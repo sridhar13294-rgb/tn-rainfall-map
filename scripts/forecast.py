@@ -26,6 +26,7 @@ MODELS = [  # (label, Open-Meteo model id)
 DAILY = ['precipitation_sum', 'temperature_2m_max', 'temperature_2m_min', 'wind_speed_10m_max', 'wind_direction_10m_dominant']
 LEVELS = ['10m', '925hPa', '850hPa', '700hPa', '500hPa', '200hPa']
 WIND_BOX = dict(lat0=0, lat1=25, lon0=65, lon1=95, step=1.0)
+PACE = 8
 LAND_URL = 'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_land.geojson'
 
 
@@ -59,7 +60,7 @@ def query(points, params):
         q = dict(params, latitude=','.join(f'{p[1]:.2f}' for p in chunk), longitude=','.join(f'{p[0]:.2f}' for p in chunk))
         res = get(API + '?' + urllib.parse.urlencode(q))
         out += res if isinstance(res, list) else [res]
-        time.sleep(1.5)
+        time.sleep(PACE)   # stay under Open-Meteo's 600 calls/minute (each location counts ~1.2 calls)
     return out
 
 
@@ -135,8 +136,16 @@ def main():
     if not per_model:
         raise SystemExit('no model data at all')
 
-    nd = len(dates)
     labels = [m for m, _ in MODELS if m in per_model]
+    # drop trailing days that no model fully covers
+    nd = len(dates)
+    while nd and all(per_model[m][0]['precipitation_sum'][nd - 1] is None for m in labels):
+        nd -= 1
+    dates = dates[:nd]
+    for m in labels:
+        for rec in per_model[m]:
+            for k in rec:
+                rec[k] = rec[k][:nd]
     # cells: [lon, lat, {var: [[avg per day], {model: [per day]}]}]
     cells = []
     coverage = [[m for m in labels if per_model[m][0]['precipitation_sum'][d] is not None] for d in range(nd)]
@@ -194,6 +203,7 @@ def main():
     tpl = open(P('site/forecast_template.html')).read()
     open(P('site/forecast.html'), 'w').write(tpl.replace('/*FDATA*/', json.dumps(F, separators=(',', ':'))))
     status['points'] = len(pts)
+    status['days'] = nd
     json.dump(status, open(P('data/forecast_status.json'), 'w'), indent=1)
     print(json.dumps(status, indent=1))
 
