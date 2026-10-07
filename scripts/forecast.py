@@ -34,7 +34,7 @@ class RateLimited(RuntimeError):
     pass
 
 
-DEADLINE = time.time() + 22 * 60   # never let one run hang until GitHub cancels it
+DEADLINE = time.time() + 27 * 60   # never let one run hang until GitHub cancels it
 
 
 def get(url, tries=4):
@@ -66,10 +66,10 @@ def batches(seq, n):
         yield seq[i:i + n]
 
 
-def query(points, params):
+def query(points, params, size=60):
     """Open-Meteo multi-location request; returns one result dict per point."""
     out = []
-    for chunk in batches(points, 60):
+    for chunk in batches(points, size):
         q = dict(params, latitude=','.join(f'{p[1]:.2f}' for p in chunk), longitude=','.join(f'{p[0]:.2f}' for p in chunk))
         res = get(API + '?' + urllib.parse.urlencode(q))
         out += res if isinstance(res, list) else [res]
@@ -188,7 +188,13 @@ def main():
     wind = None
     try:
         hv = [f'wind_speed_{l}' for l in LEVELS] + [f'wind_direction_{l}' for l in LEVELS]
-        res = query(grid, dict(hourly=','.join(hv), models='gfs_seamless', forecast_days=7, timezone='GMT', wind_speed_unit='ms'))
+        wp = dict(hourly=','.join(hv), models='gfs_seamless', forecast_days=7, timezone='GMT', wind_speed_unit='ms')
+        try:
+            res = query(grid, dict(wp, temporal_resolution='hourly_6'), size=25)   # 6-hourly only: 6x smaller replies
+        except RuntimeError as e:
+            if 'HTTP 400' not in str(e):
+                raise
+            res = query(grid, wp, size=25)
         times = res[0]['hourly']['time']
         idx = [k for k, t in enumerate(times) if int(t[11:13]) % 6 == 0]
         lv = {}
@@ -210,6 +216,12 @@ def main():
     except Exception as e:
         status['wind'] = f'FAILED: {e}'
         print('wind failed:', e, file=sys.stderr)
+        try:   # keep showing the previous run's wind rather than nothing
+            old = open(P('site/forecast.html')).read()
+            wind = json.loads(old[old.index('const F=') + 8:old.index(';\nconst $=')])['wind']
+            status['wind'] += ' (showing previous run)'
+        except Exception:
+            pass
 
     now = dt.datetime.now(IST)
     F = dict(updated=now.strftime('%d %b %Y, %H:%M IST'), dates=dates, models=labels, coverage=coverage,
