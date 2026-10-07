@@ -85,9 +85,14 @@ def parse_page(page, districts):
     m = re.search(r'as on\s*(\d{4}-\d{2}-\d{2})', page)
     date = m.group(1) if m else None
     p = Rows(); p.feed(page)
-    out = []
+    out, cols = [], {}
     for row in p.rows:
         texts = [html.unescape(t) for t, _ in row]
+        low = [t.lower() for t in texts]
+        if any('name of the station' in t for t in low):
+            cols = {'name': next(i for i, t in enumerate(low) if 'name of the station' in t),
+                    'district': next((i for i, t in enumerate(low) if t.startswith('district')), None)}
+            continue
         hrefs = [h for _, hs in row for h in hs]
         sid = next((re.search(r'add_stations/(\d+)', h).group(1) for h in hrefs if 'add_stations/' in h), None)
         nums = [(i, num(t)) for i, t in enumerate(texts)]
@@ -96,9 +101,13 @@ def parse_page(page, districts):
         if not lat or not lon:
             continue
         rain = next((v for i, v in reversed(nums) if v is not None and i > lon[0]), None)
-        dcell = next((t for t in texts if any(t.startswith(d) or f' {d}' in f' {t}' for d in districts)), '')
-        district = next((d for d in sorted(districts, key=len, reverse=True) if d.lower() in dcell.lower()), None)
-        name = next((t for t in texts if t and num(t) is None and t != dcell and not re.fullmatch(r'[\d\-/ :]+', t)), '')
+        if cols and len(texts) > max(c for c in cols.values() if c is not None):
+            name = texts[cols['name']]
+            dcell = texts[cols['district']] if cols['district'] is not None else ''
+        else:
+            dcell = next((t for t in texts if any(t.startswith(d) for d in districts)), '')
+            name = next((t for t in texts if t and num(t) is None and t != dcell and not re.fullmatch(r'[\d\-/ :]+', t)), '')
+        district = next((d for d in sorted(districts, key=len, reverse=True) if dcell.lower().startswith(d.lower())), None)
         parts = [x.strip() for x in dcell.split('|')]
         out.append({'id': sid or f'{district}:{name}', 'name': name.strip(' .'), 'district': district,
                     'taluk': parts[1] if len(parts) > 1 else '', 'lat': lat[1], 'lon': lon[1], 'rain': rain})
@@ -113,26 +122,33 @@ ALIASES = {'Kanyakumari': 'Kanniyakumari', 'Tiruchirappalli': 'Thiruchirappalli'
 
 
 # ---------------------------------------------------------------- name matching
-STOP = {'taluk', 'office', 'pwd', 'aws', 'arg', 'tndrra', 'rtff', 'vao', 'the', 'of', 'and', 'tk', 'to', 'gcc', 'w', 'z'}
+STOP = {'taluk', 'office', 'pwd', 'aws', 'arg', 'tndrra', 'rtff', 'vao', 'the', 'of', 'and', 'tk', 'to', 'gcc', 'pal',
+        'basl', 'dscl', 'rscl', 'corporation', 'park', 'w', 'z'}
+
+
+def canon(w):
+    """Collapse common Tamil-name spelling variants: Thondi/Tondi, Mimisal/Meemisal, Pettai/Pet."""
+    w = w.replace('pettai', 'pet').replace('patti', 'pati').replace('th', 't').replace('dh', 'd').replace('zh', 'l')
+    w = w.replace('ee', 'i').replace('oo', 'u').replace('aa', 'a').replace('w', 'v').replace('y', 'i').replace('g', 'k')
+    return re.sub(r'(.)\1+', r'\1', w)
 
 
 def norm(name):
     n = name.lower()
-    n = re.sub(r'_\d+$|\(\w\)$', '', n)
+    n = re.sub(r'_\d+$', '', n)
     n = re.sub(r'[^a-z ]', ' ', n)
-    return [w for w in n.split() if w not in STOP and len(w) > 1]
+    return [canon(w) for w in n.split() if w not in STOP and len(w) > 1]
 
 
-def score(a, b):
-    ta, tb = norm(a), norm(b)
-    if not ta or not tb:
+def score(report_name, tn_name):
+    a, b = norm(report_name), norm(tn_name)
+    if not a or not b:
         return 0.0
-    sa, sb = ' '.join(ta), ' '.join(tb)
-    r = difflib.SequenceMatcher(None, sa, sb).ratio()
-    # every word of the short name appears (fuzzily) in the long name, e.g. "Andimadam" vs "Taluk Office, Andimadam"
-    short, long_ = (ta, tb) if len(ta) <= len(tb) else (tb, ta)
-    hit = sum(any(difflib.SequenceMatcher(None, w, x).ratio() >= .85 for x in long_) for w in short) / len(short)
-    return max(r, hit * .97)
+    r = difflib.SequenceMatcher(None, ' '.join(a), ' '.join(b)).ratio()
+    # every word of the report name found in the TN SMART name, e.g. "Andimadam" in "Taluk Office, Andimadam".
+    # Not the other way round: "Kodaikanal Perumalmalai" is a different place from the "Kodaikanal" gauge.
+    hit = sum(any(difflib.SequenceMatcher(None, w, x).ratio() >= .925 for x in b) for w in a) / len(a)
+    return max(r, .97 if hit == 1 else 0)
 
 
 def match(baseline, stations, overrides):
@@ -145,7 +161,7 @@ def match(baseline, stations, overrides):
         if key in overrides:
             res.append((overrides[key] or None, 1.0, 'manual')); continue
         best = max(((score(b['station'], s['name']), s['id']) for s in by_d.get(b['district'], [])), default=(0, None))
-        res.append((best[1], best[0], 'auto') if best[0] >= 0.80 else (None, best[0], 'none'))
+        res.append((best[1], best[0], 'auto') if best[0] >= 0.925 else (None, best[0], 'none'))
     return res
 
 
@@ -248,6 +264,19 @@ def main():
             r, a = .3 * math.sqrt((i + .5) / len(L)), i * 2.39996
             g['lon'], g['lat'] = c[0] + r * math.cos(a) / .98, c[1] + r * math.sin(a)
 
+    # an exact 0 mm month while the district's median gauge had 20+ mm means the gauge wasn't reporting
+    # (newly installed "_2" gauges, ARG gaps): treat it as missing, not as a dry month
+    n_gap = 0
+    for k in range(nm):
+        vals = {}
+        for g in gauges:
+            if g['m'][k] is not None:
+                vals.setdefault(g['district'], []).append(g['m'][k])
+        med = {d: statistics.median(v) for d, v in vals.items()}
+        for g in gauges:
+            if g['m'][k] == 0 and med.get(g['district'], 0) >= 20:
+                g['m'][k] = None; n_gap += 1
+
     # suspect readings: > 1000 mm in a month and > 5x the district median for that month
     for k in range(nm):
         vals = {}
@@ -297,6 +326,7 @@ def main():
                   f"{n_gps} gauges are placed at their real TN SMART latitude/longitude ({n_match} of {len(base['stations'])} report "
                   f"stations matched by name). Report stations that could not be matched are only used in districts with "
                   f"fewer than 5 located gauges. Grid values are inverse-distance estimates from the 8 nearest gauges within 60 km. "
+                  f"{n_gap} gauge-months showing 0 mm while their district had rain are treated as missing. "
                   f"{n_susp} suspect gauge reading(s) (over 1,000 mm in a month and over 5× the district median) are excluded. "
                   f"Hill zones are hand-drawn approximations; the hill shading is illustrative relief and does not change the rainfall colours."),
     }
@@ -306,7 +336,7 @@ def main():
     tpl = open(P('site/template.html')).read()
     open(P('site/index.html'), 'w').write(tpl.replace('/*DATA*/', json.dumps(D, separators=(',', ':'), ensure_ascii=False)))
     status.update(data_to=str(last), months=nm, gauges=len(gauges), gauges_with_gps=n_gps, report_matched=n_match,
-                  report_total=len(base['stations']), suspect=n_susp, daily_files=len(daily))
+                  report_total=len(base['stations']), suspect=n_susp, zero_gaps=n_gap, daily_files=len(daily))
     save(P('data/status.json'), status)
     print(json.dumps(status, indent=1))
 

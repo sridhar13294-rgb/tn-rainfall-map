@@ -83,7 +83,7 @@ const sg=document.createElementNS(NS,'g');sv.appendChild(sg);sg.style.display='n
 const SD=D.st.filter(r=>r[4]).map(r=>{const k=document.createElementNS(NS,'circle');k.setAttribute('cx',X(r[2]));k.setAttribute('cy',Y(r[3]));k.setAttribute('fill',r[5]?'#e11d48':'#111');k.setAttribute('stroke','#fff');sg.appendChild(k);
  k.addEventListener('click',e=>{e.stopPropagation();const m=+mo.value;$('info').innerHTML=`<b>${r[0]}</b> · ${D.d[r[1]]} · rain gauge<br>${m==NM?'Total':MN[m]}: <b>${f1(stv(r,m))} mm</b>`+(r[5]?'<br><span class="m">⚠ suspect reading excluded from the grid</span>':'')});return k});
 // zoom & pan
-const card=sv.parentNode;card.style.position='relative';card.insertAdjacentHTML('beforeend','<div style="position:absolute;right:12px;top:12px;display:flex;flex-direction:column;gap:6px" id="zb"><button data-z="1.6">+</button><button data-z="0.625">−</button><button data-z="0">⌂</button></div>');
+const card=sv.parentNode;card.style.position='relative';card.insertAdjacentHTML('beforeend','<div style="position:absolute;left:12px;top:12px;display:flex;flex-direction:column;gap:6px" id="zb"><button data-z="1.6">+</button><button data-z="0.625">−</button><button data-z="0">⌂</button></div>');
 document.querySelectorAll('#zb button').forEach(b=>{b.style.cssText='width:36px;height:36px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:18px';b.onclick=()=>{const z=+b.dataset.z;z?zoomAt(z,vb[0]+vb[2]/2,vb[1]+vb[3]/2):(vb=V0.slice(),apply())}});
 const V0=[0,0,440,575];let vb=V0.slice();
 const TX=[...sv.querySelectorAll('text')].map(t=>[t,+t.getAttribute('font-size'),parseFloat(t.style.strokeWidth)||0]);
