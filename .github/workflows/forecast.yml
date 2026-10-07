@@ -22,7 +22,7 @@ concurrency:
 jobs:
   forecast:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
@@ -33,10 +33,11 @@ jobs:
       - name: Download model forecasts and build the page
         run: python scripts/forecast.py
       - name: Save the forecast
+        if: always()
         run: |
           git config user.name "forecast-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add site/forecast.html data/forecast_status.json data/land_region.json
+          git add -A site/forecast.html data/forecast_status.json data/land_region.json || true
           git diff --cached --quiet || git commit -m "Forecast update $(TZ=Asia/Kolkata date '+%Y-%m-%d %H:%M IST')"
           git pull --rebase -X theirs origin ${{ github.ref_name }} && git push origin HEAD:${{ github.ref_name }}
       - if: github.ref_name == 'main'

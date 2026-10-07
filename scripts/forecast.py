@@ -30,9 +30,18 @@ PACE = 8
 LAND_URL = 'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_land.geojson'
 
 
+class RateLimited(RuntimeError):
+    pass
+
+
+DEADLINE = time.time() + 22 * 60   # never let one run hang until GitHub cancels it
+
+
 def get(url, tries=4):
     last = None
     for i in range(tries):
+        if time.time() > DEADLINE:
+            raise RuntimeError(f'time budget used up; last error: {last}')
         try:
             req = urllib.request.Request(url, headers={'User-Agent': 'tn-rainfall-map forecast (non-commercial)'})
             with urllib.request.urlopen(req, timeout=120) as r:
@@ -41,6 +50,10 @@ def get(url, tries=4):
             body = e.read().decode('utf-8', 'replace')[:300]
             if e.code == 400:            # bad request (e.g. unknown model) - retrying won't help
                 raise RuntimeError(f'HTTP 400: {body}')
+            if e.code == 429:
+                if 'inute' in body and i == 0:   # per-minute limit: wait it out once
+                    time.sleep(65); last = body; continue
+                raise RateLimited(f'Open-Meteo limit reached: {body}')
             last = f'HTTP {e.code}: {body}'
         except Exception as e:
             last = e
@@ -134,6 +147,7 @@ def main():
             status['models'][label] = f'FAILED: {e}'
             print(label, 'failed:', e, file=sys.stderr)
     if not per_model:
+        json.dump(status, open(P('data/forecast_status.json'), 'w'), indent=1)
         raise SystemExit('no model data at all')
 
     labels = [m for m, _ in MODELS if m in per_model]
