@@ -1,13 +1,13 @@
 {
- "run_utc": "2026-10-07T21:00:50+00:00",
+ "run_utc": "2026-10-07T21:26:11+00:00",
  "models": {
   "GFS": "ok (15 days)",
   "ECMWF": "ok (14 days)",
-  "ECMWF AI": "ok (15 days)",
-  "GEM": "ok (9 days)",
-  "ICON": "ok (7 days)"
+  "ECMWF AI": "FAILED: time budget used up; last error: <urlopen error _ssl.c:993: The handshake operation timed out>",
+  "GEM": "FAILED: time budget used up; last error: None",
+  "ICON": "FAILED: time budget used up; last error: None"
  },
- "wind": "FAILED: time budget used up; last error: <urlopen error _ssl.c:993: The handshake operation timed out>",
+ "wind": "FAILED: time budget used up; last error: None (showing previous run)",
  "points": 231,
  "days": 15
 }
