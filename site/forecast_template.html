@@ -1,0 +1,138 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Tamil Nadu Weather Forecast</title>
+<style>
+:root{--bg:#f4f6f9;--card:#fff;--ink:#14213d;--mut:#667085;--line:#dde3ec;--acc:#0b5cab;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f141b;--card:#18202b;--ink:#e6ebf2;--mut:#93a0b3;--line:#2a3544;--acc:#5aa9ff}}
+:root[data-theme="dark"]{--bg:#0f141b;--card:#18202b;--ink:#e6ebf2;--mut:#93a0b3;--line:#2a3544;--acc:#5aa9ff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.w{max-width:620px;margin:0 auto;padding:12px}
+h1{font-size:18px;margin:0}h2{font-size:15px;margin:0 0 8px}.m{color:var(--mut);font-size:12px}
+a{color:var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:10px}
+.warn{background:#fff4d6;color:#5c4400;border-radius:10px;padding:8px 10px;font-size:12px;margin-top:10px}
+select{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:6px 0 4px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:5px 10px;font:inherit;font-size:12px;cursor:pointer;text-align:center;line-height:1.2}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#fff}.chip small{display:block;font-size:10px;opacity:.8}
+svg{width:100%;height:auto;display:block}
+.lg{display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:8px}.lg div{display:flex;align-items:center;gap:5px;font-size:11px}.lg i{width:14px;height:12px;border-radius:2px;border:1px solid rgba(0,0,0,.12)}
+#info{min-height:36px;font-size:13px;margin-top:8px}
+#info table{border-collapse:collapse;margin-top:4px;font-size:12px}#info td{padding:1px 10px 1px 0}
+.wwrap{position:relative;border-radius:10px;overflow:hidden;background:#0b1a2e;touch-action:pan-y}
+.wwrap canvas{display:block;width:100%}.wwrap canvas+canvas{position:absolute;left:0;top:0}
+#wtip{position:absolute;left:8px;bottom:8px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;padding:4px 8px;border-radius:6px;pointer-events:none}
+input[type=range]{width:100%}
+button.play{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;width:40px;height:32px;font-size:15px}
+</style></head><body><div class="w">
+<div class="m"><a href="index.html">← Rainfall map</a></div>
+<h1>Tamil Nadu Weather Forecast</h1>
+<div class="m" id="upd"></div>
+<div class="warn"><b>Experimental, not an official forecast.</b> Follow IMD and TNSDMA warnings for safety decisions. Days 8–16 are much less reliable than days 1–7.</div>
+
+<div class="card">
+ <h2>16-day forecast</h2>
+ <div class="row"><select id="var"><option value="precipitation_sum">Rain (mm)</option><option value="temperature_2m_max">Max temperature (°C)</option><option value="temperature_2m_min">Min temperature (°C)</option><option value="wind_speed_10m_max">Max wind (km/h)</option></select>
+ <select id="mod"></select></div>
+ <div class="chips" id="days"></div>
+ <svg id="tn" viewBox="0 0 440 575"></svg>
+ <div class="lg" id="lg"></div>
+ <div id="info" class="m">Tap a square to see every model's forecast for that spot.</div>
+</div>
+
+<div class="card">
+ <h2>Wind flow</h2>
+ <div class="chips" id="lev"></div>
+ <div class="wwrap" id="ww"><canvas id="wb"></canvas><canvas id="wp"></canvas><div id="wtip"></div></div>
+ <div class="row" style="margin-top:8px"><button class="play" id="pl">▶</button><div style="flex:1"><input type="range" id="wt" min="0" value="0"><div class="m" id="wtl"></div></div></div>
+ <div class="lg" id="wlg"></div>
+ <div class="m" style="margin-top:6px">GFS model, every 6 hours for 7 days, 1° grid. Tap the map to read speed and direction.</div>
+</div>
+
+<p class="m" id="notes"></p>
+</div><script>
+const F=/*FDATA*/;
+const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
+const DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const f1=v=>v==null?'—':(+v).toLocaleString('en',{maximumFractionDigits:1});
+$('upd').textContent='Updated '+F.updated+' · average of '+F.models.join(', ');
+$('notes').textContent='Daily values are midnight-to-midnight IST, from Open-Meteo (non-commercial use). The average uses only models that reach that day: ICON runs to about day 7, GEM to about day 10, ECMWF and ECMWF AI to about day 15, GFS to day 16. Grid 0.25° (~28 km). Wind flow: NOAA GFS via Open-Meteo.';
+
+// ---------- 16-day Tamil Nadu map
+const X=l=>(l-76.1)*100,Y=a=>(13.7-a)*100;
+const SC={precipitation_sum:{b:[[0,'#eef2f6','0'],[.1,'#d6ecf7','0.1–2.4'],[2.5,'#9fd3ea','2.5–15'],[15.6,'#4ba3d6','15.6–64'],[64.5,'#2156a6','64.5–115 heavy'],[115.6,'#7b2a9e','115.6–204 very heavy'],[204.5,'#c2185b','204.5+ extreme']],u:'mm'},
+ temperature_2m_max:{b:[[0,'#3f7fbf','<22'],[22,'#6bb0d8','22–26'],[26,'#a9dcc4','26–29'],[29,'#f2e394','29–32'],[32,'#f6b25e','32–35'],[35,'#e8693d','35–38'],[38,'#b5172b','38+']],u:'°C'},
+ temperature_2m_min:{b:[[0,'#2c5aa0','<14'],[14,'#5c95cf','14–18'],[18,'#9cc9e3','18–21'],[21,'#cfe8c8','21–23'],[23,'#f2e394','23–25'],[25,'#f6b25e','25–27'],[27,'#e8693d','27+']],u:'°C'},
+ wind_speed_10m_max:{b:[[0,'#eef2f6','<10'],[10,'#cfe8c8','10–20'],[20,'#9fd3ea','20–30'],[30,'#4ba3d6','30–40'],[40,'#f6b25e','40–50'],[50,'#e8693d','50–62'],[62,'#7b2a9e','62+ gale']],u:'km/h'}};
+const sv=$('tn');
+sv.innerHTML='<defs><clipPath id="cp"><path id="cl"/></clipPath></defs><g id="cg" clip-path="url(#cp)"></g><path id="ol" fill="none" stroke-width="1" stroke-linejoin="round" style="stroke:var(--ink)"/><g id="cty"></g>';
+const PD=F.tn.map(r=>r.map((p,i)=>(i?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)).join('')+'Z').join('');
+$('cl').setAttribute('d',PD);$('ol').setAttribute('d',PD);
+const R=F.cells.map((c,i)=>{const r=document.createElementNS(NS,'rect');r.setAttribute('x',X(c.lon-F.step/2));r.setAttribute('y',Y(c.lat+F.step/2));r.setAttribute('width',F.step*100+.5);r.setAttribute('height',F.step*100+.5);r.dataset.i=i;$('cg').appendChild(r);return r});
+F.ct.forEach(c=>{const g=$('cty'),x=X(c[1]),y=Y(c[2]),e=c[3]=='end';const k=document.createElementNS(NS,'circle');k.setAttribute('cx',x);k.setAttribute('cy',y);k.setAttribute('r',2.4);k.setAttribute('fill','#14213d');k.setAttribute('stroke','#fff');g.appendChild(k);
+ const t=document.createElementNS(NS,'text');t.setAttribute('x',x+(e?-5:5));t.setAttribute('y',y+2.6);t.setAttribute('text-anchor',e?'end':'start');t.setAttribute('font-size',8);t.setAttribute('font-weight',600);t.style.cssText='fill:var(--ink);stroke:var(--card);stroke-width:2.4px;paint-order:stroke;pointer-events:none';t.textContent=c[0];g.appendChild(t)});
+$('mod').innerHTML='<option value="avg">Average of models</option>'+F.models.map(m=>`<option value="${m}">${m} only</option>`).join('');
+const dl=s=>{const d=new Date(s+'T00:00:00');return [DOW[d.getDay()],d.getDate()+' '+MON[d.getMonth()]]};
+let day=0,sel=-1;
+$('days').innerHTML=F.dates.map((s,i)=>{const [a,b]=dl(s);return `<button class="chip" data-d="${i}">${i==0?'Today':i==1?'Tomorrow':a}<small>${b} · ${F.coverage[i].length} models</small></button>`}).join('');
+$('days').onclick=e=>{const b=e.target.closest('[data-d]');if(b){day=+b.dataset.d;paint()}};
+function cls(v,b){let k=0;b.forEach((x,i)=>{if(v>=x[0])k=i});return k}
+function val(c,v,m,d){const s=c[v];return s?(m=='avg'?s.avg[d]:(s[m]||[])[d]):null}
+function paint(){const v=$('var').value,m=$('mod').value,b=SC[v].b;
+ document.querySelectorAll('#days .chip').forEach((c,i)=>c.classList.toggle('on',i==day));
+ F.cells.forEach((c,i)=>{const x=val(c,v,m,day);R[i].setAttribute('fill',x==null?'#d9dde3':b[cls(x,b)][1]);R[i].setAttribute('stroke',i==sel?'#000':'none');R[i].setAttribute('stroke-width',i==sel?1.6:0)});
+ $('lg').innerHTML=b.map(x=>`<div><i style="background:${x[1]}"></i>${x[2]}</div>`).join('')+(m!='avg'&&!F.coverage[day].includes(m)?'<div class="m">'+m+' does not reach this day (grey).</div>':'');
+ show()}
+function show(){if(sel<0)return;const c=F.cells[sel],v=$('var').value,u=SC[v].u,[a,b]=dl(F.dates[day]);
+ const rows=F.models.map(m=>`<tr><td>${m}</td><td><b>${f1(val(c,v,m,day))}</b> ${u}</td></tr>`).join('');
+ const avg=F.cells[sel][v].avg,mx=Math.max(1,...avg.filter(x=>x!=null));
+ const bars=`<svg viewBox="0 0 320 60" style="margin-top:6px">${avg.map((x,i)=>`<rect x="${i*20+2}" y="${48-(x||0)/mx*44}" width="16" height="${Math.max(.5,(x||0)/mx*44)}" rx="2" fill="${i==day?'#f08c00':'var(--acc)'}"><title>${F.dates[i]}: ${f1(x)} ${u}</title></rect><text x="${i*20+10}" y="58" font-size="7" text-anchor="middle" fill="var(--mut)">${dl(F.dates[i])[1].split(' ')[0]}</text>`).join('')}</svg>`;
+ const wd=c.wind_dir[day];
+ $('info').innerHTML=`<b>${c.lat.toFixed(2)}°N, ${c.lon.toFixed(2)}°E</b> · ${a} ${b}<br>Average: <b>${f1(val(c,v,'avg',day))} ${u}</b>`+(wd!=null?` · wind from ${Math.round(wd)}°`:'')+`<table>${rows}</table><div class="m">16-day average trend</div>${bars}`}
+sv.addEventListener('click',e=>{const i=e.target.dataset&&e.target.dataset.i;if(i!=null){sel=+i;paint()}});
+$('var').onchange=paint;$('mod').onchange=paint;paint();
+
+// ---------- wind animation
+const W=F.wind;
+if(!W){$('ww').innerHTML='<div class="m" style="padding:20px;color:#fff">Wind data unavailable in this run.</div>'}else{
+const LV=Object.keys(W.levels),LN={'10m':'Surface','925hPa':'925 hPa · ~750 m','850hPa':'850 hPa · ~1.5 km','700hPa':'700 hPa · ~3 km','500hPa':'500 hPa · ~5.5 km','200hPa':'200 hPa · ~12 km'};
+let lev='850hPa',fr=0,playing=false;
+$('lev').innerHTML=LV.map(l=>`<button class="chip" data-l="${l}">${LN[l]||l}</button>`).join('');
+$('lev').onclick=e=>{const b=e.target.closest('[data-l]');if(b){lev=b.dataset.l;mark();reset()}};
+function mark(){document.querySelectorAll('#lev .chip').forEach(c=>c.classList.toggle('on',c.dataset.l==lev))}
+const wt=$('wt');wt.max=W.times.length-1;
+const tl=s=>{const d=new Date(s);const i=new Date(d.getTime()+5.5*3600e3);return DOW[i.getUTCDay()]+' '+i.getUTCDate()+' '+MON[i.getUTCMonth()]+', '+String(i.getUTCHours()).padStart(2,'0')+':'+String(i.getUTCMinutes()).padStart(2,'0')+' IST'};
+const LO0=W.lon0,LO1=W.lon0+(W.nx-1)*W.step,LA0=W.lat0,LA1=W.lat0+(W.ny-1)*W.step;
+const wb=$('wb'),wp=$('wp'),bx=wb.getContext('2d'),px=wp.getContext('2d');let CW,CH,dpr;
+const lx=l=>(l-LO0)/(LO1-LO0)*CW,ly=a=>(LA1-a)/(LA1-LA0)*CH;
+function base(){dpr=window.devicePixelRatio||1;CW=$('ww').clientWidth;CH=CW*(LA1-LA0)/(LO1-LO0)/Math.cos(12.5*Math.PI/180);
+ [wb,wp].forEach(c=>{c.width=CW*dpr;c.height=CH*dpr;c.style.height=CH+'px'});[bx,px].forEach(c=>c.setTransform(dpr,0,0,dpr,0,0));
+ bx.fillStyle='#0b1a2e';bx.fillRect(0,0,CW,CH);bx.fillStyle='#1d2b3d';bx.strokeStyle='#5d7590';bx.lineWidth=.7;
+ F.land.forEach(r=>{bx.beginPath();r.forEach((p,i)=>i?bx.lineTo(lx(p[0]),ly(p[1])):bx.moveTo(lx(p[0]),ly(p[1])));bx.closePath();bx.fill();bx.stroke()});
+ bx.strokeStyle='#ffd166';bx.lineWidth=1.2;F.tn.forEach(r=>{bx.beginPath();r.forEach((p,i)=>i?bx.lineTo(lx(p[0]),ly(p[1])):bx.moveTo(lx(p[0]),ly(p[1])));bx.closePath();bx.stroke()});
+ bx.fillStyle='rgba(255,255,255,.45)';bx.font='italic 11px system-ui';bx.textAlign='center';bx.fillText('Bay of Bengal',lx(87.5),ly(15));bx.fillText('Arabian Sea',lx(68.5),ly(15));bx.fillText('Indian Ocean',lx(80),ly(2.5));
+ bx.fillStyle='#fff';bx.font='10px system-ui';bx.textAlign='left';[['Chennai',80.27,13.08],['Madurai',78.12,9.93],['Coimbatore',76.96,11.0]].forEach(c=>{bx.beginPath();bx.arc(lx(c[1]),ly(c[2]),2,0,7);bx.fill();bx.fillText(c[0],lx(c[1])+4,ly(c[2])+3)})}
+function uv(lo,la){const fx=(lo-LO0)/W.step,fy=(la-LA0)/W.step;if(fx<0||fy<0||fx>W.nx-1||fy>W.ny-1)return null;
+ const x0=Math.min(Math.floor(fx),W.nx-2),y0=Math.min(Math.floor(fy),W.ny-2),dx=fx-x0,dy=fy-y0,f=W.levels[lev][fr],n=W.nx;
+ const g=(a)=>{const p=y0*n+x0;return (a[p]*(1-dx)+a[p+1]*dx)*(1-dy)+(a[p+n]*(1-dx)+a[p+n+1]*dx)*dy};return [g(f[0])/2,g(f[1])/2]}
+const SP=[[0,'#3b82c4'],[5,'#38b2ac'],[10,'#7bc96f'],[15,'#e6d65a'],[20,'#f59e42'],[30,'#e8553d'],[45,'#c026d3']];
+const scol=s=>{let c=SP[0][1];SP.forEach(x=>{if(s>=x[0])c=x[1]});return c};
+$('wlg').innerHTML=SP.map((x,i)=>`<div><i style="background:${x[1]}"></i>${x[0]}${SP[i+1]?'–'+SP[i+1][0]:'+'} m/s</div>`).join('');
+let parts=[];const NP=()=>Math.round(1400*CW/400);
+function seed(p){p.lo=LO0+Math.random()*(LO1-LO0);p.la=LA0+Math.random()*(LA1-LA0);p.age=Math.floor(Math.random()*80);return p}
+function reset(){px.clearRect(0,0,CW,CH);parts=Array.from({length:NP()},()=>seed({}))}
+function tick(){px.globalCompositeOperation='destination-in';px.fillStyle='rgba(0,0,0,0.9)';px.fillRect(0,0,CW,CH);px.globalCompositeOperation='source-over';px.lineWidth=1.1;
+ const k=(lev=='200hPa'?.006:.012)*(LO1-LO0)/30;
+ for(const p of parts){const w=uv(p.lo,p.la);if(!w||p.age++>90){seed(p);p.age=0;continue}
+  const s=Math.hypot(w[0],w[1]),nlo=p.lo+w[0]*k/Math.cos(p.la*Math.PI/180),nla=p.la+w[1]*k;
+  px.strokeStyle=scol(s);px.beginPath();px.moveTo(lx(p.lo),ly(p.la));px.lineTo(lx(nlo),ly(nla));px.stroke();p.lo=nlo;p.la=nla}
+ requestAnimationFrame(tick)}
+function setFr(i){fr=i;wt.value=i;$('wtl').textContent=tl(W.times[i])+' · frame '+(i+1)+' of '+W.times.length}
+wt.oninput=()=>setFr(+wt.value);
+let pt=null;$('pl').onclick=()=>{playing=!playing;$('pl').textContent=playing?'❚❚':'▶';if(playing)pt=setInterval(()=>setFr((fr+1)%W.times.length),900);else clearInterval(pt)};
+wp.addEventListener('click',e=>{const r=wp.getBoundingClientRect(),lo=LO0+(e.clientX-r.left)/r.width*(LO1-LO0),la=LA1-(e.clientY-r.top)/r.height*(LA1-LA0),w=uv(lo,la);if(!w)return;
+ const s=Math.hypot(w[0],w[1]),from=(Math.atan2(-w[0],-w[1])*180/Math.PI+360)%360;$('wtip').textContent=`${la.toFixed(1)}°N ${lo.toFixed(1)}°E · ${s.toFixed(1)} m/s (${(s*3.6).toFixed(0)} km/h) from ${Math.round(from)}°`});
+const now=Date.now();let first=0;W.times.forEach((t,i)=>{if(new Date(t).getTime()<=now)first=i});
+base();mark();setFr(first);reset();tick();
+let rz;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{base();reset()},200)});
+}
+</script></body></html>
