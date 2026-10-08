@@ -786,7 +786,8 @@ def anomalies_850(models, labels, clim, d0, nd):
 
 
 SST_LTM = 'https://downloads.psl.noaa.gov/Datasets/noaa.oisst.v2.highres/sst.mon.ltm.1991-2020.nc'
-SST_BOXES = dict(iod_w=(-10, 10, 50, 70), iod_e=(-10, 0, 90, 110), nino34=(-5, 5, 190, 240), bob=(5, 22, 80, 95), arabian=(5, 22, 60, 75))
+SST_BOXES = dict(iod_w=(-10, 10, 50, 70), iod_e=(-10, 0, 90, 110), nino34=(-5, 5, 190, 240), bob=(5, 22, 80, 95), arabian=(5, 22, 60, 75),
+                 tropics=(-20, 20, 0, 360))
 
 
 def _box_mean(f, la, lo, box):
@@ -812,7 +813,9 @@ def sst_climatology():
     """1991-2020 monthly OISST climatology (NOAA PSL) for the map region and the index boxes; cached."""
     cache = P('data/sst_clim_1991_2020.json')
     if os.path.exists(cache):
-        return json.load(open(cache))
+        c = json.load(open(cache))
+        if all(k in c['boxes'][0] for k in SST_BOXES):
+            return c
     import netCDF4
     ds = netCDF4.Dataset('ltm.nc', memory=http(SST_LTM, timeout=300))
     la, lo = np.asarray(ds['lat'][:]), np.asarray(ds['lon'][:])
@@ -850,7 +853,7 @@ def sst_latest(status):
     today = dt.datetime.now(UTC).date()
     hist_path = P('data/sst_indices.json')
     hist = json.load(open(hist_path)) if os.path.exists(hist_path) else {}
-    if hist and next(iter(hist.values())).get('base') != '1991-2020':
+    if hist and 'nino34_rel' not in next(iter(hist.values())):
         hist = {}                                   # drop values made with the old 1971-2000 base
 
     def load(day):
@@ -867,7 +870,8 @@ def sst_latest(status):
         cb = {k: clim['boxes'][ia][k] * (1 - w) + clim['boxes'][ib][k] * w for k in SST_BOXES}
         v = {k: _box_mean(sst, la, lo, bx) - cb[k] for k, bx in SST_BOXES.items()}
         return dict(iod=round(v['iod_w'] - v['iod_e'], 2), nino34=round(v['nino34'], 2), bob=round(v['bob'], 2),
-                    arabian=round(v['arabian'], 2), base='1991-2020')
+                    arabian=round(v['arabian'], 2), tropics=round(v['tropics'], 2),
+                    nino34_rel=round(v['nino34'] - v['tropics'], 2), base='1991-2020')
 
     latest = None
     for back in range(1, 8):
