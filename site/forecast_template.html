@@ -58,6 +58,27 @@ button.play{border:1px solid var(--line);background:var(--card);color:var(--ink)
  <div class="m" style="margin-top:6px">Mean sea-level pressure averaged across the models available at each time (listed under the slider), every 6 hours. Isobars every 2 hPa; <b style="color:#d62828">L</b> marks a low-pressure centre, <b style="color:#1d4ed8">H</b> a high. "Spread" shows how much the models disagree: large spread around a low means its position or depth is uncertain. Tap the map to read values.</div>
 </div>
 
+<div class="card">
+ <h2>System watch: lows and depressions (ensembles)</h2>
+ <div id="sysv"></div>
+</div>
+
+<div class="card">
+ <h2>One-month outlook</h2>
+ <div id="olv"></div>
+</div>
+
+<div class="card">
+ <h2>Monsoon drivers</h2>
+ <div class="chips" id="drv"><button class="chip" data-v="a850">850 hPa wind anomaly</button><button class="chip" data-v="sst">Sea temperature anomaly</button><button class="chip" data-v="mjo">MJO</button></div>
+ <div id="dv"></div>
+</div>
+
+<div class="card">
+ <h2>How good is the forecast? (checked against TN SMART gauges)</h2>
+ <div id="vfy"></div>
+</div>
+
 <p class="m" id="notes"></p>
 </div><script>
 const F=/*FDATA*/;
@@ -82,7 +103,7 @@ $('cl').setAttribute('d',PD);$('ol').setAttribute('d',PD);
 const R=F.cells.map((c,i)=>{const r=document.createElementNS(NS,'rect');r.setAttribute('x',X(c.lon-F.step/2));r.setAttribute('y',Y(c.lat+F.step/2));r.setAttribute('width',F.step*100+.5);r.setAttribute('height',F.step*100+.5);r.dataset.i=i;$('cg').appendChild(r);return r});
 F.ct.forEach(c=>{const g=$('cty'),x=X(c[1]),y=Y(c[2]),e=c[3]=='end';const k=document.createElementNS(NS,'circle');k.setAttribute('cx',x);k.setAttribute('cy',y);k.setAttribute('r',2.4);k.setAttribute('fill','#14213d');k.setAttribute('stroke','#fff');g.appendChild(k);
  const t=document.createElementNS(NS,'text');t.setAttribute('x',x+(e?-5:5));t.setAttribute('y',y+2.6);t.setAttribute('text-anchor',e?'end':'start');t.setAttribute('font-size',8);t.setAttribute('font-weight',600);t.style.cssText='fill:var(--ink);stroke:var(--card);stroke-width:2.4px;paint-order:stroke;pointer-events:none';t.textContent=c[0];g.appendChild(t)});
-$('mod').innerHTML='<option value="avg">Average of models</option>'+F.models.map(m=>`<option value="${m}">${m} only</option>`).join('');
+$('mod').innerHTML=(F.weights?'<option value="avg">Skill-weighted average (rain)</option><option value="eq">Simple average (equal weights)</option>':'<option value="avg">Average of models</option>')+F.models.map(m=>`<option value="${m}">${m} only</option>`).join('');
 const dl=s=>{const d=new Date(s+'T00:00:00');return [DOW[d.getDay()],d.getDate()+' '+MON[d.getMonth()]]};
 const has6=!!(F.coverage6&&F.cells[0].rain6);
 if(!has6){$('var').querySelector('[value=rain6]').remove()}
@@ -96,7 +117,7 @@ $('days').innerHTML=F.dates.map((s,i)=>{const [a,b]=dl(s);return `<button class=
 $('days').onclick=e=>{const b=e.target.closest('[data-d]');if(b){day=+b.dataset.d;paint()}};
 $('per').onclick=e=>{const b=e.target.closest('[data-p]');if(b){per=+b.dataset.p;paint()}};
 function cls(v,b){let k=0;b.forEach((x,i)=>{if(v>=x[0])k=i});return k}
-function val(c,v,m,k){const s=c[v];return s?(m=='avg'?s.avg[k]:(s[m]||[])[k]):null}
+function val(c,v,m,k){const s=c[v];if(!s)return null;if(m=='eq'&&!s.eq)m='avg';return m=='avg'?s.avg[k]:(s[m]||[])[k]}
 function paint(){const v=$('var').value,m=$('mod').value,b=SC[v].b,k=K();
  document.querySelectorAll('#days .chip').forEach((c,i)=>c.classList.toggle('on',i==day));
  $('per').style.display=is6()?'':'none';
@@ -211,4 +232,262 @@ $('pp').onclick=()=>{pplay=!pplay;$('pp').textContent=pplay?'❚❚':'▶';if(pp
 pc.addEventListener('click',e=>{const r=pc.getBoundingClientRect(),lo=PLO0+(e.clientX-r.left)/r.width*(PLO1-PLO0),la=PLA1-(e.clientY-r.top)/r.height*(PLA1-PLA0),a=bil(grid(pf,'avg'),lo,la),s2=bil(grid(pf,'spread'),lo,la);if(a==null)return;$('ptip').textContent=`${la.toFixed(1)}°N ${lo.toFixed(1)}°E · ${a.toFixed(1)} hPa · spread ±${s2.toFixed(1)}`});
 pdraw();let prz;window.addEventListener('resize',()=>{clearTimeout(prz);prz=setTimeout(pdraw,200)});
 }
+
+// ---------- monsoon drivers (850 hPa anomaly, SST, MJO)
+(function(){
+const D=F.drivers||{};let view='a850',af=0,aplay=null;
+const tip='position:absolute;left:8px;bottom:8px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;padding:4px 8px;border-radius:6px;pointer-events:none';
+const lerp=(st,v)=>{if(v<=st[0][0])return st[0][1];for(let i=1;i<st.length;i++)if(v<=st[i][0]){const a=st[i-1],b=st[i],t=(v-a[0])/(b[0]-a[0]);return a[1].map((x,j)=>Math.round(x+(b[1][j]-x)*t))}return st[st.length-1][1]};
+const DIV=[[-2,[33,102,172]],[-1,[103,169,207]],[-.3,[209,229,240]],[0,[247,247,247]],[.3,[253,219,199]],[1,[239,138,98]],[2,[178,24,43]]];
+const fmtD=s=>{const d=new Date(s+'T00:00:00');return DOW[d.getDay()]+' '+d.getDate()+' '+MON[d.getMonth()]};
+function mapCanvas(box,draw,onTap){
+ const wrap=document.createElement('div');wrap.className='wwrap';wrap.style.background='#fff';wrap.style.marginTop='8px';
+ const cv=document.createElement('canvas'),tp=document.createElement('div');tp.style.cssText=tip;wrap.append(cv,tp);
+ const LO0=box.lon0,LO1=box.lon0+(box.nx-1)*box.step,LA0=box.lat0,LA1=box.lat0+(box.ny-1)*box.step;
+ const g={LO0,LO1,LA0,LA1};
+ g.render=()=>{const dpr=window.devicePixelRatio||1,W=wrap.clientWidth||400,H=W*(LA1-LA0)/(LO1-LO0)/Math.cos((LA0+LA1)/2*Math.PI/180);
+  cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);cv.style.height=H+'px';const c=cv.getContext('2d');
+  g.W=W;g.H=H;g.x=l=>(l-LO0)/(LO1-LO0)*W;g.y=a=>(LA1-a)/(LA1-LA0)*H;draw(c,cv,dpr,g);
+  c.setTransform(dpr,0,0,dpr,0,0);c.strokeStyle='rgba(30,40,50,.6)';c.lineWidth=.8;
+  F.land.forEach(r=>{c.beginPath();r.forEach((p,i)=>i?c.lineTo(g.x(p[0]),g.y(p[1])):c.moveTo(g.x(p[0]),g.y(p[1])));c.closePath();c.stroke()});
+  c.strokeStyle='#7a4b00';c.lineWidth=1.1;F.tn.forEach(r=>{c.beginPath();r.forEach((p,i)=>i?c.lineTo(g.x(p[0]),g.y(p[1])):c.moveTo(g.x(p[0]),g.y(p[1])));c.closePath();c.stroke()})};
+ cv.addEventListener('click',e=>{const r=cv.getBoundingClientRect(),lo=LO0+(e.clientX-r.left)/r.width*(LO1-LO0),la=LA1-(e.clientY-r.top)/r.height*(LA1-LA0);tp.textContent=onTap(lo,la)||''});
+ g.wrap=wrap;return g}
+function bilin(a,b,lo,la){const fx=(lo-b.lon0)/b.step,fy=(la-b.lat0)/b.step;if(fx<0||fy<0||fx>b.nx-1||fy>b.ny-1)return null;const x0=Math.min(Math.floor(fx),b.nx-2),y0=Math.min(Math.floor(fy),b.ny-2),dx=fx-x0,dy=fy-y0,n=b.nx,p=y0*n+x0;return (a[p]*(1-dx)+a[p+1]*dx)*(1-dy)+(a[p+n]*(1-dx)+a[p+n+1]*dx)*dy}
+function slider(n,label,onset){const row=document.createElement('div');row.className='row';row.style.marginTop='8px';
+ row.innerHTML='<button class="play">▶</button><div style="flex:1"><input type="range" min="0" value="0"><div class="m"></div></div>';
+ const btn=row.querySelector('button'),rg=row.querySelector('input'),lb=row.querySelector('.m');rg.max=n-1;
+ const set=i=>{rg.value=i;lb.textContent=label(i);onset(i)};rg.oninput=()=>set(+rg.value);
+ btn.onclick=()=>{if(aplay){clearInterval(aplay);aplay=null;btn.textContent='▶'}else{btn.textContent='❚❚';aplay=setInterval(()=>set((+rg.value+1)%n),900)}};
+ row.set=set;return row}
+function legend(st,unit){return '<div class="lg">'+st.map(s=>`<div><i style="background:rgb(${s[1].join(',')})"></i>${s[0]>0?'+':''}${s[0]}</div>`).join('')+`<div class="m">${unit}</div></div>`}
+function stop(){if(aplay){clearInterval(aplay);aplay=null}}
+
+// 850 hPa anomaly
+function v850(el){const A=D.anom850;if(!A||!A.days.length){el.innerHTML='<p class="m">850 hPa anomaly unavailable in this run.</p>';return}
+ const SP=[[0,[247,247,247]],[2,[220,214,240]],[4,[170,150,215]],[6,[120,90,180]],[9,[70,30,130]]];
+ const g=mapCanvas(A,(c,cv,dpr,g)=>{const W2=cv.width,H2=cv.height,img=c.createImageData(W2,H2),d=img.data,U=A.u[af],V=A.v[af];
+   for(let y=0;y<H2;y++){const la=g.LA1-(y+.5)/H2*(g.LA1-g.LA0);for(let x=0;x<W2;x++){const lo=g.LO0+(x+.5)/W2*(g.LO1-g.LO0),u=bilin(U,A,lo,la),v=bilin(V,A,lo,la),col=u==null?[220,220,220]:lerp(SP,Math.hypot(u,v)/10),o=(y*W2+x)*4;d[o]=col[0];d[o+1]=col[1];d[o+2]=col[2];d[o+3]=255}}
+   c.putImageData(img,0,0);c.setTransform(dpr,0,0,dpr,0,0);c.strokeStyle='#1b1b1b';c.fillStyle='#1b1b1b';c.lineWidth=1;
+   for(let j=0;j<A.ny;j+=2)for(let i=0;i<A.nx;i+=2){const k=j*A.nx+i,u=U[k]/10,v=V[k]/10,s=Math.hypot(u,v);if(s<.7)continue;const x=g.x(A.lon0+i*A.step),y=g.y(A.lat0+j*A.step),L=Math.min(16,4+s*1.6),ex=x+u/s*L,ey=y-v/s*L;
+    c.beginPath();c.moveTo(x,y);c.lineTo(ex,ey);c.stroke();const an=Math.atan2(ey-y,ex-x);c.beginPath();c.moveTo(ex,ey);c.lineTo(ex-4*Math.cos(an-.45),ey-4*Math.sin(an-.45));c.lineTo(ex-4*Math.cos(an+.45),ey-4*Math.sin(an+.45));c.closePath();c.fill()}},
+  (lo,la)=>{const u=bilin(A.u[af],A,lo,la),v=bilin(A.v[af],A,lo,la);if(u==null)return;const s=Math.hypot(u,v)/10,dir=(Math.atan2(-u,-v)*180/Math.PI+360)%360;return `${la.toFixed(1)}°N ${lo.toFixed(1)}°E · anomaly ${s.toFixed(1)} m/s from ${Math.round(dir)}° · u ${(u/10).toFixed(1)}, v ${(v/10).toFixed(1)}`});
+ el.append(g.wrap);
+ const sl=slider(A.days.length,i=>`${fmtD(A.days[i])} (daily mean) · ${A.models[i].length} models: ${A.models[i].join(', ')}`,i=>{af=i;g.render()});el.append(sl);
+ el.insertAdjacentHTML('beforeend',legend(SP,'m/s anomaly speed')+'<p class="m">850 hPa (~1.5 km) wind minus its 1991–2020 average for the date (NCEP/NCAR reanalysis), averaged across the models with 850 hPa winds. Arrows point the way the extra wind blows. During the northeast monsoon, arrows from the east or northeast over Tamil Nadu mean stronger-than-normal easterlies, which usually support rain; arrows from the west mean weaker easterlies.</p>');
+ sl.set(0)}
+
+// sea temperature anomaly
+function vsst(el){const S=D.sst;if(!S){el.innerHTML='<p class="m">Sea temperature data unavailable in this run.</p>';return}
+ const g=mapCanvas(S,(c,cv)=>{const W2=cv.width,H2=cv.height,img=c.createImageData(W2,H2),d=img.data;
+   for(let y=0;y<H2;y++){const la=g.LA1-(y+.5)/H2*(g.LA1-g.LA0),j=Math.round((la-S.lat0)/S.step);for(let x=0;x<W2;x++){const lo=g.LO0+(x+.5)/W2*(g.LO1-g.LO0),i=Math.round((lo-S.lon0)/S.step),v=(j>=0&&j<S.ny&&i>=0&&i<S.nx)?S.anom[j*S.nx+i]:-999,col=v==-999?[214,208,196]:lerp(DIV,v/10),o=(y*W2+x)*4;d[o]=col[0];d[o+1]=col[1];d[o+2]=col[2];d[o+3]=255}}
+   c.putImageData(img,0,0)},
+  (lo,la)=>{const j=Math.round((la-S.lat0)/S.step),i=Math.round((lo-S.lon0)/S.step);if(j<0||i<0||j>=S.ny||i>=S.nx)return;const v=S.anom[j*S.nx+i];return v==-999?'Land':`${la.toFixed(1)}°N ${lo.toFixed(1)}°E · ${(v/10>0?'+':'')+(v/10).toFixed(1)} °C vs normal`});
+ el.append(g.wrap);g.render();
+ el.insertAdjacentHTML('beforeend',legend(DIV,'°C')+`<p class="m">NOAA OISST v2.1 daily sea-surface temperature for ${fmtD(S.date)}, shown as the difference from NOAA's 1991–2020 average for the time of year (the same base period NOAA CPC uses for ENSO). Grey is land.</p>`);
+ const H=D.sst_idx||[];if(!H.length)return;const L=H[H.length-1];
+ const IDX=[['iod','Indian Ocean Dipole (IOD)',v=>v>=.4?'positive IOD — usually favourable for northeast monsoon rain':v<=-.4?'negative IOD — usually unfavourable':'neutral'],
+  ['nino34','Niño 3.4 (ENSO)',v=>v>=.5?'El Niño-like — often more northeast monsoon rain':v<=-.5?'La Niña-like — often less northeast monsoon rain':'neutral'],
+  ['nino34_rel','Relative Niño 3.4 (minus the 20°S–20°N tropical average)',v=>v>=.5?'El Niño even after removing the general warmth of the tropical oceans':v<=-.5?'La Niña-like after removing tropical warmth':'neutral after removing tropical warmth'],
+  ['bob','Bay of Bengal (5–22°N, 80–95°E)',v=>v>=.5?'warmer than normal — more fuel for lows and depressions':v<=-.5?'cooler than normal':'near normal'],
+  ['arabian','Arabian Sea (5–22°N, 60–75°E)',v=>v>=.5?'warmer than normal':v<=-.5?'cooler than normal':'near normal']];
+ const spark=k=>{const xs=H.map(h=>h[k]),mn=Math.min(...xs,-.5),mx=Math.max(...xs,.5),w=120,h=28,X=i=>i/(xs.length-1||1)*w,Y=v=>h-(v-mn)/(mx-mn)*h;
+  return `<svg viewBox="0 0 ${w} ${h}" style="width:120px;height:28px;display:inline-block;vertical-align:middle"><line x1="0" x2="${w}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--line)"/><polyline fill="none" stroke="var(--acc)" stroke-width="1.5" points="${xs.map((v,i)=>X(i).toFixed(1)+','+Y(v).toFixed(1)).join(' ')}"/></svg>`};
+ el.insertAdjacentHTML('beforeend','<table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:6px">'+IDX.filter(([k])=>L[k]!=null).map(([k,n,f])=>`<tr style="border-top:1px solid var(--line)"><td style="padding:5px 4px">${n}<div class="m">${f(L[k])}</div></td><td style="text-align:right;padding:5px 4px"><b>${L[k]>0?'+':''}${L[k].toFixed(2)} °C</b><br>${spark(k)}</td></tr>`).join('')+`</table><p class="m">Index values are computed here from the same OISST data against the 1991–2020 average (IOD = west box 10°S–10°N, 50–70°E minus east box 10°S–0°, 90–110°E). Lines show the last ${H.length} days. The plain Niño 3.4 value is the traditional anomaly; the relative value subtracts the average warmth of all tropical oceans, which is closer to how NOAA CPC now reports ENSO strength. Official statements from IMD, BoM and NOAA use weekly or monthly averages and their own methods, so they can differ.</p>`)}
+
+// MJO
+function vmjo(el){const MJ=D.mjo||{},M2=Array.isArray(MJ)?MJ:(MJ.days||[]),SRC=MJ.source=='romi'?"NOAA PSL's real-time OLR MJO index (ROMI), drawn in the same orientation as the Wheeler–Hendon RMM diagram":"the real-time RMM index from Australia's Bureau of Meteorology (Wheeler and Hendon)";
+ if(M2.length){const R=M2.slice(-40),S=300,c=S/2,k=S/7,X=x=>c+x*k,Y=y=>c-y*k,last=R[R.length-1];
+  const rays=[0,45,90,135].map(a=>{const r=a*Math.PI/180;return `<line x1="${c-Math.cos(r)*3.5*k}" y1="${c+Math.sin(r)*3.5*k}" x2="${c+Math.cos(r)*3.5*k}" y2="${c-Math.sin(r)*3.5*k}" stroke="var(--line)"/>`}).join('');
+  const nums=[1,2,3,4,5,6,7,8].map(p=>{const a=[202.5,247.5,292.5,337.5,22.5,67.5,112.5,157.5][p-1]*Math.PI/180;return `<text x="${c+Math.cos(a)*3.05*k}" y="${c-Math.sin(a)*3.05*k+4}" font-size="12" text-anchor="middle" fill="var(--mut)" font-weight="600">${p}</text>`}).join('');
+  const path=R.map((r,i)=>`${i?'L':'M'}${X(r.rmm1).toFixed(1)} ${Y(r.rmm2).toFixed(1)}`).join('');
+  const dots=R.map((r,i)=>`<circle cx="${X(r.rmm1)}" cy="${Y(r.rmm2)}" r="${i==R.length-1?5:2.2}" fill="${i==R.length-1?'#d62828':'var(--acc)'}" opacity="${.35+.65*i/R.length}"><title>${r.date}: phase ${r.phase}, amplitude ${r.amp}</title></circle>`).join('');
+  const lab=R.map((r,i)=>(i%10==0||i==R.length-1)?`<text x="${X(r.rmm1)+6}" y="${Y(r.rmm2)-5}" font-size="9" fill="var(--ink)">${r.date.slice(8)}/${r.date.slice(5,7)}</text>`:'').join('');
+  const MF=D.mjo_fc&&D.mjo_fc.tracks||{},MSTY={'GFS':['#e8771a','4 3',1.6],'ECMWF':['#1d5fd0','4 3',1.6],'GFS + ECMWF average':['#111','',2.6],'GFS ensemble mean':['#e8771a','1 3',1.8],'ECMWF ensemble mean':['#1d5fd0','1 3',1.8],'Ensembles average':['#8e24aa','',2.6]};
+  const fl=Object.entries(MF).filter(([n])=>MSTY[n]).map(([n,t])=>{const [c,da,w]=MSTY[n];const d=t.map((p,i)=>`${i?'L':'M'}${X(p[1]).toFixed(1)} ${Y(p[2]).toFixed(1)}`).join('');
+    const ticks=t.map((p,i)=>i%5==0&&i?`<circle cx="${X(p[1])}" cy="${Y(p[2])}" r="2.2" fill="${c}"/>`:'').join('');const e=t[t.length-1];
+    return `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-dasharray="${da}" opacity=".9"/>${ticks}<circle cx="${X(e[1])}" cy="${Y(e[2])}" r="3.4" fill="${c}"><title>${n}: ${e[0]}</title></circle>`}).join('');
+  el.innerHTML=`<svg viewBox="0 0 ${S} ${S}" style="max-width:360px;margin:8px auto 0">${rays}<circle cx="${c}" cy="${c}" r="${k}" fill="none" stroke="var(--mut)"/>
+   <text x="${c}" y="${S-6}" text-anchor="middle" font-size="11" fill="var(--mut)">Indian Ocean</text><text x="${S-6}" y="${c}" text-anchor="middle" font-size="11" fill="var(--mut)" transform="rotate(90 ${S-6} ${c})">Maritime Continent</text>
+   <text x="${c}" y="14" text-anchor="middle" font-size="11" fill="var(--mut)">Western Pacific</text><text x="10" y="${c}" text-anchor="middle" font-size="11" fill="var(--mut)" transform="rotate(-90 10 ${c})">W. Hemisphere &amp; Africa</text>
+   ${nums}<path d="${path}" fill="none" stroke="var(--acc)" stroke-width="1.4" opacity=".7"/>${dots}${lab}${fl}</svg>
+   <p style="margin:6px 0 0"><b>Now (${fmtD(last.date)}): phase ${last.phase}, amplitude ${last.amp.toFixed(2)}</b> — ${last.amp>=1?'an active MJO':'a weak MJO (inside the circle), so little influence'}.</p>
+   <p class="m">Observed MJO from ${SRC}, last ${R.length} days; the red dot is the latest. During the northeast monsoon (Oct–Dec), an active MJO in phases 2–3 (convection over the Indian Ocean) tends to bring more rain to Tamil Nadu, and phases 6–7 tend to suppress it.</p>`;
+  if(Object.keys(MF).length){const phz=p=>{const a=(Math.atan2(p[2],p[1])*180/Math.PI+360)%360;return [5,6,7,8,1,2,3,4][Math.floor(a/45)%8]};
+   const rows=Object.entries(MF).filter(([n])=>MSTY[n]).map(([n,t])=>{const [c,da,w]=MSTY[n];const pick=k=>{const p=t[Math.min(t.length-1,k)];const a=Math.hypot(p[1],p[2]);return `${fmtD(p[0]).replace(/^\w+ /,'')}: <b>${a<1?'weak':'phase '+phz(p)}</b> (${a.toFixed(1)})`};
+     const n0=t.findIndex(p=>p[0]>=F.dates[0]);return `<tr style="border-top:1px solid var(--line)"><td style="padding:4px"><svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="${c}" stroke-width="${w}" stroke-dasharray="${da}"/></svg> ${n}</td><td style="padding:4px;font-size:11px">${[5,10].map(k=>pick(Math.max(0,n0)+k)).join('<br>')}<br>end ${pick(t.length-1)}</td></tr>`}).join('');
+   const cal=D.mjo_fc.calibration||{};
+   el.insertAdjacentHTML('beforeend',`<h2 style="margin-top:10px">MJO forecast</h2><table style="width:100%;border-collapse:collapse;font-size:12px">${rows}</table><p class="m">Forecast paths start from the latest observed point. Each comes from the model's forecast cloudiness (outgoing longwave radiation) between 20°S and 20°N, joined to the last 60 days of NOAA CPC Blended OLR satellite observations (the same data NOAA's real-time index uses) and processed the same way as NOAA's real-time OLR MJO index (anomaly from 1991–2020, previous 40-day mean removed, 9-day smoothing, projected on NOAA PSL's daily MJO patterns). Dots mark every 5 days. Ensemble lines are the average of all members (GFS ensemble 31, ECMWF ensemble 50); the solid lines average GFS with ECMWF and the two ensembles. Ensemble forecasts run to 10 days, main models to 15–16. Scale checked against NOAA's observed index over ${cal.days||'—'} days (match ${cal.corr!=null?Math.round(cal.corr*100)+'%':'—'}). The last few days of each path lean on the 9-day smoothing, so treat the ends as indicative.</p>`)}}
+ else el.innerHTML='<p class="m">Observed MJO index unavailable in this run.</p>';
+ const Hv=D.hov;if(!Hv||!(Hv.future||[]).length)return;
+ const rows=[...(Hv.past||[]).map(r=>({...r,f:0})),...Hv.future.map(r=>({...r,f:1}))],L0=40,L1=200,lonI=Hv.lons.map((l,i)=>[l,i]).filter(x=>x[0]>=L0&&x[0]<=L1);
+ const wrap=document.createElement('div');wrap.style.cssText='position:relative;margin-top:10px';const cv=document.createElement('canvas');wrap.append(cv);
+ el.insertAdjacentHTML('beforeend','<h2 style="margin-top:12px">Where the MJO is heading: tropical 850 hPa wind anomaly</h2>');el.append(wrap);
+ const dpr=window.devicePixelRatio||1,W=wrap.clientWidth||400,rh=Math.max(9,Math.min(16,360/rows.length)),top=18,left=44,H=top+rows.length*rh+4;
+ cv.width=W*dpr;cv.height=H*dpr;cv.style.width='100%';cv.style.height=H+'px';const c2=cv.getContext('2d');c2.setTransform(dpr,0,0,dpr,0,0);
+ const HS=[[-8,[33,102,172]],[-4,[103,169,207]],[-1,[209,229,240]],[0,[247,247,247]],[1,[253,219,199]],[4,[239,138,98]],[8,[178,24,43]]];
+ const xw=(W-left-4)/(L1-L0),cs=getComputedStyle(document.body);
+ rows.forEach((r,ri)=>{lonI.forEach(([l,i])=>{const v=r.u[i];c2.fillStyle=`rgb(${lerp(HS,v).join(',')})`;c2.fillRect(left+(l-L0)*xw,top+ri*rh,2.5*xw+.6,rh+.4)});
+  if(ri%3==0||ri==rows.length-1){c2.fillStyle=cs.color;c2.font='9px system-ui';c2.fillText(r.date.slice(8)+'/'+r.date.slice(5,7),2,top+ri*rh+rh*.75)}});
+ const fi=rows.findIndex(r=>r.f);if(fi>0){c2.strokeStyle='#111';c2.lineWidth=1.5;c2.beginPath();c2.moveTo(left,top+fi*rh);c2.lineTo(W-4,top+fi*rh);c2.stroke()}
+ c2.fillStyle=cs.color;c2.font='9px system-ui';c2.textAlign='center';[60,90,120,150,180].forEach(l=>c2.fillText(l+'°E',left+(l-L0)*xw,11));
+ [[70,'IO 2–3'],[115,'MC 4–5'],[160,'WP 6–7']].forEach(([l,t])=>{c2.fillStyle='rgba(0,0,0,.35)';c2.fillText(t,left+(l-L0)*xw,top+10)});c2.textAlign='left';
+ el.insertAdjacentHTML('beforeend',legend(HS,'m/s (blue = easterly, red = westerly anomaly)')+`<p class="m">15°S–15°N average 850 hPa zonal wind minus its 1991–2020 average, by longitude (40°E–160°W). Rows above the black line are past days kept from earlier runs (${(Hv.past||[]).length} so far, building up daily); rows below are the GFS + ECMWF forecast. An active MJO shows up as a band of westerly (red) anomalies moving east (to the right) over one to two weeks; IO = Indian Ocean, MC = Maritime Continent, WP = western Pacific, with the matching MJO phases. This is a guide to the MJO's movement, not an official MJO index forecast.</p>`)}
+
+function show(){stop();document.querySelectorAll('#drv .chip').forEach(b=>b.classList.toggle('on',b.dataset.v==view));const el=$('dv');el.innerHTML='';({a850:v850,sst:vsst,mjo:vmjo})[view](el)}
+$('drv').onclick=e=>{const b=e.target.closest('[data-v]');if(b){view=b.dataset.v;show()}};
+show();let rz;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(show,250)});
+})();
+
+// ---------- system watch (lows in the main models and the GFS + ECMWF ensembles)
+(function(){
+const SY=F.systems||{},el=$('sysv');if(!el)return;
+const det=SY.deterministic||{},L=SY.list||[],E=SY.ens,sz=SY.ens_size||{},t0=new Date(F.dates[0]+'T00:00:00Z').getTime();
+const tl=k=>{const i=new Date(t0+k*216e5+5.5*3600e3);return `${DOW[i.getUTCDay()]} ${i.getUTCDate()} ${MON[i.getUTCMonth()]}, ${String(i.getUTCHours()).padStart(2,'0')}:${String(i.getUTCMinutes()).padStart(2,'0')} IST`};
+const dd=k=>{const i=new Date(t0+k*216e5+5.5*3600e3);return `${DOW[i.getUTCDay()]} ${i.getUTCDate()} ${MON[i.getUTCMonth()]}`};
+const ll=(lo,la)=>`${la.toFixed(1)}°N ${lo.toFixed(1)}°E`;
+const ENAME={'GEFS':'GFS ensemble','ECMWF ENS':'ECMWF ensemble'},ECOL={'GEFS':'#b85a0d','ECMWF ENS':'#1849a9'};
+const nDet=Object.keys(det).length;
+if(!nDet&&!L.length){el.innerHTML='<p style="margin:4px 0"><b>No low-pressure system expected over the Bay of Bengal or Arabian Sea in the next 10 days</b> in any of the five main models.</p><p class="m">When a main model shows a low forming over the sea (at least 2 hPa deeper than the area 250–450 km around it and lasting 36 hours or more), this card switches on: the GFS ensemble (31 members) and ECMWF ensemble (50 members) are tracked the same way and summarised as probabilities.</p>';return}
+if(!L.length){el.innerHTML='<p><b>'+Object.keys(det).join(', ')+'</b> show a low in the next 10 days, but the ensembles could not be summarised in this run.</p>';return}
+let si=-1,fk=0,showMem=true;
+const TNI=SY.tn;
+const tnLine=TNI?`<div style="background:${TNI.prob>=30?'#fde2e2':TNI.prob>=10?'#fff4d6':'#e8f5ec'};border-radius:10px;padding:8px 10px;margin:4px 0 8px"><b>Chance of a low passing within 300 km of the Tamil Nadu coast in the next 10 days: ${TNI.prob}%</b><div class="m">${Object.entries(TNI.probs).map(([k,v])=>`${ENAME[k]} ${v}%`).join(' · ')}${TNI.det&&TNI.det.length?' · main models showing it: '+TNI.det.join(', '):' · none of the main models'}</div></div>`:'';
+const PC=p=>p<950?'#7a0010':p<970?'#e0306f':p<990?'#f29a1d':p<1000?'#1f7ae0':'#4a4a4a';
+const chips=`<div class="chips" id="syc"><button class="chip" data-s="-1">All systems<small>${L.length} found</small></button>${L.map((x,i)=>`<button class="chip" data-s="${i}">${x.basin}<small>${x.prob}% · ${dd(x.genesis[0])}${x.tn_prob?` · TN ${x.tn_prob}%`:''}</small></button>`).join('')}</div>`;
+el.innerHTML=tnLine+chips+'<div id="sysum"></div><div class="wwrap" id="sywrap" style="background:#eef3f7;margin-top:6px"><canvas id="sycv"></canvas></div><div class="row" style="margin-top:8px"><div style="flex:1"><input type="range" id="syt" min="0" value="0"><div class="m" id="sytl"></div></div></div><label class="m" style="display:flex;gap:6px;align-items:center;margin-top:4px"><input type="checkbox" id="symem" checked> Show every member\'s track (coloured by central pressure)</label><div class="lg" id="sylg"></div><p class="m">Member tracks are coloured by central pressure like ECMWF-style track charts: grey above 1000 hPa, blue 990–1000, orange 970–990, pink 950–970, dark red below 950; a large dot marks where each member\'s low ends. "All systems" shows every low found from 40°E to 120°E (including lows that form over the South China Sea and move west into the Bay). For a single system, shading is the chance that the low passes within 150 km (share of all ensemble members, the two ensembles weighted equally). Dashed lines: each ensemble\'s mean track, with circles showing how far the members are spread around it once a day. Pink: our consensus, the equal-weight average of the GFS-ensemble mean, the ECMWF-ensemble mean and the main models that have the low. Thin black: individual main models. Lows are found on a 0.5° grid in smoothed sea-level pressure; a track must start over the sea, be at least 2 hPa deeper than its surroundings at some point and last 24 hours. These are pressure lows in the models, not IMD depression or cyclone classifications.</p>';
+function sumry(){if(si<0){$('sysum').innerHTML=`<p style="margin:6px 0;font-size:13px">${L.map(x=>`<b>${x.basin}</b>: ${x.prob}% chance, forms around ${dd(x.genesis[0])} near ${ll(x.genesis[1],x.genesis[2])}${x.tn_prob?`, <b>${x.tn_prob}%</b> within 300 km of Tamil Nadu`:''}`).join('<br>')}</p>`;return}
+ const x=L[si],c=x.consensus.length?x.consensus:(x.det_mean.length?x.det_mean:Object.values(x.mean_tracks)[0]),g=c[0],e=c[c.length-1];
+ const pe=Object.keys(x.probs).map(k=>`${ENAME[k]} ${x.probs[k]}% (${x.members[k]} of ${sz[k]})`).join(', ');
+ const sp=Object.entries(x.mean_tracks).map(([k,t])=>{const q=t[Math.min(t.length-1,Math.floor(t.length/2))];return `${ENAME[k]} ±${q[5]} km`}).join(', ');
+ $('sysum').innerHTML=`<p style="margin:6px 0"><b>${x.basin} low: ${x.prob}% chance</b> <span class="m">(${pe})</span></p>
+  ${(SY.excluded||[]).length?`<p class="m" style="margin:2px 0">${SY.excluded.map(k=>ENAME[k]).join(' and ')}: data incomplete in this run, so left out of these figures.</p>`:''}
+  ${x.tn_prob?`<p style="margin:2px 0"><b>${x.tn_prob}%</b> chance this low passes within 300 km of the Tamil Nadu coast.</p>`:''}
+  <p style="margin:4px 0;font-size:13px">Forms around <b>${dd(g[0])}</b> near ${ll(g[1],g[2])}; the consensus moves to near <b>${ll(e[1],e[2])}</b> by ${dd(e[0])}. Lowest average pressure about <b>${Math.round(x.min_p)} hPa</b>.${x.det.length?` Main models showing it: <b>${x.det.join(', ')}</b>.`:' None of the main models shows it.'}${sp?` Track spread at mid-period: ${sp}.`:''}</p>`}
+function draw(){const ALL=si<0,x=ALL?{consensus:[],det_mean:[],mean_tracks:{},det_tracks:{},strike:[],members_tracks:{}}:L[si],wrap=$('sywrap'),cv=$('sycv'),dpr=window.devicePixelRatio||1,W=wrap.clientWidth||400,B=F.systems_box||{lon0:60,lat0:0,nx:81,ny:51,step:.5};
+ // zoom to the system (tracks and 5%+ strike area) while keeping Tamil Nadu in view
+ const xs=[77.5,80.5],ys=[8,13.5];const SRC=ALL?L:[x];SRC.forEach(y=>[y.consensus,y.det_mean,...Object.values(y.mean_tracks),...Object.values(y.det_tracks||{}),...(ALL?Object.values(y.members_tracks).flat():[])].forEach(t=>(t||[]).forEach(p=>{xs.push(p[1]);ys.push(p[2])})));
+ x.strike.forEach(([i])=>{xs.push(40+(i%161)*.5);ys.push(-5+Math.floor(i/161)*.5)});
+ let LO0=Math.min(...xs)-2.5,LO1=Math.max(...xs)+2.5,LA0=Math.min(...ys)-2,LA1=Math.max(...ys)+2;
+ const wantW=Math.max(LO1-LO0,(LA1-LA0)*1.25,14),cxm=(LO0+LO1)/2;LO0=cxm-wantW/2;LO1=cxm+wantW/2;
+ const wantH=Math.max(LA1-LA0,wantW/1.25),cym=(LA0+LA1)/2;LA0=Math.max(-2,cym-wantH/2);LA1=LA0+wantH;
+ const H=W*(LA1-LA0)/(LO1-LO0)/Math.cos((LA0+LA1)/2*Math.PI/180);cv.width=W*dpr;cv.height=H*dpr;cv.style.height=H+'px';
+ const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);const X2=l=>(l-LO0)/(LO1-LO0)*W,Y2=a=>(LA1-a)/(LA1-LA0)*H,kmdeg=k=>k/111;
+ c.fillStyle='#eef3f7';c.fillRect(0,0,W,H);
+ // strike probability
+ const SC2=[[5,'rgba(255,230,140,.75)'],[20,'rgba(250,180,70,.8)'],[40,'rgba(235,110,50,.85)'],[60,'rgba(190,30,45,.85)'],[80,'rgba(120,10,60,.9)']];
+ const cw=X2(60.5)-X2(60),chh=Y2(0)-Y2(.5);
+ x.strike.forEach(([i,v])=>{const lo=40+(i%161)*.5,la=-5+Math.floor(i/161)*.5;let col=null;SC2.forEach(q=>{if(v>=q[0])col=q[1]});if(col){c.fillStyle=col;c.fillRect(X2(lo-.25),Y2(la+.25),cw+.5,chh+.5)}});
+ c.fillStyle='rgba(227,220,205,.85)';c.strokeStyle='#8a8170';c.lineWidth=.7;
+ F.land.forEach(r=>{c.beginPath();r.forEach((p,i)=>i?c.lineTo(X2(p[0]),Y2(p[1])):c.moveTo(X2(p[0]),Y2(p[1])));c.closePath();c.fill();c.stroke()});
+ c.strokeStyle=(LO1-LO0)>18?'rgba(122,75,0,.45)':'#7a4b00';c.lineWidth=(LO1-LO0)>18?.45:1.1;F.tn.forEach(r=>{c.beginPath();r.forEach((p,i)=>i?c.lineTo(X2(p[0]),Y2(p[1])):c.moveTo(X2(p[0]),Y2(p[1])));c.closePath();c.stroke()});
+ const line=(t,col,w,dash)=>{c.strokeStyle=col;c.lineWidth=w;c.setLineDash(dash||[]);c.beginPath();t.forEach((p,i)=>i?c.lineTo(X2(p[1]),Y2(p[2])):c.moveTo(X2(p[1]),Y2(p[2])));c.stroke();c.setLineDash([])};
+ const memDraw=(trs,alpha)=>trs.forEach(t=>{c.globalAlpha=alpha;for(let i=1;i<t.length;i++){c.strokeStyle=PC(Math.min(t[i-1][3],t[i][3]));c.lineWidth=1.3;c.beginPath();c.moveTo(X2(t[i-1][1]),Y2(t[i-1][2]));c.lineTo(X2(t[i][1]),Y2(t[i][2]));c.stroke()}
+  t.forEach((p,i)=>{if(p[0]%4==0){c.fillStyle='#fff';c.strokeStyle=PC(p[3]);c.lineWidth=1;c.beginPath();c.arc(X2(p[1]),Y2(p[2]),2.2,0,7);c.fill();c.stroke()}});
+  const e2=t[t.length-1];c.fillStyle=PC(Math.min(...t.map(q=>q[3])));c.strokeStyle='#222';c.lineWidth=.8;c.beginPath();c.arc(X2(e2[1]),Y2(e2[2]),4.2,0,7);c.fill();c.stroke();c.globalAlpha=1});
+ if(showMem)(ALL?L:[x]).forEach(y=>Object.values(y.members_tracks).forEach(trs=>memDraw(trs,ALL?.8:.55)));
+ if(ALL){L.forEach(y=>{if(y.consensus.length){line(y.consensus,'#fff',5);line(y.consensus,'#d61f69',2.6)}})}
+ Object.values(x.det_tracks||{}).forEach(t=>line(t,'rgba(20,20,20,.75)',1.3));
+ Object.entries(x.mean_tracks).forEach(([e,t])=>{t.forEach(p=>{if(p[0]%8==0){c.strokeStyle=ECOL[e];c.globalAlpha=.3;c.lineWidth=1;c.beginPath();c.arc(X2(p[1]),Y2(p[2]),Math.max(2,X2(p[1]+kmdeg(p[5])/Math.cos(p[2]*Math.PI/180))-X2(p[1])),0,7);c.stroke();c.globalAlpha=1}});line(t,ECOL[e],2.6,[7,4])});
+ const cs=x.consensus;if(cs.length){line(cs,'#fff',6);line(cs,'#d61f69',3.4);
+  let lastXY=null;cs.forEach(p=>{if(p[0]%4==0){c.fillStyle='#d61f69';c.beginPath();c.arc(X2(p[1]),Y2(p[2]),3.4,0,7);c.fill();
+   if(!lastXY||Math.hypot(X2(p[1])-lastXY[0],Y2(p[2])-lastXY[1])>34){lastXY=[X2(p[1]),Y2(p[2])];const i2=new Date(t0+p[0]*216e5);c.font='bold 10px system-ui';c.lineWidth=3;c.strokeStyle='#fff';const s=i2.getUTCDate()+' '+MON[i2.getUTCMonth()];c.strokeText(s,X2(p[1])+6,Y2(p[2])-5);c.fillStyle='#7a0f3c';c.fillText(s,X2(p[1])+6,Y2(p[2])-5)}}})}
+ // positions at the selected time
+ const mark=(t,col,r)=>{const q=t.find(p=>p[0]==fk);if(q){c.fillStyle=col;c.strokeStyle='#fff';c.lineWidth=1.5;c.beginPath();c.arc(X2(q[1]),Y2(q[2]),r,0,7);c.fill();c.stroke()}};
+ Object.entries(x.mean_tracks).forEach(([e,t])=>mark(t,ECOL[e],5));mark(cs,'#d61f69',6.5);
+ Object.entries(x.det_tracks||{}).forEach(([n,t])=>{const q=t.find(p=>p[0]==fk);if(q){c.fillStyle='#111';c.beginPath();c.arc(X2(q[1]),Y2(q[2]),3.5,0,7);c.fill();c.font='bold 10px system-ui';c.fillText(n,X2(q[1])+5,Y2(q[2])+12)}});
+ if(ALL){$('sytl').textContent='All systems over the whole forecast (dots every 24 h, large dot = end of each member\'s track)';$('sylg').innerHTML=[['#4a4a4a','>1000 hPa'],['#1f7ae0','990–1000'],['#f29a1d','970–990'],['#e0306f','950–970'],['#7a0010','<950']].map(q=>`<div><i style="background:${q[0]}"></i>${q[1]}</div>`).join('')+'<div><i style="background:#d61f69"></i>consensus</div>';return}
+ c.fillStyle='rgba(20,30,40,.55)';c.font='italic 11px system-ui';if(LO1>86)c.fillText('Bay of Bengal',X2(Math.min(LO1-7,87)),Y2(Math.max(LA0+1.5,9)));if(LO0<70)c.fillText('Arabian Sea',X2(Math.max(LO0+.5,64)),Y2(Math.max(LA0+1.5,9)));
+ const q=cs.find(p=>p[0]==fk)||Object.values(x.mean_tracks).map(t=>t.find(p=>p[0]==fk)).find(Boolean);
+ $('sytl').textContent=tl(fk)+(q?` — consensus ${ll(q[1],q[2])}, about ${Math.round(q[3])} hPa`:' — no consensus position at this time');
+ $('sylg').innerHTML=SC2.map(q2=>`<div><i style="background:${q2[1]}"></i>${q2[0]}%+</div>`).join('')+`<div><i style="background:${ECOL.GEFS}"></i>GFS ens. mean</div><div><i style="background:${ECOL['ECMWF ENS']}"></i>ECMWF ens. mean</div><div><i style="background:#d61f69"></i>consensus</div><div><i style="background:#222"></i>main models</div>`}
+function pick(i){si=i;document.querySelectorAll('#syc .chip').forEach((b,j)=>b.classList.toggle('on',j-1==si));$('syt').style.display=si<0?'none':'';
+ if(si<0){sumry();draw();return}const x=L[si];
+ const ks=[...new Set([...x.consensus.map(p=>p[0]),...Object.values(x.mean_tracks).flat().map(p=>p[0])])].sort((a,b)=>a-b);
+ const rg=$('syt');rg.min=ks[0];rg.max=ks[ks.length-1];fk=ks[Math.min(ks.length-1,Math.floor(ks.length/3))];rg.value=fk;sumry();draw()}
+$('syt').oninput=e=>{fk=+e.target.value;draw()};$('symem').onchange=e=>{showMem=e.target.checked;draw()};
+if($('syc'))$('syc').onclick=e=>{const b=e.target.closest('[data-s]');if(b)pick(+b.dataset.s)};
+pick(-1);let rz;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(draw,200)});
+// heavy-rain probability over Tamil Nadu
+if(E&&(E.days||[]).length){
+ el.insertAdjacentHTML('beforeend','<h2 style="margin-top:12px">Tamil Nadu rain from the ensembles</h2><div class="row"><select id="emode"><option value="mean">Average rain (mm/day)</option><option value="p64">Chance of heavy rain ≥ 64.5 mm/day</option><option value="p115">Chance of very heavy rain ≥ 115.6 mm/day</option></select></div><div class="chips" id="edays"></div>');
+ const sv2=document.createElementNS(NS,'svg');sv2.setAttribute('viewBox','0 0 440 575');el.append(sv2);
+ sv2.innerHTML='<defs><clipPath id="cp2"><path d="'+PD+'"/></clipPath></defs><g id="eg" clip-path="url(#cp2)"></g><path d="'+PD+'" fill="none" stroke-width="1" style="stroke:var(--ink)"/>';
+ const ER=F.cells.map(cl=>{const r=document.createElementNS(NS,'rect');r.setAttribute('x',X(cl.lon-F.step/2));r.setAttribute('y',Y(cl.lat+F.step/2));r.setAttribute('width',F.step*100+.5);r.setAttribute('height',F.step*100+.5);sv2.querySelector('#eg').appendChild(r);return r});
+ el.insertAdjacentHTML('beforeend','<div class="lg" id="elg"></div><p class="m">Daily (05:30–05:30 IST) rain from all members of the two ensembles; each ensemble weighted equally.</p>');
+ let ed=0;$('edays').innerHTML=E.days.map((d,i)=>{const dt2=new Date(d.date+'T00:00:00');return `<button class="chip" data-e="${i}">${DOW[dt2.getDay()]}<small>${dt2.getDate()} ${MON[dt2.getMonth()]}</small></button>`}).join('');
+ $('edays').onclick=e=>{const b=e.target.closest('[data-e]');if(b){ed=+b.dataset.e;ep()}};$('emode').onchange=ep;
+ function ep(){const mode=$('emode').value,v=E.days[ed][mode],bins=mode=='mean'?SC.precipitation_sum.b:[[0,'#eef2f6','0–9%'],[10,'#fde3b0','10–29%'],[30,'#f8b55c','30–49%'],[50,'#e8693d','50–69%'],[70,'#b5172b','70%+']];
+  document.querySelectorAll('#edays .chip').forEach((c,i)=>c.classList.toggle('on',i==ed));
+  ER.forEach((r,i)=>r.setAttribute('fill',bins[cls(v[i],bins)][1]));$('elg').innerHTML=bins.map(x=>`<div><i style="background:${x[1]}"></i>${x[2]}</div>`).join('')}
+ ep()}
+})();
+
+// ---------- step 4: one-month outlook (NOAA CFSv2)
+(function(){const O=F.outlook,el=$('olv');if(!el)return;
+if(!O||!O.weeks||!O.weeks.length){el.innerHTML='<p class="m">The one-month outlook is unavailable in this run (NOAA CFSv2 data could not be read). It will return with the next update.</p>';return}
+const fd=s=>{const d=new Date(s+'T00:00:00');return d.getDate()+' '+MON[d.getMonth()]};
+const CAT=p=>p==null?'—':p<=-100?'No rain':p<=-60?'Large deficient':p<=-20?'Deficient':p<20?'Normal':p<60?'Excess':'Large excess';
+const CATC=p=>p==null?'var(--mut)':p<=-60?'#a8541a':p<=-20?'#d9883a':p<20?'var(--ink)':p<60?'#1f7ae0':'#1846a3';
+const MODES={rain:{t:'Rain in the week (mm)',b:[[0,'#eef2f6','0–4'],[5,'#d6ecf7','5–14'],[15,'#9fd3ea','15–34'],[35,'#4ba3d6','35–64'],[65,'#2156a6','65–114'],[115,'#7b2a9e','115–199'],[200,'#c2185b','200+']]},
+ dep:{t:'Rain compared with normal (IMD categories)',b:[[-1e9,'#a8541a','Large deficient (−60% or less)'],[-59.5,'#e3a868','Deficient (−59 to −20%)'],[-19.5,'#eef0e6','Normal (−19 to +19%)'],[19.5,'#8cc4ea','Excess (+20 to +59%)'],[59.5,'#1846a3','Large excess (+60% or more)']]},
+ up:{t:'Chance of an above-normal week (+20% or more)',b:[[0,'#eef2f6','0–19%'],[20,'#cfe3f5','20–39%'],[40,'#8cc4ea','40–59%'],[60,'#3b8fd6','60–79%'],[80,'#1846a3','80%+']]},
+ dn:{t:'Chance of a below-normal week (−20% or more)',b:[[0,'#eef2f6','0–19%'],[20,'#f6dcc0','20–39%'],[40,'#e8b07a','40–59%'],[60,'#cf7a35','60–79%'],[80,'#8f4513','80%+']]},
+ tx:{t:'Max temperature compared with normal (°C)',b:[[-1e9,'#2c5aa0','−2 or cooler'],[-1.95,'#7fb1de','−2 to −1'],[-.95,'#eef0e6','within 1'],[1,'#f6b25e','+1 to +2'],[2,'#e8693d','+2 to +3'],[3,'#b5172b','+3 or warmer']]},
+ tn:{t:'Min temperature compared with normal (°C)',b:[[-1e9,'#2c5aa0','−2 or cooler'],[-1.95,'#7fb1de','−2 to −1'],[-.95,'#eef0e6','within 1'],[1,'#f6b25e','+1 to +2'],[2,'#e8693d','+2 to +3'],[3,'#b5172b','+3 or warmer']]}};
+let ow=0,osel=-1;
+el.innerHTML=`<div class="chips" id="owk">${O.weeks.map((w,i)=>`<button class="chip" data-w="${i}">Week ${i+1}<small>${fd(w.start)} – ${fd(w.end)}</small></button>`).join('')}</div>
+<div class="row"><select id="omode">${Object.entries(MODES).map(([k,v])=>`<option value="${k}">${v.t}</option>`).join('')}</select><select id="osrc"><option value="five">Weeks 1–2: average of the 5 models</option><option value="cfs">Weeks 1–2: NOAA CFSv2</option></select></div>
+<svg id="osv" viewBox="0 0 440 575"></svg><div class="lg" id="olg"></div><div id="oinfo" class="m" style="font-size:13px;margin-top:6px">Tap a square for that spot's four weeks.</div>
+<h2 style="margin-top:12px">Tamil Nadu, week by week</h2><div style="overflow-x:auto"><table id="otab" style="border-collapse:collapse;font-size:12px;width:100%"></table></div>
+<p class="m">Weeks run 05:30 to 05:30 IST, starting tomorrow. Weeks 3–4 come from NOAA's CFSv2 (${O.members} members from the ${O.cycles.length} latest runs, newest ${O.newest}); weeks 1–2 also show the five-model average from the 16-day forecast above, which is more reliable at that range. "Normal" is the 1991–2020 average from NOAA CPC's gauge analysis. Chances are the share of CFSv2 members with a week 20% or more above (or below) normal. CFSv2 rain is shown as the model gives it, not bias-corrected, so treat weeks 3–4 as a broad tendency, not an amount. Temperatures are corrected for CFSv2's own bias, found by matching its week 1 to the five-model average (this run: max ${O.t_bias.tmax>0?'+':''}${O.t_bias.tmax} °C, min ${O.t_bias.tmin>0?'+':''}${O.t_bias.tmin} °C).</p>`;
+const sv3=$('osv');sv3.innerHTML='<defs><clipPath id="cp3"><path d="'+PD+'"/></clipPath></defs><g id="og" clip-path="url(#cp3)"></g><path d="'+PD+'" fill="none" stroke-width="1" style="stroke:var(--ink);pointer-events:none"/>';
+const OR=F.cells.map((cl,i)=>{const r=document.createElementNS(NS,'rect');r.setAttribute('x',X(cl.lon-F.step/2));r.setAttribute('y',Y(cl.lat+F.step/2));r.setAttribute('width',F.step*100+.5);r.setAttribute('height',F.step*100+.5);r.dataset.i=i;sv3.querySelector('#og').appendChild(r);return r});
+const useFive=w=>w<2&&$('osrc').value=='five'&&O.weeks[w].five;
+function ov(w,mode,i){const W=O.weeks[w],r=useFive(w)?W.five[i]:W.rain[i],n=W.normal[i];
+ if(mode=='rain')return r;if(mode=='dep')return(r==null||!n)?null:(r/n-1)*100;if(mode=='up')return W.p_up[i];if(mode=='dn')return W.p_dn[i];if(mode=='tx')return W.tmax_anom[i];return W.tmin_anom[i]}
+function opaint(){const mode=$('omode').value,b=MODES[mode].b;
+ document.querySelectorAll('#owk .chip').forEach((c,i)=>c.classList.toggle('on',i==ow));
+ $('osrc').style.display=(ow<2&&(mode=='rain'||mode=='dep'))?'':'none';
+ OR.forEach((r,i)=>{const v=ov(ow,mode,i);r.setAttribute('fill',v==null?'#d9dde3':b[cls(v,b)][1]);r.setAttribute('stroke',i==osel?'#000':'none');r.setAttribute('stroke-width',i==osel?1.6:0)});
+ $('olg').innerHTML=b.map(x=>`<div><i style="background:${x[1]}"></i>${x[2]}</div>`).join('')+(ow<2&&(mode=='up'||mode=='dn'||mode=='tx'||mode=='tn')?'<div class="m">From CFSv2.</div>':'');
+ oinfo()}
+function oinfo(){if(osel<0)return;const c=F.cells[osel];
+ $('oinfo').innerHTML=`<b>${c.lat.toFixed(2)}°N, ${c.lon.toFixed(2)}°E</b><table style="border-collapse:collapse;margin-top:4px">`+
+ '<tr class="m"><td>Week</td><td>Rain</td><td>Normal</td><td></td><td>Max temp</td></tr>'+
+ O.weeks.map((W,w)=>{const r=useFive(w)?W.five[osel]:W.rain[osel],n=W.normal[osel],p=(r!=null&&n)?Math.round((r/n-1)*100):null;
+ return `<tr${w==ow?' style="font-weight:600"':''}><td style="padding:1px 10px 1px 0">${w+1}</td><td style="padding:1px 10px 1px 0">${f1(r)} mm</td><td style="padding:1px 10px 1px 0">${f1(n)} mm</td><td style="padding:1px 10px 1px 0;color:${CATC(p)}">${p==null?'':(p>0?'+':'')+p+'% · '+CAT(p)}</td><td>${f1(W.tmax[osel])} °C</td></tr>`}).join('')+'</table>'}
+function otab(){const th=s=>`<th style="text-align:left;padding:4px 6px;border-bottom:1px solid var(--line);font-weight:600" class="m">${s}</th>`,td=(s,st)=>`<td style="padding:4px 6px;border-bottom:1px solid var(--line);${st||''}">${s}</td>`;
+ $('otab').innerHTML='<tr>'+['Week','Rain (CFSv2)','vs normal','Chance above / below','Max temp'].map(th).join('')+'</tr>'+
+ O.weeks.map((W,w)=>{const t=W.tn,five=t.five!=null?`<div class="m">5 models: ${f1(t.five)} mm, ${t.five_dep>0?'+':''}${t.five_dep}%</div>`:'';
+  return '<tr>'+td(`<b>${w+1}</b><div class="m">${fd(W.start)}–<br>${fd(W.end)}</div>`)+td(`${f1(t.rain)} mm<div class="m">normal ${f1(t.normal)} · range ${f1(t.lo)}–${f1(t.hi)}</div>`+five)+td(`<b style="color:${CATC(t.dep)}">${t.dep>0?'+':''}${t.dep}%</b><div class="m">${CAT(t.dep)}</div>`)+td(`${t.p_up}% / ${t.p_dn}%`)+td(`${t.tmax_anom>0?'+':''}${f1(t.tmax_anom)} °C`)+'</tr>'}).join('')+
+ '<tr><td colspan="5" class="m" style="padding:4px 6px">State-wide averages over Tamil Nadu land. Range: 8 in 10 CFSv2 members fall inside it. Max temp: difference from normal.</td></tr>'}
+$('owk').onclick=e=>{const b=e.target.closest('[data-w]');if(b){ow=+b.dataset.w;opaint()}};$('omode').onchange=opaint;$('osrc').onchange=opaint;
+sv3.addEventListener('click',e=>{const i=e.target.dataset&&e.target.dataset.i;if(i!=null){osel=+i;opaint()}});
+otab();opaint()})();
+
+// ---------- step 5: forecast check against TN SMART gauges
+(function(){const V=F.verify,el=$('vfy');if(!el)return;
+const NM={'Average':'Average of models','Weighted average':'Skill-weighted average'};
+if(!V){el.innerHTML='<p class="m">The forecast check is unavailable in this run.</p>';return}
+const wline=F.weights?`<p style="margin:4px 0">The rain average above is <b>skill-weighted</b> by the last ${V.window_days} days: ${Object.entries(F.weights).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${k} ${Math.round(v*100)}%`).join(' · ')}. Choose "Simple average" in the model menu to see equal weights.</p>`
+ :`<p style="margin:4px 0">Every model counts equally in the average for now. Once each model has ${V.min_days} verified days, the rain average will be weighted towards the models that have been closest to the TN SMART gauges${V.note?` (${V.note})`:''}.</p>`;
+const S=V.scores||{},names=Object.keys(S);
+if(!names.length){el.innerHTML=wline+`<p class="m">Forecasts are being saved${V.first_run?' since '+V.first_run.replace('T',' ').replace('Z',' UTC'):''}. The first scores appear once TN SMART publishes readings for a day those forecasts covered (a TN SMART day ends at 08:30 IST, so usually within two days). ${V.gauge_cells} forecast squares contain at least one TN SMART gauge.</p>`;return}
+let lead='1';
+el.innerHTML=wline+`<div class="chips" id="vld"><button class="chip" data-l="1">Next day</button><button class="chip" data-l="2">2 days ahead</button><button class="chip" data-l="3">3 days ahead</button></div><div style="overflow-x:auto"><table id="vtab" style="border-collapse:collapse;font-size:12px;width:100%"></table></div><h2 style="margin-top:12px">State-average rain: gauges vs next-day forecast</h2><svg id="vch" viewBox="0 0 340 150"></svg><div class="lg"><div><i style="background:#9aa3ad"></i>TN SMART gauges</div><div><i style="background:#0b5cab"></i>Average of models</div><div><i style="background:#e8693d"></i>Skill-weighted average</div></div>
+<p class="m">Scored on the ${V.gauge_cells} forecast squares (0.25°) that hold TN SMART gauges, averaging gauges in the same square, over the last ${V.window_days} days. A TN SMART day is the 24 hours to 08:30 IST; the forecast for it combines the models' 6-hour rain blocks centred on that window. Typical error: average absolute difference per square (mm). Bias: forecast total ÷ gauge total (1.0 = right amount; above 1 = too wet). Rain days caught: share of squares with 2.5 mm or more where the forecast also had 2.5 mm or more. False alarms: share of forecast rain squares that stayed dry. Skill score (ETS): 0 = no better than chance, 1 = perfect. Heavy rain: 64.5 mm or more.</p>`;
+function vt(){document.querySelectorAll('#vld .chip').forEach(c=>c.classList.toggle('on',c.dataset.l==lead));
+ const rows=names.filter(n=>S[n][lead]).sort((a,b)=>S[a][lead].mae-S[b][lead].mae);const best=rows.length?S[rows[0]][lead].mae:null;
+ const th=s=>`<th style="text-align:left;padding:4px 6px;border-bottom:1px solid var(--line);font-weight:600" class="m">${s}</th>`,td=(s,st)=>`<td style="padding:4px 6px;border-bottom:1px solid var(--line);${st||''}">${s}</td>`,fx=v=>v==null?'—':v;
+ $('vtab').innerHTML='<tr>'+['Forecast','Typical error','Bias','Rain days caught / false alarms','Skill (ETS)','Heavy rain hit / miss / false'].map(th).join('')+'</tr>'+
+ rows.map(n=>{const s=S[n][lead];return '<tr>'+td(`<b>${NM[n]||n}</b><div class="m">${s.days} days</div>`)+td(`${s.mae} mm`,s.mae==best?'font-weight:700;color:#1a7f37':'')+td(fx(s.bias))+td((s.pod==null?'—':Math.round(s.pod*100)+'%')+' / '+(s.far==null?'—':Math.round(s.far*100)+'%'))+td(fx(s.ets))+td(`${s.heavy.hit} / ${s.heavy.miss} / ${s.heavy.false}`)+'</tr>'}).join('')}
+function vch(){const D=(V.daily||[]).filter(r=>r.fc&&Object.keys(r.fc).length),n=D.length,svg=$('vch');if(!n){svg.innerHTML='<text x="170" y="75" text-anchor="middle" font-size="11" fill="var(--mut)">No next-day forecasts verified yet</text>';return}
+ const mx=Math.max(1,...D.map(r=>Math.max(r.obs,...Object.values(r.fc)))),bw=320/n,H=118,y=v=>10+H-(v/mx)*H;
+ let s=D.map((r,i)=>`<rect x="${10+i*bw+bw*.15}" y="${y(r.obs)}" width="${bw*.7}" height="${Math.max(.5,10+H-y(r.obs))}" fill="#9aa3ad" rx="1"><title>${r.date}: gauges ${r.obs} mm</title></rect>`).join('');
+ const line=(k,col)=>{const p=D.map((r,i)=>r.fc[k]==null?null:[10+i*bw+bw/2,y(r.fc[k])]).filter(Boolean);return p.length?`<polyline points="${p.map(q=>q.join(',')).join(' ')}" fill="none" stroke="${col}" stroke-width="1.8"/>`+p.map(q=>`<circle cx="${q[0]}" cy="${q[1]}" r="1.8" fill="${col}"/>`).join(''):''};
+ s+=line('Average','#0b5cab')+line('Weighted average','#e8693d');
+ s+=`<text x="10" y="146" font-size="8" fill="var(--mut)">${D[0].date.slice(5)}</text><text x="330" y="146" font-size="8" text-anchor="end" fill="var(--mut)">${D[n-1].date.slice(5)}</text><text x="12" y="9" font-size="8" fill="var(--mut)">${Math.round(mx)} mm</text>`;
+ svg.innerHTML=s}
+$('vld').onclick=e=>{const b=e.target.closest('[data-l]');if(b){lead=b.dataset.l;vt()}};vt();vch()})();
 </script></body></html>
