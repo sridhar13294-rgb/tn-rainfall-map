@@ -376,7 +376,9 @@ def gfs_collect(m, pool, pts, wpts, d0, now, wind_out):
 
 
 # ------------------------------------------------------------------ ECMWF IFS and AIFS (open data)
-ECMWF_BASES = ['https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com', 'https://data.ecmwf.int/forecasts']
+ECMWF_BASES = ['https://ai4edataeuwest.blob.core.windows.net/ecmwf',          # Azure mirror (least throttled)
+               'https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com',
+               'https://data.ecmwf.int/forecasts']
 
 
 def ec_url(base, model, run, step):
@@ -404,8 +406,12 @@ def ec_collect(m, pool, pts, wpts, d0, now, model):
     def field(step, rec, var):
         def task():
             try:
-                info, vals = decode(http(ec_url(base, model, run, step) + '.grib2',
-                                         (rec['_offset'], rec['_offset'] + rec['_length'] - 1)))
+                rng = (rec['_offset'], rec['_offset'] + rec['_length'] - 1)
+                try:
+                    buf = http(ec_url(base, model, run, step) + '.grib2', rng)
+                except RuntimeError:
+                    buf = http(ec_url(next(b for b in ECMWF_BASES if b != base), model, run, step) + '.grib2', rng, tries=3)
+                info, vals = decode(buf)
                 if var == 'msl':
                     m.add(var, info, step, sample(info, vals, wpts, 'wind'))
                 elif var in ('u850', 'v850'):
@@ -1120,6 +1126,7 @@ def ecens_collect(pool, pts, wpts, d0, now, info):
         raise RuntimeError('no complete ECMWF ensemble run found')
     run, base = chosen
     other = [b for b in ECMWF_BASES if b != base][0]
+    info['fallback'] = other
     s0, _ = needed(run, d0, NDAYS)
     s1 = min(ENS_HOURS, s0 + 24 * NDAYS)
     members = {}
