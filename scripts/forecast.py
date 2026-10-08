@@ -29,12 +29,13 @@ P = lambda *a: os.path.join(ROOT, *a)
 UTC, IST = dt.timezone.utc, dt.timezone(dt.timedelta(hours=5, minutes=30))
 UA = 'tn-rainfall-map forecast (non-commercial; github.com/sridhar13294-rgb/tn-rainfall-map)'
 T_START = time.time()
-DEADLINE = T_START + 45 * 60
+DEADLINE = T_START + 38 * 60
+BUDGET = {'GFS': 9, 'ECMWF': 6, 'ECMWF AI': 4, 'ICON': 8, 'GEM': 8}   # minutes per model
 NDAYS = 16
 LEVELS = ['10m', '925', '850', '700', '500', '200']           # page keys: 10m and hPa levels
 WIND_BOX = dict(lat0=0, lat1=25, lon0=65, lon1=95, step=1.0)
 LAND_URL = 'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_land.geojson'
-LOCK = threading.Lock()
+LOCK = threading.RLock()
 
 
 class NotFound(Exception):
@@ -42,10 +43,13 @@ class NotFound(Exception):
 
 
 # ------------------------------------------------------------------ network
-def http(url, rng=None, tries=4, timeout=120, method='GET'):
+CURRENT = {'deadline': DEADLINE}
+
+
+def http(url, rng=None, tries=3, timeout=60, method='GET'):
     last = None
     for i in range(tries):
-        if time.time() > DEADLINE:
+        if time.time() > min(DEADLINE, CURRENT['deadline']):
             raise RuntimeError('time budget used up')
         h = {'User-Agent': UA}
         if rng:
@@ -205,9 +209,11 @@ class Model:
         self.recs = {k: [] for k in ('tp', 't2', 'tmax', 'tmin', 'u10', 'v10')}
         self.ok = self.failed = 0
         self.errors, self.samples, self.info = [], {}, {}
+        self.bytes = 0
 
     def err(self, msg):
         with LOCK:
+            PROGRESS[self.name] = f'ok {self.ok} failed {self.failed + 1}'
             self.failed += 1
             if len(self.errors) < 8:
                 self.errors.append(msg[:300])
@@ -222,6 +228,7 @@ class Model:
             vals_pts = vals_pts * 1000.0
         with LOCK:
             self.ok += 1
+            PROGRESS[self.name] = f'ok {self.ok} failed {self.failed}'
             if var not in self.samples:
                 self.samples[var] = {k: (v if isinstance(v, (int, float, str)) or v is None else str(v))
                                      for k, v in info.items() if k in ('shortName', 'units', 'gridType', 'stepRange',
@@ -238,6 +245,19 @@ def run_tasks(pool, tasks):
     futs = [pool.submit(t) for t in tasks]
     for f in cf.as_completed(futs):
         f.result()
+
+
+PROGRESS = {}
+
+
+def heartbeat(stop):
+    while not stop.wait(30):
+        try:
+            with LOCK:
+                snap = dict(PROGRESS, elapsed_s=round(time.time() - T_START))
+            json.dump(snap, open(P('data/forecast_progress.json'), 'w'), indent=1, default=str)
+        except Exception:
+            pass
 
 
 # ------------------------------------------------------------------ steps needed
@@ -285,8 +305,9 @@ def gfs_collect(m, pool, pts, wpts, d0, now, wind_out):
                 if kind in ('wind', 'both'):
                     lev = wanted_levels[rec['level']]
                     comp = 'u' if rec['var'] == 'UGRD' else 'v'
+                    sw = sample(info, vals, wpts, 'wind')      # computed outside the lock
                     with LOCK:
-                        wind_out.setdefault(step, {}).setdefault(lev, {})[comp] = sample(info, vals, wpts, 'wind')
+                        wind_out.setdefault(step, {}).setdefault(lev, {})[comp] = sw
             except Exception as e:
                 m.err(f'f{step:03d} {rec["var"]} {rec["level"]}: {e}')
         return task
@@ -639,11 +660,15 @@ def main():
         'ICON': lambda m, pool: icon_collect(m, pool, pts, d0, now),
         'GEM': lambda m, pool: gem_collect(m, pool, pts, d0, now),
     }
+    stop = threading.Event()
+    threading.Thread(target=heartbeat, args=(stop,), daemon=True).start()
     with cf.ThreadPoolExecutor(max_workers=16) as pool:
         for name, job in jobs.items():
             if only and name not in only:
                 continue
             m, t0 = models[name], time.time()
+            CURRENT['deadline'] = t0 + BUDGET[name] * 60
+            PROGRESS['current'] = name
             try:
                 job(m, pool)
             except Exception as e:
@@ -653,6 +678,9 @@ def main():
                                           fields_ok=m.ok, fields_failed=m.failed, seconds=round(time.time() - t0),
                                           errors=m.errors, samples=m.samples, **m.info)
             print(name, json.dumps(status['models'][name], default=str)[:800], flush=True)
+            json.dump(status, open(P('data/forecast_status.json'), 'w'), indent=1, default=str)
+    stop.set()
+    CURRENT['deadline'] = DEADLINE
 
     # daily values per model
     per = {n: daily(m, d0, NDAYS, len(pts)) for n, m in models.items()}
