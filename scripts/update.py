@@ -9,7 +9,7 @@
 If TN SMART can't be reached, the map is rebuilt from the data already saved and the problem is
 written to data/status.json, so a failed day never breaks the site.
 """
-import datetime as dt, difflib, html, json, math, os, re, statistics, sys, time, urllib.request
+import datetime as dt, difflib, html, json, math, os, re, statistics, sys, time, urllib.parse, urllib.request
 from html.parser import HTMLParser
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -60,6 +60,38 @@ class Rows(HTMLParser):
     def handle_data(self, data):
         if self.cell is not None:
             self.cell[0] += data
+
+
+def fetch_date(date):
+    """TN SMART station page for a past date (YYYY-MM-DD), via the page's own date form."""
+    data = urllib.parse.urlencode({'date_on': date, 'search_submit': 'View Data'}).encode()
+    last = None
+    for attempt in range(4):
+        try:
+            req = urllib.request.Request(URL.rstrip('/'), data=data, headers={
+                'User-Agent': 'Mozilla/5.0 (tn-rainfall-map daily update)', 'Content-Type': 'application/x-www-form-urlencoded'})
+            with urllib.request.urlopen(req, timeout=120) as r:
+                return r.read().decode('utf-8', 'replace')
+        except Exception as e:
+            last = e; time.sleep(10 * (attempt + 1))
+    raise RuntimeError(f'could not download {date}: {last}')
+
+
+def save_day(page, districts, stations, want=None):
+    """Parse a TN SMART page, update gauge positions and save that day's readings. Returns (date, rows)."""
+    date, rows = parse_page(page, districts + list(ALIASES))
+    for r in rows:
+        r['district'] = ALIASES.get(r['district'], r['district'])
+    if want and date != want:
+        raise RuntimeError(f'asked for {want}, page shows {date}')
+    if not rows:
+        raise RuntimeError('page downloaded but no station rows recognised (layout may have changed)')
+    for r in rows:
+        stations[r['id']] = {k: r[k] for k in ('id', 'name', 'district', 'taluk', 'lat', 'lon')}
+    vals = {r['id']: r['rain'] for r in rows if r['rain'] is not None}
+    if date and vals:
+        save(P('data/daily', date + '.json'), vals)
+    return date, rows
 
 
 def fetch(url):

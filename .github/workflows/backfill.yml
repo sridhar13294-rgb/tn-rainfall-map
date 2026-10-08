@@ -1,0 +1,27 @@
+name: Backfill past TN SMART days
+on:
+  workflow_dispatch:
+  push:
+    branches: [ui-v2]
+    paths: ['scripts/backfill.py']
+permissions:
+  contents: write
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python scripts/backfill.py
+      - if: always()
+        run: |
+          git config user.name "rainfall-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/daily data/stations.json data/backfill_status.json
+          git diff --cached --quiet || git commit -m "Backfill TN SMART daily readings"
+          git pull --rebase -X theirs origin ${{ github.ref_name }} && git push origin HEAD:${{ github.ref_name }}
