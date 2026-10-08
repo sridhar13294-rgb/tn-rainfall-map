@@ -1,4 +1,4 @@
-"""Probe 2: radar images for each IMD radar near Tamil Nadu, their scan time (GIF comment) vs when they appear online."""
+"""Probe 2 (rerun): radar images for each IMD radar near Tamil Nadu, their scan time (GIF comment) vs when they appear online."""
 import datetime as dt, json, os, re, time, urllib.request
 OUT = 'data/radar_probe'; os.makedirs(OUT, exist_ok=True)
 UA = 'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Mobile Safari/537.36'
@@ -18,7 +18,7 @@ for rid in IDS:
     except Exception as e:
         imgs[rid] = 'ERR ' + str(e)[:200]
 log['images'] = imgs
-for rnd in range(8):
+for rnd in range(7):
     now = dt.datetime.now(dt.timezone.utc).strftime('%H:%M:%S'); row = {'fetched_utc': now}
     for rid, L in imgs.items():
         if not isinstance(L, list): continue
@@ -32,5 +32,5 @@ for rnd in range(8):
                 row[path] = 'ERR ' + str(e)[:120]
     log['rounds'].append(row)
     json.dump(log, open(os.path.join(OUT, 'probe2.json'), 'w'), indent=1)
-    if rnd < 7: time.sleep(300)
+    if rnd < 6: time.sleep(300)
 print(json.dumps(log['images'], indent=1))

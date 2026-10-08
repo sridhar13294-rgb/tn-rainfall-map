@@ -9,13 +9,15 @@ permissions:
 jobs:
   probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.ref_name }}
       - run: python scripts/probe.py
-      - run: |
+        timeout-minutes: 45
+      - if: always()
+        run: |
           git config user.name "probe-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/radar_probe
