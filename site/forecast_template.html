@@ -1,0 +1,214 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Tamil Nadu Weather Forecast</title>
+<style>
+:root{--bg:#f4f6f9;--card:#fff;--ink:#14213d;--mut:#667085;--line:#dde3ec;--acc:#0b5cab;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f141b;--card:#18202b;--ink:#e6ebf2;--mut:#93a0b3;--line:#2a3544;--acc:#5aa9ff}}
+:root[data-theme="dark"]{--bg:#0f141b;--card:#18202b;--ink:#e6ebf2;--mut:#93a0b3;--line:#2a3544;--acc:#5aa9ff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.w{max-width:620px;margin:0 auto;padding:12px}
+h1{font-size:18px;margin:0}h2{font-size:15px;margin:0 0 8px}.m{color:var(--mut);font-size:12px}
+a{color:var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:10px}
+.warn{background:#fff4d6;color:#5c4400;border-radius:10px;padding:8px 10px;font-size:12px;margin-top:10px}
+select{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:6px 0 4px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:5px 10px;font:inherit;font-size:12px;cursor:pointer;text-align:center;line-height:1.2}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#fff}.chip small{display:block;font-size:10px;opacity:.8}
+svg{width:100%;height:auto;display:block}
+.lg{display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:8px}.lg div{display:flex;align-items:center;gap:5px;font-size:11px}.lg i{width:14px;height:12px;border-radius:2px;border:1px solid rgba(0,0,0,.12)}
+#info{min-height:36px;font-size:13px;margin-top:8px}
+#info table{border-collapse:collapse;margin-top:4px;font-size:12px}#info td{padding:1px 10px 1px 0}
+.wwrap{position:relative;border-radius:10px;overflow:hidden;background:#0b1a2e;touch-action:pan-y}
+.wwrap canvas{display:block;width:100%}.wwrap canvas+canvas{position:absolute;left:0;top:0}
+#wtip{position:absolute;left:8px;bottom:8px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;padding:4px 8px;border-radius:6px;pointer-events:none}
+input[type=range]{width:100%}
+button.play{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;width:40px;height:32px;font-size:15px}
+</style></head><body><div class="w">
+<div class="m"><a href="index.html">← Rainfall map</a></div>
+<h1>Tamil Nadu Weather Forecast</h1>
+<div class="m" id="upd"></div>
+<div class="warn"><b>Experimental, not an official forecast.</b> Follow IMD and TNSDMA warnings for safety decisions. Days 8–16 are much less reliable than days 1–7.</div>
+
+<div class="card">
+ <h2>16-day forecast</h2>
+ <div class="row"><select id="var"><option value="rain6">Rain every 6 hours (mm)</option><option value="precipitation_sum">Rain, daily total (mm)</option><option value="temperature_2m_max">Max temperature (°C)</option><option value="temperature_2m_min">Min temperature (°C)</option><option value="wind_speed_10m_max">Max wind (km/h)</option></select>
+ <select id="mod"></select></div>
+ <div class="chips" id="days"></div>
+ <div class="chips" id="per"></div>
+ <svg id="tn" viewBox="0 0 440 575"></svg>
+ <div class="lg" id="lg"></div>
+ <div id="info" class="m">Tap a square to see every model's forecast for that spot.</div>
+</div>
+
+<div class="card">
+ <h2>Wind flow</h2>
+ <div class="chips" id="lev"></div>
+ <div class="wwrap" id="ww"><canvas id="wb"></canvas><canvas id="wp"></canvas><div id="wtip"></div></div>
+ <div class="row" style="margin-top:8px"><button class="play" id="pl">▶</button><div style="flex:1"><input type="range" id="wt" min="0" value="0"><div class="m" id="wtl"></div></div></div>
+ <div class="lg" id="wlg"></div>
+ <div class="m" style="margin-top:6px"><span id="wsrc">NOAA GFS</span>, every 6 hours for 7 days, 1° grid. Tap the map to read speed and direction.</div>
+</div>
+
+<div class="card">
+ <h2>Sea-level pressure (average of models)</h2>
+ <div class="row"><select id="pmode"><option value="avg">Average pressure with isobars (hPa)</option><option value="spread">Model disagreement (spread, hPa)</option></select></div>
+ <div class="wwrap" id="pw" style="margin-top:8px"><canvas id="pc"></canvas><div id="ptip" style="position:absolute;left:8px;bottom:8px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;padding:4px 8px;border-radius:6px;pointer-events:none"></div></div>
+ <div class="row" style="margin-top:8px"><button class="play" id="pp">▶</button><div style="flex:1"><input type="range" id="pt" min="0" value="0"><div class="m" id="ptl"></div></div></div>
+ <div class="lg" id="plg"></div>
+ <div class="m" style="margin-top:6px">Mean sea-level pressure averaged across the models available at each time (listed under the slider), every 6 hours. Isobars every 2 hPa; <b style="color:#d62828">L</b> marks a low-pressure centre, <b style="color:#1d4ed8">H</b> a high. "Spread" shows how much the models disagree: large spread around a low means its position or depth is uncertain. Tap the map to read values.</div>
+</div>
+
+<p class="m" id="notes"></p>
+</div><script>
+const F=/*FDATA*/;
+const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
+const DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const f1=v=>v==null?'—':(+v).toLocaleString('en',{maximumFractionDigits:1});
+$('upd').textContent='Updated '+F.updated+' · model runs: '+F.models.map(m=>m+' '+(F.runs?F.runs[m]:'')).join(', ');
+$('notes').textContent='Model data come directly from the official open-data servers: NOAA (GFS), ECMWF (IFS and AIFS "ECMWF AI"), DWD (ICON) and Environment and Climate Change Canada (GEM), each at its latest complete run. A forecast day runs 05:30 to 05:30 IST (00 to 00 UTC); 6-hourly rain uses the blocks 05:30–11:30, 11:30–17:30, 17:30–23:30 and 23:30–05:30 IST. Rain and sea-level pressure are both averaged across the models available for each time. The average uses only models that reach that day: ICON runs to about day 7, GEM to about day 10, ECMWF and ECMWF AI to day 15, GFS to day 16. Max/min temperature come from 3-hourly temperatures (6-hourly for ECMWF AI and for ECMWF after day 6, which can understate the afternoon peak by about 1 °C), plus the models\' own max/min where published (GFS, ECMWF). Values are interpolated to a 0.25° (~28 km) grid. Experimental and non-commercial.';
+
+// ---------- 16-day Tamil Nadu map
+const X=l=>(l-76.1)*100,Y=a=>(13.7-a)*100;
+const SC={rain6:{b:[[0,'#eef2f6','0'],[.1,'#d6ecf7','0.1–2.4'],[2.5,'#9fd3ea','2.5–7.5'],[7.6,'#4ba3d6','7.6–15'],[15.1,'#2156a6','15–35'],[35.1,'#7b2a9e','35–64'],[64.5,'#c2185b','64.5+ in 6 h']],u:'mm'},
+ precipitation_sum:{b:[[0,'#eef2f6','0'],[.1,'#d6ecf7','0.1–2.4'],[2.5,'#9fd3ea','2.5–15'],[15.6,'#4ba3d6','15.6–64'],[64.5,'#2156a6','64.5–115 heavy'],[115.6,'#7b2a9e','115.6–204 very heavy'],[204.5,'#c2185b','204.5+ extreme']],u:'mm'},
+ temperature_2m_max:{b:[[0,'#3f7fbf','<22'],[22,'#6bb0d8','22–26'],[26,'#a9dcc4','26–29'],[29,'#f2e394','29–32'],[32,'#f6b25e','32–35'],[35,'#e8693d','35–38'],[38,'#b5172b','38+']],u:'°C'},
+ temperature_2m_min:{b:[[0,'#2c5aa0','<14'],[14,'#5c95cf','14–18'],[18,'#9cc9e3','18–21'],[21,'#cfe8c8','21–23'],[23,'#f2e394','23–25'],[25,'#f6b25e','25–27'],[27,'#e8693d','27+']],u:'°C'},
+ wind_speed_10m_max:{b:[[0,'#eef2f6','<10'],[10,'#cfe8c8','10–20'],[20,'#9fd3ea','20–30'],[30,'#4ba3d6','30–40'],[40,'#f6b25e','40–50'],[50,'#e8693d','50–62'],[62,'#7b2a9e','62+ gale']],u:'km/h'}};
+const PER=['05:30–11:30','11:30–17:30','17:30–23:30','23:30–05:30'];
+const sv=$('tn');
+sv.innerHTML='<defs><clipPath id="cp"><path id="cl"/></clipPath></defs><g id="cg" clip-path="url(#cp)"></g><path id="ol" fill="none" stroke-width="1" stroke-linejoin="round" style="stroke:var(--ink)"/><g id="cty"></g>';
+const PD=F.tn.map(r=>r.map((p,i)=>(i?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)).join('')+'Z').join('');
+$('cl').setAttribute('d',PD);$('ol').setAttribute('d',PD);
+const R=F.cells.map((c,i)=>{const r=document.createElementNS(NS,'rect');r.setAttribute('x',X(c.lon-F.step/2));r.setAttribute('y',Y(c.lat+F.step/2));r.setAttribute('width',F.step*100+.5);r.setAttribute('height',F.step*100+.5);r.dataset.i=i;$('cg').appendChild(r);return r});
+F.ct.forEach(c=>{const g=$('cty'),x=X(c[1]),y=Y(c[2]),e=c[3]=='end';const k=document.createElementNS(NS,'circle');k.setAttribute('cx',x);k.setAttribute('cy',y);k.setAttribute('r',2.4);k.setAttribute('fill','#14213d');k.setAttribute('stroke','#fff');g.appendChild(k);
+ const t=document.createElementNS(NS,'text');t.setAttribute('x',x+(e?-5:5));t.setAttribute('y',y+2.6);t.setAttribute('text-anchor',e?'end':'start');t.setAttribute('font-size',8);t.setAttribute('font-weight',600);t.style.cssText='fill:var(--ink);stroke:var(--card);stroke-width:2.4px;paint-order:stroke;pointer-events:none';t.textContent=c[0];g.appendChild(t)});
+$('mod').innerHTML='<option value="avg">Average of models</option>'+F.models.map(m=>`<option value="${m}">${m} only</option>`).join('');
+const dl=s=>{const d=new Date(s+'T00:00:00');return [DOW[d.getDay()],d.getDate()+' '+MON[d.getMonth()]]};
+const has6=!!(F.coverage6&&F.cells[0].rain6);
+if(!has6){$('var').querySelector('[value=rain6]').remove()}
+let day=0,per=0,sel=-1;
+// start at the 6-hour block that contains "now"
+if(has6){const t0=new Date(F.dates[0]+'T00:00:00Z').getTime(),k=Math.floor((Date.now()-t0)/216e5);if(k>=0&&k<F.coverage6.length){day=Math.floor(k/4);per=k%4}}
+const is6=()=>$('var').value=='rain6';
+const K=()=>is6()?day*4+per:day;
+const cov=()=>is6()?(F.coverage6[K()]||[]):F.coverage[day];
+$('days').innerHTML=F.dates.map((s,i)=>{const [a,b]=dl(s);return `<button class="chip" data-d="${i}">${i==0?'Today':i==1?'Tomorrow':a}<small>${b} · ${F.coverage[i].length} models</small></button>`}).join('');
+$('days').onclick=e=>{const b=e.target.closest('[data-d]');if(b){day=+b.dataset.d;paint()}};
+$('per').onclick=e=>{const b=e.target.closest('[data-p]');if(b){per=+b.dataset.p;paint()}};
+function cls(v,b){let k=0;b.forEach((x,i)=>{if(v>=x[0])k=i});return k}
+function val(c,v,m,k){const s=c[v];return s?(m=='avg'?s.avg[k]:(s[m]||[])[k]):null}
+function paint(){const v=$('var').value,m=$('mod').value,b=SC[v].b,k=K();
+ document.querySelectorAll('#days .chip').forEach((c,i)=>c.classList.toggle('on',i==day));
+ $('per').style.display=is6()?'':'none';
+ if(is6())$('per').innerHTML=PER.map((p,i)=>`<button class="chip${i==per?' on':''}" data-p="${i}">${p}<small>IST · ${(F.coverage6[day*4+i]||[]).length} models</small></button>`).join('');
+ F.cells.forEach((c,i)=>{const x=val(c,v,m,k);R[i].setAttribute('fill',x==null?'#d9dde3':b[cls(x,b)][1]);R[i].setAttribute('stroke',i==sel?'#000':'none');R[i].setAttribute('stroke-width',i==sel?1.6:0)});
+ $('lg').innerHTML=b.map(x=>`<div><i style="background:${x[1]}"></i>${x[2]}</div>`).join('')+(m!='avg'&&!cov().includes(m)?'<div class="m">'+m+' does not reach this time (grey).</div>':'');
+ show()}
+function show(){if(sel<0)return;const c=F.cells[sel],v=$('var').value,u=SC[v].u,[a,b]=dl(F.dates[day]),k=K();
+ const when=is6()?`${a} ${b}, ${PER[per]} IST`:`${a} ${b}`;
+ const rows=F.models.map(m=>`<tr><td>${m}</td><td><b>${f1(val(c,v,m,k))}</b> ${u}</td></tr>`).join('');
+ const ser=c[v].avg,n=ser.length,mx=Math.max(1,...ser.filter(x=>x!=null)),bw=320/n;
+ const ticks=is6()?F.dates.map((d,i)=>`<text x="${(i*4+2)*bw}" y="58" font-size="7" text-anchor="middle" fill="var(--mut)">${dl(d)[1].split(' ')[0]}</text>`).join(''):F.dates.map((d,i)=>`<text x="${i*bw+bw/2}" y="58" font-size="7" text-anchor="middle" fill="var(--mut)">${dl(d)[1].split(' ')[0]}</text>`).join('');
+ const bars=`<svg viewBox="0 0 320 60" style="margin-top:6px">${ser.map((x,i)=>`<rect x="${i*bw+bw*.12}" y="${48-(x||0)/mx*44}" width="${bw*.76}" height="${Math.max(.5,(x||0)/mx*44)}" rx="1" fill="${i==k?'#f08c00':'var(--acc)'}"><title>${f1(x)} ${u}</title></rect>`).join('')}${ticks}</svg>`;
+ const wd=c.wind_dir[day];
+ $('info').innerHTML=`<b>${c.lat.toFixed(2)}°N, ${c.lon.toFixed(2)}°E</b> · ${when}<br>Average: <b>${f1(val(c,v,'avg',k))} ${u}</b>`+(wd!=null&&!is6()?` · wind from ${Math.round(wd)}°`:'')+`<table>${rows}</table><div class="m">${is6()?'Every 6 hours, all 16 days':'16-day trend'} (average of models)</div>${bars}`}
+sv.addEventListener('click',e=>{const i=e.target.dataset&&e.target.dataset.i;if(i!=null){sel=+i;paint()}});
+$('var').onchange=paint;$('mod').onchange=paint;paint();
+
+// ---------- wind animation
+const W=F.wind;
+if(!W){$('ww').innerHTML='<div class="m" style="padding:20px;color:#fff">Wind data unavailable in this run.</div>'}else{
+$('wsrc').textContent='NOAA GFS '+(W.run||'')+' run';const LV=Object.keys(W.levels),LN={'10m':'Surface','925hPa':'925 hPa · ~750 m','850hPa':'850 hPa · ~1.5 km','700hPa':'700 hPa · ~3 km','500hPa':'500 hPa · ~5.5 km','200hPa':'200 hPa · ~12 km'};
+let lev='850hPa',fr=0,playing=false;
+$('lev').innerHTML=LV.map(l=>`<button class="chip" data-l="${l}">${LN[l]||l}</button>`).join('');
+$('lev').onclick=e=>{const b=e.target.closest('[data-l]');if(b){lev=b.dataset.l;mark();reset()}};
+function mark(){document.querySelectorAll('#lev .chip').forEach(c=>c.classList.toggle('on',c.dataset.l==lev))}
+const wt=$('wt');wt.max=W.times.length-1;
+const tl=s=>{const d=new Date(s);const i=new Date(d.getTime()+5.5*3600e3);return DOW[i.getUTCDay()]+' '+i.getUTCDate()+' '+MON[i.getUTCMonth()]+', '+String(i.getUTCHours()).padStart(2,'0')+':'+String(i.getUTCMinutes()).padStart(2,'0')+' IST'};
+const LO0=W.lon0,LO1=W.lon0+(W.nx-1)*W.step,LA0=W.lat0,LA1=W.lat0+(W.ny-1)*W.step;
+const wb=$('wb'),wp=$('wp'),bx=wb.getContext('2d'),px=wp.getContext('2d');let CW,CH,dpr;
+const lx=l=>(l-LO0)/(LO1-LO0)*CW,ly=a=>(LA1-a)/(LA1-LA0)*CH;
+function base(){dpr=window.devicePixelRatio||1;CW=$('ww').clientWidth;CH=CW*(LA1-LA0)/(LO1-LO0)/Math.cos(12.5*Math.PI/180);
+ [wb,wp].forEach(c=>{c.width=CW*dpr;c.height=CH*dpr;c.style.height=CH+'px'});[bx,px].forEach(c=>c.setTransform(dpr,0,0,dpr,0,0));
+ bx.fillStyle='#0b1a2e';bx.fillRect(0,0,CW,CH);bx.fillStyle='#1d2b3d';bx.strokeStyle='#5d7590';bx.lineWidth=.7;
+ F.land.forEach(r=>{bx.beginPath();r.forEach((p,i)=>i?bx.lineTo(lx(p[0]),ly(p[1])):bx.moveTo(lx(p[0]),ly(p[1])));bx.closePath();bx.fill();bx.stroke()});
+ bx.strokeStyle='#ffd166';bx.lineWidth=1.2;F.tn.forEach(r=>{bx.beginPath();r.forEach((p,i)=>i?bx.lineTo(lx(p[0]),ly(p[1])):bx.moveTo(lx(p[0]),ly(p[1])));bx.closePath();bx.stroke()});
+ bx.fillStyle='rgba(255,255,255,.45)';bx.font='italic 11px system-ui';bx.textAlign='center';bx.fillText('Bay of Bengal',lx(87.5),ly(15));bx.fillText('Arabian Sea',lx(68.5),ly(15));bx.fillText('Indian Ocean',lx(80),ly(2.5));
+ bx.fillStyle='#fff';bx.font='10px system-ui';bx.textAlign='left';[['Chennai',80.27,13.08],['Madurai',78.12,9.93],['Coimbatore',76.96,11.0]].forEach(c=>{bx.beginPath();bx.arc(lx(c[1]),ly(c[2]),2,0,7);bx.fill();bx.fillText(c[0],lx(c[1])+4,ly(c[2])+3)})}
+function uv(lo,la){const fx=(lo-LO0)/W.step,fy=(la-LA0)/W.step;if(fx<0||fy<0||fx>W.nx-1||fy>W.ny-1)return null;
+ const x0=Math.min(Math.floor(fx),W.nx-2),y0=Math.min(Math.floor(fy),W.ny-2),dx=fx-x0,dy=fy-y0,f=W.levels[lev][fr],n=W.nx;
+ const g=(a)=>{const p=y0*n+x0;return (a[p]*(1-dx)+a[p+1]*dx)*(1-dy)+(a[p+n]*(1-dx)+a[p+n+1]*dx)*dy};return [g(f[0])/2,g(f[1])/2]}
+const SP=[[0,'#3b82c4'],[5,'#38b2ac'],[10,'#7bc96f'],[15,'#e6d65a'],[20,'#f59e42'],[30,'#e8553d'],[45,'#c026d3']];
+const scol=s=>{let c=SP[0][1];SP.forEach(x=>{if(s>=x[0])c=x[1]});return c};
+$('wlg').innerHTML=SP.map((x,i)=>`<div><i style="background:${x[1]}"></i>${x[0]}${SP[i+1]?'–'+SP[i+1][0]:'+'} m/s</div>`).join('');
+let parts=[];const NP=()=>Math.round(1400*CW/400);
+function seed(p){p.lo=LO0+Math.random()*(LO1-LO0);p.la=LA0+Math.random()*(LA1-LA0);p.age=Math.floor(Math.random()*80);return p}
+function reset(){px.clearRect(0,0,CW,CH);parts=Array.from({length:NP()},()=>seed({}))}
+function tick(){px.globalCompositeOperation='destination-in';px.fillStyle='rgba(0,0,0,0.9)';px.fillRect(0,0,CW,CH);px.globalCompositeOperation='source-over';px.lineWidth=1.1;
+ const k=(lev=='200hPa'?.006:.012)*(LO1-LO0)/30;
+ for(const p of parts){const w=uv(p.lo,p.la);if(!w||p.age++>90){seed(p);p.age=0;continue}
+  const s=Math.hypot(w[0],w[1]),nlo=p.lo+w[0]*k/Math.cos(p.la*Math.PI/180),nla=p.la+w[1]*k;
+  px.strokeStyle=scol(s);px.beginPath();px.moveTo(lx(p.lo),ly(p.la));px.lineTo(lx(nlo),ly(nla));px.stroke();p.lo=nlo;p.la=nla}
+ requestAnimationFrame(tick)}
+function setFr(i){fr=i;wt.value=i;$('wtl').textContent=tl(W.times[i])+' · frame '+(i+1)+' of '+W.times.length}
+wt.oninput=()=>setFr(+wt.value);
+let pt=null;$('pl').onclick=()=>{playing=!playing;$('pl').textContent=playing?'❚❚':'▶';if(playing)pt=setInterval(()=>setFr((fr+1)%W.times.length),900);else clearInterval(pt)};
+wp.addEventListener('click',e=>{const r=wp.getBoundingClientRect(),lo=LO0+(e.clientX-r.left)/r.width*(LO1-LO0),la=LA1-(e.clientY-r.top)/r.height*(LA1-LA0),w=uv(lo,la);if(!w)return;
+ const s=Math.hypot(w[0],w[1]),from=(Math.atan2(-w[0],-w[1])*180/Math.PI+360)%360;$('wtip').textContent=`${la.toFixed(1)}°N ${lo.toFixed(1)}°E · ${s.toFixed(1)} m/s (${(s*3.6).toFixed(0)} km/h) from ${Math.round(from)}°`});
+const now=Date.now();let first=0;W.times.forEach((t,i)=>{if(new Date(t).getTime()<=now)first=i});
+base();mark();setFr(first);reset();tick();
+let rz;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{base();reset()},200)});
+}
+
+// ---------- sea-level pressure
+const M=F.mslp;
+if(!M){$('pw').innerHTML='<div class="m" style="padding:20px;color:#fff">Pressure data unavailable in this run.</div>'}else{
+const pc=$('pc'),px2=pc.getContext('2d');let PW,PH,pdpr,pf=0,pplay=false,ptimer=null;
+const PLO0=M.lon0,PLO1=M.lon0+(M.nx-1)*M.step,PLA0=M.lat0,PLA1=M.lat0+(M.ny-1)*M.step;
+const qx=l=>(l-PLO0)/(PLO1-PLO0)*PW,qy=a=>(PLA1-a)/(PLA1-PLA0)*PH;
+const PST=[[994,[74,20,134]],[998,[44,90,160]],[1002,[90,166,214]],[1006,[191,227,239]],[1009,[244,244,232]],[1012,[246,217,138]],[1015,[241,154,74]],[1019,[192,57,43]]];
+const SST=[[0,[255,255,255]],[.5,[255,240,190]],[1,[250,190,90]],[2,[230,90,60]],[3.5,[150,30,120]]];
+const ramp=(st,v)=>{if(v<=st[0][0])return st[0][1];for(let i=1;i<st.length;i++)if(v<=st[i][0]){const a=st[i-1],b=st[i],t=(v-a[0])/(b[0]-a[0]);return a[1].map((x,j)=>x+(b[1][j]-x)*t)}return st[st.length-1][1]};
+const grid=(f,mode)=>{const a=mode=='spread'?M.spread[f]:M.avg[f];return mode=='spread'?a.map(x=>x/10):a.map(x=>1000+x/10)};
+function bil(g,lo,la){const fx=(lo-PLO0)/M.step,fy=(la-PLA0)/M.step;if(fx<0||fy<0||fx>M.nx-1||fy>M.ny-1)return null;const x0=Math.min(Math.floor(fx),M.nx-2),y0=Math.min(Math.floor(fy),M.ny-2),dx=fx-x0,dy=fy-y0,n=M.nx,p=y0*n+x0;return (g[p]*(1-dx)+g[p+1]*dx)*(1-dy)+(g[p+n]*(1-dx)+g[p+n+1]*dx)*dy}
+function pdraw(){const mode=$('pmode').value,g=grid(pf,mode);
+ pdpr=window.devicePixelRatio||1;PW=$('pw').clientWidth;PH=PW*(PLA1-PLA0)/(PLO1-PLO0)/Math.cos(12.5*Math.PI/180);
+ pc.width=Math.round(PW*pdpr);pc.height=Math.round(PH*pdpr);pc.style.height=PH+'px';
+ const W2=pc.width,H2=pc.height,img=px2.createImageData(W2,H2),d=img.data,st=mode=='spread'?SST:PST;
+ for(let y=0;y<H2;y++){const la=PLA1-(y+.5)/H2*(PLA1-PLA0);for(let x=0;x<W2;x++){const lo=PLO0+(x+.5)/W2*(PLO1-PLO0),v=bil(g,lo,la),c=v==null?[200,200,200]:ramp(st,v),o=(y*W2+x)*4;d[o]=c[0];d[o+1]=c[1];d[o+2]=c[2];d[o+3]=255}}
+ px2.putImageData(img,0,0);px2.setTransform(pdpr,0,0,pdpr,0,0);
+ px2.strokeStyle='rgba(30,40,50,.55)';px2.lineWidth=.8;F.land.forEach(r=>{px2.beginPath();r.forEach((p,i)=>i?px2.lineTo(qx(p[0]),qy(p[1])):px2.moveTo(qx(p[0]),qy(p[1])));px2.closePath();px2.stroke()});
+ px2.strokeStyle='#7a4b00';px2.lineWidth=1.2;F.tn.forEach(r=>{px2.beginPath();r.forEach((p,i)=>i?px2.lineTo(qx(p[0]),qy(p[1])):px2.moveTo(qx(p[0]),qy(p[1])));px2.closePath();px2.stroke()});
+ if(mode=='avg'){
+  // isobars by marching squares on a 4x finer grid
+  const S=4,nx=(M.nx-1)*S+1,ny=(M.ny-1)*S+1,fg=new Float32Array(nx*ny);
+  for(let j=0;j<ny;j++)for(let i=0;i<nx;i++)fg[j*nx+i]=bil(g,PLO0+i*M.step/S,PLA0+j*M.step/S);
+  const gx=i=>qx(PLO0+i*M.step/S),gy=j=>qy(PLA0+j*M.step/S);
+  let mn=1e9,mxv=-1e9;g.forEach(v=>{mn=Math.min(mn,v);mxv=Math.max(mxv,v)});
+  px2.lineWidth=.9;px2.font='9px system-ui';
+  for(let L=Math.ceil(mn/2)*2;L<=mxv;L+=2){px2.strokeStyle=L%4==0?'rgba(20,20,20,.75)':'rgba(20,20,20,.45)';px2.beginPath();let lab=null;
+   for(let j=0;j<ny-1;j++)for(let i=0;i<nx-1;i++){const a=fg[j*nx+i],b=fg[j*nx+i+1],c=fg[(j+1)*nx+i+1],e=fg[(j+1)*nx+i],P=[];
+    const LL=L+1e-3,ed=(v1,v2,x1,y1,x2,y2)=>{if((v1-LL)*(v2-LL)<0){const t=(LL-v1)/(v2-v1);P.push([gx(x1+(x2-x1)*t),gy(y1+(y2-y1)*t)])}};
+    ed(a,b,i,j,i+1,j);ed(b,c,i+1,j,i+1,j+1);ed(c,e,i+1,j+1,i,j+1);ed(e,a,i,j+1,i,j);
+    for(let q=0;q+1<P.length;q+=2){px2.moveTo(P[q][0],P[q][1]);px2.lineTo(P[q+1][0],P[q+1][1]);if(!lab&&i%37==5)lab=P[q]}}
+   px2.stroke();if(lab&&L%4==0){px2.fillStyle='rgba(20,20,20,.8)';px2.fillText(L,lab[0]+2,lab[1]-2)}}
+  // L / H centres on the 1-degree grid
+  px2.font='bold 15px system-ui';px2.textAlign='center';
+  for(let j=2;j<M.ny-2;j++)for(let i=2;i<M.nx-2;i++){const v=g[j*M.nx+i];let lo=true,hi=true,sum=0,cnt=0;
+   for(let b=-3;b<=3;b++)for(let a=-3;a<=3;a++){const jj=j+b,ii=i+a;if(jj<0||ii<0||jj>=M.ny||ii>=M.nx||(a==0&&b==0))continue;const w=g[jj*M.nx+ii];sum+=w;cnt++;if(w<=v)lo=false;if(w>=v)hi=false}
+   const x=qx(PLO0+i*M.step),y=qy(PLA0+j*M.step);
+   if(lo&&v<1009&&sum/cnt-v>=1){px2.fillStyle='#d62828';px2.fillText('L',x,y+5);px2.font='10px system-ui';px2.fillText(v.toFixed(0),x,y+16);px2.font='bold 15px system-ui'}
+   if(hi&&v>1013&&v-sum/cnt>=1.5){px2.fillStyle='#1d4ed8';px2.fillText('H',x,y+5);px2.font='10px system-ui';px2.fillText(v.toFixed(0),x,y+16);px2.font='bold 15px system-ui'}}
+  px2.textAlign='left'}
+ px2.fillStyle='rgba(20,30,40,.7)';px2.font='italic 11px system-ui';px2.textAlign='center';px2.fillText('Bay of Bengal',qx(87.5),qy(15));px2.fillText('Arabian Sea',qx(68.5),qy(15));px2.textAlign='left';
+ const st2=mode=='spread'?SST:PST;$('plg').innerHTML=st2.map(s=>`<div><i style="background:rgb(${s[1].join(',')})"></i>${mode=='spread'?s[0]+' hPa':s[0]}</div>`).join('')+(mode=='spread'?'':'<div class="m">hPa</div>');
+ const t=new Date(M.times[pf]),i2=new Date(t.getTime()+5.5*3600e3);
+ $('ptl').textContent=`${DOW[i2.getUTCDay()]} ${i2.getUTCDate()} ${MON[i2.getUTCMonth()]}, ${String(i2.getUTCHours()).padStart(2,'0')}:${String(i2.getUTCMinutes()).padStart(2,'0')} IST · ${M.models[pf].length} models: ${M.models[pf].join(', ')}`}
+const pt=$('pt');pt.max=M.times.length-1;
+let p0=0;M.times.forEach((t,i)=>{if(new Date(t).getTime()<=Date.now())p0=i});pf=p0;pt.value=pf;
+pt.oninput=()=>{pf=+pt.value;pdraw()};$('pmode').onchange=pdraw;
+$('pp').onclick=()=>{pplay=!pplay;$('pp').textContent=pplay?'❚❚':'▶';if(pplay)ptimer=setInterval(()=>{pf=(pf+1)%M.times.length;pt.value=pf;pdraw()},700);else clearInterval(ptimer)};
+pc.addEventListener('click',e=>{const r=pc.getBoundingClientRect(),lo=PLO0+(e.clientX-r.left)/r.width*(PLO1-PLO0),la=PLA1-(e.clientY-r.top)/r.height*(PLA1-PLA0),a=bil(grid(pf,'avg'),lo,la),s2=bil(grid(pf,'spread'),lo,la);if(a==null)return;$('ptip').textContent=`${la.toFixed(1)}°N ${lo.toFixed(1)}°E · ${a.toFixed(1)} hPa · spread ±${s2.toFixed(1)}`});
+pdraw();let prz;window.addEventListener('resize',()=>{clearTimeout(prz);prz=setTimeout(pdraw,200)});
+}
+</script></body></html>
