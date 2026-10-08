@@ -1360,8 +1360,8 @@ def consensus_tracks(ens_means, det_tracks):
 
 # ------------------------------------------------------------------ MJO forecast (OMI / ROMI method on model OLR)
 PSL_EOF = 'https://downloads.psl.noaa.gov/Datasets.other/MJO/eof{k}/eof{doy:03d}.txt'
-OLR_LTM = 'https://downloads.psl.noaa.gov/Datasets/interp_OLR/olr.day.ltm.1991-2020.nc'
-OLR_DAP = 'https://psl.noaa.gov/thredds/dodsC/Datasets/interp_OLR/olr.day.mean.nc'
+OLR_LTM = 'https://downloads.psl.noaa.gov/Datasets/cpc_blended_olr-2.5deg/olr.cbo-2.5deg.day.ltm.1991-2020.nc'
+OLR_DAP = 'https://psl.noaa.gov/thredds/dodsC/Datasets/cpc_blended_olr-2.5deg/olr.cbo-2.5deg.day.mean.nc'
 
 
 def _doy(d):
@@ -1399,13 +1399,16 @@ def mjo_forecasts(sources, d0, romi_rows, status):
     # climatology and observations on the OMI grid (latitude ascending, 20S-20N)
     ltm = netCDF4.Dataset('ltm.nc', memory=http(OLR_LTM, timeout=180))
     la = np.asarray(ltm['lat'][:]); j = [int(np.argmin(np.abs(la - x))) for x in OLR_LATS]
-    clim = np.asarray(ltm['olr'][:, j, :], float).reshape(ltm['olr'].shape[0], -1)       # (365, 2448)
+    lo = np.asarray(ltm['lon'][:]) % 360; i = [int(np.argmin(np.abs(lo - x))) for x in BAND_LONS]
+    clim = np.asarray(ltm['olr'][:, j, :], float)[:, :, i].reshape(ltm['olr'].shape[0], -1)       # (365, 2448)
     ltm.close()
     ds = netCDF4.Dataset(OLR_DAP)
     t = ds['time']; n = len(t); n0 = max(0, n - 90)
     times = netCDF4.num2date(t[n0:n], t.units, only_use_cftime_datetimes=False)
     la = np.asarray(ds['lat'][:]); j = [int(np.argmin(np.abs(la - x))) for x in OLR_LATS]
-    obs_raw = np.asarray(ds['olr'][n0:n, :, :], float)[:, j, :].reshape(n - n0, -1)
+    lo = np.asarray(ds['lon'][:]) % 360; i = [int(np.argmin(np.abs(lo - x))) for x in BAND_LONS]
+    obs_raw = np.asarray(ds['olr'][n0:n, :, :], float)[:, j, :][:, :, i].reshape(n - n0, -1)
+    status['mjo_obs_grid'] = f'lat {la[0]}..{la[-1]}, lon {lo[0]}..{lo[-1]}'
     ds.close()
     obs = {}
     for tt, row in zip(times, obs_raw):
