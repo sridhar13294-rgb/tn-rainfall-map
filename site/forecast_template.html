@@ -347,6 +347,7 @@ function sumry(){const x=L[si],c=x.consensus.length?x.consensus:(x.det_mean.leng
  const pe=Object.keys(x.probs).map(k=>`${ENAME[k]} ${x.probs[k]}% (${x.members[k]} of ${sz[k]})`).join(', ');
  const sp=Object.entries(x.mean_tracks).map(([k,t])=>{const q=t[Math.min(t.length-1,Math.floor(t.length/2))];return `${ENAME[k]} ±${q[5]} km`}).join(', ');
  $('sysum').innerHTML=`<p style="margin:6px 0"><b>${x.basin} low: ${x.prob}% chance</b> <span class="m">(${pe})</span></p>
+  ${(SY.excluded||[]).length?`<p class="m" style="margin:2px 0">${SY.excluded.map(k=>ENAME[k]).join(' and ')}: data incomplete in this run, so left out of these figures.</p>`:''}
   <p style="margin:4px 0;font-size:13px">Forms around <b>${dd(g[0])}</b> near ${ll(g[1],g[2])}; the consensus moves to near <b>${ll(e[1],e[2])}</b> by ${dd(e[0])}. Lowest average pressure about <b>${Math.round(x.min_p)} hPa</b>.${x.det.length?` Main models showing it: <b>${x.det.join(', ')}</b>.`:' None of the main models shows it.'}${sp?` Track spread at mid-period: ${sp}.`:''}</p>`}
 function draw(){const x=L[si],wrap=$('sywrap'),cv=$('sycv'),dpr=window.devicePixelRatio||1,W=wrap.clientWidth||400,B=F.systems_box||{lon0:60,lat0:0,nx:81,ny:51,step:.5};
  // zoom to the system (tracks and 5%+ strike area) while keeping Tamil Nadu in view

@@ -29,8 +29,8 @@ P = lambda *a: os.path.join(ROOT, *a)
 UTC, IST = dt.timezone.utc, dt.timezone(dt.timedelta(hours=5, minutes=30))
 UA = 'tn-rainfall-map forecast (non-commercial; github.com/sridhar13294-rgb/tn-rainfall-map)'
 T_START = time.time()
-DEADLINE = T_START + 62 * 60
-BUDGET = {'GFS': 9, 'ECMWF': 6, 'ECMWF AI': 4, 'ICON': 8, 'GEM': 8, 'GEFS': 12, 'ECMWF ENS': 14}   # minutes per model
+DEADLINE = T_START + 66 * 60
+BUDGET = {'GFS': 9, 'ECMWF': 6, 'ECMWF AI': 4, 'ICON': 8, 'GEM': 8, 'GEFS': 12, 'ECMWF ENS': 22}   # minutes per model
 NDAYS = 16
 LEVELS = ['10m', '925', '850', '700', '500', '200']           # page keys: 10m and hPa levels
 WIND_BOX = dict(lat0=0, lat1=25, lon0=65, lon1=95, step=1.0)
@@ -1238,7 +1238,7 @@ def ecens_collect(pool, pts, wpts, d0, now, info, system=True):
     s0, _ = needed(run, d0, NDAYS)
     s1 = min(ENS_HOURS, s0 + 24 * NDAYS)
     members = {}
-    pool = cf.ThreadPoolExecutor(max_workers=8)     # ECMWF's bucket throttles heavy parallel use
+    pool = cf.ThreadPoolExecutor(max_workers=12)    # spread over two mirrors; both throttle heavy parallel use
 
     def mem_model(k):
         with LOCK:
@@ -1283,17 +1283,19 @@ def ecens_collect(pool, pts, wpts, d0, now, info, system=True):
                     continue
                 if r.get('param') == 'tp' and boundary:
                     out.append(field(step, r, 'tp'))
-                elif r.get('param') == 'msl' and s0 <= step <= s1 and step % 6 == 0:
+                elif r.get('param') == 'msl' and s0 <= step <= s1 and (step % 6 == 0 if step <= 144 else (run + dt.timedelta(hours=step)).hour in (0, 12)):
                     out.append(field(step, r, 'msl'))
             return out
         return task
 
     steps = [st for st in list(range(0, 145, 3)) + list(range(150, 361, 6))
-             if st <= s1 and (st % 6 == 0 if system else (run + dt.timedelta(hours=st)).hour == 0)]
+             if st <= s1 and ((st % 6 == 0 if st <= 144 else (run + dt.timedelta(hours=st)).hour in (0, 12)) if system
+                              else (run + dt.timedelta(hours=st)).hour == 0)]
     futs = [pool.submit(idx_task(st)) for st in steps]
-    tasks = []
-    for f in cf.as_completed(futs):
-        tasks += f.result()
+    by_step = []
+    for st_, f in zip(steps, futs):
+        by_step.append((st_, f.result()))
+    tasks = [t for _, ts in sorted(by_step, key=lambda x: x[0]) for t in ts]     # earliest forecast hours first
     run_tasks(pool, tasks)
     pool.shutdown()
     info['run'] = run.strftime('%Y-%m-%d %HZ'); info['members'] = len(members)
@@ -1833,9 +1835,20 @@ def main():
     status['ensembles'] = einfo
     if want_system and ens:
         try:
+            # use an ensemble for the system watch only if its pressure fields came through (>= 90% of members complete)
+            full = {}
+            for n, mem in ens.items():
+                counts = [len(m.recs['mslt']) for m in mem.values()]
+                need = max(counts) if counts else 0
+                ok = sum(c >= 0.95 * need for c in counts) if need else 0
+                if need and ok >= 0.9 * len(mem):
+                    full[n] = {k: m for k, m in mem.items() if len(m.recs['mslt']) >= 0.95 * need}
+                else:
+                    systems.setdefault('excluded', []).append(n)
             systems['ens'] = ensemble_products(ens, d0, wbox, len(pts))
-            systems['list'] = build_systems(ens, lows, d0, {n: len(ens[n]) for n in ens})
-            systems['ens_size'] = {n: len(ens[n]) for n in ens}
+            if full:
+                systems['list'] = build_systems(full, lows, d0, {n: len(full[n]) for n in full})
+                systems['ens_size'] = {n: len(full[n]) for n in full}
             systems['ens_runs'] = {n: einfo[n].get('run') for n in ens}
         except Exception as e:
             status['systems_error'] = str(e); traceback.print_exc()
