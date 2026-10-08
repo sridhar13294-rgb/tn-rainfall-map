@@ -101,25 +101,66 @@
     return c;
   }
 
-  function save(blob, name) {
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
-    document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  // Save the file. Phones: the share sheet ("Save image" / "Save to Files" / WhatsApp...) when the browser offers it,
+  // otherwise a normal download. Because some in-app browsers and embedded views silently block downloads, the
+  // picture is also shown on screen so it can be long-pressed and saved.
+  async function save(blob, name, preview) {
+    const file = new File([blob], name, { type: blob.type });
+    let how = 'download';
+    try {
+      if (navigator.canShare && navigator.canShare({ files: [file] }) && /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent)) {
+        await navigator.share({ files: [file], title: name });
+        how = 'shared';
+      }
+    } catch (e) { if (e && e.name === 'AbortError') how = 'cancelled'; }
+    if (how === 'download') {
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+      document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 60000);
+    }
+    showPreview(preview, name, blob, how);
+  }
+
+  function showPreview(canvas, name, blob, how) {
+    let ov = document.getElementById('dl-ov');
+    if (!ov) {
+      ov = document.createElement('div'); ov.id = 'dl-ov';
+      ov.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(8,20,24,.86);display:flex;flex-direction:column;align-items:center;padding:16px;overflow:auto;font:15px/1.45 "Anek Latin",system-ui,sans-serif;color:#fff';
+      document.body.appendChild(ov);
+    }
+    const url = canvas.toDataURL('image/jpeg', 0.9), isPdf = /\.pdf$/.test(name);
+    ov.innerHTML = `<div style="max-width:560px;width:100%"><p style="margin:4px 0 10px"><b>${name}</b><br>${
+      how === 'shared' ? 'Sent.' : how === 'cancelled' ? 'Not saved.' : 'Downloading.'} Not in your Downloads? ${isPdf ? 'Tap Open PDF, or press' : 'Press'} and hold the picture and choose <b>Download image</b>.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">${isPdf ? '<button data-a="open" style="flex:1">Open PDF</button>' : ''}<button data-a="share" style="flex:1">Share or save</button><button data-a="close" style="flex:1">Close</button></div>
+      <img src="${url}" alt="${name}" style="width:100%;border-radius:8px;background:#fff;-webkit-touch-callout:default;user-select:auto"></div>`;
+    ov.querySelectorAll('button').forEach(b => b.style.cssText += ';border:0;border-radius:10px;padding:10px;font:inherit;font-weight:600;background:#fff;color:#0f2a33;cursor:pointer');
+    ov.onclick = async e => {
+      const a = e.target.dataset && e.target.dataset.a;
+      if (a === 'close' || e.target === ov) ov.remove();
+      if (a === 'open') window.open(URL.createObjectURL(blob), '_blank');
+      if (a === 'share') {
+        const f = new File([blob], name, { type: blob.type });
+        try { if (navigator.canShare && navigator.canShare({ files: [f] })) { await navigator.share({ files: [f], title: name }); return; } } catch (err) { if (err.name === 'AbortError') return; }
+        const l = document.createElement('a'); l.href = URL.createObjectURL(blob); l.download = name; l.target = '_blank'; document.body.appendChild(l); l.click(); l.remove();
+      }
+    };
   }
 
   async function download(o, fmt, msg) {
     msg.textContent = 'Making the ' + fmt.toUpperCase() + '…';
     try {
       const c = await render(o), name = o.file + (fmt === 'jpeg' ? '.jpg' : '.' + fmt);
-      if (fmt === 'png') c.toBlob(b => save(b, name), 'image/png');
-      else if (fmt === 'jpeg') c.toBlob(b => save(b, name), 'image/jpeg', 0.92);
+      let blob;
+      if (fmt === 'png') blob = await new Promise(r => c.toBlob(r, 'image/png'));
+      else if (fmt === 'jpeg') blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.92));
       else {
         const { jsPDF } = await loadPdfLib();
         const pw = 210, ph = 297, m = 10, r = Math.min((pw - 2 * m) / c.width, (ph - 2 * m) / c.height);
         const doc = new jsPDF({ unit: 'mm', format: 'a4' });
         doc.addImage(c.toDataURL('image/jpeg', 0.92), 'JPEG', (pw - c.width * r) / 2, m, c.width * r, c.height * r);
-        doc.save(name);
+        blob = doc.output('blob');
       }
-      msg.textContent = 'Saved ' + name;
+      msg.textContent = '';
+      await save(blob, name, c);
     } catch (e) { msg.textContent = e.message || 'Could not make the file.'; }
   }
 
