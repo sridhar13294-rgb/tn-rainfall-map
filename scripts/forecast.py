@@ -1014,7 +1014,11 @@ def find_lows(grid, ny, nx, lat0, lon0, step, min_depth=1.5):
             ring = [g[jj, ii] for jj in range(j - 4, j + 5) for ii in range(i - 4, i + 5)
                     if 0 <= jj < ny and 0 <= ii < nx and max(abs(jj - j), abs(ii - i)) >= 3]
             depth = float(np.mean(ring) - v) if ring else 0
-            la, lo = lat0 + j * step, lon0 + i * step
+            # sub-grid position of the minimum (parabola through the neighbours)
+            cx, cy = g[j, i - 1] - 2 * v + g[j, i + 1], g[j - 1, i] - 2 * v + g[j + 1, i]
+            dx = 0.5 * (g[j, i - 1] - g[j, i + 1]) / cx if cx > 1e-6 else 0.0
+            dy = 0.5 * (g[j - 1, i] - g[j + 1, i]) / cy if cy > 1e-6 else 0.0
+            la, lo = lat0 + (j + max(-.5, min(.5, dy))) * step, lon0 + (i + max(-.5, min(.5, dx))) * step
             basin = next((b for b, (a0, a1, o0, o1) in LOW_BOXES.items() if a0 <= la <= a1 and o0 <= lo <= o1), None)
             if basin and depth >= min_depth:
                 out.append((lo, la, round(float(v), 1), round(depth, 1), basin))
