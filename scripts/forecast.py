@@ -186,6 +186,8 @@ def wind_points():
 BAND_LATS = [-15 + 2.5 * k for k in range(13)]
 BAND_LONS = [2.5 * k for k in range(144)]
 BAND_PTS = [(lo, la) for la in BAND_LATS for lo in BAND_LONS]
+OLR_LATS = [-20 + 2.5 * k for k in range(17)]                  # OMI grid: 20S-20N, 2.5 deg, latitude outer
+OLR_PTS = [(lo, la) for la in OLR_LATS for lo in BAND_LONS]
 
 
 def band_mean(vals_pts):
@@ -225,7 +227,7 @@ class Model:
 
     def __init__(self, name):
         self.name, self.run = name, None
-        self.recs = {k: [] for k in ('tp', 't2', 'tmax', 'tmin', 'u10', 'v10', 'msl', 'u850', 'v850', 'band850')}
+        self.recs = {k: [] for k in ('tp', 't2', 'tmax', 'tmin', 'u10', 'v10', 'msl', 'u850', 'v850', 'band850', 'olr', 'ttr')}
         self.ok = self.failed = 0
         self.errors, self.samples, self.info = [], {}, {}
         self.bytes = 0
@@ -254,8 +256,8 @@ class Model:
                 self.samples[var] = {k: (v if isinstance(v, (int, float, str)) or v is None else str(v))
                                      for k, v in info.items() if k in ('shortName', 'units', 'gridType', 'stepRange',
                                                                        'typeOfLevel', 'level', 'Ni', 'Nj', 'numberOfDataPoints')}
-            if var in ('tp', 'tmax', 'tmin'):
-                start = lo if lo is not None else (0 if var == 'tp' else end - 6)
+            if var in ('tp', 'tmax', 'tmin', 'olr', 'ttr'):
+                start = lo if lo is not None else (0 if var in ('tp', 'ttr') else end - 6)
                 self.recs[var].append((start, end, vals_pts))
             else:
                 self.recs[var].append((step, vals_pts))
@@ -324,6 +326,8 @@ def gfs_collect(m, pool, pts, wpts, d0, now, wind_out):
                 comp = 'u' if rec['var'] == 'UGRD' else 'v'
                 if 'msl' in kinds:
                     m.add('msl', info, step, sample(info, vals, wpts, 'wind'))
+                if 'olr' in kinds:
+                    m.add('olr', info, step, sample(info, vals, OLR_PTS, 'olr'))
                 if 'tn' in kinds:
                     m.add(var, info, step, sample(info, vals, pts, 'tn'))
                 if 'p850' in kinds:
@@ -350,6 +354,8 @@ def gfs_collect(m, pool, pts, wpts, d0, now, wind_out):
                     out.append(field(step, r, 't2', {'tn'}))
                 elif r['var'] == 'PRMSL' and r['level'] == 'mean sea level' and in_days and step % 6 == 0:
                     out.append(field(step, r, 'msl', {'msl'}))
+                elif r['var'] == 'ULWRF' and r['level'] == 'top of atmosphere' and in_days and step % 6 == 0 and 'ave' in r['fc']:
+                    out.append(field(step, r, 'olr', {'olr'}))
                 elif r['var'] == 'APCP' and r['level'] == 'surface' and step % 6 == 0:
                     out.append(field(step, r, 'tp', {'tn'}))
                 elif r['var'] in ('TMAX', 'TMIN') and r['level'] == '2 m above ground' and in_days and step % 6 == 0:
@@ -433,6 +439,8 @@ def ec_collect(m, pool, pts, wpts, d0, now, model):
                     m.add(var, info, step, sample(info, vals, wpts, 'wind'))
                 elif var in ('u850', 'v850'):
                     add_850(m, info, step, vals, var[0], wpts)
+                elif var == 'ttr':
+                    m.add(var, info, step, sample(info, vals, OLR_PTS, 'olr'))
                 else:
                     m.add(var, info, step, sample(info, vals, pts, 'tn'))
             except Exception as e:
@@ -462,6 +470,8 @@ def ec_collect(m, pool, pts, wpts, d0, now, model):
                     out.append(field(step, r, 'tp'))
                 elif p == 'msl' and in_days and step % 6 == 0:
                     out.append(field(step, r, 'msl'))
+                elif p == 'ttr' and (run + dt.timedelta(hours=step)).hour == 0 and step >= s0:
+                    out.append(field(step, r, 'ttr'))
                 elif p == '2t' and in_days:
                     out.append(field(step, r, 't2'))
                 elif p in ('mx2t3', 'mx2t6') and in_days:
@@ -977,7 +987,7 @@ def mjo_observed(status):
                     continue
                 x, y = pc2, -pc1                     # PSL: OMI PC2 ~ RMM1 and -OMI PC1 ~ RMM2
                 rows.append(dict(date=f'{int(p[0]):04d}-{int(p[1]):02d}-{int(p[2]):02d}', rmm1=round(x, 2), rmm2=round(y, 2),
-                                 phase=rmm_phase(x, y), amp=round(math.hypot(x, y), 2)))
+                                 phase=rmm_phase(x, y), amp=round(math.hypot(x, y), 2), pc1=pc1, pc2=pc2))
         src = 'romi'
     status['mjo'] = f"{src}, latest {rows[-1]['date'] if rows else 'none'}"
     return dict(source=src, days=rows[-60:])
@@ -1078,7 +1088,7 @@ def gefs_url(run, mem, step):
     return f"{GEFS}/gefs.{run:%Y%m%d}/{run:%H}/atmos/pgrb2ap5/{name}.t{run:%H}z.pgrb2a.0p50.f{step:03d}"
 
 
-def gefs_collect(pool, pts, wpts, d0, now, info):
+def gefs_collect(pool, pts, wpts, d0, now, info, system=True):
     for run in candidate_runs(now, (0, 6, 12, 18), 5):
         if exists(gefs_url(run, 30, ENS_HOURS) + '.idx'):
             break
@@ -1099,7 +1109,10 @@ def gefs_collect(pool, pts, wpts, d0, now, info):
             m = members[mem]
             try:
                 inf, vals = decode(http(gefs_url(run, mem, step), (rec['start'], rec['end'])))
-                m.add(var, inf, step, sample(inf, vals, wpts if var == 'msl' else pts, ('gefs-w' if var == 'msl' else 'gefs-tn')))
+                if var == 'olr':
+                    m.add(var, inf, step, sample(inf, vals, OLR_PTS, 'olr'))
+                else:
+                    m.add(var, inf, step, sample(inf, vals, wpts if var == 'msl' else pts, ('gefs-w' if var == 'msl' else 'gefs-tn')))
             except Exception as e:
                 m.err(f'{mem} f{step}: {e}')
         return task
@@ -1112,6 +1125,10 @@ def gefs_collect(pool, pts, wpts, d0, now, info):
                 members[mem].err(f'idx {mem} f{step}: {e}'); return []
             out = []
             for r in recs:
+                if r['var'] == 'ULWRF' and r['level'] == 'top of atmosphere' and 'ave' in r['fc'] and s0 < step <= s1:
+                    out.append(field(mem, step, r, 'olr'))
+                if not system:
+                    continue
                 if r['var'] == 'APCP' and r['level'] == 'surface':
                     out.append(field(mem, step, r, 'tp'))
                 elif r['var'] == 'PRMSL' and r['level'] == 'mean sea level' and s0 <= step <= s1:
@@ -1134,7 +1151,7 @@ def ens_url(base, run, step):
     return f"{base}/{run:%Y%m%d}/{run:%H}z/ifs/0p25/enfo/{run:%Y%m%d%H}0000-{step}h-enfo-ef"
 
 
-def ecens_collect(pool, pts, wpts, d0, now, info):
+def ecens_collect(pool, pts, wpts, d0, now, info, system=True):
     chosen = None
     for run in candidate_runs(now, (0, 12), 7):
         bases = [b for b in ECMWF_BASES if exists(ens_url(b, run, ENS_HOURS) + '.index')]
@@ -1164,7 +1181,10 @@ def ecens_collect(pool, pts, wpts, d0, now, info):
             try:
                 rng = (rec['_offset'], rec['_offset'] + rec['_length'] - 1)
                 inf, vals = decode(ec_fetch(bases, lambda b: ens_url(b, run, step), rng, k + step))
-                m.add(var, inf, step, sample(inf, vals, wpts if var == 'msl' else pts, 'wind' if var == 'msl' else 'tn'))
+                if var == 'ttr':
+                    m.add(var, inf, step, sample(inf, vals, OLR_PTS, 'olr'))
+                else:
+                    m.add(var, inf, step, sample(inf, vals, wpts if var == 'msl' else pts, 'wind' if var == 'msl' else 'tn'))
             except Exception as e:
                 m.err(f'{k} {step}h {var}: {e}')
         return task
@@ -1182,6 +1202,10 @@ def ecens_collect(pool, pts, wpts, d0, now, info):
             for r in recs:
                 if r.get('levtype') != 'sfc' or r.get('type') not in ('cf', 'pf'):
                     continue
+                if r.get('param') == 'ttr' and boundary and step >= s0:
+                    out.append(field(step, r, 'ttr'))
+                if not system:
+                    continue
                 if r.get('param') == 'tp' and boundary:
                     out.append(field(step, r, 'tp'))
                 elif r.get('param') == 'msl' and s0 <= step <= s1 and (run + dt.timedelta(hours=step)).hour in (0, 12):
@@ -1190,7 +1214,7 @@ def ecens_collect(pool, pts, wpts, d0, now, info):
         return task
 
     steps = [st for st in list(range(0, 145, 3)) + list(range(150, 361, 6))
-             if st <= s1 and (run + dt.timedelta(hours=st)).hour in (0, 12)]
+             if st <= s1 and (run + dt.timedelta(hours=st)).hour in ((0, 12) if system else (0,))]
     futs = [pool.submit(idx_task(st)) for st in steps]
     tasks = []
     for f in cf.as_completed(futs):
@@ -1231,7 +1255,7 @@ def ensemble_products(ens, d0, wbox, npts):
                          p115=[int(round(100 * float(x))) for x in np.mean(p115, 0)]))
     # pressure: combined ensemble mean (each ensemble's mean weighted equally) and member tracks
     nfr = ENS_HOURS // 6 + 1
-    msl_mean, tracks, chance = [], {}, {}
+    msl_mean, tracks, chance, by_member, ens_mean_tracks = [], {}, {}, {}, {}
     for name, members in ens.items():
         tracks[name] = []
         hit = 0
@@ -1245,8 +1269,10 @@ def ensemble_products(ens, d0, wbox, npts):
             tr = track_lows(frames, wbox['lat0'], wbox['lon0'], wbox['ny'], wbox['nx'], wbox['step'])
             if tr:
                 hit += 1
+                by_member.setdefault(name, {})[k_m] = tr
             tracks[name] += [[[p[0], round(p[1], 1), round(p[2], 1), p[3]] for p in t] for t in tr]
         chance[name] = round(100 * hit / max(1, len(members)))
+        ens_mean_tracks[name] = mean_tracks(by_member.get(name, {}), len(members))
     for k in range(nfr):
         ms = []
         for name, members in ens.items():
@@ -1261,8 +1287,218 @@ def ensemble_products(ens, d0, wbox, npts):
         if not ms:
             break
         msl_mean.append([int(round((x - 1000) * 10)) for x in np.mean(ms, 0)])
-    return dict(days=days, msl=msl_mean, tracks=tracks, chance_low=chance,
+    return dict(days=days, msl=msl_mean, tracks=tracks, mean_tracks=ens_mean_tracks, chance_low=chance,
                 chance_low_avg=round(sum(chance.values()) / max(1, len(chance))))
+
+
+def basin_of(lo):
+    return 'Bay of Bengal' if lo >= 77 else 'Arabian Sea'
+
+
+def mean_tracks(member_tracks, n_members, min_frac=0.2):
+    """Ensemble-mean track per basin: at each 6-hourly frame, the average position of the members that have a low
+    in that basin (deepest one per member), kept when at least 20% of members (and 3 or more) agree."""
+    per = {}
+    for mi, trs in member_tracks.items():
+        for t in trs:
+            for k, lo, la, pv, *_ in t:
+                key = (basin_of(lo), k, mi)
+                if key not in per or pv < per[key][2]:
+                    per[key] = (lo, la, pv)
+    out = {}
+    need = max(3, int(math.ceil(min_frac * n_members)))
+    for (b, k, mi), v in per.items():
+        out.setdefault(b, {}).setdefault(k, []).append(v)
+    res = {}
+    for b, frames in out.items():
+        pts = []
+        for k in sorted(frames):
+            vs = frames[k]
+            if len(vs) >= need:
+                lo = sum(v[0] for v in vs) / len(vs); la = sum(v[1] for v in vs) / len(vs); pv = sum(v[2] for v in vs) / len(vs)
+                pts.append([k, round(lo, 2), round(la, 2), round(pv, 1), len(vs)])
+        if len(pts) >= 2:
+            res[b] = pts
+    return res
+
+
+def consensus_tracks(ens_means, det_tracks):
+    """Our own consensus per basin: equal-weight average of the GFS-ensemble mean, the ECMWF-ensemble mean and the
+    average of the main models that have the low, at each frame where at least two of these three are available."""
+    det = {}
+    for n, trs in det_tracks.items():
+        for t in trs:
+            for k, lo, la, pv, *_ in t:
+                det.setdefault((basin_of(lo), k), {})[n] = (lo, la, pv)
+    det_mean = {}
+    for (b, k), byn in det.items():
+        vs = list(byn.values())
+        det_mean.setdefault(b, {})[k] = (sum(v[0] for v in vs) / len(vs), sum(v[1] for v in vs) / len(vs), sum(v[2] for v in vs) / len(vs))
+    out = {}
+    basins = set(det_mean) | {b for m in ens_means.values() for b in m}
+    for b in basins:
+        frames = set(det_mean.get(b, {}))
+        for m in ens_means.values():
+            frames |= {p[0] for p in m.get(b, [])}
+        pts = []
+        for k in sorted(frames):
+            comps = []
+            for m in ens_means.values():
+                q = next((p for p in m.get(b, []) if p[0] == k), None)
+                if q:
+                    comps.append((q[1], q[2], q[3]))
+            if k in det_mean.get(b, {}):
+                comps.append(det_mean[b][k])
+            if len(comps) >= 2:
+                pts.append([k, round(sum(c[0] for c in comps) / len(comps), 2), round(sum(c[1] for c in comps) / len(comps), 2),
+                            round(sum(c[2] for c in comps) / len(comps), 1), len(comps)])
+        if len(pts) >= 2:
+            out[b] = pts
+    return out
+
+
+
+# ------------------------------------------------------------------ MJO forecast (OMI / ROMI method on model OLR)
+PSL_EOF = 'https://downloads.psl.noaa.gov/Datasets.other/MJO/eof{k}/eof{doy:03d}.txt'
+OLR_LTM = 'https://downloads.psl.noaa.gov/Datasets/interp_OLR/olr.day.ltm.1991-2020.nc'
+OLR_DAP = 'https://psl.noaa.gov/thredds/dodsC/Datasets/interp_OLR/olr.day.mean.nc'
+
+
+def _doy(d):
+    return min(d.timetuple().tm_yday, 365) if not (d.month == 2 and d.day == 29) else 59
+
+
+def olr_daily_from_model(m, d0, ndays):
+    """Daily-mean OLR (W m-2) on the OMI grid for each forecast day, from 6-h averages (GFS) or accumulated ttr (ECMWF)."""
+    out = {}
+    if m.run is None:
+        return out
+    C = cumulative(m.recs['ttr']) if m.recs['ttr'] else None
+    for d in range(ndays):
+        a = int((d0 + dt.timedelta(days=d) - m.run).total_seconds() // 3600); b = a + 24
+        if a < 0:
+            continue
+        day = (d0 + dt.timedelta(days=d)).date()
+        if m.recs['olr']:
+            vs = [v for st, e, v in m.recs['olr'] if a < e <= b and e - st == 6]
+            if len(vs) == 4:
+                out[day] = np.mean(vs, 0)
+        elif C is not None and b in C and (a == 0 or a in C):
+            ca = 0 if a == 0 else C[a]
+            if C[b] is not None and (a == 0 or ca is not None):
+                out[day] = -(C[b] - ca) / 86400.0
+    return out
+
+
+def mjo_forecasts(sources, d0, romi_rows, status):
+    """sources: {name: {date: OLR field}} (deterministic) and {name: [member dicts]} (ensembles).
+    Observed OLR (NOAA interpolated OLR) fills the past; each series is turned into anomalies, the mean of the previous
+    40 days is removed, a 9-day running mean applied and the result projected on NOAA PSL's daily OMI EOFs.
+    The scale is calibrated on the observed part against NOAA's real-time OMI (ROMI)."""
+    import netCDF4
+    # climatology and observations on the OMI grid (latitude ascending, 20S-20N)
+    ltm = netCDF4.Dataset('ltm.nc', memory=http(OLR_LTM, timeout=180))
+    la = np.asarray(ltm['lat'][:]); j = [int(np.argmin(np.abs(la - x))) for x in OLR_LATS]
+    clim = np.asarray(ltm['olr'][:, j, :], float).reshape(ltm['olr'].shape[0], -1)       # (365, 2448)
+    ltm.close()
+    ds = netCDF4.Dataset(OLR_DAP)
+    t = ds['time']; n = len(t); n0 = max(0, n - 90)
+    times = netCDF4.num2date(t[n0:n], t.units, only_use_cftime_datetimes=False)
+    la = np.asarray(ds['lat'][:]); j = [int(np.argmin(np.abs(la - x))) for x in OLR_LATS]
+    obs_raw = np.asarray(ds['olr'][n0:n, :, :], float)[:, j, :].reshape(n - n0, -1)
+    ds.close()
+    obs = {}
+    for tt, row in zip(times, obs_raw):
+        d = dt.date(tt.year, tt.month, tt.day)
+        if np.all(np.isfinite(row)) and row.mean() > 100:
+            obs[d] = row - clim[_doy(d) - 1]
+    last_obs = max(obs)
+    status['mjo_obs_olr'] = f'{min(obs)} to {last_obs}'
+    eofs = {}
+
+    def eof(d):
+        k = _doy(d)
+        if k not in eofs:
+            e = []
+            for i in (1, 2):
+                txt = http(PSL_EOF.format(k=i, doy=k), timeout=60).decode()
+                e.append(np.array([float(x) for x in txt.split()], float))
+            eofs[k] = e
+        return eofs[k]
+
+    def index_series(fc_days):
+        """fc_days: {date: OLR field} for forecast days. Returns {date: (pc1, pc2)} (uncalibrated)."""
+        series = dict(obs)
+        if fc_days:
+            fc_anom = {d: v - clim[_doy(d) - 1] for d, v in fc_days.items() if d > last_obs}
+            if not fc_anom:
+                return {}
+            # keep the domain-mean anomaly continuous with the last 10 observed days (removes model-wide OLR bias)
+            ref = np.mean([obs[d].mean() for d in sorted(obs)[-10:]])
+            bias = np.mean([v.mean() for v in fc_anom.values()]) - ref
+            fc_anom = {d: v - bias for d, v in fc_anom.items()}
+            first = min(fc_anom)
+            gap = (first - last_obs).days
+            for g in range(1, gap):                    # linear fill between the last observation and the forecast
+                w = g / gap
+                series[last_obs + dt.timedelta(days=g)] = obs[last_obs] * (1 - w) + fc_anom[first] * w
+            series.update(fc_anom)
+        days = sorted(series)
+        x = {}
+        for d in days:
+            prev = [series[d - dt.timedelta(days=i)] for i in range(1, 41) if d - dt.timedelta(days=i) in series]
+            if len(prev) >= 35:
+                x[d] = series[d] - np.mean(prev, 0)
+        out = {}
+        for d in sorted(x):
+            win = [x[d + dt.timedelta(days=i)] for i in range(-4, 5) if d + dt.timedelta(days=i) in x]
+            if len(win) >= 5:
+                e1, e2 = eof(d)
+                v = np.mean(win, 0)
+                out[d] = (float(v @ e1), float(v @ e2))
+        return out
+
+    # calibration on observations only, against ROMI
+    obs_idx = index_series({})
+    pairs = [(obs_idx[dt.date.fromisoformat(r['date'])], (r['pc1'], r['pc2'])) for r in romi_rows
+             if 'pc1' in r and dt.date.fromisoformat(r['date']) in obs_idx]
+    if len(pairs) < 10:
+        raise RuntimeError(f'too few days to calibrate ({len(pairs)})')
+    a = np.array([p[0] for p in pairs]).ravel(); b = np.array([p[1] for p in pairs]).ravel()
+    scale = float(a @ b / (a @ a))
+    corr = float(np.corrcoef(a, b)[0, 1])
+    status['mjo_calibration'] = dict(days=len(pairs), scale=round(scale, 4), corr=round(corr, 3))
+
+    def to_xy(idx, start):
+        return [[d.isoformat(), round(scale * pc2, 2), round(-scale * pc1, 2)] for d, (pc1, pc2) in sorted(idx.items()) if d >= start]
+
+    start = min(dt.date.fromisoformat(romi_rows[-1]['date']), last_obs)
+    out = {'calibration': status['mjo_calibration'], 'start': start.isoformat(), 'tracks': {}}
+    for name, src in sources.items():
+        try:
+            if isinstance(src, dict):
+                tr = to_xy(index_series(src), start)
+            else:                                       # ensemble: average the members' index values by date
+                acc = {}
+                for mem in src:
+                    for d, x, y in to_xy(index_series(mem), start):
+                        acc.setdefault(d, []).append((x, y))
+                tr = [[d, round(float(np.mean([p[0] for p in v])), 2), round(float(np.mean([p[1] for p in v])), 2), len(v)]
+                      for d, v in sorted(acc.items()) if len(v) >= 5]
+            if len(tr) >= 3:
+                out['tracks'][name] = tr
+        except Exception as e:
+            status.setdefault('mjo_errors', {})[name] = str(e)[:200]
+
+    def avg(names, label):
+        ts = [dict((p[0], p) for p in out['tracks'][n]) for n in names if n in out['tracks']]
+        if len(ts) < 2:
+            return
+        common = sorted(set.intersection(*[set(t) for t in ts]))
+        out['tracks'][label] = [[d, round(sum(t[d][1] for t in ts) / len(ts), 2), round(sum(t[d][2] for t in ts) / len(ts), 2)] for d in common]
+    avg(['GFS', 'ECMWF'], 'GFS + ECMWF average')
+    avg(['GFS ensemble mean', 'ECMWF ensemble mean'], 'Ensembles average')
+    return out
 
 
 # ------------------------------------------------------------------ main
@@ -1441,33 +1677,54 @@ def main():
     except Exception as e:
         status['mjo'] = f'FAILED: {e}'; traceback.print_exc()
 
-    # step 3: ensembles when any deterministic model shows a low over the Bay of Bengal or Arabian Sea
+    # step 3: ensembles. Always read for the MJO forecast (OLR only); when any main model shows a low over the
+    # Bay of Bengal or Arabian Sea (or on a manual test), rain and pressure are read as well for the system watch.
     wbox = dict(lat0=lats[0], lon0=lons[0], ny=len(lats), nx=len(lons), step=WIND_BOX['step'])
-    systems = {}
+    systems, ens, einfo, lows = {}, {}, {}, {}
     try:
         lows = deterministic_lows(models, labels, d0, nd * 4 + 1, wbox)
         systems = dict(deterministic={n: [[[p[0], round(p[1], 1), round(p[2], 1), p[3]] for p in t] for t in tr] for n, tr in lows.items()},
                        triggered=bool(lows), forced=os.environ.get('FORCE_ENS') == '1')
         status['systems'] = {n: len(t) for n, t in lows.items()}
-        if lows or systems['forced']:
-            ens, einfo = {}, {}
-            with cf.ThreadPoolExecutor(max_workers=24) as pool2:
-                for name, fn in (('GEFS', gefs_collect), ('ECMWF ENS', ecens_collect)):
-                    t0 = time.time(); CURRENT['deadline'] = t0 + BUDGET[name] * 60; einfo[name] = {}
-                    try:
-                        _, mem = fn(pool2, pts, wpts, d0, now, einfo[name])
-                        ens[name] = mem
-                    except Exception as e:
-                        einfo[name]['error'] = str(e); traceback.print_exc()
-                    einfo[name]['seconds'] = round(time.time() - t0)
-                    json.dump(dict(status, ensembles=einfo), open(P('data/forecast_status.json'), 'w'), indent=1, default=str)
-            CURRENT['deadline'] = DEADLINE
-            status['ensembles'] = einfo
-            if ens:
-                systems['ens'] = ensemble_products(ens, d0, wbox, len(pts))
-                systems['ens_runs'] = {n: einfo[n].get('run') for n in ens}
     except Exception as e:
         status['systems_error'] = str(e); traceback.print_exc()
+    want_system = bool(lows) or systems.get('forced', False)
+    with cf.ThreadPoolExecutor(max_workers=24) as pool2:
+        for name, fn in (('GEFS', gefs_collect), ('ECMWF ENS', ecens_collect)):
+            t0 = time.time(); CURRENT['deadline'] = t0 + BUDGET[name] * 60; einfo[name] = {}
+            try:
+                _, mem = fn(pool2, pts, wpts, d0, now, einfo[name], system=want_system)
+                ens[name] = mem
+            except Exception as e:
+                einfo[name]['error'] = str(e); traceback.print_exc()
+            einfo[name]['seconds'] = round(time.time() - t0)
+            json.dump(dict(status, ensembles=einfo), open(P('data/forecast_status.json'), 'w'), indent=1, default=str)
+    CURRENT['deadline'] = DEADLINE
+    status['ensembles'] = einfo
+    if want_system and ens:
+        try:
+            systems['ens'] = ensemble_products(ens, d0, wbox, len(pts))
+            systems['ens']['consensus'] = consensus_tracks(systems['ens']['mean_tracks'], lows)
+            systems['ens_runs'] = {n: einfo[n].get('run') for n in ens}
+        except Exception as e:
+            status['systems_error'] = str(e); traceback.print_exc()
+    # MJO forecast: GFS, ECMWF, their ensembles, and averages
+    try:
+        romi = (drivers.get('mjo') or {}).get('days') or []
+        srcs = {}
+        for n in ('GFS', 'ECMWF'):
+            if n in labels:
+                srcs[n] = olr_daily_from_model(models[n], d0, NDAYS)
+        for n, lab in (('GEFS', 'GFS ensemble mean'), ('ECMWF ENS', 'ECMWF ensemble mean')):
+            if n in ens:
+                srcs[lab] = [olr_daily_from_model(m, d0, ENS_HOURS // 24) for m in ens[n].values()]
+        status['mjo_sources'] = {k: (len(v) if isinstance(v, dict) else f'{len(v)} members, {max((len(x) for x in v), default=0)} days') for k, v in srcs.items()}
+        if romi and srcs:
+            drivers['mjo_fc'] = mjo_forecasts(srcs, d0, romi, status)
+            for r in drivers['mjo'].get('days', []):
+                r.pop('pc1', None); r.pop('pc2', None)
+    except Exception as e:
+        status['mjo_fc'] = f'FAILED: {e}'; traceback.print_exc()
 
     runs = {n: models[n].run.strftime('%HZ %d %b') for n in labels}
     F = dict(updated=dt.datetime.now(IST).strftime('%d %b %Y, %H:%M IST'), dates=dates, models=labels, runs=runs,
