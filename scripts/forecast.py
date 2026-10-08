@@ -785,12 +785,73 @@ def anomalies_850(models, labels, clim, d0, nd):
     return dict(days=days, models=mods, u=out_u, v=out_v), band
 
 
-def sst_latest(status):
-    """Latest NOAA OISST v2.1 daily anomaly over the Indian Ocean plus IOD, Nino 3.4 and Bay of Bengal indices."""
+SST_LTM = 'https://downloads.psl.noaa.gov/Datasets/noaa.oisst.v2.highres/sst.mon.ltm.1991-2020.nc'
+SST_BOXES = dict(iod_w=(-10, 10, 50, 70), iod_e=(-10, 0, 90, 110), nino34=(-5, 5, 190, 240), bob=(5, 22, 80, 95), arabian=(5, 22, 60, 75))
+
+
+def _box_mean(f, la, lo, box):
+    la0, la1, lo0, lo1 = box
+    j = (la >= la0) & (la <= la1); i = (lo >= lo0) & (lo <= lo1)
+    sub = f[np.ix_(j, i)]
+    w = np.cos(np.radians(la[j]))[:, None] * np.ones((1, int(i.sum())))
+    ok = ~np.ma.getmaskarray(sub)
+    return float(np.sum(np.where(ok, np.ma.getdata(sub), 0) * w) / np.sum(w * ok))
+
+
+def _region_half_deg(f, la, lo):
+    b = SST_BOX
+    j = np.where((la >= b['lat0'] - 1e-6) & (la <= b['lat1'] + 1e-6))[0]
+    i = np.where((lo >= b['lon0'] - 1e-6) & (lo <= b['lon1'] + 1e-6))[0]
+    nj, ni = (len(j) // 2) * 2, (len(i) // 2) * 2
+    sub = f[np.ix_(j[:nj], i[:ni])]
+    blk = np.ma.masked_invalid(sub).reshape(nj // 2, 2, ni // 2, 2).mean(axis=(1, 3))
+    return blk, dict(lat0=float(la[j[0]] + .125), lon0=float(lo[i[0]] + .125), step=0.5, ny=nj // 2, nx=ni // 2)
+
+
+def sst_climatology():
+    """1991-2020 monthly OISST climatology (NOAA PSL) for the map region and the index boxes; cached."""
+    cache = P('data/sst_clim_1991_2020.json')
+    if os.path.exists(cache):
+        return json.load(open(cache))
     import netCDF4
+    ds = netCDF4.Dataset('ltm.nc', memory=http(SST_LTM, timeout=300))
+    la, lo = np.asarray(ds['lat'][:]), np.asarray(ds['lon'][:])
+    c = {'grid': [], 'boxes': []}
+    for mth in range(12):
+        f = ds['sst'][mth, :, :]
+        blk, geom = _region_half_deg(f, la, lo)
+        c['grid'].append([None if np.ma.is_masked(x) else round(float(x), 2) for x in np.ma.ravel(blk)])
+        c['boxes'].append({k: round(_box_mean(f, la, lo, bx), 3) for k, bx in SST_BOXES.items()})
+    c['geom'] = geom
+    ds.close()
+    json.dump(c, open(cache, 'w'), separators=(',', ':'))
+    return c
+
+
+def _clim_month_weights(day):
+    y = day.year
+    mids = [dt.date(y, m, 15) for m in range(1, 13)]
+    if day < mids[0]:
+        a, b, ia, ib = dt.date(y - 1, 12, 15), mids[0], 11, 0
+    elif day >= mids[11]:
+        a, b, ia, ib = mids[11], dt.date(y + 1, 1, 15), 11, 0
+    else:
+        k = max(i for i in range(12) if mids[i] <= day)
+        a, b, ia, ib = mids[k], mids[k + 1], k, k + 1
+    w = (day - a).days / (b - a).days
+    return ia, ib, w
+
+
+def sst_latest(status):
+    """Latest NOAA OISST v2.1 daily SST over the Indian Ocean as an anomaly against the 1991-2020 climatology,
+    plus IOD, Nino 3.4, Bay of Bengal and Arabian Sea indices (history kept in data/sst_indices.json)."""
+    import netCDF4
+    clim = sst_climatology()
     today = dt.datetime.now(UTC).date()
     hist_path = P('data/sst_indices.json')
     hist = json.load(open(hist_path)) if os.path.exists(hist_path) else {}
+    if hist and next(iter(hist.values())).get('base') != '1991-2020':
+        hist = {}                                   # drop values made with the old 1971-2000 base
 
     def load(day):
         for suffix in ('_preliminary', ''):
@@ -801,16 +862,12 @@ def sst_latest(status):
                 continue
         return None, None
 
-    def indices(an, la, lo):
-        def box(la0, la1, lo0, lo1):
-            j = (la >= la0) & (la <= la1); i = (lo >= lo0) & (lo <= lo1)
-            sub = an[np.ix_(j, i)]
-            w = np.cos(np.radians(la[j]))[:, None] * np.ones((1, i.sum()))
-            ok = ~np.ma.getmaskarray(sub)
-            return float(np.sum(np.where(ok, sub, 0) * w) / np.sum(w * ok))
-        west, east = box(-10, 10, 50, 70), box(-10, 0, 90, 110)
-        return dict(iod=round(west - east, 2), nino34=round(box(-5, 5, 190, 240), 2),
-                    bob=round(box(5, 22, 80, 95), 2), arabian=round(box(5, 22, 60, 75), 2))
+    def indices(sst, la, lo, day):
+        ia, ib, w = _clim_month_weights(day)
+        cb = {k: clim['boxes'][ia][k] * (1 - w) + clim['boxes'][ib][k] * w for k in SST_BOXES}
+        v = {k: _box_mean(sst, la, lo, bx) - cb[k] for k, bx in SST_BOXES.items()}
+        return dict(iod=round(v['iod_w'] - v['iod_e'], 2), nino34=round(v['nino34'], 2), bob=round(v['bob'], 2),
+                    arabian=round(v['arabian'], 2), base='1991-2020')
 
     latest = None
     for back in range(1, 8):
@@ -818,27 +875,25 @@ def sst_latest(status):
         ds, url = load(day)
         if ds is None:
             continue
-        an = ds['anom'][0, 0, :, :]; la = np.asarray(ds['lat'][:]); lo = np.asarray(ds['lon'][:])
-        hist[day.isoformat()] = indices(an, la, lo)
-        b = SST_BOX
-        j = np.where((la >= b['lat0'] - 1e-6) & (la <= b['lat1'] + 1e-6))[0]
-        i = np.where((lo >= b['lon0'] - 1e-6) & (lo <= b['lon1'] + 1e-6))[0]
-        sub = an[np.ix_(j, i)]
-        # 0.25 deg -> 0.5 deg by averaging 2x2 blocks
-        nj, ni = (len(j) // 2) * 2, (len(i) // 2) * 2
-        sub = sub[:nj, :ni]
-        blk = sub.reshape(nj // 2, 2, ni // 2, 2)
-        mean = blk.mean(axis=(1, 3))
-        grid = [(-999 if np.ma.is_masked(x) else int(round(float(x) * 10))) for x in np.ma.ravel(mean)]
-        latest = dict(date=day.isoformat(), lat0=float(la[j[0]] + .125), lon0=float(lo[i[0]] + .125), step=0.5,
-                      ny=nj // 2, nx=ni // 2, anom=grid, source=url.rsplit('/', 1)[1])
+        sst = ds['sst'][0, 0, :, :]; la = np.asarray(ds['lat'][:]); lo = np.asarray(ds['lon'][:])
+        status['sst_file_anom_note'] = str(getattr(ds['anom'], 'long_name', '')) + ' | ' + str(getattr(ds, 'climatology', getattr(ds['anom'], 'comment', '')))[:160]
+        hist[day.isoformat()] = indices(sst, la, lo, day)
+        blk, geom = _region_half_deg(sst, la, lo)
+        ia, ib, w = _clim_month_weights(day)
+        g1, g2 = clim['grid'][ia], clim['grid'][ib]
+        grid = []
+        for k, x in enumerate(np.ma.ravel(blk)):
+            if np.ma.is_masked(x) or g1[k] is None or g2[k] is None:
+                grid.append(-999)
+            else:
+                grid.append(int(round((float(x) - (g1[k] * (1 - w) + g2[k] * w)) * 10)))
+        latest = dict(date=day.isoformat(), anom=grid, source=url.rsplit('/', 1)[1], base='1991-2020', **geom)
         ds.close()
         break
-    # backfill up to 6 missing days per run so the index history builds up to 60 days
     filled = 0
     for back in range(2, 61):
         day = today - dt.timedelta(days=back)
-        if day.isoformat() in hist or filled >= 6:
+        if day.isoformat() in hist or filled >= 8:
             continue
         try:
             ds, _ = load(day)
@@ -846,13 +901,12 @@ def sst_latest(status):
             ds = None
         if ds is None:
             continue
-        hist[day.isoformat()] = indices(ds['anom'][0, 0, :, :], np.asarray(ds['lat'][:]), np.asarray(ds['lon'][:]))
+        hist[day.isoformat()] = indices(ds['sst'][0, 0, :, :], np.asarray(ds['lat'][:]), np.asarray(ds['lon'][:]), day)
         ds.close(); filled += 1
-    keep = sorted(hist)[-90:]
-    hist = {k: hist[k] for k in keep}
+    hist = {k: hist[k] for k in sorted(hist)[-90:]}
     json.dump(hist, open(hist_path, 'w'), indent=0)
-    status['sst'] = f"latest {latest['date'] if latest else 'none'}, history {len(hist)} days"
-    return latest, [dict(date=k, **hist[k]) for k in sorted(hist)[-60:]]
+    status['sst'] = f"latest {latest['date'] if latest else 'none'}, history {len(hist)} days, base 1991-2020"
+    return latest, [dict(date=k, **{x: y for x, y in hist[k].items() if x != 'base'}) for k in sorted(hist)[-60:]]
 
 
 ROMI = 'https://psl.noaa.gov/mjo/mjoindex/romi.cpcolr.1x.txt'
