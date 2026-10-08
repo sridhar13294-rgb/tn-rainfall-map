@@ -34,7 +34,7 @@ jobs:
         run: |
           sudo apt-get update -q
           sudo apt-get install -y -q libeccodes-dev
-          pip install -q eccodes numpy
+          pip install -q eccodes numpy netCDF4
           python -c "import eccodes; print('ecCodes', eccodes.codes_get_api_version())"
       - name: Download model forecasts and build the page
         run: python scripts/forecast.py
@@ -43,7 +43,7 @@ jobs:
         run: |
           git config user.name "forecast-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          for f in site/forecast.html data/forecast_status.json data/forecast_progress.json data/land_region.json data/icon_*_neighbours.json; do if [ -e "$f" ]; then git add "$f"; fi; done
+          for f in site/forecast.html data/forecast_status.json data/forecast_progress.json data/land_region.json data/icon_*_neighbours.json data/clim_ncep.json data/sst_indices.json data/mjo_u850_history.json; do if [ -e "$f" ]; then git add "$f"; fi; done
           git diff --cached --quiet || git commit -m "Forecast update $(TZ=Asia/Kolkata date '+%Y-%m-%d %H:%M IST')"
           git pull --rebase -X theirs origin ${{ github.ref_name }} && git push origin HEAD:${{ github.ref_name }}
       - if: github.ref_name == 'main'

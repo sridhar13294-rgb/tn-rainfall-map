@@ -181,6 +181,22 @@ def wind_points():
     return lats, lons, [(lo, la) for la in lats for lo in lons]
 
 
+BAND_LATS = [-15 + 2.5 * k for k in range(13)]
+BAND_LONS = [2.5 * k for k in range(144)]
+BAND_PTS = [(lo, la) for la in BAND_LATS for lo in BAND_LONS]
+
+
+def band_mean(vals_pts):
+    """15S-15N average at each 2.5 degree longitude (equal weights, as in the RMM index)."""
+    return np.asarray(vals_pts).reshape(len(BAND_LATS), len(BAND_LONS)).mean(axis=0)
+
+
+def add_850(m, info, step, vals, comp, wpts):
+    m.add('u850' if comp == 'u' else 'v850', info, step, sample(info, vals, wpts, 'wind'))
+    if comp == 'u':
+        m.add('band850', info, step, band_mean(sample(info, vals, BAND_PTS, 'band')))
+
+
 def floor6(t):
     return t.replace(minute=0, second=0, microsecond=0) - dt.timedelta(hours=t.hour % 6)
 
@@ -207,7 +223,7 @@ class Model:
 
     def __init__(self, name):
         self.name, self.run = name, None
-        self.recs = {k: [] for k in ('tp', 't2', 'tmax', 'tmin', 'u10', 'v10', 'msl')}
+        self.recs = {k: [] for k in ('tp', 't2', 'tmax', 'tmin', 'u10', 'v10', 'msl', 'u850', 'v850', 'band850')}
         self.ok = self.failed = 0
         self.errors, self.samples, self.info = [], {}, {}
         self.bytes = 0
@@ -299,18 +315,19 @@ def gfs_collect(m, pool, pts, wpts, d0, now, wind_out):
     wind_steps = [s for s in range(max(0, s0 - s0 % 6), 169, 6)]
     wanted_levels = {'10 m above ground': '10m', '925 mb': '925', '850 mb': '850', '700 mb': '700', '500 mb': '500', '200 mb': '200'}
 
-    def field(step, rec, var, kind):
+    def field(step, rec, var, kinds):
         def task():
             try:
                 info, vals = decode(http(gfs_url(run, step), (rec['start'], rec['end'])))
-                if kind == 'msl':
+                comp = 'u' if rec['var'] == 'UGRD' else 'v'
+                if 'msl' in kinds:
                     m.add('msl', info, step, sample(info, vals, wpts, 'wind'))
-                    return
-                if kind in ('tn', 'both'):
+                if 'tn' in kinds:
                     m.add(var, info, step, sample(info, vals, pts, 'tn'))
-                if kind in ('wind', 'both'):
+                if 'p850' in kinds:
+                    add_850(m, info, step, vals, comp, wpts)
+                if 'wind' in kinds:
                     lev = wanted_levels[rec['level']]
-                    comp = 'u' if rec['var'] == 'UGRD' else 'v'
                     sw = sample(info, vals, wpts, 'wind')      # computed outside the lock
                     with LOCK:
                         wind_out.setdefault(step, {}).setdefault(lev, {})[comp] = sw
@@ -328,20 +345,24 @@ def gfs_collect(m, pool, pts, wpts, d0, now, wind_out):
             in_days = s0 <= step <= s1
             for r in recs:
                 if r['var'] == 'TMP' and r['level'] == '2 m above ground' and in_days:
-                    out.append(field(step, r, 't2', 'tn'))
+                    out.append(field(step, r, 't2', {'tn'}))
                 elif r['var'] == 'PRMSL' and r['level'] == 'mean sea level' and in_days and step % 6 == 0:
-                    out.append(field(step, r, 'msl', 'msl'))
+                    out.append(field(step, r, 'msl', {'msl'}))
                 elif r['var'] == 'APCP' and r['level'] == 'surface' and step % 6 == 0:
-                    out.append(field(step, r, 'tp', 'tn'))
+                    out.append(field(step, r, 'tp', {'tn'}))
                 elif r['var'] in ('TMAX', 'TMIN') and r['level'] == '2 m above ground' and in_days and step % 6 == 0:
-                    out.append(field(step, r, r['var'].lower(), 'tn'))
+                    out.append(field(step, r, r['var'].lower(), {'tn'}))
                 elif r['var'] in ('UGRD', 'VGRD') and r['level'] in wanted_levels:
                     is10 = r['level'] == '10 m above ground'
-                    tn = is10 and in_days and step % 6 == 0
-                    wd = step in wind_steps
-                    if tn or wd:
-                        var = 'u10' if r['var'] == 'UGRD' else 'v10'
-                        out.append(field(step, r, var, 'both' if (tn and wd) else ('tn' if tn else 'wind')))
+                    kinds = set()
+                    if is10 and in_days and step % 6 == 0:
+                        kinds.add('tn')
+                    if step in wind_steps:
+                        kinds.add('wind')
+                    if r['level'] == '850 mb' and in_days and step % 6 == 0:
+                        kinds.add('p850')
+                    if kinds:
+                        out.append(field(step, r, 'u10' if r['var'] == 'UGRD' else 'v10', kinds))
             return out
         return task
 
@@ -385,6 +406,8 @@ def ec_collect(m, pool, pts, wpts, d0, now, model):
                                          (rec['_offset'], rec['_offset'] + rec['_length'] - 1)))
                 if var == 'msl':
                     m.add(var, info, step, sample(info, vals, wpts, 'wind'))
+                elif var in ('u850', 'v850'):
+                    add_850(m, info, step, vals, var[0], wpts)
                 else:
                     m.add(var, info, step, sample(info, vals, pts, 'tn'))
             except Exception as e:
@@ -404,6 +427,9 @@ def ec_collect(m, pool, pts, wpts, d0, now, model):
             in_days = s0 <= step <= s1
             for r in recs:
                 p, lt = r.get('param'), r.get('levtype')
+                if lt == 'pl' and str(r.get('levelist')) == '850' and p in ('u', 'v') and in_days and step % 6 == 0:
+                    out.append(field(step, r, p + '850'))
+                    continue
                 if lt != 'sfc':
                     continue
                 with LOCK:
@@ -656,6 +682,209 @@ def six_hourly(m, d0, nper):
     return out
 
 
+
+# ------------------------------------------------------------------ large-scale drivers (step 2)
+PSL = 'https://downloads.psl.noaa.gov/Datasets/ncep.reanalysis.derived/pressure'
+OISST = 'https://www.ncei.noaa.gov/data/sea-surface-temperature-optimum-interpolation/v2.1/access/avhrr'
+BOM_RMM = 'https://www.bom.gov.au/clim_data/IDCKGEM000/rmm.74toRealtime.txt'
+SST_BOX = dict(lat0=-15, lat1=30, lon0=40, lon1=110, step=0.5)
+
+
+def _bilinear_ll(field, la_axis, lo_axis, pts):
+    """Bilinear interpolation on a regular global grid (la_axis may be descending; lo 0..360)."""
+    la_axis, lo_axis = np.asarray(la_axis, float), np.asarray(lo_axis, float)
+    dla, dlo = la_axis[1] - la_axis[0], lo_axis[1] - lo_axis[0]
+    out = []
+    for lo, la in pts:
+        fi = ((lo - lo_axis[0]) % 360) / dlo
+        fj = (la - la_axis[0]) / dla
+        i0, j0 = int(np.floor(fi)), int(np.floor(fj))
+        wx, wy = fi - i0, fj - j0
+        i1 = (i0 + 1) % len(lo_axis)
+        j0 = min(max(j0, 0), len(la_axis) - 1); j1 = min(j0 + 1, len(la_axis) - 1)
+        v = (field[j0, i0] * (1 - wx) + field[j0, i1] * wx) * (1 - wy) + (field[j1, i0] * (1 - wx) + field[j1, i1] * wx) * wy
+        out.append(float(v))
+    return out
+
+
+def climatology(wpts):
+    """NCEP/NCAR reanalysis monthly long-term means: 850 hPa u/v over the region and 15S-15N u850 by longitude."""
+    cache = P('data/clim_ncep.json')
+    if os.path.exists(cache):
+        c = json.load(open(cache))
+        if len(c['u850'][0]) == len(wpts):
+            return c
+    import netCDF4
+    c = {}
+    for var in ('uwnd', 'vwnd'):
+        last = None
+        for fn in (f'{var}.mon.ltm.1991-2020.nc', f'{var}.mon.ltm.nc'):
+            try:
+                buf = http(f'{PSL}/{fn}', timeout=180)
+                c['source'] = fn.replace(var, '{var}'); break
+            except Exception as e:
+                last = e
+        else:
+            raise RuntimeError(f'NCEP climatology not available: {last}')
+        ds = netCDF4.Dataset('mem.nc', memory=buf)
+        lev = [int(x) for x in ds['level'][:]]
+        la, lo = ds['lat'][:], ds['lon'][:]
+        data = np.asarray(ds[var][:, lev.index(850), :, :], float)       # (12, lat, lon)
+        key = 'u850' if var == 'uwnd' else 'v850'
+        c[key] = [[round(x, 2) for x in _bilinear_ll(data[mth], la, lo, wpts)] for mth in range(12)]
+        if var == 'uwnd':
+            band = [(lo_, la_) for la_ in BAND_LATS for lo_ in BAND_LONS]
+            c['band850'] = [[round(x, 2) for x in band_mean(_bilinear_ll(data[mth], la, lo, band))] for mth in range(12)]
+        ds.close()
+    json.dump(c, open(cache, 'w'), separators=(',', ':'))
+    return c
+
+
+def clim_on(c, key, day):
+    """Monthly climatology linearly interpolated to a date (monthly means taken as valid on the 15th)."""
+    y = day.year
+    mids = [dt.date(y, m, 15) for m in range(1, 13)]
+    if day < mids[0]:
+        a, b, ia, ib = dt.date(y - 1, 12, 15), mids[0], 11, 0
+    elif day >= mids[11]:
+        a, b, ia, ib = mids[11], dt.date(y + 1, 1, 15), 11, 0
+    else:
+        k = max(i for i in range(12) if mids[i] <= day)
+        a, b, ia, ib = mids[k], mids[k + 1], k, k + 1
+    w = (day - a).days / (b - a).days
+    return np.asarray(c[key][ia]) * (1 - w) + np.asarray(c[key][ib]) * w
+
+
+def anomalies_850(models, labels, clim, d0, nd):
+    """Daily-mean 850 hPa wind anomaly over the region, averaged across models with 850 hPa winds."""
+    days, out_u, out_v, mods, band = [], [], [], [], []
+    for d in range(nd):
+        a_t = d0 + dt.timedelta(days=d)
+        us, vs, bs, who = [], [], [], []
+        for n in labels:
+            m = models[n]
+            a = int((a_t - m.run).total_seconds() // 3600)
+            if a < 0:
+                continue
+            want = {a, a + 6, a + 12, a + 18}
+            u = {s: v for s, v in m.recs['u850'] if s in want}
+            v = {s: x for s, x in m.recs['v850'] if s in want}
+            b = {s: x for s, x in m.recs['band850'] if s in want}
+            if len(u) == 4 and len(v) == 4:
+                us.append(np.mean(list(u.values()), 0)); vs.append(np.mean(list(v.values()), 0)); who.append(n)
+                if len(b) == 4:
+                    bs.append(np.mean(list(b.values()), 0))
+        if not us:
+            break
+        day = a_t.date()
+        du = np.mean(us, 0) - clim_on(clim, 'u850', day)
+        dv = np.mean(vs, 0) - clim_on(clim, 'v850', day)
+        days.append(day.isoformat()); mods.append(who)
+        out_u.append([int(round(x * 10)) for x in du]); out_v.append([int(round(x * 10)) for x in dv])
+        band.append([round(float(x), 1) for x in (np.mean(bs, 0) - clim_on(clim, 'band850', day))] if bs else None)
+    return dict(days=days, models=mods, u=out_u, v=out_v), band
+
+
+def sst_latest(status):
+    """Latest NOAA OISST v2.1 daily anomaly over the Indian Ocean plus IOD, Nino 3.4 and Bay of Bengal indices."""
+    import netCDF4
+    today = dt.datetime.now(UTC).date()
+    hist_path = P('data/sst_indices.json')
+    hist = json.load(open(hist_path)) if os.path.exists(hist_path) else {}
+
+    def load(day):
+        for suffix in ('_preliminary', ''):
+            url = f"{OISST}/{day:%Y%m}/oisst-avhrr-v02r01.{day:%Y%m%d}{suffix}.nc"
+            try:
+                return netCDF4.Dataset('sst.nc', memory=http(url, tries=2, timeout=120)), url
+            except NotFound:
+                continue
+        return None, None
+
+    def indices(an, la, lo):
+        def box(la0, la1, lo0, lo1):
+            j = (la >= la0) & (la <= la1); i = (lo >= lo0) & (lo <= lo1)
+            sub = an[np.ix_(j, i)]
+            w = np.cos(np.radians(la[j]))[:, None] * np.ones((1, i.sum()))
+            ok = ~np.ma.getmaskarray(sub)
+            return float(np.sum(np.where(ok, sub, 0) * w) / np.sum(w * ok))
+        west, east = box(-10, 10, 50, 70), box(-10, 0, 90, 110)
+        return dict(iod=round(west - east, 2), nino34=round(box(-5, 5, 190, 240), 2),
+                    bob=round(box(5, 22, 80, 95), 2), arabian=round(box(5, 22, 60, 75), 2))
+
+    latest = None
+    for back in range(1, 8):
+        day = today - dt.timedelta(days=back)
+        ds, url = load(day)
+        if ds is None:
+            continue
+        an = ds['anom'][0, 0, :, :]; la = np.asarray(ds['lat'][:]); lo = np.asarray(ds['lon'][:])
+        hist[day.isoformat()] = indices(an, la, lo)
+        b = SST_BOX
+        j = np.where((la >= b['lat0'] - 1e-6) & (la <= b['lat1'] + 1e-6))[0]
+        i = np.where((lo >= b['lon0'] - 1e-6) & (lo <= b['lon1'] + 1e-6))[0]
+        sub = an[np.ix_(j, i)]
+        # 0.25 deg -> 0.5 deg by averaging 2x2 blocks
+        nj, ni = (len(j) // 2) * 2, (len(i) // 2) * 2
+        sub = sub[:nj, :ni]
+        blk = sub.reshape(nj // 2, 2, ni // 2, 2)
+        mean = blk.mean(axis=(1, 3))
+        grid = [(-999 if np.ma.is_masked(x) else int(round(float(x) * 10))) for x in np.ma.ravel(mean)]
+        latest = dict(date=day.isoformat(), lat0=float(la[j[0]] + .125), lon0=float(lo[i[0]] + .125), step=0.5,
+                      ny=nj // 2, nx=ni // 2, anom=grid, source=url.rsplit('/', 1)[1])
+        ds.close()
+        break
+    # backfill up to 6 missing days per run so the index history builds up to 60 days
+    filled = 0
+    for back in range(2, 61):
+        day = today - dt.timedelta(days=back)
+        if day.isoformat() in hist or filled >= 6:
+            continue
+        try:
+            ds, _ = load(day)
+        except Exception:
+            ds = None
+        if ds is None:
+            continue
+        hist[day.isoformat()] = indices(ds['anom'][0, 0, :, :], np.asarray(ds['lat'][:]), np.asarray(ds['lon'][:]))
+        ds.close(); filled += 1
+    keep = sorted(hist)[-90:]
+    hist = {k: hist[k] for k in keep}
+    json.dump(hist, open(hist_path, 'w'), indent=0)
+    status['sst'] = f"latest {latest['date'] if latest else 'none'}, history {len(hist)} days"
+    return latest, [dict(date=k, **hist[k]) for k in sorted(hist)[-60:]]
+
+
+def mjo_observed(status):
+    """Bureau of Meteorology real-time RMM index (Wheeler and Hendon 2004): last 60 days."""
+    txt = http(BOM_RMM, timeout=120).decode('utf-8', 'replace')
+    rows = []
+    for line in txt.splitlines():
+        p = line.split()
+        if len(p) >= 7 and p[0].isdigit() and len(p[0]) == 4:
+            try:
+                r1, r2, ph, amp = float(p[3]), float(p[4]), int(float(p[5])), float(p[6])
+            except ValueError:
+                continue
+            if abs(r1) > 100 or abs(amp) > 100:
+                continue
+            rows.append(dict(date=f'{int(p[0]):04d}-{int(p[1]):02d}-{int(p[2]):02d}', rmm1=round(r1, 2), rmm2=round(r2, 2), phase=ph, amp=round(amp, 2)))
+    status['mjo'] = f"latest {rows[-1]['date'] if rows else 'none'}"
+    return rows[-60:]
+
+
+def update_band_history(band, d0):
+    """Keep day-0 (analysis-like) tropical u850 anomalies so the time-longitude plot has a past as well as a future."""
+    path = P('data/mjo_u850_history.json')
+    hist = json.load(open(path)) if os.path.exists(path) else {}
+    if band and band[0] is not None:
+        hist[d0.date().isoformat()] = band[0]
+    keep = sorted(hist)[-45:]
+    hist = {k: hist[k] for k in keep}
+    json.dump(hist, open(path, 'w'), separators=(',', ':'))
+    return [dict(date=k, u=hist[k]) for k in keep if k < d0.date().isoformat()]
+
+
 # ------------------------------------------------------------------ main
 def land_outline():
     cache = P('data/land_region.json')
@@ -812,9 +1041,29 @@ def main():
         except Exception:
             pass
 
+    # step 2: large-scale drivers (each part optional: a failure never blocks the forecast)
+    drivers = {}
+    try:
+        clim = climatology(wpts)
+        anom, band = anomalies_850(models, labels, clim, d0, nd)
+        drivers['anom850'] = dict(lat0=lats[0], lon0=lons[0], step=WIND_BOX['step'], ny=len(lats), nx=len(lons), **anom)
+        drivers['hov'] = dict(lons=BAND_LONS, past=update_band_history(band, d0),
+                              future=[dict(date=d, u=b) for d, b in zip(anom['days'], band) if b is not None])
+        status['anom850'] = f"{len(anom['days'])} days, climatology {clim.get('source')}"
+    except Exception as e:
+        status['anom850'] = f'FAILED: {e}'; traceback.print_exc()
+    try:
+        drivers['sst'], drivers['sst_idx'] = sst_latest(status)
+    except Exception as e:
+        status['sst'] = f'FAILED: {e}'; traceback.print_exc()
+    try:
+        drivers['mjo'] = mjo_observed(status)
+    except Exception as e:
+        status['mjo'] = f'FAILED: {e}'; traceback.print_exc()
+
     runs = {n: models[n].run.strftime('%HZ %d %b') for n in labels}
     F = dict(updated=dt.datetime.now(IST).strftime('%d %b %Y, %H:%M IST'), dates=dates, models=labels, runs=runs,
-             coverage=coverage, coverage6=coverage6, cells=cells, wind=wind, mslp=mslp, land=land_outline(), tn=geo['tn'], ct=geo['ct'], step=.25)
+             coverage=coverage, coverage6=coverage6, cells=cells, wind=wind, mslp=mslp, drivers=drivers, land=land_outline(), tn=geo['tn'], ct=geo['ct'], step=.25)
     tpl = open(P('site/forecast_template.html')).read()
     open(P('site/forecast.html'), 'w').write(tpl.replace('/*FDATA*/', json.dumps(F, separators=(',', ':'))))
     status.update(points=len(pts), days=nd, seconds=round(time.time() - T_START))
