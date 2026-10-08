@@ -280,7 +280,7 @@ function vsst(el){const S=D.sst;if(!S){el.innerHTML='<p class="m">Sea temperatur
  el.insertAdjacentHTML('beforeend','<table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:6px">'+IDX.map(([k,n,f])=>`<tr style="border-top:1px solid var(--line)"><td style="padding:5px 4px">${n}<div class="m">${f(L[k])}</div></td><td style="text-align:right;padding:5px 4px"><b>${L[k]>0?'+':''}${L[k].toFixed(2)} °C</b><br>${spark(k)}</td></tr>`).join('')+`</table><p class="m">Index values are computed here from the same OISST anomalies (IOD = west box 10°S–10°N, 50–70°E minus east box 10°S–0°, 90–110°E). Lines show the last ${H.length} days. Official IOD and ENSO statements come from IMD, BoM and NOAA and use weekly or monthly averages, so they can differ.</p>`)}
 
 // MJO
-function vmjo(el){const M2=D.mjo||[];
+function vmjo(el){const MJ=D.mjo||{},M2=Array.isArray(MJ)?MJ:(MJ.days||[]),SRC=MJ.source=='romi'?"NOAA PSL's real-time OLR MJO index (ROMI), drawn in the same orientation as the Wheeler–Hendon RMM diagram":"the real-time RMM index from Australia's Bureau of Meteorology (Wheeler and Hendon)";
  if(M2.length){const R=M2.slice(-40),S=300,c=S/2,k=S/7,X=x=>c+x*k,Y=y=>c-y*k,last=R[R.length-1];
   const rays=[0,45,90,135].map(a=>{const r=a*Math.PI/180;return `<line x1="${c-Math.cos(r)*3.5*k}" y1="${c+Math.sin(r)*3.5*k}" x2="${c+Math.cos(r)*3.5*k}" y2="${c-Math.sin(r)*3.5*k}" stroke="var(--line)"/>`}).join('');
   const nums=[1,2,3,4,5,6,7,8].map(p=>{const a=[202.5,247.5,292.5,337.5,22.5,67.5,112.5,157.5][p-1]*Math.PI/180;return `<text x="${c+Math.cos(a)*3.05*k}" y="${c-Math.sin(a)*3.05*k+4}" font-size="12" text-anchor="middle" fill="var(--mut)" font-weight="600">${p}</text>`}).join('');
@@ -292,7 +292,7 @@ function vmjo(el){const M2=D.mjo||[];
    <text x="${c}" y="14" text-anchor="middle" font-size="11" fill="var(--mut)">Western Pacific</text><text x="10" y="${c}" text-anchor="middle" font-size="11" fill="var(--mut)" transform="rotate(-90 10 ${c})">W. Hemisphere &amp; Africa</text>
    ${nums}<path d="${path}" fill="none" stroke="var(--acc)" stroke-width="1.4" opacity=".7"/>${dots}${lab}</svg>
    <p style="margin:6px 0 0"><b>Now (${fmtD(last.date)}): phase ${last.phase}, amplitude ${last.amp.toFixed(2)}</b> — ${last.amp>=1?'an active MJO':'a weak MJO (inside the circle), so little influence'}.</p>
-   <p class="m">Observed real-time RMM index from Australia's Bureau of Meteorology (Wheeler and Hendon), last ${R.length} days; the red dot is the latest. During the northeast monsoon (Oct–Dec), an active MJO in phases 2–3 (convection over the Indian Ocean) tends to bring more rain to Tamil Nadu, and phases 6–7 tend to suppress it.</p>`}
+   <p class="m">Observed MJO from ${SRC}, last ${R.length} days; the red dot is the latest. During the northeast monsoon (Oct–Dec), an active MJO in phases 2–3 (convection over the Indian Ocean) tends to bring more rain to Tamil Nadu, and phases 6–7 tend to suppress it.</p>`}
  else el.innerHTML='<p class="m">Observed MJO index unavailable in this run.</p>';
  const Hv=D.hov;if(!Hv||!(Hv.future||[]).length)return;
  const rows=[...(Hv.past||[]).map(r=>({...r,f:0})),...Hv.future.map(r=>({...r,f:1}))],L0=40,L1=200,lonI=Hv.lons.map((l,i)=>[l,i]).filter(x=>x[0]>=L0&&x[0]<=L1);

@@ -855,22 +855,50 @@ def sst_latest(status):
     return latest, [dict(date=k, **hist[k]) for k in sorted(hist)[-60:]]
 
 
+ROMI = 'https://psl.noaa.gov/mjo/mjoindex/romi.cpcolr.1x.txt'
+
+
+def rmm_phase(x, y):
+    """Wheeler-Hendon phase (1-8) from a point on the RMM phase diagram."""
+    ang = math.degrees(math.atan2(y, x)) % 360
+    return [5, 6, 7, 8, 1, 2, 3, 4][int(ang // 45) % 8]
+
+
 def mjo_observed(status):
-    """Bureau of Meteorology real-time RMM index (Wheeler and Hendon 2004): last 60 days."""
-    txt = http(BOM_RMM, timeout=120).decode('utf-8', 'replace')
-    rows = []
-    for line in txt.splitlines():
-        p = line.split()
-        if len(p) >= 7 and p[0].isdigit() and len(p[0]) == 4:
-            try:
-                r1, r2, ph, amp = float(p[3]), float(p[4]), int(float(p[5])), float(p[6])
-            except ValueError:
-                continue
-            if abs(r1) > 100 or abs(amp) > 100:
-                continue
-            rows.append(dict(date=f'{int(p[0]):04d}-{int(p[1]):02d}-{int(p[2]):02d}', rmm1=round(r1, 2), rmm2=round(r2, 2), phase=ph, amp=round(amp, 2)))
-    status['mjo'] = f"latest {rows[-1]['date'] if rows else 'none'}"
-    return rows[-60:]
+    """Observed real-time MJO: BoM RMM if reachable, otherwise NOAA PSL real-time OMI (ROMI) in RMM orientation."""
+    rows, src = [], None
+    try:
+        txt = http(BOM_RMM, tries=1, timeout=60).decode('utf-8', 'replace')
+        for line in txt.splitlines():
+            p = line.split()
+            if len(p) >= 7 and p[0].isdigit() and len(p[0]) == 4:
+                try:
+                    r1, r2, ph, amp = float(p[3]), float(p[4]), int(float(p[5])), float(p[6])
+                except ValueError:
+                    continue
+                if abs(r1) > 100 or abs(amp) > 100:
+                    continue
+                rows.append(dict(date=f'{int(p[0]):04d}-{int(p[1]):02d}-{int(p[2]):02d}', rmm1=round(r1, 2), rmm2=round(r2, 2), phase=ph, amp=round(amp, 2)))
+        src = 'bom'
+    except Exception as e:
+        status['mjo_bom'] = f'unavailable: {e}'
+    if not rows:
+        txt = http(ROMI, timeout=120).decode('utf-8', 'replace')
+        for line in txt.splitlines():
+            p = line.split()
+            if len(p) >= 7 and p[0].isdigit() and len(p[0]) == 4:
+                try:
+                    pc1, pc2 = float(p[4]), float(p[5])
+                except ValueError:
+                    continue
+                if abs(pc1) > 50 or abs(pc2) > 50:
+                    continue
+                x, y = pc2, -pc1                     # PSL: OMI PC2 ~ RMM1 and -OMI PC1 ~ RMM2
+                rows.append(dict(date=f'{int(p[0]):04d}-{int(p[1]):02d}-{int(p[2]):02d}', rmm1=round(x, 2), rmm2=round(y, 2),
+                                 phase=rmm_phase(x, y), amp=round(math.hypot(x, y), 2)))
+        src = 'romi'
+    status['mjo'] = f"{src}, latest {rows[-1]['date'] if rows else 'none'}"
+    return dict(source=src, days=rows[-60:])
 
 
 def update_band_history(band, d0):
