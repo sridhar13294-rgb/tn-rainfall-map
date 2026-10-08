@@ -1347,6 +1347,20 @@ def _mean_track(tracks, min_n):
     return out
 
 
+def _smooth_track(t):
+    """1-2-1 smoothing of positions and pressure along time (ends kept), to remove jitter from few-member averages."""
+    if len(t) < 3:
+        return t
+    out = [list(t[0])]
+    for a, b, c in zip(t, t[1:], t[2:]):
+        q = list(b)
+        for i in (1, 2, 3):
+            q[i] = round((a[i] + 2 * b[i] + c[i]) / 4, 2 if i < 3 else 1)
+        out.append(q)
+    out.append(list(t[-1]))
+    return out
+
+
 def build_systems(ens, det_tracks, d0, ens_size):
     """Group the lows of all ensemble members and main models into systems (tracks that stay within 4 degrees of the
     system's running mean for at least 3 shared 6-hourly times), then summarise each system."""
@@ -1425,7 +1439,7 @@ def build_systems(ens, det_tracks, d0, ens_size):
         if prob < 0.10 and not dets:
             continue
         means = {e: _mean_track(by_src[e], max(3, int(math.ceil(0.3 * len(by_src[e]))))) for e in ens_size if by_src.get(e)}
-        means = {e: t for e, t in means.items() if len(t) >= 3}
+        means = {e: _smooth_track(t) for e, t in means.items() if len(t) >= 3}
         det_mean = _mean_track(by_src.get('det', []), 1) if dets else []
         comps = list(means.values()) + ([det_mean] if det_mean else [])
         frames = sorted({p[0] for t in comps for p in t})
@@ -1453,6 +1467,7 @@ def build_systems(ens, det_tracks, d0, ens_size):
                 hits += near
             strike += hits / ens_size[e]
         strike = strike / max(1, len(ens_size))
+        cons = _smooth_track(cons)
         main = cons or det_mean or next(iter(means.values()), [])
         if not main:
             continue
