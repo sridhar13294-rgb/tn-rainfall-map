@@ -29,8 +29,8 @@ P = lambda *a: os.path.join(ROOT, *a)
 UTC, IST = dt.timezone.utc, dt.timezone(dt.timedelta(hours=5, minutes=30))
 UA = 'tn-rainfall-map forecast (non-commercial; github.com/sridhar13294-rgb/tn-rainfall-map)'
 T_START = time.time()
-DEADLINE = T_START + 38 * 60
-BUDGET = {'GFS': 9, 'ECMWF': 6, 'ECMWF AI': 4, 'ICON': 8, 'GEM': 8}   # minutes per model
+DEADLINE = T_START + 62 * 60
+BUDGET = {'GFS': 9, 'ECMWF': 6, 'ECMWF AI': 4, 'ICON': 8, 'GEM': 8, 'GEFS': 12, 'ECMWF ENS': 14}   # minutes per model
 NDAYS = 16
 LEVELS = ['10m', '925', '850', '700', '500', '200']           # page keys: 10m and hPa levels
 WIND_BOX = dict(lat0=0, lat1=25, lon0=65, lon1=95, step=1.0)
@@ -971,6 +971,266 @@ def update_band_history(band, d0):
     return [dict(date=k, u=hist[k]) for k in keep if k < d0.date().isoformat()]
 
 
+
+# ------------------------------------------------------------------ step 3: ensembles when a system is possible
+GEFS = 'https://noaa-gefs-pds.s3.amazonaws.com'
+ENS_HOURS = 240                      # ensembles are read to day 10
+LOW_BOXES = {'Bay of Bengal': (3, 22, 79.5, 95), 'Arabian Sea': (3, 21, 65, 74.5)}
+
+
+def find_lows(grid, ny, nx, lat0, lon0, step, min_depth=1.5):
+    """Closed lows on a regular grid: local minimum over +-2 cells, at least min_depth hPa below the ring 3-4 cells away."""
+    g = np.asarray(grid, float).reshape(ny, nx)
+    out = []
+    for j in range(2, ny - 2):
+        for i in range(2, nx - 2):
+            v = g[j, i]
+            if v > g[j - 2:j + 3, i - 2:i + 3].min() + 1e-9:
+                continue
+            ring = [g[jj, ii] for jj in range(j - 4, j + 5) for ii in range(i - 4, i + 5)
+                    if 0 <= jj < ny and 0 <= ii < nx and max(abs(jj - j), abs(ii - i)) >= 3]
+            depth = float(np.mean(ring) - v) if ring else 0
+            la, lo = lat0 + j * step, lon0 + i * step
+            basin = next((b for b, (a0, a1, o0, o1) in LOW_BOXES.items() if a0 <= la <= a1 and o0 <= lo <= o1), None)
+            if basin and depth >= min_depth:
+                out.append((lo, la, round(float(v), 1), round(depth, 1), basin))
+    return out
+
+
+def track_lows(frames, lat0, lon0, ny, nx, step):
+    """frames: list of (time_index, grid). Links lows within 4 degrees between consecutive 6-hourly frames;
+    keeps tracks lasting at least 3 frames (18 h)."""
+    tracks, live = [], []
+    for k, grid in frames:
+        lows = find_lows(grid, ny, nx, lat0, lon0, step)
+        nxt = []
+        used = set()
+        for tr in live:
+            lk, lo, la = tr[-1][0], tr[-1][1], tr[-1][2]
+            best = None
+            for q, (x, y, pv, dp, b) in enumerate(lows):
+                d = math.hypot((x - lo) * math.cos(math.radians(la)), y - la)
+                if q not in used and d <= 4 and k - lk <= 2 and (best is None or d < best[0]):
+                    best = (d, q)
+            if best:
+                used.add(best[1]); x, y, pv, dp, b = lows[best[1]]
+                tr.append([k, x, y, pv, dp]); nxt.append(tr)
+            elif k - lk <= 2:
+                nxt.append(tr)
+            else:
+                if len(tr) >= 3:
+                    tracks.append(tr)
+        for q, (x, y, pv, dp, b) in enumerate(lows):
+            if q not in used and dp >= 2:
+                nxt.append([[k, x, y, pv, dp]])
+        live = nxt
+    tracks += [t for t in live if len(t) >= 3]
+    return tracks
+
+
+def deterministic_lows(models, labels, d0, nframes, wbox):
+    """Tracks of lows in each deterministic model's sea-level pressure over the first 10 days."""
+    out = {}
+    for n in labels:
+        m = models[n]
+        by = {s: v for s, v in m.recs['msl']}
+        frames = []
+        for k in range(min(nframes, ENS_HOURS // 6 + 1)):
+            st = int((d0 + dt.timedelta(hours=6 * k) - m.run).total_seconds() // 3600)
+            if st in by:
+                frames.append((k, by[st]))
+        tr = track_lows(frames, wbox['lat0'], wbox['lon0'], wbox['ny'], wbox['nx'], wbox['step'])
+        if tr:
+            out[n] = tr
+    return out
+
+
+def gefs_url(run, mem, step):
+    name = 'gec00' if mem == 0 else f'gep{mem:02d}'
+    return f"{GEFS}/gefs.{run:%Y%m%d}/{run:%H}/atmos/pgrb2ap5/{name}.t{run:%H}z.pgrb2a.0p50.f{step:03d}"
+
+
+def gefs_collect(pool, pts, wpts, d0, now, info):
+    for run in candidate_runs(now, (0, 6, 12, 18), 5):
+        if exists(gefs_url(run, 30, ENS_HOURS) + '.idx'):
+            break
+    else:
+        try:
+            info['listing'] = http(f"{GEFS}/?list-type=2&delimiter=/&prefix=gefs.{now:%Y%m%d}/00/atmos/", tries=1).decode()[:1500]
+        except Exception as e:
+            info['listing'] = str(e)
+        raise RuntimeError('no complete GEFS run found')
+    s0, _ = needed(run, d0, NDAYS)
+    s1 = min(ENS_HOURS, s0 + 24 * NDAYS)
+    members = {k: Model(f'GEFS {k}') for k in range(31)}
+    for mm in members.values():
+        mm.run = run
+
+    def field(mem, step, rec, var):
+        def task():
+            m = members[mem]
+            try:
+                inf, vals = decode(http(gefs_url(run, mem, step), (rec['start'], rec['end'])))
+                m.add(var, inf, step, sample(inf, vals, wpts if var == 'msl' else pts, ('gefs-w' if var == 'msl' else 'gefs-tn')))
+            except Exception as e:
+                m.err(f'{mem} f{step}: {e}')
+        return task
+
+    def idx_task(mem, step):
+        def task():
+            try:
+                recs = parse_idx(http(gefs_url(run, mem, step) + '.idx').decode())
+            except Exception as e:
+                members[mem].err(f'idx {mem} f{step}: {e}'); return []
+            out = []
+            for r in recs:
+                if r['var'] == 'APCP' and r['level'] == 'surface':
+                    out.append(field(mem, step, r, 'tp'))
+                elif r['var'] == 'PRMSL' and r['level'] == 'mean sea level' and s0 <= step <= s1:
+                    out.append(field(mem, step, r, 'msl'))
+            return out
+        return task
+
+    futs = [pool.submit(idx_task(mem, st)) for mem in range(31) for st in range(6, s1 + 1, 6)]
+    tasks = []
+    for f in cf.as_completed(futs):
+        tasks += f.result()
+    run_tasks(pool, tasks)
+    info['run'] = run.strftime('%Y-%m-%d %HZ')
+    info['fields_ok'] = sum(m.ok for m in members.values()); info['fields_failed'] = sum(m.failed for m in members.values())
+    info['errors'] = [e for m in members.values() for e in m.errors][:5]
+    return run, members
+
+
+def ens_url(base, run, step):
+    return f"{base}/{run:%Y%m%d}/{run:%H}z/ifs/0p25/enfo/{run:%Y%m%d%H}0000-{step}h-enfo-ef"
+
+
+def ecens_collect(pool, pts, wpts, d0, now, info):
+    chosen = None
+    for run in candidate_runs(now, (0, 12), 7):
+        for base in ECMWF_BASES:
+            if exists(ens_url(base, run, ENS_HOURS) + '.index'):
+                chosen = (run, base); break
+        if chosen:
+            break
+    if not chosen:
+        raise RuntimeError('no complete ECMWF ensemble run found')
+    run, base = chosen
+    s0, _ = needed(run, d0, NDAYS)
+    s1 = min(ENS_HOURS, s0 + 24 * NDAYS)
+    members = {}
+
+    def mem_model(k):
+        with LOCK:
+            if k not in members:
+                members[k] = Model(f'ENS {k}'); members[k].run = run
+            return members[k]
+
+    def field(step, rec, var):
+        k = int(rec.get('number', 0)) if rec.get('type') == 'pf' else 0
+
+        def task():
+            m = mem_model(k)
+            try:
+                inf, vals = decode(http(ens_url(base, run, step) + '.grib2', (rec['_offset'], rec['_offset'] + rec['_length'] - 1)))
+                m.add(var, inf, step, sample(inf, vals, wpts if var == 'msl' else pts, 'wind' if var == 'msl' else 'tn'))
+            except Exception as e:
+                m.err(f'{k} {step}h {var}: {e}')
+        return task
+
+    def idx_task(step):
+        def task():
+            try:
+                recs = [json.loads(l) for l in http(ens_url(base, run, step) + '.index').decode().splitlines() if l.strip()]
+            except Exception as e:
+                info.setdefault('index_errors', []).append(f'{step}: {e}'); return []
+            out = []
+            boundary = (run + dt.timedelta(hours=step)).hour == 0
+            for r in recs:
+                if r.get('levtype') != 'sfc' or r.get('type') not in ('cf', 'pf'):
+                    continue
+                if r.get('param') == 'tp' and boundary:
+                    out.append(field(step, r, 'tp'))
+                elif r.get('param') == 'msl' and s0 <= step <= s1 and step % 6 == 0:
+                    out.append(field(step, r, 'msl'))
+            return out
+        return task
+
+    steps = [st for st in list(range(0, 145, 3)) + list(range(150, 361, 6)) if st <= s1 and st % 6 == 0]
+    futs = [pool.submit(idx_task(st)) for st in steps]
+    tasks = []
+    for f in cf.as_completed(futs):
+        tasks += f.result()
+    run_tasks(pool, tasks)
+    info['run'] = run.strftime('%Y-%m-%d %HZ'); info['base'] = base; info['members'] = len(members)
+    info['fields_ok'] = sum(m.ok for m in members.values()); info['fields_failed'] = sum(m.failed for m in members.values())
+    info['errors'] = [e for m in members.values() for e in m.errors][:5]
+    return run, members
+
+
+def ensemble_products(ens, d0, wbox, npts):
+    """ens: {'GEFS': members, 'ECMWF ENS': members}. Returns daily mean rain and heavy-rain probabilities
+    (each ensemble weighted equally), combined mean sea-level pressure and every member's low-pressure tracks."""
+    nd = ENS_HOURS // 24
+    per_ens = {}
+    for name, members in ens.items():
+        rains = []
+        for m in members.values():
+            r = daily(m, d0, nd, npts)['rain']
+            rains.append(r)
+        per_ens[name] = rains
+    days = []
+    for d in range(nd):
+        means, p64, p115, counts = [], [], [], {}
+        for name, rains in per_ens.items():
+            xs = [r[d] for r in rains if r[d] is not None]
+            if len(xs) < 5:
+                continue
+            arr = np.stack(xs)
+            means.append(arr.mean(0)); p64.append((arr >= 64.5).mean(0)); p115.append((arr >= 115.6).mean(0)); counts[name] = len(xs)
+        if not means:
+            break
+        days.append(dict(date=(d0 + dt.timedelta(days=d)).strftime('%Y-%m-%d'), members=counts,
+                         mean=[round(float(x), 1) for x in np.mean(means, 0)],
+                         p64=[int(round(100 * float(x))) for x in np.mean(p64, 0)],
+                         p115=[int(round(100 * float(x))) for x in np.mean(p115, 0)]))
+    # pressure: combined ensemble mean (each ensemble's mean weighted equally) and member tracks
+    nfr = ENS_HOURS // 6 + 1
+    msl_mean, tracks, chance = [], {}, {}
+    for name, members in ens.items():
+        tracks[name] = []
+        hit = 0
+        for k_m, m in members.items():
+            by = {s: v for s, v in m.recs['msl']}
+            frames = []
+            for k in range(nfr):
+                st = int((d0 + dt.timedelta(hours=6 * k) - m.run).total_seconds() // 3600)
+                if st in by:
+                    frames.append((k, by[st]))
+            tr = track_lows(frames, wbox['lat0'], wbox['lon0'], wbox['ny'], wbox['nx'], wbox['step'])
+            if tr:
+                hit += 1
+            tracks[name] += [[[p[0], round(p[1], 1), round(p[2], 1), p[3]] for p in t] for t in tr]
+        chance[name] = round(100 * hit / max(1, len(members)))
+    for k in range(nfr):
+        ms = []
+        for name, members in ens.items():
+            vs = []
+            for m in members.values():
+                st = int((d0 + dt.timedelta(hours=6 * k) - m.run).total_seconds() // 3600)
+                v = next((v for s, v in m.recs['msl'] if s == st), None)
+                if v is not None:
+                    vs.append(v)
+            if len(vs) >= 5:
+                ms.append(np.mean(vs, 0))
+        if not ms:
+            break
+        msl_mean.append([int(round((x - 1000) * 10)) for x in np.mean(ms, 0)])
+    return dict(days=days, msl=msl_mean, tracks=tracks, chance_low=chance,
+                chance_low_avg=round(sum(chance.values()) / max(1, len(chance))))
+
+
 # ------------------------------------------------------------------ main
 def land_outline():
     cache = P('data/land_region.json')
@@ -1147,9 +1407,37 @@ def main():
     except Exception as e:
         status['mjo'] = f'FAILED: {e}'; traceback.print_exc()
 
+    # step 3: ensembles when any deterministic model shows a low over the Bay of Bengal or Arabian Sea
+    wbox = dict(lat0=lats[0], lon0=lons[0], ny=len(lats), nx=len(lons), step=WIND_BOX['step'])
+    systems = {}
+    try:
+        lows = deterministic_lows(models, labels, d0, nd * 4 + 1, wbox)
+        systems = dict(deterministic={n: [[[p[0], round(p[1], 1), round(p[2], 1), p[3]] for p in t] for t in tr] for n, tr in lows.items()},
+                       triggered=bool(lows), forced=os.environ.get('FORCE_ENS') == '1')
+        status['systems'] = {n: len(t) for n, t in lows.items()}
+        if lows or systems['forced']:
+            ens, einfo = {}, {}
+            with cf.ThreadPoolExecutor(max_workers=24) as pool2:
+                for name, fn in (('GEFS', gefs_collect), ('ECMWF ENS', ecens_collect)):
+                    t0 = time.time(); CURRENT['deadline'] = t0 + BUDGET[name] * 60; einfo[name] = {}
+                    try:
+                        _, mem = fn(pool2, pts, wpts, d0, now, einfo[name])
+                        ens[name] = mem
+                    except Exception as e:
+                        einfo[name]['error'] = str(e); traceback.print_exc()
+                    einfo[name]['seconds'] = round(time.time() - t0)
+                    json.dump(dict(status, ensembles=einfo), open(P('data/forecast_status.json'), 'w'), indent=1, default=str)
+            CURRENT['deadline'] = DEADLINE
+            status['ensembles'] = einfo
+            if ens:
+                systems['ens'] = ensemble_products(ens, d0, wbox, len(pts))
+                systems['ens_runs'] = {n: einfo[n].get('run') for n in ens}
+    except Exception as e:
+        status['systems_error'] = str(e); traceback.print_exc()
+
     runs = {n: models[n].run.strftime('%HZ %d %b') for n in labels}
     F = dict(updated=dt.datetime.now(IST).strftime('%d %b %Y, %H:%M IST'), dates=dates, models=labels, runs=runs,
-             coverage=coverage, coverage6=coverage6, cells=cells, wind=wind, mslp=mslp, drivers=drivers, land=land_outline(), tn=geo['tn'], ct=geo['ct'], step=.25)
+             coverage=coverage, coverage6=coverage6, cells=cells, wind=wind, mslp=mslp, drivers=drivers, systems=systems, land=land_outline(), tn=geo['tn'], ct=geo['ct'], step=.25)
     tpl = open(P('site/forecast_template.html')).read()
     open(P('site/forecast.html'), 'w').write(tpl.replace('/*FDATA*/', json.dumps(F, separators=(',', ':'))))
     status.update(points=len(pts), days=nd, seconds=round(time.time() - T_START))

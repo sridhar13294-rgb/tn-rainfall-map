@@ -6,6 +6,11 @@ on:
     - cron: '30 9 * * *'     # 15:00 IST (after GFS 06Z, ECMWF 06Z)
     - cron: '30 17 * * *'    # 23:00 IST (after GFS 12Z / ECMWF 12Z)
   workflow_dispatch:
+    inputs:
+      force_ensembles:
+        description: 'Run the GFS + ECMWF ensembles even if no low is detected'
+        type: boolean
+        default: false
   push:
     branches: [forecast, forecast-v2]
     paths: ['scripts/forecast.py', 'site/forecast_template.html', '.github/workflows/forecast.yml']
@@ -22,7 +27,7 @@ concurrency:
 jobs:
   forecast:
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    timeout-minutes: 75
     steps:
       - uses: actions/checkout@v4
         with:
@@ -37,6 +42,8 @@ jobs:
           pip install -q eccodes numpy netCDF4
           python -c "import eccodes; print('ecCodes', eccodes.codes_get_api_version())"
       - name: Download model forecasts and build the page
+        env:
+          FORCE_ENS: ${{ inputs.force_ensembles && '1' || '0' }}
         run: python scripts/forecast.py
       - name: Save the forecast
         if: always()
