@@ -14,7 +14,7 @@ Output:
   - GFS wind at 10 m and 925/850/700/500/200 hPa, every 6 h for 7 days, 1 deg grid, 0-25N 65-95E.
   - site/forecast.html (from site/forecast_template.html) and data/forecast_status.json.
 """
-import bz2, concurrent.futures as cf, datetime as dt, json, math, os, re, sys, threading, time, traceback
+import bz2, concurrent.futures as cf, datetime as dt, json, math, os, random, re, sys, threading, time, traceback
 import urllib.error, urllib.request
 
 import numpy as np
@@ -62,6 +62,8 @@ def http(url, rng=None, tries=5, timeout=60, method='GET'):
             if e.code in (403, 404, 410):
                 raise NotFound(f'{e.code} {url}')
             last = f'HTTP {e.code}'
+            if e.code in (429, 503):                  # server asks us to slow down: back off harder
+                time.sleep(min(30, 3 * 2 ** i) + random.uniform(0, 3)); continue
         except Exception as e:
             last = repr(e)
         time.sleep(4 * (i + 1))
@@ -1117,9 +1119,11 @@ def ecens_collect(pool, pts, wpts, d0, now, info):
     if not chosen:
         raise RuntimeError('no complete ECMWF ensemble run found')
     run, base = chosen
+    other = [b for b in ECMWF_BASES if b != base][0]
     s0, _ = needed(run, d0, NDAYS)
     s1 = min(ENS_HOURS, s0 + 24 * NDAYS)
     members = {}
+    pool = cf.ThreadPoolExecutor(max_workers=8)     # ECMWF's bucket throttles heavy parallel use
 
     def mem_model(k):
         with LOCK:
@@ -1133,7 +1137,12 @@ def ecens_collect(pool, pts, wpts, d0, now, info):
         def task():
             m = mem_model(k)
             try:
-                inf, vals = decode(http(ens_url(base, run, step) + '.grib2', (rec['_offset'], rec['_offset'] + rec['_length'] - 1)))
+                rng = (rec['_offset'], rec['_offset'] + rec['_length'] - 1)
+                try:
+                    buf = http(ens_url(base, run, step) + '.grib2', rng)
+                except RuntimeError:
+                    buf = http(ens_url(other, run, step) + '.grib2', rng, tries=3)
+                inf, vals = decode(buf)
                 m.add(var, inf, step, sample(inf, vals, wpts if var == 'msl' else pts, 'wind' if var == 'msl' else 'tn'))
             except Exception as e:
                 m.err(f'{k} {step}h {var}: {e}')
@@ -1141,10 +1150,17 @@ def ecens_collect(pool, pts, wpts, d0, now, info):
 
     def idx_task(step):
         def task():
-            try:
-                recs = [json.loads(l) for l in http(ens_url(base, run, step) + '.index').decode().splitlines() if l.strip()]
-            except Exception as e:
-                info.setdefault('index_errors', []).append(f'{step}: {e}'); return []
+            recs = None
+            for b in (base, other):
+                try:
+                    recs = [json.loads(l) for l in http(ens_url(b, run, step) + '.index').decode().splitlines() if l.strip()]
+                    break
+                except Exception as e:
+                    err = e
+            if recs is None:
+                with LOCK:
+                    info.setdefault('index_errors', []).append(f'{step}: {err}')
+                return []
             out = []
             boundary = (run + dt.timedelta(hours=step)).hour == 0
             for r in recs:
@@ -1152,17 +1168,19 @@ def ecens_collect(pool, pts, wpts, d0, now, info):
                     continue
                 if r.get('param') == 'tp' and boundary:
                     out.append(field(step, r, 'tp'))
-                elif r.get('param') == 'msl' and s0 <= step <= s1 and step % 6 == 0:
+                elif r.get('param') == 'msl' and s0 <= step <= s1 and (run + dt.timedelta(hours=step)).hour in (0, 12):
                     out.append(field(step, r, 'msl'))
             return out
         return task
 
-    steps = [st for st in list(range(0, 145, 3)) + list(range(150, 361, 6)) if st <= s1 and st % 6 == 0]
+    steps = [st for st in list(range(0, 145, 3)) + list(range(150, 361, 6))
+             if st <= s1 and (run + dt.timedelta(hours=st)).hour in (0, 12)]
     futs = [pool.submit(idx_task(st)) for st in steps]
     tasks = []
     for f in cf.as_completed(futs):
         tasks += f.result()
     run_tasks(pool, tasks)
+    pool.shutdown()
     info['run'] = run.strftime('%Y-%m-%d %HZ'); info['base'] = base; info['members'] = len(members)
     info['fields_ok'] = sum(m.ok for m in members.values()); info['fields_failed'] = sum(m.failed for m in members.values())
     info['errors'] = [e for m in members.values() for e in m.errors][:5]
