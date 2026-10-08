@@ -186,6 +186,8 @@ def wind_points():
 BAND_LATS = [-15 + 2.5 * k for k in range(13)]
 BAND_LONS = [2.5 * k for k in range(144)]
 BAND_PTS = [(lo, la) for la in BAND_LATS for lo in BAND_LONS]
+TRACK_BOX = dict(lat0=0.0, lon0=60.0, step=0.5, ny=51, nx=81)          # 0-25N, 60-100E for low tracking
+TRACK_PTS = [(TRACK_BOX['lon0'] + i * .5, TRACK_BOX['lat0'] + j * .5) for j in range(51) for i in range(81)]
 OLR_LATS = [-20 + 2.5 * k for k in range(17)]                  # OMI grid: 20S-20N, 2.5 deg, latitude outer
 OLR_PTS = [(lo, la) for la in OLR_LATS for lo in BAND_LONS]
 
@@ -227,7 +229,7 @@ class Model:
 
     def __init__(self, name):
         self.name, self.run = name, None
-        self.recs = {k: [] for k in ('tp', 't2', 'tmax', 'tmin', 'u10', 'v10', 'msl', 'u850', 'v850', 'band850', 'olr', 'ttr')}
+        self.recs = {k: [] for k in ('tp', 't2', 'tmax', 'tmin', 'u10', 'v10', 'msl', 'mslt', 'u850', 'v850', 'band850', 'olr', 'ttr')}
         self.ok = self.failed = 0
         self.errors, self.samples, self.info = [], {}, {}
         self.bytes = 0
@@ -245,7 +247,7 @@ class Model:
         if var in ('t2', 'tmax', 'tmin'):
             if np.nanmean(vals_pts) > 150:       # Kelvin
                 vals_pts = vals_pts - 273.15
-        if var == 'msl' and np.nanmean(vals_pts) > 2000:   # Pa -> hPa
+        if var in ('msl', 'mslt') and np.nanmean(vals_pts) > 2000:   # Pa -> hPa
             vals_pts = vals_pts / 100.0
         if var == 'tp' and (info.get('units') or '') == 'm':
             vals_pts = vals_pts * 1000.0
@@ -326,6 +328,7 @@ def gfs_collect(m, pool, pts, wpts, d0, now, wind_out):
                 comp = 'u' if rec['var'] == 'UGRD' else 'v'
                 if 'msl' in kinds:
                     m.add('msl', info, step, sample(info, vals, wpts, 'wind'))
+                    m.add('mslt', info, step, sample(info, vals, TRACK_PTS, 'track'))
                 if 'olr' in kinds:
                     m.add('olr', info, step, sample(info, vals, OLR_PTS, 'olr'))
                 if 'tn' in kinds:
@@ -437,6 +440,7 @@ def ec_collect(m, pool, pts, wpts, d0, now, model):
                 info, vals = decode(ec_fetch(bases, lambda b: ec_url(b, model, run, step), rng, step + rec['_offset']))
                 if var == 'msl':
                     m.add(var, info, step, sample(info, vals, wpts, 'wind'))
+                    m.add('mslt', info, step, sample(info, vals, TRACK_PTS, 'track'))
                 elif var in ('u850', 'v850'):
                     add_850(m, info, step, vals, var[0], wpts)
                 elif var == 'ttr':
@@ -541,6 +545,7 @@ def icon_collect(m, pool, pts, wpts, d0, now):
     s0, s1 = needed(run, d0, NDAYS)
     idx, w, n = icon_neighbours(run, pts, 'tn', (7.4, 14.3, 75.7, 81.0))
     ridx, rw, _ = icon_neighbours(run, wpts, 'region', (-1.5, 26.5, 63.5, 96.5))
+    tidx, tw, _ = icon_neighbours(run, TRACK_PTS, 'track', (-1.5, 26.5, 58.5, 101.5))
     m.info['cells'] = n
     steps = [s for s in list(range(0, 79, 3)) + list(range(81, 181, 3)) if s0 <= s <= s1]
 
@@ -552,6 +557,7 @@ def icon_collect(m, pool, pts, wpts, d0, now):
                     raise RuntimeError(f'grid size {len(vals)} != {n}')
                 if tag == 'msl':
                     m.add(tag, info, step, np.sum(vals[ridx] * rw, axis=0))
+                    m.add('mslt', info, step, np.sum(vals[tidx] * tw, axis=0))
                 else:
                     m.add(tag, info, step, np.sum(vals[idx] * w, axis=0))
             except Exception as e:
@@ -628,6 +634,8 @@ def gem_collect(m, pool, pts, wpts, d0, now):
             try:
                 info, vals = decode(http(url))
                 m.add(var, info, step, sample(info, vals, wpts if var == 'msl' else pts, 'wind' if var == 'msl' else 'tn'))
+                if var == 'msl':
+                    m.add('mslt', info, step, sample(info, vals, TRACK_PTS, 'track'))
             except Exception as e:
                 m.err(f'{var} {step}: {e}')
         return task
@@ -1009,77 +1017,140 @@ def update_band_history(band, d0):
 # ------------------------------------------------------------------ step 3: ensembles when a system is possible
 GEFS = 'https://noaa-gefs-pds.s3.amazonaws.com'
 ENS_HOURS = 240                      # ensembles are read to day 10
-LOW_BOXES = {'Bay of Bengal': (3, 22, 79.5, 95), 'Arabian Sea': (3, 21, 65, 74.5)}
+LOW_BOXES = {'Bay of Bengal': (2, 22.5, 78, 99), 'Arabian Sea': (2, 24, 60, 77.5)}   # where a low must form
+STRIKE_KM = 150
 
 
-def find_lows(grid, ny, nx, lat0, lon0, step, min_depth=1.5):
-    """Closed lows on a regular grid: local minimum over +-2 cells, at least min_depth hPa below the ring 3-4 cells away."""
-    g = np.asarray(grid, float).reshape(ny, nx)
-    out = []
-    for j in range(2, ny - 2):
-        for i in range(2, nx - 2):
-            v = g[j, i]
-            if v > g[j - 2:j + 3, i - 2:i + 3].min() + 1e-9:
+def ocean_mask():
+    """1 for sea, 0 for land on the 0.5 degree tracking grid (from the Natural Earth coastline); cached."""
+    cache = P('data/track_ocean_mask.json')
+    if os.path.exists(cache):
+        m = json.load(open(cache))
+        if len(m) == len(TRACK_PTS):
+            return np.array(m, bool)
+    pts = np.array(TRACK_PTS)
+    inside = np.zeros(len(pts), bool)
+    for ring in land_outline():
+        r = np.array(ring, float); x, y = r[:, 0], r[:, 1]
+        sel = (pts[:, 0] >= x.min()) & (pts[:, 0] <= x.max()) & (pts[:, 1] >= y.min()) & (pts[:, 1] <= y.max())
+        if not sel.any():
+            continue
+        px, py = pts[sel, 0], pts[sel, 1]
+        c = np.zeros(int(sel.sum()), bool)
+        x2, y2 = np.roll(x, -1), np.roll(y, -1)
+        for a1, b1, a2, b2 in zip(x, y, x2, y2):
+            if b1 == b2:
                 continue
-            ring = [g[jj, ii] for jj in range(j - 4, j + 5) for ii in range(i - 4, i + 5)
-                    if 0 <= jj < ny and 0 <= ii < nx and max(abs(jj - j), abs(ii - i)) >= 3]
-            depth = float(np.mean(ring) - v) if ring else 0
-            # sub-grid position of the minimum (parabola through the neighbours)
-            cx, cy = g[j, i - 1] - 2 * v + g[j, i + 1], g[j - 1, i] - 2 * v + g[j + 1, i]
-            dx = 0.5 * (g[j, i - 1] - g[j, i + 1]) / cx if cx > 1e-6 else 0.0
-            dy = 0.5 * (g[j - 1, i] - g[j + 1, i]) / cy if cy > 1e-6 else 0.0
-            la, lo = lat0 + (j + max(-.5, min(.5, dy))) * step, lon0 + (i + max(-.5, min(.5, dx))) * step
-            basin = next((b for b, (a0, a1, o0, o1) in LOW_BOXES.items() if a0 <= la <= a1 and o0 <= lo <= o1), None)
-            if basin and depth >= min_depth:
-                out.append((lo, la, round(float(v), 1), round(depth, 1), basin))
+            c ^= ((b1 > py) != (b2 > py)) & (px < (a2 - a1) * (py - b1) / (b2 - b1) + a1)
+        inside[sel] |= c
+    sea = ~inside
+    json.dump([int(v) for v in sea], open(cache, 'w'), separators=(',', ':'))
+    return sea
+
+
+def _smooth(g):
+    for _ in range(2):
+        q = np.pad(g, 1, mode='edge'); g = (q[:-2, 1:-1] + 2 * q[1:-1, 1:-1] + q[2:, 1:-1]) / 4
+        q = np.pad(g, 1, mode='edge'); g = (q[1:-1, :-2] + 2 * q[1:-1, 1:-1] + q[1:-1, 2:]) / 4
+    return g
+
+
+_RING = [(dj, di) for dj in range(-8, 9) for di in range(-8, 9) if 5 <= math.hypot(dj, di) <= 8]
+
+
+def find_lows(vals, sea):
+    """Closed lows in a sea-level pressure field on the 0.5 deg tracking grid: smoothed field, local minimum within
+    +-1 deg, at least 1.5 hPa below the average 2.5-4 deg away. Returns (lon, lat, p, depth, over_sea)."""
+    ny, nx = TRACK_BOX['ny'], TRACK_BOX['nx']
+    g = _smooth(np.asarray(vals, float).reshape(ny, nx))
+    from numpy.lib.stride_tricks import sliding_window_view
+    wmin = sliding_window_view(np.pad(g, 2, mode='edge'), (5, 5)).min(axis=(2, 3))
+    out = []
+    for j, i in np.argwhere(g <= wmin + 1e-9):
+        if j < 3 or j > ny - 4 or i < 3 or i > nx - 4:
+            continue
+        ring = [g[j + dj, i + di] for dj, di in _RING if 0 <= j + dj < ny and 0 <= i + di < nx]
+        v = g[j, i]
+        depth = float(np.mean(ring) - v)
+        if depth < 1.5:
+            continue
+        cx, cy = g[j, i - 1] - 2 * v + g[j, i + 1], g[j - 1, i] - 2 * v + g[j + 1, i]
+        dx = 0.5 * (g[j, i - 1] - g[j, i + 1]) / cx if cx > 1e-6 else 0.0
+        dy = 0.5 * (g[j - 1, i] - g[j + 1, i]) / cy if cy > 1e-6 else 0.0
+        lo = TRACK_BOX['lon0'] + (i + max(-.5, min(.5, dx))) * TRACK_BOX['step']
+        la = TRACK_BOX['lat0'] + (j + max(-.5, min(.5, dy))) * TRACK_BOX['step']
+        out.append((float(lo), float(la), round(float(v), 1), round(depth, 1), bool(sea[j * nx + i])))
     return out
 
 
-def track_lows(frames, lat0, lon0, ny, nx, step):
-    """frames: list of (time_index, grid). Links lows within 4 degrees between consecutive 6-hourly frames;
-    keeps tracks lasting at least 3 frames (18 h)."""
-    tracks, live = [], []
-    for k, grid in frames:
-        lows = find_lows(grid, ny, nx, lat0, lon0, step)
-        nxt = []
+def _deg(a, b):
+    return math.hypot((a[0] - b[0]) * math.cos(math.radians((a[1] + b[1]) / 2)), a[1] - b[1])
+
+
+def basin_at(lo, la):
+    return next((b for b, (a0, a1, o0, o1) in LOW_BOXES.items() if a0 <= la <= a1 and o0 <= lo <= o1), None)
+
+
+def track_lows(frames):
+    """Follow lows through 6-hourly frames [(k, lows)] using each low's own motion as a first guess.
+    A track starts only over the sea in the Bay of Bengal or Arabian Sea with depth >= 2 hPa, may cross land later,
+    ends after 12 h without a match, and is kept if it lasts >= 36 h and reaches >= 2.5 hPa depth.
+    Points: [frame, lon, lat, pressure, depth]."""
+    done, active = [], []
+    for k, lows in frames:
         used = set()
-        for tr in live:
-            lk, lo, la = tr[-1][0], tr[-1][1], tr[-1][2]
+        for tr in sorted(active, key=len, reverse=True):
+            last = tr[-1]; gap = k - last[0]
+            if gap > 2:
+                continue
+            vx = vy = 0.0
+            if len(tr) >= 2:
+                pv = tr[-2]; dk = max(1, last[0] - pv[0])
+                vx, vy = (last[1] - pv[1]) / dk, (last[2] - pv[2]) / dk
+                sp = math.hypot(vx, vy)
+                if sp > 1.2:
+                    vx, vy = vx * 1.2 / sp, vy * 1.2 / sp
+            guess = (last[1] + vx * gap, last[2] + vy * gap)
             best = None
-            for q, (x, y, pv, dp, b) in enumerate(lows):
-                d = math.hypot((x - lo) * math.cos(math.radians(la)), y - la)
-                if q not in used and d <= 4 and k - lk <= 2 and (best is None or d < best[0]):
+            for q, (lo, la, pv_, dp, sea) in enumerate(lows):
+                if q in used:
+                    continue
+                d = _deg((lo, la), guess)
+                if d <= 1.5 + 1.0 * gap and (best is None or d < best[0]):
                     best = (d, q)
             if best:
-                used.add(best[1]); x, y, pv, dp, b = lows[best[1]]
-                tr.append([k, x, y, pv, dp]); nxt.append(tr)
-            elif k - lk <= 2:
-                nxt.append(tr)
-            else:
-                if len(tr) >= 3:
-                    tracks.append(tr)
-        for q, (x, y, pv, dp, b) in enumerate(lows):
-            if q not in used and dp >= 2:
-                nxt.append([[k, x, y, pv, dp]])
-        live = nxt
-    tracks += [t for t in live if len(t) >= 3]
-    return tracks
+                used.add(best[1]); lo, la, pv_, dp, sea = lows[best[1]]
+                tr.append([k, round(lo, 2), round(la, 2), pv_, dp])
+        keep = []
+        for tr in active:
+            (done if k - tr[-1][0] > 2 else keep).append(tr)
+        active = keep
+        for q, (lo, la, pv_, dp, sea) in enumerate(lows):
+            if q not in used and sea and dp >= 2.0 and basin_at(lo, la):
+                active.append([[k, round(lo, 2), round(la, 2), pv_, dp]])
+    done += active
+    return [t for t in done if t[-1][0] - t[0][0] >= 6 and max(p[4] for p in t) >= 2.5]
 
 
-def deterministic_lows(models, labels, d0, nframes, wbox):
-    """Tracks of lows in each deterministic model's sea-level pressure over the first 10 days."""
+def model_frames(m, d0, nframes, sea):
+    by = {st: v for st, v in m.recs['mslt']}
+    frames = []
+    for k in range(nframes):
+        st = int((d0 + dt.timedelta(hours=6 * k) - m.run).total_seconds() // 3600)
+        if st in by and np.all(np.isfinite(by[st])):
+            frames.append((k, find_lows(by[st], sea)))
+    return frames
+
+
+def deterministic_lows(models, labels, d0, nframes, wbox=None):
+    """Low-pressure tracks in each main model over the first 10 days."""
+    sea = ocean_mask()
     out = {}
     for n in labels:
-        m = models[n]
-        by = {s: v for s, v in m.recs['msl']}
-        frames = []
-        for k in range(min(nframes, ENS_HOURS // 6 + 1)):
-            st = int((d0 + dt.timedelta(hours=6 * k) - m.run).total_seconds() // 3600)
-            if st in by:
-                frames.append((k, by[st]))
-        tr = track_lows(frames, wbox['lat0'], wbox['lon0'], wbox['ny'], wbox['nx'], wbox['step'])
-        if tr:
-            out[n] = tr
+        if models[n].recs['mslt']:
+            tr = track_lows(model_frames(models[n], d0, min(nframes, ENS_HOURS // 6 + 1), sea))
+            if tr:
+                out[n] = tr
     return out
 
 
@@ -1111,8 +1182,10 @@ def gefs_collect(pool, pts, wpts, d0, now, info, system=True):
                 inf, vals = decode(http(gefs_url(run, mem, step), (rec['start'], rec['end'])))
                 if var == 'olr':
                     m.add(var, inf, step, sample(inf, vals, OLR_PTS, 'olr'))
+                elif var == 'msl':
+                    m.add('mslt', inf, step, sample(inf, vals, TRACK_PTS, 'gefs-track'))
                 else:
-                    m.add(var, inf, step, sample(inf, vals, wpts if var == 'msl' else pts, ('gefs-w' if var == 'msl' else 'gefs-tn')))
+                    m.add(var, inf, step, sample(inf, vals, pts, 'gefs-tn'))
             except Exception as e:
                 m.err(f'{mem} f{step}: {e}')
         return task
@@ -1183,8 +1256,10 @@ def ecens_collect(pool, pts, wpts, d0, now, info, system=True):
                 inf, vals = decode(ec_fetch(bases, lambda b: ens_url(b, run, step), rng, k + step))
                 if var == 'ttr':
                     m.add(var, inf, step, sample(inf, vals, OLR_PTS, 'olr'))
+                elif var == 'msl':
+                    m.add('mslt', inf, step, sample(inf, vals, TRACK_PTS, 'track'))
                 else:
-                    m.add(var, inf, step, sample(inf, vals, wpts if var == 'msl' else pts, 'wind' if var == 'msl' else 'tn'))
+                    m.add(var, inf, step, sample(inf, vals, pts, 'tn'))
             except Exception as e:
                 m.err(f'{k} {step}h {var}: {e}')
         return task
@@ -1208,13 +1283,13 @@ def ecens_collect(pool, pts, wpts, d0, now, info, system=True):
                     continue
                 if r.get('param') == 'tp' and boundary:
                     out.append(field(step, r, 'tp'))
-                elif r.get('param') == 'msl' and s0 <= step <= s1 and (run + dt.timedelta(hours=step)).hour in (0, 12):
+                elif r.get('param') == 'msl' and s0 <= step <= s1 and step % 6 == 0:
                     out.append(field(step, r, 'msl'))
             return out
         return task
 
     steps = [st for st in list(range(0, 145, 3)) + list(range(150, 361, 6))
-             if st <= s1 and (run + dt.timedelta(hours=st)).hour in ((0, 12) if system else (0,))]
+             if st <= s1 and (st % 6 == 0 if system else (run + dt.timedelta(hours=st)).hour == 0)]
     futs = [pool.submit(idx_task(st)) for st in steps]
     tasks = []
     for f in cf.as_completed(futs):
@@ -1253,115 +1328,117 @@ def ensemble_products(ens, d0, wbox, npts):
                          mean=[round(float(x), 1) for x in np.mean(means, 0)],
                          p64=[int(round(100 * float(x))) for x in np.mean(p64, 0)],
                          p115=[int(round(100 * float(x))) for x in np.mean(p115, 0)]))
-    # pressure: combined ensemble mean (each ensemble's mean weighted equally) and member tracks
-    nfr = ENS_HOURS // 6 + 1
-    msl_mean, tracks, chance, by_member, ens_mean_tracks = [], {}, {}, {}, {}
-    for name, members in ens.items():
-        tracks[name] = []
-        hit = 0
-        for k_m, m in members.items():
-            by = {s: v for s, v in m.recs['msl']}
-            frames = []
-            for k in range(nfr):
-                st = int((d0 + dt.timedelta(hours=6 * k) - m.run).total_seconds() // 3600)
-                if st in by:
-                    frames.append((k, by[st]))
-            tr = track_lows(frames, wbox['lat0'], wbox['lon0'], wbox['ny'], wbox['nx'], wbox['step'])
-            if tr:
-                hit += 1
-                by_member.setdefault(name, {})[k_m] = tr
-            tracks[name] += [[[p[0], round(p[1], 1), round(p[2], 1), p[3]] for p in t] for t in tr]
-        chance[name] = round(100 * hit / max(1, len(members)))
-        ens_mean_tracks[name] = mean_tracks(by_member.get(name, {}), len(members))
-    for k in range(nfr):
-        ms = []
-        for name, members in ens.items():
-            vs = []
-            for m in members.values():
-                st = int((d0 + dt.timedelta(hours=6 * k) - m.run).total_seconds() // 3600)
-                v = next((v for s, v in m.recs['msl'] if s == st), None)
-                if v is not None:
-                    vs.append(v)
-            if len(vs) >= 5:
-                ms.append(np.mean(vs, 0))
-        if not ms:
-            break
-        msl_mean.append([int(round((x - 1000) * 10)) for x in np.mean(ms, 0)])
-    return dict(days=days, msl=msl_mean, tracks=tracks, mean_tracks=ens_mean_tracks, chance_low=chance,
-                chance_low_avg=round(sum(chance.values()) / max(1, len(chance))))
+    return dict(days=days)
 
 
-def basin_of(lo):
-    return 'Bay of Bengal' if lo >= 77 else 'Arabian Sea'
-
-
-def mean_tracks(member_tracks, n_members, min_frac=0.2):
-    """Ensemble-mean track per basin: at each 6-hourly frame, the average position of the members that have a low
-    in that basin (deepest one per member), kept when at least 20% of members (and 3 or more) agree."""
+def _mean_track(tracks, min_n):
+    """Average position per frame of the given tracks, where at least min_n of them have a point; spread in km."""
     per = {}
-    for mi, trs in member_tracks.items():
-        for t in trs:
-            for k, lo, la, pv, *_ in t:
-                key = (basin_of(lo), k, mi)
-                if key not in per or pv < per[key][2]:
-                    per[key] = (lo, la, pv)
-    out = {}
-    need = max(3, int(math.ceil(min_frac * n_members)))
-    for (b, k, mi), v in per.items():
-        out.setdefault(b, {}).setdefault(k, []).append(v)
-    res = {}
-    for b, frames in out.items():
-        pts = []
-        for k in sorted(frames):
-            vs = frames[k]
-            if len(vs) >= need:
-                lo = sum(v[0] for v in vs) / len(vs); la = sum(v[1] for v in vs) / len(vs); pv = sum(v[2] for v in vs) / len(vs)
-                pts.append([k, round(lo, 2), round(la, 2), round(pv, 1), len(vs)])
-        if len(pts) >= 2:
-            res[b] = pts
-    return res
-
-
-def consensus_tracks(ens_means, det_tracks):
-    """Our own consensus per basin: equal-weight average of the GFS-ensemble mean, the ECMWF-ensemble mean and the
-    average of the main models that have the low, at each frame where at least two of these three are available."""
-    det = {}
-    for n, trs in det_tracks.items():
-        for t in trs:
-            for k, lo, la, pv, *_ in t:
-                det.setdefault((basin_of(lo), k), {})[n] = (lo, la, pv)
-    det_mean = {}
-    for (b, k), byn in det.items():
-        vs = list(byn.values())
-        det_mean.setdefault(b, {})[k] = (sum(v[0] for v in vs) / len(vs), sum(v[1] for v in vs) / len(vs), sum(v[2] for v in vs) / len(vs))
-    out = {}
-    basins = set(det_mean) | {b for m in ens_means.values() for b in m}
-    for b in basins:
-        frames = set(det_mean.get(b, {}))
-        for m in ens_means.values():
-            frames |= {p[0] for p in m.get(b, [])}
-        pts = []
-        for k in sorted(frames):
-            comps = []
-            for m in ens_means.values():
-                q = next((p for p in m.get(b, []) if p[0] == k), None)
-                if q:
-                    comps.append((q[1], q[2], q[3]))
-            if k in det_mean.get(b, {}):
-                comps.append(det_mean[b][k])
-            if len(comps) >= 2:
-                pts.append([k, round(sum(c[0] for c in comps) / len(comps), 2), round(sum(c[1] for c in comps) / len(comps), 2),
-                            round(sum(c[2] for c in comps) / len(comps), 1), len(comps)])
-        if len(pts) >= 2:
-            out[b] = pts
+    for t in tracks:
+        for k, lo, la, pv, dp in t:
+            per.setdefault(k, []).append((lo, la, pv))
+    out = []
+    for k in sorted(per):
+        v = per[k]
+        if len(v) >= min_n:
+            lo = sum(x[0] for x in v) / len(v); la = sum(x[1] for x in v) / len(v); pv = sum(x[2] for x in v) / len(v)
+            spread = 111 * math.sqrt(sum(_deg((x[0], x[1]), (lo, la)) ** 2 for x in v) / len(v))
+            out.append([k, round(lo, 2), round(la, 2), round(pv, 1), len(v), int(round(spread))])
     return out
 
 
-
-# ------------------------------------------------------------------ MJO forecast (OMI / ROMI method on model OLR)
-PSL_EOF = 'https://downloads.psl.noaa.gov/Datasets.other/MJO/eof{k}/eof{doy:03d}.txt'
-OLR_LTM = 'https://downloads.psl.noaa.gov/Datasets/cpc_blended_olr-2.5deg/olr.cbo-2.5deg.day.ltm.1991-2020.nc'
-OLR_DAP = 'https://psl.noaa.gov/thredds/dodsC/Datasets/cpc_blended_olr-2.5deg/olr.cbo-2.5deg.day.mean.nc'
+def build_systems(ens, det_tracks, d0, ens_size):
+    """Group the lows of all ensemble members and main models into systems (tracks that stay within 4 degrees of the
+    system's running mean for at least 3 shared 6-hourly times), then summarise each system."""
+    sea = ocean_mask()
+    nfr = ENS_HOURS // 6 + 1
+    items = []
+    for name, members in ens.items():
+        for mid, m in members.items():
+            for tr in track_lows(model_frames(m, d0, nfr, sea)):
+                items.append(dict(src=name, mem=mid, tr=tr))
+    for n, trs in det_tracks.items():
+        for tr in trs:
+            items.append(dict(src='det', mem=n, tr=tr))
+    items.sort(key=lambda it: -(it['tr'][-1][0] - it['tr'][0][0]))
+    clusters = []
+    for it in items:
+        pos = {p[0]: (p[1], p[2]) for p in it['tr']}
+        best = None
+        for c in clusters:
+            common = [k for k in pos if k in c['mean']]
+            if len(common) >= 3:
+                d = sum(_deg(pos[k], c['mean'][k]) for k in common) / len(common)
+                if d <= 4.0 and (best is None or d < best[0]):
+                    best = (d, c)
+        if best:
+            c = best[1]
+            if (it['src'], it['mem']) in c['who']:
+                continue
+            c['items'].append(it); c['who'].add((it['src'], it['mem']))
+            acc = {}
+            for x in c['items']:
+                for p in x['tr']:
+                    acc.setdefault(p[0], []).append((p[1], p[2]))
+            c['mean'] = {k: (sum(a for a, _ in v) / len(v), sum(b for _, b in v) / len(v)) for k, v in acc.items()}
+        else:
+            clusters.append(dict(items=[it], who={(it['src'], it['mem'])}, mean=dict(pos)))
+    systems = []
+    ny, nx = TRACK_BOX['ny'], TRACK_BOX['nx']
+    cell = np.array(TRACK_PTS)
+    for c in clusters:
+        by_src = {}
+        for it in c['items']:
+            by_src.setdefault(it['src'], []).append(it['tr'])
+        probs = {e: len(by_src.get(e, [])) / ens_size[e] for e in ens_size}
+        prob = sum(probs.values()) / max(1, len(probs))
+        dets = sorted({it['mem'] for it in c['items'] if it['src'] == 'det'})
+        if prob < 0.10 and not dets:
+            continue
+        means = {e: _mean_track(by_src[e], max(3, int(math.ceil(0.3 * len(by_src[e]))))) for e in ens_size if by_src.get(e)}
+        means = {e: t for e, t in means.items() if len(t) >= 3}
+        det_mean = _mean_track(by_src.get('det', []), 1) if dets else []
+        comps = list(means.values()) + ([det_mean] if det_mean else [])
+        frames = sorted({p[0] for t in comps for p in t})
+        cons = []
+        for k in frames:
+            v = [next(p for p in t if p[0] == k) for t in comps if any(p[0] == k for p in t)]
+            if len(v) >= min(2, len(comps)):
+                cons.append([k, round(sum(x[1] for x in v) / len(v), 2), round(sum(x[2] for x in v) / len(v), 2),
+                             round(sum(x[3] for x in v) / len(v), 1), len(v)])
+        # strike probability: share of members whose low passes within 150 km (each ensemble weighted equally)
+        strike = np.zeros(len(TRACK_PTS))
+        for e in ens_size:
+            hits = np.zeros(len(TRACK_PTS))
+            for tr in by_src.get(e, []):
+                near = np.zeros(len(TRACK_PTS), bool)
+                pts = [(p[1], p[2]) for p in tr]
+                dense = []
+                for (x1, y1), (x2, y2) in zip(pts, pts[1:]):
+                    for f in (0, .5):
+                        dense.append((x1 + (x2 - x1) * f, y1 + (y2 - y1) * f))
+                dense.append(pts[-1])
+                for x, y in dense:
+                    d = np.hypot((cell[:, 0] - x) * math.cos(math.radians(y)), cell[:, 1] - y) * 111
+                    near |= d <= STRIKE_KM
+                hits += near
+            strike += hits / ens_size[e]
+        strike = strike / max(1, len(ens_size))
+        main = cons or det_mean or next(iter(means.values()), [])
+        if not main:
+            continue
+        g0 = main[0]
+        systems.append(dict(
+            basin=basin_at(g0[1], g0[2]) or ('Bay of Bengal' if g0[1] >= 78 else 'Arabian Sea'),
+            prob=int(round(100 * prob)), probs={e: int(round(100 * v)) for e, v in probs.items()},
+            members={e: len(by_src.get(e, [])) for e in ens_size}, det=dets,
+            mean_tracks=means, det_mean=det_mean, consensus=cons,
+            min_p=min(p[3] for p in main), genesis=g0[:3], end=main[-1][:3],
+            members_tracks={e: [[[p[0], p[1], p[2]] for p in t] for t in by_src.get(e, [])] for e in ens_size},
+            det_tracks={it['mem']: [[p[0], p[1], p[2], p[3]] for p in it['tr']] for it in c['items'] if it['src'] == 'det'},
+            strike=[[int(i), int(round(100 * v))] for i, v in enumerate(strike) if v >= 0.05]))
+    systems.sort(key=lambda x: -x['prob'])
+    return systems[:4]
 
 
 def _doy(d):
@@ -1686,7 +1763,7 @@ def main():
     systems, ens, einfo, lows = {}, {}, {}, {}
     try:
         lows = deterministic_lows(models, labels, d0, nd * 4 + 1, wbox)
-        systems = dict(deterministic={n: [[[p[0], round(p[1], 1), round(p[2], 1), p[3]] for p in t] for t in tr] for n, tr in lows.items()},
+        systems = dict(deterministic={n: [[[p[0], p[1], p[2], p[3]] for p in t] for t in tr] for n, tr in lows.items()},
                        triggered=bool(lows), forced=os.environ.get('FORCE_ENS') == '1')
         status['systems'] = {n: len(t) for n, t in lows.items()}
     except Exception as e:
@@ -1707,7 +1784,8 @@ def main():
     if want_system and ens:
         try:
             systems['ens'] = ensemble_products(ens, d0, wbox, len(pts))
-            systems['ens']['consensus'] = consensus_tracks(systems['ens']['mean_tracks'], lows)
+            systems['list'] = build_systems(ens, lows, d0, {n: len(ens[n]) for n in ens})
+            systems['ens_size'] = {n: len(ens[n]) for n in ens}
             systems['ens_runs'] = {n: einfo[n].get('run') for n in ens}
         except Exception as e:
             status['systems_error'] = str(e); traceback.print_exc()

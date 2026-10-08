@@ -329,61 +329,75 @@ $('drv').onclick=e=>{const b=e.target.closest('[data-v]');if(b){view=b.dataset.v
 show();let rz;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(show,250)});
 })();
 
-// ---------- system watch (deterministic lows + GFS/ECMWF ensembles)
+// ---------- system watch (lows in the main models and the GFS + ECMWF ensembles)
 (function(){
 const SY=F.systems||{},el=$('sysv');if(!el)return;
-const det=SY.deterministic||{},E=SY.ens,t0=new Date(F.dates[0]+'T00:00:00Z').getTime();
-const tl=k=>{const i=new Date(t0+k*216e5+5.5*3600e3);return `${DOW[i.getUTCDay()]} ${i.getUTCDate()} ${MON[i.getUTCMonth()]} ${String(i.getUTCHours()).padStart(2,'0')}:${String(i.getUTCMinutes()).padStart(2,'0')} IST`};
+const det=SY.deterministic||{},L=SY.list||[],E=SY.ens,sz=SY.ens_size||{},t0=new Date(F.dates[0]+'T00:00:00Z').getTime();
+const tl=k=>{const i=new Date(t0+k*216e5+5.5*3600e3);return `${DOW[i.getUTCDay()]} ${i.getUTCDate()} ${MON[i.getUTCMonth()]}, ${String(i.getUTCHours()).padStart(2,'0')}:${String(i.getUTCMinutes()).padStart(2,'0')} IST`};
+const dd=k=>{const i=new Date(t0+k*216e5+5.5*3600e3);return `${DOW[i.getUTCDay()]} ${i.getUTCDate()} ${MON[i.getUTCMonth()]}`};
+const ll=(lo,la)=>`${la.toFixed(1)}°N ${lo.toFixed(1)}°E`;
+const ENAME={'GEFS':'GFS ensemble','ECMWF ENS':'ECMWF ensemble'},ECOL={'GEFS':'#b85a0d','ECMWF ENS':'#1849a9'};
 const nDet=Object.keys(det).length;
-let html='';
-if(!nDet&&!E){el.innerHTML='<p style="margin:4px 0"><b>No low-pressure system expected over the Bay of Bengal or Arabian Sea in the next 10 days</b> in any of the five models.</p><p class="m">When any model shows a closed low (at least 2 hPa deeper than its surroundings), this card switches on automatically: the GFS ensemble (31 members) and ECMWF ensemble (51 members) are downloaded, averaged with equal weight for each ensemble, and every member\'s track is drawn.</p>';return}
-if(nDet){const lines=Object.entries(det).map(([n,trs])=>{const t=trs[0],a=t[0],b=t[t.length-1],mn=Math.min(...t.map(p=>p[3]));return `<li><b>${n}</b>: low from ${tl(a[0])} near ${a[2].toFixed(0)}°N ${a[1].toFixed(0)}°E, lowest ${mn.toFixed(0)} hPa, last seen ${b[2].toFixed(0)}°N ${b[1].toFixed(0)}°E</li>`}).join('');
- html+=`<p style="margin:4px 0"><b>${nDet} of ${F.models.length} models show a low in the next 10 days.</b></p><ul style="margin:4px 0 8px 18px;padding:0;font-size:13px">${lines}</ul>`}
-else if(SY.forced)html+='<p class="m">No model shows a low right now; the ensembles below were run as a manual test.</p>';
-if(!E){el.innerHTML=html+'<p class="m">Ensemble data could not be downloaded in this run.</p>';return}
-const ch=E.chance_low||{};
-html+=`<p style="margin:4px 0">Chance of a low forming (members showing one): <b>${E.chance_low_avg}%</b> <span class="m">(GFS ensemble ${ch['GEFS']??'—'}%, ECMWF ensemble ${ch['ECMWF ENS']??'—'}%)</span></p>`;
-el.innerHTML=html;
-// track map
-const B={lat0:F.wind?F.wind.lat0:0,lon0:F.wind?F.wind.lon0:65,step:1,nx:31,ny:26};
-const LO0=B.lon0,LO1=B.lon0+(B.nx-1),LA0=B.lat0,LA1=B.lat0+(B.ny-1);
-const wrap=document.createElement('div');wrap.className='wwrap';wrap.style.background='#eef3f7';wrap.style.marginTop='6px';const cv=document.createElement('canvas');wrap.append(cv);el.append(wrap);
-let fk=0;
-function draw(){const dpr=window.devicePixelRatio||1,W=wrap.clientWidth||400,H=W*(LA1-LA0)/(LO1-LO0)/Math.cos(12.5*Math.PI/180);cv.width=W*dpr;cv.height=H*dpr;cv.style.height=H+'px';
- const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);const x=l=>(l-LO0)/(LO1-LO0)*W,y=a=>(LA1-a)/(LA1-LA0)*H;
- c.fillStyle='#eef3f7';c.fillRect(0,0,W,H);c.fillStyle='#e3dccd';c.strokeStyle='#8a8170';c.lineWidth=.7;
- F.land.forEach(r=>{c.beginPath();r.forEach((p,i)=>i?c.lineTo(x(p[0]),y(p[1])):c.moveTo(x(p[0]),y(p[1])));c.closePath();c.fill();c.stroke()});
- c.strokeStyle='#7a4b00';c.lineWidth=1.1;F.tn.forEach(r=>{c.beginPath();r.forEach((p,i)=>i?c.lineTo(x(p[0]),y(p[1])):c.moveTo(x(p[0]),y(p[1])));c.closePath();c.stroke()});
- const col={'GEFS':'rgba(230,120,20,.55)','ECMWF ENS':'rgba(30,90,200,.5)'};
- Object.entries(E.tracks||{}).forEach(([n,trs])=>trs.forEach(t=>{c.strokeStyle=col[n];c.lineWidth=1.2;c.beginPath();t.forEach((p,i)=>i?c.lineTo(x(p[1]),y(p[2])):c.moveTo(x(p[1]),y(p[2])));c.stroke();
-  const q=t.find(p=>p[0]==fk);if(q){c.fillStyle=col[n].replace(/[\d.]+\)$/,'1)');c.beginPath();c.arc(x(q[1]),y(q[2]),3,0,7);c.fill()}}));
- const mcol={'GEFS':'#c45a00','ECMWF ENS':'#0d3d99'};
- Object.entries(E.mean_tracks||{}).forEach(([n,bs])=>Object.values(bs).forEach(t=>{c.strokeStyle=mcol[n];c.lineWidth=3.4;c.setLineDash([7,4]);c.beginPath();t.forEach((p,i)=>i?c.lineTo(x(p[1]),y(p[2])):c.moveTo(x(p[1]),y(p[2])));c.stroke();c.setLineDash([]);
-  t.forEach(p=>{if(p[0]%4==0){c.fillStyle=mcol[n];c.beginPath();c.arc(x(p[1]),y(p[2]),2.4,0,7);c.fill()}})}));
- Object.values(E.consensus||{}).forEach(t=>{c.strokeStyle='#fff';c.lineWidth=6;c.beginPath();t.forEach((p,i)=>i?c.lineTo(x(p[1]),y(p[2])):c.moveTo(x(p[1]),y(p[2])));c.stroke();
-  c.strokeStyle='#d61f69';c.lineWidth=3.4;c.beginPath();t.forEach((p,i)=>i?c.lineTo(x(p[1]),y(p[2])):c.moveTo(x(p[1]),y(p[2])));c.stroke();
-  t.forEach(p=>{if(p[0]%4==0){c.fillStyle='#d61f69';c.beginPath();c.arc(x(p[1]),y(p[2]),3.2,0,7);c.fill();const i2=new Date(t0+p[0]*216e5);c.fillStyle='#5a0a2c';c.font='bold 9px system-ui';c.fillText(i2.getUTCDate()+'/'+(i2.getUTCMonth()+1),x(p[1])+5,y(p[2])+3)}})});
- Object.entries(det).forEach(([n,trs])=>trs.forEach(t=>{c.strokeStyle='#111';c.lineWidth=2.2;c.beginPath();t.forEach((p,i)=>i?c.lineTo(x(p[1]),y(p[2])):c.moveTo(x(p[1]),y(p[2])));c.stroke();
-  const q=t.find(p=>p[0]==fk);if(q){c.fillStyle='#111';c.font='bold 10px system-ui';c.fillText(n,x(q[1])+5,y(q[2])-4);c.beginPath();c.arc(x(q[1]),y(q[2]),4,0,7);c.fill()}}));
- c.fillStyle='rgba(20,30,40,.6)';c.font='italic 11px system-ui';c.fillText('Bay of Bengal',x(85),y(16));c.fillText('Arabian Sea',x(66),y(16))}
-const nfr=Math.max(1,(E.msl||[]).length);
-const row=document.createElement('div');row.className='row';row.style.marginTop='8px';row.innerHTML='<div style="flex:1"><input type="range" min="0" value="0"><div class="m"></div></div>';el.append(row);
-const rg=row.querySelector('input'),lb=row.querySelector('.m');rg.max=nfr-1;rg.oninput=()=>{fk=+rg.value;lb.textContent=tl(fk)+' — dots show where each member puts the low at this time';draw()};rg.oninput();
-el.insertAdjacentHTML('beforeend','<div class="lg"><div><i style="background:rgb(230,120,20)"></i>GFS ensemble member</div><div><i style="background:rgb(30,90,200)"></i>ECMWF ensemble member</div><div><i style="background:#111"></i>main models</div><div><i style="background:#c45a00"></i>GFS ensemble mean (dashed)</div><div><i style="background:#0d3d99"></i>ECMWF ensemble mean (dashed)</div><div><i style="background:#d61f69"></i>consensus (our average)</div></div><p class="m">Each thin line is one ensemble member\'s low-pressure centre (found where sea-level pressure is at least 2 hPa below its surroundings), on a 1° grid, every 6 hours to day 10. Tightly bunched lines mean a confident track; widely spread lines mean the track is uncertain. The dashed lines are each ensemble\'s mean track (average position of the members that have the low, shown when at least 20% of members agree). The pink consensus line is our own average of the GFS-ensemble mean, the ECMWF-ensemble mean and the main models, with equal weight for each of the three, wherever at least two of them have the low; dates mark 05:30 IST each day. These are lows in pressure, not an official depression or cyclone classification — follow IMD for those.</p>');
+if(!nDet&&!L.length){el.innerHTML='<p style="margin:4px 0"><b>No low-pressure system expected over the Bay of Bengal or Arabian Sea in the next 10 days</b> in any of the five main models.</p><p class="m">When a main model shows a low forming over the sea (at least 2 hPa deeper than the area 250–450 km around it and lasting 36 hours or more), this card switches on: the GFS ensemble (31 members) and ECMWF ensemble (50 members) are tracked the same way and summarised as probabilities.</p>';return}
+if(!L.length){el.innerHTML='<p><b>'+Object.keys(det).join(', ')+'</b> show a low in the next 10 days, but the ensembles could not be summarised in this run.</p>';return}
+let si=0,fk=0,showMem=false;
+const chips=L.length>1?`<div class="chips" id="syc">${L.map((x,i)=>`<button class="chip" data-s="${i}">${x.basin}<small>${x.prob}% · from ${dd(x.genesis[0])}</small></button>`).join('')}</div>`:'';
+el.innerHTML=chips+'<div id="sysum"></div><div class="wwrap" id="sywrap" style="background:#eef3f7;margin-top:6px"><canvas id="sycv"></canvas></div><div class="row" style="margin-top:8px"><div style="flex:1"><input type="range" id="syt" min="0" value="0"><div class="m" id="sytl"></div></div></div><label class="m" style="display:flex;gap:6px;align-items:center;margin-top:4px"><input type="checkbox" id="symem"> Show every member\'s track</label><div class="lg" id="sylg"></div><p class="m">Shading: chance that the low passes within 150 km (share of all ensemble members, the two ensembles weighted equally). Dashed lines: each ensemble\'s mean track, with circles showing how far the members are spread around it once a day. Pink: our consensus, the equal-weight average of the GFS-ensemble mean, the ECMWF-ensemble mean and the main models that have the low. Thin black: individual main models. Lows are found on a 0.5° grid in smoothed sea-level pressure; a track must start over the sea, be at least 2.5 hPa deeper than its surroundings at some point and last 36 hours. These are pressure lows in the models, not IMD depression or cyclone classifications.</p>';
+function sumry(){const x=L[si],c=x.consensus.length?x.consensus:(x.det_mean.length?x.det_mean:Object.values(x.mean_tracks)[0]),g=c[0],e=c[c.length-1];
+ const pe=Object.keys(x.probs).map(k=>`${ENAME[k]} ${x.probs[k]}% (${x.members[k]} of ${sz[k]})`).join(', ');
+ const sp=Object.entries(x.mean_tracks).map(([k,t])=>{const q=t[Math.min(t.length-1,Math.floor(t.length/2))];return `${ENAME[k]} ±${q[5]} km`}).join(', ');
+ $('sysum').innerHTML=`<p style="margin:6px 0"><b>${x.basin} low: ${x.prob}% chance</b> <span class="m">(${pe})</span></p>
+  <p style="margin:4px 0;font-size:13px">Forms around <b>${dd(g[0])}</b> near ${ll(g[1],g[2])}; the consensus moves to near <b>${ll(e[1],e[2])}</b> by ${dd(e[0])}. Lowest average pressure about <b>${Math.round(x.min_p)} hPa</b>.${x.det.length?` Main models showing it: <b>${x.det.join(', ')}</b>.`:' None of the main models shows it.'}${sp?` Track spread at mid-period: ${sp}.`:''}</p>`}
+function draw(){const x=L[si],wrap=$('sywrap'),cv=$('sycv'),dpr=window.devicePixelRatio||1,W=wrap.clientWidth||400,B=F.systems_box||{lon0:60,lat0:0,nx:81,ny:51,step:.5};
+ // zoom to the system (tracks and 5%+ strike area) while keeping Tamil Nadu in view
+ const xs=[77.5,80.5],ys=[8,13.5];[x.consensus,x.det_mean,...Object.values(x.mean_tracks),...Object.values(x.det_tracks||{})].forEach(t=>(t||[]).forEach(p=>{xs.push(p[1]);ys.push(p[2])}));
+ x.strike.forEach(([i])=>{xs.push(60+(i%81)*.5);ys.push(Math.floor(i/81)*.5)});
+ let LO0=Math.min(...xs)-2.5,LO1=Math.max(...xs)+2.5,LA0=Math.min(...ys)-2,LA1=Math.max(...ys)+2;
+ const wantW=Math.max(LO1-LO0,(LA1-LA0)*1.25,14),cxm=(LO0+LO1)/2;LO0=cxm-wantW/2;LO1=cxm+wantW/2;
+ const wantH=Math.max(LA1-LA0,wantW/1.25),cym=(LA0+LA1)/2;LA0=Math.max(-2,cym-wantH/2);LA1=LA0+wantH;
+ const H=W*(LA1-LA0)/(LO1-LO0)/Math.cos((LA0+LA1)/2*Math.PI/180);cv.width=W*dpr;cv.height=H*dpr;cv.style.height=H+'px';
+ const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);const X2=l=>(l-LO0)/(LO1-LO0)*W,Y2=a=>(LA1-a)/(LA1-LA0)*H,kmdeg=k=>k/111;
+ c.fillStyle='#eef3f7';c.fillRect(0,0,W,H);
+ // strike probability
+ const SC2=[[5,'rgba(255,230,140,.75)'],[20,'rgba(250,180,70,.8)'],[40,'rgba(235,110,50,.85)'],[60,'rgba(190,30,45,.85)'],[80,'rgba(120,10,60,.9)']];
+ const cw=X2(60.5)-X2(60),chh=Y2(0)-Y2(.5);
+ x.strike.forEach(([i,v])=>{const lo=60+(i%81)*.5,la=Math.floor(i/81)*.5;let col=null;SC2.forEach(q=>{if(v>=q[0])col=q[1]});if(col){c.fillStyle=col;c.fillRect(X2(lo-.25),Y2(la+.25),cw+.5,chh+.5)}});
+ c.fillStyle='rgba(227,220,205,.85)';c.strokeStyle='#8a8170';c.lineWidth=.7;
+ F.land.forEach(r=>{c.beginPath();r.forEach((p,i)=>i?c.lineTo(X2(p[0]),Y2(p[1])):c.moveTo(X2(p[0]),Y2(p[1])));c.closePath();c.fill();c.stroke()});
+ c.strokeStyle='#7a4b00';c.lineWidth=1.1;F.tn.forEach(r=>{c.beginPath();r.forEach((p,i)=>i?c.lineTo(X2(p[0]),Y2(p[1])):c.moveTo(X2(p[0]),Y2(p[1])));c.closePath();c.stroke()});
+ const line=(t,col,w,dash)=>{c.strokeStyle=col;c.lineWidth=w;c.setLineDash(dash||[]);c.beginPath();t.forEach((p,i)=>i?c.lineTo(X2(p[1]),Y2(p[2])):c.moveTo(X2(p[1]),Y2(p[2])));c.stroke();c.setLineDash([])};
+ if(showMem)Object.entries(x.members_tracks).forEach(([e,trs])=>trs.forEach(t=>line(t,e=='GEFS'?'rgba(184,90,13,.35)':'rgba(24,73,169,.3)',1)));
+ Object.values(x.det_tracks||{}).forEach(t=>line(t,'rgba(20,20,20,.75)',1.3));
+ Object.entries(x.mean_tracks).forEach(([e,t])=>{t.forEach(p=>{if(p[0]%8==0){c.strokeStyle=ECOL[e];c.globalAlpha=.3;c.lineWidth=1;c.beginPath();c.arc(X2(p[1]),Y2(p[2]),Math.max(2,X2(p[1]+kmdeg(p[5])/Math.cos(p[2]*Math.PI/180))-X2(p[1])),0,7);c.stroke();c.globalAlpha=1}});line(t,ECOL[e],2.6,[7,4])});
+ const cs=x.consensus;if(cs.length){line(cs,'#fff',6);line(cs,'#d61f69',3.4);
+  let lastXY=null;cs.forEach(p=>{if(p[0]%4==0){c.fillStyle='#d61f69';c.beginPath();c.arc(X2(p[1]),Y2(p[2]),3.4,0,7);c.fill();
+   if(!lastXY||Math.hypot(X2(p[1])-lastXY[0],Y2(p[2])-lastXY[1])>34){lastXY=[X2(p[1]),Y2(p[2])];const i2=new Date(t0+p[0]*216e5);c.font='bold 10px system-ui';c.lineWidth=3;c.strokeStyle='#fff';const s=i2.getUTCDate()+' '+MON[i2.getUTCMonth()];c.strokeText(s,X2(p[1])+6,Y2(p[2])-5);c.fillStyle='#7a0f3c';c.fillText(s,X2(p[1])+6,Y2(p[2])-5)}}})}
+ // positions at the selected time
+ const mark=(t,col,r)=>{const q=t.find(p=>p[0]==fk);if(q){c.fillStyle=col;c.strokeStyle='#fff';c.lineWidth=1.5;c.beginPath();c.arc(X2(q[1]),Y2(q[2]),r,0,7);c.fill();c.stroke()}};
+ Object.entries(x.mean_tracks).forEach(([e,t])=>mark(t,ECOL[e],5));mark(cs,'#d61f69',6.5);
+ Object.entries(x.det_tracks||{}).forEach(([n,t])=>{const q=t.find(p=>p[0]==fk);if(q){c.fillStyle='#111';c.beginPath();c.arc(X2(q[1]),Y2(q[2]),3.5,0,7);c.fill();c.font='bold 10px system-ui';c.fillText(n,X2(q[1])+5,Y2(q[2])+12)}});
+ c.fillStyle='rgba(20,30,40,.55)';c.font='italic 11px system-ui';if(LO1>86)c.fillText('Bay of Bengal',X2(Math.min(LO1-7,87)),Y2(Math.max(LA0+1.5,9)));if(LO0<70)c.fillText('Arabian Sea',X2(Math.max(LO0+.5,64)),Y2(Math.max(LA0+1.5,9)));
+ const q=cs.find(p=>p[0]==fk)||Object.values(x.mean_tracks).map(t=>t.find(p=>p[0]==fk)).find(Boolean);
+ $('sytl').textContent=tl(fk)+(q?` — consensus ${ll(q[1],q[2])}, about ${Math.round(q[3])} hPa`:' — no consensus position at this time');
+ $('sylg').innerHTML=SC2.map(q2=>`<div><i style="background:${q2[1]}"></i>${q2[0]}%+</div>`).join('')+`<div><i style="background:${ECOL.GEFS}"></i>GFS ens. mean</div><div><i style="background:${ECOL['ECMWF ENS']}"></i>ECMWF ens. mean</div><div><i style="background:#d61f69"></i>consensus</div><div><i style="background:#222"></i>main models</div>`}
+function pick(i){si=i;const x=L[si];document.querySelectorAll('#syc .chip').forEach((b,j)=>b.classList.toggle('on',j==si));
+ const ks=[...new Set([...x.consensus.map(p=>p[0]),...Object.values(x.mean_tracks).flat().map(p=>p[0])])].sort((a,b)=>a-b);
+ const rg=$('syt');rg.min=ks[0];rg.max=ks[ks.length-1];fk=ks[Math.min(ks.length-1,Math.floor(ks.length/3))];rg.value=fk;sumry();draw()}
+$('syt').oninput=e=>{fk=+e.target.value;draw()};$('symem').onchange=e=>{showMem=e.target.checked;draw()};
+if($('syc'))$('syc').onclick=e=>{const b=e.target.closest('[data-s]');if(b)pick(+b.dataset.s)};
+pick(0);let rz;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(draw,200)});
 // heavy-rain probability over Tamil Nadu
-if((E.days||[]).length){
+if(E&&(E.days||[]).length){
  el.insertAdjacentHTML('beforeend','<h2 style="margin-top:12px">Tamil Nadu rain from the ensembles</h2><div class="row"><select id="emode"><option value="mean">Average rain (mm/day)</option><option value="p64">Chance of heavy rain ≥ 64.5 mm/day</option><option value="p115">Chance of very heavy rain ≥ 115.6 mm/day</option></select></div><div class="chips" id="edays"></div>');
  const sv2=document.createElementNS(NS,'svg');sv2.setAttribute('viewBox','0 0 440 575');el.append(sv2);
  sv2.innerHTML='<defs><clipPath id="cp2"><path d="'+PD+'"/></clipPath></defs><g id="eg" clip-path="url(#cp2)"></g><path d="'+PD+'" fill="none" stroke-width="1" style="stroke:var(--ink)"/>';
  const ER=F.cells.map(cl=>{const r=document.createElementNS(NS,'rect');r.setAttribute('x',X(cl.lon-F.step/2));r.setAttribute('y',Y(cl.lat+F.step/2));r.setAttribute('width',F.step*100+.5);r.setAttribute('height',F.step*100+.5);sv2.querySelector('#eg').appendChild(r);return r});
- el.insertAdjacentHTML('beforeend','<div class="lg" id="elg"></div>');
- let ed=0;$('edays').innerHTML=E.days.map((d,i)=>`<button class="chip" data-e="${i}">${fmtDay(d.date)}<small>${Object.values(d.members).reduce((a,b)=>a+b,0)} members</small></button>`).join('');
+ el.insertAdjacentHTML('beforeend','<div class="lg" id="elg"></div><p class="m">Daily (05:30–05:30 IST) rain from all members of the two ensembles; each ensemble weighted equally.</p>');
+ let ed=0;$('edays').innerHTML=E.days.map((d,i)=>{const dt2=new Date(d.date+'T00:00:00');return `<button class="chip" data-e="${i}">${DOW[dt2.getDay()]}<small>${dt2.getDate()} ${MON[dt2.getMonth()]}</small></button>`}).join('');
  $('edays').onclick=e=>{const b=e.target.closest('[data-e]');if(b){ed=+b.dataset.e;ep()}};$('emode').onchange=ep;
  function ep(){const mode=$('emode').value,v=E.days[ed][mode],bins=mode=='mean'?SC.precipitation_sum.b:[[0,'#eef2f6','0–9%'],[10,'#fde3b0','10–29%'],[30,'#f8b55c','30–49%'],[50,'#e8693d','50–69%'],[70,'#b5172b','70%+']];
   document.querySelectorAll('#edays .chip').forEach((c,i)=>c.classList.toggle('on',i==ed));
   ER.forEach((r,i)=>r.setAttribute('fill',bins[cls(v[i],bins)][1]));$('elg').innerHTML=bins.map(x=>`<div><i style="background:${x[1]}"></i>${x[2]}</div>`).join('')}
  ep()}
-draw();let rz;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(draw,200)});
-function fmtDay(s){const d=new Date(s+'T00:00:00');return DOW[d.getDay()]+'<br>'+d.getDate()+' '+MON[d.getMonth()]}
 })();
 </script></body></html>
