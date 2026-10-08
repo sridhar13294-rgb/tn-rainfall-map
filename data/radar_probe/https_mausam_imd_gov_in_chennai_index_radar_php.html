@@ -1,0 +1,1510 @@
+
+<!doctype html>
+<html lang="en">
+   
+   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />  
+   <head>
+      <meta charset="utf-8">
+      <meta name="robots" content="noodp">
+      <meta name="viewport" id="viewport" content="width=device-width">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      
+      <title></title>
+      <meta name="keywords" content="IMD">
+      
+     
+
+      <link rel="stylesheet" href="css/home.css" type="text/css">
+   
+      <link rel="shortcut icon" href="ico/favicon.png">
+     
+      
+
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.1/css/all.css" />
+
+      <style type="text/css" media="screen">
+
+          #middle h2{
+            font-size: 16px;
+            padding-bottom: 0px;
+           }
+           #middle .middle_content .anc{
+                color:#000; 
+                font-weight: 600; 
+                text-decoration: underline;
+           }
+         
+      </style>
+        <style>
+
+
+                        #chartdiv {
+                          width: 80%;
+                          height: 900px;
+                        overflow: visible;
+                        }       
+
+                        .amcharts-chart-div {
+                          width: 80%;
+                          height: 900px;
+                        overflow: visible;
+
+                        }
+                        .ammapDescriptionWindow {
+                          width: 0px;
+                          background-color: #eee;
+                          padding: 10px;
+                          text-align: "center";
+                          border-radius: 5px;
+                          font-family: Verdana;
+                          font-size: 14px;
+                          opacity: 0.95;
+                          overflow: visible;
+                        }
+
+                        .ammapDescriptionTitle {
+                          font-weight: bold;
+                          font-size: 16px;
+                          margin-bottom: 10px;
+                        }                                                               
+                        </style>
+
+                        <!-- Resources -->
+                        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+                        <script src="https://www.amcharts.com/lib/3/ammap.js"></script>
+                        <script src="https://www.amcharts.com/lib/3/maps/js/indiaLow.js"></script>
+                        <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+                        <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+   </head>
+   <body>
+   
+    <!--This cover the whole page -->
+      <div id="pageheight">
+      <!--This cover the website page -->
+         <div id="pagewrap">
+           
+         
+
+       
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-157746104-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-157746104-1');
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-157746104-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-157746104-1');
+</script>
+<script>
+ function changeLang(){
+  document.getElementById('form_lang').submit();
+ }
+ </script>
+<header id="header">
+   <div class="l_content">
+      <div id="header-logo"><a id="logo" href="#."><img src="https://mausam.imd.gov.in/imd_latest/contents/img/logo-india-big.png" alt="India Meteorological Department" width="80" height="110" style="z-index: 1;"></a>
+      
+     <div style="width:500px">
+<h1 style="color:#FFF; text-align:center; font-size:11px; padding-top:0px; padding-left:0px; font-weight:200">  Ministry of Earth Sciences</h1>
+<h1 style="color:#FFF; text-align:center; font-size:13px; padding-top:0px; padding-left:0px; font-weight:200">India Meteorological Department</h1>
+<h1 style="color:#FFF; text-align:center; font-size:13px; padding-top:0px; padding-left:0px; font-weight:200"> REGIONAL METEOROLOGICAL CENTRE CHENNAI</h1>
+
+
+
+
+</div>
+      
+      
+      </div>
+      <div id="header-main">
+         <div class="l_top">
+          
+            <div id="header-search">
+
+         
+  <!-- Language -->
+ <form method='get' action='' id='form_lang' >
+  <select name='lang' onchange='changeLang();' >
+   <option value='en'  selected >English</option>
+   <option value='hi'  >Hindi</option>
+  </select>
+ </form>
+          </div>
+            
+ <div id="social_media" >
+
+         
+			
+</div>
+         
+         <div class="l_bottom" >
+            <ul class="sf-menu">             
+              
+<li class="no-menu"><a href="https://mausam.imd.gov.in/chennai" title="Home"><img src="https://mausam.imd.gov.in/chennai/img/home.gif" height="18"/></a></li>                      
+                       
+<!--<li  class="no-menu"><a href="http://mumbairain.tropmet.res.in/" target=_blank>Monsoon Online</a></li>-->
+			   
+			<div class="sf-menu-pointer"></div>
+
+<li  class="no-menu"><a href="https://mausam.imd.gov.in/chennai/aboutus.php" >About Us</a></li>
+			   
+			<div class="sf-menu-pointer"></div>
+
+<li  class="no-menu"><a href="https://mausam.imd.gov.in/chennai/mcdata/contact_details.pdf">Contact Us</a></li>
+			   
+			<div class="sf-menu-pointer"></div>
+
+<li  class="no-menu"><a href="https://mausam.imd.gov.in/chennai/mcdata/data_supply.pdf" target="_blank">Data Supply</a></li>
+			   
+			<div class=""></div>	
+
+
+<li  class="no-menu"><a href="https://mausam.imd.gov.in/chennai/mcdata/press.pdf">Press</a></li>
+
+
+<li  class="no-menu"><a href="https://mausam.imd.gov.in/chennai/rti.php" target="_blank">RTI </a></li>
+			   
+			<div class="sf-menu-pointer"></div>
+			   
+
+
+<li id="sf-menu-vic">
+                <abbr ><a href="#.">Others</a></abbr>
+                  <ul>
+                     <li class="accessible">
+                        <h2 class="accessible">Press</h2></li>          	
+                    
+					
+
+					<li><a href="https://mausam.imd.gov.in/imd_latest/contents/faq.php" target="_blank">FAQs</a></li>
+					<li><a href="https://mausam.imd.gov.in/chennai/disclaimer.php" target="_blank">Disclaimer</a></li>
+					
+
+                                        
+                  </ul>
+                  <div class="sf-menu-pointer"></div>
+               
+               </li>
+
+      
+              
+
+
+
+            </ul>
+
+
+
+
+
+
+
+
+
+         </div>
+      </div>
+      <div id="second_logo">
+      <a href="#."><img src="https://mausam.imd.gov.in/imd_latest/img/imd_logo_enamble.png" alt="India Meteorological Department"></a>
+      </div>
+   </div>
+</header>           
+            <div id="columns">
+                         <div id="columns">
+            
+            <!-- This section shows the warning links and specialized forecasts dropdown-->
+           
+<section id="content">
+   <div id="current">
+      <div id="warning_content">
+         <h2>Warnings</h2>
+         <ul >
+            <li><a href="https://mausam.imd.gov.in/imd_latest/contents/subdivisionwise-warning_mc.php?id=24" title="Subdivision Wise" class="tip" style="font-size:12px;">Subdivision Wise</a>
+&nbsp;&nbsp;&nbsp;<a href="https://mausam.imd.gov.in/imd_latest/contents/districtwise-warning_mc.php?id=26" title="District Wise" class="tip"  style="font-size:12px;">District Wise</a></li>
+           
+         </ul>
+      </div>
+      <div id="nowcast_content"  >
+          <h2>Nowcast</h2>
+         <ul>
+             <li><a href="https://mausam.imd.gov.in/imd_latest/contents/districtwisewarnings_mc.php?id=26" title="District Wise" class="tip"  style="font-size:12px;">District Wise</a>
+&nbsp;&nbsp;&nbsp;<a href="https://mausam.imd.gov.in/imd_latest/contents/stationwise-nowcast-warning_mc.php?id=26" title="Station Wise" class="tip"  style="font-size:12px;">Station Wise</a></li>
+         </ul>
+      </div>
+
+      <div id="nowcast_content2" >
+          <h2>Weather Observations</h2>
+         <ul>
+             <li><a href="https://mausam.imd.gov.in/imd_latest/contents/Todaysweather_mc.php?id=26" title="Temperature" class="tip"  style="font-size:12px;">Daily</a>
+&nbsp;&nbsp;&nbsp;<a href="http://aws.imd.gov.in:8091/state/TAMIL_NADU"target="_blank" title="Temperature" class="tip"  style="font-size:12px;">AWS</a></li>
+
+
+         </ul>
+      </div>
+
+   </div>
+   
+   <div>
+   <div class="other" >
+      <ul class="sf-menu">
+         <li class="closed">
+           <a href="#" class="nonclick"> Specialised Forecast</a>
+             <ul>
+			 <!--<li class=""><a href="https://mausam.imd.gov.in/chennai/mcdata/fishermen.pdf"target="_blank">Fishermen Warning</a></li>			 
+			 <li class=""><a href="https://mausam.imd.gov.in/chennai/mcdata/coastal.pdf"target="_blank">Coastal Bulletin</a></li>
+			 <li class=""><a href="https://mausam.imd.gov.in/chennai/mcdata/thunderstorm.pdf"target="_blank">SpecialisedThunderstorm Warning (Regional)</a></li> 
+			 <li class=""><a href="https://mausam.imd.gov.in/chennai/mcdata/temperature.pdf"target="_blank">Temperature  Warning (Regional)</a></li>
+			 <li class=""><a href="https://mausam.imd.gov.in/chennai/mcdata/fog.pdf"target="_blank">Fog Warning (Regional)</a></li>-->
+			 <li class=""><a href="https://mausam.imd.gov.in/chennai/mcdata/port.pdf"target="_blank">Port Warning</a></li>
+			 <li class=""><a href="https://mausam.imd.gov.in/chennai/mcdata/highway.pdf" target=_blank>Highway Forecast </a></li>
+			 <li class=""><a href="https://internal.imd.gov.in/pages/city_weather_main_mausam.php" target=_blank>City Forecast</a></li>
+			 <li class=""><a href="https://mausam.imd.gov.in/imd_latest/contents/monsoon.php" target=_blank>Monsoon Forecast </a></li>
+			 <li class=""><a href="https://mausam.imd.gov.in/imd_latest/contents/cyclone.php" target=_blank>Cyclone</a></li>
+               
+               
+             </ul>
+            
+         </li>
+      </ul>
+      
+   </div> 
+   
+  
+ 
+</section>
+
+
+                      
+              <section id="middle">
+                <div class="middle_content">
+                  <h3 style="color:red; text-align: center; font-size: 18px;">Radar - Chennai</h3>
+                  <hr />
+
+                  <div style="text-align: center">
+
+  
+                   <a style="color:#000;" href="index_radar_animation.php?id=Chennai" class="btn btn-primary">Animations of last 3-hours</a>
+
+     
+                   <hr />
+
+       <div id="chartdiv"  style="height:600px;width:60%;  overflow:visible; float: left"></div>
+
+                  <div style="float:left; width:38%; margin-left:1%; ">
+                
+                        <table>
+                        <tr>
+                        <td id="images" style="float: left">
+	
+                          						  
+                        <!--MAX(Z)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MAX(Z)-->
+
+			<div id="img1" >
+                        
+			<img src="../../../Radar/caz_cni.gif" style="height:150px;width:48%;" title="MAX (Z)">
+                         <img src="../../../Radar/ppi_cni.gif" style="height:150px;width:48%;"  title="Plan Position Indicator (Z) - Close Range">
+                          </div>
+                        
+			<div id="img2" >
+                         <img src="../../../Radar/sri_cni.gif" style="height:150px;width:48%;" title="Surface Rainfall Intensity">                          <img src="../../../Radar/ppz_cni.gif" style="height:150px;width:48%;"  title="Plan Position Indicator (Z)">
+                          </div>
+                        
+			<div id="img3" >
+                          <img src="../../../Radar/pac_cni.gif" style="height:150px;width:48%;"title="Precipitation Accumulation"> <?php// } ?>
+
+                        <img src="../../../Radar/ppv_cni.gif" style="height:150px;width:48%;" title="Plan Position Indicator (V)">
+                         
+                          </div>
+			</td>
+                        </tr>
+                        </table>
+                  </div>
+                </div>
+               </section>
+              
+               <div class="clr"></div>
+            </div>
+         
+          <link href="https://mausam.imd.gov.in/responsive/css/style.css" rel="stylesheet">
+<style>
+.footer {
+    border-top: 1px solid #ddd;
+    padding: 35px 0 15px;
+    background: #fff;
+}
+
+.footer-container {
+    width: 100%;
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+
+/* =========================
+   4 COLUMN FOOTER
+   ========================= */
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+}
+
+.footer-column {
+    min-width: 0;
+}
+
+.footer-widget {
+    height: 100%;
+}
+
+
+/* =========================
+   HEADINGS
+   ========================= */
+
+.footer-title {
+    margin: 0 0 12px;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.footer-title a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.footer-title a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================
+   BODY TEXT
+   ========================= */
+
+.footer-body {
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.footer-address {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.footer-address a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.footer-address a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================
+   MEDIA QUERY TIMING
+   ========================= */
+
+.footer-subtitle {
+    margin: 0 0 12px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+
+/* =========================
+   SPECIALISED PRODUCTS
+   ========================= */
+
+.footer-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.footer-list li {
+    margin-bottom: 8px;
+}
+
+.footer-list a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.footer-list a:hover {
+    text-decoration: underline;
+}
+
+.footer-list img {
+    width: auto;
+    height: 20px;
+    vertical-align: middle;
+}
+
+
+/* =========================
+   SOCIAL MEDIA
+   ========================= */
+
+.footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+
+/* =========================
+   COPYRIGHT
+   ========================= */
+
+.footer-copyright {
+    margin: 18px 0 0;
+    padding-top: 12px;
+    border-top: 1px solid #ddd;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+
+/* =========================
+   TABLET
+   ========================= */
+
+@media (max-width: 1000px) {
+
+    .footer-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px 25px;
+    }
+
+}
+
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 600px) {
+
+    .footer {
+        padding: 30px 0 15px;
+    }
+
+    .footer-container {
+        padding: 0 15px;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+
+    .footer-title {
+        font-size: 16px;
+    }
+
+}
+</style>
+<section class="footer">
+    <div class="footer-container">
+
+        <div class="footer-grid">
+
+            <!-- Column 1: Contact Us -->
+            <div class="footer-column">
+                <div class="footer-widget">
+
+                    <h3 class="footer-title">
+                        <a href="https://mausam.imd.gov.in/chennai/mcdata/contact_details.pdf"
+                           target="_blank"
+                           rel="noopener noreferrer">
+                            Contact Us
+                        </a>
+                        <br>
+                        Weather-Related Queries for public
+                    </h3>
+
+                    <div class="footer-body">
+                        <p class="footer-address">
+                            Regional Weather Forecasting Centre<br>
+                            India Meteorological Department (IMD)<br>
+                            Nungambakkam, Chennai – 600006<br>
+                            Contact:
+                            <a href="tel:044-28271951">044-28271951</a>
+                            <br>
+                            <a href="tel:044-28246048">044-28246048</a> (24 x7)
+                            <br>
+                            <a href="tel:+917825848914">+91 7825848914</a>
+                            <br>
+                            Email: acwctp[at]gmail[dot]com
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Column 2: Media Queries -->
+            <div class="footer-column">
+                <div class="footer-widget">
+
+                    <h3 class="footer-title">
+                        Weather-Related Queries for Media
+                    </h3>
+
+                    <h4 class="footer-subtitle">
+                        Query Timings: 09:30 AM to 06:00 PM
+                    </h4>
+
+                    <div class="footer-body">
+                        <p class="footer-address">
+                            Dr. V. R. Durai, Scientist-F<br>
+                            Office:
+                            <a href="tel:044-28246037">044-28246037</a><br>
+                            Mobile:
+                            <a href="tel:+919868362417">+91 9868362417</a><br>
+                            Email: durai[dot]imd[at]gmail[dot]com
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- Column 3: Current Weather Queries -->
+            <div class="footer-column">
+                <div class="footer-widget">
+
+                    <h3 class="footer-title">
+                        Weather Data-Related Queries
+                    </h3>
+
+                    <div class="footer-body">
+                        <p class="footer-address">
+                            Dr. Arvind Kumar, Scientist-D<br>
+                            Office:
+                            <a href="tel:044-28246072">044-28246072</a><br>
+                            Mobile:
+                            <a href="tel:+91-7452882111">+91-7452882111</a><br>
+                            Email: arvindmausam[at]gmail[dot]com
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- Column 4: Specialised Products -->
+            <div class="footer-column">
+                <div class="footer-widget">
+
+                    <h3 class="footer-title">
+                        Specialised Products
+                    </h3>
+
+                    <div class="footer-body">
+
+                        <ul class="footer-list">
+
+                            <li>
+                                MAUSAM :
+                                <a href="https://play.google.com/store/apps/details?id=com.imd.masuam"
+                                   target="_blank"
+                                   rel="noopener noreferrer">
+                                    <img src="https://mausam.imd.gov.in/responsive/img/icons/android.png"
+                                         alt="ANDROID">
+                                </a>
+                                &nbsp;|&nbsp;
+                                <a href="https://apps.apple.com/us/app/id1522893967"
+                                   target="_blank"
+                                   rel="noopener noreferrer">
+                                    <img src="https://mausam.imd.gov.in/responsive/img/icons/apple.png"
+                                         alt="APPLE">
+                                </a>
+                                |
+                                <a href="https://mausam.imd.gov.in/responsive/videos/mausam_app_v1.mp4"
+                                   target="_blank"
+                                   rel="noopener noreferrer">
+                                    Video
+                                </a>
+                            </li>
+
+                            <li>
+                                Meghdoot Agro :
+                                <a href="https://play.google.com/store/apps/details?id=com.aas.meghdoot"
+                                   target="_blank"
+                                   rel="noopener noreferrer">
+                                    <img src="https://mausam.imd.gov.in/responsive/img/icons/android.png"
+                                         alt="ANDROID">
+                                </a>
+                                &nbsp;|&nbsp;
+                                <a href="https://apps.apple.com/in/app/meghdoot/id1474048155"
+                                   target="_blank"
+                                   rel="noopener noreferrer">
+                                    <img src="https://mausam.imd.gov.in/responsive/img/icons/apple.png"
+                                         alt="APPLE">
+                                </a>
+                                |
+                                <a href="https://mausam.imd.gov.in/responsive/videos/meghdoot_app.mp4"
+                                   target="_blank"
+                                   rel="noopener noreferrer">
+                                    Video
+                                </a>
+                            </li>
+
+                            <li>
+                                Damini Lightning :
+                                <a href="https://play.google.com/store/apps/details?id=com.lightening.live.damini"
+                                   target="_blank"
+                                   rel="noopener noreferrer">
+                                    <img src="https://mausam.imd.gov.in/responsive/img/icons/android.png"
+                                         alt="ANDROID">
+                                </a>
+                                &nbsp;|&nbsp;
+                                <a href="https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=1502385645"
+                                   target="_blank"
+                                   rel="noopener noreferrer">
+                                    <img src="https://mausam.imd.gov.in/responsive/img/icons/apple.png"
+                                         alt="APPLE">
+                                </a>
+                            </li>
+
+                            <li>
+                                UMANG :
+                                <a href="https://play.google.com/store/apps/details?id=in.gov.umang.negd.g2c"
+                                   target="_blank"
+                                   rel="noopener noreferrer">
+                                    <img src="https://mausam.imd.gov.in/responsive/img/icons/android.png"
+                                         alt="ANDROID">
+                                </a>
+                                &nbsp;|&nbsp;
+                                <a href="https://apps.apple.com/in/app/umang/id1236448857"
+                                   target="_blank"
+                                   rel="noopener noreferrer">
+                                    <img src="https://mausam.imd.gov.in/responsive/img/icons/apple.png"
+                                         alt="APPLE">
+                                </a>
+                            </li>
+
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Social Media -->
+        <div class="footer-social">
+
+            <a href="https://www.facebook.com/acwcChennai/"
+               class="social-link facebook"
+               title="Facebook"
+               target="_blank"
+               rel="noopener noreferrer">
+                <i class="bi bi-facebook"></i>
+            </a>
+
+            <a href="https://twitter.com/ChennaiRmc"
+               class="social-link twitter"
+               title="Twitter"
+               target="_blank"
+               rel="noopener noreferrer">
+                <i class="bi bi-twitter"></i>
+            </a>
+
+        </div>
+
+
+        <!-- Copyright -->
+        <p class="footer-copyright">
+            &copy; Copyright 2026,
+            Regional Meteorological Centre, Chennai<br>
+            India Meteorological Department<br>
+            Ministry of Earth Sciences, New Delhi, India
+        </p>
+
+    </div>
+</section>         
+    </div>
+        
+       
+        
+        
+        
+      </div>
+
+
+
+      <script src="js/libs/jquery-1.10.2.min.js"></script>
+      <script src="js/home.js"></script>
+      <script src="libs/easyab/easyab.min.js" type="text/javascript"></script>
+
+      
+
+
+
+
+
+      <script src="assets/dist/viewer.js"></script>
+    <link  href="assets/dist/viewer.css" rel="stylesheet">
+
+   <script type="text/javascript">
+
+    function imageViewer(){
+       var $image = $('#image');
+
+        $image.viewer({
+          inline: true,
+          viewed: function() {
+            $image.viewer('zoomTo', 1);
+          }
+        });
+
+        // Get the Viewer.js instance after initialized
+        var viewer = $image.data('viewer');
+
+        // View a list of images
+        $('#images').viewer();
+    }
+
+
+    $( document ).ready(function() {
+      imageViewer();
+    });
+   </script>
+
+    <script type="text/javascript">
+                        /**
+                         * Define SVG path for target icon
+                         */
+                        var targetSVG = "M9,0C4.029,0,0,4.029,0,9s4.029,9,9,9s9-4.029,9-9S13.971,0,9,0z M9,15.93 c-3.83,0-6.93-3.1-6.93-6.93S5.17,2.07,9,2.07s6.93,3.1,6.93,6.93S12.83,15.93,9,15.93 M12.5,9c0,1.933-1.567,3.5-3.5,3.5S5.5,10.933,5.5,9S7.067,5.5,9,5.5 S12.5,7.067,12.5,9z";
+
+                        /**
+                         * Create the map
+                         */
+                        var i=1;
+
+
+                        var countrydataprovider = {
+                         "map": "indiaLow",
+                        "getAreasFromMap": true,
+                          "theme": "none",
+                          "imagesSettings": {
+                            "rollOverColor": "#089282",
+                            "rollOverScale": 3,
+                        "labelPosition": "middle",
+                            "labelFontSize": 8,
+                         "labelColor": "#fff",
+                            "selectedScale": 3,
+                            "selectedColor": "#089282",
+                            "color": "#13564e",
+                        "selectable":true
+                          },
+                        "images": [{
+                        "imageURL": "../imd_latest/contents/map-marker-icon-png-green.png", 
+                         "width": 20,
+                              "height": 20,
+                              "label": "Bhopal",
+                        "title": "Bhopal",
+                        "latitude": 23.2599,
+                              "longitude": 77.4126,    
+                        "ajaxUrl": "radar.php",
+                         "selectable":true
+                        },
+
+                        {
+                        "imageURL": "../imd_latest/contents/map-marker-icon-png-green.png", 
+                         "width": 20,
+                              "height": 20,
+                              "label": "Agartala",
+                         "title": "Agartala",
+                        "latitude": 23.8315,
+                              "longitude": 91.2868,
+                        "ajaxUrl": "radar.php",
+                        "selectable":true
+
+                        },
+
+                        {
+                        "imageURL": "../imd_latest/contents/map-marker-icon-png-green.png", 
+                         "width": 20,
+                              "height": 20,
+                              "label": "Delhi",
+                         "title": "Delhi",  
+                        "latitude": 28.5632,
+                              "longitude": 77.1912,
+                        "ajaxUrl": "radar.php",
+                        "selectable":true     
+
+                        },
+
+
+                        {
+                          "latitude": 23.2420,
+                              "longitude": 69.6669,
+                        "imageURL": "../imd_latest/contents/map-marker-icon-png-green.png", 
+                        "width": 20,
+                              "height": 20,
+                              "label": "Bhuj",
+                              "title": "Bhuj",
+                        "ajaxUrl": "radar.php",       
+                        "selectable":true
+
+                        },
+
+                        {
+                          "latitude": 12.25,
+                              "longitude": 79.9,
+                       "imageURL": "../imd_latest/contents/map-marker-icon-png-green.png", 
+                              "width": 20,
+                              "height": 20,
+                              "label": "Chennai",
+                              "title": "Chennai",
+                        "ajaxUrl": "radar.php",       
+                               "selectable":true
+
+                        },
+
+                        {
+                          "latitude": 12.9451,
+                              "longitude": 80.2115,
+                       "imageURL": "../imd_latest/contents/map-marker-icon-png-green.png", 
+                              "width": 20,
+                              "height": 20,
+                              "label": "Pallikaranai",
+                              "title": "Pallikaranai",
+                        "ajaxUrl": "radar.php",       
+                               "selectable":true
+
+                        },
+
+                        {
+                              "latitude": 15.4909,
+                              "longitude":  73.8278,
+                        "imageURL": "../imd_latest/contents/map-marker-icon-png-green.png",   
+                              "width": 20,
+                              "height": 20,
+                              "label": "Goa",
+                              "title": "Goa",
+                        "ajaxUrl": "radar.php",       
+                               "selectable":true
+
+                            },
+
+
+                        {
+                          "latitude": 19.2647,
+                              "longitude": 84.8620,
+                        "imageURL": "../imd_latest/contents/map-marker-icon-png-green.png",      
+                              "width": 20,
+                              "height": 20,
+                              "label": "Gopalpur",
+                              "title": "Gopalpur",
+                        "ajaxUrl": "radar.php",       
+                               "selectable":true
+
+                        },
+
+                        {
+                          "latitude": 17.3850,
+                              "longitude": 78.4867,
+                              "width": 28,
+                              "height": 28,
+                              "label": "Hyderabad",
+                              "title": "Hyderabad",
+                        "imageURL": "../imd_latest/contents/map-marker-icon-png-green.png",      
+                        "ajaxUrl": "radar.php",       
+                               "selectable":true
+
+                        },
+
+
+                        {
+                          "latitude": 26.9124,
+                              "longitude": 75.7873,
+                              "width": 20,
+                              "height": 20,
+                              "label": "Jaipur",
+                              "title": "Jaipur",
+                        "imageURL": "../imd_latest/contents/map-marker-icon-png-green.png",      
+                        "ajaxUrl": "radar.php",       
+                               "selectable":true
+                        },
+
+                        {
+                          "latitude": 22.5726,
+                              "longitude": 88.3639,
+                              "width": 20,
+                              "height": 20,
+                              "label": "Kolkata",
+                              "title": "Kolkata",
+                      "imageURL": "../imd_latest/contents/map-marker-icon-png-green.png",      
+                        "ajaxUrl": "radar.php",       
+                               "selectable":true
+                        },
+
+
+
+                        {
+                          "latitude": 9.9312,
+                              "longitude": 76.2673,
+                              "width": 20,
+                              "height": 20,
+                              "label": "Kochi",
+                              "title": "Kochi",
+                       "imageURL": "../imd_latest/contents/map-marker-icon-png-green.png",      
+                        "ajaxUrl": "radar.php",       
+                               "selectable":true
+
+                        },
+
+
+                        {
+                          "latitude": 10.9254,
+                              "longitude": 79.8380,
+                              "width": 20,
+                              "height": 20,
+                              "label": "Karaikal",
+                              "title": "Karaikal",
+                       "imageURL": "../imd_latest/contents/map-marker-icon-png-green.png",  
+                        "ajaxUrl": "radar.php",       
+                               "selectable":true
+                        },
+
+                        {
+                          "latitude": 26.8467,
+                              "longitude": 80.9462,
+                              "width": 20,
+                              "height": 20,
+                              "label": "Lucknow",
+                              "title": "Lucknow",
+                        "imageURL": "../imd_latest/contents/map-marker-icon-png-green.png",   
+                        "ajaxUrl": "radar.php",       
+                               "selectable":true
+
+                        },
+
+                        {
+                          "latitude": 16.1905,
+                              "longitude": 81.1362,
+                              "width": 20,
+                              "height": 20,
+                              "label": "Machilipatnam",
+                              "title": "Machilipatnam",
+                        "imageURL": "../imd_latest/contents/map-marker-icon-png-green.png",      
+                        "ajaxUrl": "radar.php",       
+                               "selectable":true
+                        },
+
+                        {
+                          "latitude": 19.0760,
+                              "longitude": 72.8777,
+                              "width": 20,
+                              "height": 20,
+                              "label": "Mumbai-Colaba",
+                              "title": "Mumbai",
+                       "imageURL": "../imd_latest/contents/map-marker-icon-png-green.png",  
+                        "ajaxUrl": "radar.php",       
+                               "selectable":true
+
+                        },						
+						
+                        {
+                          "latitude": 21.1458,
+                              "longitude": 79.0882,
+                              "width": 20,
+                              "height": 20,
+                              "label": "Nagpur",
+                              "title": "Nagpur",
+                        "imageURL": "../imd_latest/contents/map-marker-icon-png-green.png",     
+                        "ajaxUrl": "radar.php",       
+                               "selectable":true
+
+                        },
+			{
+                          "latitude": 25.2702,
+                              "longitude": 91.7323,
+                              "width": 20,
+                              "height": 20,
+                              "label": "Sohra",
+                              "title": "Sohra",
+                        "imageURL": "../imd_latest/contents/map-marker-icon-png-green.png",    
+                        "ajaxUrl": "radar.php",       
+                               "selectable":true
+
+                        },
+
+
+                        {
+                          "latitude": 30.3398,
+                              "longitude":  76.3869,
+                              "width": 20,
+                              "height": 20,
+                              "label": "Patiala",
+                              "title": "Patiala",
+                       "imageURL": "../imd_latest/contents/map-marker-icon-png-green.png",       
+                        "ajaxUrl": "radar.php",       
+                               "selectable":true
+                        },
+
+                        {
+                          "latitude": 25.5941,
+                              "longitude": 85.1376,
+                              "width": 20,
+                              "height": 20,
+                              "label": "Patna",
+                              "title": "Patna",
+                       "imageURL": "../imd_latest/contents/map-marker-icon-png-green.png",  
+                        "ajaxUrl": "radar.php",       
+                               "selectable":true
+                        },
+
+                        {
+                          "latitude": 34.083656,
+                              "longitude":  74.797371,
+                              "width": 20,
+                              "height": 20,
+                              "label": "Srinagar",
+                              "title": "Srinagar",
+                       "imageURL": "../imd_latest/contents/map-marker-icon-png-green.png",    
+                        "ajaxUrl": "radar.php",       
+                               "selectable":true
+
+                        },
+						
+						{
+                          "latitude": 32.9266,
+                              "longitude":  74.8570,
+                              "width": 20,
+                              "height": 20,
+                              "label": "Jammu",
+                              "title": "Jammu",
+                       "imageURL": "../imd_latest/contents/map-marker-icon-png-green.png", 
+                        "ajaxUrl": "radar.php",       
+                               "selectable":true
+
+                        },
+
+                        {
+                          "latitude": 8.5241,
+                              "longitude":76.9366 ,
+                              "width": 20,
+                              "height": 20,
+                              "label": "Thiruvananthapuram",
+                              "title": "Thiruvananthapuram",
+                       "imageURL": "../imd_latest/contents/map-marker-icon-png-green.png", 
+                        "ajaxUrl": "radar.php",       
+                               "selectable":true
+
+                        },
+
+                        {
+                          "latitude": 17.6868,
+                              "longitude": 83.2185,
+                              "width": 20,
+                              "height": 20,
+                              "label": "Visakhapatnam",
+                              "title": "Visakhapatnam",
+                       "imageURL": "../imd_latest/contents/map-marker-icon-png-green.png",  
+                        "ajaxUrl": "radar.php",       
+                               "selectable":true
+                        },
+						{
+                          "latitude": 27.4728,
+                              "longitude": 94.9120,
+                              "width": 20,
+                              "height": 20,
+                              "label": "Mohanbari",
+                              "title": "Mohanbari",
+                       "imageURL": "../imd_latest/contents/map-marker-icon-png-green.png", 
+                        "ajaxUrl": "radar.php",       
+                               "selectable":true
+                        },
+
+                        {
+                          "latitude": 20.3166,
+                              "longitude": 86.6114,
+                              "width": 20,
+                              "height": 20,
+                              "label": "Paradip",
+                              "title": "Paradip",
+                        "imageURL": "../imd_latest/contents/map-marker-icon-png-green.png", 
+                        "ajaxUrl": "radar.php",       
+                               "selectable":true
+                        },
+
+                        {
+                          "latitude": 13.7259,
+                              "longitude": 80.2266,
+                              "width": 20,
+                              "height": 20,
+                              "label": "Sriharikota",
+                              "title": "Sriharikota",
+                       "imageURL": "../imd_latest/contents/map-marker-icon-png-green.png",   
+                        "ajaxUrl": "radar.php",       
+                               "selectable":true
+                        },
+
+                        /*{
+
+                           "latitude": 28.5901,
+                              "longitude": 77.0888,
+                              "width": 20,
+                              "height": 20,
+                              "label": "Palam",
+                               "labelPosition":"left",
+                               "title": "Palam",
+                        "imageURL": "map-marker-icon-png-green.png",      
+                        "ajaxUrl": "radar.php",       
+                               "selectable":true
+
+                        }, */
+						{
+                          "latitude": 29.4604,
+                              "longitude": 79.6558,
+                              "width": 20,
+                              "height": 20,
+                              "label": "Mukteshwar",
+                              "title": "Mukteshwar",
+                        "imageURL": "map-marker-icon-png-green.png",      
+                        "ajaxUrl": "radar.php",       
+                               "selectable":true
+                        },
+						{
+                          "latitude": 19.7343,
+                              "longitude": 72.8763,
+                              "width": 20,
+                              "height": 20,
+                              "label": "Mumbai-Veravali",
+                              "title": "Veravali",
+                        "imageURL": "map-marker-icon-png-green.png",      
+                        "ajaxUrl": "radar.php",       
+                               "selectable":true
+                        },
+						{
+                          "latitude": 31.0978,
+                              "longitude": 77.2678,
+                              "width": 20,
+                              "height": 20,
+                              "label": "Kufri",
+                              "title": "Kufri",
+                        "imageURL": "map-marker-icon-png-green.png",      
+                        "ajaxUrl": "radar.php",       
+                               "selectable":true
+                        }
+                        
+                                           
+
+
+
+
+                        ],
+                        areas :
+                        [
+                                {
+                                        "id": "IN-DL",
+                                           "label":"Delhi",
+                        "passZoomValuesToTarget": true
+                                },
+                        {
+                        "id":"IN-AR",
+                        "label":"Arunachal",
+                        "passZoomValuesToTarget": true
+                        },
+
+
+                        {
+                        "id":"IN-MN",
+                        "label":"Manipur",
+                        "passZoomValuesToTarget": true
+                        },
+
+
+                        {
+                        "id":"IN-TR",
+                        "label":"Tripura"
+                        },
+
+
+                        {
+                        "id":"IN-ML",
+                        "label":"Meghalaya"
+                        },
+
+                        {
+                        "id":"IN-NL",
+                        "label":"Nagaland"
+                        },
+
+
+
+                        {
+                        "id":"IN-AS",
+                        "label":"Assam"
+                        },
+
+                        {
+                        "id":"IN-MZ",
+                        "label":"Mizoram"
+                        },
+
+
+                        {
+                        "id":"IN-KL",
+                        "label":"Kerala"
+                        },
+
+
+                        {
+                        "id":"IN-TN",
+                        "label":"TamilNadu"
+                        },
+
+                        {
+                        "id":"IN-KA",
+                        "label":"Karnataka"
+                        },
+
+                        {
+                        "id":"IN-AP",
+                        "label":"AndhraPradesh"
+                        },
+
+                        {
+                        "id":"IN-TG",
+                        "label":"Telangana"
+                        },
+
+
+                        {
+                        "id":"IN-MH",
+                        "label":"Maharashtra",
+                        "passZoomValuesToTarget": true
+                        },
+
+                        {
+                        "id":"IN-OR",
+                        "label":"Orissa"
+                        },
+
+                        {
+                        "id":"IN-CT",
+                        "label":"Chhatisgarh"
+                        },
+                        {
+                        "id":"IN-WB",
+                        "label":"WestBengal"
+                        },
+
+                        {
+                        "id":"IN-JH",
+                        "label":"Jharkhand"
+                        },
+
+                        {
+                        "id":"IN-BR",
+                        "label":"Bihar"
+                        },
+
+
+                        {
+                        "id":"IN-UP",
+                        "label":"UP"
+                        },
+
+
+
+                        {
+                        "id":"IN-RJ",
+                        "label":"Rajasthan"
+                        },
+
+
+                        {
+                        "id":"IN-MP",
+                        "label":"MadhyaPradesh"
+                        },
+
+                        {
+                        "id":"IN-GJ",
+                        "label":"Gujarat"
+                        },
+
+                        {
+                        "id":"IN-HR",
+                        "label":"Haryana"
+                        },
+
+
+                        {
+                        "id":"IN-PB",
+                        "label":"Punjab"
+                        },
+
+
+                        {
+                        "id":"IN-UT",
+                        "label":"Uttrakhand"
+                        },
+
+
+                        {
+                        "id":"IN-HP",
+                        "label":"HimachalPradesh"
+                        },
+
+                        {
+                        "id":"IN-JK",
+                        "label":"JammuandKashmir",
+                        "title":"JammuandKashmir"
+                        }
+
+
+                        ]
+
+
+                        };
+
+                        var map = AmCharts.makeChart( "chartdiv", {
+                          "type": "map",
+                          "theme": "light",
+                        "getAreasFromMap": true, 
+                         
+
+
+                        "dataProvider": countrydataprovider,
+
+
+                         "areasSettings": {
+                            "color":"#AAF0D1",
+                        "autoZoom": true,
+                        "outlineColor":"#000000",
+                        "selectedColor":undefined,
+                        "selectedOutlineColor":"#000000",
+                            "unlistedAreasColor": "#AAF0D1",
+                            "outlineThickness": 0.1,
+                             "unlistedAreasOutlineColor": "#000000",
+
+                          },
+
+"hideCredits":"true",
+                        /*"legend": {
+                            "backgroundColor": "#fff",
+                            "backgroundAlpha": 0,
+                            "align": "right",
+                        "marginBottom":10,
+                            "data": [{
+                              "title": "No warning",
+                              "color": "#008000"
+                            }, {
+                              "title": "Watch",
+                              "color": "#FFCC33"
+                            },
+
+                        {
+                              "title": "Alert",
+                              "color": "#FFA500"
+                            },
+                        {
+                              "title": "Warning",
+                              "color": "#FF0000"
+                            }
+
+                        ]
+                          },*/
+
+                        "listeners": [ {
+                            "event": "clickMapObject",
+                            "method": function( e ) {
+                               //alert(e.mapObject.label);
+                               if ( e.mapObject.ajaxUrl !== undefined ) {
+                                // add "description" if it was emptyi
+                                 e.mapObject.description =undefined;
+                                if ( e.mapObject.description === undefined )
+                                  e.mapObject.description = "<div id='mapcontent'>Loading...</div>";
+                                
+                          //        alert( e.mapObject.description); 
+                        //           e.mapObject.description=e.mapObject.ajaxUrl;
+                                // delay loading by a bit so that map can finish displaying description box and zoom
+                                setTimeout( function() {
+                                	window.location.href = "index_radar.php?id="+e.mapObject.label;
+                                  //$("#mapcontent" ).load( e.mapObject.ajaxUrl+"?id="+e.mapObject.label );
+                                  //imageViewer();
+
+                                 
+                                }, 1000 );
+                           document.getElementById( "images" ).innerHTML = '<p>'+e.mapObject.label  + e.mapObject.description + '</p>';
+                             e.mapObject.description ="<br>";
+                            
+				}
+                            }
+                          } ],
+
+
+
+                         //export: {
+                           // enabled: true
+                         // },
+
+                        "mouseWheelZoomEnabled": false
+
+
+
+                        } );
+
+                        function handleMapObjectClick(event) {
+                          if (event.mapObject.id == "backButton") {
+                            handleGoHome();
+                          }
+                        }
+
+
+                        map.addListener("clickMapObject", handleMapObjectClick);
+
+
+
+                        </script>   
+
+
+        <script type="text/javascript">
+	    	$(document).ready(function(){
+			  $("text").click(function(){
+			    alert();
+			  });
+			});
+	  </script>
+
+
+
+             
+      
+      
+   </body>
+  
+</html>
