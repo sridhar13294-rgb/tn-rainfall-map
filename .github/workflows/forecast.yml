@@ -7,7 +7,7 @@ on:
     - cron: '30 17 * * *'    # 23:00 IST (after GFS 12Z / ECMWF 12Z)
   workflow_dispatch:
   push:
-    branches: [forecast]
+    branches: [forecast, forecast-v2]
     paths: ['scripts/forecast.py', 'site/forecast_template.html', '.github/workflows/forecast.yml']
 
 permissions:
