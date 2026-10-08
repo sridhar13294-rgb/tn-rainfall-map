@@ -202,11 +202,12 @@ class Model:
     recs['t2']   -> list of (step, values)                  2 m temperature (degC)
     recs['tmax'] -> list of (start_step, end_step, values)  window maximum (degC); same for 'tmin'
     recs['u10'], recs['v10'] -> list of (step, values)      10 m wind (m/s)
+    recs['msl']  -> list of (step, values over the wind/pressure region)  mean sea-level pressure (hPa)
     """
 
     def __init__(self, name):
         self.name, self.run = name, None
-        self.recs = {k: [] for k in ('tp', 't2', 'tmax', 'tmin', 'u10', 'v10')}
+        self.recs = {k: [] for k in ('tp', 't2', 'tmax', 'tmin', 'u10', 'v10', 'msl')}
         self.ok = self.failed = 0
         self.errors, self.samples, self.info = [], {}, {}
         self.bytes = 0
@@ -224,6 +225,8 @@ class Model:
         if var in ('t2', 'tmax', 'tmin'):
             if np.nanmean(vals_pts) > 150:       # Kelvin
                 vals_pts = vals_pts - 273.15
+        if var == 'msl' and np.nanmean(vals_pts) > 2000:   # Pa -> hPa
+            vals_pts = vals_pts / 100.0
         if var == 'tp' and (info.get('units') or '') == 'm':
             vals_pts = vals_pts * 1000.0
         with LOCK:
@@ -300,6 +303,9 @@ def gfs_collect(m, pool, pts, wpts, d0, now, wind_out):
         def task():
             try:
                 info, vals = decode(http(gfs_url(run, step), (rec['start'], rec['end'])))
+                if kind == 'msl':
+                    m.add('msl', info, step, sample(info, vals, wpts, 'wind'))
+                    return
                 if kind in ('tn', 'both'):
                     m.add(var, info, step, sample(info, vals, pts, 'tn'))
                 if kind in ('wind', 'both'):
@@ -323,6 +329,8 @@ def gfs_collect(m, pool, pts, wpts, d0, now, wind_out):
             for r in recs:
                 if r['var'] == 'TMP' and r['level'] == '2 m above ground' and in_days:
                     out.append(field(step, r, 't2', 'tn'))
+                elif r['var'] == 'PRMSL' and r['level'] == 'mean sea level' and in_days and step % 6 == 0:
+                    out.append(field(step, r, 'msl', 'msl'))
                 elif r['var'] == 'APCP' and r['level'] == 'surface' and step % 6 == 0:
                     out.append(field(step, r, 'tp', 'tn'))
                 elif r['var'] in ('TMAX', 'TMIN') and r['level'] == '2 m above ground' and in_days and step % 6 == 0:
@@ -352,7 +360,7 @@ def ec_url(base, model, run, step):
     return f"{base}/{run:%Y%m%d}/{run:%H}z/{model}/0p25/oper/{run:%Y%m%d%H}0000-{step}h-oper-fc"
 
 
-def ec_collect(m, pool, pts, d0, now, model):
+def ec_collect(m, pool, pts, wpts, d0, now, model):
     full = 360
     steps_all = (list(range(0, 145, 3)) + list(range(150, 361, 6))) if model == 'ifs' else list(range(0, 361, 6))
     cycles = (0, 12) if model == 'ifs' else (0, 6, 12, 18)
@@ -375,7 +383,10 @@ def ec_collect(m, pool, pts, d0, now, model):
             try:
                 info, vals = decode(http(ec_url(base, model, run, step) + '.grib2',
                                          (rec['_offset'], rec['_offset'] + rec['_length'] - 1)))
-                m.add(var, info, step, sample(info, vals, pts, 'tn'))
+                if var == 'msl':
+                    m.add(var, info, step, sample(info, vals, wpts, 'wind'))
+                else:
+                    m.add(var, info, step, sample(info, vals, pts, 'tn'))
             except Exception as e:
                 m.err(f'{step}h {rec.get("param")}: {e}')
         return task
@@ -399,6 +410,8 @@ def ec_collect(m, pool, pts, d0, now, model):
                     params_seen.add(p)
                 if p == 'tp' and step % 6 == 0:
                     out.append(field(step, r, 'tp'))
+                elif p == 'msl' and in_days and step % 6 == 0:
+                    out.append(field(step, r, 'msl'))
                 elif p == '2t' and in_days:
                     out.append(field(step, r, 't2'))
                 elif p in ('mx2t3', 'mx2t6') and in_days:
@@ -426,32 +439,39 @@ def icon_url(run, var, step):
     return f"{DWD}/{run:%H}/{var}/icon_global_icosahedral_single-level_{run:%Y%m%d%H}_{step:03d}_{var.upper()}.grib2.bz2"
 
 
-def icon_neighbours(run, pts):
-    cache = P('data/icon_tn_neighbours.json')
+_icon_grid = {}
+
+
+def icon_neighbours(run, pts, name, box):
+    """4 nearest icosahedral cells (inverse-distance weights) for each point; cached in data/."""
+    cache = P(f'data/icon_{name}_neighbours.json')
     if os.path.exists(cache):
         c = json.load(open(cache))
         if len(c['idx']) == len(pts):
             return np.array(c['idx']).T, np.array(c['w']).T, c['n']
-    arrs = {}
-    for v in ('clat', 'clon'):
-        url = f"{DWD}/{run:%H}/{v}/icon_global_icosahedral_time-invariant_{run:%Y%m%d%H}_{v.upper()}.grib2.bz2"
-        info, vals = decode(http(url))
-        if np.nanmax(np.abs(vals)) < 3.3:
-            vals = np.degrees(vals)
-        arrs[v] = vals
-    lat, lon = arrs['clat'], arrs['clon']
-    sel = np.where((lat > 7.4) & (lat < 14.3) & (lon > 75.7) & (lon < 81.0))[0]
+    if not _icon_grid:
+        for v in ('clat', 'clon'):
+            url = f"{DWD}/{run:%H}/{v}/icon_global_icosahedral_time-invariant_{run:%Y%m%d%H}_{v.upper()}.grib2.bz2"
+            info, vals = decode(http(url))
+            if np.nanmax(np.abs(vals)) < 3.3:
+                vals = np.degrees(vals)
+            _icon_grid[v] = vals
+    lat, lon = _icon_grid['clat'], _icon_grid['clon']
+    la0, la1, lo0, lo1 = box
+    sel = np.where((lat > la0) & (lat < la1) & (lon > lo0) & (lon < lo1))[0]
+    slat, slon = lat[sel], lon[sel]
     idx, w = [], []
     for lo, la in pts:
-        d = np.hypot((lon[sel] - lo) * math.cos(math.radians(la)), lat[sel] - la)
+        near = np.where((np.abs(slat - la) < .4) & (np.abs(slon - lo) < .4))[0]
+        d = np.hypot((slon[near] - lo) * math.cos(math.radians(la)), slat[near] - la)
         k = np.argsort(d)[:4]
         ww = 1 / np.maximum(d[k], 1e-4) ** 2
-        idx.append([int(i) for i in sel[k]]); w.append([float(x) for x in ww / ww.sum()])
+        idx.append([int(i) for i in sel[near[k]]]); w.append([float(x) for x in ww / ww.sum()])
     json.dump({'n': int(len(lat)), 'idx': idx, 'w': w}, open(cache, 'w'))
     return np.array(idx).T, np.array(w).T, int(len(lat))
 
 
-def icon_collect(m, pool, pts, d0, now):
+def icon_collect(m, pool, pts, wpts, d0, now):
     for run in candidate_runs(now, (0, 12), 3.5):
         if exists(icon_url(run, 't_2m', 180)):
             break
@@ -459,7 +479,8 @@ def icon_collect(m, pool, pts, d0, now):
         raise RuntimeError('no complete ICON run found')
     m.run = run
     s0, s1 = needed(run, d0, NDAYS)
-    idx, w, n = icon_neighbours(run, pts)
+    idx, w, n = icon_neighbours(run, pts, 'tn', (7.4, 14.3, 75.7, 81.0))
+    ridx, rw, _ = icon_neighbours(run, wpts, 'region', (-1.5, 26.5, 63.5, 96.5))
     m.info['cells'] = n
     steps = [s for s in list(range(0, 79, 3)) + list(range(81, 181, 3)) if s0 <= s <= s1]
 
@@ -469,7 +490,10 @@ def icon_collect(m, pool, pts, d0, now):
                 info, vals = decode(http(icon_url(run, var, step)))
                 if len(vals) != n:
                     raise RuntimeError(f'grid size {len(vals)} != {n}')
-                m.add(tag, info, step, np.sum(vals[idx] * w, axis=0))
+                if tag == 'msl':
+                    m.add(tag, info, step, np.sum(vals[ridx] * rw, axis=0))
+                else:
+                    m.add(tag, info, step, np.sum(vals[idx] * w, axis=0))
             except Exception as e:
                 m.err(f'{var} {step}: {e}')
         return task
@@ -479,8 +503,10 @@ def icon_collect(m, pool, pts, d0, now):
         tasks.append(field('t_2m', s, 't2'))
         if s % 6 == 0:
             tasks += [field('u_10m', s, 'u10'), field('v_10m', s, 'v10')]
-        if (run + dt.timedelta(hours=s)).hour == 0 and s > 0:
+        if s % 6 == 0 and s > 0:
             tasks.append(field('tot_prec', s, 'tp'))
+        if s % 6 == 0:
+            tasks.append(field('pmsl', s, 'msl'))
     run_tasks(pool, tasks)
 
 
@@ -490,6 +516,7 @@ GEM_PAT = {
     't2': r'_(AirTemp_AGL-2m|TMP_TGL_2)_',
     'u10': r'_(WindU_AGL-10m|UGRD_TGL_10)_',
     'v10': r'_(WindV_AGL-10m|VGRD_TGL_10)_',
+    'msl': r'_(Pressure_MSL|PRMSL_MSL|MSLP|Pressure-MSL|PressureMSL|PRMSL)',
 }
 
 
@@ -504,7 +531,7 @@ def gem_list(url):
     return sorted(set(re.findall(r'href="([^"/?]+\.grib2)"', html)))
 
 
-def gem_collect(m, pool, pts, d0, now):
+def gem_collect(m, pool, pts, wpts, d0, now):
     found = None
     for run in candidate_runs(now, (0, 12), 4):
         for pat in gem_dirs(run):
@@ -527,7 +554,7 @@ def gem_collect(m, pool, pts, d0, now):
         if cand:
             names[var] = cand[0]
     m.info['files_240'] = names
-    m.info['listing_sample'] = names240[:40] if len(names) < 4 else None
+    m.info['listing_sample'] = [x for x in names240 if 'Sfc' in x or 'MSL' in x.upper()][:60] if len(names) < 5 else None
     if 't2' not in names:
         raise RuntimeError('GEM file names not recognised')
     s0, s1 = needed(run, d0, NDAYS)
@@ -540,7 +567,7 @@ def gem_collect(m, pool, pts, d0, now):
         def task():
             try:
                 info, vals = decode(http(url))
-                m.add(var, info, step, sample(info, vals, pts, 'tn'))
+                m.add(var, info, step, sample(info, vals, wpts if var == 'msl' else pts, 'wind' if var == 'msl' else 'tn'))
             except Exception as e:
                 m.err(f'{var} {step}: {e}')
         return task
@@ -550,8 +577,10 @@ def gem_collect(m, pool, pts, d0, now):
         tasks.append(field('t2', s))
         if s % 6 == 0 and 'u10' in names:
             tasks += [field('u10', s), field('v10', s)]
-        if 'tp' in names and s > 0 and (run + dt.timedelta(hours=s)).hour == 0:
+        if 'tp' in names and s > 0 and s % 6 == 0:
             tasks.append(field('tp', s))
+        if 'msl' in names and s % 6 == 0:
+            tasks.append(field('msl', s))
     run_tasks(pool, tasks)
 
 
@@ -610,6 +639,23 @@ def daily(m, d0, ndays, npts):
     return out
 
 
+def six_hourly(m, d0, nper):
+    """Rain in each 6-hour period [d0 + 6k h, d0 + 6(k+1) h] for one model."""
+    out = [None] * nper
+    if m.run is None:
+        return out
+    C = cumulative(m.recs['tp'])
+    for k in range(nper):
+        a = int((d0 + dt.timedelta(hours=6 * k) - m.run).total_seconds() // 3600)
+        b = a + 6
+        if a < 0 or a not in C or b not in C:
+            continue
+        ca = np.zeros_like(C[b]) if a == 0 else C[a]
+        if ca is not None and C[b] is not None:
+            out[k] = np.maximum(C[b] - ca, 0)
+    return out
+
+
 # ------------------------------------------------------------------ main
 def land_outline():
     cache = P('data/land_region.json')
@@ -655,10 +701,10 @@ def main():
 
     jobs = {
         'GFS': lambda m, pool: gfs_collect(m, pool, pts, wpts, d0, now, wind_raw),
-        'ECMWF': lambda m, pool: ec_collect(m, pool, pts, d0, now, 'ifs'),
-        'ECMWF AI': lambda m, pool: ec_collect(m, pool, pts, d0, now, 'aifs-single'),
-        'ICON': lambda m, pool: icon_collect(m, pool, pts, d0, now),
-        'GEM': lambda m, pool: gem_collect(m, pool, pts, d0, now),
+        'ECMWF': lambda m, pool: ec_collect(m, pool, pts, wpts, d0, now, 'ifs'),
+        'ECMWF AI': lambda m, pool: ec_collect(m, pool, pts, wpts, d0, now, 'aifs-single'),
+        'ICON': lambda m, pool: icon_collect(m, pool, pts, wpts, d0, now),
+        'GEM': lambda m, pool: gem_collect(m, pool, pts, wpts, d0, now),
     }
     stop = threading.Event()
     threading.Thread(target=heartbeat, args=(stop,), daemon=True).start()
@@ -684,6 +730,7 @@ def main():
 
     # daily values per model
     per = {n: daily(m, d0, NDAYS, len(pts)) for n, m in models.items()}
+    per6 = {n: six_hourly(m, d0, NDAYS * 4) for n, m in models.items()}
     labels = [n for n in models if any(x is not None for x in per[n]['rain'])]
     for n in labels:
         status['models'][n]['days_with_rain'] = sum(x is not None for x in per[n]['rain'])
@@ -693,6 +740,7 @@ def main():
     nd = max(d + 1 for n in labels for d in range(NDAYS) if per[n]['rain'][d] is not None)
     dates = [(d0 + dt.timedelta(days=d)).strftime('%Y-%m-%d') for d in range(nd)]
     coverage = [[n for n in labels if per[n]['rain'][d] is not None] for d in range(nd)]
+    coverage6 = [[n for n in labels if per6[n][k] is not None] for k in range(nd * 4)]
     keymap = {'precipitation_sum': 'rain', 'temperature_2m_max': 'tmax', 'temperature_2m_min': 'tmin', 'wind_speed_10m_max': 'wmax'}
     cells = []
     for i, (lo, la) in enumerate(pts):
@@ -713,7 +761,35 @@ def main():
             else:
                 dd.append(None)
         rec['wind_dir'] = dd
+        mv = {n: [r1(per6[n][k][i]) if per6[n][k] is not None else None for k in range(nd * 4)] for n in labels}
+        avg6 = []
+        for k in range(nd * 4):
+            xs = [mv[n][k] for n in labels if mv[n][k] is not None]
+            avg6.append(round(sum(xs) / len(xs), 1) if xs else None)
+        rec['rain6'] = {'avg': avg6, **mv}
         cells.append(rec)
+
+    # mean sea-level pressure: average and spread of the models, every 6 h
+    mslp = None
+    frames = []
+    for k in range(nd * 4 + 1):
+        vt = d0 + dt.timedelta(hours=6 * k)
+        got = {}
+        for n in labels:
+            mm = models[n]
+            st = int((vt - mm.run).total_seconds() // 3600)
+            for s, v in mm.recs['msl']:
+                if s == st and np.isfinite(v).all() and 900 < np.nanmean(v) < 1100:
+                    got[n] = v
+        if got:
+            arr = np.stack(list(got.values()))
+            frames.append((vt, sorted(got), arr.mean(0), arr.std(0)))
+    if frames:
+        mslp = dict(lat0=lats[0], lon0=lons[0], step=WIND_BOX['step'], ny=len(lats), nx=len(lons),
+                    times=[f[0].strftime('%Y-%m-%dT%H:%MZ') for f in frames], models=[f[1] for f in frames],
+                    avg=[[int(round((x - 1000) * 10)) for x in f[2]] for f in frames],
+                    spread=[[int(round(x * 10)) for x in f[3]] for f in frames])
+    status['mslp'] = {n: len(models[n].recs['msl']) for n in labels}
 
     # wind animation frames (GFS)
     wind = None
@@ -738,7 +814,7 @@ def main():
 
     runs = {n: models[n].run.strftime('%HZ %d %b') for n in labels}
     F = dict(updated=dt.datetime.now(IST).strftime('%d %b %Y, %H:%M IST'), dates=dates, models=labels, runs=runs,
-             coverage=coverage, cells=cells, wind=wind, land=land_outline(), tn=geo['tn'], ct=geo['ct'], step=.25)
+             coverage=coverage, coverage6=coverage6, cells=cells, wind=wind, mslp=mslp, land=land_outline(), tn=geo['tn'], ct=geo['ct'], step=.25)
     tpl = open(P('site/forecast_template.html')).read()
     open(P('site/forecast.html'), 'w').write(tpl.replace('/*FDATA*/', json.dumps(F, separators=(',', ':'))))
     status.update(points=len(pts), days=nd, seconds=round(time.time() - T_START))
