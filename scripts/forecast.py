@@ -376,9 +376,31 @@ def gfs_collect(m, pool, pts, wpts, d0, now, wind_out):
 
 
 # ------------------------------------------------------------------ ECMWF IFS and AIFS (open data)
-ECMWF_BASES = ['https://ai4edataeuwest.blob.core.windows.net/ecmwf',          # Azure mirror (least throttled)
-               'https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com',
-               'https://data.ecmwf.int/forecasts']
+ECMWF_BASES = ['https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com',
+               'https://data.ecmwf.int/forecasts',
+               'https://ai4edataeuwest.blob.core.windows.net/ecmwf']
+
+
+def ec_fetch(bases, url_fn, rng, salt):
+    """Byte-range download spread across all mirrors that hold the run (load balancing), with failover."""
+    order = bases[salt % len(bases):] + bases[:salt % len(bases)]
+    last = None
+    for k, b in enumerate(order):
+        try:
+            return http(url_fn(b) + '.grib2', rng, tries=3 if k == 0 else 2)
+        except Exception as e:
+            last = e
+    raise RuntimeError(f'all mirrors failed: {last}')
+
+
+def ec_index(bases, url_fn):
+    last = None
+    for b in bases:
+        try:
+            return [json.loads(l) for l in http(url_fn(b) + '.index', tries=3).decode().splitlines() if l.strip()]
+        except Exception as e:
+            last = e
+    raise RuntimeError(f'index unavailable on all mirrors: {last}')
 
 
 def ec_url(base, model, run, step):
@@ -391,15 +413,14 @@ def ec_collect(m, pool, pts, wpts, d0, now, model):
     cycles = (0, 12) if model == 'ifs' else (0, 6, 12, 18)
     chosen = None
     for run in candidate_runs(now, cycles, 5):
-        for base in ECMWF_BASES:
-            if exists(ec_url(base, model, run, full) + '.index'):
-                chosen = (run, base); break
-        if chosen:
-            break
+        bases = [b for b in ECMWF_BASES if exists(ec_url(b, model, run, full) + '.index')]
+        if bases:
+            chosen = (run, bases); break
     if not chosen:
         raise RuntimeError(f'no complete {model} run found')
-    run, base = chosen
-    m.run, m.info['base'] = run, base
+    run, bases = chosen
+    base = bases[0]
+    m.run, m.info['mirrors'] = run, bases
     s0, s1 = needed(run, d0, NDAYS)
     steps = [s for s in steps_all if s <= s1]
 
@@ -407,11 +428,7 @@ def ec_collect(m, pool, pts, wpts, d0, now, model):
         def task():
             try:
                 rng = (rec['_offset'], rec['_offset'] + rec['_length'] - 1)
-                try:
-                    buf = http(ec_url(base, model, run, step) + '.grib2', rng)
-                except RuntimeError:
-                    buf = http(ec_url(next(b for b in ECMWF_BASES if b != base), model, run, step) + '.grib2', rng, tries=3)
-                info, vals = decode(buf)
+                info, vals = decode(ec_fetch(bases, lambda b: ec_url(b, model, run, step), rng, step + rec['_offset']))
                 if var == 'msl':
                     m.add(var, info, step, sample(info, vals, wpts, 'wind'))
                 elif var in ('u850', 'v850'):
@@ -427,8 +444,7 @@ def ec_collect(m, pool, pts, wpts, d0, now, model):
     def idx_task(step):
         def task():
             try:
-                lines = http(ec_url(base, model, run, step) + '.index').decode().strip().splitlines()
-                recs = [json.loads(l) for l in lines if l.strip()]
+                recs = ec_index(bases, lambda b: ec_url(b, model, run, step))
             except Exception as e:
                 m.err(f'index {step}h: {e}'); return []
             out = []
@@ -1117,16 +1133,14 @@ def ens_url(base, run, step):
 def ecens_collect(pool, pts, wpts, d0, now, info):
     chosen = None
     for run in candidate_runs(now, (0, 12), 7):
-        for base in ECMWF_BASES:
-            if exists(ens_url(base, run, ENS_HOURS) + '.index'):
-                chosen = (run, base); break
-        if chosen:
-            break
+        bases = [b for b in ECMWF_BASES if exists(ens_url(b, run, ENS_HOURS) + '.index')]
+        if bases:
+            chosen = (run, bases); break
     if not chosen:
         raise RuntimeError('no complete ECMWF ensemble run found')
-    run, base = chosen
-    other = [b for b in ECMWF_BASES if b != base][0]
-    info['fallback'] = other
+    run, bases = chosen
+    base = bases[0]
+    info['mirrors'] = bases
     s0, _ = needed(run, d0, NDAYS)
     s1 = min(ENS_HOURS, s0 + 24 * NDAYS)
     members = {}
@@ -1145,11 +1159,7 @@ def ecens_collect(pool, pts, wpts, d0, now, info):
             m = mem_model(k)
             try:
                 rng = (rec['_offset'], rec['_offset'] + rec['_length'] - 1)
-                try:
-                    buf = http(ens_url(base, run, step) + '.grib2', rng)
-                except RuntimeError:
-                    buf = http(ens_url(other, run, step) + '.grib2', rng, tries=3)
-                inf, vals = decode(buf)
+                inf, vals = decode(ec_fetch(bases, lambda b: ens_url(b, run, step), rng, k + step))
                 m.add(var, inf, step, sample(inf, vals, wpts if var == 'msl' else pts, 'wind' if var == 'msl' else 'tn'))
             except Exception as e:
                 m.err(f'{k} {step}h {var}: {e}')
@@ -1157,16 +1167,11 @@ def ecens_collect(pool, pts, wpts, d0, now, info):
 
     def idx_task(step):
         def task():
-            recs = None
-            for b in (base, other):
-                try:
-                    recs = [json.loads(l) for l in http(ens_url(b, run, step) + '.index').decode().splitlines() if l.strip()]
-                    break
-                except Exception as e:
-                    err = e
-            if recs is None:
+            try:
+                recs = ec_index(bases, lambda b: ens_url(b, run, step))
+            except Exception as e:
                 with LOCK:
-                    info.setdefault('index_errors', []).append(f'{step}: {err}')
+                    info.setdefault('index_errors', []).append(f'{step}: {e}')
                 return []
             out = []
             boundary = (run + dt.timedelta(hours=step)).hour == 0
@@ -1188,7 +1193,7 @@ def ecens_collect(pool, pts, wpts, d0, now, info):
         tasks += f.result()
     run_tasks(pool, tasks)
     pool.shutdown()
-    info['run'] = run.strftime('%Y-%m-%d %HZ'); info['base'] = base; info['members'] = len(members)
+    info['run'] = run.strftime('%Y-%m-%d %HZ'); info['members'] = len(members)
     info['fields_ok'] = sum(m.ok for m in members.values()); info['fields_failed'] = sum(m.failed for m in members.values())
     info['errors'] = [e for m in members.values() for e in m.errors][:5]
     return run, members
