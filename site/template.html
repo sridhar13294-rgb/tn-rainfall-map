@@ -84,6 +84,7 @@ table{border-collapse:collapse;width:100%}
 .notes{font-size:12.5px;color:var(--mut);line-height:1.5}
 .topo div{display:flex;align-items:center;gap:8px;font-size:13px;margin-top:6px}
 @media (prefers-reduced-motion:no-preference){.mo .bar i{transition:height .25s}}
+.dl{display:flex;align-items:center;flex-wrap:wrap;gap:6px 8px;margin-top:12px;font-size:13.5px;color:var(--mut)}.dl span{margin-right:2px}.dl button{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:8px;padding:5px 12px;font:inherit;font-weight:600;font-size:13px;cursor:pointer}.dl small{flex-basis:100%;font-size:12px}
 </style></head><body><div class="w">
 <header class="top">
  <div class="brand"><span class="ta" lang="ta">மழை</span><h1>Tamil Nadu<br>rainfall</h1></div>
@@ -122,7 +123,7 @@ table{border-collapse:collapse;width:100%}
 </section>
 
 <section><h2>About the data</h2><p class="notes" id="notes"></p></section>
-</div><script>
+</div><script src="export.js"></script><script>
 const D=/*DATA*/;
 const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],MONL=['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -280,4 +281,9 @@ function update(){document.querySelectorAll('#seg button').forEach(b=>b.classLis
  $('selt').innerHTML=`Showing <b>${selLabel()}</b> · ${days.length} day${days.length>1?'s':''}`+(gap?`<br><span style="color:var(--warn);font-size:13px">${gap==days.length?'TN SMART has no readings for this period.':'TN SMART has no readings for '+gap+' of these days; totals leave them out.'}</span>`:'')+(mode=='days'&&anchor!=null?' <span class="m">· tap another day to make a range</span>':'');
  paint();summary();dots();show()}
 apply();update();
+mapDownload($('tl').previousElementSibling.previousElementSibling,()=>{if(vb[2]<439){vb=V0.slice();apply()}const b=bins(nDays);
+ return {svg:sv,title:'Tamil Nadu rainfall, '+selLabel(),sub:$('sum').textContent,legend:b.map((x,i)=>[x[1],(nDays==1?x[2]+' '+x[3].toLowerCase():x[2]+' mm')]),
+  legendTitle:nDays==1?'Rain in the day (mm, IMD categories)':`Rain over the ${nDays} days (mm)`,
+  note:`Source: TN SMART (TNSDMA) rain gauges, ${D.meta.gauges} gauges; 0.1° grid estimated from the 8 nearest gauges within 60 km. Data to ${fd(ND-1)} ${YR}.`+(focusD>=0?` ${D.d[focusD]} district highlighted.`:''),
+  file:'tn-rainfall-'+selLabel().replace(/[^A-Za-z0-9]+/g,'-').replace(/-+$/,'').toLowerCase()}});
 </script></body></html>

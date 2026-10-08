@@ -35,6 +35,7 @@ svg{width:100%;height:auto;display:block}
 input[type=range]{width:100%;accent-color:var(--acc)}
 button.play{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:10px;width:42px;height:36px;font-size:15px;cursor:pointer}
 #tn{background:var(--paper);border-radius:14px;border:1px solid var(--line);margin-top:6px}
+.dl{display:flex;align-items:center;flex-wrap:wrap;gap:6px 8px;margin-top:12px;font-size:13.5px;color:var(--mut)}.dl span{margin-right:2px}.dl button{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:8px;padding:5px 12px;font:inherit;font-weight:600;font-size:13px;cursor:pointer}.dl small{flex-basis:100%;font-size:12px}
 </style></head><body><div class="w">
 <header class="top">
  <div class="brand"><span class="ta" lang="ta">மழை</span><div><h1>Tamil Nadu<br>forecast</h1></div></div>
@@ -94,7 +95,7 @@ button.play{border:1px solid var(--line);background:var(--paper);color:var(--ink
 </div>
 
 <p class="m" id="notes"></p>
-</div><script>
+</div><script src="export.js"></script><script>
 const F=/*FDATA*/;
 const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
 const DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -149,6 +150,11 @@ function show(){if(sel<0)return;const c=F.cells[sel],v=$('var').value,u=SC[v].u,
  $('info').innerHTML=`<b>${c.lat.toFixed(2)}°N, ${c.lon.toFixed(2)}°E</b> · ${when}<br>Average: <b>${f1(val(c,v,'avg',k))} ${u}</b>`+(wd!=null&&!is6()?` · wind from ${Math.round(wd)}°`:'')+`<table>${rows}</table><div class="m">${is6()?'Every 6 hours, all 16 days':'16-day trend'} (average of models)</div>${bars}`}
 sv.addEventListener('click',e=>{const i=e.target.dataset&&e.target.dataset.i;if(i!=null){sel=+i;paint()}});
 $('var').onchange=paint;$('mod').onchange=paint;paint();
+mapDownload($('info').parentNode,()=>{const v=$('var').value,b=SC[v].b,[a,dd]=dl(F.dates[day]),opt=s=>s.options[s.selectedIndex].text;
+ return {svg:sv,title:'Tamil Nadu forecast: '+opt($('var'))+', '+a+' '+dd+(is6()?' '+PER[per]+' IST':''),sub:opt($('mod'))+(is6()?'':' · day runs 05:30–05:30 IST'),
+  legend:b.map(x=>[x[1],x[2]+' '+SC[v].u]),legendTitle:opt($('var')),
+  note:'Average of the latest GFS, ECMWF, ECMWF AI, ICON and GEM runs from the official open-data servers. Updated '+F.updated+'. Experimental, not an official forecast: follow IMD and TNSDMA warnings.',
+  file:'tn-forecast-'+v.replace(/_/g,'-')+'-'+F.dates[day]+(is6()?'-'+PER[per].slice(0,2):'')}});
 
 // ---------- wind animation
 const W=F.wind;
@@ -478,7 +484,13 @@ function otab(){const th=s=>`<th style="text-align:left;padding:4px 6px;border-b
  '<tr><td colspan="5" class="m" style="padding:4px 6px">State-wide averages over Tamil Nadu land. Range: 8 in 10 CFSv2 members fall inside it. Max temp: difference from normal.</td></tr>'}
 $('owk').onclick=e=>{const b=e.target.closest('[data-w]');if(b){ow=+b.dataset.w;opaint()}};$('omode').onchange=opaint;$('osrc').onchange=opaint;
 sv3.addEventListener('click',e=>{const i=e.target.dataset&&e.target.dataset.i;if(i!=null){osel=+i;opaint()}});
-otab();opaint()})();
+otab();opaint();
+mapDownload($('olg').parentNode.insertBefore(document.createElement('div'),$('oinfo')),()=>{const mode=$('omode').value,W=O.weeks[ow];
+ return {svg:sv3,title:`Tamil Nadu one-month outlook: week ${ow+1}, ${fd(W.start)} – ${fd(W.end)}`,sub:MODES[mode].t+(useFive(ow)&&(mode=='rain'||mode=='dep')?' · average of the 5 models':' · NOAA CFSv2'),
+  legend:MODES[mode].b.map(x=>[x[1],x[2]]),legendTitle:MODES[mode].t,
+  note:`NOAA CFSv2, ${O.members} members (newest run ${O.newest}); normal = NOAA CPC 1991–2020. Weeks 3–4 are a broad tendency, not an amount. Updated ${F.updated}. Experimental, not an official forecast.`,
+  file:'tn-outlook-week'+(ow+1)+'-'+mode}});
+})();
 
 // ---------- step 5: forecast check against TN SMART gauges
 (function(){const V=F.verify,el=$('vfy');if(!el)return;
