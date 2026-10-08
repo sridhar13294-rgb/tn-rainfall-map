@@ -22,7 +22,7 @@ concurrency:
 jobs:
   forecast:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 55
     steps:
       - uses: actions/checkout@v4
         with:
@@ -30,6 +30,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Install the GRIB decoder (ecCodes)
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q libeccodes-dev
+          pip install -q eccodes numpy
+          python -c "import eccodes; print('ecCodes', eccodes.codes_get_api_version())"
       - name: Download model forecasts and build the page
         run: python scripts/forecast.py
       - name: Save the forecast

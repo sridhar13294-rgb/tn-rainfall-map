@@ -45,7 +45,7 @@ button.play{border:1px solid var(--line);background:var(--card);color:var(--ink)
  <div class="wwrap" id="ww"><canvas id="wb"></canvas><canvas id="wp"></canvas><div id="wtip"></div></div>
  <div class="row" style="margin-top:8px"><button class="play" id="pl">▶</button><div style="flex:1"><input type="range" id="wt" min="0" value="0"><div class="m" id="wtl"></div></div></div>
  <div class="lg" id="wlg"></div>
- <div class="m" style="margin-top:6px">GFS model, every 6 hours for 7 days, 1° grid. Tap the map to read speed and direction.</div>
+ <div class="m" style="margin-top:6px"><span id="wsrc">NOAA GFS</span>, every 6 hours for 7 days, 1° grid. Tap the map to read speed and direction.</div>
 </div>
 
 <p class="m" id="notes"></p>
@@ -54,8 +54,8 @@ const F=/*FDATA*/;
 const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
 const DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const f1=v=>v==null?'—':(+v).toLocaleString('en',{maximumFractionDigits:1});
-$('upd').textContent='Updated '+F.updated+' · average of '+F.models.join(', ');
-$('notes').textContent='Daily values are midnight-to-midnight IST, from Open-Meteo (non-commercial use). The average uses only models that reach that day: ICON runs to about day 7, GEM to about day 10, ECMWF and ECMWF AI to about day 15, GFS to day 16. Grid 0.25° (~28 km). Wind flow: NOAA GFS via Open-Meteo.';
+$('upd').textContent='Updated '+F.updated+' · model runs: '+F.models.map(m=>m+' '+(F.runs?F.runs[m]:'')).join(', ');
+$('notes').textContent='Model data come directly from the official open-data servers: NOAA (GFS), ECMWF (IFS and AIFS "ECMWF AI"), DWD (ICON) and Environment and Climate Change Canada (GEM), each at its latest complete run. A forecast day runs 05:30 to 05:30 IST (00 to 00 UTC). The average uses only models that reach that day: ICON runs to about day 7, GEM to about day 10, ECMWF and ECMWF AI to day 15, GFS to day 16. Max/min temperature come from 3-hourly temperatures (6-hourly for ECMWF AI and for ECMWF after day 6, which can understate the afternoon peak by about 1 °C), plus the models\' own max/min where published (GFS, ECMWF). Values are interpolated to a 0.25° (~28 km) grid. Experimental and non-commercial.';
 
 // ---------- 16-day Tamil Nadu map
 const X=l=>(l-76.1)*100,Y=a=>(13.7-a)*100;
@@ -94,7 +94,7 @@ $('var').onchange=paint;$('mod').onchange=paint;paint();
 // ---------- wind animation
 const W=F.wind;
 if(!W){$('ww').innerHTML='<div class="m" style="padding:20px;color:#fff">Wind data unavailable in this run.</div>'}else{
-const LV=Object.keys(W.levels),LN={'10m':'Surface','925hPa':'925 hPa · ~750 m','850hPa':'850 hPa · ~1.5 km','700hPa':'700 hPa · ~3 km','500hPa':'500 hPa · ~5.5 km','200hPa':'200 hPa · ~12 km'};
+$('wsrc').textContent='NOAA GFS '+(W.run||'')+' run';const LV=Object.keys(W.levels),LN={'10m':'Surface','925hPa':'925 hPa · ~750 m','850hPa':'850 hPa · ~1.5 km','700hPa':'700 hPa · ~3 km','500hPa':'500 hPa · ~5.5 km','200hPa':'200 hPa · ~12 km'};
 let lev='850hPa',fr=0,playing=false;
 $('lev').innerHTML=LV.map(l=>`<button class="chip" data-l="${l}">${LN[l]||l}</button>`).join('');
 $('lev').onclick=e=>{const b=e.target.closest('[data-l]');if(b){lev=b.dataset.l;mark();reset()}};
