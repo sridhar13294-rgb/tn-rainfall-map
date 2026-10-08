@@ -1,42 +1,36 @@
-"""One-off probe: can IMD's Chennai/Karaikal radar pages and images be read automatically from outside India?"""
-import json, os, re, time, urllib.request, urllib.parse, hashlib
+"""Probe 2: radar images for each IMD radar near Tamil Nadu, their scan time (GIF comment) vs when they appear online."""
+import datetime as dt, json, os, re, time, urllib.request
 OUT = 'data/radar_probe'; os.makedirs(OUT, exist_ok=True)
 UA = 'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Mobile Safari/537.36'
-log = {}
-def get(url, n=None):
-    t = time.time()
+IDS = ['Chennai', 'Pallikaranai', 'Karaikal', 'Sriharikota', 'Kochi', 'Thiruvananthapuram']
+def get(url):
+    r = urllib.request.urlopen(urllib.request.Request(url, headers={'User-Agent': UA, 'Referer': 'https://mausam.imd.gov.in/'}), timeout=60)
+    return r.read(), r.headers.get('Last-Modified')
+def comment(b):
+    m = re.search(rb'\x21\xfe(.)', b[:4000])
+    if not m: return None
+    n = b[m.end() - 1]; return b[m.end():m.end() + n].decode('latin1')
+log = {'rounds': []}; imgs = {}
+for rid in IDS:
     try:
-        r = urllib.request.urlopen(urllib.request.Request(url, headers={'User-Agent': UA, 'Referer': 'https://mausam.imd.gov.in/'}), timeout=60)
-        b = r.read()
-        return dict(status=r.status, type=r.headers.get('Content-Type'), len=len(b), modified=r.headers.get('Last-Modified'),
-                    server=r.headers.get('Server'), secs=round(time.time() - t, 1)), b
+        h, _ = get('https://mausam.imd.gov.in/chennai/index_radar.php?id=' + rid)
+        imgs[rid] = sorted(set(re.findall(r'Radar/[A-Za-z0-9_]+\.(?:gif|png|jpg)', h)))
     except Exception as e:
-        return dict(error=str(e)[:300], secs=round(time.time() - t, 1)), b''
-ip, _ = get('https://api.ipify.org?format=json'); 
-try: log['runner_ip'] = json.loads(_.decode())
-except Exception: log['runner_ip'] = ip
-pages = ['https://mausam.imd.gov.in/chennai/index_radar.php', 'https://mausam.imd.gov.in/imd_latest/contents/index_radar.php',
-         'https://mausam.imd.gov.in/responsive/radar.php']
-imgs = set()
-for u in pages:
-    meta, b = get(u); log[u] = meta
-    if b:
-        h = b.decode('utf-8', 'replace'); open(os.path.join(OUT, re.sub(r'\W+', '_', u)[-60:] + '.html'), 'w').write(h)
-        for m in re.findall(r'''(?:src|href|data-src)\s*=\s*["']([^"']+\.(?:gif|png|jpe?g)[^"']*)["']''', h, re.I):
-            full = urllib.parse.urljoin(u, m)
-            if re.search(r'radar|dwr|ppi|caz|maxz|sri|chn|kkl|karaikal|chennai', full, re.I):
-                imgs.add(full)
-        for m in re.findall(r'''["']([^"']*(?:radar|dwr|DWR)[^"']*\.(?:gif|png|jpe?g))["']''', h):
-            imgs.add(urllib.parse.urljoin(u, m))
-log['images_found'] = sorted(imgs)
-for i, u in enumerate(sorted(imgs)[:40]):
-    meta, b = get(u); meta['sha'] = hashlib.md5(b).hexdigest()[:10] if b else None; log['img:' + u] = meta
-    if b and len(b) > 2000:
-        ext = os.path.splitext(urllib.parse.urlparse(u).path)[1] or '.img'
-        open(os.path.join(OUT, f'img{i:02d}{ext}'), 'wb').write(b)
-# second look 12 minutes later: do the images change?
-time.sleep(720)
-for u in sorted(imgs)[:40]:
-    meta, b = get(u); log['img2:' + u] = dict(modified=meta.get('modified'), sha=hashlib.md5(b).hexdigest()[:10] if b else None, err=meta.get('error'))
-json.dump(log, open(os.path.join(OUT, 'probe.json'), 'w'), indent=1)
-print(json.dumps(log, indent=1)[:5000])
+        imgs[rid] = 'ERR ' + str(e)[:200]
+log['images'] = imgs
+for rnd in range(8):
+    now = dt.datetime.now(dt.timezone.utc).strftime('%H:%M:%S'); row = {'fetched_utc': now}
+    for rid, L in imgs.items():
+        if not isinstance(L, list): continue
+        for path in L:
+            try:
+                b, lm = get('https://mausam.imd.gov.in/' + path)
+                row[path] = dict(scan=comment(b), modified=lm, len=len(b))
+                if rnd == 0:
+                    open(os.path.join(OUT, path.split('/')[-1]), 'wb').write(b)
+            except Exception as e:
+                row[path] = 'ERR ' + str(e)[:120]
+    log['rounds'].append(row)
+    json.dump(log, open(os.path.join(OUT, 'probe2.json'), 'w'), indent=1)
+    if rnd < 7: time.sleep(300)
+print(json.dumps(log['images'], indent=1))
