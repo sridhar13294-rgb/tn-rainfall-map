@@ -1,9 +1,6 @@
 name: Backfill past TN SMART days
 on:
-  workflow_dispatch:
-  push:
-    branches: [ui-v2]
-    paths: ['scripts/backfill.py']
+  workflow_dispatch:         # one-off: fetch any missing past days of the year from TN SMART
 permissions:
   contents: write
 jobs:

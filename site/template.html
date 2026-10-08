@@ -15,12 +15,12 @@ a{color:var(--acc)}
 :focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 /* header */
 .top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:18px 0 14px}
-.brand{display:flex;align-items:flex-end;gap:10px;min-width:0}
-.ta{font:700 40px/0.9 "Anek Tamil",var(--f);color:var(--acc);letter-spacing:-.5px}
-h1{font:700 19px/1.1 var(--f);font-stretch:112%;margin:0}
-.sub{margin:3px 0 0;color:var(--mut);font-size:12.5px;line-height:1.3}
+.brand{display:flex;align-items:flex-end;gap:8px;min-width:0}
+.ta{font:700 34px/0.9 "Anek Tamil",var(--f);color:var(--acc);letter-spacing:-.5px}
+h1{font:700 17.5px/1.1 var(--f);font-stretch:108%;margin:0;white-space:nowrap}
+.sub{margin:-4px 0 14px;color:var(--mut);font-size:13px;line-height:1.35}
 .tabs{display:flex;background:var(--chip);border-radius:10px;padding:3px;flex:none}
-.tabs a{padding:6px 11px;border-radius:8px;text-decoration:none;color:var(--mut);font-weight:600;font-size:13.5px}
+.tabs a{padding:6px 9px;border-radius:8px;text-decoration:none;color:var(--mut);font-weight:600;font-size:13.5px}
 .tabs a.on{background:var(--paper);color:var(--ink);box-shadow:0 1px 2px rgba(15,42,51,.12)}
 h2{font:700 16px/1.2 var(--f);font-stretch:108%;margin:0 0 10px}
 section{padding:18px 0;border-top:1px solid var(--line)}
@@ -35,7 +35,7 @@ section:first-of-type{border-top:0;padding-top:4px}
 .mo .bar{height:64px;display:flex;align-items:flex-end;border-radius:6px;background:var(--chip);overflow:hidden;outline:2px solid transparent;outline-offset:1px}
 .mo .bar i{display:block;width:100%;border-radius:4px 4px 0 0}
 .mo span{font-size:12px;font-weight:600;color:var(--mut);text-align:center}
-.mo.on .bar{outline-color:var(--ink)}
+.mo.on .bar{outline-color:var(--ink);outline-width:1.5px}
 .mo.on span{color:var(--ink)}
 .mo:disabled{cursor:default;opacity:.35}
 .pre{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
@@ -60,7 +60,7 @@ section:first-of-type{border-top:0;padding-top:4px}
 .sum strong{font-size:22px;font-weight:700;font-stretch:110%}
 .mapwrap{position:relative;background:var(--paper);border-radius:14px;overflow:hidden;border:1px solid var(--line)}
 svg{width:100%;height:auto;display:block}
-#zb{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:6px}
+#zb{position:absolute;left:10px;bottom:10px;display:flex;flex-direction:column;gap:6px}
 #zb button{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--paper);font-size:19px;cursor:pointer;box-shadow:0 1px 3px rgba(15,42,51,.12)}
 .tog{display:flex;gap:16px;margin-top:10px;font-size:13px;color:var(--mut)}
 .tog label{display:flex;align-items:center;gap:6px}
@@ -69,7 +69,7 @@ svg{width:100%;height:auto;display:block}
 .scale{display:flex;margin-top:14px;border-radius:8px;overflow:hidden}
 .scale div{flex:1;min-width:0}
 .scale i{display:block;height:12px}
-.scale span{display:block;font-size:10.5px;color:var(--mut);padding-top:3px;white-space:nowrap;overflow:hidden;text-overflow:clip}
+.scale span{display:block;font-size:10.5px;color:var(--mut);padding-top:3px;white-space:nowrap}
 .scale b{display:block;font-size:10.5px;font-weight:600;color:var(--ink)}
 .scalet{font-size:12.5px;color:var(--mut);margin-top:6px}
 /* districts */
@@ -86,9 +86,10 @@ table{border-collapse:collapse;width:100%}
 @media (prefers-reduced-motion:no-preference){.mo .bar i{transition:height .25s}}
 </style></head><body><div class="w">
 <header class="top">
- <div class="brand"><span class="ta" lang="ta">மழை</span><div><h1>Tamil Nadu rainfall</h1><p class="sub" id="sub"></p></div></div>
+ <div class="brand"><span class="ta" lang="ta">மழை</span><h1>Tamil Nadu<br>rainfall</h1></div>
  <nav class="tabs"><a class="on" href="index.html">Rainfall</a><a href="forecast.html">Forecast</a></nav>
 </header>
+<p class="sub" id="sub"></p>
 
 <section>
  <div class="seg" id="seg"><button data-m="months" class="on">Months</button><button data-m="days">Days</button></div>
@@ -211,16 +212,17 @@ $('th').onchange=e=>{const v=e.target.checked?'':'none';th.style.display=v;tt.st
 // ---------- compute a period
 let GT=[],CV=new Float32Array(D.c.length),SUS=[],sel=-1,focusD=-1,nDays=0;
 function median(a){if(!a.length)return 0;const s=[...a].sort((x,y)=>x-y),h=s.length>>1;return s.length%2?s[h]:(s[h-1]+s[h])/2}
-function compute(days){const n=days.length;nDays=n;
+let gap=0;
+function compute(all){const days=all.filter(k=>D.sd[k]!=null);gap=all.length-days.length;const n=days.length;nDays=all.length;
  GT=D.v.map(row=>{let t=0,mi=0;for(const k of days){const v=row[k];if(v<0)mi++;else t+=v}if(mi>0.1*n)return null;return mi?t/10*n/(n-mi):t/10});
  const byD={};GT.forEach((v,i)=>{if(v!=null)(byD[D.st[i][1]]=byD[D.st[i][1]]||[]).push(v)});const med={};for(const d in byD)med[d]=median(byD[d]);
- const sc=n/30;SUS=GT.map((v,i)=>{if(v==null)return 0;const md=med[D.st[i][1]]||0;if(n>=20&&v==0&&md>=20)return 2;if(v>5*Math.max(md,20*sc)&&v>Math.max(200,1000*sc))return 1;return 0});
+ const sc=Math.max(n,1)/30;SUS=GT.map((v,i)=>{if(v==null)return 0;const md=med[D.st[i][1]]||0;if(n>=20&&v==0&&md>=20)return 2;if(v>5*Math.max(md,20*sc)&&v>Math.max(200,1000*sc))return 1;return 0});
  D.c.forEach((c,ci)=>{const ix=c[3],ds=c[4],P=[];for(let j=0;j<ix.length&&P.length<8;j++){const g=ix[j];if(GT[g]!=null&&!SUS[g])P.push([ds[j],GT[g]])}
   if(!P.length){CV[ci]=NaN;return}if(P[0][0]<.5){CV[ci]=P[0][1];return}let a=0,b=0;P.forEach(([d,v])=>{const w=1/(d*d);a+=w*v;b+=w});CV[ci]=a/b})}
 function paint(){const b=bins(nDays),cnt=b.map(()=>0);
  R.forEach((r,i)=>{const v=CV[i];if(isNaN(v)){r.setAttribute('fill','#d6dbd9');return}const k=cls(v,b);cnt[k]++;r.setAttribute('fill',b[k][1]);r.setAttribute('fill-opacity',focusD<0||D.c[i][2]==focusD?1:.28)});
- $('lg').innerHTML=b.map((x,i)=>`<div><i style="background:${x[1]}"></i><span>${x[2]}</span></div>`).join('');
- $('lt').textContent=nDays==1?'mm in the day, IMD categories: '+IMD.map(x=>x[3]).slice(1).join(', ').toLowerCase():'mm over the '+nDays+' days';
+ $('lg').innerHTML=b.map((x,i)=>`<div><i style="background:${x[1]}"></i><span>${nDays==1?(i?x[0]:'0'):x[0]}</span></div>`).join('');
+ $('lt').textContent=nDays==1?'mm in the day, IMD categories from no rain to extremely heavy (204.5+). Colours show the lower edge of each band.':`mm over the ${nDays} days. Each colour starts at the number under it; the last band is ${b[b.length-1][0]} mm and above.`;
  R.forEach(r=>r.removeAttribute('stroke'));if(sel>=0){R[sel].setAttribute('stroke','#000');R[sel].setAttribute('stroke-width',1.5)}}
 function summary(){const vals=[...CV].filter(v=>!isNaN(v)),avg=vals.reduce((a,b)=>a+b,0)/Math.max(1,vals.length);
  const dist=D.d.map((_,di)=>{let s=0,n=0;D.c.forEach((c,ci)=>{if(c[2]==di&&!isNaN(CV[ci])){s+=CV[ci];n++}});return n?s/n:null});
@@ -230,8 +232,10 @@ function summary(){const vals=[...CV].filter(v=>!isNaN(v)),avg=vals.reduce((a,b)
  // best gauge per district
  const top={};GT.forEach((v,i)=>{if(v==null||SUS[i])return;const d=D.st[i][1];if(top[d]==null||v>GT[top[d]])top[d]=i});
  const mx=Math.max(1,...order.map(x=>x[1])),b=bins(nDays);
- $('dt').innerHTML=order.map(([n,v,i])=>`<tr data-d="${i}" class="${i==focusD?'on':''}"><td class="n">${n}<div class="g">${top[i]!=null?'Top gauge: '+D.st[top[i]][0]+', '+f0(GT[top[i]])+' mm':''}</div></td><td class="v">${f0(v)} mm</td><td><div class="bar" style="width:${Math.max(2,v/mx*100)}%;background:${b[cls(v,b)][1]};outline:1px solid rgba(15,42,51,.12)"></div></td></tr>`).join('')}
-$('dt').onclick=e=>{const tr=e.target.closest('tr');if(!tr)return;const d=+tr.dataset.d;focusD=focusD==d?-1:d;paint();summary();if(focusD>=0)$('mw').scrollIntoView({behavior:'smooth',block:'center'})};
+ const showN=allD||focusD>=0?order.length:10;
+ $('dt').innerHTML=order.slice(0,showN).map(([n,v,i])=>`<tr data-d="${i}" class="${i==focusD?'on':''}"><td class="n">${n}<div class="g">${top[i]!=null?'Top gauge: '+D.st[top[i]][0]+', '+f0(GT[top[i]])+' mm':''}</div></td><td class="v">${f0(v)} mm</td><td><div class="bar" style="width:${Math.max(2,v/mx*100)}%;background:${b[cls(v,b)][1]};outline:1px solid rgba(15,42,51,.12)"></div></td></tr>`).join('')+(showN<order.length?`<tr class="more"><td colspan="3" style="text-align:center;color:var(--acc);font-weight:600;padding:10px 0">Show all ${order.length} districts</td></tr>`:'')}
+let allD=false;
+$('dt').onclick=e=>{const tr=e.target.closest('tr');if(!tr)return;if(tr.classList.contains('more')){allD=true;summary();return}const d=+tr.dataset.d;focusD=focusD==d?-1:d;paint();summary();if(focusD>=0)$('mw').scrollIntoView({behavior:'smooth',block:'center'})};
 function show(){if(sel<0)return;const c=D.c[sel];
  $('info').innerHTML=`<b>${f1(CV[sel])} mm</b> · ${D.d[c[2]]} · ${(c[1]+.05).toFixed(2)}°N ${(c[0]+.05).toFixed(2)}°E<div class="near">${near(c)}</div>`}
 function near(c){const L=c[3].slice(0,4).map((g,j)=>[c[4][j],g]).filter(x=>x[0]<=15).slice(0,3);
@@ -273,7 +277,7 @@ function update(){document.querySelectorAll('#seg button').forEach(b=>b.classLis
  document.querySelectorAll('#strip .mo').forEach(b=>{const on=selM.has(+b.dataset.m);b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
  if(mode=='days')drawCal();
  const days=selDays();compute(days);
- $('selt').innerHTML=`Showing <b>${selLabel()}</b> · ${days.length} day${days.length>1?'s':''}`+(mode=='days'&&anchor!=null?' <span class="m">· tap another day to make a range</span>':'');
+ $('selt').innerHTML=`Showing <b>${selLabel()}</b> · ${days.length} day${days.length>1?'s':''}`+(gap?`<br><span style="color:var(--warn);font-size:13px">${gap==days.length?'TN SMART has no readings for this period.':'TN SMART has no readings for '+gap+' of these days; totals leave them out.'}</span>`:'')+(mode=='days'&&anchor!=null?' <span class="m">· tap another day to make a range</span>':'');
  paint();summary();dots();show()}
 apply();update();
 </script></body></html>

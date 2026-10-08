@@ -1,13 +1,9 @@
-"""Daily update for the Tamil Nadu Rainfall Grid Map.
+"""Rainfall map update (runs twice a day).
 
-1. Downloads TN SMART's station-wise rainfall page (station name, district, lat/lon, today's rain).
-2. Saves that day's rainfall to data/daily/YYYY-MM-DD.json and station positions to data/stations.json.
-3. Matches the monthly-report stations (data/baseline.json) to TN SMART stations to give them real GPS.
-4. Adds daily rain after the report's sync date to each station's monthly totals.
-5. Interpolates a 0.1 degree grid (inverse distance) and writes site/index.html.
-
-If TN SMART can't be reached, the map is rebuilt from the data already saved and the problem is
-written to data/status.json, so a failed day never breaks the site.
+1. Downloads TN SMART's station-wise rainfall page for today, and re-reads the two previous days
+   (late or corrected readings), saving each day to data/daily/YYYY-MM-DD.json and gauge positions to data/stations.json.
+2. Builds site/index.html with every day of the year per gauge, so the page can add up any months, dates or ranges.
+   scripts/backfill.py fills in past days that are missing.
 """
 import datetime as dt, difflib, html, json, math, os, re, statistics, sys, time, urllib.parse, urllib.request
 from html.parser import HTMLParser
@@ -250,7 +246,13 @@ def main():
             v = daily.get(k, {}).get(g['id'])
             row.append(-1 if v is None else int(round(v * 10)))
         vals.append(row)
-    missing_days = [(start + dt.timedelta(days=k)).isoformat() for k in range(ndays) if k not in daily]
+    # days TN SMART has no readings for (outages): fewer than half the gauges reported
+    missing_days = [(start + dt.timedelta(days=k)).isoformat() for k in range(ndays)
+                    if sum(r[k] >= 0 for r in vals) < 0.5 * len(gauges)]
+    for k in range(ndays):
+        if (start + dt.timedelta(days=k)).isoformat() in missing_days:
+            for r in vals:
+                r[k] = -1
 
     # 4. for every 0.1 degree cell, its 12 nearest gauges within 60 km (the page picks the 8 nearest with data)
     cells = []
@@ -265,6 +267,8 @@ def main():
     sd = []
     for k in range(ndays):
         v = [r[k] for r in vals if r[k] >= 0]
+        if len(v) < 0.5 * len(gauges):
+            v = []
         sd.append(round(sum(v) / len(v) / 10, 1) if v else None)
 
     upd = dt.datetime.now(IST).strftime('%d %b %Y, %H:%M IST')
@@ -272,7 +276,9 @@ def main():
         'year': year, 'start': start.isoformat(), 'last': last.isoformat(), 'updated': upd, 'gauges': len(gauges),
         'missing': missing_days,
         'notes': (f"Daily readings from the {len(gauges)} TN SMART (TNSDMA) rain gauges with a known position, for every day "
-                  f"from 1 Jan {year}. A TN SMART day is the 24 hours ending 08:30 IST on that date. "
+                  f"from 1 Jan {year}, read from TN SMART's station-wise page for each date. TN SMART has no readings for "
+                  f"{len(missing_days)} day(s) this year (shown hatched in the calendar); totals that include them cover only the "
+                  f"days with readings. "
                   f"For the period you choose, each gauge's rain is added up; a gauge missing more than 10% of the days is left out, "
                   f"and smaller gaps are filled in proportion. Over 20 days or more, a gauge showing 0 mm while its district's median "
                   f"gauge had 20 mm or more is treated as not reporting. A gauge more than 5 times its district median "
