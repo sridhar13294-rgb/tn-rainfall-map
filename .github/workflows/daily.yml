@@ -43,6 +43,9 @@ jobs:
 
   publish:
     needs: update
+    concurrency:            # the rainfall and forecast robots publish one at a time
+      group: pages-deploy
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     environment:
       name: github-pages
