@@ -210,165 +210,82 @@ def main():
     stations = load(P('data/stations.json'), {})
     overrides = load(P('data/match_overrides.json'), {})
 
-    # 1-2. today's TN SMART page
+    # 1-2. TN SMART: today's page, plus the two previous days again (late or corrected readings)
     try:
         page = open(os.environ['TNSMART_HTML']).read() if os.environ.get('TNSMART_HTML') else fetch(URL)
         os.makedirs(P('data/raw'), exist_ok=True)
         open(P('data/raw/latest.html'), 'w').write(page)
-        date, rows = parse_page(page, districts + list(ALIASES))
-        for r in rows:
-            r['district'] = ALIASES.get(r['district'], r['district'])
+        date, rows = save_day(page, districts, stations)
         status.update(page_date=date, rows_on_page=len(rows), rows_with_rain=sum(r['rain'] is not None for r in rows))
-        if not rows:
-            raise RuntimeError('page downloaded but no station rows recognised (layout may have changed)')
-        for r in rows:
-            stations[r['id']] = {k: r[k] for k in ('id', 'name', 'district', 'taluk', 'lat', 'lon')}
-        if date:
-            save(P('data/daily', date + '.json'), {r['id']: r['rain'] for r in rows if r['rain'] is not None})
-        save(P('data/stations.json'), stations)
         status['tnsmart'] = 'ok'
+        if date and not os.environ.get('TNSMART_HTML'):
+            for k in (1, 2):
+                d = (dt.date.fromisoformat(date) - dt.timedelta(days=k)).isoformat()
+                try:
+                    save_day(fetch_date(d), districts, stations, want=d)
+                except Exception as e:
+                    status[f'refresh_{d}'] = f'FAILED: {e}'
+        save(P('data/stations.json'), stations)
     except Exception as e:
         status['tnsmart'] = f'FAILED: {e}'
         print('TN SMART step failed:', e, file=sys.stderr)
 
-    # 3. give monthly-report stations real coordinates
-    sync = dt.date.fromisoformat(base['synced_till'])
-    year = sync.year
-    matches = match(base['stations'], stations, overrides)
-    save(P('data/match_report.json'), [{'district': b['district'], 'station': b['station'], 'tnsmart_id': m[0],
-          'tnsmart_name': stations.get(m[0], {}).get('name') if m[0] else None, 'score': round(m[1], 2), 'how': m[2]}
-          for b, m in zip(base['stations'], matches)])
-
-    # 4. monthly series per gauge
+    # 3. every saved day of the year, per gauge
+    files = sorted(f[:10] for f in os.listdir(P('data/daily')) if f.endswith('.json'))
+    last = dt.date.fromisoformat(files[-1])
+    year = last.year
+    start = dt.date(year, 1, 1)
+    ndays = (last - start).days + 1
     daily = {}
-    if os.path.isdir(P('data/daily')):
-        for f in sorted(os.listdir(P('data/daily'))):
-            d = dt.date.fromisoformat(f[:10])
-            if d > sync and d.year == year:
-                daily[d] = load(P('data/daily', f), {})
-    last = max([sync] + list(daily))
-    nm = last.month
-    first_daily = min(daily) if daily else None
-
-    def add_daily(series, sid):
-        for d, vals in daily.items():
-            if sid in vals and series[d.month - 1] is not None:
-                series[d.month - 1] += vals[sid]
-
-    # cell-centre centroid of each district, for report stations without GPS
-    cen = {}
-    for lo, la, di in geo['cells']:
-        cen.setdefault(di, []).append((lo + .05, la + .05))
-    cen = {districts[k]: (sum(p[0] for p in v) / len(v), sum(p[1] for p in v) / len(v)) for k, v in cen.items()}
-
-    gauges, used = [], set()
-    for b, (sid, sc, how) in zip(base['stations'], matches):
-        series = [round(x, 1) for x in b['m'][:nm]]
-        if sid and sid in stations:
-            s = stations[sid]; used.add(sid)
-            add_daily(series, sid)
-            gauges.append(dict(name=b['station'], district=b['district'], lon=s['lon'], lat=s['lat'], gps=1, m=series))
-        else:
-            # no GPS: unknown position and no daily feed, so months after the report are unknown
-            if last > sync:
-                for k in range(sync.month - 1, nm):
-                    series[k] = None
-            gauges.append(dict(name=b['station'], district=b['district'], lon=None, lat=None, gps=0, m=series))
-    for sid, s in stations.items():   # TN SMART gauges not in the monthly report: only whole months after first daily record
-        if sid in used or s['district'] not in districts:
-            continue
-        series = [None] * nm
-        for k in range(nm):
-            if first_daily and dt.date(year, k + 1, 1) >= first_daily:
-                series[k] = 0.0
-        add_daily(series, sid)
-        if any(v is not None for v in series):
-            gauges.append(dict(name=s['name'], district=s['district'], lon=s['lon'], lat=s['lat'], gps=1, m=series))
-
-    # spread no-GPS gauges around their district centre (only used where a district has few GPS gauges)
-    nogps = {}
+    for f in files:
+        d = dt.date.fromisoformat(f)
+        if d.year == year:
+            daily[(d - start).days] = load(P('data/daily', f + '.json'), {})
+    gauges = [s for s in sorted(stations.values(), key=lambda s: (s['district'] or '', s['name']))
+              if s['district'] in districts and s.get('lat') and s.get('lon')]
+    vals = []
     for g in gauges:
-        if not g['gps']:
-            nogps.setdefault(g['district'], []).append(g)
-    for d, L in nogps.items():
-        c = cen.get(d, (78.5, 11))
-        for i, g in enumerate(sorted(L, key=lambda g: g['name'])):
-            r, a = .3 * math.sqrt((i + .5) / len(L)), i * 2.39996
-            g['lon'], g['lat'] = c[0] + r * math.cos(a) / .98, c[1] + r * math.sin(a)
+        row = []
+        for k in range(ndays):
+            v = daily.get(k, {}).get(g['id'])
+            row.append(-1 if v is None else int(round(v * 10)))
+        vals.append(row)
+    missing_days = [(start + dt.timedelta(days=k)).isoformat() for k in range(ndays) if k not in daily]
 
-    # an exact 0 mm month while the district's median gauge had 20+ mm means the gauge wasn't reporting
-    # (newly installed "_2" gauges, ARG gaps): treat it as missing, not as a dry month
-    n_gap = 0
-    for k in range(nm):
-        vals = {}
-        for g in gauges:
-            if g['m'][k] is not None:
-                vals.setdefault(g['district'], []).append(g['m'][k])
-        med = {d: statistics.median(v) for d, v in vals.items()}
-        for g in gauges:
-            if g['m'][k] == 0 and med.get(g['district'], 0) >= 20:
-                g['m'][k] = None; n_gap += 1
-
-    # suspect readings: > 1000 mm in a month and > 5x the district median for that month
-    for k in range(nm):
-        vals = {}
-        for g in gauges:
-            if g['m'][k] is not None:
-                vals.setdefault(g['district'], []).append(g['m'][k])
-        med = {d: statistics.median(v) for d, v in vals.items()}
-        for g in gauges:
-            v = g['m'][k]
-            if v is not None and v > 1000 and v > 5 * max(med[g['district']], 20):
-                g.setdefault('suspect', []).append(k)
-
-    gps_count = {}
-    for g in gauges:
-        if g['gps']:
-            gps_count[g['district']] = gps_count.get(g['district'], 0) + 1
-
-    def usable(g, k):
-        return g['m'][k] is not None and k not in g.get('suspect', []) and (g['gps'] or gps_count.get(g['district'], 0) < 5)
-
-    # 5. inverse-distance grid: 8 nearest usable gauges within 60 km, power 2
+    # 4. for every 0.1 degree cell, its 12 nearest gauges within 60 km (the page picks the 8 nearest with data)
     cells = []
     for lo, la, di in geo['cells']:
         cx, cy = lo + .05, la + .05
-        near = sorted(((km(cx, cy, g['lon'], g['lat']), g) for g in gauges if abs(g['lat'] - cy) < .6 and abs(g['lon'] - cx) < .7),
-                      key=lambda t: t[0])
-        vals = []
-        for k in range(nm):
-            pts = [(d, g['m'][k]) for d, g in near if usable(g, k)][:8]
-            if not pts:
-                vals.append(0.0); continue
-            if pts[0][0] < .5:
-                vals.append(round(pts[0][1], 1)); continue
-            w = [1 / d ** 2 for d, _ in pts]
-            vals.append(round(sum(wi * v for wi, (_, v) in zip(w, pts)) / sum(w), 1))
-        cells.append([lo, la, di] + vals + [round(sum(vals), 1)])
+        near = sorted(((km(cx, cy, g['lon'], g['lat']), i) for i, g in enumerate(gauges)
+                       if abs(g['lat'] - cy) < .6 and abs(g['lon'] - cx) < .7), key=lambda t: t[0])
+        near = [(d, i) for d, i in near if d <= 60][:12]
+        cells.append([lo, la, di, [i for _, i in near], [round(d, 1) for d, _ in near]])
 
-    n_gps = sum(g['gps'] for g in gauges)
-    n_match = sum(1 for m in matches if m[0])
-    n_susp = sum(1 for g in gauges if g.get('suspect'))
+    # state-average gauge rain per day (for the calendar shading)
+    sd = []
+    for k in range(ndays):
+        v = [r[k] for r in vals if r[k] >= 0]
+        sd.append(round(sum(v) / len(v) / 10, 1) if v else None)
+
     upd = dt.datetime.now(IST).strftime('%d %b %Y, %H:%M IST')
     meta = {
-        'year': year,
-        'subtitle': f"0.1° grid (~11 km) · TN SMART rain gauges · data to {last.strftime('%d %b %Y')} · updated {upd}",
-        'notes': (f"Monthly totals come from the TNSDMA TN SMART monthly report (synced till {sync.strftime('%d %b %Y')}) "
-                  f"plus TN SMART daily station readings saved automatically each day since then. "
-                  f"{n_gps} gauges are placed at their real TN SMART latitude/longitude ({n_match} of {len(base['stations'])} report "
-                  f"stations matched by name). Report stations that could not be matched are only used in districts with "
-                  f"fewer than 5 located gauges. Grid values are inverse-distance estimates from the 8 nearest gauges within 60 km. "
-                  f"{n_gap} gauge-months showing 0 mm while their district had rain are treated as missing. "
-                  f"{n_susp} suspect gauge reading(s) (over 1,000 mm in a month and over 5× the district median) are excluded. "
-                  f"Hill zones are hand-drawn approximations; the hill shading is illustrative relief and does not change the rainfall colours."),
+        'year': year, 'start': start.isoformat(), 'last': last.isoformat(), 'updated': upd, 'gauges': len(gauges),
+        'missing': missing_days,
+        'notes': (f"Daily readings from the {len(gauges)} TN SMART (TNSDMA) rain gauges with a known position, for every day "
+                  f"from 1 Jan {year}. A TN SMART day is the 24 hours ending 08:30 IST on that date. "
+                  f"For the period you choose, each gauge's rain is added up; a gauge missing more than 10% of the days is left out, "
+                  f"and smaller gaps are filled in proportion. Over 20 days or more, a gauge showing 0 mm while its district's median "
+                  f"gauge had 20 mm or more is treated as not reporting. A gauge more than 5 times its district median "
+                  f"(and well above normal amounts) is flagged as suspect and left out of the grid. Grid squares (0.1°, ~11 km) "
+                  f"are inverse-distance estimates from the 8 nearest gauges within 60 km. Hill zones are hand-drawn "
+                  f"approximations; the hill shading is illustrative relief and does not change the rainfall colours."),
     }
-    D = dict(g=geo['g'], tn=geo['tn'], d=districts, ct=geo['ct'], c=cells, mn=MONTHS[:nm], meta=meta,
-             st=[[g['name'], districts.index(g['district']) if g['district'] in districts else 0, round(g['lon'], 4), round(g['lat'], 4),
-                  g['gps'], 1 if g.get('suspect') else 0] + g['m'] for g in gauges])
+    D = dict(g=geo['g'], tn=geo['tn'], d=districts, ct=geo['ct'], meta=meta, sd=sd,
+             st=[[g['name'], districts.index(g['district']), round(g['lon'], 4), round(g['lat'], 4)] for g in gauges],
+             v=vals, c=cells)
     tpl = open(P('site/template.html')).read()
     open(P('site/index.html'), 'w').write(tpl.replace('/*DATA*/', json.dumps(D, separators=(',', ':'), ensure_ascii=False)))
-    status.update(data_to=str(last), months=nm, gauges=len(gauges), gauges_with_gps=n_gps, report_matched=n_match,
-                  report_total=len(base['stations']), suspect=n_susp, zero_gaps=n_gap, daily_files=len(daily))
+    status.update(data_to=str(last), days=ndays, days_missing=len(missing_days), gauges=len(gauges))
     save(P('data/status.json'), status)
     print(json.dumps(status, indent=1))
 

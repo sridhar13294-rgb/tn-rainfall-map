@@ -1,44 +1,190 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Tamil Nadu Rainfall Grid Map 2026</title>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Tamil Nadu Rainfall</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anek+Latin:wdth,wght@75..125,300..800&family=Anek+Tamil:wght@600..800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f4f6f9;--card:#fff;--ink:#14213d;--mut:#667085;--line:#dde3ec;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f141b;--card:#18202b;--ink:#e6ebf2;--mut:#93a0b3;--line:#2a3544}}
-:root[data-theme="dark"]{--bg:#0f141b;--card:#18202b;--ink:#e6ebf2;--mut:#93a0b3;--line:#2a3544}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-.w{max-width:560px;margin:0 auto;padding:12px}
-h1{font-size:18px;margin:0}small,.m{color:var(--mut);font-size:12px}
-select{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:7px 8px;width:100%;margin:10px 0}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px}
+:root{--bg:#ecf0ee;--paper:#f8faf9;--ink:#0f2a33;--mut:#5b6e73;--line:#d3dcda;--acc:#0f6e7a;--acc-ink:#fff;--warn:#a3402a;--chip:#e1e8e6;
+ --f:"Anek Latin",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c1a1e;--paper:#12242a;--ink:#e3ecea;--mut:#8fa5a8;--line:#24393f;--acc:#5cc2c9;--acc-ink:#062026;--warn:#e07b5f;--chip:#1b3037;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0c1a1e;--paper:#12242a;--ink:#e3ecea;--mut:#8fa5a8;--line:#24393f;--acc:#5cc2c9;--acc-ink:#062026;--warn:#e07b5f;--chip:#1b3037;color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 var(--f);font-variant-numeric:tabular-nums;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+button{font:inherit;color:inherit}
+.w{max-width:640px;margin:0 auto;padding:0 16px 40px}
+a{color:var(--acc)}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+/* header */
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:18px 0 14px}
+.brand{display:flex;align-items:flex-end;gap:10px;min-width:0}
+.ta{font:700 40px/0.9 "Anek Tamil",var(--f);color:var(--acc);letter-spacing:-.5px}
+h1{font:700 19px/1.1 var(--f);font-stretch:112%;margin:0}
+.sub{margin:3px 0 0;color:var(--mut);font-size:12.5px;line-height:1.3}
+.tabs{display:flex;background:var(--chip);border-radius:10px;padding:3px;flex:none}
+.tabs a{padding:6px 11px;border-radius:8px;text-decoration:none;color:var(--mut);font-weight:600;font-size:13.5px}
+.tabs a.on{background:var(--paper);color:var(--ink);box-shadow:0 1px 2px rgba(15,42,51,.12)}
+h2{font:700 16px/1.2 var(--f);font-stretch:108%;margin:0 0 10px}
+section{padding:18px 0;border-top:1px solid var(--line)}
+section:first-of-type{border-top:0;padding-top:4px}
+.m{color:var(--mut);font-size:13px}
+/* period picker */
+.seg{display:inline-flex;background:var(--chip);border-radius:10px;padding:3px;margin-bottom:12px}
+.seg button{border:0;background:none;padding:6px 16px;border-radius:8px;font-weight:600;font-size:14px;color:var(--mut);cursor:pointer}
+.seg button.on{background:var(--paper);color:var(--ink);box-shadow:0 1px 2px rgba(15,42,51,.12)}
+.strip{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;align-items:end}
+.mo{border:0;background:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:stretch;gap:5px}
+.mo .bar{height:64px;display:flex;align-items:flex-end;border-radius:6px;background:var(--chip);overflow:hidden;outline:2px solid transparent;outline-offset:1px}
+.mo .bar i{display:block;width:100%;border-radius:4px 4px 0 0}
+.mo span{font-size:12px;font-weight:600;color:var(--mut);text-align:center}
+.mo.on .bar{outline-color:var(--ink)}
+.mo.on span{color:var(--ink)}
+.mo:disabled{cursor:default;opacity:.35}
+.pre{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.pre button{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer}
+.pre button:active{background:var(--chip)}
+.calhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.calhead b{font-size:15px}
+.calhead button{border:1px solid var(--line);background:var(--paper);border-radius:8px;width:36px;height:32px;font-size:18px;cursor:pointer}
+.calhead button:disabled{opacity:.3}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal .h{font-size:11px;color:var(--mut);text-align:center;padding-bottom:2px}
+.day{border:0;border-radius:6px;aspect-ratio:1/0.82;padding:3px 0 0;font-size:13px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;line-height:1.1;background:var(--chip)}
+.day small{font-size:9.5px;font-weight:500;opacity:.8}
+.day.in{box-shadow:inset 0 0 0 2px var(--ink)}
+.day.end{background:var(--ink)!important;color:var(--paper)!important}
+.day:disabled{opacity:.3;cursor:default}
+.day.nodata{background:repeating-linear-gradient(45deg,var(--chip),var(--chip) 3px,transparent 3px,transparent 6px)}
+.selt{margin:14px 0 0;font-size:14px}
+.selt b{font-weight:700}
+/* map */
+.sum{margin:0 0 12px;font-size:15.5px;line-height:1.45}
+.sum strong{font-size:22px;font-weight:700;font-stretch:110%}
+.mapwrap{position:relative;background:var(--paper);border-radius:14px;overflow:hidden;border:1px solid var(--line)}
 svg{width:100%;height:auto;display:block}
-#info{min-height:40px;margin:8px 2px;font-size:13px}
-.lg{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;margin-top:10px}
-.lg div{display:flex;align-items:center;gap:7px;font-size:12px}.lg i{width:16px;height:16px;border-radius:3px;flex:none;border:1px solid rgba(0,0,0,.15)}.lg b{margin-left:auto;color:var(--mut);font-weight:400}
+#zb{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:6px}
+#zb button{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--paper);font-size:19px;cursor:pointer;box-shadow:0 1px 3px rgba(15,42,51,.12)}
+.tog{display:flex;gap:16px;margin-top:10px;font-size:13px;color:var(--mut)}
+.tog label{display:flex;align-items:center;gap:6px}
+#info{margin-top:12px;font-size:14px;min-height:22px}
+#info .near{color:var(--mut);font-size:13px;margin-top:2px}
+.scale{display:flex;margin-top:14px;border-radius:8px;overflow:hidden}
+.scale div{flex:1;min-width:0}
+.scale i{display:block;height:12px}
+.scale span{display:block;font-size:10.5px;color:var(--mut);padding-top:3px;white-space:nowrap;overflow:hidden;text-overflow:clip}
+.scale b{display:block;font-size:10.5px;font-weight:600;color:var(--ink)}
+.scalet{font-size:12.5px;color:var(--mut);margin-top:6px}
+/* districts */
+table{border-collapse:collapse;width:100%}
+#dt td{padding:7px 0;border-bottom:1px solid var(--line);vertical-align:middle;font-size:14px}
+#dt tr{cursor:pointer}
+#dt tr.on td{background:var(--chip)}
+#dt td.n{width:38%;font-weight:600;padding-left:4px}
+#dt td.v{width:72px;text-align:right;padding-right:10px;font-weight:600}
+#dt .bar{height:10px;border-radius:3px}
+#dt .g{font-size:12px;color:var(--mut)}
+.notes{font-size:12.5px;color:var(--mut);line-height:1.5}
+.topo div{display:flex;align-items:center;gap:8px;font-size:13px;margin-top:6px}
+@media (prefers-reduced-motion:no-preference){.mo .bar i{transition:height .25s}}
 </style></head><body><div class="w">
-<div class="m" style="text-align:right"><a href="forecast.html" style="color:#0b5cab">Weather forecast →</a></div><h1>Tamil Nadu Rainfall Grid Map — <span id="yr"></span><br><small id="sub"></small></h1>
-<select id="mo"></select>
-<label class="m"><input type="checkbox" id="tg" checked> Show cities</label> &nbsp; <label class="m"><input type="checkbox" id="th" checked> Ghats &amp; hills</label>
-<div class="card"><svg id="sv" viewBox="0 0 440 575"></svg></div>
-<div id="info" class="m">Tap a grid cell to see its rainfall. Pinch, scroll or use + / − to zoom; zoom in to see individual rain gauges.</div>
-<div class="card"><div style="font-weight:600;font-size:13px" id="lt"></div><div class="lg" id="lg"></div></div>
-<div class="card" id="tl" style="margin-top:10px"><div style="font-weight:600;font-size:13px">Topography (approximate)</div>
-<div class="lg" style="grid-template-columns:1fr"><div><svg width="22" height="16" viewBox="0 0 22 16" style="width:22px;flex:none"><defs><filter id="sw1" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.25" numOctaves="4" seed="4" result="n"/><feDiffuseLighting in="n" surfaceScale="7" lighting-color="#fff" result="l"><feDistantLight azimuth="315" elevation="45"/></feDiffuseLighting><feComponentTransfer in="l" result="r"><feFuncR type="linear" slope="1.5" intercept="-0.56"/><feFuncG type="linear" slope="1.5" intercept="-0.56"/><feFuncB type="linear" slope="1.5" intercept="-0.56"/></feComponentTransfer><feFlood flood-color="#9fd8c2" result="b"/><feBlend in="r" in2="b" mode="soft-light" result="o"/><feComposite in="o" in2="SourceAlpha" operator="in"/></filter></defs><rect x="2" y="2" width="18" height="12" rx="3" fill="#000" filter="url(#sw1)"/></svg>High ranges – peaks above ~1,500 m</div>
-<div><svg width="22" height="16" viewBox="0 0 22 16" style="width:22px;flex:none"><defs><filter id="sw2" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.25" numOctaves="4" seed="5" result="n"/><feDiffuseLighting in="n" surfaceScale="3" lighting-color="#fff" result="l"><feDistantLight azimuth="315" elevation="45"/></feDiffuseLighting><feComponentTransfer in="l" result="r"><feFuncR type="linear" slope="1.5" intercept="-0.56"/><feFuncG type="linear" slope="1.5" intercept="-0.56"/><feFuncB type="linear" slope="1.5" intercept="-0.56"/></feComponentTransfer><feFlood flood-color="#9fd8c2" result="b"/><feBlend in="r" in2="b" mode="soft-light" result="o"/><feComposite in="o" in2="SourceAlpha" operator="in"/></filter></defs><rect x="2" y="2" width="18" height="12" rx="3" fill="#000" filter="url(#sw2)"/></svg>Hills &amp; plateaus – ~600 to 1,500 m</div></div></div>
-<p class="m" id="notes"></p>
+<header class="top">
+ <div class="brand"><span class="ta" lang="ta">மழை</span><div><h1>Tamil Nadu rainfall</h1><p class="sub" id="sub"></p></div></div>
+ <nav class="tabs"><a class="on" href="index.html">Rainfall</a><a href="forecast.html">Forecast</a></nav>
+</header>
+
+<section>
+ <div class="seg" id="seg"><button data-m="months" class="on">Months</button><button data-m="days">Days</button></div>
+ <div id="pm"><div class="strip" id="strip"></div>
+  <div class="pre" id="pre"></div></div>
+ <div id="pd" hidden><div class="calhead"><button id="pv" aria-label="Previous month">‹</button><b id="calt"></b><button id="nx" aria-label="Next month">›</button></div>
+  <div class="cal" id="cal"></div>
+  <div class="pre" id="qk"></div></div>
+ <p class="selt" id="selt"></p>
+</section>
+
+<section>
+ <p class="sum" id="sum"></p>
+ <div class="mapwrap" id="mw"><svg id="sv" viewBox="0 0 440 575"></svg><div id="zb"><button data-z="1.6" aria-label="Zoom in">+</button><button data-z="0.625" aria-label="Zoom out">−</button><button data-z="0" aria-label="Reset zoom">⌂</button></div></div>
+ <div class="scale" id="lg"></div><div class="scalet" id="lt"></div>
+ <div id="info">Tap a square for its rainfall and the nearest gauges. Zoom in to see each gauge.</div>
+ <div class="tog"><label><input type="checkbox" id="tg" checked> Cities</label><label><input type="checkbox" id="th" checked> Hills</label></div>
+</section>
+
+<section>
+ <h2>Districts</h2>
+ <p class="m" style="margin:-4px 0 8px">Average over each district's grid squares. Tap a district to pick it out on the map.</p>
+ <table id="dt"></table>
+</section>
+
+<section id="tl">
+ <h2>Hills on the map</h2>
+ <div class="topo"><div><svg width="22" height="16" viewBox="0 0 22 16" style="width:22px;flex:none"><defs><filter id="sw1" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.25" numOctaves="4" seed="4" result="n"/><feDiffuseLighting in="n" surfaceScale="7" lighting-color="#fff" result="l"><feDistantLight azimuth="315" elevation="45"/></feDiffuseLighting><feComponentTransfer in="l" result="r"><feFuncR type="linear" slope="1.5" intercept="-0.56"/><feFuncG type="linear" slope="1.5" intercept="-0.56"/><feFuncB type="linear" slope="1.5" intercept="-0.56"/></feComponentTransfer><feFlood flood-color="#9fd8c2" result="b"/><feBlend in="r" in2="b" mode="soft-light" result="o"/><feComposite in="o" in2="SourceAlpha" operator="in"/></filter></defs><rect x="2" y="2" width="18" height="12" rx="3" fill="#000" filter="url(#sw1)"/></svg>High ranges, peaks above about 1,500 m</div>
+ <div><svg width="22" height="16" viewBox="0 0 22 16" style="width:22px;flex:none"><defs><filter id="sw2" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.25" numOctaves="4" seed="5" result="n"/><feDiffuseLighting in="n" surfaceScale="3" lighting-color="#fff" result="l"><feDistantLight azimuth="315" elevation="45"/></feDiffuseLighting><feComponentTransfer in="l" result="r"><feFuncR type="linear" slope="1.5" intercept="-0.56"/><feFuncG type="linear" slope="1.5" intercept="-0.56"/><feFuncB type="linear" slope="1.5" intercept="-0.56"/></feComponentTransfer><feFlood flood-color="#9fd8c2" result="b"/><feBlend in="r" in2="b" mode="soft-light" result="o"/><feComposite in="o" in2="SourceAlpha" operator="in"/></filter></defs><rect x="2" y="2" width="18" height="12" rx="3" fill="#000" filter="url(#sw2)"/></svg>Hills and plateaus, about 600 to 1,500 m</div></div>
+</section>
+
+<section><h2>About the data</h2><p class="notes" id="notes"></p></section>
 </div><script>
 const D=/*DATA*/;
-const MN=D.mn,NM=MN.length;
-const BINS={t:[[0,'#ffffcc','0–100'],[100,'#ffeda0','100–200'],[200,'#fed976','200–300'],[300,'#c7e9b4','300–400'],[400,'#7fcdbb','400–500'],[500,'#41b6c4','500–600'],[600,'#1d91c0','600–700'],[700,'#225ea8','700–800'],[800,'#253494','800–900'],[900,'#6a1b9a','900–1000+']],
-m:[[0,'#fff7bc','0–5'],[5,'#fee391','5–15'],[15,'#c7e9b4','15–30'],[30,'#7fcdbb','30–60'],[60,'#41b6c4','60–100'],[100,'#2c7fb8','100–200'],[200,'#6a1b9a','200+']]};
 const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],MONL=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const T0=new Date(D.meta.start+'T00:00:00Z'),ND=D.sd.length,YR=D.meta.year;
+const dateOf=k=>new Date(T0.getTime()+k*864e5),kOf=(m,d)=>Math.round((Date.UTC(YR,m,d)-T0.getTime())/864e5);
+const fd=k=>{const d=dateOf(k);return d.getUTCDate()+' '+MON[d.getUTCMonth()]};
+const f0=v=>v==null?'—':Math.round(v).toLocaleString('en'),f1=v=>v==null?'—':(+v).toLocaleString('en',{maximumFractionDigits:1});
+const MISS=new Set(D.meta.missing);
+// colour ramp (unchanged rain colours) and thresholds that follow the length of the period
+const RAMP=['#ffffcc','#ffeda0','#fed976','#c7e9b4','#7fcdbb','#41b6c4','#1d91c0','#225ea8','#253494','#6a1b9a'];
+const IMD=[[0,'#f1f3f0','0','No rain'],[.1,'#ffffcc','0.1–2.4','Very light'],[2.5,'#c7e9b4','2.5–15.5','Light'],[15.6,'#7fcdbb','15.6–64.4','Moderate'],[64.5,'#2c7fb8','64.5–115.5','Heavy'],[115.6,'#253494','115.6–204.4','Very heavy'],[204.5,'#6a1b9a','204.5+','Extremely heavy']];
+function bins(n){if(n==1)return IMD;
+ const t=n<=10?[0,1,5,10,20,35,50,75,100,150]:n<=45?[0,5,15,30,45,60,80,100,150,200]:n<=120?[0,25,50,100,150,200,300,400,500,600]:[0,100,200,300,400,500,600,700,800,900];
+ return t.map((x,i)=>[x,RAMP[i],i<t.length-1?`${x}–${t[i+1]}`:`${x}+`])}
+function cls(v,b){let k=0;b.forEach((x,i)=>{if(v>=x[0])k=i});return k}
+
+// ---------- header
+$('sub').textContent=`${D.meta.gauges} TN SMART gauges · to ${fd(ND-1)} ${YR} · updated ${D.meta.updated}`;
+$('notes').textContent=D.meta.notes;
+
+// ---------- period selection
+let mode='months',selM=new Set(),dA=ND-1,dB=ND-1,anchor=null,calM=dateOf(ND-1).getUTCMonth();
+const lastM=dateOf(ND-1).getUTCMonth();
+for(let m=0;m<=lastM;m++)selM.add(m);
+const mDays=m=>{const a=Math.max(0,kOf(m,1)),b=Math.min(ND-1,kOf(m+1,1)-1);return a>b?[]:Array.from({length:b-a+1},(_,i)=>a+i)};
+const mTot=MON.map((_,m)=>mDays(m).reduce((s,k)=>s+(D.sd[k]||0),0));
+const mMax=Math.max(1,...mTot);const MB=bins(30);
+$('strip').innerHTML=MON.map((n,m)=>`<button class="mo" data-m="${m}" ${m>lastM?'disabled':''} aria-pressed="false"><div class="bar"><i style="height:${m>lastM?0:Math.max(3,mTot[m]/mMax*100)}%;background:${MB[cls(mTot[m],MB)][1]}"></i></div><span>${n}</span></button>`).join('');
+$('strip').onclick=e=>{const b=e.target.closest('.mo');if(!b||b.disabled)return;const m=+b.dataset.m;
+ if(selM.has(m)){if(selM.size>1)selM.delete(m)}else selM.add(m);update()};
+const PRE=[['All of '+YR,()=>{selM=new Set([...Array(lastM+1).keys()])}],['SW monsoon (Jun–Sep)',()=>{selM=new Set([5,6,7,8].filter(m=>m<=lastM))}],['NE monsoon (Oct–Dec)',()=>{selM=new Set([9,10,11].filter(m=>m<=lastM))}],['Latest month',()=>{selM=new Set([lastM])}]];
+$('pre').innerHTML=PRE.map((p,i)=>`<button data-p="${i}">${p[0]}</button>`).join('');
+$('pre').onclick=e=>{const b=e.target.closest('[data-p]');if(b){PRE[+b.dataset.p][1]();if(!selM.size)selM.add(lastM);update()}};
+const QK=[['Latest day',1],['Last 7 days',7],['Last 30 days',30]];
+$('qk').innerHTML=QK.map(q=>`<button data-q="${q[1]}">${q[0]}</button>`).join('');
+$('qk').onclick=e=>{const b=e.target.closest('[data-q]');if(b){dB=ND-1;dA=Math.max(0,ND-+b.dataset.q);anchor=null;calM=dateOf(dB).getUTCMonth();update()}};
+$('seg').onclick=e=>{const b=e.target.closest('[data-m]');if(!b)return;mode=b.dataset.m;update()};
+$('pv').onclick=()=>{if(calM>0){calM--;drawCal()}};$('nx').onclick=()=>{if(calM<lastM){calM++;drawCal()}};
+const IMDc=v=>v==null?null:IMD[cls(v,IMD)][1];
+function drawCal(){$('calt').textContent=MONL[calM]+' '+YR;$('pv').disabled=calM<=0;$('nx').disabled=calM>=lastM;
+ const first=new Date(Date.UTC(YR,calM,1)),off=(first.getUTCDay()+6)%7,nd=new Date(Date.UTC(YR,calM+1,0)).getUTCDate();
+ let h=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(x=>`<div class="h">${x}</div>`).join('')+'<div></div>'.repeat(off);
+ for(let d=1;d<=nd;d++){const k=kOf(calM,d),fut=k>ND-1,iso=`${YR}-${String(calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`,nod=MISS.has(iso);
+  const v=fut?null:D.sd[k],inR=!fut&&k>=dA&&k<=dB,end=!fut&&(k==dA||k==dB);
+  const bg=fut||nod?'':`background:${IMDc(v)};color:${v>=64.5?'#fff':'#0f2a33'}`;
+  h+=`<button class="day${inR?' in':''}${end?' end':''}${nod?' nodata':''}" data-k="${k}" ${fut?'disabled':''} style="${bg}" title="${fut?'':f1(v)+' mm state average'}">${d}${fut||v==null?'':`<small>${v<1?f1(v):f0(v)}</small>`}</button>`}
+ $('cal').innerHTML=h}
+$('cal').onclick=e=>{const b=e.target.closest('.day');if(!b||b.disabled)return;const k=+b.dataset.k;
+ if(anchor==null||anchor==k){dA=dB=k;anchor=k}else{dA=Math.min(anchor,k);dB=Math.max(anchor,k);anchor=null}update()};
+function selDays(){if(mode=='months'){return [...selM].sort((a,b)=>a-b).flatMap(mDays)}return Array.from({length:dB-dA+1},(_,i)=>dA+i)}
+function selLabel(){if(mode=='months'){const ms=[...selM].sort((a,b)=>a-b);const runs=[];ms.forEach(m=>{const r=runs[runs.length-1];if(r&&r[1]==m-1)r[1]=m;else runs.push([m,m])});
+  return runs.map(r=>r[0]==r[1]?MON[r[0]]:MON[r[0]]+'–'+MON[r[1]]).join(' + ')+' '+YR}
+ return dA==dB?fd(dA)+' '+YR:fd(dA)+' – '+fd(dB)+' '+YR}
+
+// ---------- map
 const X=l=>(l-76.1)*100,Y=a=>(13.7-a)*100,G=D.g*100;
-const mo=$('mo');mo.innerHTML=`<option value="${NM}">Total (${MN[0]}–${MN[NM-1]})</option>`+MN.map((m,i)=>`<option value="${i}">${m} ${D.meta.year}</option>`).join('');
-const sv=$('sv');sv.innerHTML='<defs><clipPath id="cp"><path id="cl"/></clipPath></defs><path id="ob" stroke-width="3.2" stroke-linejoin="round" style="stroke:var(--ink);fill:var(--ink)"/><path id="bg" style="fill:var(--card)"/><g id="cg" clip-path="url(#cp)"></g>';
+const sv=$('sv');sv.innerHTML='<defs><clipPath id="cp"><path id="cl"/></clipPath></defs><path id="ob" stroke-width="3.2" stroke-linejoin="round" style="stroke:var(--ink);fill:var(--ink)"/><path id="bg" style="fill:var(--paper)"/><g id="cg" clip-path="url(#cp)"></g>';
 const PD=D.tn.map(r=>r.map((p,i)=>(i?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)).join('')+'Z').join('');['ob','bg','cl'].forEach(k=>$(k).setAttribute('d',PD));
 const cg=$('cg'),R=D.c.map(c=>{const r=document.createElementNS(NS,'rect');r.setAttribute('x',X(c[0]).toFixed(1));r.setAttribute('y',(Y(c[1])-G).toFixed(1));r.setAttribute('width',G+.4);r.setAttribute('height',G+.4);cg.appendChild(r);return r});
 const ct=document.createElementNS(NS,'g');sv.appendChild(ct);
 D.ct.forEach(c=>{const x=X(c[1]),y=Y(c[2]),e=c[3]=='end',s=c[4];
- const k=document.createElementNS(NS,'circle');k.setAttribute('cx',x);k.setAttribute('cy',y);k.setAttribute('r',s?3.6:2.4);k.setAttribute('fill',s?'#e11d48':'#14213d');k.setAttribute('stroke','#fff');k.setAttribute('stroke-width',1);ct.appendChild(k);
- const t=document.createElementNS(NS,'text');t.setAttribute('x',x+(e?-5:5));t.setAttribute('y',y+2.6);t.setAttribute('text-anchor',e?'end':'start');t.setAttribute('font-size',8);t.setAttribute('font-weight',600);t.style.cssText='fill:var(--ink);stroke:var(--card);stroke-width:2.4px;paint-order:stroke;stroke-linejoin:round';t.textContent=c[0]+(s?' ★':'');ct.appendChild(t)});
+ const k=document.createElementNS(NS,'circle');k.setAttribute('cx',x);k.setAttribute('cy',y);k.setAttribute('r',s?3.6:2.4);k.setAttribute('fill',s?'#a3402a':'#0f2a33');k.setAttribute('stroke','#fff');k.setAttribute('stroke-width',1);ct.appendChild(k);
+ const t=document.createElementNS(NS,'text');t.setAttribute('x',x+(e?-5:5));t.setAttribute('y',y+2.6);t.setAttribute('text-anchor',e?'end':'start');t.setAttribute('font-size',8);t.setAttribute('font-weight',600);t.style.cssText='fill:var(--ink);stroke:var(--paper);stroke-width:2.4px;paint-order:stroke;stroke-linejoin:round;font-family:var(--f)';t.textContent=c[0];ct.appendChild(t)});
 $('tg').onchange=e=>ct.style.display=e.target.checked?'':'none';
 sv.querySelector('defs').insertAdjacentHTML('beforeend','<filter id="rel" filterUnits="userSpaceOnUse" x="0" y="0" width="440" height="575" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceAlpha" stdDeviation="7" result="hb"/><feTurbulence type="fractalNoise" baseFrequency="0.055" numOctaves="7" seed="9" result="n"/><feComposite in="hb" in2="n" operator="arithmetic" k1="2.4" k2="0.12" k3="0.015" k4="0" result="ht"/><feDiffuseLighting in="ht" surfaceScale="17" diffuseConstant="1" lighting-color="#fff" result="l"><feDistantLight azimuth="315" elevation="45"/></feDiffuseLighting><feComponentTransfer in="l"><feFuncR type="linear" slope="1.5" intercept="-0.56"/><feFuncG type="linear" slope="1.5" intercept="-0.56"/><feFuncB type="linear" slope="1.5" intercept="-0.56"/><feFuncA type="linear" slope="0" intercept="1"/></feComponentTransfer></filter><filter id="hh" x="-25%" y="-25%" width="150%" height="150%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.08" numOctaves="3" seed="4" result="en"/><feDisplacementMap in="SourceGraphic" in2="en" scale="7" xChannelSelector="R" yChannelSelector="G" result="sh"/><feGaussianBlur in="sh" stdDeviation="0.7" result="soft"/><feTurbulence type="fractalNoise" baseFrequency="0.13" numOctaves="7" seed="11" result="h"/><feDiffuseLighting in="h" surfaceScale="7" diffuseConstant="1.25" lighting-color="#fff" result="l0"><feDistantLight azimuth="315" elevation="35"/></feDiffuseLighting><feComponentTransfer in="l0" result="lit"><feFuncR type="gamma" amplitude="1.15" exponent="1.6" offset="0.12"/><feFuncG type="gamma" amplitude="1.15" exponent="1.6" offset="0.12"/><feFuncB type="gamma" amplitude="1.15" exponent="1.6" offset="0.12"/></feComponentTransfer><feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="4" seed="7" result="cn"/><feColorMatrix in="cn" type="matrix" values="0.05 0.45 0 0 -0.02  0.55 0.10 0 0 0.10  0.10 0.05 0 0 0.02 0 0 0 1 0" result="col"/><feBlend in="col" in2="lit" mode="multiply" result="tex"/><feComposite in="tex" in2="soft" operator="in"/></filter><filter id="hm" x="-25%" y="-25%" width="150%" height="150%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.08" numOctaves="3" seed="21" result="en"/><feDisplacementMap in="SourceGraphic" in2="en" scale="6" xChannelSelector="R" yChannelSelector="G" result="sh"/><feGaussianBlur in="sh" stdDeviation="0.7" result="soft"/><feTurbulence type="fractalNoise" baseFrequency="0.11" numOctaves="7" seed="28" result="h"/><feDiffuseLighting in="h" surfaceScale="5" diffuseConstant="1.25" lighting-color="#fff" result="l0"><feDistantLight azimuth="315" elevation="35"/></feDiffuseLighting><feComponentTransfer in="l0" result="lit"><feFuncR type="gamma" amplitude="1.15" exponent="1.6" offset="0.12"/><feFuncG type="gamma" amplitude="1.15" exponent="1.6" offset="0.12"/><feFuncB type="gamma" amplitude="1.15" exponent="1.6" offset="0.12"/></feComponentTransfer><feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="4" seed="24" result="cn"/><feColorMatrix in="cn" type="matrix" values="0.15 0.55 0 0 0.05  0.55 0.25 0 0 0.12  0.12 0.10 0 0 0.03 0 0 0 1 0" result="col"/><feBlend in="col" in2="lit" mode="multiply" result="tex"/><feComposite in="tex" in2="soft" operator="in"/></filter>');
 const HI=[[[77.22,8.40],[77.40,8.34],[77.58,8.45],[77.62,8.72],[77.52,8.98],[77.32,9.12],[77.24,8.90],[77.24,8.62]],
@@ -60,31 +206,46 @@ const tt=document.createElementNS(NS,'g');tt.style.pointerEvents='none';sv.appen
 [['Nilgiris 2,637 m',76.25,11.74,'start'],['Anamalai',76.78,10.18,'end'],['Palani Hills 2,133 m',77.52,10.07,'middle'],['Agasthyamalai 1,647 m',77.18,8.62,'end'],['Cardamom Hills',77.15,9.50,'end'],['Shevaroys 1,620 m',78.12,11.95,'end'],['Kolli–Pachaimalai ~1,300 m',78.30,11.12,'start'],['Kalrayan ~1,100 m',78.62,11.75,'start'],['Javadi ~1,100 m',78.90,12.28,'middle'],['Eastern Ghats',79.30,12.15,'start'],['Palghat Gap',76.78,10.70,'end']].forEach(a=>{const t=document.createElementNS(NS,'text');t.setAttribute('x',X(a[1]));t.setAttribute('y',Y(a[2]));t.setAttribute('text-anchor',a[3]);t.setAttribute('font-size',6.6);t.setAttribute('font-style','italic');t.style.cssText='fill:#5a3210;stroke:var(--card);stroke-width:2.2px;paint-order:stroke;stroke-linejoin:round';t.textContent=a[0];tt.appendChild(t)});
 const wg=document.createElementNS(NS,'text');wg.setAttribute('transform','translate('+X(76.95)+' '+Y(9.55)+') rotate(-78)');wg.setAttribute('text-anchor','middle');wg.setAttribute('font-size',8.5);wg.setAttribute('font-weight',700);wg.setAttribute('letter-spacing',1);wg.style.cssText='fill:#5a3210;stroke:var(--card);stroke-width:2.4px;paint-order:stroke';wg.textContent='WESTERN GHATS';tt.appendChild(wg);
 $('th').onchange=e=>{const v=e.target.checked?'':'none';th.style.display=v;tt.style.display=v;$('tl').style.display=v};
-let sel=-1;
-function cls(v,b){let k=0;b.forEach((x,i)=>{if(v>=x[0])k=i});return k}
-function paint(){const m=+mo.value,b=m==NM?BINS.t:BINS.m,n=b.map(()=>0);
- D.c.forEach((c,i)=>{const k=cls(c[3+m],b);n[k]++;R[i].setAttribute('fill',b[k][1])});
- $('lt').textContent='Rainfall (mm) — '+(m==NM?MN[0]+'–'+MN[NM-1]+' total':MN[m]+' '+D.meta.year);
- $('lg').innerHTML=b.map((x,i)=>`<div><i style="background:${x[1]}"></i>${x[2]}<b>${n[i]}</b></div>`).join('');
- show()}
-function show(){if(sel<0)return;const c=D.c[sel],m=+mo.value;R.forEach(r=>r.removeAttribute('stroke'));R[sel].setAttribute('stroke','#000');R[sel].setAttribute('stroke-width',1.5);
- $('info').innerHTML=`<b>${D.d[c[2]]}</b> area · ${c[1].toFixed(2)}°N, ${c[0].toFixed(2)}°E<br>${m==NM?MN[0]+'–'+MN[NM-1]+' total':MN[m]}: <b>${f1(c[3+m])} mm</b> (grid estimate)`+near(c[0]+D.g/2,c[1]+D.g/2,m)}
-sv.addEventListener('click',e=>{const t=e.target;const i=R.indexOf(t);if(i>=0){sel=i;show()}});
-mo.onchange=paint;
-const f1=v=>v==null?'—':v.toLocaleString('en',{maximumFractionDigits:1});
-// D.st rows: [name, districtIdx, lon, lat, gps(1/0), suspect(1/0), months...]
-function stv(r,m){if(m<NM)return r[6+m];let t=0;for(let i=0;i<NM;i++){if(r[6+i]==null)return null;t+=r[6+i]}return t}
-function near(lo,la,m){const k=Math.cos(la*Math.PI/180);const L=D.st.filter(r=>r[4]).map(r=>[Math.hypot((r[2]-lo)*k,r[3]-la)*111,r]).filter(x=>x[0]<15).sort((a,b)=>a[0]-b[0]).slice(0,3);
- if(!L.length)return '<br><span class="m">No GPS rain gauge within 15 km.</span>';
- return '<br><span class="m">Nearest gauges: '+L.map(([d,r])=>`${r[0]} ${f1(stv(r,m))} mm (${d.toFixed(0)} km)`+(r[5]?' ⚠':'')).join(' · ')+'</span>'}
-$('yr').textContent=D.meta.year;$('sub').textContent=D.meta.subtitle;$('notes').textContent=D.meta.notes;
-// station dots (GPS gauges only), shown when zoomed in
+$('th').onchange=e=>{const v=e.target.checked?'':'none';th.style.display=v;tt.style.display=v;$('tl').style.display=v};
+
+// ---------- compute a period
+let GT=[],CV=new Float32Array(D.c.length),SUS=[],sel=-1,focusD=-1,nDays=0;
+function median(a){if(!a.length)return 0;const s=[...a].sort((x,y)=>x-y),h=s.length>>1;return s.length%2?s[h]:(s[h-1]+s[h])/2}
+function compute(days){const n=days.length;nDays=n;
+ GT=D.v.map(row=>{let t=0,mi=0;for(const k of days){const v=row[k];if(v<0)mi++;else t+=v}if(mi>0.1*n)return null;return mi?t/10*n/(n-mi):t/10});
+ const byD={};GT.forEach((v,i)=>{if(v!=null)(byD[D.st[i][1]]=byD[D.st[i][1]]||[]).push(v)});const med={};for(const d in byD)med[d]=median(byD[d]);
+ const sc=n/30;SUS=GT.map((v,i)=>{if(v==null)return 0;const md=med[D.st[i][1]]||0;if(n>=20&&v==0&&md>=20)return 2;if(v>5*Math.max(md,20*sc)&&v>Math.max(200,1000*sc))return 1;return 0});
+ D.c.forEach((c,ci)=>{const ix=c[3],ds=c[4],P=[];for(let j=0;j<ix.length&&P.length<8;j++){const g=ix[j];if(GT[g]!=null&&!SUS[g])P.push([ds[j],GT[g]])}
+  if(!P.length){CV[ci]=NaN;return}if(P[0][0]<.5){CV[ci]=P[0][1];return}let a=0,b=0;P.forEach(([d,v])=>{const w=1/(d*d);a+=w*v;b+=w});CV[ci]=a/b})}
+function paint(){const b=bins(nDays),cnt=b.map(()=>0);
+ R.forEach((r,i)=>{const v=CV[i];if(isNaN(v)){r.setAttribute('fill','#d6dbd9');return}const k=cls(v,b);cnt[k]++;r.setAttribute('fill',b[k][1]);r.setAttribute('fill-opacity',focusD<0||D.c[i][2]==focusD?1:.28)});
+ $('lg').innerHTML=b.map((x,i)=>`<div><i style="background:${x[1]}"></i><span>${x[2]}</span></div>`).join('');
+ $('lt').textContent=nDays==1?'mm in the day, IMD categories: '+IMD.map(x=>x[3]).slice(1).join(', ').toLowerCase():'mm over the '+nDays+' days';
+ R.forEach(r=>r.removeAttribute('stroke'));if(sel>=0){R[sel].setAttribute('stroke','#000');R[sel].setAttribute('stroke-width',1.5)}}
+function summary(){const vals=[...CV].filter(v=>!isNaN(v)),avg=vals.reduce((a,b)=>a+b,0)/Math.max(1,vals.length);
+ const dist=D.d.map((_,di)=>{let s=0,n=0;D.c.forEach((c,ci)=>{if(c[2]==di&&!isNaN(CV[ci])){s+=CV[ci];n++}});return n?s/n:null});
+ let bg=-1;GT.forEach((v,i)=>{if(v!=null&&!SUS[i]&&(bg<0||v>GT[bg]))bg=i});
+ const order=D.d.map((n,i)=>[n,dist[i],i]).filter(x=>x[1]!=null).sort((a,b)=>b[1]-a[1]);
+ $('sum').innerHTML=`Tamil Nadu averaged <strong>${f0(avg)} mm</strong> ${nDays==1?'on '+selLabel():'over '+selLabel()}. Wettest district: <b>${order[0][0]}</b>, ${f0(order[0][1])} mm`+(bg>=0?`. Highest gauge: <b>${D.st[bg][0]}</b> (${D.d[D.st[bg][1]]}), ${f0(GT[bg])} mm.`:'.');
+ // best gauge per district
+ const top={};GT.forEach((v,i)=>{if(v==null||SUS[i])return;const d=D.st[i][1];if(top[d]==null||v>GT[top[d]])top[d]=i});
+ const mx=Math.max(1,...order.map(x=>x[1])),b=bins(nDays);
+ $('dt').innerHTML=order.map(([n,v,i])=>`<tr data-d="${i}" class="${i==focusD?'on':''}"><td class="n">${n}<div class="g">${top[i]!=null?'Top gauge: '+D.st[top[i]][0]+', '+f0(GT[top[i]])+' mm':''}</div></td><td class="v">${f0(v)} mm</td><td><div class="bar" style="width:${Math.max(2,v/mx*100)}%;background:${b[cls(v,b)][1]};outline:1px solid rgba(15,42,51,.12)"></div></td></tr>`).join('')}
+$('dt').onclick=e=>{const tr=e.target.closest('tr');if(!tr)return;const d=+tr.dataset.d;focusD=focusD==d?-1:d;paint();summary();if(focusD>=0)$('mw').scrollIntoView({behavior:'smooth',block:'center'})};
+function show(){if(sel<0)return;const c=D.c[sel];
+ $('info').innerHTML=`<b>${f1(CV[sel])} mm</b> · ${D.d[c[2]]} · ${(c[1]+.05).toFixed(2)}°N ${(c[0]+.05).toFixed(2)}°E<div class="near">${near(c)}</div>`}
+function near(c){const L=c[3].slice(0,4).map((g,j)=>[c[4][j],g]).filter(x=>x[0]<=15).slice(0,3);
+ if(!L.length)return 'No gauge within 15 km; estimated from gauges further away.';
+ return 'Nearest gauges: '+L.map(([d,g])=>`${D.st[g][0]} ${GT[g]==null?'no data':f0(GT[g])+' mm'}${SUS[g]==1?' (suspect, not used)':SUS[g]==2?' (not reporting)':''}, ${f0(d)} km`).join(' · ')}
+sv.addEventListener('click',e=>{const i=R.indexOf(e.target);if(i>=0){sel=i;paint();show()}});
+// gauge dots when zoomed in
 const sg=document.createElementNS(NS,'g');sv.appendChild(sg);sg.style.display='none';
-const SD=D.st.filter(r=>r[4]).map(r=>{const k=document.createElementNS(NS,'circle');k.setAttribute('cx',X(r[2]));k.setAttribute('cy',Y(r[3]));k.setAttribute('fill',r[5]?'#e11d48':'#111');k.setAttribute('stroke','#fff');sg.appendChild(k);
- k.addEventListener('click',e=>{e.stopPropagation();const m=+mo.value;$('info').innerHTML=`<b>${r[0]}</b> · ${D.d[r[1]]} · rain gauge<br>${m==NM?'Total':MN[m]}: <b>${f1(stv(r,m))} mm</b>`+(r[5]?'<br><span class="m">⚠ suspect reading excluded from the grid</span>':'')});return k});
-// zoom & pan
-const card=sv.parentNode;card.style.position='relative';card.insertAdjacentHTML('beforeend','<div style="position:absolute;left:12px;top:12px;display:flex;flex-direction:column;gap:6px" id="zb"><button data-z="1.6">+</button><button data-z="0.625">−</button><button data-z="0">⌂</button></div>');
-document.querySelectorAll('#zb button').forEach(b=>{b.style.cssText='width:36px;height:36px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:18px';b.onclick=()=>{const z=+b.dataset.z;z?zoomAt(z,vb[0]+vb[2]/2,vb[1]+vb[3]/2):(vb=V0.slice(),apply())}});
+const SD=D.st.map((r,i)=>{const k=document.createElementNS(NS,'circle');k.setAttribute('cx',X(r[2]));k.setAttribute('cy',Y(r[3]));k.setAttribute('stroke','#fff');sg.appendChild(k);
+ k.addEventListener('click',e=>{e.stopPropagation();$('info').innerHTML=`<b>${r[0]}</b> · ${D.d[r[1]]} gauge<div class="near">${selLabel()}: <b>${GT[i]==null?'not enough readings':f1(GT[i])+' mm'}</b>${SUS[i]==1?' · suspect reading, left out of the grid':SUS[i]==2?' · 0 mm while the district had rain, treated as not reporting':''}</div>`});return k});
+function dots(){SD.forEach((k,i)=>k.setAttribute('fill',SUS[i]?'#a3402a':GT[i]==null?'#9aa5a8':'#0f2a33'))}
+
+// ---------- zoom & pan
+document.querySelectorAll('#zb button').forEach(b=>{b.onclick=()=>{const z=+b.dataset.z;z?zoomAt(z,vb[0]+vb[2]/2,vb[1]+vb[3]/2):(vb=V0.slice(),apply())}});
 const V0=[0,0,440,575];let vb=V0.slice();
 const TX=[...sv.querySelectorAll('text')].map(t=>[t,+t.getAttribute('font-size'),parseFloat(t.style.strokeWidth)||0]);
 const CC=[...ct.querySelectorAll('circle')].map(c=>[c,+c.getAttribute('r')]);
@@ -96,15 +257,23 @@ function apply(){vb[2]=Math.min(Math.max(vb[2],440/40),440);vb[3]=vb[2]*575/440;
 function toU(px,py){const b=sv.getBoundingClientRect();return[vb[0]+(px-b.left)/b.width*vb[2],vb[1]+(py-b.top)/b.height*vb[3]]}
 function zoomAt(f,ux,uy){const w=vb[2]/f;const nw=Math.min(Math.max(w,11),440),r=nw/vb[2];vb=[ux-(ux-vb[0])*r,uy-(uy-vb[1])*r,nw,nw*575/440];apply()}
 sv.addEventListener('wheel',e=>{e.preventDefault();const [ux,uy]=toU(e.clientX,e.clientY);zoomAt(Math.exp(-e.deltaY*.0018),ux,uy)},{passive:false});
-const P=new Map();let moved=0;
-sv.addEventListener('pointerdown',e=>{P.set(e.pointerId,[e.clientX,e.clientY]);moved=0});
-sv.addEventListener('pointermove',e=>{if(!P.has(e.pointerId))return;const o=P.get(e.pointerId),b=sv.getBoundingClientRect(),s=vb[2]/b.width;
- if(P.size==1){if(vb[2]>=439)return;vb[0]-=(e.clientX-o[0])*s;vb[1]-=(e.clientY-o[1])*s;moved+=Math.abs(e.clientX-o[0])+Math.abs(e.clientY-o[1]);P.set(e.pointerId,[e.clientX,e.clientY]);apply()}
- else{const q=[...P].find(x=>x[0]!=e.pointerId)[1],d0=Math.hypot(o[0]-q[0],o[1]-q[1]);P.set(e.pointerId,[e.clientX,e.clientY]);const d1=Math.hypot(e.clientX-q[0],e.clientY-q[1]);moved+=9;
+const PT=new Map();let moved=0;
+sv.addEventListener('pointerdown',e=>{PT.set(e.pointerId,[e.clientX,e.clientY]);moved=0});
+sv.addEventListener('pointermove',e=>{if(!PT.has(e.pointerId))return;const o=PT.get(e.pointerId),b=sv.getBoundingClientRect(),s=vb[2]/b.width;
+ if(PT.size==1){if(vb[2]>=439)return;vb[0]-=(e.clientX-o[0])*s;vb[1]-=(e.clientY-o[1])*s;moved+=Math.abs(e.clientX-o[0])+Math.abs(e.clientY-o[1]);PT.set(e.pointerId,[e.clientX,e.clientY]);apply()}
+ else{const q=[...PT].find(x=>x[0]!=e.pointerId)[1],d0=Math.hypot(o[0]-q[0],o[1]-q[1]);PT.set(e.pointerId,[e.clientX,e.clientY]);const d1=Math.hypot(e.clientX-q[0],e.clientY-q[1]);moved+=9;
   if(d0>0){const [ux,uy]=toU((e.clientX+q[0])/2,(e.clientY+q[1])/2);zoomAt(d1/d0,ux,uy)}}});
-['pointerup','pointercancel','pointerleave'].forEach(t=>sv.addEventListener(t,e=>P.delete(e.pointerId)));
+['pointerup','pointercancel','pointerleave'].forEach(t=>sv.addEventListener(t,e=>PT.delete(e.pointerId)));
 sv.addEventListener('click',e=>{if(moved>6)e.stopImmediatePropagation()},true);
 sv.addEventListener('dblclick',e=>{const [ux,uy]=toU(e.clientX,e.clientY);zoomAt(2,ux,uy)});
-apply();
-paint();
+
+// ---------- update everything
+function update(){document.querySelectorAll('#seg button').forEach(b=>b.classList.toggle('on',b.dataset.m==mode));
+ $('pm').hidden=mode!='months';$('pd').hidden=mode!='days';
+ document.querySelectorAll('#strip .mo').forEach(b=>{const on=selM.has(+b.dataset.m);b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
+ if(mode=='days')drawCal();
+ const days=selDays();compute(days);
+ $('selt').innerHTML=`Showing <b>${selLabel()}</b> · ${days.length} day${days.length>1?'s':''}`+(mode=='days'&&anchor!=null?' <span class="m">· tap another day to make a range</span>':'');
+ paint();summary();dots();show()}
+apply();update();
 </script></body></html>

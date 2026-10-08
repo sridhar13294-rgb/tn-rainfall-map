@@ -1,31 +1,45 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Tamil Nadu Weather Forecast</title>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Tamil Nadu Forecast</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anek+Latin:wdth,wght@75..125,300..800&family=Anek+Tamil:wght@600..800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f4f6f9;--card:#fff;--ink:#14213d;--mut:#667085;--line:#dde3ec;--acc:#0b5cab;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f141b;--card:#18202b;--ink:#e6ebf2;--mut:#93a0b3;--line:#2a3544;--acc:#5aa9ff}}
-:root[data-theme="dark"]{--bg:#0f141b;--card:#18202b;--ink:#e6ebf2;--mut:#93a0b3;--line:#2a3544;--acc:#5aa9ff}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-.w{max-width:620px;margin:0 auto;padding:12px}
-h1{font-size:18px;margin:0}h2{font-size:15px;margin:0 0 8px}.m{color:var(--mut);font-size:12px}
-a{color:var(--acc)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:10px}
-.warn{background:#fff4d6;color:#5c4400;border-radius:10px;padding:8px 10px;font-size:12px;margin-top:10px}
-select{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+:root{--bg:#ecf0ee;--card:#f8faf9;--paper:#f8faf9;--ink:#0f2a33;--mut:#5b6e73;--line:#d3dcda;--acc:#0f6e7a;--chipbg:#e1e8e6;
+ --f:"Anek Latin",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c1a1e;--card:#12242a;--paper:#12242a;--ink:#e3ecea;--mut:#8fa5a8;--line:#24393f;--acc:#5cc2c9;--chipbg:#1b3037;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0c1a1e;--card:#12242a;--paper:#12242a;--ink:#e3ecea;--mut:#8fa5a8;--line:#24393f;--acc:#5cc2c9;--chipbg:#1b3037;color-scheme:dark}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 var(--f);font-variant-numeric:tabular-nums;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+.w{max-width:640px;margin:0 auto;padding:0 16px 40px}
+a{color:var(--acc)}:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:18px 0 10px}
+.brand{display:flex;align-items:flex-end;gap:10px;min-width:0}
+.ta{font:700 40px/0.9 "Anek Tamil",var(--f);color:var(--acc);letter-spacing:-.5px}
+h1{font:700 19px/1.1 var(--f);font-stretch:112%;margin:0}
+.tabs{display:flex;background:var(--chipbg);border-radius:10px;padding:3px;flex:none}
+.tabs a{padding:6px 11px;border-radius:8px;text-decoration:none;color:var(--mut);font-weight:600;font-size:13.5px}
+.tabs a.on{background:var(--paper);color:var(--ink);box-shadow:0 1px 2px rgba(15,42,51,.12)}
+h2{font:700 16px/1.2 var(--f);font-stretch:108%;margin:0 0 10px}.m{color:var(--mut);font-size:12.5px}
+.card{padding:18px 0;border-top:1px solid var(--line);margin:0}
+.warn{border-left:3px solid #c98a1b;padding:4px 0 4px 10px;font-size:13px;margin:6px 0 14px;color:var(--ink)}
+select{font:inherit;font-size:14px;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:7px 10px;max-width:100%}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.chips{display:flex;gap:6px;overflow-x:auto;padding:6px 0 4px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
-.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:5px 10px;font:inherit;font-size:12px;cursor:pointer;text-align:center;line-height:1.2}
-.chip.on{background:var(--acc);border-color:var(--acc);color:#fff}.chip small{display:block;font-size:10px;opacity:.8}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:8px 0 4px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:10px;padding:6px 11px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;text-align:center;line-height:1.2}
+.chip.on{background:var(--ink);border-color:var(--ink);color:var(--paper)}.chip small{display:block;font-size:11px;font-weight:400;opacity:.8}
 svg{width:100%;height:auto;display:block}
-.lg{display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:8px}.lg div{display:flex;align-items:center;gap:5px;font-size:11px}.lg i{width:14px;height:12px;border-radius:2px;border:1px solid rgba(0,0,0,.12)}
-#info{min-height:36px;font-size:13px;margin-top:8px}
-#info table{border-collapse:collapse;margin-top:4px;font-size:12px}#info td{padding:1px 10px 1px 0}
-.wwrap{position:relative;border-radius:10px;overflow:hidden;background:#0b1a2e;touch-action:pan-y}
+.lg{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:10px}.lg div{display:flex;align-items:center;gap:5px;font-size:12px}.lg i{width:14px;height:12px;border-radius:3px;border:1px solid rgba(0,0,0,.12)}
+#info{min-height:36px;font-size:14px;margin-top:10px}
+#info table{border-collapse:collapse;margin-top:4px;font-size:13px}#info td{padding:1px 12px 1px 0}
+.wwrap{position:relative;border-radius:14px;overflow:hidden;background:#0b1a2e;touch-action:pan-y}
 .wwrap canvas{display:block;width:100%}.wwrap canvas+canvas{position:absolute;left:0;top:0}
 #wtip{position:absolute;left:8px;bottom:8px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;padding:4px 8px;border-radius:6px;pointer-events:none}
-input[type=range]{width:100%}
-button.play{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;width:40px;height:32px;font-size:15px}
+input[type=range]{width:100%;accent-color:var(--acc)}
+button.play{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:10px;width:42px;height:36px;font-size:15px;cursor:pointer}
+#tn{background:var(--paper);border-radius:14px;border:1px solid var(--line);margin-top:6px}
 </style></head><body><div class="w">
-<div class="m"><a href="index.html">← Rainfall map</a></div>
-<h1>Tamil Nadu Weather Forecast</h1>
+<header class="top">
+ <div class="brand"><span class="ta" lang="ta">மழை</span><div><h1>Tamil Nadu forecast</h1></div></div>
+ <nav class="tabs"><a href="index.html">Rainfall</a><a class="on" href="forecast.html">Forecast</a></nav>
+</header>
 <div class="m" id="upd"></div>
 <div class="warn"><b>Experimental, not an official forecast.</b> Follow IMD and TNSDMA warnings for safety decisions. Days 8–16 are much less reliable than days 1–7.</div>
 
