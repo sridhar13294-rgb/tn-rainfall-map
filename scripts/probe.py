@@ -14,7 +14,7 @@ log = {'rounds': []}; imgs = {}
 for rid in IDS:
     try:
         h, _ = get('https://mausam.imd.gov.in/chennai/index_radar.php?id=' + rid)
-        imgs[rid] = sorted(set(re.findall(r'Radar/[A-Za-z0-9_]+\.(?:gif|png|jpg)', h)))
+        imgs[rid] = sorted(set(re.findall(r'Radar/[A-Za-z0-9_]+\.(?:gif|png|jpg)', h.decode('utf-8', 'replace'))))
     except Exception as e:
         imgs[rid] = 'ERR ' + str(e)[:200]
 log['images'] = imgs
