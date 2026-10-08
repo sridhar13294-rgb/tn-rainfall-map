@@ -1485,6 +1485,12 @@ def build_systems(ens, det_tracks, d0, ens_size):
     return systems[:4]
 
 
+# ------------------------------------------------------------------ MJO forecast (OMI / ROMI method on model OLR)
+PSL_EOF = 'https://downloads.psl.noaa.gov/Datasets.other/MJO/eof{k}/eof{doy:03d}.txt'
+OLR_LTM = 'https://downloads.psl.noaa.gov/Datasets/cpc_blended_olr-2.5deg/olr.cbo-2.5deg.day.ltm.1991-2020.nc'
+OLR_DAP = 'https://psl.noaa.gov/thredds/dodsC/Datasets/cpc_blended_olr-2.5deg/olr.cbo-2.5deg.day.mean.nc'
+
+
 def _doy(d):
     return min(d.timetuple().tm_yday, 365) if not (d.month == 2 and d.day == 29) else 59
 
