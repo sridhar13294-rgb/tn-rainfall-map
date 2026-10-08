@@ -1019,8 +1019,10 @@ def update_band_history(band, d0):
 # ------------------------------------------------------------------ step 3: ensembles when a system is possible
 GEFS = 'https://noaa-gefs-pds.s3.amazonaws.com'
 ENS_HOURS = 240                      # ensembles are read to day 10
-LOW_BOXES = {'Arabian Sea': (-2, 27, 42, 77.5), 'Bay of Bengal': (-2, 24, 77.5, 99),
-             'South China Sea / Gulf of Thailand': (-2, 25, 99, 118)}   # a low must form over the sea inside these
+# a low must form over the open sea inside these boxes; the Persian Gulf, Gulf of Oman, Gulf of Aden and Red Sea are
+# left out because they hold heat lows that sit still and swing with the daily cycle, not monsoon or cyclone lows
+LOW_BOXES = {'Arabian Sea': (-2, 22, 51, 77.5), 'Bay of Bengal': (-2, 23, 77.5, 99),
+             'South China Sea / Gulf of Thailand': (-2, 22, 99, 118)}
 TN_COAST = [(80.3, 13.4), (80.25, 12.6), (79.85, 11.7), (79.85, 10.8), (79.3, 10.3), (79.0, 9.4), (78.2, 8.8), (77.55, 8.08),
             (77.1, 8.4), (78.1, 9.2), (79.85, 12.2), (80.2, 13.0)]
 TN_KM = 300
@@ -1139,7 +1141,12 @@ def track_lows(frames):
             if q not in used and sea and dp >= 2.0 and basin_at(lo, la) and -3 <= la <= 28:
                 active.append([[k, round(lo, 2), round(la, 2), pv_, dp]])
     done += active
-    return [t for t in done if t[-1][0] - t[0][0] >= 4 and max(p[4] for p in t) >= 2.0]
+    def real(t):
+        if t[-1][0] - t[0][0] < 4 or max(p[4] for p in t) < 2.0:
+            return False
+        travel = max(_deg((p[1], p[2]), (t[0][1], t[0][2])) for p in t)
+        return travel >= 1.5 or max(p[4] for p in t) >= 3.0      # drop shallow lows that never move (heat lows)
+    return [t for t in done if real(t)]
 
 
 def model_frames(m, d0, nframes, sea):
