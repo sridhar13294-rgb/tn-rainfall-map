@@ -186,8 +186,8 @@ def wind_points():
 BAND_LATS = [-15 + 2.5 * k for k in range(13)]
 BAND_LONS = [2.5 * k for k in range(144)]
 BAND_PTS = [(lo, la) for la in BAND_LATS for lo in BAND_LONS]
-TRACK_BOX = dict(lat0=0.0, lon0=60.0, step=0.5, ny=51, nx=81)          # 0-25N, 60-100E for low tracking
-TRACK_PTS = [(TRACK_BOX['lon0'] + i * .5, TRACK_BOX['lat0'] + j * .5) for j in range(51) for i in range(81)]
+TRACK_BOX = dict(lat0=-5.0, lon0=40.0, step=0.5, ny=71, nx=161)        # 5S-30N, 40-120E for low tracking
+TRACK_PTS = [(TRACK_BOX['lon0'] + i * .5, TRACK_BOX['lat0'] + j * .5) for j in range(71) for i in range(161)]
 OLR_LATS = [-20 + 2.5 * k for k in range(17)]                  # OMI grid: 20S-20N, 2.5 deg, latitude outer
 OLR_PTS = [(lo, la) for la in OLR_LATS for lo in BAND_LONS]
 
@@ -249,6 +249,8 @@ class Model:
                 vals_pts = vals_pts - 273.15
         if var in ('msl', 'mslt') and np.nanmean(vals_pts) > 2000:   # Pa -> hPa
             vals_pts = vals_pts / 100.0
+        if var == 'mslt':
+            vals_pts = np.asarray(vals_pts, np.float32)
         if var == 'tp' and (info.get('units') or '') == 'm':
             vals_pts = vals_pts * 1000.0
         with LOCK:
@@ -545,7 +547,7 @@ def icon_collect(m, pool, pts, wpts, d0, now):
     s0, s1 = needed(run, d0, NDAYS)
     idx, w, n = icon_neighbours(run, pts, 'tn', (7.4, 14.3, 75.7, 81.0))
     ridx, rw, _ = icon_neighbours(run, wpts, 'region', (-1.5, 26.5, 63.5, 96.5))
-    tidx, tw, _ = icon_neighbours(run, TRACK_PTS, 'track', (-1.5, 26.5, 58.5, 101.5))
+    tidx, tw, _ = icon_neighbours(run, TRACK_PTS, 'track', (-6.5, 31.5, 38.5, 121.5))
     m.info['cells'] = n
     steps = [s for s in list(range(0, 79, 3)) + list(range(81, 181, 3)) if s0 <= s <= s1]
 
@@ -1017,7 +1019,11 @@ def update_band_history(band, d0):
 # ------------------------------------------------------------------ step 3: ensembles when a system is possible
 GEFS = 'https://noaa-gefs-pds.s3.amazonaws.com'
 ENS_HOURS = 240                      # ensembles are read to day 10
-LOW_BOXES = {'Bay of Bengal': (2, 22.5, 78, 99), 'Arabian Sea': (2, 24, 60, 77.5)}   # where a low must form
+LOW_BOXES = {'Arabian Sea': (-2, 27, 42, 77.5), 'Bay of Bengal': (-2, 24, 77.5, 99),
+             'South China Sea / Gulf of Thailand': (-2, 25, 99, 118)}   # a low must form over the sea inside these
+TN_COAST = [(80.3, 13.4), (80.25, 12.6), (79.85, 11.7), (79.85, 10.8), (79.3, 10.3), (79.0, 9.4), (78.2, 8.8), (77.55, 8.08),
+            (77.1, 8.4), (78.1, 9.2), (79.85, 12.2), (80.2, 13.0)]
+TN_KM = 300
 STRIKE_KM = 150
 
 
@@ -1087,6 +1093,10 @@ def _deg(a, b):
     return math.hypot((a[0] - b[0]) * math.cos(math.radians((a[1] + b[1]) / 2)), a[1] - b[1])
 
 
+def near_tn(tr):
+    return any(min(_deg((p[1], p[2]), c) for c in TN_COAST) * 111 <= TN_KM for p in tr)
+
+
 def basin_at(lo, la):
     return next((b for b, (a0, a1, o0, o1) in LOW_BOXES.items() if a0 <= la <= a1 and o0 <= lo <= o1), None)
 
@@ -1126,10 +1136,10 @@ def track_lows(frames):
             (done if k - tr[-1][0] > 2 else keep).append(tr)
         active = keep
         for q, (lo, la, pv_, dp, sea) in enumerate(lows):
-            if q not in used and sea and dp >= 2.0 and basin_at(lo, la):
+            if q not in used and sea and dp >= 2.0 and basin_at(lo, la) and -3 <= la <= 28:
                 active.append([[k, round(lo, 2), round(la, 2), pv_, dp]])
     done += active
-    return [t for t in done if t[-1][0] - t[0][0] >= 6 and max(p[4] for p in t) >= 2.5]
+    return [t for t in done if t[-1][0] - t[0][0] >= 4 and max(p[4] for p in t) >= 2.0]
 
 
 def model_frames(m, d0, nframes, sea):
@@ -1376,6 +1386,11 @@ def build_systems(ens, det_tracks, d0, ens_size):
     for n, trs in det_tracks.items():
         for tr in trs:
             items.append(dict(src='det', mem=n, tr=tr))
+    # chance of any low passing within 300 km of the Tamil Nadu coast (each ensemble weighted equally)
+    tn_hit = {e: {it['mem'] for it in items if it['src'] == e and near_tn(it['tr'])} for e in ens_size}
+    tn = dict(probs={e: int(round(100 * len(v) / ens_size[e])) for e, v in tn_hit.items()},
+              det=sorted({it['mem'] for it in items if it['src'] == 'det' and near_tn(it['tr'])}))
+    tn['prob'] = int(round(sum(tn['probs'].values()) / max(1, len(tn['probs']))))
     items.sort(key=lambda it: -(it['tr'][-1][0] - it['tr'][0][0]))
     clusters = []
     for it in items:
@@ -1436,6 +1451,7 @@ def build_systems(ens, det_tracks, d0, ens_size):
         for it in c['items']:
             by_src.setdefault(it['src'], []).append(it['tr'])
         probs = {e: len(by_src.get(e, [])) / ens_size[e] for e in ens_size}
+        tnp = {e: sum(near_tn(t) for t in by_src.get(e, [])) / ens_size[e] for e in ens_size}
         prob = sum(probs.values()) / max(1, len(probs))
         dets = sorted({it['mem'] for it in c['items'] if it['src'] == 'det'})
         if prob < 0.10 and not dets:
@@ -1475,16 +1491,18 @@ def build_systems(ens, det_tracks, d0, ens_size):
             continue
         g0 = main[0]
         systems.append(dict(
-            basin=basin_at(g0[1], g0[2]) or ('Bay of Bengal' if g0[1] >= 78 else 'Arabian Sea'),
+            basin=(basin_at(g0[1], g0[2]) or ('Bay of Bengal' if 77.5 <= g0[1] < 99 else 'Arabian Sea' if g0[1] < 77.5 else 'South China Sea / Gulf of Thailand'))
+                  + (' → Bay of Bengal' if g0[1] >= 99 and main[-1][1] < 99 else ''),
             prob=int(round(100 * prob)), probs={e: int(round(100 * v)) for e, v in probs.items()},
             members={e: len(by_src.get(e, [])) for e in ens_size}, det=dets,
             mean_tracks=means, det_mean=det_mean, consensus=cons,
             min_p=min(p[3] for p in main), genesis=g0[:3], end=main[-1][:3],
-            members_tracks={e: [[[p[0], p[1], p[2]] for p in t] for t in by_src.get(e, [])] for e in ens_size},
+            tn_prob=int(round(100 * sum(tnp.values()) / max(1, len(tnp)))),
+            members_tracks={e: [[[p[0], p[1], p[2], p[3]] for p in t] for t in by_src.get(e, [])] for e in ens_size},
             det_tracks={it['mem']: [[p[0], p[1], p[2], p[3]] for p in it['tr']] for it in c['items'] if it['src'] == 'det'},
             strike=[[int(i), int(round(100 * v))] for i, v in enumerate(strike) if v >= 0.05]))
     systems.sort(key=lambda x: -x['prob'])
-    return systems[:4]
+    return systems[:6], tn
 
 
 # ------------------------------------------------------------------ MJO forecast (OMI / ROMI method on model OLR)
@@ -1646,7 +1664,7 @@ def land_outline():
             polys = [geom['coordinates']] if geom['type'] == 'Polygon' else geom['coordinates']
             for poly in polys:
                 for ring in poly:
-                    if any(55 < x < 105 and -10 < y < 35 for x, y in ring):
+                    if any(32 < x < 128 and -15 < y < 40 for x, y in ring):
                         r = []
                         for x, y in ring:
                             q = [round(x, 2), round(y, 2)]
@@ -1847,7 +1865,7 @@ def main():
                     systems.setdefault('excluded', []).append(n)
             systems['ens'] = ensemble_products(ens, d0, wbox, len(pts))
             if full:
-                systems['list'] = build_systems(full, lows, d0, {n: len(full[n]) for n in full})
+                systems['list'], systems['tn'] = build_systems(full, lows, d0, {n: len(full[n]) for n in full})
                 systems['ens_size'] = {n: len(full[n]) for n in full}
             systems['ens_runs'] = {n: einfo[n].get('run') for n in ens}
         except Exception as e:
