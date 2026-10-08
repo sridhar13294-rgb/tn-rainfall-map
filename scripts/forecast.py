@@ -46,7 +46,7 @@ class NotFound(Exception):
 CURRENT = {'deadline': DEADLINE}
 
 
-def http(url, rng=None, tries=3, timeout=60, method='GET'):
+def http(url, rng=None, tries=5, timeout=60, method='GET'):
     last = None
     for i in range(tries):
         if time.time() > min(DEADLINE, CURRENT['deadline']):

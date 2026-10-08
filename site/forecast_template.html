@@ -188,7 +188,7 @@ function pdraw(){const mode=$('pmode').value,g=grid(pf,mode);
   px2.lineWidth=.9;px2.font='9px system-ui';
   for(let L=Math.ceil(mn/2)*2;L<=mxv;L+=2){px2.strokeStyle=L%4==0?'rgba(20,20,20,.75)':'rgba(20,20,20,.45)';px2.beginPath();let lab=null;
    for(let j=0;j<ny-1;j++)for(let i=0;i<nx-1;i++){const a=fg[j*nx+i],b=fg[j*nx+i+1],c=fg[(j+1)*nx+i+1],e=fg[(j+1)*nx+i],P=[];
-    const ed=(v1,v2,x1,y1,x2,y2)=>{if((v1-L)*(v2-L)<0){const t=(L-v1)/(v2-v1);P.push([gx(x1+(x2-x1)*t),gy(y1+(y2-y1)*t)])}};
+    const LL=L+1e-3,ed=(v1,v2,x1,y1,x2,y2)=>{if((v1-LL)*(v2-LL)<0){const t=(LL-v1)/(v2-v1);P.push([gx(x1+(x2-x1)*t),gy(y1+(y2-y1)*t)])}};
     ed(a,b,i,j,i+1,j);ed(b,c,i+1,j,i+1,j+1);ed(c,e,i+1,j+1,i,j+1);ed(e,a,i,j+1,i,j);
     for(let q=0;q+1<P.length;q+=2){px2.moveTo(P[q][0],P[q][1]);px2.lineTo(P[q+1][0],P[q+1][1]);if(!lab&&i%37==5)lab=P[q]}}
    px2.stroke();if(lab&&L%4==0){px2.fillStyle='rgba(20,20,20,.8)';px2.fillText(L,lab[0]+2,lab[1]-2)}}
@@ -197,8 +197,8 @@ function pdraw(){const mode=$('pmode').value,g=grid(pf,mode);
   for(let j=2;j<M.ny-2;j++)for(let i=2;i<M.nx-2;i++){const v=g[j*M.nx+i];let lo=true,hi=true,sum=0,cnt=0;
    for(let b=-3;b<=3;b++)for(let a=-3;a<=3;a++){const jj=j+b,ii=i+a;if(jj<0||ii<0||jj>=M.ny||ii>=M.nx||(a==0&&b==0))continue;const w=g[jj*M.nx+ii];sum+=w;cnt++;if(w<=v)lo=false;if(w>=v)hi=false}
    const x=qx(PLO0+i*M.step),y=qy(PLA0+j*M.step);
-   if(lo&&v<1009&&sum/cnt-v>=.8){px2.fillStyle='#d62828';px2.fillText('L',x,y+5);px2.font='10px system-ui';px2.fillText(v.toFixed(0),x,y+16);px2.font='bold 15px system-ui'}
-   if(hi&&v>1011&&v-sum/cnt>=.8){px2.fillStyle='#1d4ed8';px2.fillText('H',x,y+5);px2.font='10px system-ui';px2.fillText(v.toFixed(0),x,y+16);px2.font='bold 15px system-ui'}}
+   if(lo&&v<1009&&sum/cnt-v>=1){px2.fillStyle='#d62828';px2.fillText('L',x,y+5);px2.font='10px system-ui';px2.fillText(v.toFixed(0),x,y+16);px2.font='bold 15px system-ui'}
+   if(hi&&v>1013&&v-sum/cnt>=1.5){px2.fillStyle='#1d4ed8';px2.fillText('H',x,y+5);px2.font='10px system-ui';px2.fillText(v.toFixed(0),x,y+16);px2.font='bold 15px system-ui'}}
   px2.textAlign='left'}
  px2.fillStyle='rgba(20,30,40,.7)';px2.font='italic 11px system-ui';px2.textAlign='center';px2.fillText('Bay of Bengal',qx(87.5),qy(15));px2.fillText('Arabian Sea',qx(68.5),qy(15));px2.textAlign='left';
  const st2=mode=='spread'?SST:PST;$('plg').innerHTML=st2.map(s=>`<div><i style="background:rgb(${s[1].join(',')})"></i>${mode=='spread'?s[0]+' hPa':s[0]}</div>`).join('')+(mode=='spread'?'':'<div class="m">hPa</div>');
