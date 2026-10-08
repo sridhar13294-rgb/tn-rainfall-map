@@ -1383,6 +1383,35 @@ def build_systems(ens, det_tracks, d0, ens_size):
             c['mean'] = {k: (sum(a for a, _ in v) / len(v), sum(b for _, b in v) / len(v)) for k, v in acc.items()}
         else:
             clusters.append(dict(items=[it], who={(it['src'], it['mem'])}, mean=dict(pos)))
+    # second pass: merge groups whose mean tracks run together (same system split by the first pass)
+    def mean_of(c):
+        acc = {}
+        for x in c['items']:
+            for p in x['tr']:
+                acc.setdefault(p[0], []).append((p[1], p[2]))
+        return {k: (sum(a for a, _ in v) / len(v), sum(b for _, b in v) / len(v)) for k, v in acc.items()}
+    merged = True
+    while merged:
+        merged = False
+        clusters.sort(key=lambda c: -len(c['items']))
+        for i in range(len(clusters)):
+            for j in range(i + 1, len(clusters)):
+                a, b = clusters[i], clusters[j]
+                common = [k for k in a['mean'] if k in b['mean']]
+                if len(common) >= 3 and sum(_deg(a['mean'][k], b['mean'][k]) for k in common) / len(common) <= 4.0:
+                    for it in b['items']:
+                        key = (it['src'], it['mem'])
+                        if key in a['who']:
+                            old_it = next(x for x in a['items'] if (x['src'], x['mem']) == key)
+                            if len(it['tr']) > len(old_it['tr']):
+                                a['items'].remove(old_it); a['items'].append(it)
+                        else:
+                            a['items'].append(it); a['who'].add(key)
+                    a['mean'] = mean_of(a)
+                    clusters.pop(j); merged = True
+                    break
+            if merged:
+                break
     systems = []
     ny, nx = TRACK_BOX['ny'], TRACK_BOX['nx']
     cell = np.array(TRACK_PTS)
