@@ -64,9 +64,19 @@ button.play{border:1px solid var(--line);background:var(--card);color:var(--ink)
 </div>
 
 <div class="card">
+ <h2>One-month outlook</h2>
+ <div id="olv"></div>
+</div>
+
+<div class="card">
  <h2>Monsoon drivers</h2>
  <div class="chips" id="drv"><button class="chip" data-v="a850">850 hPa wind anomaly</button><button class="chip" data-v="sst">Sea temperature anomaly</button><button class="chip" data-v="mjo">MJO</button></div>
  <div id="dv"></div>
+</div>
+
+<div class="card">
+ <h2>How good is the forecast? (checked against TN SMART gauges)</h2>
+ <div id="vfy"></div>
 </div>
 
 <p class="m" id="notes"></p>
@@ -93,7 +103,7 @@ $('cl').setAttribute('d',PD);$('ol').setAttribute('d',PD);
 const R=F.cells.map((c,i)=>{const r=document.createElementNS(NS,'rect');r.setAttribute('x',X(c.lon-F.step/2));r.setAttribute('y',Y(c.lat+F.step/2));r.setAttribute('width',F.step*100+.5);r.setAttribute('height',F.step*100+.5);r.dataset.i=i;$('cg').appendChild(r);return r});
 F.ct.forEach(c=>{const g=$('cty'),x=X(c[1]),y=Y(c[2]),e=c[3]=='end';const k=document.createElementNS(NS,'circle');k.setAttribute('cx',x);k.setAttribute('cy',y);k.setAttribute('r',2.4);k.setAttribute('fill','#14213d');k.setAttribute('stroke','#fff');g.appendChild(k);
  const t=document.createElementNS(NS,'text');t.setAttribute('x',x+(e?-5:5));t.setAttribute('y',y+2.6);t.setAttribute('text-anchor',e?'end':'start');t.setAttribute('font-size',8);t.setAttribute('font-weight',600);t.style.cssText='fill:var(--ink);stroke:var(--card);stroke-width:2.4px;paint-order:stroke;pointer-events:none';t.textContent=c[0];g.appendChild(t)});
-$('mod').innerHTML='<option value="avg">Average of models</option>'+F.models.map(m=>`<option value="${m}">${m} only</option>`).join('');
+$('mod').innerHTML=(F.weights?'<option value="avg">Skill-weighted average (rain)</option><option value="eq">Simple average (equal weights)</option>':'<option value="avg">Average of models</option>')+F.models.map(m=>`<option value="${m}">${m} only</option>`).join('');
 const dl=s=>{const d=new Date(s+'T00:00:00');return [DOW[d.getDay()],d.getDate()+' '+MON[d.getMonth()]]};
 const has6=!!(F.coverage6&&F.cells[0].rain6);
 if(!has6){$('var').querySelector('[value=rain6]').remove()}
@@ -107,7 +117,7 @@ $('days').innerHTML=F.dates.map((s,i)=>{const [a,b]=dl(s);return `<button class=
 $('days').onclick=e=>{const b=e.target.closest('[data-d]');if(b){day=+b.dataset.d;paint()}};
 $('per').onclick=e=>{const b=e.target.closest('[data-p]');if(b){per=+b.dataset.p;paint()}};
 function cls(v,b){let k=0;b.forEach((x,i)=>{if(v>=x[0])k=i});return k}
-function val(c,v,m,k){const s=c[v];return s?(m=='avg'?s.avg[k]:(s[m]||[])[k]):null}
+function val(c,v,m,k){const s=c[v];if(!s)return null;if(m=='eq'&&!s.eq)m='avg';return m=='avg'?s.avg[k]:(s[m]||[])[k]}
 function paint(){const v=$('var').value,m=$('mod').value,b=SC[v].b,k=K();
  document.querySelectorAll('#days .chip').forEach((c,i)=>c.classList.toggle('on',i==day));
  $('per').style.display=is6()?'':'none';
@@ -412,4 +422,72 @@ if(E&&(E.days||[]).length){
   ER.forEach((r,i)=>r.setAttribute('fill',bins[cls(v[i],bins)][1]));$('elg').innerHTML=bins.map(x=>`<div><i style="background:${x[1]}"></i>${x[2]}</div>`).join('')}
  ep()}
 })();
+
+// ---------- step 4: one-month outlook (NOAA CFSv2)
+(function(){const O=F.outlook,el=$('olv');if(!el)return;
+if(!O||!O.weeks||!O.weeks.length){el.innerHTML='<p class="m">The one-month outlook is unavailable in this run (NOAA CFSv2 data could not be read). It will return with the next update.</p>';return}
+const fd=s=>{const d=new Date(s+'T00:00:00');return d.getDate()+' '+MON[d.getMonth()]};
+const CAT=p=>p==null?'—':p<=-100?'No rain':p<=-60?'Large deficient':p<=-20?'Deficient':p<20?'Normal':p<60?'Excess':'Large excess';
+const CATC=p=>p==null?'var(--mut)':p<=-60?'#a8541a':p<=-20?'#d9883a':p<20?'var(--ink)':p<60?'#1f7ae0':'#1846a3';
+const MODES={rain:{t:'Rain in the week (mm)',b:[[0,'#eef2f6','0–4'],[5,'#d6ecf7','5–14'],[15,'#9fd3ea','15–34'],[35,'#4ba3d6','35–64'],[65,'#2156a6','65–114'],[115,'#7b2a9e','115–199'],[200,'#c2185b','200+']]},
+ dep:{t:'Rain compared with normal (IMD categories)',b:[[-1e9,'#a8541a','Large deficient (−60% or less)'],[-59.5,'#e3a868','Deficient (−59 to −20%)'],[-19.5,'#eef0e6','Normal (−19 to +19%)'],[19.5,'#8cc4ea','Excess (+20 to +59%)'],[59.5,'#1846a3','Large excess (+60% or more)']]},
+ up:{t:'Chance of an above-normal week (+20% or more)',b:[[0,'#eef2f6','0–19%'],[20,'#cfe3f5','20–39%'],[40,'#8cc4ea','40–59%'],[60,'#3b8fd6','60–79%'],[80,'#1846a3','80%+']]},
+ dn:{t:'Chance of a below-normal week (−20% or more)',b:[[0,'#eef2f6','0–19%'],[20,'#f6dcc0','20–39%'],[40,'#e8b07a','40–59%'],[60,'#cf7a35','60–79%'],[80,'#8f4513','80%+']]},
+ tx:{t:'Max temperature compared with normal (°C)',b:[[-1e9,'#2c5aa0','−2 or cooler'],[-1.95,'#7fb1de','−2 to −1'],[-.95,'#eef0e6','within 1'],[1,'#f6b25e','+1 to +2'],[2,'#e8693d','+2 to +3'],[3,'#b5172b','+3 or warmer']]},
+ tn:{t:'Min temperature compared with normal (°C)',b:[[-1e9,'#2c5aa0','−2 or cooler'],[-1.95,'#7fb1de','−2 to −1'],[-.95,'#eef0e6','within 1'],[1,'#f6b25e','+1 to +2'],[2,'#e8693d','+2 to +3'],[3,'#b5172b','+3 or warmer']]}};
+let ow=0,osel=-1;
+el.innerHTML=`<div class="chips" id="owk">${O.weeks.map((w,i)=>`<button class="chip" data-w="${i}">Week ${i+1}<small>${fd(w.start)} – ${fd(w.end)}</small></button>`).join('')}</div>
+<div class="row"><select id="omode">${Object.entries(MODES).map(([k,v])=>`<option value="${k}">${v.t}</option>`).join('')}</select><select id="osrc"><option value="five">Weeks 1–2: average of the 5 models</option><option value="cfs">Weeks 1–2: NOAA CFSv2</option></select></div>
+<svg id="osv" viewBox="0 0 440 575"></svg><div class="lg" id="olg"></div><div id="oinfo" class="m" style="font-size:13px;margin-top:6px">Tap a square for that spot's four weeks.</div>
+<h2 style="margin-top:12px">Tamil Nadu, week by week</h2><div style="overflow-x:auto"><table id="otab" style="border-collapse:collapse;font-size:12px;width:100%"></table></div>
+<p class="m">Weeks run 05:30 to 05:30 IST, starting tomorrow. Weeks 3–4 come from NOAA's CFSv2 (${O.members} members from the ${O.cycles.length} latest runs, newest ${O.newest}); weeks 1–2 also show the five-model average from the 16-day forecast above, which is more reliable at that range. "Normal" is the 1991–2020 average from NOAA CPC's gauge analysis. Chances are the share of CFSv2 members with a week 20% or more above (or below) normal. CFSv2 rain is shown as the model gives it, not bias-corrected, so treat weeks 3–4 as a broad tendency, not an amount. Temperatures are corrected for CFSv2's own bias, found by matching its week 1 to the five-model average (this run: max ${O.t_bias.tmax>0?'+':''}${O.t_bias.tmax} °C, min ${O.t_bias.tmin>0?'+':''}${O.t_bias.tmin} °C).</p>`;
+const sv3=$('osv');sv3.innerHTML='<defs><clipPath id="cp3"><path d="'+PD+'"/></clipPath></defs><g id="og" clip-path="url(#cp3)"></g><path d="'+PD+'" fill="none" stroke-width="1" style="stroke:var(--ink);pointer-events:none"/>';
+const OR=F.cells.map((cl,i)=>{const r=document.createElementNS(NS,'rect');r.setAttribute('x',X(cl.lon-F.step/2));r.setAttribute('y',Y(cl.lat+F.step/2));r.setAttribute('width',F.step*100+.5);r.setAttribute('height',F.step*100+.5);r.dataset.i=i;sv3.querySelector('#og').appendChild(r);return r});
+const useFive=w=>w<2&&$('osrc').value=='five'&&O.weeks[w].five;
+function ov(w,mode,i){const W=O.weeks[w],r=useFive(w)?W.five[i]:W.rain[i],n=W.normal[i];
+ if(mode=='rain')return r;if(mode=='dep')return(r==null||!n)?null:(r/n-1)*100;if(mode=='up')return W.p_up[i];if(mode=='dn')return W.p_dn[i];if(mode=='tx')return W.tmax_anom[i];return W.tmin_anom[i]}
+function opaint(){const mode=$('omode').value,b=MODES[mode].b;
+ document.querySelectorAll('#owk .chip').forEach((c,i)=>c.classList.toggle('on',i==ow));
+ $('osrc').style.display=(ow<2&&(mode=='rain'||mode=='dep'))?'':'none';
+ OR.forEach((r,i)=>{const v=ov(ow,mode,i);r.setAttribute('fill',v==null?'#d9dde3':b[cls(v,b)][1]);r.setAttribute('stroke',i==osel?'#000':'none');r.setAttribute('stroke-width',i==osel?1.6:0)});
+ $('olg').innerHTML=b.map(x=>`<div><i style="background:${x[1]}"></i>${x[2]}</div>`).join('')+(ow<2&&(mode=='up'||mode=='dn'||mode=='tx'||mode=='tn')?'<div class="m">From CFSv2.</div>':'');
+ oinfo()}
+function oinfo(){if(osel<0)return;const c=F.cells[osel];
+ $('oinfo').innerHTML=`<b>${c.lat.toFixed(2)}°N, ${c.lon.toFixed(2)}°E</b><table style="border-collapse:collapse;margin-top:4px">`+
+ '<tr class="m"><td>Week</td><td>Rain</td><td>Normal</td><td></td><td>Max temp</td></tr>'+
+ O.weeks.map((W,w)=>{const r=useFive(w)?W.five[osel]:W.rain[osel],n=W.normal[osel],p=(r!=null&&n)?Math.round((r/n-1)*100):null;
+ return `<tr${w==ow?' style="font-weight:600"':''}><td style="padding:1px 10px 1px 0">${w+1}</td><td style="padding:1px 10px 1px 0">${f1(r)} mm</td><td style="padding:1px 10px 1px 0">${f1(n)} mm</td><td style="padding:1px 10px 1px 0;color:${CATC(p)}">${p==null?'':(p>0?'+':'')+p+'% · '+CAT(p)}</td><td>${f1(W.tmax[osel])} °C</td></tr>`}).join('')+'</table>'}
+function otab(){const th=s=>`<th style="text-align:left;padding:4px 6px;border-bottom:1px solid var(--line);font-weight:600" class="m">${s}</th>`,td=(s,st)=>`<td style="padding:4px 6px;border-bottom:1px solid var(--line);${st||''}">${s}</td>`;
+ $('otab').innerHTML='<tr>'+['Week','Rain (CFSv2)','vs normal','Chance above / below','Max temp'].map(th).join('')+'</tr>'+
+ O.weeks.map((W,w)=>{const t=W.tn,five=t.five!=null?`<div class="m">5 models: ${f1(t.five)} mm, ${t.five_dep>0?'+':''}${t.five_dep}%</div>`:'';
+  return '<tr>'+td(`<b>${w+1}</b><div class="m">${fd(W.start)}–<br>${fd(W.end)}</div>`)+td(`${f1(t.rain)} mm<div class="m">normal ${f1(t.normal)} · range ${f1(t.lo)}–${f1(t.hi)}</div>`+five)+td(`<b style="color:${CATC(t.dep)}">${t.dep>0?'+':''}${t.dep}%</b><div class="m">${CAT(t.dep)}</div>`)+td(`${t.p_up}% / ${t.p_dn}%`)+td(`${t.tmax_anom>0?'+':''}${f1(t.tmax_anom)} °C`)+'</tr>'}).join('')+
+ '<tr><td colspan="5" class="m" style="padding:4px 6px">State-wide averages over Tamil Nadu land. Range: 8 in 10 CFSv2 members fall inside it. Max temp: difference from normal.</td></tr>'}
+$('owk').onclick=e=>{const b=e.target.closest('[data-w]');if(b){ow=+b.dataset.w;opaint()}};$('omode').onchange=opaint;$('osrc').onchange=opaint;
+sv3.addEventListener('click',e=>{const i=e.target.dataset&&e.target.dataset.i;if(i!=null){osel=+i;opaint()}});
+otab();opaint()})();
+
+// ---------- step 5: forecast check against TN SMART gauges
+(function(){const V=F.verify,el=$('vfy');if(!el)return;
+const NM={'Average':'Average of models','Weighted average':'Skill-weighted average'};
+if(!V){el.innerHTML='<p class="m">The forecast check is unavailable in this run.</p>';return}
+const wline=F.weights?`<p style="margin:4px 0">The rain average above is <b>skill-weighted</b> by the last ${V.window_days} days: ${Object.entries(F.weights).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${k} ${Math.round(v*100)}%`).join(' · ')}. Choose "Simple average" in the model menu to see equal weights.</p>`
+ :`<p style="margin:4px 0">Every model counts equally in the average for now. Once each model has ${V.min_days} verified days, the rain average will be weighted towards the models that have been closest to the TN SMART gauges${V.note?` (${V.note})`:''}.</p>`;
+const S=V.scores||{},names=Object.keys(S);
+if(!names.length){el.innerHTML=wline+`<p class="m">Forecasts are being saved${V.first_run?' since '+V.first_run.replace('T',' ').replace('Z',' UTC'):''}. The first scores appear once TN SMART publishes readings for a day those forecasts covered (a TN SMART day ends at 08:30 IST, so usually within two days). ${V.gauge_cells} forecast squares contain at least one TN SMART gauge.</p>`;return}
+let lead='1';
+el.innerHTML=wline+`<div class="chips" id="vld"><button class="chip" data-l="1">Next day</button><button class="chip" data-l="2">2 days ahead</button><button class="chip" data-l="3">3 days ahead</button></div><div style="overflow-x:auto"><table id="vtab" style="border-collapse:collapse;font-size:12px;width:100%"></table></div><h2 style="margin-top:12px">State-average rain: gauges vs next-day forecast</h2><svg id="vch" viewBox="0 0 340 150"></svg><div class="lg"><div><i style="background:#9aa3ad"></i>TN SMART gauges</div><div><i style="background:#0b5cab"></i>Average of models</div><div><i style="background:#e8693d"></i>Skill-weighted average</div></div>
+<p class="m">Scored on the ${V.gauge_cells} forecast squares (0.25°) that hold TN SMART gauges, averaging gauges in the same square, over the last ${V.window_days} days. A TN SMART day is the 24 hours to 08:30 IST; the forecast for it combines the models' 6-hour rain blocks centred on that window. Typical error: average absolute difference per square (mm). Bias: forecast total ÷ gauge total (1.0 = right amount; above 1 = too wet). Rain days caught: share of squares with 2.5 mm or more where the forecast also had 2.5 mm or more. False alarms: share of forecast rain squares that stayed dry. Skill score (ETS): 0 = no better than chance, 1 = perfect. Heavy rain: 64.5 mm or more.</p>`;
+function vt(){document.querySelectorAll('#vld .chip').forEach(c=>c.classList.toggle('on',c.dataset.l==lead));
+ const rows=names.filter(n=>S[n][lead]).sort((a,b)=>S[a][lead].mae-S[b][lead].mae);const best=rows.length?S[rows[0]][lead].mae:null;
+ const th=s=>`<th style="text-align:left;padding:4px 6px;border-bottom:1px solid var(--line);font-weight:600" class="m">${s}</th>`,td=(s,st)=>`<td style="padding:4px 6px;border-bottom:1px solid var(--line);${st||''}">${s}</td>`,fx=v=>v==null?'—':v;
+ $('vtab').innerHTML='<tr>'+['Forecast','Typical error','Bias','Rain days caught / false alarms','Skill (ETS)','Heavy rain hit / miss / false'].map(th).join('')+'</tr>'+
+ rows.map(n=>{const s=S[n][lead];return '<tr>'+td(`<b>${NM[n]||n}</b><div class="m">${s.days} days</div>`)+td(`${s.mae} mm`,s.mae==best?'font-weight:700;color:#1a7f37':'')+td(fx(s.bias))+td((s.pod==null?'—':Math.round(s.pod*100)+'%')+' / '+(s.far==null?'—':Math.round(s.far*100)+'%'))+td(fx(s.ets))+td(`${s.heavy.hit} / ${s.heavy.miss} / ${s.heavy.false}`)+'</tr>'}).join('')}
+function vch(){const D=(V.daily||[]).filter(r=>r.fc&&Object.keys(r.fc).length),n=D.length,svg=$('vch');if(!n){svg.innerHTML='<text x="170" y="75" text-anchor="middle" font-size="11" fill="var(--mut)">No next-day forecasts verified yet</text>';return}
+ const mx=Math.max(1,...D.map(r=>Math.max(r.obs,...Object.values(r.fc)))),bw=320/n,H=118,y=v=>10+H-(v/mx)*H;
+ let s=D.map((r,i)=>`<rect x="${10+i*bw+bw*.15}" y="${y(r.obs)}" width="${bw*.7}" height="${Math.max(.5,10+H-y(r.obs))}" fill="#9aa3ad" rx="1"><title>${r.date}: gauges ${r.obs} mm</title></rect>`).join('');
+ const line=(k,col)=>{const p=D.map((r,i)=>r.fc[k]==null?null:[10+i*bw+bw/2,y(r.fc[k])]).filter(Boolean);return p.length?`<polyline points="${p.map(q=>q.join(',')).join(' ')}" fill="none" stroke="${col}" stroke-width="1.8"/>`+p.map(q=>`<circle cx="${q[0]}" cy="${q[1]}" r="1.8" fill="${col}"/>`).join(''):''};
+ s+=line('Average','#0b5cab')+line('Weighted average','#e8693d');
+ s+=`<text x="10" y="146" font-size="8" fill="var(--mut)">${D[0].date.slice(5)}</text><text x="330" y="146" font-size="8" text-anchor="end" fill="var(--mut)">${D[n-1].date.slice(5)}</text><text x="12" y="9" font-size="8" fill="var(--mut)">${Math.round(mx)} mm</text>`;
+ svg.innerHTML=s}
+$('vld').onclick=e=>{const b=e.target.closest('[data-l]');if(b){lead=b.dataset.l;vt()}};vt();vch()})();
 </script></body></html>

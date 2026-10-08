@@ -18,6 +18,8 @@ import bz2, concurrent.futures as cf, datetime as dt, json, math, os, random, re
 import urllib.error, urllib.request
 
 import numpy as np
+import outlook                                  # step 4: one-month outlook (NOAA CFSv2)
+import verify                                   # step 5: forecast check against TN SMART gauges
 
 try:
     import eccodes
@@ -29,8 +31,8 @@ P = lambda *a: os.path.join(ROOT, *a)
 UTC, IST = dt.timezone.utc, dt.timezone(dt.timedelta(hours=5, minutes=30))
 UA = 'tn-rainfall-map forecast (non-commercial; github.com/sridhar13294-rgb/tn-rainfall-map)'
 T_START = time.time()
-DEADLINE = T_START + 66 * 60
-BUDGET = {'GFS': 9, 'ECMWF': 6, 'ECMWF AI': 4, 'ICON': 8, 'GEM': 8, 'GEFS': 12, 'ECMWF ENS': 22}   # minutes per model
+DEADLINE = T_START + 72 * 60
+BUDGET = {'GFS': 9, 'ECMWF': 6, 'ECMWF AI': 4, 'ICON': 8, 'GEM': 8, 'GEFS': 12, 'ECMWF ENS': 22, 'CFS': 8}   # minutes per model
 NDAYS = 16
 LEVELS = ['10m', '925', '850', '700', '500', '200']           # page keys: 10m and hPa levels
 WIND_BOX = dict(lat0=0, lat1=25, lon0=65, lon1=95, step=1.0)
@@ -1743,17 +1745,40 @@ def main():
     dates = [(d0 + dt.timedelta(days=d)).strftime('%Y-%m-%d') for d in range(nd)]
     coverage = [[n for n in labels if per[n]['rain'][d] is not None] for d in range(nd)]
     coverage6 = [[n for n in labels if per6[n][k] is not None] for k in range(nd * 4)]
+    # step 5: score earlier forecasts against TN SMART gauges; weight the rain average by recent skill once there is
+    # enough history (otherwise every model counts equally)
+    ver, W = None, None
+    try:
+        ver = verify.verify(pts, now)
+        if ver.get('weights') and all(n in ver['weights'] for n in labels):
+            W = ver['weights']
+        status['verify'] = dict(gauge_cells=ver['gauge_cells'], days=len(ver['daily']), weights=ver['weights'], note=ver['note'])
+    except Exception as e:
+        status['verify'] = f'FAILED: {e}'; traceback.print_exc()
+
+    def wmean(pairs):
+        """pairs: [(model, value)] -> weighted (or equal) mean, rounded."""
+        if not pairs:
+            return None
+        if W:
+            tot = sum(W[n] for n, _ in pairs)
+            return round(sum(W[n] * v for n, v in pairs) / tot, 1)
+        return round(sum(v for _, v in pairs) / len(pairs), 1)
+
     keymap = {'precipitation_sum': 'rain', 'temperature_2m_max': 'tmax', 'temperature_2m_min': 'tmin', 'wind_speed_10m_max': 'wmax'}
     cells = []
     for i, (lo, la) in enumerate(pts):
         rec = {'lon': lo, 'lat': la}
         for out_key, k in keymap.items():
             mv = {n: [r1(per[n][k][d][i]) if per[n][k][d] is not None else None for d in range(nd)] for n in labels}
-            avg = []
+            avg, eq = [], []
             for d in range(nd):
-                xs = [mv[n][d] for n in labels if mv[n][d] is not None]
-                avg.append(round(sum(xs) / len(xs), 1) if xs else None)
+                xs = [(n, mv[n][d]) for n in labels if mv[n][d] is not None]
+                eq.append(round(sum(v for _, v in xs) / len(xs), 1) if xs else None)
+                avg.append(wmean(xs) if k == 'rain' else eq[-1])
             rec[out_key] = {'avg': avg, **mv}
+            if k == 'rain' and W:
+                rec[out_key]['eq'] = eq
         dd = []
         for d in range(nd):
             xs = [(per[n]['wdir'][d][i], per[n]['wmax'][d][i]) for n in labels if per[n]['wdir'][d] is not None]
@@ -1764,12 +1789,22 @@ def main():
                 dd.append(None)
         rec['wind_dir'] = dd
         mv = {n: [r1(per6[n][k][i]) if per6[n][k] is not None else None for k in range(nd * 4)] for n in labels}
-        avg6 = []
+        avg6, eq6 = [], []
         for k in range(nd * 4):
-            xs = [mv[n][k] for n in labels if mv[n][k] is not None]
-            avg6.append(round(sum(xs) / len(xs), 1) if xs else None)
+            xs = [(n, mv[n][k]) for n in labels if mv[n][k] is not None]
+            eq6.append(round(sum(v for _, v in xs) / len(xs), 1) if xs else None)
+            avg6.append(wmean(xs))
         rec['rain6'] = {'avg': avg6, **mv}
+        if W:
+            rec['rain6']['eq'] = eq6
         cells.append(rec)
+
+    try:
+        status.setdefault('verify', {})
+        if isinstance(status['verify'], dict):
+            status['verify']['archived_days'] = verify.archive(per6, labels, W, d0, now, len(pts))
+    except Exception as e:
+        status['verify_archive'] = f'FAILED: {e}'; traceback.print_exc()
 
     # mean sea-level pressure: average and spread of the models, every 6 h
     mslp = None
@@ -1834,6 +1869,21 @@ def main():
     except Exception as e:
         status['mjo'] = f'FAILED: {e}'; traceback.print_exc()
 
+    # step 4: one-month outlook from NOAA CFSv2 (weeks 1-4), with the five-model average for weeks 1-2
+    outlook_data = None
+    try:
+        CURRENT['deadline'] = time.time() + BUDGET['CFS'] * 60
+        fm = {}
+        for out_key, k in (('precipitation_sum', 'rain'), ('temperature_2m_max', 'tmax'), ('temperature_2m_min', 'tmin')):
+            fm[k] = []
+            for d in range(nd):
+                col = [c[out_key]['avg'][d] for c in cells]
+                fm[k].append(None if any(x is None for x in col) else np.array(col, float))
+        outlook_data = outlook.build(http, pts, d0, now, fm, status)
+    except Exception as e:
+        status['outlook'] = f'FAILED: {e}'; traceback.print_exc()
+    CURRENT['deadline'] = DEADLINE
+
     # step 3: ensembles. Always read for the MJO forecast (OLR only); when any main model shows a low over the
     # Bay of Bengal or Arabian Sea (or on a manual test), rain and pressure are read as well for the system watch.
     wbox = dict(lat0=lats[0], lon0=lons[0], ny=len(lats), nx=len(lons), step=WIND_BOX['step'])
@@ -1897,7 +1947,7 @@ def main():
 
     runs = {n: models[n].run.strftime('%HZ %d %b') for n in labels}
     F = dict(updated=dt.datetime.now(IST).strftime('%d %b %Y, %H:%M IST'), dates=dates, models=labels, runs=runs,
-             coverage=coverage, coverage6=coverage6, cells=cells, wind=wind, mslp=mslp, drivers=drivers, systems=systems, land=land_outline(), tn=geo['tn'], ct=geo['ct'], step=.25)
+             coverage=coverage, coverage6=coverage6, cells=cells, wind=wind, mslp=mslp, drivers=drivers, systems=systems, verify=ver, weights=W, outlook=outlook_data, land=land_outline(), tn=geo['tn'], ct=geo['ct'], step=.25)
     tpl = open(P('site/forecast_template.html')).read()
     open(P('site/forecast.html'), 'w').write(tpl.replace('/*FDATA*/', json.dumps(F, separators=(',', ':'))))
     status.update(points=len(pts), days=nd, seconds=round(time.time() - T_START))

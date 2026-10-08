@@ -27,7 +27,7 @@ concurrency:
 jobs:
   forecast:
     runs-on: ubuntu-latest
-    timeout-minutes: 75
+    timeout-minutes: 85
     steps:
       - uses: actions/checkout@v4
         with:
@@ -41,6 +41,12 @@ jobs:
           sudo apt-get install -y -q libeccodes-dev
           pip install -q eccodes numpy netCDF4
           python -c "import eccodes; print('ecCodes', eccodes.codes_get_api_version())"
+      - name: Latest TN SMART gauge readings (from the live branch, for the forecast check)
+        if: github.ref_name != 'main'
+        run: |
+          git fetch -q --depth=1 origin main
+          mkdir -p /tmp/obs && git archive origin/main data/daily data/stations.json | tar -x -C /tmp/obs
+          echo "OBS_ROOT=/tmp/obs" >> "$GITHUB_ENV"
       - name: Download model forecasts and build the page
         env:
           FORCE_ENS: ${{ inputs.force_ensembles && '1' || '0' }}
@@ -50,7 +56,7 @@ jobs:
         run: |
           git config user.name "forecast-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          for f in site/forecast.html data/forecast_status.json data/forecast_progress.json data/land_region.json data/icon_*_neighbours.json data/clim_ncep.json data/sst_clim_1991_2020.json data/sst_indices.json data/mjo_u850_history.json; do if [ -e "$f" ]; then git add "$f"; fi; done
+          for f in site/forecast.html data/forecast_status.json data/forecast_progress.json data/land_region.json data/icon_*_neighbours.json data/clim_ncep.json data/sst_clim_1991_2020.json data/sst_indices.json data/mjo_u850_history.json data/cpc_clim_tn.json data/verify; do if [ -e "$f" ]; then git add "$f"; fi; done
           git diff --cached --quiet || git commit -m "Forecast update $(TZ=Asia/Kolkata date '+%Y-%m-%d %H:%M IST')"
           git pull --rebase -X theirs origin ${{ github.ref_name }} && git push origin HEAD:${{ github.ref_name }}
       - if: github.ref_name == 'main'

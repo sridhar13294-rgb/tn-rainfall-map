@@ -18,6 +18,11 @@ A GitHub Action (`.github/workflows/daily.yml`) runs at 09:45 and 18:00 IST:
 - 6-hourly and daily rain, max/min temperature and max wind for a 0.25° Tamil Nadu grid, averaged across GFS (NOAA),
   ECMWF IFS and AIFS (ECMWF open data), ICON (DWD) and GEM (ECCC), read directly from the official open-data servers.
 - Mean sea-level pressure averaged across the same models (with model spread), and GFS wind flow at 6 heights.
+- One-month outlook (weeks 1-4) from NOAA CFSv2 (`scripts/outlook.py`): a lagged ensemble of the latest 8 runs
+  (32 members), against the NOAA CPC 1991-2020 normal; weeks 1-2 also show the five-model average.
+- Forecast check (`scripts/verify.py`): each run saves its rain forecast for the next TN SMART days to `data/verify/fc/`;
+  once gauge readings arrive they are scored (`data/verify/scores.json`), and after 10 verified days the rain average
+  is weighted towards the models closest to the gauges.
 - `data/forecast_status.json` records which model runs were used and any download errors.
 Experimental and non-commercial; not an official forecast.
 
