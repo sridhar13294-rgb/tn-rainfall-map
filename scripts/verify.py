@@ -78,15 +78,39 @@ def archive(per6, labels, weights, d0, now, npts):
     return len(days)
 
 
+def dead_gauges(st, days=30):
+    """Gauges that read 0 mm on every day of the last `days` saved days while the median gauge in their district had
+    40 mm or more: almost certainly not reporting, so their zeros would wrongly count as 'dry' in the forecast check."""
+    import statistics
+    d = OBS('data', 'daily')
+    if not os.path.isdir(d):
+        return set()
+    files = sorted(f for f in os.listdir(d) if f.endswith('.json'))[-days:]
+    if len(files) < 20:
+        return set()
+    tot = {}
+    for f in files:
+        for k, v in json.load(open(os.path.join(d, f))).items():
+            if v is not None:
+                tot[k] = tot.get(k, 0) + v
+    byd = {}
+    for k, t in tot.items():
+        byd.setdefault(st.get(k, {}).get('district'), []).append(t)
+    med = {dname: statistics.median(v) for dname, v in byd.items()}
+    return {k for k, t in tot.items() if t == 0 and med.get(st.get(k, {}).get('district'), 0) >= 40}
+
+
 def gauge_cells(pts):
-    """{cell index: [station ids]} for TN SMART gauges inside a 0.25 degree forecast cell."""
+    """{cell index: [station ids]} for TN SMART gauges inside a 0.25 degree forecast cell (gauges that have stopped
+    reporting are left out)."""
     try:
         st = json.load(open(OBS('data', 'stations.json')))
     except Exception:
         return {}
+    dead = dead_gauges(st)
     cells = {}
     for sid, s in st.items():
-        if s.get('lat') is None or s.get('lon') is None:
+        if s.get('lat') is None or s.get('lon') is None or sid in dead:
             continue
         best = min(range(len(pts)), key=lambda i: (pts[i][0] - s['lon']) ** 2 + (pts[i][1] - s['lat']) ** 2)
         if abs(pts[best][0] - s['lon']) <= 0.13 and abs(pts[best][1] - s['lat']) <= 0.13:
