@@ -1793,7 +1793,9 @@ def r1(x):
 
 def main():
     now = dt.datetime.now(UTC)
-    d0 = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    # day 1 = the current IST day (05:30-05:30 IST = 00-00 UTC). The 02:10 IST run is still the previous UTC day,
+    # so it starts at the coming 00 UTC instead of a day that has already ended in IST.
+    d0 = dt.datetime.combine((now + dt.timedelta(hours=5, minutes=30)).date(), dt.time(), tzinfo=UTC)
     geo = json.load(open(P('data/geo.json')))
     pts = tn_points(geo)
     lats, lons, wpts = wind_points()
