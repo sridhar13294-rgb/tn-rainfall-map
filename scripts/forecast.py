@@ -1257,6 +1257,7 @@ def ecens_collect(pool, pts, wpts, d0, now, info, system=True):
     s0, _ = needed(run, d0, NDAYS)
     s1 = min(ENS_HOURS, s0 + 24 * NDAYS)
     members = {}
+    failed = []                                       # fields refused by the servers, retried once at the end
     pool = cf.ThreadPoolExecutor(max_workers=12)    # spread over two mirrors; both throttle heavy parallel use
 
     def mem_model(k):
@@ -1265,7 +1266,7 @@ def ecens_collect(pool, pts, wpts, d0, now, info, system=True):
                 members[k] = Model(f'ENS {k}'); members[k].run = run
             return members[k]
 
-    def field(step, rec, var):
+    def field(step, rec, var, retry=False):
         k = int(rec.get('number', 0)) if rec.get('type') == 'pf' else 0
 
         def task():
@@ -1279,8 +1280,17 @@ def ecens_collect(pool, pts, wpts, d0, now, info, system=True):
                     m.add('mslt', inf, step, sample(inf, vals, TRACK_PTS, 'track'))
                 else:
                     m.add(var, inf, step, sample(inf, vals, pts, 'tn'))
+                if retry:
+                    with LOCK:
+                        m.failed -= 1
             except Exception as e:
-                m.err(f'{k} {step}h {var}: {e}')
+                if retry:
+                    with LOCK:
+                        m.errors.append(f'{k} {step}h {var} (retry): {e}')
+                else:
+                    m.err(f'{k} {step}h {var}: {e}')
+                    with LOCK:
+                        failed.append((step, rec, var))
         return task
 
     def idx_task(step):
@@ -1317,6 +1327,13 @@ def ecens_collect(pool, pts, wpts, d0, now, info, system=True):
     tasks = [t for _, ts in sorted(by_step, key=lambda x: x[0]) for t in ts]     # earliest forecast hours first
     run_tasks(pool, tasks)
     pool.shutdown()
+    # second pass: ECMWF's servers throttle bursts (HTTP 503), so fetch whatever failed again, slowly
+    if failed and time.time() < min(DEADLINE, CURRENT['deadline']) - 60:
+        info['retried'] = len(failed)
+        time.sleep(20)
+        pool = cf.ThreadPoolExecutor(max_workers=4)
+        run_tasks(pool, [field(st, r, v, retry=True) for st, r, v in failed])
+        pool.shutdown()
     info['run'] = run.strftime('%Y-%m-%d %HZ'); info['members'] = len(members)
     info['fields_ok'] = sum(m.ok for m in members.values()); info['fields_failed'] = sum(m.failed for m in members.values())
     info['errors'] = [e for m in members.values() for e in m.errors][:5]
