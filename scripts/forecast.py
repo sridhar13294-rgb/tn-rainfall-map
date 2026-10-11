@@ -437,7 +437,9 @@ def ec_collect(m, pool, pts, wpts, d0, now, model):
     s0, s1 = needed(run, d0, NDAYS)
     steps = [s for s in steps_all if s <= s1]
 
-    def field(step, rec, var):
+    failed, failed_idx = [], []                       # refused by the servers (429/503): tried once more at the end
+
+    def field(step, rec, var, retry=False):
         def task():
             try:
                 rng = (rec['_offset'], rec['_offset'] + rec['_length'] - 1)
@@ -451,8 +453,17 @@ def ec_collect(m, pool, pts, wpts, d0, now, model):
                     m.add(var, info, step, sample(info, vals, OLR_PTS, 'olr'))
                 else:
                     m.add(var, info, step, sample(info, vals, pts, 'tn'))
+                if retry:
+                    with LOCK:
+                        m.failed -= 1
             except Exception as e:
-                m.err(f'{step}h {rec.get("param")}: {e}')
+                if retry:
+                    with LOCK:
+                        m.errors.append(f'{step}h {rec.get("param")} (retry): {e}')
+                else:
+                    m.err(f'{step}h {rec.get("param")}: {e}')
+                    with LOCK:
+                        failed.append((step, rec, var))
         return task
 
     params_seen = set()
@@ -462,6 +473,8 @@ def ec_collect(m, pool, pts, wpts, d0, now, model):
             try:
                 recs = ec_index(bases, lambda b: ec_url(b, model, run, step))
             except Exception as e:
+                with LOCK:
+                    failed_idx.append(step)
                 m.err(f'index {step}h: {e}'); return []
             out = []
             in_days = s0 <= step <= s1
@@ -497,6 +510,16 @@ def ec_collect(m, pool, pts, wpts, d0, now, model):
         tasks += f.result()
     m.info['sfc_params'] = sorted(params_seen)
     run_tasks(pool, tasks)
+    if (failed or failed_idx) and time.time() < min(DEADLINE, CURRENT['deadline']) - 60:
+        m.info['retried'] = len(failed) + len(failed_idx)
+        time.sleep(20)
+        with cf.ThreadPoolExecutor(max_workers=4) as slow:
+            more = []
+            for st in list(failed_idx):
+                more += idx_task(st)()
+                with LOCK:
+                    m.failed -= 1                     # either it worked now, or its second failure was just counted
+            run_tasks(slow, [field(st, r, v, retry=True) for st, r, v in failed] + more)
 
 
 # ------------------------------------------------------------------ ICON (DWD)
