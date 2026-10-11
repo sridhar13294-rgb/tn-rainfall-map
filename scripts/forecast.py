@@ -32,7 +32,7 @@ UTC, IST = dt.timezone.utc, dt.timezone(dt.timedelta(hours=5, minutes=30))
 UA = 'tn-rainfall-map forecast (non-commercial; github.com/sridhar13294-rgb/tn-rainfall-map)'
 T_START = time.time()
 DEADLINE = T_START + 72 * 60
-BUDGET = {'GFS': 9, 'ECMWF': 6, 'ECMWF AI': 4, 'ICON': 8, 'GEM': 8, 'GEFS': 12, 'ECMWF ENS': 22, 'CFS': 8}   # minutes per model
+BUDGET = {'GFS': 9, 'ECMWF': 9, 'ECMWF AI': 6, 'ICON': 8, 'GEM': 8, 'GEFS': 12, 'ECMWF ENS': 22, 'CFS': 8}   # minutes per model
 NDAYS = 16
 LEVELS = ['10m', '925', '850', '700', '500', '200']           # page keys: 10m and hPa levels
 WIND_BOX = dict(lat0=0, lat1=25, lon0=65, lon1=95, step=1.0)

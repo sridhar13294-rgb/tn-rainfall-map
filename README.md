@@ -14,7 +14,7 @@ A GitHub Action (`.github/workflows/daily.yml`) runs at 09:45 and 18:00 IST:
 `data/status.json` shows what the last run did. If TN SMART can't be reached, the map is rebuilt from saved data and the error is recorded there.
 
 ## Weather forecast page (experimental)
-`forecast.html`, rebuilt 3 times a day (07:00, 15:00 and 02:10 IST, each after a new ECMWF run) by `.github/workflows/forecast.yml` running `scripts/forecast.py`:
+`forecast.html`, rebuilt 3 times a day (07:00, 15:00 and 03:45 IST, each after a new ECMWF run) by `.github/workflows/forecast.yml` running `scripts/forecast.py`:
 - 6-hourly and daily rain, max/min temperature and max wind for a 0.25° Tamil Nadu grid, averaged across GFS (NOAA),
   ECMWF IFS and AIFS (ECMWF open data), ICON (DWD) and GEM (ECCC), read directly from the official open-data servers.
 - Mean sea-level pressure averaged across the same models (with model spread), and GFS wind flow at 6 heights.
