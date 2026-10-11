@@ -1190,7 +1190,8 @@ def find_circulations(u, v, lats, lons):
     zeta = np.full((ny, nx), np.nan)
     zeta[1:-1, 1:-1] = ((V[1:-1, 2:] - V[1:-1, :-2]) / (2 * dx[1:-1]) - (U[2:, 1:-1] - U[:-2, 1:-1]) / (2 * dy))
     z = np.nan_to_num(zeta)
-    q = np.pad(z, 1, mode='edge'); z = (q[:-2, 1:-1] + q[2:, 1:-1] + q[1:-1, :-2] + q[1:-1, 2:] + 4 * z) / 8
+    for _ in range(2):                            # light smoothing so one circulation gives one steady centre
+        q = np.pad(z, 1, mode='edge'); z = (q[:-2, 1:-1] + q[2:, 1:-1] + q[1:-1, :-2] + q[1:-1, 2:] + 4 * z) / 8
     out = []
     R = CIRC_R
     for j in range(R, ny - R):
@@ -1203,7 +1204,12 @@ def find_circulations(u, v, lats, lons):
                 continue
             turns = int(U[j + R, i] < 0) + int(U[j - R, i] > 0) + int(V[j, i + R] > 0) + int(V[j, i - R] < 0)
             if turns >= 3:
-                out.append((float(lons[i]), float(la), round(float(c) * 1e5, 1)))
+                # sub-grid centre from a parabola through the neighbouring vorticity values
+                cx = z[j, i - 1] - 2 * c + z[j, i + 1]; cy = z[j - 1, i] - 2 * c + z[j + 1, i]
+                fx = 0.5 * (z[j, i - 1] - z[j, i + 1]) / cx if cx < 0 else 0.0
+                fy = 0.5 * (z[j - 1, i] - z[j + 1, i]) / cy if cy < 0 else 0.0
+                fx, fy = max(-.5, min(.5, fx)), max(-.5, min(.5, fy))
+                out.append((float(lons[i]) + fx * (lons[1] - lons[0]), float(la) + fy * (lats[1] - lats[0]), round(float(c) * 1e5, 1)))
     keep = []                                     # one centre per circulation: drop weaker ones within 3 degrees
     for c in sorted(out, key=lambda t: -t[2]):
         if all(math.hypot(c[0] - k[0], c[1] - k[1]) > 3 for k in keep):
@@ -1237,7 +1243,15 @@ def circulation_tracks(m, d0, nframes, lats, lons):
             (done if k - tr[-1][0] > 2 else keep).append(tr)
         active = keep + [[[k, lo, la, zz]] for q, (lo, la, zz) in enumerate(cs) if q not in used]
     done += active
-    return [t for t in done if t[-1][0] - t[0][0] >= 4]          # lasts at least 24 hours
+    out = []
+    for t in done:
+        if t[-1][0] - t[0][0] < 4:                                # lasts at least 24 hours
+            continue
+        for _ in range(2):                                        # smooth the path along time (ends kept)
+            t = [t[0]] + [[t[k][0], (t[k - 1][1] + 2 * t[k][1] + t[k + 1][1]) / 4, (t[k - 1][2] + 2 * t[k][2] + t[k + 1][2]) / 4, t[k][3]]
+                          for k in range(1, len(t) - 1)] + [t[-1]]
+        out.append([[p[0], round(p[1], 2), round(p[2], 2), p[3]] for p in t])
+    return out
 
 
 def build_circulations(models, labels, d0, nframes, lats, lons):
@@ -1264,11 +1278,20 @@ def build_circulations(models, labels, d0, nframes, lats, lons):
     out = []
     for g in groups:
         frames = sorted(set(p[0] for t in g.values() for p in t))
+        need = 2 if len(g) >= 2 else 1                 # average only where at least two models agree on the time
         mean = []
         for k in frames:
             ps = [p for t in g.values() for p in t if p[0] == k]
+            if len(ps) < need:
+                continue
             mean.append([k, round(float(np.mean([p[1] for p in ps])), 2), round(float(np.mean([p[2] for p in ps])), 2),
                          round(float(np.max([p[3] for p in ps])), 1), len(ps)])
+        if len(mean) < 2:
+            continue
+        for _ in range(2):
+            mean = [mean[0]] + [[mean[k][0], round((mean[k - 1][1] + 2 * mean[k][1] + mean[k + 1][1]) / 4, 2),
+                                 round((mean[k - 1][2] + 2 * mean[k][2] + mean[k + 1][2]) / 4, 2), mean[k][3], mean[k][4]]
+                                for k in range(1, len(mean) - 1)] + [mean[-1]]
         near = min((min(math.hypot((p[1] - c[0]) * math.cos(math.radians(p[2])), p[2] - c[1]) for c in TN_COAST) * 111
                     for p in mean), default=9999)
         out.append(dict(models=sorted(g), n=len(g), of=nmod, track=mean, tracks={k: [p[:3] for p in t] for k, t in g.items()},
