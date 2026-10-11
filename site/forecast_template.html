@@ -74,6 +74,7 @@ button.play{border:1px solid var(--line);background:var(--paper);color:var(--ink
 <div class="card">
  <h2>System watch: lows and depressions (ensembles)</h2>
  <div id="sysv"></div>
+ <div id="circv"></div>
 </div>
 
 <div class="card">
@@ -440,6 +441,30 @@ if(E&&(E.days||[]).length){
   ER.forEach((r,i)=>r.setAttribute('fill',bins[cls(v[i],bins)][1]));$('elg').innerHTML=bins.map(x=>`<div><i style="background:${x[1]}"></i>${x[2]}</div>`).join('')}
  ep()}
 })();
+
+// ---------- cyclonic circulations (850 hPa)
+(function(){const el=$('circv');if(!el)return;const C=(F.systems||{}).circ;
+const t0=new Date(F.dates[0]+'T00:00:00Z').getTime(),when=k=>{const d=new Date(t0+k*216e5+198e5);return DOW[d.getUTCDay()]+' '+d.getUTCDate()+' '+MON[d.getUTCMonth()]+' '+(d.getUTCHours()<12?'morning':'evening')};
+const ll=(lo,la)=>`${la.toFixed(1)}°N ${lo.toFixed(1)}°E`;
+const dir=(a,b)=>{const dx=b[1]-a[1],dy=b[2]-a[2];if(Math.hypot(dx,dy)<1)return 'stays near there';const n=['north','north-east','east','south-east','south','south-west','west','north-west'];return 'moves '+n[Math.round(((Math.atan2(dx,dy)*180/Math.PI)+360)%360/45)%8]};
+el.innerHTML='<h2 style="margin-top:14px">Cyclonic circulations (winds at about 1.5 km)</h2>';
+if(!C){el.insertAdjacentHTML('beforeend','<p class="m">Circulation check unavailable in this run.</p>');return}
+if(!C.length){el.insertAdjacentHTML('beforeend','<p class="m">No cyclonic circulation in the next 16 days between 65°E and 95°E in GFS, ECMWF or ECMWF AI.</p>');return}
+const COL=['#d61f69','#1f7ae0','#f29a1d','#2f9e44','#7048e8','#0c8599','#e8590c','#495057'];
+el.insertAdjacentHTML('beforeend','<div class="wwrap" style="background:#eef3f7"><canvas id="cicv"></canvas></div><div id="cil" style="margin-top:8px;font-size:13.5px"></div><p class="m">A cyclonic circulation is air turning anticlockwise around a centre at about 1.5 km height (850 hPa), the kind IMD reports as a "cyclonic circulation". It can bring rain even when there is no low on the surface pressure map. Found automatically every run in each model\'s winds: spin of at least 2×10⁻⁵ per second at the centre, wind turning around it on at least 3 of 4 sides, lasting 24 hours or more. Thick line: average position of the models that show it; thin lines: each model; dots every 24 hours. Only GFS, ECMWF and ECMWF AI give us winds at this height.</p>');
+const cv=$('cicv'),W=cv.parentNode.clientWidth||400,H=W*25/30/Math.cos(12*Math.PI/180),dpr=window.devicePixelRatio||1;cv.width=W*dpr;cv.height=H*dpr;cv.style.height=H+'px';
+const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);const X=l=>(l-65)/30*W,Y=a=>(25-a)/25*H;
+c.fillStyle='#eef3f7';c.fillRect(0,0,W,H);c.fillStyle='rgba(227,220,205,.9)';c.strokeStyle='#8a8170';c.lineWidth=.7;
+(F.land||[]).forEach(r=>{c.beginPath();r.forEach((p,i)=>i?c.lineTo(X(p[0]),Y(p[1])):c.moveTo(X(p[0]),Y(p[1])));c.closePath();c.fill();c.stroke()});
+c.strokeStyle='#7a4b00';c.lineWidth=.6;F.tn.forEach(r=>{c.beginPath();r.forEach((p,i)=>i?c.lineTo(X(p[0]),Y(p[1])):c.moveTo(X(p[0]),Y(p[1])));c.closePath();c.stroke()});
+C.forEach((s,i)=>{const col=COL[i%COL.length];
+ Object.values(s.tracks).forEach(t=>{c.globalAlpha=.45;c.strokeStyle=col;c.lineWidth=1;c.beginPath();t.forEach((p,j)=>j?c.lineTo(X(p[1]),Y(p[2])):c.moveTo(X(p[1]),Y(p[2])));c.stroke();c.globalAlpha=1});
+ const t=s.track;c.strokeStyle='#fff';c.lineWidth=5;c.beginPath();t.forEach((p,j)=>j?c.lineTo(X(p[1]),Y(p[2])):c.moveTo(X(p[1]),Y(p[2])));c.stroke();
+ c.strokeStyle=col;c.lineWidth=2.6;c.stroke();
+ t.forEach(p=>{if(p[0]%4==0){c.fillStyle=col;c.beginPath();c.arc(X(p[1]),Y(p[2]),3,0,7);c.fill()}});
+ c.font='bold 11px system-ui';c.lineWidth=3;c.strokeStyle='#fff';c.fillStyle=col;const a=t[0],lab=String(i+1);c.strokeText(lab,X(a[1])+5,Y(a[2])-5);c.fillText(lab,X(a[1])+5,Y(a[2])-5)});
+$('cil').innerHTML=C.map((s,i)=>{const a=s.track[0],b=s.track[s.track.length-1];
+ return `<div style="display:flex;gap:8px;margin:6px 0"><b style="color:${COL[i%COL.length]};min-width:14px">${i+1}</b><div>Near <b>${ll(a[1],a[2])}</b> from ${when(a[0])}, ${dir(a,b)}${Math.hypot(b[1]-a[1],b[2]-a[2])>=1?' to '+ll(b[1],b[2]):''} until ${when(b[0])}. <span class="m">In ${s.n} of ${s.of} models (${s.models.join(', ')})${s.tn_km<=300?` · comes within <b style="color:var(--ink)">${s.tn_km} km</b> of the Tamil Nadu coast`:''}.</span></div></div>`}).join('')})();
 
 // ---------- step 4: one-month outlook (NOAA CFSv2)
 (function(){const O=F.outlook,el=$('olv');if(!el)return;

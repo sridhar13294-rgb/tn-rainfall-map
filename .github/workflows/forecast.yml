@@ -4,7 +4,7 @@ on:
   schedule:                  # GitHub only runs schedules on the main branch, so these start once merged
     - cron: '30 1 * * *'     # 07:00 IST (after GFS 00Z / ECMWF 00Z)
     - cron: '30 9 * * *'     # 15:00 IST (after GFS 06Z, ECMWF 06Z)
-    - cron: '30 17 * * *'    # 23:00 IST (after GFS 12Z / ECMWF 12Z)
+    - cron: '40 20 * * *'    # 02:10 IST: after ECMWF publishes its 12Z run (at 17:30 UTC it still used the 00Z run)
   workflow_dispatch:
     inputs:
       force_ensembles:

@@ -1173,6 +1173,109 @@ def deterministic_lows(models, labels, d0, nframes, wbox=None):
     return out
 
 
+
+# ------------------------------------------------------------------ cyclonic circulations (850 hPa winds)
+CIRC_ZETA = 2.0e-5          # minimum relative vorticity at the centre (1/s), on the 1 degree grid after light smoothing
+CIRC_R = 2                  # the four "turning" checks are made this many grid points (degrees) from the centre
+
+
+def find_circulations(u, v, lats, lons):
+    """Cyclonic circulation centres in one 850 hPa wind field (northern hemisphere, 3-25N): a local maximum of relative
+    vorticity above CIRC_ZETA where the wind turns anticlockwise around it (easterly to the north, westerly to the south,
+    southerly to the east, northerly to the west; at least 3 of the 4). Returns [(lon, lat, zeta*1e5)]."""
+    ny, nx = len(lats), len(lons)
+    U = np.asarray(u, float).reshape(ny, nx); V = np.asarray(v, float).reshape(ny, nx)
+    lat_r = np.radians(np.asarray(lats))[:, None]
+    dx = 111e3 * np.cos(lat_r) * (lons[1] - lons[0]); dy = 111e3 * (lats[1] - lats[0])
+    zeta = np.full((ny, nx), np.nan)
+    zeta[1:-1, 1:-1] = ((V[1:-1, 2:] - V[1:-1, :-2]) / (2 * dx[1:-1]) - (U[2:, 1:-1] - U[:-2, 1:-1]) / (2 * dy))
+    z = np.nan_to_num(zeta)
+    q = np.pad(z, 1, mode='edge'); z = (q[:-2, 1:-1] + q[2:, 1:-1] + q[1:-1, :-2] + q[1:-1, 2:] + 4 * z) / 8
+    out = []
+    R = CIRC_R
+    for j in range(R, ny - R):
+        la = lats[j]
+        if la < 3:
+            continue
+        for i in range(R, nx - R):
+            c = z[j, i]
+            if c < CIRC_ZETA or c < z[j - 1:j + 2, i - 1:i + 2].max():
+                continue
+            turns = int(U[j + R, i] < 0) + int(U[j - R, i] > 0) + int(V[j, i + R] > 0) + int(V[j, i - R] < 0)
+            if turns >= 3:
+                out.append((float(lons[i]), float(la), round(float(c) * 1e5, 1)))
+    keep = []                                     # one centre per circulation: drop weaker ones within 3 degrees
+    for c in sorted(out, key=lambda t: -t[2]):
+        if all(math.hypot(c[0] - k[0], c[1] - k[1]) > 3 for k in keep):
+            keep.append(c)
+    return keep
+
+
+def circulation_tracks(m, d0, nframes, lats, lons):
+    """Follow circulation centres through one model's 6-hourly 850 hPa winds. Track points: [frame, lon, lat, zeta]."""
+    U = {s: v for s, v in m.recs['u850']}; V = {s: v for s, v in m.recs['v850']}
+    done, active = [], []
+    for k in range(nframes):
+        st = int((d0 + dt.timedelta(hours=6 * k) - m.run).total_seconds() // 3600)
+        if st not in U or st not in V:
+            continue
+        cs = find_circulations(U[st], V[st], lats, lons)
+        used = set()
+        for tr in sorted(active, key=len, reverse=True):
+            last = tr[-1]
+            if k - last[0] > 2:
+                continue
+            best = None
+            for q, (lo, la, zz) in enumerate(cs):
+                d = math.hypot((lo - last[1]) * math.cos(math.radians(la)), la - last[2])
+                if q not in used and d <= 2.5 + (k - last[0] - 1) and (best is None or d < best[0]):
+                    best = (d, q)
+            if best:
+                used.add(best[1]); lo, la, zz = cs[best[1]]; tr.append([k, lo, la, zz])
+        keep = []
+        for tr in active:
+            (done if k - tr[-1][0] > 2 else keep).append(tr)
+        active = keep + [[[k, lo, la, zz]] for q, (lo, la, zz) in enumerate(cs) if q not in used]
+    done += active
+    return [t for t in done if t[-1][0] - t[0][0] >= 4]          # lasts at least 24 hours
+
+
+def build_circulations(models, labels, d0, nframes, lats, lons):
+    """Circulations from every model with 850 hPa winds, grouped across models into systems."""
+    per = {}
+    for n in labels:
+        m = models[n]
+        if m.recs['u850'] and m.recs['v850']:
+            per[n] = circulation_tracks(m, d0, nframes, lats, lons)
+    nmod = len(per)
+    groups = []                                   # each: {model: track}
+    def close(a, b):
+        ta = {p[0]: p for p in a}; common = [p for p in b if p[0] in ta]
+        if not common:
+            return False
+        return np.mean([math.hypot((p[1] - ta[p[0]][1]) * math.cos(math.radians(p[2])), p[2] - ta[p[0]][2]) for p in common]) <= 4
+    for n, trs in per.items():
+        for t in trs:
+            g = next((g for g in groups if n not in g and any(close(t, x) for x in g.values())), None)
+            if g is None:
+                groups.append({n: t})
+            else:
+                g[n] = t
+    out = []
+    for g in groups:
+        frames = sorted(set(p[0] for t in g.values() for p in t))
+        mean = []
+        for k in frames:
+            ps = [p for t in g.values() for p in t if p[0] == k]
+            mean.append([k, round(float(np.mean([p[1] for p in ps])), 2), round(float(np.mean([p[2] for p in ps])), 2),
+                         round(float(np.max([p[3] for p in ps])), 1), len(ps)])
+        near = min((min(math.hypot((p[1] - c[0]) * math.cos(math.radians(p[2])), p[2] - c[1]) for c in TN_COAST) * 111
+                    for p in mean), default=9999)
+        out.append(dict(models=sorted(g), n=len(g), of=nmod, track=mean, tracks={k: [p[:3] for p in t] for k, t in g.items()},
+                        start=mean[0][0], end=mean[-1][0], zmax=max(p[3] for p in mean), tn_km=int(round(near))))
+    out.sort(key=lambda x: (-x['n'], x['start']))
+    return out[:8]
+
 def gefs_url(run, mem, step):
     name = 'gec00' if mem == 0 else f'gep{mem:02d}'
     return f"{GEFS}/gefs.{run:%Y%m%d}/{run:%H}/atmos/pgrb2ap5/{name}.t{run:%H}z.pgrb2a.0p50.f{step:03d}"
@@ -1912,6 +2015,11 @@ def main():
         status['systems'] = {n: len(t) for n, t in lows.items()}
     except Exception as e:
         status['systems_error'] = str(e); traceback.print_exc()
+    try:
+        systems['circ'] = build_circulations(models, labels, d0, nd * 4 + 1, lats, lons)
+        status['circulations'] = [(c['models'], c['start'], c['end'], c['zmax'], c['tn_km']) for c in systems['circ']]
+    except Exception as e:
+        status['circulations_error'] = str(e); traceback.print_exc()
     want_system = bool(lows) or systems.get('forced', False)
     with cf.ThreadPoolExecutor(max_workers=24) as pool2:
         for name, fn in (('GEFS', gefs_collect), ('ECMWF ENS', ecens_collect)):
