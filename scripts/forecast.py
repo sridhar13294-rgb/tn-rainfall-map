@@ -1217,87 +1217,43 @@ def find_circulations(u, v, lats, lons):
     return keep
 
 
-def circulation_tracks(m, d0, nframes, lats, lons):
-    """Follow circulation centres through one model's 6-hourly 850 hPa winds. Track points: [frame, lon, lat, zeta]."""
-    U = {s: v for s, v in m.recs['u850']}; V = {s: v for s, v in m.recs['v850']}
-    done, active = [], []
-    for k in range(nframes):
-        st = int((d0 + dt.timedelta(hours=6 * k) - m.run).total_seconds() // 3600)
-        if st not in U or st not in V:
-            continue
-        cs = find_circulations(U[st], V[st], lats, lons)
-        used = set()
-        for tr in sorted(active, key=len, reverse=True):
-            last = tr[-1]
-            if k - last[0] > 2:
+def build_circulations(models, labels, d0, nd, lats, lons):
+    """Cyclonic circulations day by day: each model's daily-mean 850 hPa wind (from its four 6-hourly fields) is searched
+    for circulation centres, and centres from different models within 3 degrees of each other are counted as the same
+    circulation. Daily means keep one steady centre per circulation; 6-hourly centres jump around inside troughs."""
+    have = [n for n in labels if models[n].recs['u850'] and models[n].recs['v850']]
+    days = []
+    for d in range(nd):
+        a_t = d0 + dt.timedelta(days=d)
+        found, who = [], []
+        for n in have:
+            m = models[n]
+            a = int((a_t - m.run).total_seconds() // 3600)
+            want = {a, a + 6, a + 12, a + 18}
+            U = [v for s, v in m.recs['u850'] if s in want]; V = [v for s, v in m.recs['v850'] if s in want]
+            if a < 0 or len(U) < 4 or len(V) < 4:
                 continue
-            best = None
-            for q, (lo, la, zz) in enumerate(cs):
-                d = math.hypot((lo - last[1]) * math.cos(math.radians(la)), la - last[2])
-                if q not in used and d <= 2.5 + (k - last[0] - 1) and (best is None or d < best[0]):
-                    best = (d, q)
-            if best:
-                used.add(best[1]); lo, la, zz = cs[best[1]]; tr.append([k, lo, la, zz])
-        keep = []
-        for tr in active:
-            (done if k - tr[-1][0] > 2 else keep).append(tr)
-        active = keep + [[[k, lo, la, zz]] for q, (lo, la, zz) in enumerate(cs) if q not in used]
-    done += active
-    out = []
-    for t in done:
-        if t[-1][0] - t[0][0] < 4:                                # lasts at least 24 hours
-            continue
-        for _ in range(2):                                        # smooth the path along time (ends kept)
-            t = [t[0]] + [[t[k][0], (t[k - 1][1] + 2 * t[k][1] + t[k + 1][1]) / 4, (t[k - 1][2] + 2 * t[k][2] + t[k + 1][2]) / 4, t[k][3]]
-                          for k in range(1, len(t) - 1)] + [t[-1]]
-        out.append([[p[0], round(p[1], 2), round(p[2], 2), p[3]] for p in t])
-    return out
-
-
-def build_circulations(models, labels, d0, nframes, lats, lons):
-    """Circulations from every model with 850 hPa winds, grouped across models into systems."""
-    per = {}
-    for n in labels:
-        m = models[n]
-        if m.recs['u850'] and m.recs['v850']:
-            per[n] = circulation_tracks(m, d0, nframes, lats, lons)
-    nmod = len(per)
-    groups = []                                   # each: {model: track}
-    def close(a, b):
-        ta = {p[0]: p for p in a}; common = [p for p in b if p[0] in ta]
-        if not common:
-            return False
-        return np.mean([math.hypot((p[1] - ta[p[0]][1]) * math.cos(math.radians(p[2])), p[2] - ta[p[0]][2]) for p in common]) <= 4
-    for n, trs in per.items():
-        for t in trs:
-            g = next((g for g in groups if n not in g and any(close(t, x) for x in g.values())), None)
-            if g is None:
-                groups.append({n: t})
-            else:
-                g[n] = t
-    out = []
-    for g in groups:
-        frames = sorted(set(p[0] for t in g.values() for p in t))
-        need = 2 if len(g) >= 2 else 1                 # average only where at least two models agree on the time
-        mean = []
-        for k in frames:
-            ps = [p for t in g.values() for p in t if p[0] == k]
-            if len(ps) < need:
+            who.append(n)
+            for lo, la, z in find_circulations(np.mean(U, 0), np.mean(V, 0), lats, lons):
+                found.append((n, lo, la, z))
+        groups = []
+        for c in sorted(found, key=lambda t: -t[3]):
+            g = next((g for g in groups if c[0] not in [x[0] for x in g]
+                      and math.hypot(c[1] - np.mean([x[1] for x in g]), c[2] - np.mean([x[2] for x in g])) <= 3), None)
+            (g.append(c) if g else groups.append([c]))
+        need = 2 if len(who) >= 2 else 1
+        out = []
+        for g in groups:
+            if len(g) < need:
                 continue
-            mean.append([k, round(float(np.mean([p[1] for p in ps])), 2), round(float(np.mean([p[2] for p in ps])), 2),
-                         round(float(np.max([p[3] for p in ps])), 1), len(ps)])
-        if len(mean) < 2:
-            continue
-        for _ in range(2):
-            mean = [mean[0]] + [[mean[k][0], round((mean[k - 1][1] + 2 * mean[k][1] + mean[k + 1][1]) / 4, 2),
-                                 round((mean[k - 1][2] + 2 * mean[k][2] + mean[k + 1][2]) / 4, 2), mean[k][3], mean[k][4]]
-                                for k in range(1, len(mean) - 1)] + [mean[-1]]
-        near = min((min(math.hypot((p[1] - c[0]) * math.cos(math.radians(p[2])), p[2] - c[1]) for c in TN_COAST) * 111
-                    for p in mean), default=9999)
-        out.append(dict(models=sorted(g), n=len(g), of=nmod, track=mean, tracks={k: [p[:3] for p in t] for k, t in g.items()},
-                        start=mean[0][0], end=mean[-1][0], zmax=max(p[3] for p in mean), tn_km=int(round(near))))
-    out.sort(key=lambda x: (-x['n'], x['start']))
-    return out[:8]
+            lo, la = float(np.mean([x[1] for x in g])), float(np.mean([x[2] for x in g]))
+            near = min(math.hypot((lo - c[0]) * math.cos(math.radians(la)), la - c[1]) for c in TN_COAST) * 111
+            out.append(dict(lon=round(lo, 2), lat=round(la, 2), n=len(g), models=sorted(x[0] for x in g),
+                            z=round(max(x[3] for x in g), 1), tn_km=int(round(near))))
+        out.sort(key=lambda c: c['tn_km'])
+        if who:
+            days.append(dict(date=a_t.strftime('%Y-%m-%d'), of=len(who), models=who, circ=out))
+    return days
 
 def gefs_url(run, mem, step):
     name = 'gec00' if mem == 0 else f'gep{mem:02d}'
@@ -2039,8 +1995,8 @@ def main():
     except Exception as e:
         status['systems_error'] = str(e); traceback.print_exc()
     try:
-        systems['circ'] = build_circulations(models, labels, d0, nd * 4 + 1, lats, lons)
-        status['circulations'] = [(c['models'], c['start'], c['end'], c['zmax'], c['tn_km']) for c in systems['circ']]
+        systems['circ'] = build_circulations(models, labels, d0, nd, lats, lons)
+        status['circulations'] = [(x['date'], [(c['lat'], c['lon'], c['n'], c['tn_km']) for c in x['circ']]) for x in systems['circ'][:5]]
     except Exception as e:
         status['circulations_error'] = str(e); traceback.print_exc()
     want_system = bool(lows) or systems.get('forced', False)
