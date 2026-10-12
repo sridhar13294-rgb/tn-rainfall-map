@@ -1240,6 +1240,74 @@ def find_circulations(u, v, lats, lons):
     return keep
 
 
+def tn_km(lo, la):
+    """Distance (km) from (lon, lat) to the nearest point of the Tamil Nadu coast line."""
+    return min(math.hypot((lo - c[0]) * math.cos(math.radians(la)), la - c[1]) for c in TN_COAST) * 111
+
+
+def ens_circulations(ens, d0, lats, lons):
+    """Cyclonic circulations in every ensemble member, day by day (days 0-9). Each member's 850 hPa wind at 00 and
+    12 UTC is averaged and searched with find_circulations, the same test as the main models. Centres from all members
+    within 3 degrees of a group's mean position form one circulation; its chance is the share of members that have it
+    (the two ensembles weighted equally). The TN chance is the share of members with any circulation within 300 km of
+    the Tamil Nadu coast that day. Every member's centre is kept (as dots for the map, like ECMWF track charts)."""
+    nd = ENS_HOURS // 24
+    size = {e: len(mem) for e, mem in ens.items()}
+    days = []
+    for d in range(nd):
+        a_t = d0 + dt.timedelta(days=d)
+        found, n_ok, dots, tn_hit = [], {}, {}, {}
+        for e, mem in ens.items():
+            cnt, hit, pts_e = 0, 0, []
+            for k, m in mem.items():
+                if m.run is None:
+                    continue
+                a = int((a_t - m.run).total_seconds() // 3600)
+                U = {s: v for s, v in m.recs['u850'] if s in (a, a + 12)}
+                V = {s: v for s, v in m.recs['v850'] if s in (a, a + 12)}
+                if a < 0 or len(U) < 2 or len(V) < 2:
+                    continue
+                cnt += 1
+                cs = find_circulations(np.mean(list(U.values()), 0), np.mean(list(V.values()), 0), lats, lons)
+                if any(tn_km(lo, la) <= TN_KM for lo, la, _ in cs):
+                    hit += 1
+                for lo, la, z in cs:
+                    found.append((e, k, lo, la, z)); pts_e.append([round(lo, 1), round(la, 1)])
+            if cnt >= 0.5 * size[e] and cnt >= 5:            # an ensemble counts for this day only if most members came through
+                n_ok[e] = cnt; tn_hit[e] = hit; dots[e] = pts_e
+        if not n_ok:
+            continue
+        found = [f for f in found if f[0] in n_ok]
+        groups = []
+        for c in sorted(found, key=lambda t: -t[4]):
+            best = None
+            for g in groups:
+                if (c[0], c[1]) in g['who']:
+                    continue
+                dd = math.hypot((c[2] - g['lo']) * math.cos(math.radians(c[3])), c[3] - g['la'])
+                if dd <= 3 and (best is None or dd < best[0]):
+                    best = (dd, g)
+            if best:
+                g = best[1]; g['c'].append(c); g['who'].add((c[0], c[1]))
+                g['lo'] = float(np.mean([x[2] for x in g['c']])); g['la'] = float(np.mean([x[3] for x in g['c']]))
+            else:
+                groups.append(dict(c=[c], who={(c[0], c[1])}, lo=c[2], la=c[3]))
+        out = []
+        for g in groups:
+            probs = {e: sum(1 for x in g['c'] if x[0] == e) / n_ok[e] for e in n_ok}
+            prob = sum(probs.values()) / len(probs)
+            if prob < 0.10:
+                continue
+            out.append(dict(lon=round(g['lo'], 2), lat=round(g['la'], 2), prob=int(round(100 * prob)),
+                            probs={e: int(round(100 * v)) for e, v in probs.items()},
+                            z=round(float(np.median([x[4] for x in g['c']])), 1), tn_km=int(round(tn_km(g['lo'], g['la'])))))
+        out.sort(key=lambda c: -c['prob'])
+        tnp = {e: int(round(100 * tn_hit[e] / n_ok[e])) for e in n_ok}
+        days.append(dict(date=a_t.strftime('%Y-%m-%d'), members=n_ok, tn=tnp,
+                         tn_prob=int(round(sum(tnp.values()) / len(tnp))), circ=out, dots=dots))
+    return dict(size=size, days=days)
+
+
 def build_circulations(models, labels, d0, nd, lats, lons):
     """Cyclonic circulations day by day: each model's daily-mean 850 hPa wind (from its four 6-hourly fields) is searched
     for circulation centres, and centres from different models within 3 degrees of each other are counted as the same
@@ -1270,7 +1338,7 @@ def build_circulations(models, labels, d0, nd, lats, lons):
             if len(g) < need:
                 continue
             lo, la = float(np.mean([x[1] for x in g])), float(np.mean([x[2] for x in g]))
-            near = min(math.hypot((lo - c[0]) * math.cos(math.radians(la)), la - c[1]) for c in TN_COAST) * 111
+            near = tn_km(lo, la)
             out.append(dict(lon=round(lo, 2), lat=round(la, 2), n=len(g), models=sorted(x[0] for x in g),
                             z=round(max(x[3] for x in g), 1), tn_km=int(round(near))))
         out.sort(key=lambda c: c['tn_km'])
@@ -1308,6 +1376,8 @@ def gefs_collect(pool, pts, wpts, d0, now, info, system=True):
                     m.add(var, inf, step, sample(inf, vals, OLR_PTS, 'olr'))
                 elif var == 'msl':
                     m.add('mslt', inf, step, sample(inf, vals, TRACK_PTS, 'gefs-track'))
+                elif var in ('u850', 'v850'):
+                    m.add(var, inf, step, sample(inf, vals, wpts, 'gefs-wind'))
                 else:
                     m.add(var, inf, step, sample(inf, vals, pts, 'gefs-tn'))
             except Exception as e:
@@ -1319,25 +1389,29 @@ def gefs_collect(pool, pts, wpts, d0, now, info, system=True):
             try:
                 recs = parse_idx(http(gefs_url(run, mem, step) + '.idx').decode())
             except Exception as e:
-                members[mem].err(f'idx {mem} f{step}: {e}'); return []
-            out = []
+                members[mem].err(f'idx {mem} f{step}: {e}'); return [], []
+            out, wind = [], []
             for r in recs:
                 if r['var'] == 'ULWRF' and r['level'] == 'top of atmosphere' and 'ave' in r['fc'] and s0 < step <= s1:
                     out.append(field(mem, step, r, 'olr'))
+                if (r['var'] in ('UGRD', 'VGRD') and r['level'] == '850 mb' and s0 <= step <= ENS_HOURS
+                        and (run + dt.timedelta(hours=step)).hour in (0, 12)):
+                    wind.append(field(mem, step, r, 'u850' if r['var'] == 'UGRD' else 'v850'))
                 if not system:
                     continue
                 if r['var'] == 'APCP' and r['level'] == 'surface':
                     out.append(field(mem, step, r, 'tp'))
                 elif r['var'] == 'PRMSL' and r['level'] == 'mean sea level' and s0 <= step <= s1:
                     out.append(field(mem, step, r, 'msl'))
-            return out
+            return out, wind
         return task
 
     futs = [pool.submit(idx_task(mem, st)) for mem in range(31) for st in range(6, s1 + 1, 6)]
-    tasks = []
+    tasks, wind = [], []
     for f in cf.as_completed(futs):
-        tasks += f.result()
-    run_tasks(pool, tasks)
+        a, b = f.result(); tasks += a; wind += b
+    info['wind850_fields'] = len(wind)
+    run_tasks(pool, tasks + wind)          # 850 hPa winds (circulations) last, so they never hold up rain and pressure
     info['run'] = run.strftime('%Y-%m-%d %HZ')
     info['fields_ok'] = sum(m.ok for m in members.values()); info['fields_failed'] = sum(m.failed for m in members.values())
     info['errors'] = [e for m in members.values() for e in m.errors][:5]
@@ -1383,6 +1457,8 @@ def ecens_collect(pool, pts, wpts, d0, now, info, system=True):
                     m.add(var, inf, step, sample(inf, vals, OLR_PTS, 'olr'))
                 elif var == 'msl':
                     m.add('mslt', inf, step, sample(inf, vals, TRACK_PTS, 'track'))
+                elif var in ('u850', 'v850'):
+                    m.add(var, inf, step, sample(inf, vals, wpts, 'ens-wind'))
                 else:
                     m.add(var, inf, step, sample(inf, vals, pts, 'tn'))
                 if retry:
@@ -1405,11 +1481,18 @@ def ecens_collect(pool, pts, wpts, d0, now, info, system=True):
             except Exception as e:
                 with LOCK:
                     info.setdefault('index_errors', []).append(f'{step}: {e}')
-                return []
-            out = []
-            boundary = (run + dt.timedelta(hours=step)).hour == 0
+                return [], []
+            out, wind = [], []
+            hour = (run + dt.timedelta(hours=step)).hour
+            boundary = hour == 0
             for r in recs:
-                if r.get('levtype') != 'sfc' or r.get('type') not in ('cf', 'pf'):
+                if r.get('type') not in ('cf', 'pf'):
+                    continue
+                if (r.get('levtype') == 'pl' and str(r.get('levelist')) == '850' and r.get('param') in ('u', 'v')
+                        and hour in (0, 12) and step >= s0):
+                    wind.append(field(step, r, r['param'] + '850'))
+                    continue
+                if r.get('levtype') != 'sfc':
                     continue
                 if r.get('param') == 'ttr' and boundary and step >= s0:
                     out.append(field(step, r, 'ttr'))
@@ -1419,22 +1502,27 @@ def ecens_collect(pool, pts, wpts, d0, now, info, system=True):
                     out.append(field(step, r, 'tp'))
                 elif r.get('param') == 'msl' and s0 <= step <= s1 and (step % 6 == 0 if step <= 144 else (run + dt.timedelta(hours=step)).hour in (0, 12)):
                     out.append(field(step, r, 'msl'))
-            return out
+            return out, wind
         return task
 
     steps = [st for st in list(range(0, 145, 3)) + list(range(150, 361, 6))
-             if st <= s1 and ((st % 6 == 0 if st <= 144 else (run + dt.timedelta(hours=st)).hour in (0, 12)) if system
-                              else (run + dt.timedelta(hours=st)).hour == 0)]
+             if st <= s1 and (((st % 6 == 0 if st <= 144 else (run + dt.timedelta(hours=st)).hour in (0, 12)) if system
+                               else (run + dt.timedelta(hours=st)).hour == 0)
+                              or (st >= s0 and (run + dt.timedelta(hours=st)).hour in (0, 12)))]
     futs = [pool.submit(idx_task(st)) for st in steps]
     by_step = []
     for st_, f in zip(steps, futs):
         by_step.append((st_, f.result()))
-    tasks = [t for _, ts in sorted(by_step, key=lambda x: x[0]) for t in ts]     # earliest forecast hours first
-    run_tasks(pool, tasks)
+    by_step.sort(key=lambda x: x[0])
+    tasks = [t for _, (ts, _w) in by_step for t in ts]          # earliest forecast hours first
+    wind = [t for _, (_ts, ws) in by_step for t in ws]          # 850 hPa winds (circulations) last, so they never
+    info['wind850_fields'] = len(wind)                          # hold up rain and pressure
+    run_tasks(pool, tasks + wind)
     pool.shutdown()
     # second pass: ECMWF's servers throttle bursts (HTTP 503), so fetch whatever failed again, slowly
     if failed and time.time() < min(DEADLINE, CURRENT['deadline']) - 60:
         info['retried'] = len(failed)
+        failed.sort(key=lambda x: x[2] in ('u850', 'v850'))      # rain and pressure first
         time.sleep(20)
         pool = cf.ThreadPoolExecutor(max_workers=4)
         run_tasks(pool, [field(st, r, v, retry=True) for st, r, v in failed])
@@ -2056,6 +2144,16 @@ def main():
             systems['ens_runs'] = {n: einfo[n].get('run') for n in ens}
         except Exception as e:
             status['systems_error'] = str(e); traceback.print_exc()
+    # cyclonic circulations in every ensemble member (850 hPa winds are read on every run, not only when a low shows)
+    try:
+        if ens:
+            ce = ens_circulations(ens, d0, lats, lons)
+            ce['runs'] = {n: einfo[n].get('run') for n in ens}
+            systems['circ_ens'] = ce
+            status['circ_ens'] = [(x['date'], x['members'], x['tn_prob'], [(c['lat'], c['lon'], c['prob']) for c in x['circ'][:4]])
+                                  for x in ce['days']]
+    except Exception as e:
+        status['circ_ens_error'] = str(e); traceback.print_exc()
     # MJO forecast: GFS, ECMWF, their ensembles, and averages
     try:
         romi = (drivers.get('mjo') or {}).get('days') or []
