@@ -1664,7 +1664,7 @@ def build_systems(ens, det_tracks, d0, ens_size):
                     break
             if merged:
                 break
-    systems = []
+    systems, minor = [], []
     ny, nx = TRACK_BOX['ny'], TRACK_BOX['nx']
     cell = np.array(TRACK_PTS)
     for c in clusters:
@@ -1676,6 +1676,15 @@ def build_systems(ens, det_tracks, d0, ens_size):
         prob = sum(probs.values()) / max(1, len(probs))
         dets = sorted({it['mem'] for it in c['items'] if it['src'] == 'det'})
         if prob < 0.10 and not dets:
+            # weak signals (under 10% of members, no main model): kept so the map still shows every member's low
+            n_mem = sum(len(v) for k, v in by_src.items() if k != 'det')
+            if n_mem >= 2:
+                g0 = min((t[0] for v in by_src.values() for t in v), key=lambda p: p[0])
+                minor.append(dict(basin=basin_at(g0[1], g0[2]) or ('Bay of Bengal' if 77.5 <= g0[1] < 99 else 'Arabian Sea' if g0[1] < 77.5 else 'South China Sea / Gulf of Thailand'),
+                                  prob=int(round(100 * prob)), probs={e: int(round(100 * v)) for e, v in probs.items()},
+                                  members={e: len(by_src.get(e, [])) for e in ens_size}, genesis=list(g0[:3]),
+                                  tn_prob=int(round(100 * sum(tnp.values()) / max(1, len(tnp)))),
+                                  members_tracks={e: [[[p[0], p[1], p[2], p[3]] for p in t] for t in by_src.get(e, [])] for e in ens_size}))
             continue
         means = {e: _mean_track(by_src[e], max(3, int(math.ceil(0.3 * len(by_src[e]))))) for e in ens_size if by_src.get(e)}
         means = {e: _smooth_track(t) for e, t in means.items() if len(t) >= 3}
@@ -1723,6 +1732,8 @@ def build_systems(ens, det_tracks, d0, ens_size):
             det_tracks={it['mem']: [[p[0], p[1], p[2], p[3]] for p in it['tr']] for it in c['items'] if it['src'] == 'det'},
             strike=[[int(i), int(round(100 * v))] for i, v in enumerate(strike) if v >= 0.05]))
     systems.sort(key=lambda x: -x['prob'])
+    minor.sort(key=lambda x: -x['prob'])
+    tn['minor'] = minor[:15]
     return systems[:6], tn
 
 
@@ -2142,6 +2153,7 @@ def main():
             systems['ens'] = ensemble_products(ens, d0, wbox, len(pts))
             if full:
                 systems['list'], systems['tn'] = build_systems(full, lows, d0, {n: len(full[n]) for n in full})
+                systems['minor'] = systems['tn'].pop('minor', [])
                 systems['ens_size'] = {n: len(full[n]) for n in full}
             systems['ens_runs'] = {n: einfo[n].get('run') for n in ens}
         except Exception as e:
