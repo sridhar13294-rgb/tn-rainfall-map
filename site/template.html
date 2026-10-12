@@ -131,7 +131,7 @@ const fd=k=>{const d=dateOf(k);return d.getUTCDate()+' '+MON[d.getUTCMonth()]};
 const f0=v=>v==null?'—':Math.round(v).toLocaleString('en'),f1=v=>v==null?'—':(+v).toLocaleString('en',{maximumFractionDigits:1});
 const MISS=new Set(D.meta.missing);
 // colour ramp (unchanged rain colours) and thresholds that follow the length of the period
-const RAMP=['#ffffcc','#ffeda0','#fed976','#c7e9b4','#7fcdbb','#41b6c4','#1d91c0','#225ea8','#253494','#6a1b9a'];
+const RAMP=['#f2e6c9','#a8e6f5','#3cc6e6','#1f8ff0','#1f4fd0','#2bb24c','#9ad021','#f5c400','#f06b00','#d0021b'];
 const IMD=[[0,'#ebe4d6','0','No rain'],[.1,'#3cc6e6','0.1–2.4','Very light'],[2.5,'#1f5fe0','2.5–15.5','Light'],[15.6,'#2bb24c','15.6–64.4','Moderate'],[64.5,'#f5c400','64.5–115.5','Heavy'],[115.6,'#f06b00','115.6–204.4','Very heavy'],[204.5,'#d0021b','204.5+','Extremely heavy']];
 function bins(n){if(n==1)return IMD;
  const t=n<=10?[0,1,5,10,20,35,50,75,100,150]:n<=45?[0,5,15,30,45,60,80,100,150,200]:n<=120?[0,25,50,100,150,200,300,400,500,600]:[0,100,200,300,400,500,600,700,800,900];
