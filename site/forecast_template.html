@@ -442,28 +442,53 @@ if(E&&(E.days||[]).length){
  ep()}
 })();
 
-// ---------- cyclonic circulations (850 hPa), day by day
-(function(){const el=$('circv');if(!el)return;const C=(F.systems||{}).circ;
+// ---------- cyclonic circulations (850 hPa), day by day: main models and every ensemble member
+(function(){const el=$('circv');if(!el)return;const SY=F.systems||{},C=SY.circ||[],E=SY.circ_ens||null;
 el.innerHTML='<h2 style="margin-top:14px">Cyclonic circulations (winds at about 1.5 km)</h2>';
-if(!C||!C.length){el.insertAdjacentHTML('beforeend','<p class="m">Circulation check unavailable in this run.</p>');return}
+const ED=E&&E.days&&E.days.length?E.days:[];
+if(!C.length&&!ED.length){el.insertAdjacentHTML('beforeend','<p class="m">Circulation check unavailable in this run.</p>');return}
 const fd=s=>{const d=new Date(s+'T00:00:00');return [DOW[d.getDay()],d.getDate()+' '+MON[d.getMonth()]]};
 const ll=(lo,la)=>`${la.toFixed(1)}°N ${lo.toFixed(1)}°E`;
+const EC={'GEFS':'#0b8a8a','ECMWF ENS':'#7b2cbf'},EN={'GEFS':'GFS ensemble','ECMWF ENS':'ECMWF ensemble'};
+const DAYC=['#d0021b','#f06b00','#f5c400','#9ad021','#2bb24c','#16a0a0','#1f8ff0','#1f4fd0','#6a3fc8','#b02bb0'];
+const dates=[...new Set(C.map(x=>x.date).concat(ED.map(x=>x.date)))].sort();
+const cAt=d=>C.find(x=>x.date==d),eAt=d=>ED.find(x=>x.date==d);
 const near=C.map(x=>({d:x.date,of:x.of,c:x.circ.filter(c=>c.tn_km<=300)})).filter(x=>x.c.length);
-el.insertAdjacentHTML('beforeend',`<div id="cisum" style="font-size:14px"></div><div class="chips" id="cid"></div><div class="wwrap" style="background:#eef3f7"><canvas id="cicv"></canvas></div><div class="lg"><div><i style="background:#d61f69"></i>within 300 km of Tamil Nadu</div><div><i style="background:#f29a1d"></i>300–600 km</div><div><i style="background:#8aa0ad"></i>further away</div><div class="m">bigger circle = more models agree</div></div><p class="m">A cyclonic circulation is air turning anticlockwise around a centre at about 1.5 km height (850 hPa), the kind IMD reports as a "cyclonic circulation". It can bring rain even with no low on the surface pressure map. Found automatically every run in each model's daily-average winds: spin of at least 2×10⁻⁵ per second at the centre and the wind turning around it on at least 3 of 4 sides. Centres from different models within about 300 km count as the same circulation and must appear in at least 2 models. Only GFS, ECMWF and ECMWF AI give us winds at this height.</p>`);
-$('cisum').innerHTML=near.length?'<p style="margin:2px 0 4px"><b>Near Tamil Nadu:</b></p>'+near.map(x=>{const [a,b]=fd(x.d);return `<div style="margin:3px 0">${a} ${b}: `+x.c.map(c=>`near <b>${ll(c.lon,c.lat)}</b>, ${c.tn_km<60?'over or at the coast':c.tn_km+' km from the coast'} <span class="m">(${c.n} of ${x.of} model${x.of>1?"s":""})</span>`).join('; ')+'</div>'}).join(''):'<p class="m" style="margin:2px 0 6px">No cyclonic circulation within 300 km of Tamil Nadu in the next 16 days.</p>';
-let di=Math.max(0,C.findIndex(x=>x.circ.some(c=>c.tn_km<=300)));
-$('cid').innerHTML=C.map((x,i)=>{const [a,b]=fd(x.date),k=x.circ.filter(c=>c.tn_km<=300).length;return `<button class="chip" data-i="${i}">${a}<small>${b}${k?' · near TN':''}</small></button>`}).join('');
+const ensLine=ED.length?(()=>{const sz=Object.keys(E.size).map(e=>`${EN[e]||e} ${E.size[e]}`).join(', ');
+  const hi=ED.filter(x=>x.tn_prob>=10);
+  return `<p style="margin:2px 0 4px"><b>Ensembles: chance of a circulation within 300 km of Tamil Nadu</b> <span class="m">(${sz} members, to day ${ED.length})</span></p>`+
+  (hi.length?'<div style="display:flex;flex-wrap:wrap;gap:4px 10px;margin-bottom:6px">'+hi.map(x=>{const [a,b]=fd(x.date),p=x.tn_prob,col=p>=50?'#d61f69':p>=25?'#f29a1d':'#5c6b75';
+    return `<span>${a} ${b}: <b style="color:${col}">${p}%</b> <span class="m">(${Object.keys(x.tn).map(e=>(e=='GEFS'?'GFS ':'EC ')+x.tn[e]+'%').join(', ')})</span></span>`}).join('')+'</div>'
+   :'<p class="m" style="margin:0 0 6px">Below 10% on every day.</p>')})():'';
+el.insertAdjacentHTML('beforeend',`<div id="cisum" style="font-size:14px"></div><div class="chips" id="cid"></div><div class="wwrap" style="background:#eef3f7"><canvas id="cicv"></canvas></div><div class="lg" id="cilg"></div>${ED.length?'<label class="m" style="display:flex;gap:6px;align-items:center;margin-top:4px"><input type="checkbox" id="cimem" checked> Show every ensemble member\'s centre</label>':''}<p class="m">A cyclonic circulation is air turning anticlockwise around a centre at about 1.5 km height (850 hPa), the kind IMD reports as a "cyclonic circulation". It can bring rain even with no low on the surface pressure map, and weak ones like these are what ECMWF-style track charts follow. Found automatically every run: spin of at least 2×10⁻⁵ per second at the centre and the wind turning around it on at least 3 of 4 sides. <b>Main models</b> (GFS, ECMWF, ECMWF AI; daily-average winds, 16 days): centres within about 300 km count as the same circulation and must appear in at least 2 models. <b>Ensembles</b> (GFS ensemble and ECMWF ensemble; average of 00 and 12 UTC winds, 10 days): every member is checked the same way; small dots are each member's centre and the % is the share of members that have that circulation (the two ensembles weighted equally). "All days" shows every member's centre coloured by day, so you can follow where they move, like a track chart.</p>`);
+$('cisum').innerHTML=ensLine+(near.length?'<p style="margin:2px 0 4px"><b>Main models, near Tamil Nadu:</b></p>'+near.map(x=>{const [a,b]=fd(x.d);return `<div style="margin:3px 0">${a} ${b}: `+x.c.map(c=>`near <b>${ll(c.lon,c.lat)}</b>, ${c.tn_km<60?'over or at the coast':c.tn_km+' km from the coast'} <span class="m">(${c.n} of ${x.of} model${x.of>1?"s":""})</span>`).join('; ')+'</div>'}).join(''):(C.length?'<p class="m" style="margin:2px 0 6px">Main models: no cyclonic circulation within 300 km of Tamil Nadu in the next 16 days.</p>':''));
+let di=dates.findIndex(d=>{const x=cAt(d),y=eAt(d);return (x&&x.circ.some(c=>c.tn_km<=300))||(y&&y.tn_prob>=25)});if(di<0)di=0;
+$('cid').innerHTML=(ED.length?'<button class="chip" data-i="-1">All days<small>ensembles</small></button>':'')+dates.map((d,i)=>{const [a,b]=fd(d),x=cAt(d),y=eAt(d),k=x&&x.circ.some(c=>c.tn_km<=300);
+  return `<button class="chip" data-i="${i}">${a}<small>${b}${k?' · near TN':''}${y&&y.tn_prob>=10?' · '+y.tn_prob+'%':''}</small></button>`}).join('');
 $('cid').onclick=e=>{const b=e.target.closest('[data-i]');if(b){di=+b.dataset.i;draw()}};
-function draw(){document.querySelectorAll('#cid .chip').forEach((b,i)=>b.classList.toggle('on',i==di));
+if($('cimem'))$('cimem').onchange=()=>draw();
+function draw(){document.querySelectorAll('#cid .chip').forEach(b=>b.classList.toggle('on',+b.dataset.i==di));
  const cv=$('cicv'),W=cv.parentNode.clientWidth||400,H=W*25/30/Math.cos(12*Math.PI/180),dpr=window.devicePixelRatio||1;cv.width=W*dpr;cv.height=H*dpr;cv.style.height=H+'px';
  const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);const X=l=>(l-65)/30*W,Y=a=>(25-a)/25*H;
  c.fillStyle='#eef3f7';c.fillRect(0,0,W,H);c.fillStyle='rgba(227,220,205,.9)';c.strokeStyle='#8a8170';c.lineWidth=.7;
  (F.land||[]).forEach(r=>{c.beginPath();r.forEach((p,i)=>i?c.lineTo(X(p[0]),Y(p[1])):c.moveTo(X(p[0]),Y(p[1])));c.closePath();c.fill();c.stroke()});
  c.strokeStyle='#7a4b00';c.lineWidth=.6;F.tn.forEach(r=>{c.beginPath();r.forEach((p,i)=>i?c.lineTo(X(p[0]),Y(p[1])):c.moveTo(X(p[0]),Y(p[1])));c.closePath();c.stroke()});
- const x=C[di];x.circ.forEach(o=>{const col=o.tn_km<=300?'#d61f69':o.tn_km<=600?'#f29a1d':'#8aa0ad',r=5+o.n*3,px=X(o.lon),py=Y(o.lat);
+ const mem=!$('cimem')||$('cimem').checked,lab=(t,px,py)=>{c.font='bold 11px system-ui';c.lineWidth=3;c.strokeStyle='#fff';c.strokeText(t,px,py);c.fillStyle='#14213d';c.fillText(t,px,py)};
+ const dot=(lo,la,col,r)=>{c.fillStyle=col;c.beginPath();c.arc(X(lo),Y(la),r,0,7);c.fill()};
+ if(di<0){ // all days: every member's centre coloured by day
+  const ok=(x,g)=>g>=0&&x.circ[g]&&x.circ[g].prob>=25;
+  if(mem){c.globalAlpha=.5;ED.forEach((x,k)=>Object.values(x.dots).forEach(ds=>ds.forEach(p=>{if(ok(x,p[2]))dot(p[0],p[1],DAYC[k%10],2.2)})));c.globalAlpha=1}
+  ED.forEach((x,k)=>x.circ.forEach((o,g)=>{if(!ok(x,g))return;c.strokeStyle='#14213d';c.lineWidth=1.5;c.fillStyle=DAYC[k%10];c.beginPath();c.arc(X(o.lon),Y(o.lat),3+o.prob/12,0,7);c.fill();c.stroke()}));
+  $('cilg').innerHTML=ED.map((x,k)=>{const [a,b]=fd(x.date);return `<div><i style="background:${DAYC[k%10]}"></i>${a} ${b}</div>`}).join('')+'<div class="m">only circulations that at least 25% of ensemble members agree on; bigger outlined circle = more members, small dots = each member\'s centre</div>';return}
+ const d=dates[di],x=cAt(d),y=eAt(d);
+ if(y&&mem){c.globalAlpha=.55;Object.entries(y.dots).forEach(([e,ds])=>ds.forEach(p=>dot(p[0],p[1],EC[e]||'#555',2.4)));c.globalAlpha=1}
+ if(y)y.circ.filter(o=>o.prob>=15).forEach(o=>{c.strokeStyle='#14213d';c.setLineDash([3,3]);c.lineWidth=1.3;c.beginPath();c.arc(X(o.lon),Y(o.lat),9,0,7);c.stroke();c.setLineDash([]);lab(o.prob+'%',X(o.lon)-38,Y(o.lat)+4)});
+ if(x)x.circ.forEach(o=>{const col=o.tn_km<=300?'#d61f69':o.tn_km<=600?'#f29a1d':'#8aa0ad',r=5+o.n*3,px=X(o.lon),py=Y(o.lat);
   c.strokeStyle=col;c.lineWidth=2.4;c.fillStyle=col+'33';c.beginPath();c.arc(px,py,r,0,7);c.fill();c.stroke();
   c.beginPath();c.arc(px,py,r+5,Math.PI*.15,Math.PI*1.35);c.stroke();c.beginPath();const ax=px+(r+5)*Math.cos(Math.PI*1.35),ay=py+(r+5)*Math.sin(Math.PI*1.35);c.moveTo(ax,ay);c.lineTo(ax+6,ay+1);c.moveTo(ax,ay);c.lineTo(ax+1,ay+6);c.stroke();
-  c.font='bold 11px system-ui';c.lineWidth=3;c.strokeStyle='#fff';const t=`${o.n}/${x.of}`;c.strokeText(t,px+r+7,py+4);c.fillStyle='#14213d';c.fillText(t,px+r+7,py+4)})}
+  lab(`${o.n}/${x.of}`,px+r+7,py+4)});
+ $('cilg').innerHTML=(x?'<div><i style="background:#d61f69"></i>main models: within 300 km of TN</div><div><i style="background:#f29a1d"></i>300–600 km</div><div><i style="background:#8aa0ad"></i>further away</div>':'<div class="m">main models: not shown this far ahead</div>')+
+  (y?Object.keys(y.dots).map(e=>`<div><i style="background:${EC[e]||'#555'}"></i>${EN[e]||e} member (${y.members[e]})</div>`).join('')+'<div class="m">dashed ring + % = share of ensemble members</div>':'<div class="m">ensembles: only to day 10</div>')}
 draw();window.addEventListener('resize',()=>setTimeout(draw,200))})();
 
 // ---------- step 4: one-month outlook (NOAA CFSv2)
