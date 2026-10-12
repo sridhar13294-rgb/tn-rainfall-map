@@ -132,7 +132,7 @@ const f0=v=>v==null?'—':Math.round(v).toLocaleString('en'),f1=v=>v==null?'—'
 const MISS=new Set(D.meta.missing);
 // colour ramp (unchanged rain colours) and thresholds that follow the length of the period
 const RAMP=['#ffffcc','#ffeda0','#fed976','#c7e9b4','#7fcdbb','#41b6c4','#1d91c0','#225ea8','#253494','#6a1b9a'];
-const IMD=[[0,'#f1f3f0','0','No rain'],[.1,'#ffffcc','0.1–2.4','Very light'],[2.5,'#c7e9b4','2.5–15.5','Light'],[15.6,'#7fcdbb','15.6–64.4','Moderate'],[64.5,'#2c7fb8','64.5–115.5','Heavy'],[115.6,'#253494','115.6–204.4','Very heavy'],[204.5,'#6a1b9a','204.5+','Extremely heavy']];
+const IMD=[[0,'#ebe4d6','0','No rain'],[.1,'#3cc6e6','0.1–2.4','Very light'],[2.5,'#1f5fe0','2.5–15.5','Light'],[15.6,'#2bb24c','15.6–64.4','Moderate'],[64.5,'#f5c400','64.5–115.5','Heavy'],[115.6,'#f06b00','115.6–204.4','Very heavy'],[204.5,'#d0021b','204.5+','Extremely heavy']];
 function bins(n){if(n==1)return IMD;
  const t=n<=10?[0,1,5,10,20,35,50,75,100,150]:n<=45?[0,5,15,30,45,60,80,100,150,200]:n<=120?[0,25,50,100,150,200,300,400,500,600]:[0,100,200,300,400,500,600,700,800,900];
  return t.map((x,i)=>[x,RAMP[i],i<t.length-1?`${x}–${t[i+1]}`:`${x}+`])}
@@ -166,7 +166,7 @@ function drawCal(){$('calt').textContent=MONL[calM]+' '+YR;$('pv').disabled=calM
  let h=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(x=>`<div class="h">${x}</div>`).join('')+'<div></div>'.repeat(off);
  for(let d=1;d<=nd;d++){const k=kOf(calM,d),fut=k>ND-1,iso=`${YR}-${String(calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`,nod=MISS.has(iso);
   const v=fut?null:D.sd[k],inR=!fut&&k>=dA&&k<=dB,end=!fut&&(k==dA||k==dB);
-  const bg=fut||nod?'':`background:${IMDc(v)};color:${v>=64.5?'#fff':'#0f2a33'}`;
+  const bg=fut||nod?'':`background:${IMDc(v)};color:${(v>=2.5&&v<64.5)||v>=115.6?'#fff':'#0f2a33'}`;
   h+=`<button class="day${inR?' in':''}${end?' end':''}${nod?' nodata':''}" data-k="${k}" ${fut?'disabled':''} style="${bg}" title="${fut?'':f1(v)+' mm state average'}">${d}${fut||v==null?'':`<small>${v<1?f1(v):f0(v)}</small>`}</button>`}
  $('cal').innerHTML=h}
 $('cal').onclick=e=>{const b=e.target.closest('.day');if(!b||b.disabled)return;const k=+b.dataset.k;

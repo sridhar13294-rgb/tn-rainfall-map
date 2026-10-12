@@ -104,8 +104,8 @@ $('notes').textContent='Model data come directly from the official open-data ser
 
 // ---------- 16-day Tamil Nadu map
 const X=l=>(l-76.1)*100,Y=a=>(13.7-a)*100;
-const SC={rain6:{b:[[0,'#eef2f6','0'],[.1,'#d6ecf7','0.1–2.4'],[2.5,'#9fd3ea','2.5–7.5'],[7.6,'#4ba3d6','7.6–15'],[15.1,'#2156a6','15–35'],[35.1,'#7b2a9e','35–64'],[64.5,'#c2185b','64.5+ in 6 h']],u:'mm'},
- precipitation_sum:{b:[[0,'#eef2f6','0'],[.1,'#d6ecf7','0.1–2.4'],[2.5,'#9fd3ea','2.5–15'],[15.6,'#4ba3d6','15.6–64'],[64.5,'#2156a6','64.5–115 heavy'],[115.6,'#7b2a9e','115.6–204 very heavy'],[204.5,'#c2185b','204.5+ extreme']],u:'mm'},
+const SC={rain6:{b:[[0,'#ebe4d6','0 dry'],[.1,'#3cc6e6','0.1–2.4'],[2.5,'#1f5fe0','2.5–7.5'],[7.6,'#2bb24c','7.6–15'],[15.1,'#f5c400','15–35'],[35.1,'#f06b00','35–64'],[64.5,'#d0021b','64.5+ in 6 h']],u:'mm'},
+ precipitation_sum:{b:[[0,'#ebe4d6','0 dry'],[.1,'#3cc6e6','0.1–2.4 very light'],[2.5,'#1f5fe0','2.5–15 light'],[15.6,'#2bb24c','15.6–64 moderate'],[64.5,'#f5c400','64.5–115 heavy'],[115.6,'#f06b00','115.6–204 very heavy'],[204.5,'#d0021b','204.5+ extreme']],u:'mm'},
  temperature_2m_max:{b:[[0,'#3f7fbf','<22'],[22,'#6bb0d8','22–26'],[26,'#a9dcc4','26–29'],[29,'#f2e394','29–32'],[32,'#f6b25e','32–35'],[35,'#e8693d','35–38'],[38,'#b5172b','38+']],u:'°C'},
  temperature_2m_min:{b:[[0,'#2c5aa0','<14'],[14,'#5c95cf','14–18'],[18,'#9cc9e3','18–21'],[21,'#cfe8c8','21–23'],[23,'#f2e394','23–25'],[25,'#f6b25e','25–27'],[27,'#e8693d','27+']],u:'°C'},
  wind_speed_10m_max:{b:[[0,'#eef2f6','<10'],[10,'#cfe8c8','10–20'],[20,'#9fd3ea','20–30'],[30,'#4ba3d6','30–40'],[40,'#f6b25e','40–50'],[50,'#e8693d','50–62'],[62,'#7b2a9e','62+ gale']],u:'km/h'}};
@@ -136,7 +136,7 @@ function paint(){const v=$('var').value,m=$('mod').value,b=SC[v].b,k=K();
  document.querySelectorAll('#days .chip').forEach((c,i)=>c.classList.toggle('on',i==day));
  $('per').style.display=is6()?'':'none';
  if(is6())$('per').innerHTML=PER.map((p,i)=>`<button class="chip${i==per?' on':''}" data-p="${i}">${p}<small>IST · ${(F.coverage6[day*4+i]||[]).length} models</small></button>`).join('');
- F.cells.forEach((c,i)=>{const x=val(c,v,m,k);R[i].setAttribute('fill',x==null?'#d9dde3':b[cls(x,b)][1]);R[i].setAttribute('stroke',i==sel?'#000':'none');R[i].setAttribute('stroke-width',i==sel?1.6:0)});
+ F.cells.forEach((c,i)=>{const x=val(c,v,m,k);R[i].setAttribute('fill',x==null?'#b9c0c8':b[cls(x,b)][1]);R[i].setAttribute('stroke',i==sel?'#000':'none');R[i].setAttribute('stroke-width',i==sel?1.6:0)});
  $('lg').innerHTML=b.map(x=>`<div><i style="background:${x[1]}"></i>${x[2]}</div>`).join('')+(m!='avg'&&!cov().includes(m)?'<div class="m">'+m+' does not reach this time (grey).</div>':'');
  show()}
 function show(){if(sel<0)return;const c=F.cells[sel],v=$('var').value,u=SC[v].u,[a,b]=dl(F.dates[day]),k=K();
@@ -472,7 +472,7 @@ if(!O||!O.weeks||!O.weeks.length){el.innerHTML='<p class="m">The one-month outlo
 const fd=s=>{const d=new Date(s+'T00:00:00');return d.getDate()+' '+MON[d.getMonth()]};
 const CAT=p=>p==null?'—':p<=-100?'No rain':p<=-60?'Large deficient':p<=-20?'Deficient':p<20?'Normal':p<60?'Excess':'Large excess';
 const CATC=p=>p==null?'var(--mut)':p<=-60?'#a8541a':p<=-20?'#d9883a':p<20?'var(--ink)':p<60?'#1f7ae0':'#1846a3';
-const MODES={rain:{t:'Rain in the week (mm)',b:[[0,'#eef2f6','0–4'],[5,'#d6ecf7','5–14'],[15,'#9fd3ea','15–34'],[35,'#4ba3d6','35–64'],[65,'#2156a6','65–114'],[115,'#7b2a9e','115–199'],[200,'#c2185b','200+']]},
+const MODES={rain:{t:'Rain in the week (mm)',b:[[0,'#ebe4d6','0–4'],[5,'#3cc6e6','5–14'],[15,'#1f5fe0','15–34'],[35,'#2bb24c','35–64'],[65,'#f5c400','65–114'],[115,'#f06b00','115–199'],[200,'#d0021b','200+']]},
  dep:{t:'Rain compared with normal (IMD categories)',b:[[-1e9,'#a8541a','Large deficient (−60% or less)'],[-59.5,'#e3a868','Deficient (−59 to −20%)'],[-19.5,'#eef0e6','Normal (−19 to +19%)'],[19.5,'#8cc4ea','Excess (+20 to +59%)'],[59.5,'#1846a3','Large excess (+60% or more)']]},
  up:{t:'Chance of an above-normal week (+20% or more)',b:[[0,'#eef2f6','0–19%'],[20,'#cfe3f5','20–39%'],[40,'#8cc4ea','40–59%'],[60,'#3b8fd6','60–79%'],[80,'#1846a3','80%+']]},
  dn:{t:'Chance of a below-normal week (−20% or more)',b:[[0,'#eef2f6','0–19%'],[20,'#f6dcc0','20–39%'],[40,'#e8b07a','40–59%'],[60,'#cf7a35','60–79%'],[80,'#8f4513','80%+']]},
