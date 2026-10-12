@@ -476,12 +476,13 @@ function draw(){document.querySelectorAll('#cid .chip').forEach(b=>b.classList.t
  const mem=!$('cimem')||$('cimem').checked,lab=(t,px,py)=>{c.font='bold 11px system-ui';c.lineWidth=3;c.strokeStyle='#fff';c.strokeText(t,px,py);c.fillStyle='#14213d';c.fillText(t,px,py)};
  const dot=(lo,la,col,r)=>{c.fillStyle=col;c.beginPath();c.arc(X(lo),Y(la),r,0,7);c.fill()};
  if(di<0){ // all days: every member's centre coloured by day
-  c.globalAlpha=.6;ED.forEach((x,k)=>Object.values(x.dots).forEach(ds=>ds.forEach(p=>dot(p[0],p[1],DAYC[k%10],2.3))));c.globalAlpha=1;
-  ED.forEach((x,k)=>x.circ.filter(o=>o.prob>=30).forEach(o=>{c.strokeStyle='#14213d';c.lineWidth=1.5;c.fillStyle=DAYC[k%10];c.beginPath();c.arc(X(o.lon),Y(o.lat),5,0,7);c.fill();c.stroke()}));
-  $('cilg').innerHTML=ED.map((x,k)=>{const [a,b]=fd(x.date);return `<div><i style="background:${DAYC[k%10]}"></i>${a} ${b}</div>`}).join('')+'<div class="m">small dots = members, outlined = 30%+ of members</div>';return}
+  const ok=(x,g)=>g>=0&&x.circ[g]&&x.circ[g].prob>=25;
+  if(mem){c.globalAlpha=.5;ED.forEach((x,k)=>Object.values(x.dots).forEach(ds=>ds.forEach(p=>{if(ok(x,p[2]))dot(p[0],p[1],DAYC[k%10],2.2)})));c.globalAlpha=1}
+  ED.forEach((x,k)=>x.circ.forEach((o,g)=>{if(!ok(x,g))return;c.strokeStyle='#14213d';c.lineWidth=1.5;c.fillStyle=DAYC[k%10];c.beginPath();c.arc(X(o.lon),Y(o.lat),3+o.prob/12,0,7);c.fill();c.stroke()}));
+  $('cilg').innerHTML=ED.map((x,k)=>{const [a,b]=fd(x.date);return `<div><i style="background:${DAYC[k%10]}"></i>${a} ${b}</div>`}).join('')+'<div class="m">only circulations that at least 25% of ensemble members agree on; bigger outlined circle = more members, small dots = each member\'s centre</div>';return}
  const d=dates[di],x=cAt(d),y=eAt(d);
  if(y&&mem){c.globalAlpha=.55;Object.entries(y.dots).forEach(([e,ds])=>ds.forEach(p=>dot(p[0],p[1],EC[e]||'#555',2.4)));c.globalAlpha=1}
- if(y)y.circ.filter(o=>o.prob>=15).forEach(o=>{c.strokeStyle='#14213d';c.setLineDash([3,3]);c.lineWidth=1.3;c.beginPath();c.arc(X(o.lon),Y(o.lat),9,0,7);c.stroke();c.setLineDash([]);lab(o.prob+'%',X(o.lon)-10,Y(o.lat)+22)});
+ if(y)y.circ.filter(o=>o.prob>=15).forEach(o=>{c.strokeStyle='#14213d';c.setLineDash([3,3]);c.lineWidth=1.3;c.beginPath();c.arc(X(o.lon),Y(o.lat),9,0,7);c.stroke();c.setLineDash([]);lab(o.prob+'%',X(o.lon)-38,Y(o.lat)+4)});
  if(x)x.circ.forEach(o=>{const col=o.tn_km<=300?'#d61f69':o.tn_km<=600?'#f29a1d':'#8aa0ad',r=5+o.n*3,px=X(o.lon),py=Y(o.lat);
   c.strokeStyle=col;c.lineWidth=2.4;c.fillStyle=col+'33';c.beginPath();c.arc(px,py,r,0,7);c.fill();c.stroke();
   c.beginPath();c.arc(px,py,r+5,Math.PI*.15,Math.PI*1.35);c.stroke();c.beginPath();const ax=px+(r+5)*Math.cos(Math.PI*1.35),ay=py+(r+5)*Math.sin(Math.PI*1.35);c.moveTo(ax,ay);c.lineTo(ax+6,ay+1);c.moveTo(ax,ay);c.lineTo(ax+1,ay+6);c.stroke();

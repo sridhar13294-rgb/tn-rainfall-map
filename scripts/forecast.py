@@ -32,7 +32,7 @@ UTC, IST = dt.timezone.utc, dt.timezone(dt.timedelta(hours=5, minutes=30))
 UA = 'tn-rainfall-map forecast (non-commercial; github.com/sridhar13294-rgb/tn-rainfall-map)'
 T_START = time.time()
 DEADLINE = T_START + 85 * 60
-BUDGET = {'GFS': 9, 'ECMWF': 9, 'ECMWF AI': 6, 'ICON': 8, 'GEM': 8, 'GEFS': 12, 'ECMWF ENS': 32, 'CFS': 8}   # minutes per model
+BUDGET = {'GFS': 9, 'ECMWF': 9, 'ECMWF AI': 6, 'ICON': 8, 'GEM': 8, 'GEFS': 12, 'ECMWF ENS': 42, 'CFS': 8}   # minutes per model
 NDAYS = 16
 LEVELS = ['10m', '925', '850', '700', '500', '200']           # page keys: 10m and hPa levels
 WIND_BOX = dict(lat0=0, lat1=25, lon0=65, lon1=95, step=1.0)
@@ -1272,9 +1272,9 @@ def ens_circulations(ens, d0, lats, lons):
                 if any(tn_km(lo, la) <= TN_KM for lo, la, _ in cs):
                     hit += 1
                 for lo, la, z in cs:
-                    found.append((e, k, lo, la, z)); pts_e.append([round(lo, 1), round(la, 1)])
+                    found.append((e, k, lo, la, z))
             if cnt >= 0.5 * size[e] and cnt >= 5:            # an ensemble counts for this day only if most members came through
-                n_ok[e] = cnt; tn_hit[e] = hit; dots[e] = pts_e
+                n_ok[e] = cnt; tn_hit[e] = hit; dots[e] = []
         if not n_ok:
             continue
         found = [f for f in found if f[0] in n_ok]
@@ -1296,12 +1296,14 @@ def ens_circulations(ens, d0, lats, lons):
         for g in groups:
             probs = {e: sum(1 for x in g['c'] if x[0] == e) / n_ok[e] for e in n_ok}
             prob = sum(probs.values()) / len(probs)
+            gi = len(out) if prob >= 0.10 else -1                # dots: [lon, lat, index of their circulation or -1]
+            for x in g['c']:
+                dots[x[0]].append([round(x[2], 1), round(x[3], 1), gi])
             if prob < 0.10:
                 continue
             out.append(dict(lon=round(g['lo'], 2), lat=round(g['la'], 2), prob=int(round(100 * prob)),
                             probs={e: int(round(100 * v)) for e, v in probs.items()},
                             z=round(float(np.median([x[4] for x in g['c']])), 1), tn_km=int(round(tn_km(g['lo'], g['la'])))))
-        out.sort(key=lambda c: -c['prob'])
         tnp = {e: int(round(100 * tn_hit[e] / n_ok[e])) for e in n_ok}
         days.append(dict(date=a_t.strftime('%Y-%m-%d'), members=n_ok, tn=tnp,
                          tn_prob=int(round(sum(tnp.values()) / len(tnp))), circ=out, dots=dots))
