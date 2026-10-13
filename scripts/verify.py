@@ -21,6 +21,8 @@ WINDOW_DAYS = 30          # scores and weights use the last 30 verified days
 MIN_DAYS = 10             # weights switch on once every model has this many verified days at leads 1-2
 RAIN = 2.5                # IMD rainy-day threshold (mm)
 HEAVY = 64.5              # IMD heavy rain (mm)
+VHEAVY = 115.6            # IMD very heavy rain (mm)
+EVENT_DAYS = 30           # district heavy-rain events listed on the page
 BLOCK_W = (0.5, 1, 1, 1, 0.5)
 
 
@@ -118,6 +120,30 @@ def gauge_cells(pts):
     return cells
 
 
+def district_cells(pts):
+    """For the district heavy-rain check: {district: [station ids]} of working gauges and {district: [cell indices]}
+    (the 0.25 degree forecast cell nearest each of its gauges, within 0.2 degrees)."""
+    try:
+        st = json.load(open(OBS('data', 'stations.json')))
+    except Exception:
+        return {}, {}, {}
+    dead = dead_gauges(st)
+    gauges, cells = {}, {}
+    for sid, s in st.items():
+        d = s.get('district')
+        if s.get('lat') is None or s.get('lon') is None or sid in dead or not d:
+            continue
+        best = min(range(len(pts)), key=lambda i: (pts[i][0] - s['lon']) ** 2 + (pts[i][1] - s['lat']) ** 2)
+        gauges.setdefault(d, []).append(sid)
+        if abs(pts[best][0] - s['lon']) <= 0.2 and abs(pts[best][1] - s['lat']) <= 0.2:
+            cells.setdefault(d, set()).add(best)
+    return gauges, {d: sorted(c) for d, c in cells.items()}, st
+
+
+def _hmf():
+    return dict(hit=0, miss=0, false=0)
+
+
 def _empty():
     return dict(n=0, ae=0.0, fc=0.0, ob=0.0, h=0, m=0, f=0, c=0, hh=0, hm=0, hf=0)
 
@@ -151,6 +177,8 @@ def _summary(s, days):
 def verify(pts, now):
     """Score saved forecasts against TN SMART gauges. Returns the scores dict (also written to data/verify/scores.json)."""
     cells = gauge_cells(pts)
+    dgauges, dcells, stations = district_cells(pts)
+    dstats, devents, ddays = {}, [], {}
     runs = []
     if os.path.isdir(FC_DIR):
         for f in sorted(os.listdir(FC_DIR)):
@@ -194,6 +222,28 @@ def verify(pts, now):
             fc = load(p)['days'].get(day.isoformat())
             if not fc:
                 continue
+            # district check: heaviest single gauge in the district vs heaviest forecast square over its gauges
+            dobs = {}
+            for dname, sids in dgauges.items():
+                v = [(obs[x], x) for x in sids if obs.get(x) is not None]
+                if v and dname in dcells:
+                    dobs[dname] = max(v)
+            for n, arr in fc.items():
+                ds = dstats.setdefault(n, {}).setdefault(lead, dict(heavy=_hmf(), vheavy=_hmf()))
+                ddays.setdefault(n, {}).setdefault(lead, set()).add(day)
+                for dname, (omax, _) in dobs.items():
+                    fmax = max(arr[i] for i in dcells[dname]) / 10
+                    for key, thr in (('heavy', HEAVY), ('vheavy', VHEAVY)):
+                        if omax >= thr:
+                            ds[key]['hit' if fmax >= thr else 'miss'] += 1
+                        elif fmax >= thr:
+                            ds[key]['false'] += 1
+            if lead == 1 and (now.date() - day).days <= EVENT_DAYS:
+                for dname, (omax, sid) in sorted(dobs.items()):
+                    fm = {n: round(max(arr[i] for i in dcells[dname]) / 10, 1) for n, arr in fc.items()}
+                    if omax >= HEAVY or any(v >= HEAVY for v in fm.values()):
+                        devents.append(dict(date=day.isoformat(), district=dname, obs=round(omax, 1),
+                                            gauge=stations.get(sid, {}).get('name', sid), fc=fm))
             for n, arr in fc.items():
                 s = stats.setdefault(n, {}).setdefault(lead, _empty())
                 for i, ob in ob_cell.items():
@@ -227,6 +277,8 @@ def verify(pts, now):
             note = f'{have} of {MIN_DAYS} verified days so far'
     out = dict(updated=now.strftime('%Y-%m-%dT%H:%MZ'), gauge_cells=len(cells), window_days=WINDOW_DAYS,
                min_days=MIN_DAYS, scores=scores, daily=daily_series, weights=weights, note=note,
+               districts=dict(n=len(dcells), scores={n: {str(l): dict(v, days=len(ddays[n][l])) for l, v in by.items()} for n, by in dstats.items()},
+                              events=devents[-60:]),
                first_run=first_run.strftime('%Y-%m-%dT%H:%MZ') if first_run else None)
     os.makedirs(os.path.dirname(SCORES), exist_ok=True)
     json.dump(out, open(SCORES, 'w'), indent=1)
