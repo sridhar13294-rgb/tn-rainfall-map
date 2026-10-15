@@ -31,6 +31,7 @@ input[type=range]{width:100%;accent-color:var(--acc)}
 #st{font-size:13.5px;margin:2px 0 8px;min-height:20px}
 #tip{font-size:14px;margin-top:8px;min-height:22px}
 .err{color:#b3261e}
+[hidden]{display:none!important}
 .chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0 6px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
 .chip{flex:none;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:10px;padding:6px 11px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;text-align:center;line-height:1.2}
 .chip.on{background:var(--ink);border-color:var(--ink);color:var(--paper)}.chip small{display:block;font-size:11px;font-weight:400;opacity:.8}
@@ -168,7 +169,7 @@ function describe(cells,t0){const G=window.SATGEO,horizon=P.fc*P.fcStep;
  const kind=c=>c.max>=30?'Very heavy':c.max>=10?'Heavy':c.max>=5?'Moderate':'Light to moderate';
  const line=(c,extra)=>{const ll=toLL(c.x,c.y),r=Math.sqrt(c.area/Math.PI),moving=c.kmh>=4;
   const over=G.ct.filter(t=>kmBetween(ll,[t[1],t[2]])<=r+8).map(t=>t[0]);
-  return `<li><b>${kind(c)}</b> rain${2*r>80?' area':''} ${over.length&&MODE!=='long'?'over <b>'+over.join(', ')+'</b>':(q=>(q.startsWith('the ')||q==='Sri Lanka'?'over ':'near ')+q)(place(ll))} (up to ${c.max.toFixed(0)} mm/h, about ${Math.round(2*r)} km across), `+
+  return `<li><b>${kind(c)}</b> rain${2*r>80?' area':''} ${over.length&&MODE!=='long'?'over <b>'+over.join(', ')+'</b>':(q=>(q.startsWith('the ')||q==='Sri Lanka'||q.endsWith(' district')?'over ':/^\d+ km/.test(q)?'':'near ')+q)(place(ll))} (up to ${c.max.toFixed(0)} mm/h, about ${Math.round(2*r)} km across), `+
    (moving?`moving <b>${dirName(c.u,c.v)}</b> at about <b>${Math.round(c.kmh)} km/h</b>.`:'nearly stationary.')+(extra||'')+'</li>'};
  let out=[];
  if(MODE==='short'){const t=G.ct.find(q=>q[0]===CITY);const P0=[t[1],t[2]];
@@ -199,7 +200,7 @@ function draw(){const G=window.SATGEO||{tn:[],land:[],ct:[]},f=FR[cur];
   [50,100].forEach(km=>{c.beginPath();c.ellipse(x,y,km/KMX/NX*W,km/KMY/NY*H,0,0,7);c.stroke()});c.setLineDash([]);
   c.font='600 11px "Anek Latin",system-ui';c.fillStyle='rgba(15,42,51,.6)';c.textAlign='left';c.fillText('50 km',x+50/KMX/NX*W+3,y-3);c.fillText('100 km',x+100/KMX/NX*W+3,y-3)}
  if(f&&(f.fc||f.t.getTime()===lastT.getTime())){const k0=(f.t-lastT)/(MOT*60e3),kA=P.arrowH*60/MOT;
-  CELLS.slice(0,MODE==='long'?14:10).forEach(cl=>{if(cl.kmh<4||cl.area<P.minKm2*2.5)return;const a=toLL(cl.x+cl.u*k0,cl.y+cl.v*k0),b=toLL(cl.x+cl.u*(k0+kA),cl.y+cl.v*(k0+kA)),x1=X(a[0]),y1=Y(a[1]);let x2=X(b[0]),y2=Y(b[1]);
+  CELLS.slice(0,MODE==='long'?8:10).forEach(cl=>{if(cl.kmh<4||cl.area<P.minKm2*(MODE==='long'?8:2.5))return;const a=toLL(cl.x+cl.u*k0,cl.y+cl.v*k0),b=toLL(cl.x+cl.u*(k0+kA),cl.y+cl.v*(k0+kA)),x1=X(a[0]),y1=Y(a[1]);let x2=X(b[0]),y2=Y(b[1]);
    const L0=Math.hypot(x2-x1,y2-y1);if(L0<26){x2=x1+(x2-x1)/(L0||1)*26;y2=y1+(y2-y1)/(L0||1)*26}
    if(x1<0||x1>W||y1<0||y1>H)return;const ang=Math.atan2(y2-y1,x2-x1);
    c.lineCap='round';c.strokeStyle='rgba(255,255,255,.9)';c.lineWidth=5;c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();
