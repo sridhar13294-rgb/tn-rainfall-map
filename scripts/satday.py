@@ -159,12 +159,13 @@ def gauge_obs(day):
     return obs
 
 
-def sat_totals(D, corr):
-    """Satellite day total (mm) at each gauge, with the given correction; scaled up for missing pictures."""
+def sat_totals(D, corr, partial=False):
+    """Satellite day total (mm) at each gauge, with the given correction; scaled up for missing pictures
+    (partial=True: the day so far, not scaled)."""
     n = len(D['frames'])
-    if n < 72:                                                          # need at least 18 of 24 hours
+    if n < (8 if partial else 72):                                      # need at least 18 of 24 hours (2 h for the day so far)
         return None
-    S = np.array([corr(np.array(v)) for v in D['frames'].values()]).sum(0) * 0.25 * 96 / n
+    S = np.array([corr(np.array(v)) for v in D['frames'].values()]).sum(0) * 0.25 * (1 if partial else 96 / n)
     return dict(zip(D['gauge_ids'], S))
 
 
@@ -261,18 +262,19 @@ def publish_daily(corr, fit, now):
     os.makedirs(f'{OUT}/satdaily', exist_ok=True)
     for f in sorted(glob.glob(f'{SD}/*.json')):
         D = json.load(open(f)); day = D['day']
-        if (now.date() - dt.date.fromisoformat(day)).days > 30 or not D.get('complete'):
+        part = not D.get('complete')                                   # the current day so far (used by Our forecast)
+        if (now.date() - dt.date.fromisoformat(day)).days > 30:
             continue
-        S = sat_totals(D, corr)
+        S = sat_totals(D, corr, partial=part)
         if not S:
             continue
-        rec = dict(day=day, frames=len(D['frames']), correction=dict(cut=fit['cut'], scale=fit['scale']) if fit else 'radar-matched',
+        rec = dict(day=day, frames=len(D['frames']), complete=not part, correction=dict(cut=fit['cut'], scale=fit['scale']) if fit else 'radar-matched',
                    gauges={k: round(float(v), 1) for k, v in S.items()})
         npz = f'{SD}/{day}.npz'
         if fit and os.path.exists(npz):
             z = np.load(npz); cuts = list(z['cuts']) if 'cuts' in z else None
             if cuts and fit['cut'] in cuts and z['acc'].ndim == 3:
-                g = z['acc'][cuts.index(fit['cut'])] * fit['scale'] * 96 / max(1, int(z['frames']))
+                g = z['acc'][cuts.index(fit['cut'])] * fit['scale'] * (1 if part else 96 / max(1, int(z['frames'])))
                 g = g.reshape(NY // 2, 2, NX // 2, 2).mean(axis=(1, 3))       # 0.1 degree
                 rec['grid'] = dict(lon0=LON0, lat0=LAT0, step=0.1, nx=NX // 2, ny=NY // 2, mm=[round(float(x), 1) for x in g.ravel()])
         json.dump(rec, open(f'{OUT}/satdaily/{day}.json', 'w'), separators=(',', ':'))
