@@ -44,7 +44,7 @@ select{font:inherit;font-size:14px;color:var(--ink);background:var(--paper);bord
  <nav class="tabs"><a href="index.html">Rainfall</a><a href="forecast.html">Forecast</a><a class="on" href="satradar.html">Sat radar</a></nav>
 </header>
 <div class="warn"><b>Experimental.</b> Rain estimated from satellite pictures, not a real radar. It finds rain areas well but can miss small local downpours and can show light rain where none falls. Follow IMD and TNSDMA for warnings.</div>
-<div class="chips" id="rg" role="tablist"><button class="chip" data-m="long">Long range<small>Bay & Arabian Sea</small></button><button class="chip" data-m="tn">Tamil Nadu<small>state view</small></button><button class="chip" data-m="short">Short range<small>around a city</small></button></div>
+<div class="chips" id="rg" role="tablist"><button class="chip" data-m="long">Long range<small>both seas</small></button><button class="chip" data-m="south">South India<small>with Bay of Bengal</small></button><button class="chip" data-m="tn">Tamil Nadu<small>state view</small></button><button class="chip" data-m="short">Short range<small>around a city</small></button></div>
 <div class="row" id="cityrow" hidden style="margin:4px 0 6px"><label class="m" for="city">City</label><select id="city"></select></div>
 <div class="m" id="rgn" style="margin:2px 0 6px"></div>
 <div id="st">Loading satellite pictures…</div>
@@ -57,7 +57,7 @@ select{font:inherit;font-size:14px;color:var(--ink);background:var(--paper);bord
 <h2>How this works</h2>
 <p class="m" style="margin:0 0 8px">Every 15 minutes EUMETSAT's Meteosat satellite over the Indian Ocean scans the region, and EUMETSAT's H SAF service turns the infrared and microwave readings into a rain rate (product H63). This page reads those pictures directly, so it refreshes on its own every 15 minutes while open. Each new picture arrives about 45–55 minutes after the scan.</p>
 <p class="m" style="margin:0 0 8px">Satellite rain over Tamil Nadu is usually too high, because the cold cloud shields of the monsoon look like rain from space. Compared with the 565 TN SMART gauges on 10–15 Oct 2026, it gave about 3 to 5 times the measured rain, so the page corrects it. The correction is checked every 30 minutes against IMD's Chennai and Karaikal radars (when they are working) and against the TN SMART gauges; the radar pictures themselves are not shown here.</p>
-<p class="m" style="margin:0">Forecast frames (purple label) move the latest rain along its recent track: the page compares pictures 30 minutes apart, works out how each part of the rain is moving, and carries each rain cell forward in its own direction and speed (the arrows). Rain that forms or dies in the meantime is not predicted, so trust the first hour more than the second. Long range looks 6 hours ahead using pictures 30 minutes apart; after 3 hours its forecast is shown faded, as a rough guide to direction and timing only. Short range uses the same satellite pictures zoomed in, so it is good for timing but each square is still about 3–4 km across. "Now" is itself a forecast, because the newest picture is already 45–55 minutes old.</p>
+<p class="m" style="margin:0">Forecast frames (purple label) move the latest rain along its recent track: the page compares pictures 30 minutes apart, works out how each part of the rain is moving, and carries each rain cell forward in its own direction and speed (the arrows). Rain that forms or dies in the meantime is not predicted, so trust the first hour more than the second. South India looks 4 hours ahead across the peninsula and the Bay of Bengal. Long range covers both seas and looks 6 hours ahead using pictures 30 minutes apart; after 3 hours its forecast is shown faded, as a rough guide to direction and timing only. Short range uses the same satellite pictures zoomed in, so it is good for timing but each square is still about 3–4 km across. "Now" is itself a forecast, because the newest picture is already 45–55 minutes old.</p>
 </div>
 </div>
 <script src="satgeo.js"></script>
@@ -67,6 +67,7 @@ const $=id=>document.getElementById(id);
 // ---- views: long range (Bay of Bengal + Arabian Sea), Tamil Nadu, short range (around one city)
 const MODES={
  long:{name:'Long range',box:[62,96,-2,25],step:0.1,past:7,pastStep:30,fc:12,fcStep:30,gap:60,bs:16,st:8,R:8,minKm2:500,arrowH:3,note:'Bay of Bengal, Arabian Sea and Sri Lanka · next 6 hours (faded after 3 hours)'},
+ south:{name:'South India',box:[73.5,92.5,5,19.5],step:0.05,past:9,pastStep:15,fc:8,fcStep:30,gap:45,bs:20,st:10,R:10,minKm2:250,arrowH:2,note:'South India and the Bay of Bengal · next 4 hours'},
  tn:{name:'Tamil Nadu',box:[75.5,81.5,7,14.5],step:0.025,past:9,pastStep:15,fc:10,fcStep:15,gap:30,bs:30,st:15,R:10,minKm2:90,arrowH:1,note:'Tamil Nadu and nearby sea · next 2½ hours'},
  short:{name:'Short range',half:1.35,step:0.02,past:9,pastStep:15,fc:8,fcStep:15,gap:30,bs:24,st:12,R:12,minKm2:40,arrowH:1,note:'About 150 km around the chosen city · next 2 hours'}};
 let MODE='tn',CITY='Chennai',LON0,LON1,LAT0,LAT1,NX,NY,DX,DY,KMX,KMY,P;
@@ -89,7 +90,7 @@ function setMode(m){MODE=m;P=MODES[m];
  rain=c.createImageData(NX,NY);rc=document.createElement('canvas');rc.width=NX;rc.height=NY;rx=rc.getContext('2d');
  cnv=document.createElement('canvas');cnv.width=NX;cnv.height=NY;cx=cnv.getContext('2d',{willReadFrequently:true});
  document.querySelectorAll('#rg .chip').forEach(b=>b.classList.toggle('on',b.dataset.m===m));$('cityrow').hidden=m!=='short';$('rgn').textContent=P.note;
- $('clh').textContent=m==='short'?`Rain heading for ${CITY}`:m==='long'?'Rain systems and where they are heading':'Rain cells and where they are heading';
+ $('clh').textContent=m==='short'?`Rain heading for ${CITY}`:m==='long'||m==='south'?'Rain systems and where they are heading':'Rain cells and where they are heading';
  $('tip').textContent='Tap the map to see the rain rate at that spot. Arrows show where each rain cell will be in '+(P.arrowH>1?P.arrowH+' hours.':'one hour.')}
 const X=lo=>(lo-LON0)/(LON1-LON0)*W,Y=la=>(LAT1-la)/(LAT1-LAT0)*H;
 
@@ -169,14 +170,14 @@ function describe(cells,t0){const G=window.SATGEO,horizon=P.fc*P.fcStep;
  const kind=c=>c.max>=30?'Very heavy':c.max>=10?'Heavy':c.max>=5?'Moderate':'Light to moderate';
  const line=(c,extra)=>{const ll=toLL(c.x,c.y),r=Math.sqrt(c.area/Math.PI),moving=c.kmh>=4;
   const over=G.ct.filter(t=>kmBetween(ll,[t[1],t[2]])<=r+8).map(t=>t[0]);
-  return `<li><b>${kind(c)}</b> rain${2*r>80?' area':''} ${over.length&&MODE!=='long'?'over <b>'+over.join(', ')+'</b>':(q=>(q.startsWith('the ')||q==='Sri Lanka'||q.endsWith(' district')?'over ':/^\d+ km/.test(q)?'':'near ')+q)(place(ll))} (up to ${c.max.toFixed(0)} mm/h, about ${Math.round(2*r)} km across), `+
+  return `<li><b>${kind(c)}</b> rain${2*r>80?' area':''} ${over.length&&MODE!=='long'&&MODE!=='south'?'over <b>'+over.join(', ')+'</b>':(q=>(q.startsWith('the ')||q==='Sri Lanka'||q.endsWith(' district')?'over ':/^\d+ km/.test(q)?'':'near ')+q)(place(ll))} (up to ${c.max.toFixed(0)} mm/h, about ${Math.round(2*r)} km across), `+
    (moving?`moving <b>${dirName(c.u,c.v)}</b> at about <b>${Math.round(c.kmh)} km/h</b>.`:'nearly stationary.')+(extra||'')+'</li>'};
  let out=[];
  if(MODE==='short'){const t=G.ct.find(q=>q[0]===CITY);const P0=[t[1],t[2]];
   const hits=cells.map(c=>({c,m:eta(c,P0,Math.sqrt(c.area/Math.PI),horizon)})).filter(h=>h.m!==null).sort((a,b)=>a.m-b.m).slice(0,5);
   out=hits.map(h=>line(h.c,h.m===0?` It is over or next to ${CITY} in the latest picture.`:arrive(CITY,t0,h.m)));
   if(!out.length)return `<p style="margin:0;font-size:14px">No rain cell is heading for <b>${CITY}</b> in the next 2 hours, going by the latest satellite picture.</p>`+(cells.length?'<p class="m" style="margin:6px 0 0">Rain cells nearby:</p><ul class="cells">'+cells.slice(0,3).map(c=>line(c)).join('')+'</ul>':'')}
- else if(MODE==='long'){out=cells.slice(0,6).map(c=>{const r=Math.sqrt(c.area/Math.PI);let best=null;
+ else if(MODE==='long'||MODE==='south'){out=cells.slice(0,6).map(c=>{const r=Math.sqrt(c.area/Math.PI);let best=null;
    if(!inTN(toLL(c.x,c.y))&&c.kmh>=4)G.ct.forEach(t=>{const m=eta(c,[t[1],t[2]],r,horizon);if(m!==null&&m>0&&(!best||m<best.m))best={m,n:t[0]}});
    return line(c,best?arrive(best.n+' (Tamil Nadu)',t0,best.m):'')})}
  else{out=cells.filter(c=>{const ll=toLL(c.x,c.y);return inTN(ll)||G.ct.some(t=>kmBetween(ll,[t[1],t[2]])<=60)}).slice(0,6).map(c=>{const r=Math.sqrt(c.area/Math.PI);let best=null;
@@ -191,7 +192,7 @@ function poly(r){c.beginPath();r.forEach((p,i)=>i?c.lineTo(X(p[0]),Y(p[1])):c.mo
 function label(t,sz){const x=X(t[1]),y=Y(t[2]);if(x<0||x>W||y<0||y>H)return;c.font=`600 ${sz}px "Anek Latin",system-ui`;c.fillStyle='#0f2a33';c.beginPath();c.arc(x,y,2.6,0,7);c.fill();
  c.lineWidth=3;c.strokeStyle='rgba(248,250,249,.9)';const tx=t[3]=='end'?x-5:x+5;c.textAlign=t[3]=='end'?'right':'left';c.strokeText(t[0],tx,y+4);c.fillText(t[0],tx,y+4)}
 function draw(){const G=window.SATGEO||{tn:[],land:[],ct:[]},f=FR[cur];
- c.fillStyle='#dfe7ec';c.fillRect(0,0,W,H);c.fillStyle='#f3efe6';c.strokeStyle='#9aa7a4';c.lineWidth=.8;(MODE==='long'?G.land2:G.land).forEach(r=>{poly(r);c.fill();c.stroke()});
+ c.fillStyle='#dfe7ec';c.fillRect(0,0,W,H);c.fillStyle='#f3efe6';c.strokeStyle='#9aa7a4';c.lineWidth=.8;(MODE==='long'?G.land2:MODE==='south'?G.land3:G.land).forEach(r=>{poly(r);c.fill();c.stroke()});
  if(f){const d=rain.data,fade=f.fc&&MODE==='long'&&(f.t-lastT)>3*3600e3;for(let y=0;y<NY;y++)for(let x=0;x<NX;x++){const v=f.v[(NY-1-y)*NX+x],p=(y*NX+x)*4;let b=-1;for(let q=BINS.length-1;q>=0;q--)if(v>=BINS[q][0]){b=q;break}
    if(b<0){d[p+3]=0;continue}d[p]=RGB[b][0];d[p+1]=RGB[b][1];d[p+2]=RGB[b][2];d[p+3]=fade?110:f.fc?185:220}
   rx.putImageData(rain,0,0);c.imageSmoothingEnabled=false;c.drawImage(rc,0,0,W,H)}
@@ -200,14 +201,14 @@ function draw(){const G=window.SATGEO||{tn:[],land:[],ct:[]},f=FR[cur];
   [50,100].forEach(km=>{c.beginPath();c.ellipse(x,y,km/KMX/NX*W,km/KMY/NY*H,0,0,7);c.stroke()});c.setLineDash([]);
   c.font='600 11px "Anek Latin",system-ui';c.fillStyle='rgba(15,42,51,.6)';c.textAlign='left';c.fillText('50 km',x+50/KMX/NX*W+3,y-3);c.fillText('100 km',x+100/KMX/NX*W+3,y-3)}
  if(f&&(f.fc||f.t.getTime()===lastT.getTime())){const k0=(f.t-lastT)/(MOT*60e3),kA=P.arrowH*60/MOT;
-  CELLS.slice(0,MODE==='long'?8:10).forEach(cl=>{if(cl.kmh<4||cl.area<P.minKm2*(MODE==='long'?8:2.5))return;const a=toLL(cl.x+cl.u*k0,cl.y+cl.v*k0),b=toLL(cl.x+cl.u*(k0+kA),cl.y+cl.v*(k0+kA)),x1=X(a[0]),y1=Y(a[1]);let x2=X(b[0]),y2=Y(b[1]);
+  CELLS.slice(0,MODE==='long'||MODE==='south'?8:10).forEach(cl=>{if(cl.kmh<4||cl.area<P.minKm2*(MODE==='long'?8:MODE==='south'?4:2.5))return;const a=toLL(cl.x+cl.u*k0,cl.y+cl.v*k0),b=toLL(cl.x+cl.u*(k0+kA),cl.y+cl.v*(k0+kA)),x1=X(a[0]),y1=Y(a[1]);let x2=X(b[0]),y2=Y(b[1]);
    const L0=Math.hypot(x2-x1,y2-y1);if(L0<26){x2=x1+(x2-x1)/(L0||1)*26;y2=y1+(y2-y1)/(L0||1)*26}
    if(x1<0||x1>W||y1<0||y1>H)return;const ang=Math.atan2(y2-y1,x2-x1);
    c.lineCap='round';c.strokeStyle='rgba(255,255,255,.9)';c.lineWidth=5;c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();
    c.strokeStyle='#0f2a33';c.lineWidth=2.2;c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();
    c.fillStyle='#0f2a33';c.beginPath();c.moveTo(x2+3*Math.cos(ang),y2+3*Math.sin(ang));c.lineTo(x2-9*Math.cos(ang-0.45),y2-9*Math.sin(ang-0.45));c.lineTo(x2-9*Math.cos(ang+0.45),y2-9*Math.sin(ang+0.45));c.closePath();c.fill();
    c.font='700 11px "Anek Latin",system-ui';c.textAlign='left';c.lineWidth=3;c.strokeStyle='rgba(248,250,249,.95)';const lb=Math.round(cl.kmh)+' km/h';c.strokeText(lb,x2+6,y2+4);c.fillText(lb,x2+6,y2+4)})}
- if(MODE==='long')(G.xc||[]).forEach(t=>label(t,11));else G.ct.forEach(t=>label(t,MODE==='short'&&t[0]===CITY?14:12));
+ if(MODE==='long')(G.xc||[]).forEach(t=>label(t,11));else if(MODE==='south')(G.xc||[]).filter(t=>!['Mumbai','Kolkata','Male','Hyderabad','Bhubaneswar'].includes(t[0])).concat(G.ct.filter(t=>['Coimbatore','Tiruchirappalli','Thoothukudi','Puducherry'].includes(t[0]))).forEach(t=>label(t,11));else G.ct.forEach(t=>label(t,MODE==='short'&&t[0]===CITY?14:12));
  const s=$('stamp');if(f){const ahead=Math.round((f.t-lastT)/60e3);s.className='stamp'+(f.fc?' fc':'');
   s.innerHTML=(f.fc?'Forecast ':'Satellite ')+IST(f.t)+' IST<small>'+(f.fc?`+${ahead>=120?(ahead/60).toFixed(ahead%60?1:0)+' h':ahead+' min'} after the last picture`+(MODE==='long'&&ahead>180?' · rough':''):(f.t.getTime()===lastT.getTime()?'latest picture':'observed'))+(f.now?' · about now':'')+'</small>'}
  $('sl').value=cur}

@@ -18,7 +18,7 @@ with sync_playwright() as p:
             except Exception as e:
                 log.append(f'body error {e}')
     pg.on('response', on_resp)
-    for mode, key in (('tn', 'tn'), ('long', 'long'), ('short', 'short_Chennai')):
+    for mode, key in (('tn', 'tn'), ('south', 'south'), ('long', 'long'), ('short', 'short_Chennai')):
         cur['k'] = key; t0 = time.time()
         pg.goto(f'http://localhost:8765/satradar.html#{mode}'); pg.reload()
         pg.wait_for_function("document.getElementById('st').textContent.indexOf('Loading')<0", timeout=180000)
