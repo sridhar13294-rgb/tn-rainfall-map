@@ -1,0 +1,39 @@
+probe 2 at 2026-10-15T10:07:03.313324+00:00
+
+msg_iodc:h63: styles ['msg_h60b_h63', 'raster'] legend https://view.eumetsat.int/geoserver/ows?service=WMS&amp;version=1.3.0&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=640&amp;height=80&amp;layer=msg_iodc%3Ah63
+  time dim: 2022-12-09T08:00:00.000Z/2026-10-15T09:30:00.000Z/PT15M
+
+msg_iodc:ir108: styles ['raster', 'osmgray:world_light', 'osmgray:world_dark'] legend https://view.eumetsat.int/geoserver/ows?service=WMS&amp;version=1.3.0&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=msg_iodc%3Air108
+  time dim: 2020-08-01T00:00:00.000Z/2026-10-15T09:45:00.000Z/PT15M
+
+msg_iodc:rgb_convection: styles ['raster', 'raster'] legend https://view.eumetsat.int/geoserver/ows?service=WMS&amp;version=1.3.0&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=msg_iodc%3Argb_convection
+  time dim: 2020-08-01T00:00:00.000Z/2026-10-15T09:45:00.000Z/PT15M
+
+msg_iodc:cth: styles ['msg_cth', 'raster'] legend https://view.eumetsat.int/geoserver/ows?service=WMS&amp;version=1.3.0&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=640&amp;height=80&amp;layer=msg_iodc%3Acth
+  time dim: 2020-08-01T00:00:00.000Z/2026-10-15T09:45:00.000Z/PT15M
+
+WCS https://view.eumetsat.int/geoserver/msg_iodc/ows?service=WCS&version=2.0.1&request=GetCapabilities: 0 coverages; h63-like: []
+
+WCS https://view.eumetsat.int/geoserver/ows?service=WCS&version=2.0.1&request=GetCapabilities: 8 coverages; h63-like: []
+
+GetMap msg_iodc:h63: 56819 bytes, type None
+
+GetMap msg_iodc:ir108: 68942 bytes, type None
+
+GetMap msg_iodc:rgb_convection: 112798 bytes, type None
+legend h63 5623
+featureinfo: b'{"type":"FeatureCollection","features":[{"type":"Feature","id":"","geometry":null,"properties":{"RED_BAND":0,"GREEN_BAND":0,"BLUE_BAND":0}}],"totalFeatures":"unknown","numberReturned":1,"timeStamp":"2026-10-15T10:07:29.168Z","crs":null}'
+past h63 2026-10-14T18:00:00Z: 38119 bytes None
+past h63 2026-10-14T21:00:00Z: 33478 bytes None
+past h63 2026-10-15T00:00:00Z: 28741 bytes None
+past h63 2026-10-15T09:00:00Z: 56297 bytes None
+noaa-enterprise-rainrate-pds BLEND/: 1 folders ['BLEND/RainRate-Blend-INST/'] | 0 files []
+noaa-enterprise-rainrate-pds BLEND/RainRate-Blend-INST/: 2 folders ['BLEND/RainRate-Blend-INST/2025/', 'BLEND/RainRate-Blend-INST/2026/'] | 0 files []
+noaa-enterprise-rainrate-pds BLEND/RainRate-Blend-INST/2026/: 10 folders ['BLEND/RainRate-Blend-INST/2026/07/', 'BLEND/RainRate-Blend-INST/2026/08/', 'BLEND/RainRate-Blend-INST/2026/09/', 'BLEND/RainRate-Blend-INST/2026/10/'] | 0 files []
+noaa-enterprise-rainrate-pds BLEND/RainRate-Blend-INST/2026/10/: 15 folders ['BLEND/RainRate-Blend-INST/2026/10/12/', 'BLEND/RainRate-Blend-INST/2026/10/13/', 'BLEND/RainRate-Blend-INST/2026/10/14/', 'BLEND/RainRate-Blend-INST/2026/10/15/'] | 0 files []
+noaa-enterprise-rainrate-pds BLEND/RainRate-Blend-INST/2026/10/15/: 10 folders ['BLEND/RainRate-Blend-INST/2026/10/15/06/', 'BLEND/RainRate-Blend-INST/2026/10/15/07/', 'BLEND/RainRate-Blend-INST/2026/10/15/08/', 'BLEND/RainRate-Blend-INST/2026/10/15/09/'] | 0 files []
+noaa-enterprise-rainrate-pds BLEND/RainRate-Blend-INST/2026/10/15/09/: 0 folders [] | 17 files [('BLEND/RainRate-Blend-INST/2026/10/15/09/RRQPE-INST-GLB-5_v1r1_blend_s202610150930000_e202610150939599_c202610150951286.nc', '2026-10-15T09:52:02.000Z', '4891386'), ('BLEND/RainRate-Blend-INST/2026/10/15/09/RRQPE-INST-GLB-5_v1r1_blend_s202610150940000_e202610150949599_c202610150954534.nc', '2026-10-15T09:55:22.000Z', '4886736'), ('BLEND/RainRate-Blend-INST/2026/10/15/09/RRQPE-INST-GLB-5_v1r1_blend_s202610150950000_e202610150959599_c202610151005084.nc', '2026-10-15T10:05:45.000Z', '4898148')]
+noaa-ghe-pds rain_rate/: 7 folders ['rain_rate/2022/', 'rain_rate/2023/', 'rain_rate/2024/', 'rain_rate/2025/'] | 0 files []
+noaa-ghe-pds rain_rate/2025/: 3 folders ['rain_rate/2025/01/', 'rain_rate/2025/02/', 'rain_rate/2025/03/'] | 0 files []
+noaa-ghe-pds rain_rate/2025/03/: 5 folders ['rain_rate/2025/03/02/', 'rain_rate/2025/03/03/', 'rain_rate/2025/03/04/', 'rain_rate/2025/03/05/'] | 0 files []
+noaa-ghe-pds rain_rate/2025/03/05/: 0 folders [] | 77 files [('rain_rate/2025/03/05/NPR.GEO.GHE.v1.S202503051830.nc.gz', '2025-03-05T19:26:30.000Z', '3572919'), ('rain_rate/2025/03/05/NPR.GEO.GHE.v1.S202503051845.nc.gz', '2025-03-05T19:26:30.000Z', '3554573'), ('rain_rate/2025/03/05/NPR.GEO.GHE.v1.S202503051900.nc.gz', '2025-03-05T19:21:37.000Z', '2352629')]
