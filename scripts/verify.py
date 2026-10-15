@@ -21,6 +21,9 @@ WINDOW_DAYS = 30          # scores and weights use the last 30 verified days
 MIN_DAYS = 10             # weights switch on once every model has this many verified days at leads 1-2
 RAIN = 2.5                # IMD rainy-day threshold (mm)
 HEAVY = 64.5              # IMD heavy rain (mm)
+SAT_SHARE = 0.3           # share of a model's error taken from the satellite day totals (all squares), next to the gauges
+SAT_MIN_ETS = 0.25        # ...only while the satellite totals themselves match the gauges at least this well
+SAT_MIN_DAYS = 5          # ...and once a model has this many days checked against the satellite
 SATDAILY = 'https://raw.githubusercontent.com/sridhar13294-rgb/tn-rainfall-map/sat-radar/data/satradar/satdaily/{}.json'
 
 
@@ -240,17 +243,17 @@ def verify(pts, now):
                 verified.setdefault(n, {}).setdefault(lead, set()).add(day)
                 if lead == 1:
                     row['fc'][n] = round(sum(arr[i] / 10 for i in ob_cell) / len(ob_cell), 1)
-                    if len(sat_all) >= 50:                                # every square, with or without gauges
-                        sv = vs_sat.setdefault(n, _empty())
-                        for i, v in sat_all.items():
-                            _add(sv, arr[i] / 10, v)
-                        vs_days.setdefault(n, set()).add(day)
+                if len(sat_all) >= 50:                                    # every square, with or without gauges
+                    sv = vs_sat.setdefault(n, {}).setdefault(lead, _empty())
+                    for i, v in sat_all.items():
+                        _add(sv, arr[i] / 10, v)
+                    vs_days.setdefault(n, {}).setdefault(lead, set()).add(day)
         daily_series.append(row)
 
     scores = {n: {str(l): _summary(s, len(verified[n][l])) for l, s in by.items()} for n, by in stats.items()}
     # weights for the model average: inverse mean absolute error at leads 1-2, once every model has MIN_DAYS days
     models = [n for n in scores if n not in ('Average', 'Weighted average')]
-    weights, note = None, None
+    weights, note, use_sat, detail = None, None, False, {}
     if models:
         mae, ok = {}, True
         for n in models:
@@ -260,6 +263,21 @@ def verify(pts, now):
             if ndays < MIN_DAYS or not cnt:
                 ok = False
             mae[n] = ae / cnt if cnt else None
+        # the satellite day totals (gauge-corrected) also score each model over every square, including squares with
+        # no gauge (hills, coast); they count for SAT_SHARE of the error while the satellite itself matches the gauges well
+        sat_sum = _summary(sat_stats, sat_days)
+        use_sat = bool(sat_sum and sat_days >= 3 and (sat_sum['ets'] or 0) >= SAT_MIN_ETS)
+        detail = {}
+        for n in models:
+            ae = sum(vs_sat.get(n, {}).get(l, _empty())['ae'] for l in (1, 2)); cnt = sum(vs_sat.get(n, {}).get(l, _empty())['n'] for l in (1, 2))
+            nd = len(set().union(*[vs_days.get(n, {}).get(l, set()) for l in (1, 2)])) if vs_days.get(n) else 0
+            ms = ae / cnt if cnt else None
+            comb = mae[n]
+            if use_sat and ms is not None and nd >= SAT_MIN_DAYS and mae[n] is not None:
+                comb = (1 - SAT_SHARE) * mae[n] + SAT_SHARE * ms
+            detail[n] = dict(gauge_mae=round(mae[n], 2) if mae[n] is not None else None, sat_mae=round(ms, 2) if ms is not None else None,
+                             sat_days=nd, combined_mae=round(comb, 2) if comb is not None else None)
+            mae[n] = comb
         if ok:
             inv = {n: 1 / max(mae[n], 0.1) for n in models}
             eq = 1 / len(models)
@@ -269,8 +287,9 @@ def verify(pts, now):
         else:
             have = min(len(set().union(*[verified[n].get(l, set()) for l in (1, 2)])) for n in models)
             note = f'{have} of {MIN_DAYS} verified days so far'
-    satellite = dict(vs_gauges=_summary(sat_stats, sat_days),
-                     models_vs_satellite={n: _summary(v, len(vs_days[n])) for n, v in vs_sat.items()}) if (sat_days or vs_sat) else None
+    satellite = dict(vs_gauges=_summary(sat_stats, sat_days), used_for_weights=bool(models) and use_sat, share=SAT_SHARE,
+                     weight_detail=detail if models else None,
+                     models_vs_satellite={n: {str(l): _summary(v, len(vs_days[n][l])) for l, v in by.items()} for n, by in vs_sat.items()}) if (sat_days or vs_sat) else None
     out = dict(updated=now.strftime('%Y-%m-%dT%H:%MZ'), gauge_cells=len(cells), window_days=WINDOW_DAYS, satellite=satellite,
                min_days=MIN_DAYS, scores=scores, daily=daily_series, weights=weights, note=note,
                first_run=first_run.strftime('%Y-%m-%dT%H:%MZ') if first_run else None)
