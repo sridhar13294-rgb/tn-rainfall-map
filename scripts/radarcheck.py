@@ -196,6 +196,136 @@ def fit_quantiles(min_pairs=6):
     med = sum(p[0] * p[1] for p in lut) / max(sum(p[0] * p[0] for p in lut), 1e-6)
     return dict(cut=round(cut, 2), lut=lut, scale=round(med, 3), pairs=len(S), csi=round(h / max(1, h + mi + fa), 3),
                 area_bias=round(float((corr >= 1).sum() / max(1, (r >= 1).sum())), 2), radar_p90=round(float(np.quantile(rs, .9)), 1))
+# ---------- direction check: which way did storms really move on the radar, and which method got it right?
+KMX_ = (LON1 - LON0) / NX * 111.32 * math.cos(math.radians(11)); KMY_ = (LAT1 - LAT0) / NY * 110.6
+def _blur(a, r=2):
+    from numpy.lib.stride_tricks import sliding_window_view as sw
+    p = np.pad(a, r, mode='edge'); return sw(p, (2 * r + 1, 2 * r + 1)).mean(axis=(-1, -2))
+def block_motion(A, B, minutes, BS=30, ST=15, R=12, need=40):
+    """Block matching (same idea as the page). Returns list of (x, y, u_kmh, v_kmh)."""
+    A, B = _blur(A), _blur(B); out = []
+    for y0 in range(0, NY - BS, ST):
+        for x0 in range(0, NX - BS, ST):
+            a = A[y0:y0 + BS:2, x0:x0 + BS:2]
+            if a.sum() < need: continue
+            best = None
+            for dv in range(-R, R + 1):
+                for du in range(-R, R + 1):
+                    ys, xs = y0 + dv, x0 + du
+                    if ys < 0 or xs < 0 or ys + BS > NY or xs + BS > NX: continue
+                    sc = np.abs(a - B[ys:ys + BS:2, xs:xs + BS:2]).sum() + 0.02 * (du * du + dv * dv)
+                    if best is None or sc < best[0]: best = (sc, du, dv)
+            if best: out.append((x0 + BS / 2, y0 + BS / 2, best[1] * KMX_ * 60 / minutes, best[2] * KMY_ * 60 / minutes))
+    return out
+def radar_cells(F, thr=1, minpx=8):
+    lab = -np.ones(F.shape, int); cells = []; m = F >= thr
+    for j0, i0 in zip(*np.nonzero(m)):
+        if lab[j0, i0] >= 0: continue
+        st = [(j0, i0)]; lab[j0, i0] = len(cells); pts = []
+        while st:
+            j, i = st.pop(); pts.append((j, i))
+            for dj, di in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                jj, ii = j + dj, i + di
+                if 0 <= jj < F.shape[0] and 0 <= ii < F.shape[1] and m[jj, ii] and lab[jj, ii] < 0:
+                    lab[jj, ii] = len(cells); st.append((jj, ii))
+        cells.append(pts)
+    out = []
+    for pts in cells:
+        if len(pts) >= minpx:
+            js, is_ = np.array(pts).T; w = F[js, is_]; out.append((float((is_ * w).sum() / w.sum()), float((js * w).sum() / w.sum()), len(pts)))
+    return out
+def track_cells(R1, R2, minutes):
+    c1, c2 = radar_cells(R1), radar_cells(R2); out = []
+    for x, y, n in c1:
+        best = None
+        for X2, Y2, n2 in c2:
+            d = math.hypot((X2 - x) * KMX_, (Y2 - y) * KMY_)
+            if d <= 50 and 0.33 <= n2 / n <= 3 and (best is None or d < best[0]): best = (d, X2, Y2)
+        if best: out.append((x, y, (best[1] - x) * KMX_ * 60 / minutes, (best[2] - y) * KMY_ * 60 / minutes, n))
+    return out
+def ir_frame(t):
+    u = (f'{W}/ows?service=WMS&version=1.3.0&request=GetMap&layers=msg_iodc:ir108&styles=raster&crs=EPSG:4326&bbox={LAT0},{LON0},{LAT1},{LON1}'
+         f'&width={NX}&height={NY}&format=image/png&time={t:%Y-%m-%dT%H:%M:00Z}')
+    g = np.asarray(Image.open(io.BytesIO(get(u))).convert('L'), float)[::-1]
+    return 30 - g * 100 / 255                         # deg C (approximate)
+def steer_at(S, lo, la, t):
+    ts = [dt.datetime.fromisoformat(x.replace('Z', '+00:00')) for x in S['times']]; k = min(range(len(ts)), key=lambda i: abs((ts[i] - t).total_seconds()))
+    i = int(round((lo - S['lon0']) / S['step'])); j = int(round((la - S['lat0']) / S['step']))
+    if not (0 <= i < S['nx'] and 0 <= j < S['ny']): return None
+    return S['u'][k][j * S['nx'] + i] * 3.6, S['v'][k][j * S['nx'] + i] * 3.6
+def nearest(vecs, x, y, maxd=25):
+    best = None
+    for X, Y, u, v in vecs:
+        d = math.hypot(X - x, Y - y)
+        if d <= maxd and (best is None or d < best[0]): best = (d, u, v)
+    return best[1:] if best else None
+def motion_check(now, L, Li):
+    """Score each direction method against radar cell tracks for radar scans 40-70 min apart; update motioncal.json."""
+    import glob
+    H = f'{OUT}/radarhist'; os.makedirs(H, exist_ok=True); done = set()
+    logf = f'{OUT}/motionlog.jsonl'
+    if os.path.exists(logf):
+        for line in open(logf):
+            try: done.add(json.loads(line)['key'])
+            except Exception: pass
+    try: S = json.loads(get('https://raw.githubusercontent.com/sridhar13294-rgb/tn-rainfall-map/main/site/steer.json'))
+    except Exception: S = None
+    files = sorted(glob.glob(f'{H}/*.npz'))
+    for f1 in files:
+        n1, s1 = os.path.basename(f1)[:-4].split('_'); t1 = dt.datetime.strptime(s1, '%Y%m%d%H%M%S').replace(tzinfo=UTC)
+        for f2 in files:
+            n2, s2 = os.path.basename(f2)[:-4].split('_'); t2 = dt.datetime.strptime(s2, '%Y%m%d%H%M%S').replace(tzinfo=UTC)
+            mins = (t2 - t1).total_seconds() / 60; key = f'{n1}_{s1}_{s2}'
+            if n1 != n2 or not (40 <= mins <= 70) or key in done: continue
+            ts1, ts2 = sat_time_for(t1), sat_time_for(t2)
+            if not (L and ts2 <= L and Li and ts2 <= Li): continue
+            try:
+                r1 = np.load(f1)['r'].astype(float); R1 = np.nan_to_num(r1); R2 = np.nan_to_num(np.load(f2)['r'].astype(float)); mask = ~np.isnan(r1)
+                tr = track_cells(R1, R2, mins)
+                if len(tr) < 3:
+                    done.add(key); open(logf, 'a').write(json.dumps(dict(key=key, radar=n1, cells=len(tr), note='too few radar cells')) + '\n'); continue
+                sm = (ts2 - ts1).total_seconds() / 60 or 15
+                rain = block_motion(np.where(mask, sat_frame(ts1), 0), np.where(mask, sat_frame(ts2), 0), sm)
+                C1 = np.maximum(0, -40 - ir_frame(ts1)) / 3; C2 = np.maximum(0, -40 - ir_frame(ts2)) / 3
+                core = block_motion(np.where(mask, C1, 0), np.where(mask, C2, 0), sm, need=10)
+                err = {'core': [], 'rain': [], 'steer': [], 'still': []}
+                for x, y, u, v, n in tr:
+                    for name, vecs in (('core', core), ('rain', rain)):
+                        q = nearest(vecs, x, y)
+                        if q: err[name].append(math.hypot(q[0] - u, q[1] - v))
+                    if S:
+                        lo, la = LON0 + (x + .5) * (LON1 - LON0) / NX, LAT0 + (y + .5) * (LAT1 - LAT0) / NY; q = steer_at(S, lo, la, t1)
+                        if q: err['steer'].append(math.hypot(q[0] - u, q[1] - v))
+                    err['still'].append(math.hypot(u, v))
+                rec = dict(key=key, radar=n1, t1=t1.isoformat(), minutes=round(mins), cells=len(tr),
+                           radar_kmh=round(float(np.median([math.hypot(u, v) for _, _, u, v, _ in tr])), 1),
+                           mean_error_kmh={k: (round(float(np.mean(v)), 1) if v else None) for k, v in err.items()}, n={k: len(v) for k, v in err.items()})
+                open(logf, 'a').write(json.dumps(rec) + '\n'); done.add(key); print('motion check', json.dumps(rec), flush=True)
+            except Exception as e:
+                print('motion check ERROR', key, e, flush=True)
+    for f in files:                                                  # keep 3 hours of radar maps
+        t = dt.datetime.strptime(os.path.basename(f)[:-4].split('_')[1], '%Y%m%d%H%M%S').replace(tzinfo=UTC)
+        if (now - t).total_seconds() > 3 * 3600: os.remove(f)
+    # weights from the last 7 days: inverse squared mean error, only methods with enough cells
+    recs = []
+    if os.path.exists(logf):
+        for line in open(logf):
+            try:
+                r = json.loads(line)
+                if 'mean_error_kmh' in r and (now - dt.datetime.fromisoformat(r['t1'])).days <= 7: recs.append(r)
+            except Exception: pass
+    if len(recs) >= 4:
+        me = {}
+        for k in ('core', 'rain', 'steer'):
+            tot = sum(r['mean_error_kmh'][k] * r['n'][k] for r in recs if r['mean_error_kmh'].get(k) is not None)
+            n = sum(r['n'][k] for r in recs if r['mean_error_kmh'].get(k) is not None)
+            if n >= 10: me[k] = tot / n
+        if me:
+            inv = {k: 1 / max(v, 2) ** 2 for k, v in me.items()}; sw = sum(inv.values())
+            still = sum(r['mean_error_kmh']['still'] * r['n']['still'] for r in recs) / max(1, sum(r['n']['still'] for r in recs))
+            json.dump(dict(updated=now.isoformat(), checks=len(recs), weights={k: round(v / sw, 3) for k, v in inv.items()},
+                           mean_error_kmh={k: round(v, 1) for k, v in me.items()}, stationary_error_kmh=round(still, 1)),
+                      open(f'{OUT}/motioncal.json', 'w'), indent=1)
 def radar_ok(buf, tt, now):
     """A radar counts as working only if its picture is fresh (scan within 2 hours; IMD pictures often lag 1 hour) and decodes."""
     if tt is None or len(buf) < 20000:
@@ -224,6 +354,11 @@ def cron():
             fn = f'{P}/{R["name"].lower()}_{tt:%Y%m%d%H%M%S}.gif'
             if not os.path.exists(fn):
                 open(fn, 'wb').write(buf)
+            hf = f'{OUT}/radarhist/{R["name"].lower()}_{tt:%Y%m%d%H%M%S}.npz'
+            if not os.path.exists(hf):
+                os.makedirs(f'{OUT}/radarhist', exist_ok=True)
+                try: np.savez_compressed(hf, r=radar_grid(R, buf).astype(np.float16))
+                except Exception as e: print('radar map save ERROR', e)
     try:
         L = sat_latest()
     except Exception as e:
@@ -243,6 +378,12 @@ def cron():
         elif (now - tt).total_seconds() > 6 * 3600:
             os.remove(fn)
     status['compared_this_run'] = done
+    try:
+        cap = get(W + '/msg_iodc/ir108/ows?service=WMS&version=1.3.0&request=GetCapabilities').decode()
+        Li = dt.datetime.fromisoformat(re.search(r'<Dimension[^>]*name="time"[^>]*>([^<]*)</Dimension>', cap).group(1).split('/')[1].replace('.000Z', '+00:00'))
+        motion_check(now, L, Li)
+    except Exception as e:
+        status['motion_check_error'] = str(e)
     for f in glob.glob(f'{OUT}/pairs/*.npz'):            # keep two weeks of pairs
         try:
             t = dt.datetime.strptime(os.path.basename(f)[:-4].split('_')[1], '%Y%m%d%H%M').replace(tzinfo=UTC)
