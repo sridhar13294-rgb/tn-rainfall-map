@@ -18,8 +18,8 @@ jobs:
         with: {python-version: '3.11'}
       - run: pip install numpy pillow
       - run: |
-          cd scripts && python -c "
-          import sys, json, datetime as dt; sys.argv=['x']; import os; os.chdir('..'); import satday as S
+          python -c "
+          import sys, json, datetime as dt; sys.path.insert(0, 'scripts'); import satday as S
           S.grid_backfill(['2026-10-10','2026-10-11','2026-10-12','2026-10-13','2026-10-14','2026-10-15'])
           cal=json.load(open('data/satradar/satcal.json')); o=S.compare(cal, dt.datetime.now(dt.timezone.utc)); print(o['gauge_fit'])"
       - if: always()
