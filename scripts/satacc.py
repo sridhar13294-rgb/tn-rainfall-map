@@ -59,13 +59,22 @@ def blend(key, info):
     v = ds.variables[var]
     lat = next((ds.variables[k][:] for k in ('lat', 'latitude', 'Latitude') if k in ds.variables), None)
     lon = next((ds.variables[k][:] for k in ('lon', 'longitude', 'Longitude') if k in ds.variables), None)
+    if lat is None or lon is None:            # regular global grid described only by attributes
+        A = {k: getattr(ds, k) for k in ds.ncattrs()}
+        info['geo_attrs'] = {k: str(v) for k, v in A.items() if 'geospatial' in k or 'resolution' in k}
+        ny, nx = v.shape
+        la_max = float(A.get('geospatial_lat_max', 65)); la_min = float(A.get('geospatial_lat_min', -65))
+        lo_min = float(A.get('geospatial_lon_min', -180)); lo_max = float(A.get('geospatial_lon_max', 180))
+        dla = (la_max - la_min) / (ny - 1); dlo = (lo_max - lo_min) / nx
+        lat = la_max - dla * np.arange(ny); lon = lo_min + dlo * (np.arange(nx) + .5)
     if 'sel' not in _idx:
         la = np.asarray(lat); lo = np.asarray(lon) % 360
         tl = LAT0 + STEP * (np.arange(NY) + .5); tn = LON0 + STEP * (np.arange(NX) + .5)
         _idx['sel'] = (np.abs(la[:, None] - tl[None]).argmin(0), np.abs(lo[:, None] - tn[None]).argmin(0))
         info['var'] = var; info['lat_range'] = [float(la.min()), float(la.max())]; info['lon_range'] = [float(lo.min()), float(lo.max())]
     j, i = _idx['sel']
-    a = np.asarray(v[:][j][:, i], float)
+    a = np.asarray(v[j.min():j.max() + 1, i.min():i.max() + 1], float)[np.ix_(j - j.min(), i - i.min())] if j[0] <= j[-1] else \
+        np.asarray(v[j.max():j.min() + 1, i.min():i.max() + 1], float)[np.ix_(j - j.max(), i - i.min())]
     a[~np.isfinite(a)] = np.nan
     ds.close()
     return a
@@ -96,7 +105,7 @@ def main():
             miss += 1; info.setdefault('errors', []).append(f'{t}: {e}'[:200])
     out['blend'] = dict(frames=n, missing=miss, info={k: (v if k != 'vars' else {a: str(b) for a, b in v.items()}) for k, v in info.items()},
                         acc=np.round(bacc, 1).tolist())
-    print('blend frames', n, 'missing', miss, 'mean', bacc.mean(), 'max', bacc.max(), json.dumps(info, default=str)[:1500], flush=True)
+    print('errors', info.get('errors', [])[:5]); print('blend frames', n, 'missing', miss, 'mean', bacc.mean(), 'max', bacc.max(), json.dumps(info, default=str)[:1500], flush=True)
     json.dump(out, open(f'{OUT}/acc_{day}.json', 'w'), separators=(',', ':'))
 if __name__ == '__main__':
     main()
