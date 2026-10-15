@@ -1,0 +1,29 @@
+name: One-off - satellite day maps for 10-15 Oct (sat-radar branch)
+on:
+  push:
+    branches: [sat-radar]
+    paths: ['.github/workflows/satgrid.yml']
+permissions:
+  contents: write
+concurrency:
+  group: satcheck
+  cancel-in-progress: false
+jobs:
+  grids:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install numpy pillow
+      - run: |
+          cd scripts && python -c "
+          import sys, json, datetime as dt; sys.argv=['x']; import os; os.chdir('..'); import satday as S
+          S.grid_backfill(['2026-10-10','2026-10-11','2026-10-12','2026-10-13','2026-10-14','2026-10-15'])
+          cal=json.load(open('data/satradar/satcal.json')); o=S.compare(cal, dt.datetime.now(dt.timezone.utc)); print(o['gauge_fit'])"
+      - if: always()
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add data/satradar && git commit -m "Satellite day maps for 10-15 Oct" || exit 0
+          for i in 1 2 3; do git pull --rebase origin sat-radar && git push origin HEAD:sat-radar && break; sleep 5; done

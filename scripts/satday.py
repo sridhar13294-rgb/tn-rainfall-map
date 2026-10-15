@@ -307,3 +307,24 @@ if __name__ == '__main__':
     cal = json.load(open(f'{OUT}/satcal.json')) if os.path.exists(f'{OUT}/satcal.json') else {}
     backfill_from_acc()
     print(json.dumps(compare(cal, now), indent=1)[:4000] if 'compare' in sys.argv else '')
+
+
+def grid_backfill(days):
+    """Day maps (0.05 degree, per cut-off) for past days that only have gauge readings: read all 96 pictures again."""
+    for d in days:
+        day = dt.date.fromisoformat(d); npz = f'{SD}/{day}.npz'
+        if os.path.exists(npz):
+            continue
+        acc = np.zeros((len(CUTS), NY, NX)); n = 0
+        def safe(t):
+            try: return h63(t)
+            except Exception: return None
+        with cf.ThreadPoolExecutor(6) as ex:
+            for r in ex.map(safe, window(day)):
+                if r is None: continue
+                n += 1
+                for k, c in enumerate(CUTS):
+                    acc[k] += np.where(r >= c, r, 0) * 0.25
+        print('grid', day, n, 'pictures', flush=True)
+        if n >= 72:
+            np.savez_compressed(npz, acc=acc.astype(np.float32), cuts=np.array(CUTS, float), frames=n)
