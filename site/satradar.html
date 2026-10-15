@@ -31,6 +31,7 @@ input[type=range]{width:100%;accent-color:var(--acc)}
 #st{font-size:13.5px;margin:2px 0 8px;min-height:20px}
 #tip{font-size:14px;margin-top:8px;min-height:22px}
 .err{color:#b3261e}
+.unsure{color:#a35a00;font-size:12.5px}
 .dl{display:flex;align-items:center;flex-wrap:wrap;gap:6px 8px;margin-top:10px;font-size:13.5px;color:var(--mut)}.dl button{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:8px;padding:5px 12px;font:inherit;font-weight:600;font-size:13px;cursor:pointer}.dl small{flex-basis:100%;font-size:12px}
 [hidden]{display:none!important}
 .chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0 6px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
@@ -59,7 +60,7 @@ select{font:inherit;font-size:14px;color:var(--ink);background:var(--paper);bord
 <h2>How this works</h2>
 <p class="m" style="margin:0 0 8px">Every 15 minutes EUMETSAT's Meteosat satellite over the Indian Ocean scans the region, and EUMETSAT's H SAF service turns the infrared and microwave readings into a rain rate (product H63). This page reads those pictures directly, so it refreshes on its own every 15 minutes while open. Each new picture arrives about 45–55 minutes after the scan.</p>
 <p class="m" style="margin:0 0 8px">Satellite rain over Tamil Nadu is usually too high, because the cold cloud shields of the monsoon look like rain from space. Compared with the 565 TN SMART gauges on 10–15 Oct 2026, it gave about 3 to 5 times the measured rain, so the page corrects it. The correction is checked every 30 minutes against IMD's Chennai and Karaikal radars (when they are working) and against the TN SMART gauges; the radar pictures themselves are not shown here.</p>
-<p class="m" style="margin:0">Forecast frames (purple label) move the latest rain along its recent track: the page compares pictures 30 minutes apart, works out how each part of the rain is moving, and carries each rain cell forward in its own direction and speed (the arrows). Rain that forms or dies in the meantime is not predicted, so trust the first hour more than the second. South India looks 4 hours ahead across the peninsula and the Bay of Bengal. Long range covers both seas and looks 6 hours ahead using pictures 30 minutes apart; after 3 hours its forecast is shown faded, as a rough guide to direction and timing only. Short range uses the same satellite pictures zoomed in, so it is good for timing but each square is still about 3–4 km across. "Now" is itself a forecast, because the newest picture is already 45–55 minutes old.</p>
+<p class="m" style="margin:0">Forecast frames (purple label) move the latest rain along its recent track: the page compares pictures 30 minutes apart, works out how each part of the rain is moving, and carries each rain cell forward in its own direction and speed (the arrows). That track is blended with the winds 1.5–5 km up from the latest GFS model run, which steer the clouds. When the satellite track flips between pictures or disagrees with those winds (common on afternoons with weak winds, when storms grow and collapse faster than they move), the cell follows the winds and its arrow is dashed orange and marked "direction uncertain". Rain that forms or dies in the meantime is not predicted, so trust the first hour more than the second. South India looks 4 hours ahead across the peninsula and the Bay of Bengal. Long range covers both seas and looks 6 hours ahead using pictures 30 minutes apart; after 3 hours its forecast is shown faded, as a rough guide to direction and timing only. Short range uses the same satellite pictures zoomed in, so it is good for timing but each square is still about 3–4 km across. "Now" is itself a forecast, because the newest picture is already 45–55 minutes old.</p>
 </div>
 </div>
 <script src="satgeo.js"></script><script src="export.js"></script>
@@ -114,6 +115,14 @@ async function frame(t){
  const im=await loadImg(src);cx.clearRect(0,0,NX,NY);cx.drawImage(im,0,0);
  const v=decode(cx.getImageData(0,0,NX,NY).data);for(let i=0;i<v.length;i++)v[i]=v[i]>=CUT?v[i]*SCALE:0;return v}
 let CALINFO=null;
+let STEER=null;
+async function loadSteer(){if(STEER)return;try{STEER=await (await fetch('steer.json',{cache:'no-store'})).json()}catch(e){STEER=null}}
+function steerAt(lo,la,t){const S=STEER;if(!S||!S.times||!S.times.length)return null;const ts=S.times.map(x=>Date.parse(x));let i=0;while(i<ts.length-2&&ts[i+1]<t)i++;
+ const w=ts.length>1?Math.max(0,Math.min(1,(t-ts[i])/(ts[i+1]-ts[i]))):0,gx=(lo-S.lon0)/S.step,gy=(la-S.lat0)/S.step;if(gx<0||gy<0||gx>S.nx-1||gy>S.ny-1)return null;
+ const x0=Math.min(Math.floor(gx),S.nx-2),y0=Math.min(Math.floor(gy),S.ny-2),fx=gx-x0,fy=gy-y0,at=(A,k)=>{const a=A[k],q=y0*S.nx+x0;return (a[q]*(1-fx)+a[q+1]*fx)*(1-fy)+(a[q+S.nx]*(1-fx)+a[q+S.nx+1]*fx)*fy};
+ const k2=Math.min(i+1,ts.length-1);return [at(S.u,i)*(1-w)+at(S.u,k2)*w,at(S.v,i)*(1-w)+at(S.v,k2)*w]}            // m/s, toward east and north
+const toPx=(w)=>[w[0]*MOT*60/1000/KMX,w[1]*MOT*60/1000/KMY];                                                           // m/s -> grid steps per 15 min
+const angDiff=(a,b)=>{let d=Math.abs(Math.atan2(a[1],a[0])-Math.atan2(b[1],b[0]))*180/Math.PI;return d>180?360-d:d};
 async function loadCal(){try{const j=await (await fetch('satcal.json',{cache:'no-store'})).json();if(j&&j.scale>0){CUT=+j.cut_mm_h||0;SCALE=+j.scale;CALINFO=j}}catch(e){}}
 async function latest(){
  if(window.SATSNAP)return new Date(window.SATSNAP.latest);
@@ -173,7 +182,7 @@ function describe(cells,t0){const G=window.SATGEO,horizon=P.fc*P.fcStep;
  const line=(c,extra)=>{const ll=toLL(c.x,c.y),r=Math.sqrt(c.area/Math.PI),moving=c.kmh>=4;
   const over=G.ct.filter(t=>kmBetween(ll,[t[1],t[2]])<=r+8).map(t=>t[0]);
   return `<li><b>${kind(c)}</b> rain${2*r>80?' area':''} ${over.length&&MODE!=='long'&&MODE!=='south'?'over <b>'+over.join(', ')+'</b>':(q=>(q.startsWith('the ')||q==='Sri Lanka'||q.endsWith(' district')?'over ':/^\d+ km/.test(q)?'':'near ')+q)(place(ll))} (up to ${c.max.toFixed(0)} mm/h, about ${Math.round(2*r)} km across), `+
-   (moving?`moving <b>${dirName(c.u,c.v)}</b> at about <b>${Math.round(c.kmh)} km/h</b>.`:'nearly stationary.')+(extra||'')+'</li>'};
+   (moving?`moving <b>${dirName(c.u,c.v)}</b> at about <b>${Math.round(c.kmh)} km/h</b>`+(c.unsure?' <span class="unsure">(direction uncertain: the satellite track and the winds aloft disagree, so this follows the winds)</span>':'')+'.':'nearly stationary'+(c.unsure?' or drifting slowly (winds aloft are very weak)':'')+'.')+(extra||'')+'</li>'};
  let out=[];
  if(MODE==='short'){const t=G.ct.find(q=>q[0]===CITY);const P0=[t[1],t[2]];
   const hits=cells.map(c=>({c,m:eta(c,P0,Math.sqrt(c.area/Math.PI),horizon)})).filter(h=>h.m!==null).sort((a,b)=>a.m-b.m).slice(0,5);
@@ -207,8 +216,8 @@ function draw(){const G=window.SATGEO||{tn:[],land:[],ct:[]},f=FR[cur];
    const L0=Math.hypot(x2-x1,y2-y1);if(L0<26){x2=x1+(x2-x1)/(L0||1)*26;y2=y1+(y2-y1)/(L0||1)*26}
    if(x1<0||x1>W||y1<0||y1>H)return;const ang=Math.atan2(y2-y1,x2-x1);
    c.lineCap='round';c.strokeStyle='rgba(255,255,255,.9)';c.lineWidth=5;c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();
-   c.strokeStyle='#0f2a33';c.lineWidth=2.2;c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();
-   c.fillStyle='#0f2a33';c.beginPath();c.moveTo(x2+3*Math.cos(ang),y2+3*Math.sin(ang));c.lineTo(x2-9*Math.cos(ang-0.45),y2-9*Math.sin(ang-0.45));c.lineTo(x2-9*Math.cos(ang+0.45),y2-9*Math.sin(ang+0.45));c.closePath();c.fill();
+   c.strokeStyle=cl.unsure?'#a35a00':'#0f2a33';c.lineWidth=2.2;if(cl.unsure)c.setLineDash([5,4]);c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();c.setLineDash([]);
+   c.fillStyle=cl.unsure?'#a35a00':'#0f2a33';c.beginPath();c.moveTo(x2+3*Math.cos(ang),y2+3*Math.sin(ang));c.lineTo(x2-9*Math.cos(ang-0.45),y2-9*Math.sin(ang-0.45));c.lineTo(x2-9*Math.cos(ang+0.45),y2-9*Math.sin(ang+0.45));c.closePath();c.fill();
    c.font='700 11px "Anek Latin",system-ui';c.textAlign='left';c.lineWidth=3;c.strokeStyle='rgba(248,250,249,.95)';const lb=Math.round(cl.kmh)+' km/h';c.strokeText(lb,x2+6,y2+4);c.fillText(lb,x2+6,y2+4)})}
  if(MODE==='long')(G.xc||[]).forEach(t=>label(t,11));else if(MODE==='south')(G.xc||[]).filter(t=>!['Mumbai','Kolkata','Male','Hyderabad','Bhubaneswar'].includes(t[0])).concat(G.ct.filter(t=>['Coimbatore','Tiruchirappalli','Thoothukudi','Puducherry'].includes(t[0]))).forEach(t=>label(t,11));else G.ct.forEach(t=>label(t,MODE==='short'&&t[0]===CITY?14:12));
  const s=$('stamp');if(f){const ahead=Math.round((f.t-lastT)/60e3);s.className='stamp'+(f.fc?' fc':'');
@@ -225,13 +234,28 @@ async function build(){
   const past=times.map((t,i)=>({t,v:vals[i],fc:false})).filter(f=>f.v);
   if(past.length<3)throw new Error('too few pictures');
   const b=past[past.length-1],a=past.slice().reverse().find(f=>b.t-f.t>=P.gap*60e3)||past[0];
-  const M=motion(a.v,b.v,(b.t-a.t)/(MOT*60e3));CELLS=findCells(b.v,M);
+  await loadSteer();
+  const M=motion(a.v,b.v,(b.t-a.t)/(MOT*60e3));
+  const a0=past.slice().reverse().find(f=>a.t-f.t>=P.gap*60e3*0.9);const M0=a0?motion(a0.v,a.v,(a.t-a0.t)/(MOT*60e3)):null;   // the half-hour (or hour) before, for a consistency check
+  CELLS=findCells(b.v,M);
+  CELLS.forEach(cl=>{const ll=toLL(cl.x,cl.y),s1=[cl.u,cl.v],wm=steerAt(ll[0],ll[1],b.t.getTime()),w=wm?toPx(wm):null;
+   let s0=null;if(M0){let su=0,sv=0,n=0;for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++){const xx=Math.round(cl.x)+dx,yy=Math.round(cl.y)+dy;if(xx<0||yy<0||xx>=NX||yy>=NY)continue;su+=M0.fu[yy*NX+xx];sv+=M0.fv[yy*NX+xx];n++}s0=[su/n,sv/n]}
+   const sk=Math.hypot(s1[0]*KMX,s1[1]*KMY)*(60/MOT),wk=w?Math.hypot(wm[0],wm[1])*3.6:null;
+   const agreeW=w&&wk>=5?angDiff(s1,w)<70:true,agree0=s0&&Math.hypot(s0[0],s0[1])>0.05?angDiff(s1,s0)<60:true;
+   cl.track=s1;cl.wind=wm;cl.windKmh=wk;
+   if(w&&wk>=5&&(!agreeW||!agree0)){cl.u=w[0];cl.v=w[1];cl.unsure=true}          // tracking disagrees: follow the winds aloft and say so
+   else if(w&&wk>=5){cl.u=0.6*s1[0]+0.4*w[0];cl.v=0.6*s1[1]+0.4*w[1];cl.unsure=!agree0}
+   else{cl.unsure=!agree0||(w&&wk<5)}
+   cl.kmh=Math.hypot(cl.u*KMX,cl.v*KMY)*(60/MOT)});
+  if(STEER){for(let y=0;y<NY;y+=1)for(let x=0;x<NX;x+=1){const i=y*NX+x,ll=toLL(x,y),wm=steerAt(ll[0],ll[1],b.t.getTime());if(!wm)continue;const w=toPx(wm);
+    if(Math.hypot(wm[0],wm[1])*3.6>=5){M.fu[i]=0.6*M.fu[i]+0.4*w[0];M.fv[i]=0.6*M.fv[i]+0.4*w[1]}}}
   const fc=[];for(let k=1;k<=P.fc;k++)fc.push({t:new Date(b.t.getTime()+k*P.fcStep*60e3),v:advect(b.v,M,k*P.fcStep/MOT),fc:true});
   lastT=b.t;FR=past.concat(fc);
   const now=Date.now();let ni=FR.length-1,bd=1e18;FR.forEach((f,i)=>{const d=Math.abs(f.t-now);if(d<bd){bd=d;ni=i}});FR.forEach((f,i)=>f.now=i===ni&&f.fc);
   $('sl').max=FR.length-1;cur=ni;
   $('t0').textContent=IST(FR[0].t);$('t1').textContent='last picture '+IST(b.t);$('t2').textContent=IST(FR[FR.length-1].t);
-  const spd=Math.hypot(M.mu*KMX,M.mv*KMY)*(60/MOT),dir=dirName(M.mu,M.mv);
+  let gu=M.mu,gv=M.mv;if(CELLS.length){let su=0,sv=0,sw=0;CELLS.slice(0,8).forEach(cl=>{const w=Math.sqrt(cl.area);su+=cl.u*w;sv+=cl.v*w;sw+=w});gu=su/sw;gv=sv/sw}
+  const spd=Math.hypot(gu*KMX,gv*KMY)*(60/MOT),dir=dirName(gu,gv);
   $('st').innerHTML=`Latest satellite picture: <b>${IST(b.t)} IST</b> (${Math.round((now-b.t)/60e3)} min ago). `+(M.n>=3&&spd>3?`Rain is mostly moving <b>${dir}</b> at about ${Math.round(spd)} km/h.`:'Rain is nearly stationary or too little to track.')+' Updates by itself every 15 minutes.';
   $('cl').innerHTML=describe(CELLS,b.t);
   draw()}

@@ -37,10 +37,10 @@ def summary(vecs, minutes):
 def grab():
     buf = rc.get(rc.CHN['url']); return buf, rc.scan_time(buf)
 b1, t1 = grab(); print('radar scan 1', t1, flush=True)
-deadline = time.time() + 50 * 60; b2, t2 = None, None
+deadline = time.time() + 75 * 60; b2, t2 = None, None
 while time.time() < deadline:
     time.sleep(120); b, t = grab()
-    if t and (t - t1).total_seconds() >= 20 * 60:
+    if t and (t - t1).total_seconds() >= 40 * 60:
         b2, t2 = b, t; break
 print('radar scan 2', t2, flush=True)
 res = dict(radar=[t1.isoformat(), t2.isoformat() if t2 else None])
@@ -48,6 +48,35 @@ if b2:
     R1 = np.nan_to_num(rc.radar_grid(rc.CHN, b1)); R2 = np.nan_to_num(rc.radar_grid(rc.CHN, b2))
     mins = (t2 - t1).total_seconds() / 60
     rv = motion(R1, R2, need=8); res['radar_motion'] = summary(rv, mins); print('radar', res['radar_motion'], flush=True)
+    # cell tracking on the radar: match each rain cell to the nearest cell in the later scan (within 40 km, similar size)
+    from scipy import ndimage
+    def cells(F):
+        lab, n = ndimage.label(F >= 1); out = []
+        for k in range(1, n + 1):
+            yy, xx = np.nonzero(lab == k)
+            if len(yy) >= 8: out.append((xx.mean(), yy.mean(), len(yy)))
+        return out
+    c1, c2 = cells(R1), cells(R2); tr = []
+    for x, y, n in c1:
+        best = None
+        for X2, Y2, n2 in c2:
+            d = math.hypot((X2 - x) * KMX, (Y2 - y) * KMY)
+            if d <= 40 and 0.33 <= n2 / n <= 3 and (best is None or d < best[0]): best = (d, X2 - x, Y2 - y, n)
+        if best: tr.append((x, y, best[1], best[2], best[3]))
+    res['radar_cells'] = summary(tr, mins); res['radar_cells_n'] = [len(c1), len(c2), len(tr)]; print('radar cells', res['radar_cells'], flush=True)
+    try:
+        S = json.load(open('site/steer.json')); import bisect
+        ts = [dt.datetime.fromisoformat(x.replace('Z', '+00:00')) for x in S['times']]; k = min(range(len(ts)), key=lambda i: abs((ts[i] - t1).total_seconds()))
+        us, vs = [], []
+        for j in range(S['ny']):
+            for i in range(S['nx']):
+                lo, la = S['lon0'] + i * S['step'], S['lat0'] + j * S['step']
+                if 78.5 <= lo <= 81.5 and 11.5 <= la <= 14.5: us.append(S['u'][k][j * S['nx'] + i]); vs.append(S['v'][k][j * S['nx'] + i])
+        mu, mv = sum(us) / len(us), sum(vs) / len(vs); ang = (math.degrees(math.atan2(mv, mu)) + 360) % 360
+        names = ['east', 'north-east', 'north', 'north-west', 'west', 'south-west', 'south', 'south-east']
+        res['steering_wind'] = dict(time=S['times'][k], toward=names[int((ang + 22.5) // 45) % 8], angle_deg=round(ang), kmh=round(math.hypot(mu, mv) * 3.6, 1))
+    except Exception as e:
+        res['steering_wind'] = str(e)
     s1, s2 = rc.sat_time_for(t1), rc.sat_time_for(t2)
     while time.time() < deadline + 70 * 60:
         if rc.sat_latest() >= s2: break

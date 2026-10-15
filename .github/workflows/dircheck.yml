@@ -8,12 +8,12 @@ permissions:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 150
+    timeout-minutes: 170
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: '3.11'}
-      - run: pip install numpy pillow matplotlib
+      - run: pip install numpy pillow matplotlib scipy
       - run: PYTHONPATH=scripts python scripts/dircheck.py
       - if: always()
         run: |
