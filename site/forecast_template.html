@@ -136,9 +136,9 @@ function paint(){const v=$('var').value,m=$('mod').value,b=SC[v].b,k=K();
  document.querySelectorAll('#days .chip').forEach((c,i)=>c.classList.toggle('on',i==day));
  $('per').style.display=is6()?'':'none';
  if(is6())$('per').innerHTML=PER.map((p,i)=>`<button class="chip${i==per?' on':''}" data-p="${i}">${p}<small>IST · ${(F.coverage6[day*4+i]||[]).length} models</small></button>`).join('');
- const OC=m=='ours'&&v=='precipitation_sum',OP={h:1,m:.72,l:.42};
- F.cells.forEach((c,i)=>{const x=val(c,v,m,k);R[i].setAttribute('fill',x==null?'#b9c0c8':b[cls(x,b)][1]);R[i].setAttribute('fill-opacity',OC&&c.rain_conf?(OP[c.rain_conf[k]]||1):1);R[i].setAttribute('stroke',i==sel?'#000':'none');R[i].setAttribute('stroke-width',i==sel?1.6:0)});
- $('lg').innerHTML=b.map(x=>`<div><i style="background:${x[1]}"></i>${x[2]}</div>`).join('')+(OC?'<div class="m" style="flex-basis:100%">Our forecast: solid squares = high confidence, lighter = medium, faint = low (models disagree, no gauge or satellite check nearby, or far ahead).</div>':m=='ours'?'<div class="m" style="flex-basis:100%">Our forecast covers daily rain only; this view shows the average of models.</div>':'')+(m!='avg'&&m!='ours'&&!cov().includes(m)?'<div class="m">'+m+' does not reach this time (grey).</div>':'');
+ const OC=m=='ours'&&(v=='precipitation_sum'||v=='rain6'),ci=is6()?day:k,OP={h:1,m:.72,l:.42};
+ F.cells.forEach((c,i)=>{const x=val(c,v,m,k);R[i].setAttribute('fill',x==null?'#b9c0c8':b[cls(x,b)][1]);R[i].setAttribute('fill-opacity',OC&&c.rain_conf?(OP[c.rain_conf[ci]]||1):1);R[i].setAttribute('stroke',i==sel?'#000':'none');R[i].setAttribute('stroke-width',i==sel?1.6:0)});
+ $('lg').innerHTML=b.map(x=>`<div><i style="background:${x[1]}"></i>${x[2]}</div>`).join('')+(OC?'<div class="m" style="flex-basis:100%">Our forecast: solid squares = high confidence, lighter = medium, faint = low (models disagree, no gauge or satellite check nearby, or far ahead).</div>':m=='ours'?'<div class="m" style="flex-basis:100%">Our forecast is for rain only; this view shows the average of models.</div>':'')+(m!='avg'&&m!='ours'&&!cov().includes(m)?'<div class="m">'+m+' does not reach this time (grey).</div>':'');
  show()}
 function show(){if(sel<0)return;const c=F.cells[sel],v=$('var').value,u=SC[v].u,[a,b]=dl(F.dates[day]),k=K();
  const when=is6()?`${a} ${b}, ${PER[per]} IST`:`${a} ${b}`;
@@ -147,7 +147,7 @@ function show(){if(sel<0)return;const c=F.cells[sel],v=$('var').value,u=SC[v].u,
  const ticks=is6()?F.dates.map((d,i)=>`<text x="${(i*4+2)*bw}" y="58" font-size="7" text-anchor="middle" fill="var(--mut)">${dl(d)[1].split(' ')[0]}</text>`).join(''):F.dates.map((d,i)=>`<text x="${i*bw+bw/2}" y="58" font-size="7" text-anchor="middle" fill="var(--mut)">${dl(d)[1].split(' ')[0]}</text>`).join('');
  const bars=`<svg viewBox="0 0 320 60" style="margin-top:6px">${ser.map((x,i)=>`<rect x="${i*bw+bw*.12}" y="${48-(x||0)/mx*44}" width="${bw*.76}" height="${Math.max(.5,(x||0)/mx*44)}" rx="1" fill="${i==k?'#f08c00':'var(--acc)'}"><title>${f1(x)} ${u}</title></rect>`).join('')}${ticks}</svg>`;
  const wd=c.wind_dir[day];
- const CN={h:'high',m:'medium',l:'low'},oc=v=='precipitation_sum'&&c.precipitation_sum.ours?`<br>Our forecast: <b>${f1(c.precipitation_sum.ours[k])} mm</b>`+(c.rain_conf&&CN[c.rain_conf[k]]?` · confidence <b>${CN[c.rain_conf[k]]}</b>`:''):'';
+ const CN={h:'high',m:'medium',l:'low'},oc=(v=='precipitation_sum'||v=='rain6')&&c[v].ours?`<br>Our forecast: <b>${f1(c[v].ours[k])} mm</b>`+(c.rain_conf&&CN[c.rain_conf[is6()?day:k]]?` · confidence <b>${CN[c.rain_conf[is6()?day:k]]}</b>`:''):'';
  $('info').innerHTML=`<b>${c.lat.toFixed(2)}°N, ${c.lon.toFixed(2)}°E</b> · ${when}${oc}<br>Average: <b>${f1(val(c,v,'avg',k))} ${u}</b>`+(wd!=null&&!is6()?` · wind from ${Math.round(wd)}°`:'')+`<table>${rows}</table><div class="m">${is6()?'Every 6 hours, all 16 days':'16-day trend'} (average of models)</div>${bars}`}
 sv.addEventListener('click',e=>{const i=e.target.dataset&&e.target.dataset.i;if(i!=null){sel=+i;paint()}});
 $('var').onchange=paint;$('mod').onchange=paint;paint();
