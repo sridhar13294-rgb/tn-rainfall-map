@@ -31,6 +31,7 @@ input[type=range]{width:100%;accent-color:var(--acc)}
 #st{font-size:13.5px;margin:2px 0 8px;min-height:20px}
 #tip{font-size:14px;margin-top:8px;min-height:22px}
 .err{color:#b3261e}
+.dl{display:flex;align-items:center;flex-wrap:wrap;gap:6px 8px;margin-top:10px;font-size:13.5px;color:var(--mut)}.dl button{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:8px;padding:5px 12px;font:inherit;font-weight:600;font-size:13px;cursor:pointer}.dl small{flex-basis:100%;font-size:12px}
 [hidden]{display:none!important}
 .chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0 6px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
 .chip{flex:none;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:10px;padding:6px 11px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;text-align:center;line-height:1.2}
@@ -50,6 +51,7 @@ select{font:inherit;font-size:14px;color:var(--ink);background:var(--paper);bord
 <div id="st">Loading satellite pictures…</div>
 <div class="map"><canvas id="cv" width="480" height="600" aria-label="Rain map of Tamil Nadu"></canvas><div class="stamp" id="stamp"></div></div>
 <div class="ctl"><button class="play" id="pl" aria-label="Play">▶</button><div style="flex:1;min-width:0"><input type="range" id="sl" min="0" max="0" value="0" aria-label="Time"><div class="tl"><span id="t0"></span><span id="t1"></span><span id="t2"></span></div></div></div>
+<div class="dl" id="dlrow"><span>Download</span><button data-d="png">Picture (PNG)</button><button data-d="gif">Animation (GIF)</button><small id="dlmsg"></small></div>
 <div id="tip" class="m">Tap the map to see the rain rate at that spot. Arrows show where each rain cell will be in one hour.</div>
 <div class="card" style="padding-top:12px"><h2 id="clh">Rain cells and where they are heading</h2><div id="cl" class="m">Working it out…</div></div>
 <div class="lg" id="lg"></div>
@@ -60,7 +62,7 @@ select{font:inherit;font-size:14px;color:var(--ink);background:var(--paper);bord
 <p class="m" style="margin:0">Forecast frames (purple label) move the latest rain along its recent track: the page compares pictures 30 minutes apart, works out how each part of the rain is moving, and carries each rain cell forward in its own direction and speed (the arrows). Rain that forms or dies in the meantime is not predicted, so trust the first hour more than the second. South India looks 4 hours ahead across the peninsula and the Bay of Bengal. Long range covers both seas and looks 6 hours ahead using pictures 30 minutes apart; after 3 hours its forecast is shown faded, as a rough guide to direction and timing only. Short range uses the same satellite pictures zoomed in, so it is good for timing but each square is still about 3–4 km across. "Now" is itself a forecast, because the newest picture is already 45–55 minutes old.</p>
 </div>
 </div>
-<script src="satgeo.js"></script>
+<script src="satgeo.js"></script><script src="export.js"></script>
 <script>
 (function(){
 const $=id=>document.getElementById(id);
@@ -234,6 +236,29 @@ async function build(){
   $('cl').innerHTML=describe(CELLS,b.t);
   draw()}
  catch(e){if(my!==BUSY)return;$('st').innerHTML='<span class="err">Could not load the satellite pictures right now. The page will try again in a few minutes.</span>';console.error(e)}}
+
+// downloads: a picture of the current frame, or every frame as an animated GIF
+function frameCanvas(i,w){const keepCur=cur,sc=w/W;cv.width=Math.round(W*sc);cv.height=Math.round(H*sc);c.setTransform(sc,0,0,sc,0,0);cur=i;draw();
+ const f=FR[i],F=t=>Math.round(t*sc),head=F(56),foot=F(46),o=document.createElement('canvas');o.width=cv.width;o.height=cv.height+head+foot;const g=o.getContext('2d');
+ g.fillStyle='#f8faf9';g.fillRect(0,0,o.width,o.height);g.drawImage(cv,0,head);
+ g.textAlign='left';g.textBaseline='alphabetic';g.fillStyle='#0f2a33';g.font=`700 ${F(16)}px "Anek Latin",system-ui`;g.fillText(`Tamil Nadu sat radar · ${P.name}${MODE==='short'?' · '+CITY:''}`,F(10),F(22));
+ g.font=`600 ${F(12.5)}px "Anek Latin",system-ui`;g.fillStyle=f.fc?'#7a4fd0':'#0f2a33';
+ g.fillText((f.fc?`Forecast ${IST(f.t)} IST (+${Math.round((f.t-lastT)/60e3)} min after the last satellite picture)`:`Satellite picture ${IST(f.t)} IST`)+` · ${new Date(f.t.getTime()+5.5*3600e3).toISOString().slice(0,10)}`,F(10),F(44));
+ let x=F(10);const y=cv.height+head+F(8);g.font=`500 ${F(10.5)}px "Anek Latin",system-ui`;g.textBaseline='middle';
+ BINS.forEach(b=>{g.fillStyle=b[1];g.fillRect(x,y,F(13),F(10));g.fillStyle='#0f2a33';g.fillText(b[2],x+F(16),y+F(5));x+=F(16)+g.measureText(b[2]).width+F(9)});g.fillStyle='#5b6e73';g.fillText('mm/h',x,y+F(5));
+ g.font=`400 ${F(9.5)}px "Anek Latin",system-ui`;g.fillText('Experimental · EUMETSAT satellite rain, corrected with IMD radar · not official',F(10),y+F(25));
+ cv.width=W;cv.height=H;cur=keepCur;draw();return o}
+let gifLib=null;
+async function loadGif(){if(gifLib)return gifLib;await new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js';s.onload=ok;s.onerror=()=>no(new Error('Could not load the GIF maker. Check the connection and try again.'));document.head.appendChild(s)});
+ const wk=await (await fetch('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js')).text();gifLib=URL.createObjectURL(new Blob([wk],{type:'application/javascript'}));return gifLib}
+const fileBase=()=>`tn-sat-radar-${MODE}${MODE==='short'?'-'+CITY.toLowerCase():''}-${new Date(lastT.getTime()+5.5*3600e3).toISOString().slice(0,16).replace(/[-:T]/g,'')}`;
+$('dlrow').onclick=async e=>{const b=e.target.closest('[data-d]');if(!b||!FR.length)return;const msg=$('dlmsg');
+ try{if(b.dataset.d==='png'){msg.textContent='Making the picture…';const o=frameCanvas(cur,1080),blob=await new Promise(r=>o.toBlob(r,'image/png'));msg.textContent='';window.saveFile?await window.saveFile(blob,fileBase()+'.png',o):null}
+  else{msg.textContent='Making the animation… (about 10–20 seconds)';const ws=await loadGif(),gif=new GIF({workers:2,quality:10,workerScript:ws});let first=null;
+   FR.forEach((f,i)=>{const o=frameCanvas(i,720);if(!first)first=o;gif.addFrame(o,{delay:i===FR.length-1?1600:f.fc?650:500,copy:true})});
+   const blob=await new Promise((ok,no)=>{gif.on('finished',ok);gif.on('abort',()=>no(new Error('stopped')));gif.render()});msg.textContent='';
+   window.saveFile?await window.saveFile(blob,fileBase()+'.gif',first):null}}
+ catch(err){msg.textContent=err.message||'Could not make the file.'}};
 
 // view switch, city choice (remembered on this phone)
 const store={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};

@@ -26,6 +26,15 @@ with sync_playwright() as p:
         pg.screenshot(path=f'{OUT}/{mode}_page.png', full_page=True)
         pg.locator('.map').screenshot(path=f'{OUT}/{mode}_map.png')
         m = re.search(r'last picture (\d\d:\d\d)', pg.inner_text('.tl'))
+        if mode == 'tn':
+            for kind in ('png', 'gif'):
+                try:
+                    with pg.expect_download(timeout=120000) as dl:
+                        pg.click(f'[data-d="{kind}"]')
+                    dl.value.save_as(f'{OUT}/download_test.{kind}'); log.append(f'download {kind}: ok')
+                    pg.click('#dl-ov [data-a="close"]')
+                except Exception as e:
+                    log.append(f'download {kind}: FAILED {e}')
     b.close()
 srv.terminate()
 cap = __import__('urllib.request').request.urlopen(__import__('urllib.request').request.Request('https://view.eumetsat.int/geoserver/msg_iodc/h63/ows?service=WMS&version=1.3.0&request=GetCapabilities', headers={'User-Agent': 'Mozilla/5.0'}), timeout=120).read().decode()
