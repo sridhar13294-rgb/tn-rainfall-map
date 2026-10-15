@@ -1,0 +1,30 @@
+name: Lightning reference (every 15 min)
+# Reads IMD's lightning maps in the background and saves strike positions, storm clusters and their movement to the
+# lightning-data branch (lightning.json), which the Sat radar page reads. IMD's images are never shown on the site.
+on:
+  schedule:
+    - cron: '9,24,39,54 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: lightning
+  cancel-in-progress: false
+jobs:
+  read:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main}
+      - uses: actions/checkout@v4
+        with: {ref: lightning-data, path: ld}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install numpy pillow scipy
+      - run: python scripts/lightning.py ld
+      - name: Save (one commit only, so the branch stays small)
+        run: |
+          cd ld
+          git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan fresh && git add -A && git commit -qm "Lightning $(TZ=Asia/Kolkata date '+%Y-%m-%d %H:%M IST')" && git push -f origin HEAD:lightning-data

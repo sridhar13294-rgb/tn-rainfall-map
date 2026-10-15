@@ -32,6 +32,7 @@ input[type=range]{width:100%;accent-color:var(--acc)}
 #tip{font-size:14px;margin-top:8px;min-height:22px}
 .err{color:#b3261e}
 .unsure{color:#a35a00;font-size:12.5px}
+.up{color:#b3261e}.down{color:#2e7d32}.dev{color:#8e1446}.lt{color:#8a6100}
 .dl{display:flex;align-items:center;flex-wrap:wrap;gap:6px 8px;margin-top:10px;font-size:13.5px;color:var(--mut)}.dl button{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:8px;padding:5px 12px;font:inherit;font-weight:600;font-size:13px;cursor:pointer}.dl small{flex-basis:100%;font-size:12px}
 [hidden]{display:none!important}
 .chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0 6px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
@@ -59,8 +60,8 @@ select{font:inherit;font-size:14px;color:var(--ink);background:var(--paper);bord
 <div class="card">
 <h2>How this works</h2>
 <p class="m" style="margin:0 0 8px">Every 15 minutes EUMETSAT's Meteosat satellite over the Indian Ocean scans the region, and EUMETSAT's H SAF service turns the infrared and microwave readings into a rain rate (product H63). This page reads those pictures directly, so it refreshes on its own every 15 minutes while open. Each new picture arrives about 45–55 minutes after the scan.</p>
-<p class="m" style="margin:0 0 8px">Satellite rain over Tamil Nadu is usually too high, because the cold cloud shields of the monsoon look like rain from space. Compared with the 565 TN SMART gauges on 10–15 Oct 2026, it gave about 3 to 5 times the measured rain, so the page corrects it. The correction is checked every 30 minutes against IMD's Chennai and Karaikal radars (when they are working) and against the TN SMART gauges; the radar pictures themselves are not shown here.</p>
-<p class="m" style="margin:0">Forecast frames (purple label) move the latest rain along its recent track: the page compares pictures 30 minutes apart, works out how each part of the rain is moving, and carries each rain cell forward in its own direction and speed (the arrows). That track is blended with the winds 1.5–5 km up from the latest GFS model run, which steer the clouds. When the satellite track flips between pictures or disagrees with those winds (common on afternoons with weak winds, when storms grow and collapse faster than they move), the cell follows the winds and its arrow is dashed orange and marked "direction uncertain". Rain that forms or dies in the meantime is not predicted, so trust the first hour more than the second. South India looks 4 hours ahead across the peninsula and the Bay of Bengal. Long range covers both seas and looks 6 hours ahead using pictures 30 minutes apart; after 3 hours its forecast is shown faded, as a rough guide to direction and timing only. Short range uses the same satellite pictures zoomed in, so it is good for timing but each square is still about 3–4 km across. "Now" is itself a forecast, because the newest picture is already 45–55 minutes old.</p>
+<p class="m" style="margin:0 0 8px">Satellite rain over Tamil Nadu is usually too high, because the cold cloud shields of the monsoon look like rain from space. Compared with the 565 TN SMART gauges on 10–15 Oct 2026, it gave about 3 to 5 times the measured rain, so the page corrects it: weak satellite rain is ignored so the raining area matches the radar, and the remaining rates are mapped onto the radar's own range of rates, so light stays light and heavy cores stay heavy. The correction is checked every 30 minutes against IMD's Chennai and Karaikal radars (when they are working) and against the TN SMART gauges; the radar pictures themselves are not shown here.</p>
+<p class="m" style="margin:0">Forecast frames (purple label) move the latest rain along its recent track: the page compares pictures 30 minutes apart, works out how each part of the rain is moving, and carries each rain cell forward in its own direction and speed (the arrows). The direction mainly follows the storm cores (the coldest cloud tops on infrared, which move with the storm instead of spreading like the cloud shield), blended with the rain track and with the winds 1.5–5 km up from the latest GFS model run. How much each counts is tuned automatically: every 30 minutes the direction methods are checked against how storms actually moved on IMD's Chennai and Karaikal radars. When the satellite track flips between pictures or disagrees with those winds (common on afternoons with weak winds, when storms grow and collapse faster than they move), the cell follows the winds and its arrow is dashed orange and marked "direction uncertain". Each cell is also checked for growth: its rain now is compared with 30 minutes earlier, and the infrared picture shows whether its cloud tops are cooling (rising, strengthening) or warming (collapsing). Cells are marked intensifying or weakening, and that trend is carried into the first hour of the forecast and then eased off. Places where cloud tops cooled by 8 °C or more in 30 minutes are circled as developing storms, often before heavy rain shows. Lightning comes from IMD's lightning network: a background job reads IMD's lightning maps every 15 minutes (they show strikes up to about 10–20 minutes ago, so they are fresher than the rain picture) and keeps only the strike positions; the maps themselves are not shown here. Lightning marks storms that are active right now (yellow diamonds on the map), flags new thunderstorms before rain shows on the satellite picture ("new storm"), helps decide whether a cell is intensifying or weakening, and gives a fourth direction estimate, from how the lightning shifted over 30 minutes. That estimate is scored against the radars like the other three, and its weight is tuned the same way. Brand-new storms that have not started yet cannot be seen by any satellite or radar nowcast, so trust the first hour more than the second. South India looks 4 hours ahead across the peninsula and the Bay of Bengal. Long range covers both seas and looks 6 hours ahead using pictures 30 minutes apart; after 3 hours its forecast is shown faded, as a rough guide to direction and timing only. Short range uses the same satellite pictures zoomed in, so it is good for timing but each square is still about 3–4 km across. "Now" is itself a forecast, because the newest picture is already 45–55 minutes old.</p>
 </div>
 </div>
 <script src="satgeo.js"></script><script src="export.js"></script>
@@ -80,7 +81,7 @@ const WMS='https://view.eumetsat.int/geoserver/ows';
 const STOPS=[[0,[255,255,204]],[0.2,[227,244,192]],[1.05,[198,232,179]],[2,[162,218,183]],[3,[126,204,186]],[5,[96,194,191]],[7,[65,183,196]],[10,[47,164,194]],[15,[29,145,191]],[20,[32,120,180]],[30,[34,94,168]],[49.2,[12,44,133]],[60,[8,30,100]]];
 const BINS=[[0.5,'#a6dcf0','0.5–1'],[1,'#4fb8e8','1–2.5'],[2.5,'#1f72d6','2.5–5'],[5,'#2bb24c','5–10'],[10,'#f5c400','10–20'],[20,'#f06b00','20–40'],[40,'#c4001a','40+']];
 const RGB=BINS.map(b=>[parseInt(b[1].slice(1,3),16),parseInt(b[1].slice(3,5),16),parseInt(b[1].slice(5,7),16)]);
-$('lg').innerHTML=BINS.map(b=>`<div><i style="background:${b[1]}"></i>${b[2]}</div>`).join('')+'<div class="m">mm per hour</div>';
+$('lg').innerHTML=BINS.map(b=>`<div><i style="background:${b[1]}"></i>${b[2]}</div>`).join('')+'<div class="m">mm per hour</div><div><i style="background:transparent;border:2px dashed #c2185b;border-radius:50%"></i>developing storm</div><div><i style="background:#ffd400;border-color:rgba(60,40,0,.85);width:8px;height:12px;transform:rotate(0);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)"></i>lightning, last 10 min (IMD network)</div>';
 const IST=t=>{const d=new Date(t.getTime()+5.5*3600e3);return String(d.getUTCHours()).padStart(2,'0')+':'+String(d.getUTCMinutes()).padStart(2,'0')};
 const iso=t=>t.toISOString().slice(0,16)+':00Z';
 const cv=$('cv'),c=cv.getContext('2d');let W=480,H=600,rain,rc,rx,cnv,cx;
@@ -109,13 +110,28 @@ function decode(px){                                  // RGBA bytes -> mm/h (bef
  }
  return out}
 function loadImg(src){return new Promise((ok,no)=>{const im=new Image();im.crossOrigin='anonymous';im.onload=()=>ok(im);im.onerror=()=>no(new Error('image'));im.src=src})}
+const snapKey=()=>MODE==='short'?'short_'+CITY:MODE;
 async function frame(t){
- const SS=window.SATSNAP,set=SS&&(SS.modes?SS.modes[MODE==='short'?'short_'+CITY:MODE]:(MODE==='tn'?SS:null)),snap=set&&set.frames&&set.frames[iso(t)];
+ const SS=window.SATSNAP,set=SS&&(SS.modes?SS.modes[snapKey()]:(MODE==='tn'?SS:null)),snap=set&&set.frames&&set.frames[iso(t)];
  const src=snap||`${WMS}?service=WMS&version=1.3.0&request=GetMap&layers=msg_iodc:h63&styles=&crs=EPSG:4326&bbox=${LAT0},${LON0},${LAT1},${LON1}&width=${NX}&height=${NY}&format=image/png&transparent=true&time=${iso(t)}`;
  const im=await loadImg(src);cx.clearRect(0,0,NX,NY);cx.drawImage(im,0,0);
- const v=decode(cx.getImageData(0,0,NX,NY).data);for(let i=0;i<v.length;i++)v[i]=v[i]>=CUT?v[i]*SCALE:0;return v}
+ const v=decode(cx.getImageData(0,0,NX,NY).data);for(let i=0;i<v.length;i++)v[i]=v[i]>=CUT?corr(v[i]):0;return v}
+let LUT=null;
+function corr(r){if(!LUT)return r*SCALE;const n=LUT.length;if(r<=LUT[0][0])return LUT[0][1];for(let k=1;k<n;k++)if(r<=LUT[k][0]){const a=LUT[k-1],b=LUT[k];return a[1]+(b[1]-a[1])*(r-a[0])/(b[0]-a[0]||1)}
+ const a=LUT[n-2],b=LUT[n-1];return b[1]+(b[1]-a[1])/(b[0]-a[0]||1)*(r-b[0])}            // radar-matched rate mapping (quantile matching)
 let CALINFO=null;
-let STEER=null;
+// infrared (IR10.8) cloud-top temperature: the picture is greyscale, white = cold. Approximate scale: grey 0 = +30 C, grey 255 = -70 C.
+async function irFrame(t){const SS=window.SATSNAP,set=SS&&SS.modes&&SS.modes[snapKey()+'|ir'],snap=set&&set.frames&&set.frames[iso(t)];
+ const src=snap||`${WMS}?service=WMS&version=1.3.0&request=GetMap&layers=msg_iodc:ir108&styles=raster&crs=EPSG:4326&bbox=${LAT0},${LON0},${LAT1},${LON1}&width=${NX}&height=${NY}&format=image/png&time=${iso(t)}`;
+ const im=await loadImg(src);cx.clearRect(0,0,NX,NY);cx.drawImage(im,0,0);const px=cx.getImageData(0,0,NX,NY).data,o=new Float32Array(NX*NY);
+ for(let k=0;k<NX*NY;k++)o[(NY-1-Math.floor(k/NX))*NX+(k%NX)]=30-px[k*4]*100/255;return o}         // deg C
+let STEER=null,MW={core:0.5,rain:0.2,steer:0.3,light:0.3},MWINFO=null;
+const RAW='https://raw.githubusercontent.com/sridhar13294-rgb/tn-rainfall-map/',bust=()=>'?t='+Math.floor(Date.now()/300e3);
+async function getJSON(urls){for(const u of urls){try{const r=await fetch(u,{cache:'no-store'});if(r.ok)return await r.json()}catch(e){}}return null}   // first that works
+async function loadMW(){const j=window.MWSNAP||await getJSON([RAW+'sat-radar/data/satradar/motioncal.json'+bust(),'motioncal.json']);if(j&&j.weights){MW=Object.assign({light:0.3},j.weights);MWINFO=j}}
+// lightning (IMD's lightning maps, read every 15 min by a background job; positions only, IMD's images are never shown here)
+let LT=null;
+async function loadLT(){const j=window.LTSNAP||await getJSON([RAW+'lightning-data/lightning.json'+bust()]);LT=j&&j.t_end&&(Date.now()-Date.parse(j.t_end))<=80*60e3?j:null;if(LT)LT.t=new Date(LT.t_end)}
 async function loadSteer(){if(STEER)return;try{STEER=await (await fetch('steer.json',{cache:'no-store'})).json()}catch(e){STEER=null}}
 function steerAt(lo,la,t){const S=STEER;if(!S||!S.times||!S.times.length)return null;const ts=S.times.map(x=>Date.parse(x));let i=0;while(i<ts.length-2&&ts[i+1]<t)i++;
  const w=ts.length>1?Math.max(0,Math.min(1,(t-ts[i])/(ts[i+1]-ts[i]))):0,gx=(lo-S.lon0)/S.step,gy=(la-S.lat0)/S.step;if(gx<0||gy<0||gx>S.nx-1||gy>S.ny-1)return null;
@@ -123,11 +139,11 @@ function steerAt(lo,la,t){const S=STEER;if(!S||!S.times||!S.times.length)return 
  const k2=Math.min(i+1,ts.length-1);return [at(S.u,i)*(1-w)+at(S.u,k2)*w,at(S.v,i)*(1-w)+at(S.v,k2)*w]}            // m/s, toward east and north
 const toPx=(w)=>[w[0]*MOT*60/1000/KMX,w[1]*MOT*60/1000/KMY];                                                           // m/s -> grid steps per 15 min
 const angDiff=(a,b)=>{let d=Math.abs(Math.atan2(a[1],a[0])-Math.atan2(b[1],b[0]))*180/Math.PI;return d>180?360-d:d};
-async function loadCal(){try{const j=await (await fetch('satcal.json',{cache:'no-store'})).json();if(j&&j.scale>0){CUT=+j.cut_mm_h||0;SCALE=+j.scale;CALINFO=j}}catch(e){}}
-async function latest(){
- if(window.SATSNAP)return new Date(window.SATSNAP.latest);
- for(const u of [WMS.replace('/ows','/msg_iodc/h63/ows')+'?service=WMS&version=1.3.0&request=GetCapabilities',WMS+'?service=WMS&version=1.3.0&request=GetCapabilities']){
-  try{const tx=await (await fetch(u,{cache:'no-store'})).text();const i=tx.indexOf('<Name>msg_iodc:h63</Name>')>=0?tx.indexOf('<Name>msg_iodc:h63</Name>'):tx.indexOf('<Name>h63</Name>');
+async function loadCal(){try{const j=await getJSON([RAW+'sat-radar/data/satradar/satcal.json'+bust(),'satcal.json']);if(j&&j.scale>0){CUT=+j.cut_mm_h||0;SCALE=+j.scale;LUT=Array.isArray(j.lut)&&j.lut.length>=2?j.lut:null;CALINFO=j}}catch(e){}}
+async function latest(layer){layer=layer||'h63';
+ if(window.SATSNAP)return new Date(layer==='h63'?window.SATSNAP.latest:(window.SATSNAP.latest_ir||window.SATSNAP.latest));
+ for(const u of [WMS.replace('/ows',`/msg_iodc/${layer}/ows`)+'?service=WMS&version=1.3.0&request=GetCapabilities',WMS+'?service=WMS&version=1.3.0&request=GetCapabilities']){
+  try{const tx=await (await fetch(u,{cache:'no-store'})).text();const i=tx.indexOf(`<Name>msg_iodc:${layer}</Name>`)>=0?tx.indexOf(`<Name>msg_iodc:${layer}</Name>`):tx.indexOf(`<Name>${layer}</Name>`);
    const m=/<Dimension[^>]*name="time"[^>]*>([^<]*)<\/Dimension>/.exec(tx.slice(Math.max(0,i),i+8000));
    if(m){const last=m[1].split(',').pop().split('/')[1]||m[1].split(',').pop();const d=new Date(last);if(!isNaN(d))return d}}catch(e){}}
  const d=new Date(Date.now()-50*60e3);d.setUTCMinutes(Math.floor(d.getUTCMinutes()/15)*15,0,0);return d}
@@ -181,21 +197,27 @@ function describe(cells,t0){const G=window.SATGEO,horizon=P.fc*P.fcStep;
  const kind=c=>c.max>=30?'Very heavy':c.max>=10?'Heavy':c.max>=5?'Moderate':'Light to moderate';
  const line=(c,extra)=>{const ll=toLL(c.x,c.y),r=Math.sqrt(c.area/Math.PI),moving=c.kmh>=4&&!c.still;
   const over=G.ct.filter(t=>kmBetween(ll,[t[1],t[2]])<=r+8).map(t=>t[0]);
-  return `<li><b>${kind(c)}</b> rain${2*r>80?' area':''} ${over.length&&MODE!=='long'&&MODE!=='south'?'over <b>'+over.join(', ')+'</b>':(q=>(q.startsWith('the ')||q==='Sri Lanka'||q.endsWith(' district')?'over ':/^\d+ km/.test(q)?'':'near ')+q)(place(ll))} (up to ${c.max.toFixed(0)} mm/h, about ${Math.round(2*r)} km across), `+
+  const tr=(c.trend==='up'?' <b class="up">intensifying</b>':c.trend==='down'?' <span class="down">weakening</span>':'')+(c.lt?' <b class="lt">with lightning</b>':'');
+  return `<li><b>${kind(c)}</b> rain${2*r>80?' area':''}${tr} ${over.length&&MODE!=='long'&&MODE!=='south'?'over <b>'+over.join(', ')+'</b>':(q=>(q.startsWith('the ')||q==='Sri Lanka'||q.endsWith(' district')?'over ':/^\d+ km/.test(q)?'':'near ')+q)(place(ll))} (up to ${c.max.toFixed(0)} mm/h, about ${Math.round(2*r)} km across), `+
    (moving?`moving <b>${dirName(c.u,c.v)}</b> at about <b>${Math.round(c.kmh)} km/h</b>`+(c.unsure?' <span class="unsure">(direction uncertain)</span>':'')+'.':'nearly stationary'+(c.still?`, at most drifting slowly ${dirName(c.u,c.v)} (winds aloft are very weak, so rain grows and fades in place)`:'')+'.')+(extra||'')+'</li>'};
+ const devs=DEV.filter(d=>MODE==='long'||MODE==='south'||inTN(toLL(d.x,d.y))||G.ct.some(t=>kmBetween(toLL(d.x,d.y),[t[1],t[2]])<=60)).slice(0,4).map(d=>{const ll=toLL(d.x,d.y),pl=place(ll);
+   const at=(pl.startsWith('the ')||pl==='Sri Lanka'||pl.endsWith(' district'))?'over ':'';
+   if(d.ltOnly)return `<li class="dev"><b>New thunderstorm</b> ${at}${pl}: lightning in the 10 minutes to ${IST(LT.t)} IST${d.trend==='growing'?', and increasing':''}, but no rain on the satellite picture yet (that picture is older). Likely to bring rain within the next hour.</li>`;
+   return `<li class="dev"><b>Developing storm</b> ${at}${pl}: cloud tops cooled by about ${Math.round(-d.cool)} °C in 30 minutes (now about ${Math.round(d.top)} °C)${d.rain<1?', with little rain showing yet':''}${d.lt?'. <b class="lt">Lightning already seen there</b>':''}. Likely to strengthen or bring rain within the next hour.</li>`});
  let out=[];
  if(MODE==='short'){const t=G.ct.find(q=>q[0]===CITY);const P0=[t[1],t[2]];
   const hits=cells.map(c=>({c,m:eta(c,P0,Math.sqrt(c.area/Math.PI),horizon)})).filter(h=>h.m!==null).sort((a,b)=>a.m-b.m).slice(0,5);
   out=hits.map(h=>line(h.c,h.m===0?` It is over or next to ${CITY} in the latest picture.`:arrive(CITY,t0,h.m)));
-  if(!out.length)return `<p style="margin:0;font-size:14px">No rain cell is heading for <b>${CITY}</b> in the next 2 hours, going by the latest satellite picture.</p>`+(cells.length?'<p class="m" style="margin:6px 0 0">Rain cells nearby:</p><ul class="cells">'+cells.slice(0,3).map(c=>line(c)).join('')+'</ul>':'')}
+  if(!out.length)return `<p style="margin:0;font-size:14px">No rain cell is heading for <b>${CITY}</b> in the next 2 hours, going by the latest satellite picture.</p>`+(devs.length?'<ul class="cells" style="margin-top:6px">'+devs.join('')+'</ul>':'')+(cells.length?'<p class="m" style="margin:6px 0 0">Rain cells nearby:</p><ul class="cells">'+cells.slice(0,3).map(c=>line(c)).join('')+'</ul>':'')}
  else if(MODE==='long'||MODE==='south'){out=cells.slice(0,6).map(c=>{const r=Math.sqrt(c.area/Math.PI);let best=null;
    if(!inTN(toLL(c.x,c.y))&&c.kmh>=4)G.ct.forEach(t=>{const m=eta(c,[t[1],t[2]],r,horizon);if(m!==null&&m>0&&(!best||m<best.m))best={m,n:t[0]}});
    return line(c,best?arrive(best.n+' (Tamil Nadu)',t0,best.m):'')})}
  else{out=cells.filter(c=>{const ll=toLL(c.x,c.y);return inTN(ll)||G.ct.some(t=>kmBetween(ll,[t[1],t[2]])<=60)}).slice(0,6).map(c=>{const r=Math.sqrt(c.area/Math.PI);let best=null;
    if(c.kmh>=4)G.ct.forEach(t=>{const m=eta(c,[t[1],t[2]],r,horizon);if(m&&(!best||m<best.m))best={m,n:t[0]}});
    return line(c,best?arrive(best.n,t0,best.m):'')})}
+ out=devs.concat(out);
  return out.length?'<ul class="cells">'+out.join('')+'</ul>':`<p class="m" style="margin:0">No organised rain cells ${MODE==='long'?'in this area':'over Tamil Nadu'} in the latest picture.</p>`}
-let CELLS=[];
+let CELLS=[],DEV=[],GF=null,IRINFO=null;
 
 // drawing
 let FR=[],cur=0,timer=null,lastT=null;
@@ -219,6 +241,12 @@ function draw(){const G=window.SATGEO||{tn:[],land:[],ct:[]},f=FR[cur];
    c.strokeStyle=cl.unsure?'#a35a00':'#0f2a33';c.lineWidth=2.2;if(cl.unsure)c.setLineDash([5,4]);c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();c.setLineDash([]);
    c.fillStyle=cl.unsure?'#a35a00':'#0f2a33';c.beginPath();c.moveTo(x2+3*Math.cos(ang),y2+3*Math.sin(ang));c.lineTo(x2-9*Math.cos(ang-0.45),y2-9*Math.sin(ang-0.45));c.lineTo(x2-9*Math.cos(ang+0.45),y2-9*Math.sin(ang+0.45));c.closePath();c.fill();
    c.font='700 11px "Anek Latin",system-ui';c.textAlign='left';c.lineWidth=3;c.strokeStyle='rgba(248,250,249,.95)';const lb=Math.round(cl.kmh)+' km/h';c.strokeText(lb,x2+6,y2+4);c.fillText(lb,x2+6,y2+4)})}
+ if(f&&LT&&Math.abs(f.t-LT.t)<=20*60e3){const g=MODE==='long'?0.6:MODE==='south'?0.4:MODE==='tn'?0.25:0.12,rr=3,seen={},pts=[];   // one mark per area, so the rain stays visible
+  LT.s10.forEach(p=>{const k=Math.floor(p[0]/g)+','+Math.floor(p[1]/g);if(!seen[k]){seen[k]=[0,0,0];pts.push(seen[k])}const q=seen[k];q[0]+=p[0];q[1]+=p[1];q[2]++});
+  c.lineWidth=1;pts.map(q=>[q[0]/q[2],q[1]/q[2]]).forEach(p=>{const x=X(p[0]),y=Y(p[1]);if(x<0||x>W||y<0||y>H)return;
+   c.fillStyle='#ffd400';c.strokeStyle='rgba(60,40,0,.85)';c.beginPath();c.moveTo(x,y-rr*1.8);c.lineTo(x+rr,y);c.lineTo(x,y+rr*1.8);c.lineTo(x-rr,y);c.closePath();c.fill();c.stroke()})}
+ if(f&&(f.fc||f.t.getTime()===lastT.getTime())&&(f.t-lastT)<=90*60e3)DEV.slice(0,6).forEach(d=>{const ll=toLL(d.x,d.y),x=X(ll[0]),y=Y(ll[1]),r=Math.max(9,Math.sqrt(d.area)/KMX/NX*W*0.7);
+  c.strokeStyle='#c2185b';c.lineWidth=2.2;c.setLineDash([3,3]);c.beginPath();c.arc(x,y,r,0,7);c.stroke();c.setLineDash([]);c.font='700 11px "Anek Latin",system-ui';c.textAlign='center';c.lineWidth=3;c.strokeStyle='rgba(248,250,249,.95)';const tx=d.ltOnly?'new storm':'developing';c.strokeText(tx,x,y-r-4);c.fillStyle='#c2185b';c.fillText(tx,x,y-r-4)});
  if(MODE==='long')(G.xc||[]).forEach(t=>label(t,11));else if(MODE==='south')(G.xc||[]).filter(t=>!['Mumbai','Kolkata','Male','Hyderabad','Bhubaneswar'].includes(t[0])).concat(G.ct.filter(t=>['Coimbatore','Tiruchirappalli','Thoothukudi','Puducherry'].includes(t[0]))).forEach(t=>label(t,11));else G.ct.forEach(t=>label(t,MODE==='short'&&t[0]===CITY?14:12));
  const s=$('stamp');if(f){const ahead=Math.round((f.t-lastT)/60e3);s.className='stamp'+(f.fc?' fc':'');
   s.innerHTML=(f.fc?'Forecast ':'Satellite ')+IST(f.t)+' IST<small>'+(f.fc?`+${ahead>=120?(ahead/60).toFixed(ahead%60?1:0)+' h':ahead+' min'} after the last picture`+(MODE==='long'&&ahead>180?' · rough':''):(f.t.getTime()===lastT.getTime()?'latest picture':'observed'))+(f.now?' · about now':'')+'</small>'}
@@ -234,30 +262,69 @@ async function build(){
   const past=times.map((t,i)=>({t,v:vals[i],fc:false})).filter(f=>f.v);
   if(past.length<3)throw new Error('too few pictures');
   const b=past[past.length-1],a=past.slice().reverse().find(f=>b.t-f.t>=P.gap*60e3)||past[0];
-  await loadSteer();
+  await loadSteer();await loadMW();await loadLT();
   const M=motion(a.v,b.v,(b.t-a.t)/(MOT*60e3));
+  // infrared: storm cores (cloud tops -40 C and colder) and their motion over the last 30 min; IR arrives ~15 min before the rain picture
+  let irNow=null,irOld=null,irT=null,MI=null,CORE=null;
+  try{const Li=await latest('ir108');irT=new Date(Math.min(Li.getTime(),b.t.getTime()+30*60e3));[irNow,irOld]=await Promise.all([irFrame(irT),irFrame(new Date(irT.getTime()-30*60e3))]);
+   const core=T=>Float32Array.from(T,v=>Math.max(0,-40-v)/3);CORE=core(irNow);MI=motion(core(irOld),CORE,2)}catch(e){irNow=null}
   const a0=past.slice().reverse().find(f=>a.t-f.t>=P.gap*60e3*0.9);const M0=a0?motion(a0.v,a.v,(a.t-a0.t)/(MOT*60e3)):null;   // the half-hour (or hour) before, for a consistency check
   CELLS=findCells(b.v,M);
   CELLS.forEach(cl=>{const ll=toLL(cl.x,cl.y),s1=[cl.u,cl.v],wm=steerAt(ll[0],ll[1],b.t.getTime()),w=wm?toPx(wm):null;
-   let s0=null;if(M0){let su=0,sv=0,n=0;for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++){const xx=Math.round(cl.x)+dx,yy=Math.round(cl.y)+dy;if(xx<0||yy<0||xx>=NX||yy>=NY)continue;su+=M0.fu[yy*NX+xx];sv+=M0.fv[yy*NX+xx];n++}s0=[su/n,sv/n]}
-   const sk=Math.hypot(s1[0]*KMX,s1[1]*KMY)*(60/MOT),wk=w?Math.hypot(wm[0],wm[1])*3.6:null;
-   const agreeW=w&&wk>=5?angDiff(s1,w)<70:true,agree0=s0&&Math.hypot(s0[0],s0[1])>0.05?angDiff(s1,s0)<60:true;
-   cl.track=s1;cl.wind=wm;cl.windKmh=wk;
-   if(w&&wk<10&&(!agreeW||!agree0)){cl.u=w[0]*0.5;cl.v=w[1]*0.5;cl.unsure=true;cl.still=true}   // weak winds and a jumpy track: storms grow and die in place (checked on Chennai radar, 15 Oct)
-   else if(w&&wk>=5&&(!agreeW||!agree0)){cl.u=w[0];cl.v=w[1];cl.unsure=true}          // tracking disagrees: follow the winds aloft and say so
-   else if(w&&wk>=5){cl.u=0.6*s1[0]+0.4*w[0];cl.v=0.6*s1[1]+0.4*w[1];cl.unsure=!agree0}
-   else{cl.unsure=!agree0||(w&&wk<5)}
+   const r=Math.max(1,Math.round(Math.sqrt(cl.area/(KMX*KMY))/2))+2;let cu=0,cv=0,cn=0;
+   if(MI&&CORE)for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){const x=Math.round(cl.x)+dx,y=Math.round(cl.y)+dy;if(x<0||y<0||x>=NX||y>=NY)continue;const i=y*NX+x;if(CORE[i]>0){cu+=MI.fu[i]*CORE[i];cv+=MI.fv[i]*CORE[i];cn+=CORE[i]}}
+   const sc=cn>2?[cu/cn,cv/cn]:null;                                          // storm-core motion near this cell
+   let lm=null;cl.lt=0;cl.ltOld=0;
+   if(LT){const k=(LT.t-b.t)/(MOT*60e3),q=toLL(cl.x+cl.u*k,cl.y+cl.v*k),rk=Math.sqrt(cl.area/Math.PI)+15;   // where the cell is at the lightning time
+    cl.lt=LT.s10.filter(p=>kmBetween(p,q)<=rk).length;cl.ltOld=LT.s20.concat(LT.s30).filter(p=>kmBetween(p,q)<=rk).length;
+    const vs=LT.vectors.filter(v=>kmBetween(v,q)<=Math.max(35,rk));if(vs.length&&cl.lt+cl.ltOld>=3){let su=0,sv=0,sw=0;vs.forEach(v=>{su+=v[2]*v[4];sv+=v[3]*v[4];sw+=v[4]});lm=toPx([su/sw,sv/sw])}}
+   cl.light=lm;
+   const wk=w?Math.hypot(wm[0],wm[1])*3.6:0;cl.track=s1;cl.core=sc;cl.wind=wm;cl.windKmh=wk;
+   const parts=[];if(sc)parts.push([sc,MW.core]);parts.push([s1,MW.rain]);if(w&&wk>=3)parts.push([w,MW.steer]);if(lm)parts.push([lm,MW.light||0.3]);
+   let sw=0,u=0,v=0;parts.forEach(([q,k])=>{u+=q[0]*k;v+=q[1]*k;sw+=k});u/=sw;v/=sw;
+   const lead=sc||s1,disagree=(w&&wk>=5&&Math.hypot(lead[0],lead[1])>0.05&&angDiff(lead,w)>90)||(sc&&Math.hypot(s1[0],s1[1])>0.05&&angDiff(sc,s1)>100);
+   cl.u=u;cl.v=v;cl.unsure=!!disagree&&!(lm&&angDiff(lm,[u,v])<45);cl.still=disagree&&wk<10&&!sc&&!lm;
+   if(cl.still){cl.u*=0.5;cl.v*=0.5}
    cl.kmh=Math.hypot(cl.u*KMX,cl.v*KMY)*(60/MOT)});
+  // --- trend: rain now vs the same cell 30 min earlier (traced back along its track), and cloud-top cooling from infrared
+  const prev=past.slice().reverse().find(f=>b.t-f.t>=30*60e3);DEV=[];
+  const dT=irNow&&irOld?blur(Float32Array.from(irNow,(v,i)=>v-irOld[i])):null;
+  CELLS.forEach(cl=>{let now=0,old=0,cool=0,n=0,cold=99;const st=(prev?(b.t-prev.t)/(MOT*60e3):2);
+   const r=Math.max(1,Math.round(Math.sqrt(cl.area/(KMX*KMY))/2));
+   for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){const x=Math.round(cl.x)+dx,y=Math.round(cl.y)+dy;if(x<0||y<0||x>=NX||y>=NY)continue;const i=y*NX+x;now+=b.v[i];
+    if(prev){const xb=Math.round(x-cl.track[0]*st),yb=Math.round(y-cl.track[1]*st);if(xb>=0&&yb>=0&&xb<NX&&yb<NY)old+=prev.v[yb*NX+xb]}
+    if(dT){cool+=dT[i];n++;cold=Math.min(cold,irNow[i])}}
+   cl.growth=prev?(now+5)/(old+5):1;cl.cool=n?cool/n:0;cl.top=cold;
+   const ltUp=cl.lt>=3&&cl.lt>=1.5*Math.max(1,cl.ltOld/2),ltDown=cl.ltOld>=6&&cl.lt<=0.4*cl.ltOld/2;               // lightning in the last 10 min vs the 20 min before
+   cl.trend=(cl.growth>=1.3||cl.cool<=-5||(ltUp&&cl.growth>=0.9))&&!(cl.growth<0.8)?'up':(cl.growth<=0.7&&cl.cool>=-1)||cl.cool>=4||(ltDown&&cl.growth<=1)?'down':'steady'});
+  if(dT){const lab=new Int32Array(NX*NY).fill(-1),minPx=Math.max(4,P.minKm2/(KMX*KMY));let id=0;
+   for(let k=0;k<NX*NY;k++){if(lab[k]>=0||!(dT[k]<=-8&&irNow[k]<=-20))continue;const st=[k],px=[];lab[k]=id;
+    while(st.length){const q=st.pop();px.push(q);const x=q%NX,y=(q/NX)|0;for(const [ex,ey] of [[1,0],[-1,0],[0,1],[0,-1]]){const xx=x+ex,yy=y+ey;if(xx<0||yy<0||xx>=NX||yy>=NY)continue;const nn=yy*NX+xx;if(lab[nn]<0&&dT[nn]<=-8&&irNow[nn]<=-20){lab[nn]=id;st.push(nn)}}}
+    id++;if(px.length<minPx)continue;let sx=0,sy=0,c=0,mn=99,rain=0;px.forEach(q=>{sx+=q%NX;sy+=(q/NX)|0;c+=dT[q];mn=Math.min(mn,irNow[q]);rain+=b.v[q]});
+    DEV.push({x:sx/px.length,y:sy/px.length,area:px.length*KMX*KMY,cool:c/px.length,top:mn,rain:rain/px.length})}
+   DEV.sort((p,q)=>p.cool*Math.sqrt(p.area)-q.cool*Math.sqrt(q.area))}
+  if(LT){const inv=ll=>[(ll[0]-LON0)/DX-.5,(ll[1]-LAT0)/DY-.5];
+   DEV.forEach(d=>{const q=toLL(d.x,d.y);d.lt=LT.s10.filter(p=>kmBetween(p,q)<=30).length});
+   LT.clusters.filter(k=>k.n10>=2&&(k.trend==='new'||k.trend==='growing')&&k.lon>=LON0&&k.lon<=LON1&&k.lat>=LAT0&&k.lat<=LAT1).forEach(k=>{const q=[k.lon,k.lat];
+    if(CELLS.some(cl=>{const kk=(LT.t-b.t)/(MOT*60e3);return kmBetween(toLL(cl.x+cl.u*kk,cl.y+cl.v*kk),q)<=Math.sqrt(cl.area/Math.PI)+15})||DEV.some(d=>kmBetween(toLL(d.x,d.y),q)<=40))return;
+    const [x,y]=inv(q);DEV.push({x,y,area:Math.max(1,k.w*k.h)*110*110*0.3,lt:k.n10,ltOnly:true,trend:k.trend,cool:0,top:99,rain:0})});
+   DEV.sort((p,q)=>(q.lt?1:0)-(p.lt?1:0)||p.cool*Math.sqrt(p.area)-q.cool*Math.sqrt(q.area))}
+  IRINFO=irT?{t:irT,ok:!!dT}:null;
+  // growth factor field for the forecast: each cell's trend carried for up to an hour, then eased back
+  GF=new Float32Array(NX*NY).fill(1);CELLS.forEach(cl=>{const g=Math.max(0.4,Math.min(2.2,cl.growth*(cl.cool<=-5?1.2:1))),r=Math.max(1,Math.round(Math.sqrt(cl.area/(KMX*KMY))/2))+1;
+   for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){const x=Math.round(cl.x)+dx,y=Math.round(cl.y)+dy;if(x>=0&&y>=0&&x<NX&&y<NY)GF[y*NX+x]=g}});
+  if(MI&&CORE){for(let i=0;i<NX*NY;i++){if(CORE[i]>0.3){const k=MW.core/(MW.core+MW.rain);M.fu[i]=k*MI.fu[i]+(1-k)*M.fu[i];M.fv[i]=k*MI.fv[i]+(1-k)*M.fv[i]}}}
   if(STEER){for(let y=0;y<NY;y+=1)for(let x=0;x<NX;x+=1){const i=y*NX+x,ll=toLL(x,y),wm=steerAt(ll[0],ll[1],b.t.getTime());if(!wm)continue;const w=toPx(wm);
     if(Math.hypot(wm[0],wm[1])*3.6>=5){M.fu[i]=0.6*M.fu[i]+0.4*w[0];M.fv[i]=0.6*M.fv[i]+0.4*w[1]}}}
-  const fc=[];for(let k=1;k<=P.fc;k++)fc.push({t:new Date(b.t.getTime()+k*P.fcStep*60e3),v:advect(b.v,M,k*P.fcStep/MOT),fc:true});
+  const fac=(g,m)=>{const a=Math.min(m,60)/30;let f=g>=1?1+(g-1)*a:Math.max(0,1+(g-1)*a);if(m>60)f=1+(f-1)*Math.max(0,1-(m-60)/90);return f};   // trend for the first hour, then fading
+  const fc=[];for(let k=1;k<=P.fc;k++){const m=k*P.fcStep,src=Float32Array.from(b.v,(v,i)=>v*fac(GF[i],m));fc.push({t:new Date(b.t.getTime()+m*60e3),v:advect(src,M,m/MOT),fc:true})}
   lastT=b.t;FR=past.concat(fc);
   const now=Date.now();let ni=FR.length-1,bd=1e18;FR.forEach((f,i)=>{const d=Math.abs(f.t-now);if(d<bd){bd=d;ni=i}});FR.forEach((f,i)=>f.now=i===ni&&f.fc);
   $('sl').max=FR.length-1;cur=ni;
   $('t0').textContent=IST(FR[0].t);$('t1').textContent='last picture '+IST(b.t);$('t2').textContent=IST(FR[FR.length-1].t);
   let gu=M.mu,gv=M.mv;if(CELLS.length){let su=0,sv=0,sw=0;CELLS.slice(0,8).forEach(cl=>{const w=Math.sqrt(cl.area);su+=cl.u*w;sv+=cl.v*w;sw+=w});gu=su/sw;gv=sv/sw}
   const spd=Math.hypot(gu*KMX,gv*KMY)*(60/MOT),dir=dirName(gu,gv);
-  $('st').innerHTML=`Latest satellite picture: <b>${IST(b.t)} IST</b> (${Math.round((now-b.t)/60e3)} min ago). `+(M.n>=3&&spd>3?`Rain is mostly moving <b>${dir}</b> at about ${Math.round(spd)} km/h.`:'Rain is nearly stationary or too little to track.')+' Updates by itself every 15 minutes.';
+  $('st').innerHTML=`Latest satellite picture: <b>${IST(b.t)} IST</b> (${Math.round((now-b.t)/60e3)} min ago). `+(M.n>=3&&spd>3?`Rain is mostly moving <b>${dir}</b> at about ${Math.round(spd)} km/h.`:'Rain is nearly stationary or too little to track.')+(LT?` Lightning up to <b>${IST(LT.t)} IST</b>.`:'')+' Updates by itself every 15 minutes.';
   $('cl').innerHTML=describe(CELLS,b.t);
   draw()}
  catch(e){if(my!==BUSY)return;$('st').innerHTML='<span class="err">Could not load the satellite pictures right now. The page will try again in a few minutes.</span>';console.error(e)}}
