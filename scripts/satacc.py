@@ -86,20 +86,34 @@ def main():
     # H63: 96 frames of 15 min
     times = [t0 + dt.timedelta(minutes=15 * k) for k in range(96)]
     acc = np.zeros((NY, NX)); ok = 0; mx = np.zeros((NY, NX))
+    st = json.load(open('data/stations.json'))
+    gid = [k for k, v in st.items() if v.get('lat') is not None and LAT0 <= v['lat'] < LAT1 and LON0 <= v['lon'] < LON1]
+    gj = np.array([int((st[k]['lat'] - LAT0) / STEP) for k in gid]); gi = np.array([int((st[k]['lon'] - LON0) / STEP) for k in gid])
+    series = []
+    def safe(t):
+        try:
+            return h63(t)
+        except Exception as e:
+            print('h63 fail', t, e, flush=True); return None
     with cf.ThreadPoolExecutor(6) as ex:
-        for t, r in zip(times, ex.map(lambda t: (lambda: h63(t))() if True else None, times)):
+        for t, r in zip(times, ex.map(safe, times)):
+            if r is None:
+                series.append(None); continue
             acc += r * 0.25; mx = np.maximum(mx, r); ok += 1
+            series.append([round(float(x), 2) for x in r[gj, gi]])
+    out['gauge_ids'] = gid; out['h63_series'] = series
     out['h63'] = dict(frames=ok, acc=np.round(acc, 1).tolist(), max_rate=np.round(mx, 1).tolist())
     print('h63 frames', ok, 'TN-box mean', acc.mean(), 'max', acc.max(), flush=True)
     # NOAA blend: every 30 min (rate x 0.5 h)
     info = {}; bacc = np.zeros((NY, NX)); n = 0; miss = 0
-    for k in range(48):
+    for k in range(0, 48, 1 if day.isoformat() == '2026-10-15' else 8):
         t = t0 + dt.timedelta(minutes=30 * k)
         try:
             keys = [x for x in blend_keys(t) if f's{t:%Y%m%d%H%M}' in x]
             if not keys:
                 miss += 1; continue
             a = blend(keys[0], info)
+            info.setdefault('nan_share', []).append(round(float(np.isnan(a).mean()), 3))
             bacc += np.nan_to_num(a) * 0.5; n += 1
         except Exception as e:
             miss += 1; info.setdefault('errors', []).append(f'{t}: {e}'[:200])
@@ -108,4 +122,6 @@ def main():
     print('errors', info.get('errors', [])[:5]); print('blend frames', n, 'missing', miss, 'mean', bacc.mean(), 'max', bacc.max(), json.dumps(info, default=str)[:1500], flush=True)
     json.dump(out, open(f'{OUT}/acc_{day}.json', 'w'), separators=(',', ':'))
 if __name__ == '__main__':
-    main()
+    days = sys.argv[1:] or ['2026-10-15']
+    for d in days:
+        sys.argv = ['x', d]; main()
