@@ -28,3 +28,13 @@ jobs:
           git add data/satradar
           git commit -m "Satellite radar check $(TZ=Asia/Kolkata date '+%Y-%m-%d %H:%M IST')" || exit 0
           for i in 1 2 3; do git pull --rebase origin sat-radar && git push origin HEAD:sat-radar && break; sleep 5; done
+      - name: Publish the correction for the live Sat radar page (site/satcal.json on main)
+        if: always()
+        run: |
+          [ -f data/satradar/satcal.json ] || exit 0
+          cp data/satradar/satcal.json /tmp/satcal.json
+          git fetch origin main && git checkout -B main origin/main
+          cmp -s /tmp/satcal.json site/satcal.json && exit 0
+          cp /tmp/satcal.json site/satcal.json && git add site/satcal.json
+          git commit -m "Sat radar correction update $(TZ=Asia/Kolkata date '+%Y-%m-%d %H:%M IST')" || exit 0
+          for i in 1 2 3; do git pull --rebase origin main && git push origin HEAD:main && break; sleep 5; done
