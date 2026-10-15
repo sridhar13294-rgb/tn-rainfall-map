@@ -168,11 +168,11 @@ def fit():
     json.dump(out, open(f'{OUT}/fit.json', 'w'), indent=1); print(json.dumps(out, indent=1))
     return out if len(S) >= 6 else None
 def radar_ok(buf, tt, now):
-    """A radar counts as working only if its picture is fresh (scan within 60 min) and actually decodes."""
+    """A radar counts as working only if its picture is fresh (scan within 2 hours; IMD pictures often lag 1 hour) and decodes."""
     if tt is None or len(buf) < 20000:
         return False, 'no scan time or picture too small'
     age = (now - tt).total_seconds() / 60
-    if age > 60:
+    if age > 120:
         return False, f'picture is {age:.0f} min old (radar probably not working)'
     try:
         Image.open(io.BytesIO(buf)).convert('RGB')
