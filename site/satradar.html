@@ -163,24 +163,24 @@ function findCells(v,M){const lab=new Int32Array(NX*NY).fill(-1),cells=[],minPx=
   const u=su/px.length,vv=sv/px.length;cells.push({x:sx/sw,y:sy/sw,area:px.length*KMX*KMY,max:mx,u,v:vv,kmh:Math.hypot(u*KMX,vv*KMY)*(60/MOT)})}
  return cells.filter(Boolean).sort((a,b)=>b.max*Math.sqrt(b.area)-a.max*Math.sqrt(a.area))}
 function eta(c,P0,r,maxMin){const ll=toLL(c.x,c.y);if(kmBetween(ll,P0)<=r+8)return 0;for(let m=5;m<=maxMin;m+=5){const k=m/MOT,p=toLL(c.x+c.u*k,c.y+c.v*k);if(kmBetween(p,P0)<=r+8)return m}return null}
-function when(t0,m){const T=new Date(t0.getTime()+m*60e3);return T<Date.now()?`should have reached it around ${IST(T)} IST (if it held together)`:`around <b>${IST(T)} IST</b>`}
+function arrive(n,t0,m){const T=new Date(t0.getTime()+m*60e3);return T<Date.now()?` It should have reached <b>${n}</b> around ${IST(T)} IST (if it held together).`:` Reaches <b>${n}</b> around <b>${IST(T)} IST</b>.`}
 function describe(cells,t0){const G=window.SATGEO,horizon=P.fc*P.fcStep;
  const kind=c=>c.max>=30?'Very heavy':c.max>=10?'Heavy':c.max>=5?'Moderate':'Light to moderate';
  const line=(c,extra)=>{const ll=toLL(c.x,c.y),r=Math.sqrt(c.area/Math.PI),moving=c.kmh>=4;
   const over=G.ct.filter(t=>kmBetween(ll,[t[1],t[2]])<=r+8).map(t=>t[0]);
-  return `<li><b>${kind(c)}</b> rain${2*r>80?' area':''} ${over.length&&MODE!=='long'?'over <b>'+over.join(', ')+'</b>':'near '+place(ll)} (up to ${c.max.toFixed(0)} mm/h, about ${Math.round(2*r)} km across), `+
+  return `<li><b>${kind(c)}</b> rain${2*r>80?' area':''} ${over.length&&MODE!=='long'?'over <b>'+over.join(', ')+'</b>':(q=>(q.startsWith('the ')||q==='Sri Lanka'?'over ':'near ')+q)(place(ll))} (up to ${c.max.toFixed(0)} mm/h, about ${Math.round(2*r)} km across), `+
    (moving?`moving <b>${dirName(c.u,c.v)}</b> at about <b>${Math.round(c.kmh)} km/h</b>.`:'nearly stationary.')+(extra||'')+'</li>'};
  let out=[];
  if(MODE==='short'){const t=G.ct.find(q=>q[0]===CITY);const P0=[t[1],t[2]];
   const hits=cells.map(c=>({c,m:eta(c,P0,Math.sqrt(c.area/Math.PI),horizon)})).filter(h=>h.m!==null).sort((a,b)=>a.m-b.m).slice(0,5);
-  out=hits.map(h=>line(h.c,h.m===0?` It is over or next to ${CITY} now (in the latest picture).`:` Reaches <b>${CITY}</b> ${when(t0,h.m)}.`));
+  out=hits.map(h=>line(h.c,h.m===0?` It is over or next to ${CITY} in the latest picture.`:arrive(CITY,t0,h.m)));
   if(!out.length)return `<p style="margin:0;font-size:14px">No rain cell is heading for <b>${CITY}</b> in the next 2 hours, going by the latest satellite picture.</p>`+(cells.length?'<p class="m" style="margin:6px 0 0">Rain cells nearby:</p><ul class="cells">'+cells.slice(0,3).map(c=>line(c)).join('')+'</ul>':'')}
  else if(MODE==='long'){out=cells.slice(0,6).map(c=>{const r=Math.sqrt(c.area/Math.PI);let best=null;
    if(!inTN(toLL(c.x,c.y))&&c.kmh>=4)G.ct.forEach(t=>{const m=eta(c,[t[1],t[2]],r,horizon);if(m!==null&&m>0&&(!best||m<best.m))best={m,n:t[0]}});
-   return line(c,best?` Reaches the Tamil Nadu side (${best.n}) ${when(t0,best.m)}.`:'')})}
+   return line(c,best?arrive(best.n+' (Tamil Nadu)',t0,best.m):'')})}
  else{out=cells.filter(c=>{const ll=toLL(c.x,c.y);return inTN(ll)||G.ct.some(t=>kmBetween(ll,[t[1],t[2]])<=60)}).slice(0,6).map(c=>{const r=Math.sqrt(c.area/Math.PI);let best=null;
    if(c.kmh>=4)G.ct.forEach(t=>{const m=eta(c,[t[1],t[2]],r,horizon);if(m&&(!best||m<best.m))best={m,n:t[0]}});
-   return line(c,best?` Reaches <b>${best.n}</b> ${when(t0,best.m)}.`:'')})}
+   return line(c,best?arrive(best.n,t0,best.m):'')})}
  return out.length?'<ul class="cells">'+out.join('')+'</ul>':`<p class="m" style="margin:0">No organised rain cells ${MODE==='long'?'in this area':'over Tamil Nadu'} in the latest picture.</p>`}
 let CELLS=[];
 
