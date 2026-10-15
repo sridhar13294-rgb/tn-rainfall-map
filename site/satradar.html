@@ -182,7 +182,7 @@ function describe(cells,t0){const G=window.SATGEO,horizon=P.fc*P.fcStep;
  const line=(c,extra)=>{const ll=toLL(c.x,c.y),r=Math.sqrt(c.area/Math.PI),moving=c.kmh>=4;
   const over=G.ct.filter(t=>kmBetween(ll,[t[1],t[2]])<=r+8).map(t=>t[0]);
   return `<li><b>${kind(c)}</b> rain${2*r>80?' area':''} ${over.length&&MODE!=='long'&&MODE!=='south'?'over <b>'+over.join(', ')+'</b>':(q=>(q.startsWith('the ')||q==='Sri Lanka'||q.endsWith(' district')?'over ':/^\d+ km/.test(q)?'':'near ')+q)(place(ll))} (up to ${c.max.toFixed(0)} mm/h, about ${Math.round(2*r)} km across), `+
-   (moving?`moving <b>${dirName(c.u,c.v)}</b> at about <b>${Math.round(c.kmh)} km/h</b>`+(c.unsure?' <span class="unsure">(direction uncertain: the satellite track and the winds aloft disagree, so this follows the winds)</span>':'')+'.':'nearly stationary'+(c.unsure?' or drifting slowly (winds aloft are very weak)':'')+'.')+(extra||'')+'</li>'};
+   (moving?`moving <b>${dirName(c.u,c.v)}</b> at about <b>${Math.round(c.kmh)} km/h</b>`+(c.unsure?' <span class="unsure">(direction uncertain)</span>':'')+'.':'nearly stationary'+(c.unsure?' or drifting slowly (winds aloft are very weak)':'')+'.')+(extra||'')+'</li>'};
  let out=[];
  if(MODE==='short'){const t=G.ct.find(q=>q[0]===CITY);const P0=[t[1],t[2]];
   const hits=cells.map(c=>({c,m:eta(c,P0,Math.sqrt(c.area/Math.PI),horizon)})).filter(h=>h.m!==null).sort((a,b)=>a.m-b.m).slice(0,5);
