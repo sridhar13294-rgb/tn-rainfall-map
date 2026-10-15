@@ -1,0 +1,166 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="color-scheme" content="only light"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Tamil Nadu Satellite Radar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anek+Latin:wdth,wght@75..125,300..800&family=Anek+Tamil:wght@600..800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#ecf0ee;--card:#f8faf9;--paper:#f8faf9;--ink:#0f2a33;--mut:#5b6e73;--line:#d3dcda;--acc:#0f6e7a;--chipbg:#e1e8e6;--fc:#7a4fd0;
+ --f:"Anek Latin",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color-scheme:only light}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 var(--f);font-variant-numeric:tabular-nums;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+.w{max-width:640px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-right,0px)) 40px max(16px,env(safe-area-inset-left,0px))}
+a{color:var(--acc)}:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:18px 0 10px}
+.brand{display:flex;align-items:flex-end;gap:8px;min-width:0}
+.ta{font:700 34px/0.9 "Anek Tamil",var(--f);color:var(--acc);letter-spacing:-.5px}
+h1{font:700 17.5px/1.1 var(--f);font-stretch:108%;margin:0;white-space:nowrap}
+.tabs{display:flex;background:var(--chipbg);border-radius:10px;padding:3px;flex:none}
+.tabs a{padding:6px 8px;border-radius:8px;text-decoration:none;color:var(--mut);font-weight:600;font-size:13px}
+.tabs a.on{background:var(--paper);color:var(--ink);box-shadow:0 1px 2px rgba(15,42,51,.12)}
+h2{font:700 16px/1.2 var(--f);font-stretch:108%;margin:0 0 10px}.m{color:var(--mut);font-size:12.5px}
+.card{padding:16px 0;border-top:1px solid var(--line)}
+.warn{border-left:3px solid #c98a1b;padding:4px 0 4px 10px;font-size:13px;margin:6px 0 12px}
+.map{position:relative;border-radius:14px;overflow:hidden;background:#dfe7ec;touch-action:pan-y}
+.map canvas{display:block;width:100%;height:auto}
+.stamp{position:absolute;left:8px;top:8px;padding:5px 9px;border-radius:8px;font-size:13px;font-weight:700;background:rgba(15,42,51,.82);color:#fff;pointer-events:none}
+.stamp.fc{background:var(--fc)}
+.stamp small{display:block;font-weight:400;font-size:11.5px;opacity:.9}
+.ctl{display:flex;gap:10px;align-items:center;margin-top:10px}
+button.play{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:10px;width:44px;height:38px;font-size:16px;cursor:pointer;flex:none}
+input[type=range]{width:100%;accent-color:var(--acc)}
+.tl{display:flex;justify-content:space-between;font-size:11.5px;color:var(--mut);margin-top:2px}
+.lg{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:10px}.lg div{display:flex;align-items:center;gap:5px;font-size:12px}.lg i{width:14px;height:12px;border-radius:3px;border:1px solid rgba(0,0,0,.12)}
+#st{font-size:13.5px;margin:2px 0 8px;min-height:20px}
+#tip{font-size:14px;margin-top:8px;min-height:22px}
+.err{color:#b3261e}
+</style></head><body><div class="w">
+<header class="top">
+ <div class="brand"><span class="ta" lang="ta">மழை</span><div><h1>Tamil Nadu<br>sat radar</h1></div></div>
+ <nav class="tabs"><a href="index.html">Rainfall</a><a href="forecast.html">Forecast</a><a class="on" href="satradar.html">Sat radar</a></nav>
+</header>
+<div class="warn"><b>Experimental.</b> Rain estimated from satellite pictures, not a real radar. It finds rain areas well but can miss small local downpours and can show light rain where none falls. Follow IMD and TNSDMA for warnings.</div>
+<div id="st">Loading satellite pictures…</div>
+<div class="map"><canvas id="cv" width="480" height="600" aria-label="Rain map of Tamil Nadu"></canvas><div class="stamp" id="stamp"></div></div>
+<div class="ctl"><button class="play" id="pl" aria-label="Play">▶</button><div style="flex:1;min-width:0"><input type="range" id="sl" min="0" max="0" value="0" aria-label="Time"><div class="tl"><span id="t0"></span><span id="t1"></span><span id="t2"></span></div></div></div>
+<div id="tip" class="m">Tap the map to see the rain rate at that spot.</div>
+<div class="lg" id="lg"></div>
+<div class="card">
+<h2>How this works</h2>
+<p class="m" style="margin:0 0 8px">Every 15 minutes EUMETSAT's Meteosat satellite over the Indian Ocean scans the region, and EUMETSAT's H SAF service turns the infrared and microwave readings into a rain rate (product H63). This page reads those pictures directly, so it refreshes on its own every 15 minutes while open. Each new picture arrives about 45–55 minutes after the scan.</p>
+<p class="m" style="margin:0 0 8px">Satellite rain over Tamil Nadu is usually too high, because the cold cloud shields of the monsoon look like rain from space. Compared with the 565 TN SMART gauges on 10–15 Oct 2026, it gave about 3 to 5 times the measured rain, so rates here are multiplied by <b id="calv">0.3</b>. This correction will be tuned against TN SMART as more days come in.</p>
+<p class="m" style="margin:0">Forecast frames (purple label) move the latest rain areas along their recent track: the page compares the last two pictures 30 minutes apart, works out how each part of the rain is moving, and carries it forward. Rain that forms or dies in the meantime is not predicted, so trust the first hour more than the second. "Now" is itself a forecast, because the newest picture is already 45–55 minutes old.</p>
+</div>
+</div>
+<script src="satgeo.js"></script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const LON0=75.5,LON1=81.5,LAT0=7,LAT1=14.5,NX=240,NY=300,DX=(LON1-LON0)/NX,DY=(LAT1-LAT0)/NY;
+const CAL=0.3, NPAST=9, NFC=10, STEP=15;             // 9 past frames (2 h), 10 forecast steps (2.5 h)
+const WMS='https://view.eumetsat.int/geoserver/ows';
+const STOPS=[[0,[255,255,204]],[0.2,[227,244,192]],[1.05,[198,232,179]],[2,[162,218,183]],[3,[126,204,186]],[5,[96,194,191]],[7,[65,183,196]],[10,[47,164,194]],[15,[29,145,191]],[20,[32,120,180]],[30,[34,94,168]],[49.2,[12,44,133]],[60,[8,30,100]]];
+const BINS=[[0.5,'#a6dcf0','0.5–1'],[1,'#4fb8e8','1–2.5'],[2.5,'#1f72d6','2.5–5'],[5,'#2bb24c','5–10'],[10,'#f5c400','10–20'],[20,'#f06b00','20–40'],[40,'#c4001a','40+']];
+const RGB=BINS.map(b=>[parseInt(b[1].slice(1,3),16),parseInt(b[1].slice(3,5),16),parseInt(b[1].slice(5,7),16)]);
+$('calv').textContent=CAL;
+$('lg').innerHTML=BINS.map(b=>`<div><i style="background:${b[1]}"></i>${b[2]}</div>`).join('')+'<div class="m">mm per hour</div>';
+const IST=t=>{const d=new Date(t.getTime()+5.5*3600e3);return String(d.getUTCHours()).padStart(2,'0')+':'+String(d.getUTCMinutes()).padStart(2,'0')};
+const iso=t=>t.toISOString().slice(0,16)+':00Z';
+
+function decode(px){                                  // RGBA bytes -> mm/h (before correction)
+ const out=new Float32Array(NX*NY);
+ for(let p=0,k=0;k<NX*NY;k++,p+=4){
+  if(px[p+3]===0)continue;const r=px[p],g=px[p+1],b=px[p+2];let best=1e9,val=0;
+  for(let s=0;s<STOPS.length-1;s++){const c0=STOPS[s][1],c1=STOPS[s+1][1],dr=c1[0]-c0[0],dg=c1[1]-c0[1],db=c1[2]-c0[2],dd=dr*dr+dg*dg+db*db||1;
+   let t=((r-c0[0])*dr+(g-c0[1])*dg+(b-c0[2])*db)/dd;t=t<0?0:t>1?1:t;
+   const er=r-(c0[0]+t*dr),eg=g-(c0[1]+t*dg),eb=b-(c0[2]+t*db),d=er*er+eg*eg+eb*eb;
+   if(d<best){best=d;val=STOPS[s][0]+t*(STOPS[s+1][0]-STOPS[s][0])}}
+  if(best<3600)out[(NY-1-Math.floor(k/NX))*NX+(k%NX)]=val;   // store with row 0 = south
+ }
+ return out}
+
+function loadImg(src){return new Promise((ok,no)=>{const im=new Image();im.crossOrigin='anonymous';im.onload=()=>ok(im);im.onerror=()=>no(new Error('image'));im.src=src})}
+const cnv=document.createElement('canvas');cnv.width=NX;cnv.height=NY;const cx=cnv.getContext('2d',{willReadFrequently:true});
+async function frame(t){
+ const snap=window.SATSNAP&&window.SATSNAP.frames[iso(t)];
+ const src=snap||`${WMS}?service=WMS&version=1.3.0&request=GetMap&layers=msg_iodc:h63&styles=&crs=EPSG:4326&bbox=${LAT0},${LON0},${LAT1},${LON1}&width=${NX}&height=${NY}&format=image/png&transparent=true&time=${iso(t)}`;
+ const im=await loadImg(src);cx.clearRect(0,0,NX,NY);cx.drawImage(im,0,0);
+ const v=decode(cx.getImageData(0,0,NX,NY).data);for(let i=0;i<v.length;i++)v[i]*=CAL;return v}
+
+async function latest(){
+ if(window.SATSNAP)return new Date(window.SATSNAP.latest);
+ for(const u of [WMS.replace('/ows','/msg_iodc/h63/ows')+'?service=WMS&version=1.3.0&request=GetCapabilities',WMS+'?service=WMS&version=1.3.0&request=GetCapabilities']){
+  try{const tx=await (await fetch(u,{cache:'no-store'})).text();const i=tx.indexOf('<Name>msg_iodc:h63</Name>')>=0?tx.indexOf('<Name>msg_iodc:h63</Name>'):tx.indexOf('<Name>h63</Name>');
+   const m=/<Dimension[^>]*name="time"[^>]*>([^<]*)<\/Dimension>/.exec(tx.slice(Math.max(0,i),i+8000));
+   if(m){const last=m[1].split(',').pop().split('/')[1]||m[1].split(',').pop();const d=new Date(last);if(!isNaN(d))return d}}catch(e){}}
+ const d=new Date(Date.now()-50*60e3);d.setUTCMinutes(Math.floor(d.getUTCMinutes()/15)*15,0,0);return d}
+
+// motion: block matching between the frame 30 min before the latest and the latest
+function blur(a){const o=new Float32Array(a.length);for(let y=0;y<NY;y++)for(let x=0;x<NX;x++){let s=0,n=0;for(let j=-2;j<=2;j++){const yy=y+j;if(yy<0||yy>=NY)continue;for(let i=-2;i<=2;i++){const xx=x+i;if(xx<0||xx>=NX)continue;s+=a[yy*NX+xx];n++}}o[y*NX+x]=s/n}return o}
+function motion(a,b,gap){                            // a older, b newer (gap = frames between), returns per-15-min displacement field in pixels
+ const A=blur(a),B=blur(b),BS=30,ST=15,R=10,bx=[],gx=Math.floor((NX-BS)/ST)+1,gy=Math.floor((NY-BS)/ST)+1;
+ const U=new Float32Array(gx*gy),V=new Float32Array(gx*gy),ok=new Uint8Array(gx*gy);
+ for(let j=0;j<gy;j++)for(let i=0;i<gx;i++){const x0=i*ST,y0=j*ST;let mass=0;
+  for(let y=y0;y<y0+BS;y+=2)for(let x=x0;x<x0+BS;x+=2)mass+=A[y*NX+x];
+  if(mass<40)continue;let best=1e18,bu=0,bv=0;
+  for(let dv=-R;dv<=R;dv++)for(let du=-R;du<=R;du++){let s=0;
+   for(let y=y0;y<y0+BS;y+=2){const yy=y+dv;if(yy<0||yy>=NY){s+=1e3;continue}for(let x=x0;x<x0+BS;x+=2){const xx=x+du;s+=xx<0||xx>=NX?10:Math.abs(A[y*NX+x]-B[yy*NX+xx])}}
+   s+=0.02*(du*du+dv*dv);if(s<best){best=s;bu=du;bv=dv}}
+  U[j*gx+i]=bu/gap;V[j*gx+i]=bv/gap;ok[j*gx+i]=1}
+ const vu=[],vv=[];for(let k=0;k<ok.length;k++)if(ok[k]){vu.push(U[k]);vv.push(V[k])}
+ const med=a=>a.length?a.slice().sort((p,q)=>p-q)[a.length>>1]:0,mu=med(vu),mv=med(vv);
+ for(let k=0;k<ok.length;k++)if(!ok[k]){U[k]=mu;V[k]=mv}
+ const sm=F=>{const o=new Float32Array(F.length);for(let j=0;j<gy;j++)for(let i=0;i<gx;i++){let s=0,n=0;for(let q=-1;q<=1;q++)for(let p=-1;p<=1;p++){const jj=j+q,ii=i+p;if(jj<0||jj>=gy||ii<0||ii>=gx)continue;s+=F[jj*gx+ii];n++}o[j*gx+i]=s/n}return o};
+ const SU=sm(U),SV=sm(V),fu=new Float32Array(NX*NY),fv=new Float32Array(NX*NY);
+ for(let y=0;y<NY;y++)for(let x=0;x<NX;x++){let gi=(x-BS/2)/ST,gj=(y-BS/2)/ST;gi=Math.max(0,Math.min(gx-1.001,gi));gj=Math.max(0,Math.min(gy-1.001,gj));
+  const i0=Math.floor(gi),j0=Math.floor(gj),wi=gi-i0,wj=gj-j0,k=j0*gx+i0;
+  fu[y*NX+x]=(SU[k]*(1-wi)+SU[k+1]*wi)*(1-wj)+(SU[k+gx]*(1-wi)+SU[k+gx+1]*wi)*wj;
+  fv[y*NX+x]=(SV[k]*(1-wi)+SV[k+1]*wi)*(1-wj)+(SV[k+gx]*(1-wi)+SV[k+gx+1]*wi)*wj}
+ return {fu,fv,mu,mv,n:vu.length}}
+function advect(f,M,k){const o=new Float32Array(NX*NY);for(let y=0;y<NY;y++)for(let x=0;x<NX;x++){const i=y*NX+x,sx=x-k*M.fu[i],sy=y-k*M.fv[i];
+ const x0=Math.floor(sx),y0=Math.floor(sy);if(x0<0||y0<0||x0>=NX-1||y0>=NY-1)continue;const wx=sx-x0,wy=sy-y0,p=y0*NX+x0;
+ o[i]=(f[p]*(1-wx)+f[p+1]*wx)*(1-wy)+(f[p+NX]*(1-wx)+f[p+NX+1]*wx)*wy}return o}
+
+// drawing
+const cv=$('cv'),c=cv.getContext('2d'),W=cv.width,H=cv.height,X=lo=>(lo-LON0)/(LON1-LON0)*W,Y=la=>(LAT1-la)/(LAT1-LAT0)*H;
+const rain=c.createImageData(NX,NY),rc=document.createElement('canvas');rc.width=NX;rc.height=NY;const rx=rc.getContext('2d');
+let FR=[],cur=0,timer=null,lastT=null;
+function poly(r){c.beginPath();r.forEach((p,i)=>i?c.lineTo(X(p[0]),Y(p[1])):c.moveTo(X(p[0]),Y(p[1])));c.closePath()}
+function draw(){const G=window.SATGEO||{tn:[],land:[],ct:[]},f=FR[cur];
+ c.fillStyle='#dfe7ec';c.fillRect(0,0,W,H);c.fillStyle='#f3efe6';c.strokeStyle='#9aa7a4';c.lineWidth=.8;G.land.forEach(r=>{poly(r);c.fill();c.stroke()});
+ if(f){const d=rain.data;for(let y=0;y<NY;y++)for(let x=0;x<NX;x++){const v=f.v[(NY-1-y)*NX+x],p=(y*NX+x)*4;let b=-1;for(let q=BINS.length-1;q>=0;q--)if(v>=BINS[q][0]){b=q;break}
+   if(b<0){d[p+3]=0;continue}d[p]=RGB[b][0];d[p+1]=RGB[b][1];d[p+2]=RGB[b][2];d[p+3]=f.fc?185:220}
+  rx.putImageData(rain,0,0);c.imageSmoothingEnabled=false;c.drawImage(rc,0,0,W,H)}
+ c.strokeStyle='rgba(15,42,51,.45)';c.lineWidth=.6;G.tn.forEach(r=>{poly(r);c.stroke()});
+ c.font='600 12px "Anek Latin",system-ui';G.ct.forEach(t=>{const x=X(t[1]),y=Y(t[2]);if(x<0||x>W||y<0||y>H)return;c.fillStyle='#0f2a33';c.beginPath();c.arc(x,y,2.6,0,7);c.fill();
+  c.lineWidth=3;c.strokeStyle='rgba(248,250,249,.9)';const tx=t[3]=='end'?x-5:x+5;c.textAlign=t[3]=='end'?'right':'left';c.strokeText(t[0],tx,y+4);c.fillText(t[0],tx,y+4)});
+ const s=$('stamp');if(f){s.className='stamp'+(f.fc?' fc':'');s.innerHTML=(f.fc?'Forecast ':'Satellite ')+IST(f.t)+' IST<small>'+(f.fc?`+${Math.round((f.t-lastT)/60e3)} min after the last picture`:(f.t.getTime()===lastT.getTime()?'latest picture':'observed'))+(f.now?' · about now':'')+'</small>'}
+ $('sl').value=cur}
+
+async function build(){
+ $('st').textContent='Loading satellite pictures…';
+ try{
+  const L=await latest();
+  const times=[];for(let k=NPAST-1;k>=0;k--)times.push(new Date(L.getTime()-k*STEP*60e3));
+  const vals=await Promise.all(times.map(t=>frame(t).catch(()=>null)));
+  const past=times.map((t,i)=>({t,v:vals[i],fc:false})).filter(f=>f.v);
+  if(past.length<3)throw new Error('too few pictures');
+  const b=past[past.length-1],a=past.find(f=>b.t-f.t>=30*60e3&&b.t-f.t<=45*60e3)||past[past.length-3];
+  const M=motion(a.v,b.v,(b.t-a.t)/(STEP*60e3));
+  const fc=[];for(let k=1;k<=NFC;k++)fc.push({t:new Date(b.t.getTime()+k*STEP*60e3),v:advect(b.v,M,k),fc:true});
+  lastT=b.t;FR=past.concat(fc);
+  const now=Date.now();let ni=FR.length-1,bd=1e18;FR.forEach((f,i)=>{const d=Math.abs(f.t-now);if(d<bd){bd=d;ni=i}});FR.forEach((f,i)=>f.now=i===ni&&f.fc);
+  $('sl').max=FR.length-1;cur=ni;
+  $('t0').textContent=IST(FR[0].t);$('t1').textContent='last picture '+IST(b.t);$('t2').textContent=IST(FR[FR.length-1].t);
+  const spd=Math.hypot(M.mu*DX*111*Math.cos(11*Math.PI/180),M.mv*DY*111)*4;const ang=Math.atan2(M.mv,M.mu)*180/Math.PI;
+  const dirs=['east','north-east','north','north-west','west','south-west','south','south-east'],dir=dirs[((Math.round(ang/45)%8)+8)%8];
+  $('st').innerHTML=`Latest satellite picture: <b>${IST(b.t)} IST</b> (${Math.round((now-b.t)/60e3)} min ago). `+(M.n>=3&&spd>3?`Rain areas are moving <b>${dir}</b> at about ${Math.round(spd)} km/h.`:'Rain areas are nearly stationary or too few to track.')+' Updates by itself every 15 minutes.';
+  draw()}
+ catch(e){$('st').innerHTML='<span class="err">Could not load the satellite pictures right now. The page will try again in a few minutes.</span>';console.error(e)}}
+
+$('sl').oninput=e=>{cur=+e.target.value;draw()};
+$('pl').onclick=()=>{if(timer){clearInterval(timer);timer=null;$('pl').textContent='▶';return}$('pl').textContent='❚❚';timer=setInterval(()=>{cur=(cur+1)%FR.length;draw()},650)};
+cv.addEventListener('click',e=>{const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*NX,y=(e.clientY-r.top)/r.height*NY,f=FR[cur];if(!f)return;
+ const v=f.v[(NY-1-Math.floor(y))*NX+Math.floor(x)],lo=LON0+x*DX,la=LAT1-y*DY;
+ $('tip').innerHTML=`${la.toFixed(2)}°N ${lo.toFixed(2)}°E at ${IST(f.t)} IST: `+(v>=0.5?`<b>${v.toFixed(1)} mm/h</b>`:'no rain shown')+(f.fc?' (forecast)':'')});
+build();
+if(!window.SATSNAP)setInterval(async()=>{const L=await latest();if(!lastT||L>lastT)build()},5*60e3);
+})();
+</script></body></html>
