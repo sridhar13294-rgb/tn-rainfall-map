@@ -127,7 +127,7 @@
       ov.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(8,20,24,.86);display:flex;flex-direction:column;align-items:center;padding:16px;overflow:auto;font:15px/1.45 "Anek Latin",system-ui,sans-serif;color:#fff';
       document.body.appendChild(ov);
     }
-    const url = canvas.toDataURL('image/jpeg', 0.9), isPdf = /\.pdf$/.test(name);
+    const url = blob && blob.type === 'image/gif' ? URL.createObjectURL(blob) : canvas.toDataURL('image/jpeg', 0.9), isPdf = /\.pdf$/.test(name);
     ov.innerHTML = `<div style="max-width:560px;width:100%"><p style="margin:4px 0 10px"><b>${name}</b><br>${
       how === 'shared' ? 'Sent.' : how === 'cancelled' ? 'Not saved.' : 'Downloading.'} Not in your Downloads? ${isPdf ? 'Tap Open PDF, or press' : 'Press'} and hold the picture and choose <b>Download image</b>.</p>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">${isPdf ? '<button data-a="open" style="flex:1">Open PDF</button>' : ''}<button data-a="share" style="flex:1">Share or save</button><button data-a="close" style="flex:1">Close</button></div>
@@ -165,6 +165,7 @@
   }
 
   // a "Download this map" row: getOpts() returns {svg, title, sub, legend, legendTitle, note, file}
+  window.saveFile = save;                     // used by the Sat radar page for its picture and GIF downloads
   window.mapDownload = function (container, getOpts) {
     const row = document.createElement('div');
     row.className = 'dl';

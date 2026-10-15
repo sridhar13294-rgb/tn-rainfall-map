@@ -2065,6 +2065,18 @@ def main():
                                                                     [int(round(x * 2)) for x in wind_raw[s][l]['v']]] for s in frames]
                             for l in LEVELS})
         status['wind'] = f'ok ({len(frames)} frames)'
+        # steering wind for the Sat radar page: weighted mean of 850/700/500 hPa (the levels that carry rain clouds), m/s
+        try:
+            st = [s_ for s_ in frames if (gfs.run + dt.timedelta(hours=s_)) <= now + dt.timedelta(hours=54)]
+            wts = (('850', .25), ('700', .5), ('500', .25))
+            steer = dict(run=gfs.run.strftime('%Y-%m-%dT%HZ'), lat0=lats[0], lon0=lons[0], step=WIND_BOX['step'], ny=len(lats), nx=len(lons),
+                         times=[(gfs.run + dt.timedelta(hours=s_)).strftime('%Y-%m-%dT%H:%MZ') for s_ in st],
+                         u=[[round(sum(w * wind_raw[s_][l]['u'][k] for l, w in wts), 1) for k in range(len(lats) * len(lons))] for s_ in st],
+                         v=[[round(sum(w * wind_raw[s_][l]['v'][k] for l, w in wts), 1) for k in range(len(lats) * len(lons))] for s_ in st])
+            json.dump(steer, open(P('site/steer.json'), 'w'), separators=(',', ':'))
+            status['steer'] = f'ok ({len(st)} times)'
+        except Exception as e:
+            status['steer'] = f'FAILED: {e}'
     else:
         status['wind'] = 'FAILED: no complete GFS wind frames'
         try:
