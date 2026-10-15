@@ -1,7 +1,323 @@
 {
- "updated": "2026-10-15T11:28Z",
+ "updated": "2026-10-15T18:38Z",
  "gauge_cells": 183,
  "window_days": 30,
+ "satellite": {
+  "vs_gauges": {
+   "days": 6,
+   "cells": 1098,
+   "mae": 2.6,
+   "bias": 0.92,
+   "pod": 0.65,
+   "far": 0.31,
+   "ets": 0.42,
+   "heavy": {
+    "hit": 1,
+    "miss": 0,
+    "false": 3
+   }
+  },
+  "used_for_weights": true,
+  "share": 0.3,
+  "weight_detail": {
+   "GFS": {
+    "gauge_mae": 4.01,
+    "sat_mae": 3.98,
+    "sat_days": 6,
+    "combined_mae": 4.0
+   },
+   "ECMWF": {
+    "gauge_mae": 4.18,
+    "sat_mae": 3.79,
+    "sat_days": 6,
+    "combined_mae": 4.07
+   },
+   "ECMWF AI": {
+    "gauge_mae": 3.98,
+    "sat_mae": 3.48,
+    "sat_days": 6,
+    "combined_mae": 3.83
+   },
+   "GEM": {
+    "gauge_mae": 3.99,
+    "sat_mae": 3.7,
+    "sat_days": 6,
+    "combined_mae": 3.9
+   },
+   "ICON": {
+    "gauge_mae": 3.18,
+    "sat_mae": 2.91,
+    "sat_days": 6,
+    "combined_mae": 3.1
+   }
+  },
+  "models_vs_satellite": {
+   "GFS": {
+    "1": {
+     "days": 6,
+     "cells": 1386,
+     "mae": 3.8,
+     "bias": 1.38,
+     "pod": 0.86,
+     "far": 0.59,
+     "ets": 0.24,
+     "heavy": {
+      "hit": 0,
+      "miss": 2,
+      "false": 3
+     }
+    },
+    "2": {
+     "days": 5,
+     "cells": 1155,
+     "mae": 4.1,
+     "bias": 1.32,
+     "pod": 0.66,
+     "far": 0.63,
+     "ets": 0.19,
+     "heavy": {
+      "hit": 0,
+      "miss": 2,
+      "false": 5
+     }
+    },
+    "3": {
+     "days": 4,
+     "cells": 924,
+     "mae": 3.1,
+     "bias": 0.45,
+     "pod": 0.38,
+     "far": 0.55,
+     "ets": 0.16,
+     "heavy": {
+      "hit": 0,
+      "miss": 2,
+      "false": 0
+     }
+    }
+   },
+   "ECMWF": {
+    "1": {
+     "days": 6,
+     "cells": 1386,
+     "mae": 3.8,
+     "bias": 1.46,
+     "pod": 0.97,
+     "far": 0.59,
+     "ets": 0.26,
+     "heavy": {
+      "hit": 0,
+      "miss": 2,
+      "false": 0
+     }
+    },
+    "2": {
+     "days": 5,
+     "cells": 1155,
+     "mae": 3.8,
+     "bias": 1.48,
+     "pod": 0.8,
+     "far": 0.63,
+     "ets": 0.2,
+     "heavy": {
+      "hit": 0,
+      "miss": 2,
+      "false": 0
+     }
+    },
+    "3": {
+     "days": 4,
+     "cells": 924,
+     "mae": 3.2,
+     "bias": 0.89,
+     "pod": 0.7,
+     "far": 0.55,
+     "ets": 0.25,
+     "heavy": {
+      "hit": 0,
+      "miss": 2,
+      "false": 0
+     }
+    }
+   },
+   "ECMWF AI": {
+    "1": {
+     "days": 6,
+     "cells": 1386,
+     "mae": 3.7,
+     "bias": 1.52,
+     "pod": 0.99,
+     "far": 0.59,
+     "ets": 0.27,
+     "heavy": {
+      "hit": 0,
+      "miss": 2,
+      "false": 0
+     }
+    },
+    "2": {
+     "days": 5,
+     "cells": 1155,
+     "mae": 3.3,
+     "bias": 1.4,
+     "pod": 1.0,
+     "far": 0.58,
+     "ets": 0.29,
+     "heavy": {
+      "hit": 0,
+      "miss": 2,
+      "false": 0
+     }
+    },
+    "3": {
+     "days": 4,
+     "cells": 924,
+     "mae": 3.7,
+     "bias": 1.47,
+     "pod": 1.0,
+     "far": 0.57,
+     "ets": 0.29,
+     "heavy": {
+      "hit": 0,
+      "miss": 2,
+      "false": 0
+     }
+    }
+   },
+   "GEM": {
+    "1": {
+     "days": 6,
+     "cells": 1386,
+     "mae": 3.8,
+     "bias": 1.44,
+     "pod": 0.77,
+     "far": 0.53,
+     "ets": 0.29,
+     "heavy": {
+      "hit": 0,
+      "miss": 2,
+      "false": 4
+     }
+    },
+    "2": {
+     "days": 5,
+     "cells": 1155,
+     "mae": 3.6,
+     "bias": 1.45,
+     "pod": 0.79,
+     "far": 0.49,
+     "ets": 0.35,
+     "heavy": {
+      "hit": 0,
+      "miss": 2,
+      "false": 3
+     }
+    },
+    "3": {
+     "days": 4,
+     "cells": 924,
+     "mae": 5.3,
+     "bias": 2.06,
+     "pod": 0.85,
+     "far": 0.51,
+     "ets": 0.33,
+     "heavy": {
+      "hit": 0,
+      "miss": 2,
+      "false": 8
+     }
+    }
+   },
+   "ICON": {
+    "1": {
+     "days": 6,
+     "cells": 1386,
+     "mae": 3.1,
+     "bias": 0.71,
+     "pod": 0.57,
+     "far": 0.54,
+     "ets": 0.23,
+     "heavy": {
+      "hit": 0,
+      "miss": 2,
+      "false": 0
+     }
+    },
+    "2": {
+     "days": 5,
+     "cells": 1155,
+     "mae": 2.6,
+     "bias": 0.45,
+     "pod": 0.36,
+     "far": 0.5,
+     "ets": 0.19,
+     "heavy": {
+      "hit": 0,
+      "miss": 2,
+      "false": 0
+     }
+    },
+    "3": {
+     "days": 4,
+     "cells": 924,
+     "mae": 3.3,
+     "bias": 0.23,
+     "pod": 0.08,
+     "far": 0.78,
+     "ets": 0.01,
+     "heavy": {
+      "hit": 0,
+      "miss": 2,
+      "false": 0
+     }
+    }
+   },
+   "Average": {
+    "1": {
+     "days": 6,
+     "cells": 1386,
+     "mae": 3.3,
+     "bias": 1.3,
+     "pod": 1.0,
+     "far": 0.57,
+     "ets": 0.29,
+     "heavy": {
+      "hit": 0,
+      "miss": 2,
+      "false": 0
+     }
+    },
+    "2": {
+     "days": 5,
+     "cells": 1155,
+     "mae": 3.1,
+     "bias": 1.22,
+     "pod": 0.95,
+     "far": 0.55,
+     "ets": 0.31,
+     "heavy": {
+      "hit": 0,
+      "miss": 2,
+      "false": 0
+     }
+    },
+    "3": {
+     "days": 4,
+     "cells": 924,
+     "mae": 3.1,
+     "bias": 1.02,
+     "pod": 0.98,
+     "far": 0.5,
+     "ets": 0.37,
+     "heavy": {
+      "hit": 0,
+      "miss": 2,
+      "false": 0
+     }
+    }
+   }
+  }
+ },
  "min_days": 10,
  "scores": {
   "GFS": {
@@ -280,7 +596,8 @@
     "GEM": 4.2,
     "ICON": 5.3,
     "Average": 6.5
-   }
+   },
+   "sat": 3.5
   },
   {
    "date": "2026-10-11",
@@ -292,7 +609,8 @@
     "GEM": 1.9,
     "ICON": 1.6,
     "Average": 2.7
-   }
+   },
+   "sat": 0.4
   },
   {
    "date": "2026-10-12",
@@ -304,7 +622,8 @@
     "GEM": 1.0,
     "ICON": 0.6,
     "Average": 1.3
-   }
+   },
+   "sat": 0.6
   },
   {
    "date": "2026-10-13",
@@ -316,7 +635,8 @@
     "GEM": 1.2,
     "ICON": 0.4,
     "Average": 1.4
-   }
+   },
+   "sat": 0.5
   },
   {
    "date": "2026-10-14",
@@ -328,7 +648,8 @@
     "GEM": 2.0,
     "ICON": 0.4,
     "Average": 1.6
-   }
+   },
+   "sat": 1.1
   },
   {
    "date": "2026-10-15",
@@ -340,7 +661,8 @@
     "GEM": 13.3,
     "ICON": 3.5,
     "Average": 8.5
-   }
+   },
+   "sat": 10.1
   }
  ],
  "weights": null,
