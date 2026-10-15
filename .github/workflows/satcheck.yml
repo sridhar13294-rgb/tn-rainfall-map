@@ -1,0 +1,30 @@
+name: Satellite radar check vs IMD radar (every 30 min)
+# Compares our satellite radar with IMD's Chennai and Karaikal radars in the background and keeps the correction
+# up to date. The code and results live on the sat-radar branch; nothing on the website changes from this job.
+on:
+  schedule:
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: satcheck
+  cancel-in-progress: false
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: sat-radar}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install numpy pillow matplotlib
+      - run: python scripts/radarcheck.py cron
+        env: {CRON: '1'}
+      - if: always()
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add data/satradar
+          git commit -m "Satellite radar check $(TZ=Asia/Kolkata date '+%Y-%m-%d %H:%M IST')" || exit 0
+          for i in 1 2 3; do git pull --rebase origin sat-radar && git push origin HEAD:sat-radar && break; sleep 5; done
