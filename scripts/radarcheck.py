@@ -270,6 +270,12 @@ def motion_check(now, L, Li):
             except Exception: pass
     try: S = json.loads(get('https://raw.githubusercontent.com/sridhar13294-rgb/tn-rainfall-map/main/site/steer.json'))
     except Exception: S = None
+    LH = []                                                        # lightning movement history (IMD lightning maps, every 15 min)
+    try:
+        for line in get('https://raw.githubusercontent.com/sridhar13294-rgb/tn-rainfall-map/lightning-data/hist.jsonl').decode().splitlines():
+            try: h = json.loads(line); LH.append((dt.datetime.fromisoformat(h['t_end']), h['vectors']))
+            except Exception: pass
+    except Exception: pass
     files = sorted(glob.glob(f'{H}/*.npz'))
     for f1 in files:
         n1, s1 = os.path.basename(f1)[:-4].split('_'); t1 = dt.datetime.strptime(s1, '%Y%m%d%H%M%S').replace(tzinfo=UTC)
@@ -288,14 +294,21 @@ def motion_check(now, L, Li):
                 rain = block_motion(np.where(mask, sat_frame(ts1), 0), np.where(mask, sat_frame(ts2), 0), sm)
                 C1 = np.maximum(0, -40 - ir_frame(ts1)) / 3; C2 = np.maximum(0, -40 - ir_frame(ts2)) / 3
                 core = block_motion(np.where(mask, C1, 0), np.where(mask, C2, 0), sm, need=10)
-                err = {'core': [], 'rain': [], 'steer': [], 'still': []}
+                err = {'core': [], 'rain': [], 'steer': [], 'light': [], 'still': []}
+                lv = min(LH, key=lambda h: abs((h[0] - (t1 + (t2 - t1) / 2)).total_seconds()), default=None)
+                lv = lv[1] if lv and abs((lv[0] - (t1 + (t2 - t1) / 2)).total_seconds()) <= 25 * 60 else []
                 for x, y, u, v, n in tr:
                     for name, vecs in (('core', core), ('rain', rain)):
                         q = nearest(vecs, x, y)
                         if q: err[name].append(math.hypot(q[0] - u, q[1] - v))
+                    lo, la = LON0 + (x + .5) * (LON1 - LON0) / NX, LAT0 + (y + .5) * (LAT1 - LAT0) / NY
                     if S:
-                        lo, la = LON0 + (x + .5) * (LON1 - LON0) / NX, LAT0 + (y + .5) * (LAT1 - LAT0) / NY; q = steer_at(S, lo, la, t1)
+                        q = steer_at(S, lo, la, t1)
                         if q: err['steer'].append(math.hypot(q[0] - u, q[1] - v))
+                    near = [w for w in lv if abs(w[0] - lo) <= 0.35 and abs(w[1] - la) <= 0.35]
+                    if near:
+                        q = min(near, key=lambda w: (w[0] - lo) ** 2 + (w[1] - la) ** 2)
+                        err['light'].append(math.hypot(q[2] * 3.6 - u, q[3] * 3.6 - v))
                     err['still'].append(math.hypot(u, v))
                 rec = dict(key=key, radar=n1, t1=t1.isoformat(), minutes=round(mins), cells=len(tr),
                            radar_kmh=round(float(np.median([math.hypot(u, v) for _, _, u, v, _ in tr])), 1),
@@ -316,7 +329,7 @@ def motion_check(now, L, Li):
             except Exception: pass
     if len(recs) >= 4:
         me = {}
-        for k in ('core', 'rain', 'steer'):
+        for k in ('core', 'rain', 'steer', 'light'):
             tot = sum(r['mean_error_kmh'][k] * r['n'][k] for r in recs if r['mean_error_kmh'].get(k) is not None)
             n = sum(r['n'][k] for r in recs if r['mean_error_kmh'].get(k) is not None)
             if n >= 10: me[k] = tot / n
