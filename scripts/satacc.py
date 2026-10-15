@@ -66,15 +66,15 @@ def blend(key, info):
         la_max = float(A.get('geospatial_lat_max', 65)); la_min = float(A.get('geospatial_lat_min', -65))
         lo_min = float(A.get('geospatial_lon_min', -180)); lo_max = float(A.get('geospatial_lon_max', 180))
         dla = (la_max - la_min) / (ny - 1); dlo = (lo_max - lo_min) / nx
-        lat = la_max - dla * np.arange(ny); lon = lo_min + dlo * (np.arange(nx) + .5)
+        lat = la_max - dla * np.arange(ny); lon = lo_min + 0.02 * np.arange(nx)
     if 'sel' not in _idx:
         la = np.asarray(lat); lo = np.asarray(lon) % 360
         tl = LAT0 + STEP * (np.arange(NY) + .5); tn = LON0 + STEP * (np.arange(NX) + .5)
         _idx['sel'] = (np.abs(la[:, None] - tl[None]).argmin(0), np.abs(lo[:, None] - tn[None]).argmin(0))
         info['var'] = var; info['lat_range'] = [float(la.min()), float(la.max())]; info['lon_range'] = [float(lo.min()), float(lo.max())]
     j, i = _idx['sel']
-    a = np.asarray(v[j.min():j.max() + 1, i.min():i.max() + 1], float)[np.ix_(j - j.min(), i - i.min())] if j[0] <= j[-1] else \
-        np.asarray(v[j.max():j.min() + 1, i.min():i.max() + 1], float)[np.ix_(j - j.max(), i - i.min())]
+    a = np.asarray(v[j.min():j.max() + 1, i.min():i.max() + 1], float)[np.ix_(j - j.min(), i - i.min())]
+    a[a < 0] = np.nan
     a[~np.isfinite(a)] = np.nan
     ds.close()
     return a
