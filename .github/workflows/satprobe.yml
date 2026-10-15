@@ -1,24 +1,24 @@
-name: Satellite radar test (sat-radar branch only)
+name: Satellite radar check vs IMD radar (sat-radar branch only)
 on:
   push:
     branches: [sat-radar]
-    paths: ['scripts/sattest.py', 'site/satradar.html', 'site/satgeo.js', '.github/workflows/satprobe.yml']
+    paths: ['scripts/radarcheck.py', '.github/workflows/satprobe.yml']
 permissions:
   contents: write
 jobs:
-  test:
+  check:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 100
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: '3.11'}
-      - run: pip install playwright && python -m playwright install --with-deps chromium
-      - run: python scripts/sattest.py
+      - run: pip install numpy pillow matplotlib
+      - run: python scripts/radarcheck.py
       - if: always()
         run: |
           git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
           git pull --rebase || true
           git add data/satradar
-          git commit -m "Satellite radar live test" || true
+          git commit -m "Satellite radar check vs IMD radar" || true
           git push || true
