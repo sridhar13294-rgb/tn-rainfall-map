@@ -1,0 +1,22 @@
+name: Sat radar views test (sat-ranges branch only)
+on:
+  push:
+    branches: [sat-ranges]
+    paths: ['site/satradar.html', 'site/satgeo.js', 'scripts/satrangetest.py', '.github/workflows/satrangetest.yml']
+permissions:
+  contents: write
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install playwright && python -m playwright install --with-deps chromium
+      - run: python scripts/satrangetest.py
+      - if: always()
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add data/satranges && git commit -m "Sat radar views test" || exit 0
+          git pull --rebase origin sat-ranges && git push origin HEAD:sat-ranges
