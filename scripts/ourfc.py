@@ -17,6 +17,8 @@ import numpy as np
 import verify
 
 LOCAL_DAYS = 14          # local factor: last 14 days
+TOTAL_FROM_BIAS = False  # day total = the models' total (True: corrected by their recent wet/dry tendency; too few days yet)
+LOCAL = (0.5, 2.0, 5.0)  # local factor limits (low, high) and how many days of evidence count as half-sure
 PRIOR = 40.0             # pull towards "just the model average" (in squares x days of evidence)
 MIN_SAMPLES = 150
 SATGAUGE = 'https://raw.githubusercontent.com/sridhar13294-rgb/tn-rainfall-map/sat-radar/data/satradar/satgauge.json'
@@ -85,6 +87,20 @@ def _fit(X, y, w, prior):
     return np.linalg.solve(A, rhs)
 
 
+def _qmap(score, obs, w, nq=41):
+    """Weighted quantile matching: points (score quantile -> observed amount quantile)."""
+    def wq(v, q):
+        i = np.argsort(v); v, ww = v[i], w[i]; c = (np.cumsum(ww) - ww / 2) / ww.sum()
+        return np.interp(q, c, v)
+    qs = np.linspace(0, 1, nq) ** 0.6                     # finer steps at the wet end
+    a, b = wq(score, qs), wq(obs, qs)
+    xs, ys = [], []
+    for x, y in zip(a, b):
+        if not xs or x > xs[-1] + 1e-6:
+            xs.append(round(float(x), 4)); ys.append(round(float(max(y, ys[-1] if ys else 0)), 2))
+    return [xs, ys]
+
+
 def train(pts, now):
     """Learn from saved forecasts (the other models' average) and what fell afterwards. Returns the model dict."""
     sat_w, sat_ets = _sat_weight()
@@ -126,13 +142,19 @@ def train(pts, now):
         y = [math.log1p(s[3]) for s in S]
         w = [s[4] for s in S]
         c = _fit(X, y, w, [0, 1, 0, 0])
-        pred = [math.expm1(max(0, float(np.dot(c, x)))) for x in X]
-        tot_o = sum(s[3] * s[4] for s in S); tot_p = sum(p * s[4] for p, s in zip(pred, S))
-        scale = min(3.0, max(0.33, tot_o / tot_p)) if tot_p > 0 else 1.0     # keep the total amount right
+        # amounts: the regression only says WHERE rain is more or less likely; the amounts come from matching its ranking
+        # to the real spread of TN SMART / satellite amounts (so light stays light and heavy spots stay heavy)
+        sc_ = np.array([float(np.dot(c, x)) for x in X]); ob = np.array([s[3] for s in S]); ww = np.array(w)
+        qm = _qmap(sc_, ob, ww)
+        pred = [float(np.interp(v, qm[0], qm[1])) for v in sc_]
+        scale = 1.0
+        # overall wet/dry tendency of the model average on these days (sets each forecast day's total, see redistribute)
+        tot_a = sum(s[0] * s[4] for s in S); tot_o = sum(s[3] * s[4] for s in S)
+        bias = round(min(1.5, max(0.5, tot_o / tot_a)), 3) if tot_a > 0 else 1.0
         # skill on the training days, against the plain model average (same squares, same weights)
         def mae(vals):
             return sum(abs(v - s[3]) * s[4] for v, s in zip(vals, S)) / sum(s[4] for s in S)
-        model['leads'][str(L)] = dict(coef=[round(float(x), 4) for x in c], scale=round(scale, 3), samples=len(S),
+        model['leads'][str(L)] = dict(coef=[round(float(x), 4) for x in c], scale=round(scale, 3), qmap=qm, total_factor=bias, samples=len(S),
                                       days=len({s[6] for s in S}), mae_ours=round(mae([p * scale for p in pred]), 2),
                                       mae_average=round(mae([s[0] for s in S]), 2))
         if L in (1, 2):
@@ -143,9 +165,10 @@ def train(pts, now):
     local = {}
     for i, rs in resid.items():
         o = sum(r[0] * r[2] for r in rs); p = sum(r[1] * r[2] for r in rs); n = sum(r[2] for r in rs)
-        k = n / (n + 5)
-        f = (o + 5) / (p + 5)
-        local[i] = round(max(0.5, min(2.0, 1 + k * (f - 1))), 2)
+        lo, hi, k0 = LOCAL
+        k = n / (n + k0)
+        f = (o + 2) / (p + 2)
+        local[i] = round(max(lo, min(hi, math.exp(k * math.log(f)))), 2)
     model['local'] = local
     latest = next((d for d in [last_day - dt.timedelta(days=b) for b in range(0, 6)] if O.day(d)), None)
     model['latest_obs_day'] = latest.isoformat() if latest else None
@@ -170,8 +193,28 @@ def predict(model, avg, lead, i, recent):
             x += fade * (c[2] * math.log1p(r1) + c[3] * math.log1p(r3))
     else:
         x = c[0] + c[1] * math.log1p(avg) + c[2] * math.log1p(r1) + c[3] * math.log1p(r3)
-    v = math.expm1(max(0.0, x)) * sc * float(model['local'].get(i, model['local'].get(str(i), 1.0)))
+    q = m.get('qmap')
+    if q and len(q[0]) >= 2:
+        v = float(np.interp(x, q[0], q[1]))
+        if x > q[0][-1]:                                       # beyond the wettest day learned: keep growing with the score
+            v = q[1][-1] * math.exp(x - q[0][-1])
+    else:
+        v = math.expm1(max(0.0, x)) * sc
+    v *= float(model['local'].get(i, model['local'].get(str(i), 1.0)))
     return round(v, 1)
+
+
+def forecast_day(model, avgs, lead, recent):
+    """Our rain for every square of one day: WHERE and how concentrated from our model, HOW MUCH in total from the
+    models' total corrected by their recent wet/dry tendency (so a wet day stays wet and a dry day stays dry)."""
+    raw = [predict(model, a, lead, i, recent.get(i)) for i, a in enumerate(avgs)]
+    m = model['leads'].get(str(min(max(lead, 1), 3))) or {}
+    tf = m.get('total_factor', 1.0) if TOTAL_FROM_BIAS else 1.0
+    tot_a = sum(a for a in avgs if a is not None); tot_r = sum(r for r in raw if r is not None)
+    if tot_r <= 0 or tot_a <= 0:
+        return raw
+    k = tot_a * tf / tot_r
+    return [round(r * k, 1) if r is not None else None for r in raw]
 
 
 def confidence(model_vals, lead, support):
