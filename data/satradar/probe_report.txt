@@ -1,0 +1,60 @@
+probe at 2026-10-15T10:04:32.146050+00:00
+
+== S3 noaa-enterprise-rainrate-pds
+  level 0 prefix='': 5 folders, 1 files; folders: ['BLEND/', 'G16/', 'G18/', 'G19/', 'Himawari-9/'] ... ['BLEND/', 'G16/', 'G18/', 'G19/', 'Himawari-9/']
+    ('index.html', '2025-11-24T20:33:53.000Z', 36822)
+  newest file index.html size 36822 uploaded 2025-11-24T20:33:53.000Z -> 467371 min ago
+  downloaded 0.0 MB in 0s; magic b'<!DOCTYP'
+
+== S3 noaa-ghe-pds
+  level 0 prefix='': 1 folders, 3 files; folders: ['rain_rate/'] ... ['rain_rate/']
+    ('NPR.GEO.GHE.v1.Navigation.netcdf.gz', '2019-06-26T15:45:47.000Z', 169763842)
+    ('NPR.GEO.GHE.v1.Navigation.netcdf', '2019-06-26T15:46:09.000Z', 384768516)
+    ('index.html', '2021-09-27T19:48:05.000Z', 32357)
+  newest file index.html size 32357 uploaded 2021-09-27T19:48:05.000Z -> 2654776 min ago
+  downloaded 0.0 MB in 0s; magic b'<!DOCTYP'
+
+== EUMETView WMS capabilities
+  116 layers
+    msg_iodc:clm | Cloud Mask - MSG - Indian Ocean
+    msg_iodc:cth | Cloud Top Height - MSG - Indian Ocean
+    msg_iodc:fire | Active Fire Monitoring (GRIB) - MSG - Indian Ocean
+    msg_iodc:gii_kindex | Global Instability K-Index - MSG - Indian Ocean
+    msg_iodc:gii_liftedindex | Global Instability Lifted-Index – MSG – Indian Ocean
+    mtg_fd:h40b | Blended FCI / LEO MW precipitation - MTG - 0 degree
+    msg_fes:h60b | Blended SEVIRI / LEO MW precipitation and morphologic information - MSG - 0 degree
+    msg_iodc:h63 | Precipitation rate at ground by GEO/IR supported by LEO/MW - MSG - Indian Ocean
+    msg_iodc:ir039 | High Rate SEVIRI IR3.9 μm Image - MSG - Indian Ocean
+    msg_iodc:ir108 | High Rate SEVIRI IR10.8 μm Image - MSG - Indian Ocean
+    eps:osisaf_avhrr_l3_sst | Global L3C AVHRR Sea Surface Temperature (GHRSST) - Metop
+    msg_fes:rdt | Rapidly Developing Thunderstorms - MSG - 0 degree
+    msg_iodc:rgb_airmass | Airmass RGB - MSG - Indian Ocean
+    msg_iodc:rgb_ash | Volcanic Ash RGB - MSG - Indian Ocean
+    msg_iodc:rgb_convection | Convection RGB - MSG - Indian Ocean
+    msg_iodc:rgb_dust | Dust RGB - MSG - Indian Ocean
+    msg_iodc:rgb_eview | European HRV RGB - MSG - Indian Ocean
+    mtg_fd:rgb_firetemperature | Fire Temperature RGB - MTG-I - 0 degree
+    msg_iodc:rgb_fog | Fog / Low Clouds RGB - MSG - Indian Ocean
+    msg_iodc:rgb_microphysics | Day Microphysics RGB - MSG - Indian Ocean
+    msg_iodc:rgb_natural | Natural Colour RGB - MSG - Indian Ocean
+    msg_iodc:rgb_naturalenhncd | Natural Colour Enhanced RGB - MSG - Indian Ocean
+    msg_iodc:rgb_snow | Snow RGB - MSG - Indian Ocean
+    msg_iodc:rgb_tropicalairmass | Tropical Airmass RGB - MSG - Indian Ocean
+    copernicus:sentinel3a_slstr_l2p_sst_fullres | SLSTR Level 2 Sea Surface Temperature (SST) - Sentinel-3A
+    copernicus:sentinel3b_slstr_l2p_sst_fullres | SLSTR Level 2 Sea Surface Temperature (SST) - Sentinel-3B
+    msg_iodc:vis006 | High Rate SEVIRI VIS0.6 μm Image - MSG - Indian Ocean
+    msg_iodc:wv062 | High Rate SEVIRI WV6.2 μm Image - MSG - Indian Ocean
+
+== IMD radar images
+  caz_cni: 297927 bytes, Last-Modified Thu, 15 Oct 2026 10:00:01 GMT
+  ppz_cni: 384090 bytes, Last-Modified Thu, 15 Oct 2026 10:00:06 GMT
+  ppi_cni: 373673 bytes, Last-Modified Thu, 15 Oct 2026 10:00:05 GMT
+  caz_kkl: 128336 bytes, Last-Modified Thu, 15 Oct 2026 10:00:01 GMT
+  ppz_kkl: 142915 bytes, Last-Modified Thu, 15 Oct 2026 10:00:06 GMT
+  ppi_kkl: 148199 bytes, Last-Modified Thu, 15 Oct 2026 10:00:05 GMT
+  caz_plk: 1521485 bytes, Last-Modified Thu, 15 Oct 2026 10:00:03 GMT
+  ppz_plk: 2244170 bytes, Last-Modified Thu, 15 Oct 2026 10:00:06 GMT
+  ppi_plk: 1478061 bytes, Last-Modified Thu, 15 Oct 2026 10:05:03 GMT
+  caz_shr: 1685119 bytes, Last-Modified Thu, 15 Oct 2026 10:05:01 GMT
+  ppz_shr: 2283279 bytes, Last-Modified Thu, 15 Oct 2026 10:05:03 GMT
+  ppi_shr: 2072813 bytes, Last-Modified Thu, 15 Oct 2026 10:05:03 GMT
