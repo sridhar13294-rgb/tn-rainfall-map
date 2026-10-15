@@ -1,0 +1,22 @@
+name: Direction check vs IMD Chennai radar (sat-ranges branch only)
+on:
+  push:
+    branches: [sat-ranges]
+    paths: ['scripts/dircheck.py', '.github/workflows/dircheck.yml']
+permissions:
+  contents: write
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install numpy pillow matplotlib
+      - run: PYTHONPATH=scripts python scripts/dircheck.py
+      - if: always()
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add data/dircheck && git commit -m "Direction check vs Chennai radar" || exit 0
+          git pull --rebase origin sat-ranges && git push origin HEAD:sat-ranges
