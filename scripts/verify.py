@@ -9,7 +9,7 @@ When gauge readings for a day arrive (data/daily/D.json, saved by the rainfall-m
 scored on the 0.25 degree forecast cells that hold at least one gauge (gauges in a cell are averaged).
 Lead 1 = the latest run made 0-24 h before the window starts, lead 2 = 24-48 h, lead 3 = 48-72 h.
 """
-import datetime as dt, json, math, os
+import datetime as dt, json, math, os, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 P = lambda *a: os.path.join(ROOT, *a)
@@ -21,6 +21,31 @@ WINDOW_DAYS = 30          # scores and weights use the last 30 verified days
 MIN_DAYS = 10             # weights switch on once every model has this many verified days at leads 1-2
 RAIN = 2.5                # IMD rainy-day threshold (mm)
 HEAVY = 64.5              # IMD heavy rain (mm)
+SATDAILY = 'https://raw.githubusercontent.com/sridhar13294-rgb/tn-rainfall-map/sat-radar/data/satradar/satdaily/{}.json'
+
+
+def sat_day(day):
+    """Satellite day total (our Sat radar's pictures added up, gauge-fitted correction) for TN SMART day `day`, or None."""
+    try:
+        with urllib.request.urlopen(urllib.request.Request(SATDAILY.format(day.isoformat()), headers={'User-Agent': 'tn-rainfall-map'}), timeout=30) as r:
+            return json.loads(r.read())
+    except Exception:
+        return None
+
+
+def sat_at(S, lo, la):
+    """Mean of the satellite 0.1 degree grid over a 0.25 degree forecast square centred at (lo, la)."""
+    g = S.get('grid') if S else None
+    if not g:
+        return None
+    v, st = [], g['step']
+    for j in range(max(0, int((la - 0.125 - g['lat0']) / st) - 1), min(g['ny'], int((la + 0.125 - g['lat0']) / st) + 2)):
+        if abs(g['lat0'] + (j + .5) * st - la) > 0.125:
+            continue
+        for i in range(max(0, int((lo - 0.125 - g['lon0']) / st) - 1), min(g['nx'], int((lo + 0.125 - g['lon0']) / st) + 2)):
+            if abs(g['lon0'] + (i + .5) * st - lo) <= 0.125:
+                v.append(g['mm'][j * g['nx'] + i])
+    return sum(v) / len(v) if len(v) >= 4 else None
 BLOCK_W = (0.5, 1, 1, 1, 0.5)
 
 
@@ -175,6 +200,7 @@ def verify(pts, now):
         return cache[path]
 
     stats, daily_series, verified = {}, [], {}
+    sat_stats, sat_days, vs_sat, vs_days = _empty(), 0, {}, {}
     for day in obs_days:
         obs = json.load(open(OBS('data', 'daily', day.isoformat() + '.json')))
         ob_cell = {}
@@ -186,6 +212,19 @@ def verify(pts, now):
             continue
         ws = window_start(day)
         row = dict(date=day.isoformat(), obs=round(sum(ob_cell.values()) / len(ob_cell), 1), fc={})
+        # satellite estimate on the same gauge squares (same gauges averaged), scored like a model
+        S = sat_day(day); sat_cell = {}
+        if S and S.get('gauges'):
+            for i, sids in cells.items():
+                v = [S['gauges'][k] for k in sids if obs.get(k) is not None and k in S['gauges']]
+                if v and i in ob_cell:
+                    sat_cell[i] = sum(v) / len(v)
+            if len(sat_cell) >= 20:
+                for i, sv in sat_cell.items():
+                    _add(sat_stats, sv, ob_cell[i])
+                sat_days += 1
+                row['sat'] = round(sum(sat_cell.values()) / len(sat_cell), 1)
+        sat_all = {i: v for i, v in ((i, sat_at(S, pts[i][0], pts[i][1])) for i in range(len(pts))) if v is not None} if S else {}
         for lead in (1, 2, 3):
             cand = [(t, p) for t, p in runs if ws - dt.timedelta(hours=24 * lead) <= t < ws - dt.timedelta(hours=24 * (lead - 1))]
             if not cand:
@@ -201,6 +240,11 @@ def verify(pts, now):
                 verified.setdefault(n, {}).setdefault(lead, set()).add(day)
                 if lead == 1:
                     row['fc'][n] = round(sum(arr[i] / 10 for i in ob_cell) / len(ob_cell), 1)
+                    if len(sat_all) >= 50:                                # every square, with or without gauges
+                        sv = vs_sat.setdefault(n, _empty())
+                        for i, v in sat_all.items():
+                            _add(sv, arr[i] / 10, v)
+                        vs_days.setdefault(n, set()).add(day)
         daily_series.append(row)
 
     scores = {n: {str(l): _summary(s, len(verified[n][l])) for l, s in by.items()} for n, by in stats.items()}
@@ -225,7 +269,9 @@ def verify(pts, now):
         else:
             have = min(len(set().union(*[verified[n].get(l, set()) for l in (1, 2)])) for n in models)
             note = f'{have} of {MIN_DAYS} verified days so far'
-    out = dict(updated=now.strftime('%Y-%m-%dT%H:%MZ'), gauge_cells=len(cells), window_days=WINDOW_DAYS,
+    satellite = dict(vs_gauges=_summary(sat_stats, sat_days),
+                     models_vs_satellite={n: _summary(v, len(vs_days[n])) for n, v in vs_sat.items()}) if (sat_days or vs_sat) else None
+    out = dict(updated=now.strftime('%Y-%m-%dT%H:%MZ'), gauge_cells=len(cells), window_days=WINDOW_DAYS, satellite=satellite,
                min_days=MIN_DAYS, scores=scores, daily=daily_series, weights=weights, note=note,
                first_run=first_run.strftime('%Y-%m-%dT%H:%MZ') if first_run else None)
     os.makedirs(os.path.dirname(SCORES), exist_ok=True)
