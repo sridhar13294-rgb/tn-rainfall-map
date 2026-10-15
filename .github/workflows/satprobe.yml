@@ -1,22 +1,24 @@
-name: Satellite radar probe (sat-radar branch only)
+name: Satellite radar test (sat-radar branch only)
 on:
   push:
     branches: [sat-radar]
-    paths: ['scripts/satprobe.py', '.github/workflows/satprobe.yml']
+    paths: ['scripts/satprobe.py', 'scripts/satacc.py', '.github/workflows/satprobe.yml']
 permissions:
   contents: write
 jobs:
-  probe:
+  test:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: '3.11'}
-      - run: python scripts/satprobe.py
+      - run: pip install numpy pillow netCDF4
+      - run: python scripts/satacc.py 2026-10-15
       - if: always()
         run: |
           git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase || true
           git add data/satradar
-          git commit -m "Satellite radar probe results" || true
+          git commit -m "Satellite radar test results" || true
           git push || true
