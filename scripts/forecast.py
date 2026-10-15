@@ -2032,13 +2032,18 @@ def main():
         def lead_of(day):                                   # TN SMART day -> days ahead (1 = next day, as in the check)
             return max(1, int((verify.window_start(day) - now).total_seconds() // 86400) + 1)
         base = [(c['precipitation_sum'].get('eq') or c['precipitation_sum']['avg']) for c in cells]
+        wet = [[max([c['precipitation_sum'][n][d] for n in labels if c['precipitation_sum'][n][d] is not None], default=None)
+                for d in range(nd)] for c in cells]                       # wettest model per square and day
         OURS = []
         for d in range(nd):
             D = dt.date.fromisoformat(dates[d]) + dt.timedelta(days=1)   # page day d (05:30-05:30) ~ TN SMART day ending next 08:30
-            OURS.append((lead_of(D), ourfc.forecast_day(OM, [b[d] for b in base], lead_of(D), recent)))
+            res, L = ourfc.forecast_day(OM, [b[d] for b in base], [w[d] for w in wet], D)
+            OURS.append((L, res))
         for i, rec in enumerate(cells):
             r = rec['precipitation_sum']
-            r['ours'] = [OURS[d][1][i] for d in range(nd)]
+            r['ours'] = [OURS[d][1][i][0] for d in range(nd)]
+            r['ours_p'] = [None if OURS[d][1][i][1] is None else int(round(OURS[d][1][i][1] * 100)) for d in range(nd)]
+            r['ours_reach'] = [OURS[d][1][i][2] for d in range(nd)]
             conf = [ourfc.confidence([r[n][d] for n in labels], OURS[d][0], OM['support'].get(i)) for d in range(nd)]
             rec['rain_conf'] = ''.join((c[0] if c else '-') for c in conf)
             if 'rain6' in rec:                                   # 6-hour blocks: the models' timing, our daily amount
@@ -2050,10 +2055,10 @@ def main():
                     day_a = sum(x or 0 for x in a6[4 * d:4 * d + 4])
                     o6.append(round(a6[k] * r['ours'][d] / day_a, 1) if day_a > 0.05 else round(r['ours'][d] / 4, 1))
                 rec['rain6']['ours'] = o6
-        def ours_fn(avg_arr, day):
-            return ourfc.forecast_day(OM, avg_arr, lead_of(day), recent)
+        def ours_fn(avg_arr, max_arr, day):
+            return [x[0] for x in ourfc.forecast_day(OM, avg_arr, max_arr, day)[0]]
         ourfc.save(OM)
-        status['ourfc'] = {k: v for k, v in OM.items() if k in ('leads', 'satellite_weight', 'latest_obs_day')}
+        status['ourfc'] = {k: v for k, v in OM.items() if k in ('version', 'leads', 'satellite_weight', 'latest_obs_day', 'latest_partial')}
     except Exception as e:
         status['ourfc'] = f'FAILED: {e}'; traceback.print_exc()
 
