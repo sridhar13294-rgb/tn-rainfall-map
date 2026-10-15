@@ -105,37 +105,66 @@ def picture(name, t, sat, rad):
     fig.suptitle(f'{name}: {(t + dt.timedelta(hours=5, minutes=30)):%d %b %H:%M} IST, rain rate mm/h', fontsize=11)
     fig.colorbar(plt.cm.ScalarMappable(norm=nm, cmap=cm), ax=ax, orientation='horizontal', fraction=.05, pad=.06, ticks=b[:-1])
     fig.savefig(f'{OUT}/check_{name.lower()}_{t:%Y%m%d%H%M}.png', bbox_inches='tight'); plt.close(fig)
+def process(R, buf, tt, ts):
+    raw = sat_frame(ts); rad = radar_grid(R, buf); sat = raw * CAL
+    st = stats(sat, rad)
+    rec = dict(radar=R['name'], radar_utc=tt.isoformat(), sat_utc=ts.isoformat(), corrected=st, raw_ratio=stats(raw, rad)['ratio_where_both'])
+    print(json.dumps(rec), flush=True)
+    open(f'{OUT}/radarcheck.jsonl', 'a').write(json.dumps(rec) + '\n')
+    os.makedirs(f'{OUT}/pairs', exist_ok=True)
+    np.savez_compressed(f'{OUT}/pairs/{R["name"].lower()}_{tt:%Y%m%d%H%M}.npz', sat_raw=raw.astype(np.float32), radar=rad.astype(np.float32))
+    picture(R['name'], tt, sat, rad)
+def sat_time_for(tt):
+    c = [(tt - dt.timedelta(minutes=8)).replace(minute=0, second=0, microsecond=0) + dt.timedelta(minutes=15 * k) for k in range(0, 5)]
+    return min(c, key=lambda x: abs((x + dt.timedelta(minutes=8)) - tt))
 def main():
-    grabbed = []
-    for R in (CHN, KKL):
+    hours = float(os.environ.get('CHECK_HOURS', '0'))
+    stop_grab = time.time() + hours * 3600; queue = []; seen = set()
+    while True:
+        for R in (CHN, KKL):
+            try:
+                buf = get(R['url']); tt = scan_time(buf)
+                if tt and (R['name'], tt) not in seen:
+                    seen.add((R['name'], tt)); queue.append((R, buf, tt, sat_time_for(tt))); print(R['name'], 'radar scan', tt, flush=True)
+            except Exception as e:
+                print(R['name'], 'radar ERROR', e, flush=True)
         try:
-            buf = get(R['url']); t = scan_time(buf)
-            grabbed.append((R, buf, t)); print(R['name'], 'radar scan', t, flush=True)
+            L = sat_latest()
         except Exception as e:
-            print(R['name'], 'radar ERROR', e)
-    # satellite frame t covers Tamil Nadu about 8 minutes after its nominal time
-    need = {id(R): min((tt - dt.timedelta(minutes=8)).replace(minute=0, second=0) + dt.timedelta(minutes=15 * k) for k in range(-1, 6)
-                       if True) for R, _, tt in grabbed}
-    want = {}
-    for R, buf, tt in grabbed:
-        cands = [(tt - dt.timedelta(minutes=8)).replace(minute=0, second=0, microsecond=0) + dt.timedelta(minutes=15 * k) for k in range(0, 5)]
-        want[R['name']] = min(cands, key=lambda c: abs((c + dt.timedelta(minutes=8)) - tt))
-    t_end = time.time() + 80 * 60
-    while time.time() < t_end:
-        L = sat_latest(); print('satellite latest', L, 'waiting for', max(want.values()), flush=True)
-        if L >= max(want.values()): break
-        time.sleep(120)
-    for R, buf, tt in grabbed:
-        ts = want[R['name']]
-        try:
-            sat = sat_frame(ts) * CAL; rad = radar_grid(R, buf)
-            st = stats(sat, rad); raw = stats(sat / CAL, rad)
-            rec = dict(radar=R['name'], radar_utc=tt.isoformat(), sat_utc=ts.isoformat(), corrected=st, raw_ratio=raw['ratio_where_both'])
-            print(json.dumps(rec), flush=True)
-            open(f'{OUT}/radarcheck.jsonl', 'a').write(json.dumps(rec) + '\n')
-            picture(R['name'], tt, sat, rad)
-            open(f'{OUT}/radar_{R["name"].lower()}_{tt:%Y%m%d%H%M}.gif', 'wb').write(buf)
-        except Exception as e:
-            print(R['name'], 'compare ERROR', e)
+            L = None; print('sat latest ERROR', e)
+        for item in [q for q in queue if L and q[3] <= L]:
+            queue.remove(item)
+            try:
+                process(*item)
+            except Exception as e:
+                print(item[0]['name'], 'compare ERROR', e, flush=True)
+        if time.time() > stop_grab and not queue:
+            break
+        if time.time() > stop_grab + 80 * 60:
+            break
+        time.sleep(30 * 60 if time.time() < stop_grab else 120)
+    fit()
+def fit():
+    """Best cut-off T (raw mm/h below T = no rain) and scale a (rate = a * raw) so the satellite matches the radar:
+    same share of area raining at 1 mm/h, same total rain where it rains. Scored by critical success index at 1 mm/h."""
+    import glob
+    S, Rr = [], []
+    for f in sorted(glob.glob(f'{OUT}/pairs/*.npz')):
+        z = np.load(f); m = ~np.isnan(z['radar']); S.append(z['sat_raw'][m]); Rr.append(z['radar'][m])
+    if not S:
+        return
+    s = np.concatenate(S); r = np.concatenate(Rr); res = []
+    for T in (0, 1, 2, 3, 5, 7, 10, 15, 20, 30):
+        for a in (0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.6, 0.8, 1.0):
+            c = np.where(s >= T, s * a, 0)
+            h = ((c >= 1) & (r >= 1)).sum(); mi = ((c < 1) & (r >= 1)).sum(); fa = ((c >= 1) & (r < 1)).sum()
+            csi = h / max(1, h + mi + fa); bias = (c >= 1).sum() / max(1, (r >= 1).sum())
+            res.append(dict(T=T, a=a, csi=round(float(csi), 3), area_bias=round(float(bias), 2), mean_ratio=round(float(c.mean() / max(r.mean(), 1e-6)), 2),
+                            pod=round(h / max(1, h + mi), 2), far=round(fa / max(1, h + fa), 2)))
+    res.sort(key=lambda d: (-d['csi']))
+    out = dict(pairs=len(S), cells=int(len(r)), radar_rain_share=round(float((r >= 1).mean()), 3), best=res[:10],
+               current=[d for d in res if d['T'] == 0 and d['a'] == 0.3])
+    json.dump(out, open(f'{OUT}/fit.json', 'w'), indent=1); print(json.dumps(out, indent=1))
 if __name__ == '__main__':
-    main()
+    import sys
+    fit() if 'fit' in sys.argv else main()

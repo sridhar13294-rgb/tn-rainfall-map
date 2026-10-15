@@ -8,17 +8,18 @@ permissions:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 100
+    timeout-minutes: 360
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: '3.11'}
       - run: pip install numpy pillow matplotlib
       - run: python scripts/radarcheck.py
+        env: {CHECK_HOURS: "4.5"}
       - if: always()
         run: |
           git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
           git pull --rebase || true
           git add data/satradar
           git commit -m "Satellite radar check vs IMD radar" || true
-          git push || true
+          git push || (git pull --rebase && git push) || true
