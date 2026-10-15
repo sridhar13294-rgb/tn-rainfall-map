@@ -412,7 +412,19 @@ def cron():
         b = out['best'][0]
         json.dump(dict(updated=now.isoformat(), cut_mm_h=b['T'], scale=b['a'], pairs=out['pairs'], csi=b['csi'], area_bias=b['area_bias'],
                        radars=status['radars']), open(f'{OUT}/satcal.json', 'w'), indent=1)
+    # daily satellite totals vs TN SMART gauges: the gauge-fitted correction (cut-off + multiplier) is what the page uses
+    # for rain amounts; the radar-matched one above is kept for comparison
+    try:
+        import satday
+        cal = json.load(open(f'{OUT}/satcal.json')) if os.path.exists(f'{OUT}/satcal.json') else {}
+        res = satday.run(L, cal, now); status['satday'] = res
+        if res.get('gauge_fit') and cal:
+            g = res['gauge_fit']; cal['gauge_fit'] = dict(cut_mm_h=g['cut'], scale=g['scale'], ets=g['ets'], bias=g['bias'], mae=g['mae'],
+                                                          updated=now.isoformat())
+            json.dump(cal, open(f'{OUT}/satcal.json', 'w'), indent=1)
+    except Exception as e:
+        import traceback; traceback.print_exc(); status['satday_error'] = str(e)
     json.dump(status, open(f'{OUT}/cron_status.json', 'w'), indent=1); print(json.dumps(status))
 if __name__ == '__main__':
-    import sys
+    import sys; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     fit() if 'fit' in sys.argv else cron() if 'cron' in sys.argv else main()
