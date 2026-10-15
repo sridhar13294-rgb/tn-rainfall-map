@@ -87,7 +87,7 @@ def stats(sat, rad):
                 ratio_where_both=round(float(s[both].sum() / max(r[both].sum(), 1e-6)), 2) if both.any() else None,
                 radar_p90=round(float(np.percentile(r[r >= 1], 90)), 1) if (r >= 1).any() else 0, sat_p90=round(float(np.percentile(s[s >= 1], 90)), 1) if (s >= 1).any() else 0,
                 at1=pod_far(1), at5=pod_far(5))
-def picture(name, t, sat, rad):
+def picture(name, t, sat, rad, latest=False):
     import matplotlib; matplotlib.use('Agg'); import matplotlib.pyplot as plt
     from matplotlib.colors import BoundaryNorm, ListedColormap
     G = json.load(open('data/geo.json'))
@@ -104,7 +104,7 @@ def picture(name, t, sat, rad):
         c = (CHN if name == 'Chennai' else KKL)['centre']; a_.set_xlim(c[0] - 2.1, c[0] + 2.1); a_.set_ylim(c[1] - 1.9, c[1] + 1.9)
     fig.suptitle(f'{name}: {(t + dt.timedelta(hours=5, minutes=30)):%d %b %H:%M} IST, rain rate mm/h', fontsize=11)
     fig.colorbar(plt.cm.ScalarMappable(norm=nm, cmap=cm), ax=ax, orientation='horizontal', fraction=.05, pad=.06, ticks=b[:-1])
-    fig.savefig(f'{OUT}/check_{name.lower()}_{t:%Y%m%d%H%M}.png', bbox_inches='tight'); plt.close(fig)
+    fig.savefig(f'{OUT}/check_{name.lower()}_' + ('latest' if latest else f'{t:%Y%m%d%H%M}') + '.png', bbox_inches='tight'); plt.close(fig)
 def process(R, buf, tt, ts):
     raw = sat_frame(ts); rad = radar_grid(R, buf); sat = raw * CAL
     st = stats(sat, rad)
@@ -112,8 +112,9 @@ def process(R, buf, tt, ts):
     print(json.dumps(rec), flush=True)
     open(f'{OUT}/radarcheck.jsonl', 'a').write(json.dumps(rec) + '\n')
     os.makedirs(f'{OUT}/pairs', exist_ok=True)
-    np.savez_compressed(f'{OUT}/pairs/{R["name"].lower()}_{tt:%Y%m%d%H%M}.npz', sat_raw=raw.astype(np.float32), radar=rad.astype(np.float32))
-    picture(R['name'], tt, sat, rad)
+    half = lambda g: np.nanmean(g.reshape(NY // 2, 2, NX // 2, 2), axis=(1, 3))      # 0.05 degree, keeps files small
+    np.savez_compressed(f'{OUT}/pairs/{R["name"].lower()}_{tt:%Y%m%d%H%M}.npz', sat_raw=half(raw).astype(np.float16), radar=half(rad).astype(np.float16))
+    picture(R['name'], tt, sat, rad, latest=os.environ.get('CRON') == '1')
 def sat_time_for(tt):
     c = [(tt - dt.timedelta(minutes=8)).replace(minute=0, second=0, microsecond=0) + dt.timedelta(minutes=15 * k) for k in range(0, 5)]
     return min(c, key=lambda x: abs((x + dt.timedelta(minutes=8)) - tt))
@@ -152,7 +153,7 @@ def fit():
     for f in sorted(glob.glob(f'{OUT}/pairs/*.npz')):
         z = np.load(f); m = ~np.isnan(z['radar']); S.append(z['sat_raw'][m]); Rr.append(z['radar'][m])
     if not S:
-        return
+        return None
     s = np.concatenate(S); r = np.concatenate(Rr); res = []
     for T in (0, 1, 2, 3, 5, 7, 10, 15, 20, 30):
         for a in (0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.6, 0.8, 1.0):
@@ -165,6 +166,67 @@ def fit():
     out = dict(pairs=len(S), cells=int(len(r)), radar_rain_share=round(float((r >= 1).mean()), 3), best=res[:10],
                current=[d for d in res if d['T'] == 0 and d['a'] == 0.3])
     json.dump(out, open(f'{OUT}/fit.json', 'w'), indent=1); print(json.dumps(out, indent=1))
+    return out if len(S) >= 6 else None
+def radar_ok(buf, tt, now):
+    """A radar counts as working only if its picture is fresh (scan within 60 min) and actually decodes."""
+    if tt is None or len(buf) < 20000:
+        return False, 'no scan time or picture too small'
+    age = (now - tt).total_seconds() / 60
+    if age > 60:
+        return False, f'picture is {age:.0f} min old (radar probably not working)'
+    try:
+        Image.open(io.BytesIO(buf)).convert('RGB')
+    except Exception as e:
+        return False, f'picture does not open: {e}'
+    return True, ''
+def cron():
+    """One pass, run every 30 min by a timed job: save fresh radar pictures, compare any whose satellite picture
+    is now available, prune old pairs, refit the correction and write data/satradar/satcal.json."""
+    import glob
+    now = dt.datetime.now(UTC); P = f'{OUT}/pending'; os.makedirs(P, exist_ok=True)
+    status = dict(run_utc=now.isoformat(), radars={})
+    for R in (CHN, KKL):
+        try:
+            buf = get(R['url']); tt = scan_time(buf); ok, why = radar_ok(buf, tt, now)
+        except Exception as e:
+            ok, why, tt = False, f'download failed: {e}', None
+        status['radars'][R['name']] = dict(working=ok, scan_utc=tt.isoformat() if tt else None, note=why)
+        if ok:
+            fn = f'{P}/{R["name"].lower()}_{tt:%Y%m%d%H%M%S}.gif'
+            if not os.path.exists(fn):
+                open(fn, 'wb').write(buf)
+    try:
+        L = sat_latest()
+    except Exception as e:
+        L = None; status['satellite_error'] = str(e)
+    status['satellite_latest'] = L.isoformat() if L else None
+    done = 0
+    for fn in sorted(glob.glob(f'{P}/*.gif')):
+        name, stamp = os.path.basename(fn)[:-4].split('_')
+        tt = dt.datetime.strptime(stamp, '%Y%m%d%H%M%S').replace(tzinfo=UTC); ts = sat_time_for(tt)
+        R = CHN if name == 'chennai' else KKL
+        if L and ts <= L:
+            try:
+                process(R, open(fn, 'rb').read(), tt, ts); done += 1
+            except Exception as e:
+                print(name, 'compare ERROR', e, flush=True)
+            os.remove(fn)
+        elif (now - tt).total_seconds() > 6 * 3600:
+            os.remove(fn)
+    status['compared_this_run'] = done
+    for f in glob.glob(f'{OUT}/pairs/*.npz'):            # keep two weeks of pairs
+        try:
+            t = dt.datetime.strptime(os.path.basename(f)[:-4].split('_')[1], '%Y%m%d%H%M').replace(tzinfo=UTC)
+            if (now - t).days > 14:
+                os.remove(f)
+        except Exception:
+            pass
+    out = fit()
+    if out and out.get('best'):
+        b = out['best'][0]
+        json.dump(dict(updated=now.isoformat(), cut_mm_h=b['T'], scale=b['a'], pairs=out['pairs'], csi=b['csi'], area_bias=b['area_bias'],
+                       radars=status['radars']), open(f'{OUT}/satcal.json', 'w'), indent=1)
+    json.dump(status, open(f'{OUT}/cron_status.json', 'w'), indent=1); print(json.dumps(status))
 if __name__ == '__main__':
     import sys
-    fit() if 'fit' in sys.argv else main()
+    fit() if 'fit' in sys.argv else cron() if 'cron' in sys.argv else main()

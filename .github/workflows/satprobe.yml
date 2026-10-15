@@ -1,8 +1,6 @@
 name: Satellite radar check vs IMD radar (sat-radar branch only)
 on:
-  push:
-    branches: [sat-radar]
-    paths: ['scripts/radarcheck.py', '.github/workflows/satprobe.yml']
+  workflow_dispatch:
 permissions:
   contents: write
 jobs:
