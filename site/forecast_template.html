@@ -117,7 +117,7 @@ $('cl').setAttribute('d',PD);$('ol').setAttribute('d',PD);
 const R=F.cells.map((c,i)=>{const r=document.createElementNS(NS,'rect');r.setAttribute('x',X(c.lon-F.step/2));r.setAttribute('y',Y(c.lat+F.step/2));r.setAttribute('width',F.step*100+.5);r.setAttribute('height',F.step*100+.5);r.dataset.i=i;$('cg').appendChild(r);return r});
 F.ct.forEach(c=>{const g=$('cty'),x=X(c[1]),y=Y(c[2]),e=c[3]=='end';const k=document.createElementNS(NS,'circle');k.setAttribute('cx',x);k.setAttribute('cy',y);k.setAttribute('r',2.4);k.setAttribute('fill','#14213d');k.setAttribute('stroke','#fff');g.appendChild(k);
  const t=document.createElementNS(NS,'text');t.setAttribute('x',x+(e?-5:5));t.setAttribute('y',y+2.6);t.setAttribute('text-anchor',e?'end':'start');t.setAttribute('font-size',8);t.setAttribute('font-weight',600);t.style.cssText='fill:var(--ink);stroke:var(--card);stroke-width:2.4px;paint-order:stroke;pointer-events:none';t.textContent=c[0];g.appendChild(t)});
-$('mod').innerHTML=(F.weights?'<option value="avg">Skill-weighted average (rain)</option><option value="eq">Simple average (equal weights)</option>':'<option value="avg">Average of models</option>')+F.models.map(m=>`<option value="${m}">${m} only</option>`).join('');
+$('mod').innerHTML=(F.ours&&F.cells[0].precipitation_sum.ours?'<option value="ours">Our forecast (learns from TN SMART + satellite)</option>':'')+(F.weights?'<option value="avg">Skill-weighted average (rain)</option><option value="eq">Simple average (equal weights)</option>':'<option value="avg">Average of models</option>')+F.models.map(m=>`<option value="${m}">${m} only</option>`).join('');
 const dl=s=>{const d=new Date(s+'T00:00:00');return [DOW[d.getDay()],d.getDate()+' '+MON[d.getMonth()]]};
 const has6=!!(F.coverage6&&F.cells[0].rain6);
 if(!has6){$('var').querySelector('[value=rain6]').remove()}
@@ -131,13 +131,14 @@ $('days').innerHTML=F.dates.map((s,i)=>{const [a,b]=dl(s);return `<button class=
 $('days').onclick=e=>{const b=e.target.closest('[data-d]');if(b){day=+b.dataset.d;paint()}};
 $('per').onclick=e=>{const b=e.target.closest('[data-p]');if(b){per=+b.dataset.p;paint()}};
 function cls(v,b){let k=0;b.forEach((x,i)=>{if(v>=x[0])k=i});return k}
-function val(c,v,m,k){const s=c[v];if(!s)return null;if(m=='eq'&&!s.eq)m='avg';return m=='avg'?s.avg[k]:(s[m]||[])[k]}
+function val(c,v,m,k){const s=c[v];if(!s)return null;if(m=='eq'&&!s.eq)m='avg';if(m=='ours'&&!s.ours)m='avg';return m=='avg'?s.avg[k]:(s[m]||[])[k]}
 function paint(){const v=$('var').value,m=$('mod').value,b=SC[v].b,k=K();
  document.querySelectorAll('#days .chip').forEach((c,i)=>c.classList.toggle('on',i==day));
  $('per').style.display=is6()?'':'none';
  if(is6())$('per').innerHTML=PER.map((p,i)=>`<button class="chip${i==per?' on':''}" data-p="${i}">${p}<small>IST · ${(F.coverage6[day*4+i]||[]).length} models</small></button>`).join('');
- F.cells.forEach((c,i)=>{const x=val(c,v,m,k);R[i].setAttribute('fill',x==null?'#b9c0c8':b[cls(x,b)][1]);R[i].setAttribute('stroke',i==sel?'#000':'none');R[i].setAttribute('stroke-width',i==sel?1.6:0)});
- $('lg').innerHTML=b.map(x=>`<div><i style="background:${x[1]}"></i>${x[2]}</div>`).join('')+(m!='avg'&&!cov().includes(m)?'<div class="m">'+m+' does not reach this time (grey).</div>':'');
+ const OC=m=='ours'&&v=='precipitation_sum',OP={h:1,m:.72,l:.42};
+ F.cells.forEach((c,i)=>{const x=val(c,v,m,k);R[i].setAttribute('fill',x==null?'#b9c0c8':b[cls(x,b)][1]);R[i].setAttribute('fill-opacity',OC&&c.rain_conf?(OP[c.rain_conf[k]]||1):1);R[i].setAttribute('stroke',i==sel?'#000':'none');R[i].setAttribute('stroke-width',i==sel?1.6:0)});
+ $('lg').innerHTML=b.map(x=>`<div><i style="background:${x[1]}"></i>${x[2]}</div>`).join('')+(OC?'<div class="m" style="flex-basis:100%">Our forecast: solid squares = high confidence, lighter = medium, faint = low (models disagree, no gauge or satellite check nearby, or far ahead).</div>':m=='ours'?'<div class="m" style="flex-basis:100%">Our forecast covers daily rain only; this view shows the average of models.</div>':'')+(m!='avg'&&m!='ours'&&!cov().includes(m)?'<div class="m">'+m+' does not reach this time (grey).</div>':'');
  show()}
 function show(){if(sel<0)return;const c=F.cells[sel],v=$('var').value,u=SC[v].u,[a,b]=dl(F.dates[day]),k=K();
  const when=is6()?`${a} ${b}, ${PER[per]} IST`:`${a} ${b}`;
@@ -146,7 +147,8 @@ function show(){if(sel<0)return;const c=F.cells[sel],v=$('var').value,u=SC[v].u,
  const ticks=is6()?F.dates.map((d,i)=>`<text x="${(i*4+2)*bw}" y="58" font-size="7" text-anchor="middle" fill="var(--mut)">${dl(d)[1].split(' ')[0]}</text>`).join(''):F.dates.map((d,i)=>`<text x="${i*bw+bw/2}" y="58" font-size="7" text-anchor="middle" fill="var(--mut)">${dl(d)[1].split(' ')[0]}</text>`).join('');
  const bars=`<svg viewBox="0 0 320 60" style="margin-top:6px">${ser.map((x,i)=>`<rect x="${i*bw+bw*.12}" y="${48-(x||0)/mx*44}" width="${bw*.76}" height="${Math.max(.5,(x||0)/mx*44)}" rx="1" fill="${i==k?'#f08c00':'var(--acc)'}"><title>${f1(x)} ${u}</title></rect>`).join('')}${ticks}</svg>`;
  const wd=c.wind_dir[day];
- $('info').innerHTML=`<b>${c.lat.toFixed(2)}°N, ${c.lon.toFixed(2)}°E</b> · ${when}<br>Average: <b>${f1(val(c,v,'avg',k))} ${u}</b>`+(wd!=null&&!is6()?` · wind from ${Math.round(wd)}°`:'')+`<table>${rows}</table><div class="m">${is6()?'Every 6 hours, all 16 days':'16-day trend'} (average of models)</div>${bars}`}
+ const CN={h:'high',m:'medium',l:'low'},oc=v=='precipitation_sum'&&c.precipitation_sum.ours?`<br>Our forecast: <b>${f1(c.precipitation_sum.ours[k])} mm</b>`+(c.rain_conf&&CN[c.rain_conf[k]]?` · confidence <b>${CN[c.rain_conf[k]]}</b>`:''):'';
+ $('info').innerHTML=`<b>${c.lat.toFixed(2)}°N, ${c.lon.toFixed(2)}°E</b> · ${when}${oc}<br>Average: <b>${f1(val(c,v,'avg',k))} ${u}</b>`+(wd!=null&&!is6()?` · wind from ${Math.round(wd)}°`:'')+`<table>${rows}</table><div class="m">${is6()?'Every 6 hours, all 16 days':'16-day trend'} (average of models)</div>${bars}`}
 sv.addEventListener('click',e=>{const i=e.target.dataset&&e.target.dataset.i;if(i!=null){sel=+i;paint()}});
 $('var').onchange=paint;$('mod').onchange=paint;paint();
 mapDownload($('info').parentNode,()=>{const v=$('var').value,b=SC[v].b,[a,dd]=dl(F.dates[day]),opt=s=>s.options[s.selectedIndex].text;
@@ -547,7 +549,7 @@ mapDownload($('olg').parentNode.insertBefore(document.createElement('div'),$('oi
 
 // ---------- step 5: forecast check against TN SMART gauges
 (function(){const V=F.verify,el=$('vfy');if(!el)return;
-const NM={'Average':'Average of models','Weighted average':'Skill-weighted average'};
+const NM={'Average':'Average of models','Weighted average':'Skill-weighted average','Our forecast':'Our forecast'};
 if(!V){el.innerHTML='<p class="m">The forecast check is unavailable in this run.</p>';return}
 const wline=F.weights?`<p style="margin:4px 0">The rain average above is <b>skill-weighted</b> by the last ${V.window_days} days: ${Object.entries(F.weights).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${k} ${Math.round(v*100)}%`).join(' · ')}. Choose "Simple average" in the model menu to see equal weights.</p>`
  :`<p style="margin:4px 0">Every model counts equally in the average for now. Once each model has ${V.min_days} verified days, the rain average will be weighted towards the models that have been closest to the TN SMART gauges${V.note?` (${V.note})`:''}.</p>`;

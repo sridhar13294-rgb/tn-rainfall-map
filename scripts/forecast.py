@@ -2024,10 +2024,35 @@ def main():
             rec['rain6']['eq'] = eq6
         cells.append(rec)
 
+    # our own forecast: learns from the other models' average, TN SMART and the corrected satellite day totals
+    ours_fn = None
+    try:
+        import ourfc
+        OM = ourfc.train(pts, now); recent = OM['_recent']
+        def lead_of(day):                                   # TN SMART day -> days ahead (1 = next day, as in the check)
+            return max(1, int((verify.window_start(day) - now).total_seconds() // 86400) + 1)
+        for i, rec in enumerate(cells):
+            r = rec['precipitation_sum']; base = r.get('eq') or r['avg']
+            ours, conf = [], []
+            for d in range(nd):
+                D = dt.date.fromisoformat(dates[d]) + dt.timedelta(days=1)   # page day d (05:30-05:30) ~ TN SMART day ending next 08:30
+                L = lead_of(D)
+                ours.append(ourfc.predict(OM, base[d], L, i, recent.get(i)))
+                c = ourfc.confidence([r[n][d] for n in labels], L, OM['support'].get(i))
+                conf.append(c[0] if c else None)
+            r['ours'] = ours; rec['rain_conf'] = ''.join(x or '-' for x in conf)
+        def ours_fn(avg_arr, day):
+            L = lead_of(day)
+            return [ourfc.predict(OM, a, L, i, recent.get(i)) for i, a in enumerate(avg_arr)]
+        ourfc.save(OM)
+        status['ourfc'] = {k: v for k, v in OM.items() if k in ('leads', 'satellite_weight', 'latest_obs_day')}
+    except Exception as e:
+        status['ourfc'] = f'FAILED: {e}'; traceback.print_exc()
+
     try:
         status.setdefault('verify', {})
         if isinstance(status['verify'], dict):
-            status['verify']['archived_days'] = verify.archive(per6, labels, W, d0, now, len(pts))
+            status['verify']['archived_days'] = verify.archive(per6, labels, W, d0, now, len(pts), ours_fn)
     except Exception as e:
         status['verify_archive'] = f'FAILED: {e}'; traceback.print_exc()
 
@@ -2200,6 +2225,7 @@ def main():
 
     runs = {n: models[n].run.strftime('%HZ %d %b') for n in labels}
     F = dict(updated=dt.datetime.now(IST).strftime('%d %b %Y, %H:%M IST'), dates=dates, models=labels, runs=runs,
+             ours=status.get('ourfc') if isinstance(status.get('ourfc'), dict) else None,
              coverage=coverage, coverage6=coverage6, cells=cells, wind=wind, mslp=mslp, drivers=drivers, systems=systems, verify=ver, weights=W, outlook=outlook_data, land=land_outline(), tn=geo['tn'], ct=geo['ct'], step=.25)
     tpl = open(P('site/forecast_template.html')).read()
     open(P('site/forecast.html'), 'w').write(tpl.replace('/*FDATA*/', json.dumps(F, separators=(',', ':'))))
