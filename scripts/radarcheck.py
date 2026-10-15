@@ -167,6 +167,35 @@ def fit():
                current=[d for d in res if d['T'] == 0 and d['a'] == 0.3])
     json.dump(out, open(f'{OUT}/fit.json', 'w'), indent=1); print(json.dumps(out, indent=1))
     return out if len(S) >= 6 else None
+def fit_quantiles(min_pairs=6):
+    """Quantile matching: (1) cut-off so the satellite rains over the same share of the area as the radar (1 mm/h or
+    more), (2) above the cut-off, map the satellite's rate distribution onto the radar's (light to light, heavy to heavy),
+    so heavy cores stay heavy. Uses every saved pair (last 14 days). Returns None until there are enough pairs."""
+    import glob
+    S, Rr = [], []
+    for f in sorted(glob.glob(f'{OUT}/pairs/*.npz')):
+        z = np.load(f); r = np.asarray(z['radar'], float); s_ = np.asarray(z['sat_raw'], float); m = ~np.isnan(r)
+        if s_.shape != r.shape: continue
+        S.append(s_[m]); Rr.append(r[m])
+    if len(S) < min_pairs: return None
+    s = np.concatenate(S); r = np.concatenate(Rr)
+    share = float((r >= 1).mean())
+    if share <= 0: return None
+    cut = float(np.quantile(s, 1 - share))                    # same raining share as the radar
+    cut = max(cut, 0.2)
+    rs, ss = np.sort(r[r >= 1]), np.sort(s[s >= cut])
+    if len(rs) < 50 or len(ss) < 50: return None
+    qs = [0, .1, .2, .3, .4, .5, .6, .7, .8, .9, .95, .98, .995, 1]
+    lut = []
+    for q in qs:
+        a_, b_ = float(np.quantile(ss, q)), float(np.quantile(rs, q))
+        if not lut or a_ > lut[-1][0] + 1e-3: lut.append([round(a_, 2), round(max(b_, lut[-1][1] if lut else 0), 2)])
+    corr = np.where(s >= cut, np.interp(s, [p[0] for p in lut], [p[1] for p in lut]), 0)
+    h = ((corr >= 1) & (r >= 1)).sum(); mi = ((corr < 1) & (r >= 1)).sum(); fa = ((corr >= 1) & (r < 1)).sum()
+    # single multiplier for older page versions: least-squares slope of the mapping (keeps heavy cores far better than the median ratio)
+    med = sum(p[0] * p[1] for p in lut) / max(sum(p[0] * p[0] for p in lut), 1e-6)
+    return dict(cut=round(cut, 2), lut=lut, scale=round(med, 3), pairs=len(S), csi=round(h / max(1, h + mi + fa), 3),
+                area_bias=round(float((corr >= 1).sum() / max(1, (r >= 1).sum())), 2), radar_p90=round(float(np.quantile(rs, .9)), 1))
 def radar_ok(buf, tt, now):
     """A radar counts as working only if its picture is fresh (scan within 2 hours; IMD pictures often lag 1 hour) and decodes."""
     if tt is None or len(buf) < 20000:
@@ -221,8 +250,11 @@ def cron():
                 os.remove(f)
         except Exception:
             pass
-    out = fit()
-    if out and out.get('best'):
+    out = fit(); q = fit_quantiles()
+    if q:
+        json.dump(dict(updated=now.isoformat(), method='quantile', cut_mm_h=q['cut'], scale=q['scale'], lut=q['lut'], pairs=q['pairs'],
+                       csi=q['csi'], area_bias=q['area_bias'], radar_p90=q['radar_p90'], radars=status['radars']), open(f'{OUT}/satcal.json', 'w'), indent=1)
+    elif out and out.get('best'):
         b = out['best'][0]
         json.dump(dict(updated=now.isoformat(), cut_mm_h=b['T'], scale=b['a'], pairs=out['pairs'], csi=b['csi'], area_bias=b['area_bias'],
                        radars=status['radars']), open(f'{OUT}/satcal.json', 'w'), indent=1)
