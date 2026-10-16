@@ -89,7 +89,7 @@ def archive(per6, labels, weights, d0, now, npts, ours=None):
         rec['Average'] = [int(round(sum(float(vals[n][i]) for n in vals) / len(vals) * 10)) for i in range(npts)]
         if ours:                                            # our own forecast, saved so it is scored like the models
             try:
-                o = ours([x / 10 for x in rec['Average']], day)
+                o = ours([x / 10 for x in rec['Average']], [max(float(vals[n][i]) for n in vals) for i in range(npts)], day)
                 rec['Our forecast'] = [int(round((x or 0) * 10)) for x in o]
             except Exception:
                 pass

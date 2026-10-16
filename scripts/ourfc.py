@@ -1,29 +1,33 @@
-"""Our own rain forecast: a small learning model on top of the other models.
+"""Our own rain forecast (v3): our own prediction; the other models are only one of its inputs.
 
-Inputs, for every 0.25 degree forecast square and day:
-  1. the average of the other models (GFS, ECMWF, ECMWF AI, GEM, ICON) for that day,
-  2. the rain that really fell there just before the forecast was made: TN SMART gauges where the square has a gauge,
-     otherwise our satellite day total (corrected with TN SMART, from the sat-radar background job),
-  3. how the models compared with TN SMART and the satellite at that square over the last 14 days.
-What it learns (refitted every forecast run from the saved forecasts and what fell afterwards):
-  rain = local factor x b0 * (1 + model average)^b1 * (1 + rain yesterday)^b2 * (1 + rain last 3 days)^b3 - 1
-  fitted in log form, separately for 1, 2 and 3 days ahead, pulled towards "just the model average" while there are few
-  days to learn from. Squares with a gauge count fully; satellite-only squares count less (by the satellite's own skill).
-Confidence per square and day: high / medium / low from (a) whether the models agree, (b) whether the square is checked
-by a gauge or by the satellite, (c) how far ahead the day is.
+For every 0.25 degree forecast square and day it looks at:
+  1. the average of the 5 models (GFS, ECMWF, ECMWF AI, GEM, ICON),
+  2. the wettest of the 5 models (averaging hides a storm that only one model sees, e.g. GFS at Coimbatore on 15 Oct),
+  3. the rain measured there and in the squares around it on the latest observed day: TN SMART gauges, or our
+     satellite day total (corrected with TN SMART) where there is no gauge or before TN SMART publishes,
+  4. how wrong the models' average was there over the past week (observed minus forecast), yesterday counting most
+     (each day back counts half as much), also smoothed over the neighbouring squares.
+What it learns, every forecast run, from the past 30 days of saved forecasts and what really fell (TN SMART, or the
+satellite where there is no gauge), separately for 1, 2 and 3 days ahead:
+  (a) WILL IT RAIN (2.5 mm or more)? a chance from 0 to 1, learned from all squares and days;
+  (b) HOW MUCH, if it rains? learned only from the squares where it did rain, so the many dry squares do not drag the
+      amounts down.
+Our amount = (b) where the chance is above the level that gives the right size of rain area on past days, otherwise a
+small amount (chance x (b) / 2). Each day's total is our own: it is NOT forced to match the models. Where the chance is
+high, the wettest model's amount is also kept as "could reach" (the storm risk).
+Confidence per square and day: high / medium / low from (a) model agreement, (b) whether a gauge or the satellite
+checks that square, (c) how far ahead the day is.
 """
 import datetime as dt, json, math, os, urllib.request
 import numpy as np
 import verify
 
-LOCAL_DAYS = 14          # local factor: last 14 days
-TOTAL_FROM_BIAS = False  # day total = the models' total (True: corrected by their recent wet/dry tendency; too few days yet)
-LOCAL = (0.5, 2.0, 5.0)  # local factor limits (low, high) and how many days of evidence count as half-sure
-PRIOR = 40.0             # pull towards "just the model average" (in squares x days of evidence)
 MIN_SAMPLES = 150
+GAP_DAYS = 7             # past week of model errors; each day back counts half as much
 SATGAUGE = 'https://raw.githubusercontent.com/sridhar13294-rgb/tn-rainfall-map/sat-radar/data/satradar/satgauge.json'
 OUT = verify.P('data', 'verify', 'ourfc.json')
 NAME = 'Our forecast'
+MODEL_SKIP = ('Average', 'Weighted average', NAME)
 
 
 def _sat_weight():
@@ -37,20 +41,40 @@ def _sat_weight():
         return 0.0, None
 
 
+def neighbours(pts, r=0.3):
+    return [[j for j, (lo2, la2) in enumerate(pts) if abs(lo2 - lo) <= r and abs(la2 - la) <= r] for lo, la in pts]
+
+
+def smooth(vals, nb):
+    """Square value blended with the squares around it (itself counts double)."""
+    out = {}
+    for i, js in enumerate(nb):
+        s = w = 0.0
+        for j in js:
+            if j in vals:
+                k = 2.0 if j == i else 1.0; s += vals[j] * k; w += k
+        if w:
+            out[i] = s / w
+    return out
+
+
 class Obs:
     """What fell on each TN SMART day at each forecast square: gauges first, else the corrected satellite total."""
-    def __init__(self, pts, sat_w):
-        self.pts, self.sat_w, self.cells = pts, sat_w, verify.gauge_cells(pts)
+    def __init__(self, pts, sat_w, allow_partial=False):
+        self.pts, self.sat_w, self.cells, self.partial = pts, sat_w, verify.gauge_cells(pts), allow_partial
         self.cache = {}
 
-    def day(self, d):
-        if d in self.cache:
-            return self.cache[d]
+    def day(self, d, gauges=True):
+        key = (d, gauges)
+        if key in self.cache:
+            return self.cache[key]
         out = {}
-        try:
-            obs = json.load(open(verify.OBS('data', 'daily', d.isoformat() + '.json')))
-        except Exception:
-            obs = None
+        obs = None
+        if gauges:
+            try:
+                obs = json.load(open(verify.OBS('data', 'daily', d.isoformat() + '.json')))
+            except Exception:
+                obs = None
         if obs:
             for i, sids in self.cells.items():
                 v = [obs[s] for s in sids if obs.get(s) is not None]
@@ -58,163 +82,174 @@ class Obs:
                     out[i] = (sum(v) / len(v), 1.0, 'gauge')
         if self.sat_w > 0:
             S = verify.sat_day(d)
-            if S and S.get('grid'):
+            if S and S.get('grid') and (S.get('complete', True) or self.partial):
                 for i, (lo, la) in enumerate(self.pts):
                     if i not in out:
                         v = verify.sat_at(S, lo, la)
                         if v is not None:
                             out[i] = (v, self.sat_w, 'satellite')
-        self.cache[d] = out if len(out) >= 20 else None
-        return self.cache[d]
-
-    def recent(self, last):
-        """(rain on day `last`, mean of the 3 days to `last`) per square."""
-        a, b = self.day(last), [self.day(last - dt.timedelta(days=k)) for k in range(3)]
-        if not a:
-            return {}
-        out = {}
-        for i, (v, w, src) in a.items():
-            vs = [x[i][0] for x in b if x and i in x]
-            out[i] = (v, sum(vs) / len(vs))
-        return out
+        self.cache[key] = out if len(out) >= 20 else None
+        return self.cache[key]
 
 
-def _fit(X, y, w, prior):
-    """Weighted least squares, pulled towards `prior` coefficients."""
-    X, y, w = np.asarray(X), np.asarray(y), np.asarray(w)
-    A = X.T @ (X * w[:, None]) + PRIOR * np.eye(X.shape[1])
-    rhs = X.T @ (w * y) + PRIOR * np.asarray(prior)
-    return np.linalg.solve(A, rhs)
+class Archive:
+    """Saved forecasts (data/verify/fc): the models' values for a TN SMART day at a given lead."""
+    def __init__(self):
+        self.runs = []
+        if os.path.isdir(verify.FC_DIR):
+            for f in sorted(os.listdir(verify.FC_DIR)):
+                try:
+                    self.runs.append((verify.utc(f[:10]), os.path.join(verify.FC_DIR, f)))
+                except ValueError:
+                    pass
+        self.cache = {}
+
+    def get(self, D, L, before=None):
+        ws = verify.window_start(D)
+        cand = [(t, p) for t, p in self.runs if ws - dt.timedelta(hours=24 * L) <= t < ws - dt.timedelta(hours=24 * (L - 1))
+                and (before is None or t < before)]
+        if not cand:
+            return None
+        p = cand[-1][1]
+        if p not in self.cache:
+            self.cache[p] = json.load(open(p))
+        fc = self.cache[p]['days'].get(D.isoformat())
+        if not fc or 'Average' not in fc:
+            return None
+        avg = [x / 10 for x in fc['Average']]
+        models = [n for n in fc if n not in MODEL_SKIP]
+        mx = [max(fc[n][i] for n in models) / 10 if models else avg[i] for i in range(len(avg))]
+        return avg, mx
 
 
-def _qmap(score, obs, w, nq=41):
-    """Weighted quantile matching: points (score quantile -> observed amount quantile)."""
-    def wq(v, q):
-        i = np.argsort(v); v, ww = v[i], w[i]; c = (np.cumsum(ww) - ww / 2) / ww.sum()
-        return np.interp(q, c, v)
-    qs = np.linspace(0, 1, nq) ** 0.6                     # finer steps at the wet end
-    a, b = wq(score, qs), wq(obs, qs)
-    xs, ys = [], []
-    for x, y in zip(a, b):
-        if not xs or x > xs[-1] + 1e-6:
-            xs.append(round(float(x), 4)); ys.append(round(float(max(y, ys[-1] if ys else 0)), 2))
-    return [xs, ys]
+def obs_features(Ob, Ar, O, nb, gap_from=None):
+    """Recent rain (smoothed) and the past week's model error (smoothed) at every square, as of observed day O
+    (the model error is taken from complete days up to gap_from, default O)."""
+    rec = Ob.day(O)
+    r = smooth({i: v[0] for i, v in rec.items()}, nb) if rec else {}
+    gs, ws = {}, {}
+    G0 = gap_from or O
+    for b in range(GAP_DAYS):
+        X = G0 - dt.timedelta(days=b)
+        ob = Ob.day(X); fc = Ar.get(X, 1)
+        if not ob or not fc:
+            continue
+        k = 0.5 ** b
+        for i, v in ob.items():
+            if i < len(fc[0]):
+                gs[i] = gs.get(i, 0.0) + k * (v[0] - fc[0][i]); ws[i] = ws.get(i, 0.0) + k
+    g = smooth({i: gs[i] / ws[i] for i in gs}, nb)
+    return r, g
+
+
+def x_row(a, m, r, g):
+    return [1.0, math.log1p(max(a, 0)), math.log1p(max(m, 0)), math.log1p(max(r, 0)), math.copysign(math.log1p(abs(g)), g)]
+
+
+WET = 2.5
+LAM = 5.0                # gentle pull of every learned weight towards zero (few days of data)
+
+
+def _logit(X, y, w):
+    X, y, w = np.asarray(X), np.asarray(y, float), np.asarray(w); b = np.zeros(X.shape[1])
+    for _ in range(40):
+        p = 1 / (1 + np.exp(-X @ b)); W_ = w * p * (1 - p) + 1e-6
+        b = b + np.linalg.solve(X.T @ (X * W_[:, None]) + LAM * np.eye(len(b)), X.T @ (w * (y - p)) - LAM * b)
+    return b
+
+
+def fit_lead(S):
+    """S: list of (x_row, obs, weight). Returns the rain-chance weights, the amount weights, and the chance level."""
+    X = [s[0] for s in S]; y = [s[1] >= WET for s in S]; w = [s[2] for s in S]
+    b = _logit(X, y, w)
+    WR = [s for s in S if s[1] >= WET]
+    Xw = np.asarray([s[0] for s in WR]); lw = np.log([s[1] for s in WR]); ww = np.asarray([s[2] for s in WR])
+    c = np.linalg.solve(Xw.T @ (Xw * ww[:, None]) + LAM * np.eye(Xw.shape[1]), Xw.T @ (ww * lw))
+    smear = float((ww * np.exp(lw - Xw @ c)).sum() / ww.sum())
+    p = 1 / (1 + np.exp(-np.asarray(X) @ b)); frac = sum(wi for yi, wi in zip(y, w) if yi) / sum(w)
+    level = float(np.quantile(p, 1 - frac)) if 0 < frac < 1 else 0.5
+    return dict(chance=[round(float(x), 4) for x in b], amount=[round(float(x), 4) for x in c], smear=round(smear, 3),
+                level=round(level, 3))
+
+
+def predict_one(model, a, m, r, g, L):
+    """(our amount, chance of rain, could-reach amount) for one square."""
+    lead = model['leads'].get(str(min(max(L, 1), 3))) or {}
+    fade = 1.0 if L <= 3 else max(0.0, 1 - (L - 3) / 4)        # observations matter less far ahead
+    x = x_row(a, m, r * fade, g * fade)
+    if 'chance' not in lead:                                    # not enough days yet: the models' average
+        return round(a, 1), None, None
+    p = 1 / (1 + math.exp(-float(np.dot(lead['chance'], x))))
+    amt = math.exp(float(np.dot(lead['amount'], x))) * lead['smear']
+    v = amt if p >= lead['level'] else amt * p / 2
+    reach = round(max(v, m), 1) if p >= max(0.5, lead['level']) and m > v else None
+    return round(v, 1), round(p, 2), reach
+
+
+def build_samples(pts, Ob, Ar, nb, days, before_day=None):
+    """Training rows for target days `days` (forecast lead L made when the latest observed day was D-L-1)."""
+    samples = {1: [], 2: [], 3: []}
+    for D in days:
+        tgt = Ob.day(D)
+        if not tgt:
+            continue
+        for L in (1, 2, 3):
+            O = D - dt.timedelta(days=L + 1)
+            if before_day and O >= before_day:
+                continue
+            fc = Ar.get(D, L)
+            if not fc:
+                continue
+            r, g = obs_features(Ob, Ar, O, nb)
+            for i, (ob, w, src) in tgt.items():
+                if i < len(fc[0]):
+                    samples[L].append((x_row(fc[0][i], fc[1][i], r.get(i, 0.0), g.get(i, 0.0)), ob, w, i, D))
+    return samples
 
 
 def train(pts, now):
-    """Learn from saved forecasts (the other models' average) and what fell afterwards. Returns the model dict."""
+    """Learn from the past 30 days. Returns the model dict (with live inputs for the latest observed day)."""
     sat_w, sat_ets = _sat_weight()
-    O = Obs(pts, sat_w)
-    runs = []
-    if os.path.isdir(verify.FC_DIR):
-        for f in sorted(os.listdir(verify.FC_DIR)):
-            try:
-                runs.append((verify.utc(f[:10]), os.path.join(verify.FC_DIR, f)))
-            except ValueError:
-                pass
-    samples = {1: [], 2: [], 3: []}
-    resid = {}                                                 # square -> [(obs, pred_without_local, weight)] (lead 1-2)
-    last_day = now.date()
-    for back in range(1, 31):
-        D = last_day - dt.timedelta(days=back)
-        tgt = O.day(D)
-        if not tgt:
-            continue
-        ws = verify.window_start(D)
-        for L in (1, 2, 3):
-            cand = [(t, p) for t, p in runs if ws - dt.timedelta(hours=24 * L) <= t < ws - dt.timedelta(hours=24 * (L - 1))]
-            if not cand:
-                continue
-            fc = json.load(open(cand[-1][1]))['days'].get(D.isoformat())
-            if not fc or 'Average' not in fc:
-                continue
-            rec = O.recent(D - dt.timedelta(days=L + 1))         # the latest TN SMART day out when that forecast was made
-            for i, (ob, w, src) in tgt.items():
-                if i >= len(fc['Average']) or i not in rec:
-                    continue
-                samples[L].append((fc['Average'][i] / 10, rec[i][0], rec[i][1], ob, w, i, D))
-    model = dict(updated=now.strftime('%Y-%m-%dT%H:%MZ'), satellite_weight=sat_w, satellite_ets=sat_ets, leads={})
+    Ob = Obs(pts, sat_w); Ar = Archive(); nb = neighbours(pts)
+    days = [now.date() - dt.timedelta(days=b) for b in range(1, 31)]
+    samples = build_samples(pts, Ob, Ar, nb, days)
+    model = dict(version=3, updated=now.strftime('%Y-%m-%dT%H:%MZ'), satellite_weight=sat_w, satellite_ets=sat_ets, leads={},
+                 inputs=['models average', 'wettest model', 'recent rain (TN SMART / satellite)', 'past-week model error'])
     for L, S in samples.items():
-        if len(S) < MIN_SAMPLES:
-            model['leads'][str(L)] = dict(coef=[0, 1, 0, 0], samples=len(S), note='not enough days yet: model average only')
+        if len(S) < MIN_SAMPLES or sum(s[1] >= WET for s in S) < 30:
+            model['leads'][str(L)] = dict(samples=len(S), note='not enough days yet: models average')
             continue
-        X = [[1, math.log1p(a), math.log1p(r1), math.log1p(r3)] for a, r1, r3, *_ in S]
-        y = [math.log1p(s[3]) for s in S]
-        w = [s[4] for s in S]
-        c = _fit(X, y, w, [0, 1, 0, 0])
-        # amounts: the regression only says WHERE rain is more or less likely; the amounts come from matching its ranking
-        # to the real spread of TN SMART / satellite amounts (so light stays light and heavy spots stay heavy)
-        sc_ = np.array([float(np.dot(c, x)) for x in X]); ob = np.array([s[3] for s in S]); ww = np.array(w)
-        qm = _qmap(sc_, ob, ww)
-        pred = [float(np.interp(v, qm[0], qm[1])) for v in sc_]
-        scale = 1.0
-        # overall wet/dry tendency of the model average on these days (sets each forecast day's total, see redistribute)
-        tot_a = sum(s[0] * s[4] for s in S); tot_o = sum(s[3] * s[4] for s in S)
-        bias = round(min(1.5, max(0.5, tot_o / tot_a)), 3) if tot_a > 0 else 1.0
-        # skill on the training days, against the plain model average (same squares, same weights)
-        def mae(vals):
-            return sum(abs(v - s[3]) * s[4] for v, s in zip(vals, S)) / sum(s[4] for s in S)
-        model['leads'][str(L)] = dict(coef=[round(float(x), 4) for x in c], scale=round(scale, 3), qmap=qm, total_factor=bias, samples=len(S),
-                                      days=len({s[6] for s in S}), mae_ours=round(mae([p * scale for p in pred]), 2),
-                                      mae_average=round(mae([s[0] for s in S]), 2))
-        if L in (1, 2):
-            for p, s in zip(pred, S):
-                if (now.date() - s[6]).days <= LOCAL_DAYS:
-                    resid.setdefault(s[5], []).append((s[3], p * scale, s[4]))
-    # local factor per square: how much more or less rain fell than we would have said, shrunk towards 1
-    local = {}
-    for i, rs in resid.items():
-        o = sum(r[0] * r[2] for r in rs); p = sum(r[1] * r[2] for r in rs); n = sum(r[2] for r in rs)
-        lo, hi, k0 = LOCAL
-        k = n / (n + k0)
-        f = (o + 2) / (p + 2)
-        local[i] = round(max(lo, min(hi, math.exp(k * math.log(f)))), 2)
-    model['local'] = local
-    latest = next((d for d in [last_day - dt.timedelta(days=b) for b in range(0, 6)] if O.day(d)), None)
+        f = fit_lead([(s[0], s[1], s[2]) for s in S])
+        model['leads'][str(L)] = dict(f, samples=len(S), wet_samples=sum(s[1] >= WET for s in S), days=len({s[4] for s in S}))
+    # live inputs: the newest observed day (TN SMART, or the satellite's day so far if TN SMART has not published it)
+    ObL = Obs(pts, max(sat_w, 0.3), allow_partial=True)
+    latest = None
+    for b in range(0, 6):
+        d = now.date() + dt.timedelta(days=1) - dt.timedelta(days=b)
+        if ObL.day(d):
+            latest = d; break
     model['latest_obs_day'] = latest.isoformat() if latest else None
-    model['support'] = {i: v[2] for i, v in (O.day(latest) or {}).items()} if latest else {}
-    model['_recent'] = O.recent(latest) if latest else {}
-    model['_obs'] = O
+    if latest:
+        S_ = verify.sat_day(latest)
+        partial = bool(S_ and not S_.get('complete', True)) and not os.path.exists(verify.OBS('data', 'daily', latest.isoformat() + '.json'))
+        r, g = obs_features(ObL, Ar, latest, nb, gap_from=latest - dt.timedelta(days=1) if partial else None)
+        model['latest_partial'] = partial
+        src = ObL.day(latest) or {}
+        model['support'] = {i: v[2] for i, v in src.items()}
+        model['_recent'], model['_gap'] = r, g
+    else:
+        model['support'], model['_recent'], model['_gap'] = {}, {}, {}
+    model['_latest'] = latest
     return model
 
 
-def predict(model, avg, lead, i, recent):
-    """Our rain (mm) for one square: avg = other models' average, lead = days ahead (1..), recent = (yesterday, 3-day)."""
-    if avg is None:
-        return None
-    L = str(min(max(lead, 1), 3))
-    m = model['leads'].get(L) or {}
-    c = m.get('coef', [0, 1, 0, 0]); sc = m.get('scale', 1.0)
-    r1, r3 = recent if recent else (None, None)
-    if r1 is None or lead > 3:                                  # beyond 3 days (or nothing observed): model average part only
-        x = c[0] + c[1] * math.log1p(avg)
-        if r1 is not None and lead > 3:
-            fade = max(0.0, 1 - (lead - 3) / 3)
-            x += fade * (c[2] * math.log1p(r1) + c[3] * math.log1p(r3))
-    else:
-        x = c[0] + c[1] * math.log1p(avg) + c[2] * math.log1p(r1) + c[3] * math.log1p(r3)
-    q = m.get('qmap')
-    if q and len(q[0]) >= 2:
-        v = float(np.interp(x, q[0], q[1]))
-        if x > q[0][-1]:                                       # beyond the wettest day learned: keep growing with the score
-            v = q[1][-1] * math.exp(x - q[0][-1])
-    else:
-        v = math.expm1(max(0.0, x)) * sc
-    v *= float(model['local'].get(i, model['local'].get(str(i), 1.0)))
-    return round(v, 1)
-
-
-def forecast_day(model, avgs, lead, recent):
-    """Our rain for every square of one day: WHERE and how concentrated from our model, HOW MUCH in total from the
-    models' total corrected by their recent wet/dry tendency (so a wet day stays wet and a dry day stays dry)."""
-    raw = [predict(model, a, lead, i, recent.get(i)) for i, a in enumerate(avgs)]
-    m = model['leads'].get(str(min(max(lead, 1), 3))) or {}
-    tf = m.get('total_factor', 1.0) if TOTAL_FROM_BIAS else 1.0
-    tot_a = sum(a for a in avgs if a is not None); tot_r = sum(r for r in raw if r is not None)
-    if tot_r <= 0 or tot_a <= 0:
-        return raw
-    k = tot_a * tf / tot_r
-    return [round(r * k, 1) if r is not None else None for r in raw]
+def forecast_day(model, avgs, maxs, D):
+    """Our rain for every square on TN SMART day D (a date): list of (amount, chance, could_reach)."""
+    latest = model.get('_latest')
+    L = max(1, (D - latest).days - 1) if latest else 3           # same alignment as training (observed day = D-L-1)
+    r, g = model.get('_recent', {}), model.get('_gap', {})
+    return [(None, None, None) if a is None else predict_one(model, a, m if m is not None else a, r.get(i, 0.0), g.get(i, 0.0), L)
+            for i, (a, m) in enumerate(zip(avgs, maxs))], L
 
 
 def confidence(model_vals, lead, support):
