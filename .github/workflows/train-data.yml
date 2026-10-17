@@ -1,0 +1,38 @@
+name: Training history download
+on:
+  push:
+    branches: [train-data]
+    paths: ['scripts/hist_*.py', '.github/workflows/train-data.yml', 'data/history/RUN']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: {group: train-data, cancel-in-progress: false}
+jobs:
+  tnsmart:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python scripts/hist_tnsmart.py
+      - if: always()
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add data/history/tnsmart data/history/stations_hist.json data/history/tnsmart_status.json || true
+          git commit -qm "TN SMART history (NE monsoon 2019-2024)" || exit 0
+          for i in 1 2 3; do git pull -q --rebase origin train-data && git push -q origin HEAD:train-data && break; sleep 5; done
+  models:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python scripts/hist_models.py
+      - if: always()
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add data/history/models || true
+          git commit -qm "Model forecast history (Open-Meteo archives)" || exit 0
+          for i in 1 2 3; do git pull -q --rebase origin train-data && git push -q origin HEAD:train-data && break; sleep 5; done
