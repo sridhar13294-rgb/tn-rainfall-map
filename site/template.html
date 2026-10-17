@@ -27,45 +27,51 @@ h2{font:700 17px/1.2 var(--f);font-stretch:112%;margin:0 0 12px;text-wrap:balanc
 section{padding:18px 0}
 .m{color:var(--mut);font-size:13px}
 /* period picker */
-.when{padding:4px 0 6px}
-.seg{display:inline-flex;background:var(--deck);border:1px solid var(--rule);border-radius:12px;padding:3px;margin-bottom:12px}
+.main{display:grid;gap:14px;margin-top:4px}
+.ctrl{background:var(--deck);border:1px solid var(--rule);border-radius:18px;padding:12px 12px 14px;min-width:0}
+.ch{display:flex;align-items:center;justify-content:space-between;gap:8px 12px;flex-wrap:wrap;margin-bottom:12px}
+.seg{display:inline-flex;background:var(--night);border:1px solid var(--rule);border-radius:12px;padding:3px}
 .seg button{border:0;background:none;padding:6px 16px;border-radius:9px;font-weight:600;font-size:14px;color:var(--mut);cursor:pointer}
 .seg button.on{background:var(--ink);color:var(--night)}
-.strip{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;align-items:end;max-width:640px}
+.strip{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;align-items:end}
 .mo{border:0;background:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:stretch;gap:5px}
-.mo .bar{height:56px;display:flex;align-items:flex-end;border-radius:6px;background:var(--deck);overflow:hidden;outline:2px solid transparent;outline-offset:1px}
+.mo .bar{height:64px;display:flex;align-items:flex-end;border-radius:6px;background:var(--night);overflow:hidden;outline:2px solid transparent;outline-offset:1px}
 .mo .bar i{display:block;width:100%;border-radius:4px 4px 0 0}
-.mo span{font-size:12px;font-weight:600;color:var(--mut);text-align:center}
+.mo span{font-size:11.5px;font-weight:600;color:var(--mut);text-align:center}
 .mo.on .bar{outline-color:var(--ink);outline-width:1.5px}
 .mo.on span{color:var(--ink)}
 .mo:disabled{cursor:default;opacity:.3}
-.pre{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
-.pre button{border:1px solid var(--rule);background:var(--deck);color:var(--ink);border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer}
+.pre{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+.pre button{border:1px solid var(--rule);background:var(--night);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer}
+.pre button.on{background:var(--acc);border-color:var(--acc);color:#06222c;font-weight:600}
 .pre button:active{background:var(--chip)}
-.calhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;max-width:640px}
+.calhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 .calhead b{font-size:15px}
-.calhead button{border:1px solid var(--rule);background:var(--deck);border-radius:8px;width:36px;height:32px;font-size:18px;cursor:pointer}
+.calhead button{border:1px solid var(--rule);background:var(--night);border-radius:8px;width:36px;height:32px;font-size:18px;cursor:pointer}
 .calhead button:disabled{opacity:.3}
-.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;max-width:640px}
-.cal .h{font-size:11px;color:var(--mut);text-align:center;padding-bottom:2px}
-.day{border:0;border-radius:6px;aspect-ratio:1/0.82;padding:3px 0 0;font-size:13px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;line-height:1.1;background:var(--deck);color:var(--mut)}
-.day small{font-size:9.5px;font-weight:500;opacity:.85}
-.day.in{box-shadow:inset 0 0 0 2px var(--ink)}
-.day.end{background:var(--ink)!important;color:var(--night)!important}
-.day:disabled{opacity:.3;cursor:default}
-.day.nodata{background:repeating-linear-gradient(45deg,var(--chip),var(--chip) 3px,transparent 3px,transparent 6px)}
-.selt{margin:12px 0 0;font-size:14px;color:var(--mut)}
+.cal{display:grid;gap:2px;align-items:end;height:92px}
+.day{border:0;background:none;padding:0;cursor:pointer;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;height:100%;min-width:0;gap:3px}
+.day b{flex:1;display:flex;align-items:flex-end;background:var(--night);border-radius:4px;overflow:hidden}
+.day i{display:block;width:100%;border-radius:3px 3px 0 0}
+.day span{font-size:10px;line-height:12px;height:12px;color:var(--mut);text-align:center;font-weight:600}
+.day.in b{background:#2b4262}
+.day.end b{box-shadow:inset 0 0 0 2px var(--ink)}
+.day.end span{color:var(--ink)}
+.day:disabled{opacity:.25;cursor:default}
+.day.nodata b{background:repeating-linear-gradient(45deg,var(--chip),var(--chip) 2px,transparent 2px,transparent 4px)}
+.calh{margin:8px 0 0}
+.selt{margin:0;font-size:14px;color:var(--mut);text-align:right}
 .selt b{font-weight:700;color:var(--ink)}
 /* the headline */
-.hero{padding:10px 0 4px}
+.hero{padding:4px 0 0}
 .hl{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap}
 .big{font:700 clamp(68px,19vw,132px)/.8 var(--f);font-stretch:75%;letter-spacing:-1px;color:var(--ink)}
 .big small{font-size:.32em;font-stretch:100%;font-weight:600;color:var(--mut);margin-left:4px;letter-spacing:0}
 .hs{font:500 17px/1.3 var(--f);color:var(--mut);max-width:24ch;padding-bottom:6px}
-.sum{margin:14px 0 0;font-size:17px;line-height:1.45;max-width:62ch;color:var(--ink)}
+.sum{margin:12px 0 0;font-size:16px;line-height:1.45;max-width:62ch;color:var(--ink)}
 .sum strong,.sum b{font-weight:700}
 /* the figures */
-.stats{display:grid;grid-template-columns:1fr 1fr;margin-top:18px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.stats{display:grid;grid-template-columns:1fr 1fr;margin-top:16px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
 .stats>div{padding:12px 12px 12px 0;min-width:0}
 .stats>div:nth-child(2n){padding-left:14px;border-left:1px solid var(--rule)}
 .stats>div:nth-child(n+3){border-top:1px solid var(--rule)}
@@ -73,7 +79,6 @@ section{padding:18px 0}
 .stats .l{font-size:13px;color:var(--mut);margin-top:4px}
 .stats .s{font-size:12.5px;color:var(--ink);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 /* map and district cards */
-.board{display:grid;gap:16px;margin-top:20px}
 .mapp{background:var(--deck);border-radius:18px;padding:12px 12px 14px;border:1px solid var(--rule);min-width:0}
 .mapwrap{position:relative;border-radius:12px;overflow:hidden}
 svg{width:100%;height:auto;display:block}
@@ -89,7 +94,8 @@ svg{width:100%;height:auto;display:block}
 .scale span{display:block;font-size:10.5px;color:var(--mut);padding-top:4px;white-space:nowrap}
 .scale em{display:block;font-style:normal;font-size:11px;font-weight:700;color:var(--ink)}
 .scalet{font-size:12.5px;color:var(--mut);margin-top:6px}
-.spot{display:grid;gap:12px;align-content:start;min-width:0}
+.wd{padding-top:26px}
+.spot{display:grid;gap:12px;min-width:0}
 .spot h2{margin:2px 0 0}
 .dc{display:grid;grid-template-columns:118px minmax(0,1fr);gap:12px;background:var(--deck);border:1px solid var(--rule);border-radius:16px;padding:12px;cursor:pointer;text-align:left;width:100%}
 .dc.on{border-color:var(--ink)}
@@ -101,8 +107,8 @@ svg{width:100%;height:auto;display:block}
 .dc .tg span{color:var(--mut)}
 .dc .rd{font-size:12.5px;color:var(--mut);margin-top:2px}
 /* lists */
-.lists{display:grid;gap:8px;margin-top:8px;max-width:760px}
-.side{display:grid;gap:12px;align-content:start;min-width:0}.side h2{margin:2px 0 0}.side .rank{padding:14px 0 0}
+.lists{display:grid;gap:8px;margin-top:4px}
+
 .rank ol{list-style:none;margin:0;padding:0;display:grid;gap:10px}
 .rank li{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;align-items:center}
 .rank .k{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;background:var(--deck2);border:1px solid var(--rule)}
@@ -125,8 +131,9 @@ table{border-collapse:collapse;width:100%}
 @media (prefers-reduced-motion:no-preference){.mo .bar i{transition:height .25s}}
 .dl{display:flex;align-items:center;flex-wrap:wrap;gap:6px 8px;margin-top:12px;font-size:13.5px;color:var(--mut)}.dl span{margin-right:2px}.dl button{border:1px solid var(--rule);background:var(--deck2);color:var(--ink);border-radius:8px;padding:5px 12px;font:inherit;font-weight:600;font-size:13px;cursor:pointer}.dl small{flex-basis:100%;font-size:12px}
 [hidden]{display:none!important}
-@media (min-width:700px){.stats{grid-template-columns:repeat(4,1fr)}.stats>div{padding:12px 14px;border-left:1px solid var(--rule)}.stats>div:first-child{border-left:0;padding-left:0}.stats>div:nth-child(n+3){border-top:0}}
-@media (min-width:960px){.board{grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);align-items:start}.hero{display:grid;grid-template-columns:auto minmax(0,1fr);gap:32px;align-items:end}.sum{margin:0}}
+@media (max-width:959px){.pre{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-left:-12px;margin-right:-12px;padding:0 12px}.pre::-webkit-scrollbar{display:none}.pre button{flex:none}}
+@media (min-width:700px) and (max-width:959px){.stats{grid-template-columns:repeat(4,1fr)}.stats>div{padding:12px 14px;border-left:1px solid var(--rule)}.stats>div:first-child{border-left:0;padding-left:0}.stats>div:nth-child(n+3){border-top:0}.spot{grid-template-columns:1fr 1fr}}
+@media (min-width:960px){.main{grid-template-columns:minmax(330px,390px) minmax(0,1fr);grid-template-areas:'ctrl map' 'hero map';grid-template-rows:auto 1fr;align-items:start;column-gap:22px}.ctrl{grid-area:ctrl}.mapp{grid-area:map}.hero{grid-area:hero}.spot{grid-template-columns:repeat(3,minmax(0,1fr))}.lists{grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:36px}}
 </style></head><body><div class="w">
 <header class="top">
  <a class="brand" href="index.html"><span class="ta" lang="ta">மழை</span><h1><b>Tamil Nadu</b> rainfall</h1></a>
@@ -134,34 +141,31 @@ table{border-collapse:collapse;width:100%}
 </header>
 <p class="sub" id="sub"></p>
 
-<section class="when" aria-label="Choose the period">
- <div class="seg" id="seg"><button data-m="months" class="on">Months</button><button data-m="days">Days</button></div>
- <div id="pm"><div class="strip" id="strip"></div>
-  <div class="pre" id="pre"></div></div>
- <div id="pd" hidden><div class="calhead"><button id="pv" aria-label="Previous month">‹</button><b id="calt"></b><button id="nx" aria-label="Next month">›</button></div>
-  <div class="cal" id="cal"></div>
-  <div class="pre" id="qk"></div></div>
- <p class="selt" id="selt"></p>
-</section>
-
-<section class="hero">
- <div class="hl" id="hl"></div>
- <p class="sum" id="sum"></p>
-</section>
-<div class="stats" id="stats"></div>
-
-<div class="board">
+<div class="main">
+ <section class="ctrl" aria-label="Choose the period">
+  <div class="ch"><div class="seg" id="seg"><button data-m="months" class="on">Months</button><button data-m="days">Days</button></div><p class="selt" id="selt"></p></div>
+  <div id="pm"><div class="strip" id="strip"></div></div>
+  <div id="pd" hidden><div class="calhead"><button id="pv" aria-label="Previous month">‹</button><b id="calt"></b><button id="nx" aria-label="Next month">›</button></div>
+   <div class="cal" id="cal"></div><p class="m calh">Tap a day, or two days for a range. Bars: state average rain each day.</p></div>
+  <div class="pre" id="pre"></div><div id="qk" hidden></div>
+ </section>
  <section class="mapp" id="mapp">
   <div class="mapwrap" id="mw"><svg id="sv" viewBox="0 0 440 575"></svg><div id="zb"><button data-z="1.6" aria-label="Zoom in">+</button><button data-z="0.625" aria-label="Zoom out">−</button><button data-z="0" aria-label="Reset zoom">⌂</button></div></div>
   <div class="scale" id="lg"></div><div class="scalet" id="lt"></div>
   <div id="info">Tap a square for its rainfall and the nearest gauges. Zoom in to see each gauge.</div>
   <div class="tog"><label><input type="checkbox" id="tg" checked> Cities</label><label><input type="checkbox" id="th" checked> Hills</label></div>
  </section>
- <aside class="side"><h2>Wettest districts</h2><div class="spot" id="spot"></div>
-  <section class="rank"><h2>Wettest gauges</h2><ol id="top5"></ol></section></aside>
+ <section class="hero">
+  <div class="hl" id="hl"></div>
+  <p class="sum" id="sum"></p>
+  <div class="stats" id="stats"></div>
+ </section>
 </div>
 
+<section class="wd"><h2>Wettest districts</h2><div class="spot" id="spot"></div></section>
+
 <div class="lists">
+ <section class="rank"><h2>Wettest gauges</h2><ol id="top5"></ol></section>
  <section>
   <h2>All districts</h2>
   <p class="m" style="margin:-6px 0 8px">Average over each district's grid squares. Tap a district to pick it out on the map.</p>
@@ -207,25 +211,26 @@ const mTot=MON.map((_,m)=>mDays(m).reduce((s,k)=>s+(D.sd[k]||0),0));
 const mMax=Math.max(1,...mTot);const MB=bins(30);
 $('strip').innerHTML=MON.map((n,m)=>`<button class="mo" data-m="${m}" ${m>lastM?'disabled':''} aria-pressed="false"><div class="bar"><i style="height:${m>lastM?0:Math.max(3,mTot[m]/mMax*100)}%;background:${MB[cls(mTot[m],MB)][1]}"></i></div><span>${n}</span></button>`).join('');
 $('strip').onclick=e=>{const b=e.target.closest('.mo');if(!b||b.disabled)return;const m=+b.dataset.m;
- if(selM.has(m)){if(selM.size>1)selM.delete(m)}else selM.add(m);update()};
-const PRE=[['All of '+YR,()=>{selM=new Set([...Array(lastM+1).keys()])}],['SW monsoon (Jun–Sep)',()=>{selM=new Set([5,6,7,8].filter(m=>m<=lastM))}],['NE monsoon (Oct–Dec)',()=>{selM=new Set([9,10,11].filter(m=>m<=lastM))}],['Latest month',()=>{selM=new Set([lastM])}]];
-$('pre').innerHTML=PRE.map((p,i)=>`<button data-p="${i}">${p[0]}</button>`).join('');
-$('pre').onclick=e=>{const b=e.target.closest('[data-p]');if(b){PRE[+b.dataset.p][1]();if(!selM.size)selM.add(lastM);update()}};
-const QK=[['Latest day',1],['Last 7 days',7],['Last 30 days',30]];
-$('qk').innerHTML=QK.map(q=>`<button data-q="${q[1]}">${q[0]}</button>`).join('');
-$('qk').onclick=e=>{const b=e.target.closest('[data-q]');if(b){dB=ND-1;dA=Math.max(0,ND-+b.dataset.q);anchor=null;calM=dateOf(dB).getUTCMonth();update()}};
-$('seg').onclick=e=>{const b=e.target.closest('[data-m]');if(!b)return;mode=b.dataset.m;update()};
+ PSEL=null;if(selM.has(m)){if(selM.size>1)selM.delete(m)}else selM.add(m);update()};
+// one row of quick picks: day ranges switch to Days, seasons to Months
+let PSEL=null;
+const PRE=[['Latest day','d',1],['Last 7 days','d',7],['Last 30 days','d',30],['This month','m',()=>{selM=new Set([lastM])}],
+ ['NE monsoon','m',()=>{selM=new Set([9,10,11].filter(m=>m<=lastM))}],['SW monsoon','m',()=>{selM=new Set([5,6,7,8].filter(m=>m<=lastM))}],['All of '+YR,'m',()=>{selM=new Set([...Array(lastM+1).keys()])}]];
+$('pre').innerHTML=PRE.map((p,i)=>`<button data-p="${i}">${p[0]}</button>`).join('');PSEL=PRE.length-1;
+$('pre').onclick=e=>{const b=e.target.closest('[data-p]');if(!b)return;const P=PRE[+b.dataset.p];PSEL=+b.dataset.p;
+ if(P[1]=='d'){mode='days';dB=ND-1;dA=Math.max(0,ND-P[2]);anchor=null;calM=dateOf(dB).getUTCMonth()}else{mode='months';P[2]();if(!selM.size)selM.add(lastM)}update()};
+$('seg').onclick=e=>{const b=e.target.closest('[data-m]');if(!b)return;mode=b.dataset.m;PSEL=null;update()};
 $('pv').onclick=()=>{if(calM>0){calM--;drawCal()}};$('nx').onclick=()=>{if(calM<lastM){calM++;drawCal()}};
 const IMDc=v=>v==null?null:IMD[cls(v,IMD)][1];
 function drawCal(){$('calt').textContent=MONL[calM]+' '+YR;$('pv').disabled=calM<=0;$('nx').disabled=calM>=lastM;
- const first=new Date(Date.UTC(YR,calM,1)),off=(first.getUTCDay()+6)%7,nd=new Date(Date.UTC(YR,calM+1,0)).getUTCDate();
- let h=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(x=>`<div class="h">${x}</div>`).join('')+'<div></div>'.repeat(off);
+ const nd=new Date(Date.UTC(YR,calM+1,0)).getUTCDate();let mx=1;
+ for(let d=1;d<=nd;d++){const k=kOf(calM,d);if(k<=ND-1&&D.sd[k]!=null)mx=Math.max(mx,D.sd[k])}
+ let h='';
  for(let d=1;d<=nd;d++){const k=kOf(calM,d),fut=k>ND-1,iso=`${YR}-${String(calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`,nod=MISS.has(iso);
-  const v=fut?null:D.sd[k],inR=!fut&&k>=dA&&k<=dB,end=!fut&&(k==dA||k==dB);
-  const bg=fut||nod?'':`background:${IMDc(v)};color:${(v>=2.5&&v<64.5)||v>=115.6?'#fff':'#0f2a33'}`;
-  h+=`<button class="day${inR?' in':''}${end?' end':''}${nod?' nodata':''}" data-k="${k}" ${fut?'disabled':''} style="${bg}" title="${fut?'':f1(v)+' mm state average'}">${d}${fut||v==null?'':`<small>${v<1?f1(v):f0(v)}</small>`}</button>`}
- $('cal').innerHTML=h}
-$('cal').onclick=e=>{const b=e.target.closest('.day');if(!b||b.disabled)return;const k=+b.dataset.k;
+  const v=fut?null:D.sd[k],inR=!fut&&k>=dA&&k<=dB,end=!fut&&(k==dA||k==dB),ht=fut||nod||v==null?0:Math.max(5,Math.sqrt(v/mx)*100);
+  h+=`<button class="day${inR?' in':''}${end?' end':''}${nod?' nodata':''}" data-k="${k}" ${fut?'disabled':''} aria-label="${d} ${MON[calM]}${fut?'':nod?', no readings':', '+f1(v)+' mm state average'}" title="${d} ${MON[calM]}${fut?'':nod?': no readings':': '+f1(v)+' mm'}"><b><i style="height:${ht}%;background:${v==null?'transparent':IMDc(v)}"></i></b><span>${end||((d==1||d%5==0)&&!(k-1==dA||k-1==dB||k+1==dA||k+1==dB))?d:''}</span></button>`}
+ $('cal').style.gridTemplateColumns=`repeat(${nd},minmax(0,1fr))`;$('cal').innerHTML=h}
+$('cal').onclick=e=>{const b=e.target.closest('.day');if(!b||b.disabled)return;const k=+b.dataset.k;PSEL=null;
  if(anchor==null||anchor==k){dA=dB=k;anchor=k}else{dA=Math.min(anchor,k);dB=Math.max(anchor,k);anchor=null}update()};
 function selDays(){if(mode=='months'){return [...selM].sort((a,b)=>a-b).flatMap(mDays)}return Array.from({length:dB-dA+1},(_,i)=>dA+i)}
 function selLabel(){if(mode=='months'){const ms=[...selM].sort((a,b)=>a-b);const runs=[];ms.forEach(m=>{const r=runs[runs.length-1];if(r&&r[1]==m-1)r[1]=m;else runs.push([m,m])});
@@ -364,7 +369,8 @@ function update(){document.querySelectorAll('#seg button').forEach(b=>b.classLis
  document.querySelectorAll('#strip .mo').forEach(b=>{const on=selM.has(+b.dataset.m);b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
  if(mode=='days')drawCal();
  const days=selDays();compute(days);
- $('selt').innerHTML=`Showing <b>${selLabel()}</b> · ${days.length} day${days.length>1?'s':''}`+(gap?`<br><span style="color:var(--warn);font-size:13px">${gap==days.length?'TN SMART has no readings for this period.':'TN SMART has no readings for '+gap+' of these days; totals leave them out.'}</span>`:'')+(mode=='days'&&anchor!=null?' <span class="m">· tap another day to make a range</span>':'');
+ document.querySelectorAll('#pre button').forEach(x=>x.classList.toggle('on',+x.dataset.p===PSEL));
+ $('selt').innerHTML=`<b>${selLabel()}</b><br>${days.length} day${days.length>1?'s':''}`+(gap?`<br><span style="color:var(--warn);font-size:13px">${gap==days.length?'TN SMART has no readings for this period.':'TN SMART has no readings for '+gap+' of these days; totals leave them out.'}</span>`:'')+(mode=='days'&&anchor!=null?'<br><span class="m">Tap another day for a range</span>':'');
  paint();summary();dots();show()}
 apply();update();
 mapDownload($('mapp'),()=>{if(vb[2]<439){vb=V0.slice();apply()}const b=bins(nDays);
