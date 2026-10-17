@@ -2,7 +2,7 @@ name: Training history download
 on:
   push:
     branches: [train-data]
-    paths: ['scripts/hist_*.py', '.github/workflows/train-data.yml', 'data/history/RUN']
+    paths: ['data/history/RUN']
   workflow_dispatch:
 permissions:
   contents: write
