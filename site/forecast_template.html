@@ -170,7 +170,7 @@ const TH={bg:'#0b1522',ink:'#e9f0f7',mut:'#8fa3bb',acc:'#5ccfee',halo:'#0b1522',
 mapDownload($('info').parentNode,()=>{const v=$('var').value,b=SC[v].b,[a,dd]=dl(F.dates[day]),opt=s=>s.options[s.selectedIndex].text;
  return {svg:sv,title:'Tamil Nadu forecast: '+opt($('var'))+', '+a+' '+dd+(is6()?' '+PER[per]+' IST':''),sub:opt($('mod'))+(is6()?'':' · day runs 05:30–05:30 IST'),
   legend:b.map(x=>[x[1],x[2]+' '+SC[v].u]),legendTitle:opt($('var')),
-  note:'Average of the latest GFS, ECMWF, ECMWF AI, ICON and GEM runs from the official open-data servers. Updated '+F.updated+'. Experimental, not an official forecast: follow IMD and TNSDMA warnings.',
+  note:($('mod').value=='ours'?'Our forecast: learns from TN SMART gauges and the satellite, with the latest GFS, ECMWF, ECMWF AI, ICON and GEM runs as inputs. Updated ':'Latest GFS, ECMWF, ECMWF AI, ICON and GEM runs from the official open-data servers. Updated ')+F.updated+'. Experimental, not an official forecast: follow IMD and TNSDMA warnings.',
   theme:TH,file:'tn-forecast-'+v.replace(/_/g,'-')+'-'+F.dates[day]+(is6()?'-'+PER[per].slice(0,2):'')}});
 
 // ---------- wind animation
