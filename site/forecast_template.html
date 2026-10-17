@@ -1,48 +1,61 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="color-scheme" content="only light"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Tamil Nadu Forecast</title>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="color-scheme" content="dark"><meta name="theme-color" content="#0b1522"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Tamil Nadu Forecast</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anek+Latin:wdth,wght@75..125,300..800&family=Anek+Tamil:wght@600..800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#ecf0ee;--card:#f8faf9;--paper:#f8faf9;--ink:#0f2a33;--mut:#5b6e73;--line:#d3dcda;--acc:#0f6e7a;--chipbg:#e1e8e6;
- --f:"Anek Latin",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color-scheme:only light}
+:root{--night:#0b1522;--deck:#122135;--deck2:#172a42;--rule:#22344c;--mut:#8fa3bb;--acc:#5ccfee;--warn:#ff9a76;
+ --bg:#0b1522;--card:#122135;--paper:#122135;--ink:#e9f0f7;--line:#22344c;--chipbg:#1b2d45;--coast:#a9cbe2;
+ --f:"Anek Latin",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color-scheme:dark}
 *{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 var(--f);font-variant-numeric:tabular-nums;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
-.w{max-width:640px;margin:0 auto;padding:0 16px 40px}
+.w{max-width:1180px;margin:0 auto;padding-block:0 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button{font:inherit;color:inherit}
 a{color:var(--acc)}:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
-.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:18px 0 10px;flex-wrap:wrap;row-gap:10px}
-.brand{display:flex;align-items:flex-end;gap:8px;min-width:0}
-.ta{font:700 30px/0.9 "Anek Tamil",var(--f);color:var(--acc);letter-spacing:-.5px}
-h1{font:700 15.5px/1.1 var(--f);font-stretch:104%;margin:0;white-space:nowrap}
-.tabs{display:flex;background:var(--chipbg);border-radius:10px;padding:3px;flex:none}
-.tabs a{padding:6px 7px;border-radius:8px;text-decoration:none;color:var(--mut);font-weight:600;font-size:12.5px;white-space:nowrap}
-.tabs a.on{background:var(--paper);color:var(--ink);box-shadow:0 1px 2px rgba(15,42,51,.12)}
-h2{font:700 16px/1.2 var(--f);font-stretch:108%;margin:0 0 10px}.m{color:var(--mut);font-size:12.5px}
-.card{padding:18px 0;border-top:1px solid var(--line);margin:0}
-.warn{border-left:3px solid #c98a1b;padding:4px 0 4px 10px;font-size:13px;margin:6px 0 14px;color:var(--ink)}
-select{font:inherit;font-size:14px;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:7px 10px;max-width:100%}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0 10px;flex-wrap:wrap;row-gap:10px}
+.brand{display:flex;align-items:baseline;gap:10px;min-width:0;text-decoration:none;color:var(--ink)}
+.ta{font:800 34px/0.9 "Anek Tamil",var(--f);color:var(--acc)}
+h1{font:600 15px/1.15 var(--f);font-stretch:118%;margin:0;color:var(--mut)}
+h1 b{color:var(--ink);font-weight:700}
+.tabs{display:flex;background:var(--deck);border:1px solid var(--rule);border-radius:12px;padding:3px;flex:none}
+.tabs a{padding:6px 10px;border-radius:9px;text-decoration:none;color:var(--mut);font-weight:600;font-size:13px;white-space:nowrap}
+.tabs a.on{background:var(--acc);color:#06222c}
+h2{font:700 17px/1.2 var(--f);font-stretch:112%;margin:0 0 12px;text-wrap:balance}.m{color:var(--mut);font-size:12.5px}
+.card{background:var(--deck);border:1px solid var(--rule);border-radius:18px;padding:14px 14px 16px;margin:0 0 14px;min-width:0}
+.warn{border-left:3px solid #e8a33a;padding:4px 0 4px 10px;font-size:13px;margin:6px 0 14px;color:var(--ink)}
+select{font:inherit;font-size:14px;color:var(--ink);background:var(--night);border:1px solid var(--rule);border-radius:10px;padding:7px 10px;max-width:100%}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .chips{display:flex;gap:6px;overflow-x:auto;padding:8px 0 4px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
-.chip{flex:none;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:10px;padding:6px 11px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;text-align:center;line-height:1.2}
-.chip.on{background:var(--ink);border-color:var(--ink);color:var(--paper)}.chip small{display:block;font-size:11px;font-weight:400;opacity:.8}
+.chip{flex:none;border:1px solid var(--rule);background:var(--night);color:var(--ink);border-radius:10px;padding:6px 11px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;text-align:center;line-height:1.2}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#06222c}.chip small{display:block;font-size:11px;font-weight:400;opacity:.8}
 svg{width:100%;height:auto;display:block}
-.lg{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:10px}.lg div{display:flex;align-items:center;gap:5px;font-size:12px}.lg i{width:14px;height:12px;border-radius:3px;border:1px solid rgba(0,0,0,.12)}
+.lg{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:10px}.lg div{display:flex;align-items:center;gap:5px;font-size:12px}.lg i{width:14px;height:12px;border-radius:3px;border:1px solid rgba(255,255,255,.12)}
 #info{min-height:36px;font-size:14px;margin-top:10px}
 #info table{border-collapse:collapse;margin-top:4px;font-size:13px}#info td{padding:1px 12px 1px 0}
 .wwrap{position:relative;border-radius:14px;overflow:hidden;background:#0b1a2e;touch-action:pan-y}
 .wwrap canvas{display:block;width:100%}.wwrap canvas+canvas{position:absolute;left:0;top:0}
+#wtip:empty,#ptip:empty{display:none}
 #wtip{position:absolute;left:8px;bottom:8px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;padding:4px 8px;border-radius:6px;pointer-events:none}
 input[type=range]{width:100%;accent-color:var(--acc)}
-button.play{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:10px;width:42px;height:36px;font-size:15px;cursor:pointer}
-#tn{background:var(--paper);border-radius:14px;border:1px solid var(--line);margin-top:6px}
-.dl{display:flex;align-items:center;flex-wrap:wrap;gap:6px 8px;margin-top:12px;font-size:13.5px;color:var(--mut)}.dl span{margin-right:2px}.dl button{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:8px;padding:5px 12px;font:inherit;font-weight:600;font-size:13px;cursor:pointer}.dl small{flex-basis:100%;font-size:12px}
+button.play{border:1px solid var(--rule);background:var(--night);color:var(--ink);border-radius:10px;width:42px;height:36px;font-size:15px;cursor:pointer}
+#tn{margin-top:6px}
+.dl{display:flex;align-items:center;flex-wrap:wrap;gap:6px 8px;margin-top:12px;font-size:13.5px;color:var(--mut)}.dl span{margin-right:2px}.dl button{border:1px solid var(--rule);background:var(--night);color:var(--ink);border-radius:8px;padding:5px 12px;font:inherit;font-weight:600;font-size:13px;cursor:pointer}.dl small{flex-basis:100%;font-size:12px}
+/* wide screens: controls beside the map, like the Rainfall page; the other panels flow in two columns */
+@media (min-width:960px){
+ .card.fc{display:grid;grid-template-columns:minmax(330px,390px) minmax(0,1fr);grid-template-rows:repeat(7,auto) 1fr;column-gap:22px;align-items:start;padding:16px 18px 18px}
+ .card.fc>*{grid-column:1;min-width:0}
+ .card.fc>#tn{grid-column:2;grid-row:1/-1;margin-top:0}
+ .card.fc .row{flex-direction:column;align-items:stretch}
+ .rest{columns:2;column-gap:14px}
+ .rest>.card{break-inside:avoid;-webkit-column-break-inside:avoid;display:inline-block;width:100%}
+}
 </style></head><body><div class="w">
 <header class="top">
- <div class="brand"><span class="ta" lang="ta">மழை</span><div><h1>Tamil Nadu<br>forecast</h1></div></div>
+ <a class="brand" href="index.html"><span class="ta" lang="ta">மழை</span><h1><b>Tamil Nadu</b> forecast</h1></a>
  <nav class="tabs"><a href="index.html">Rainfall</a><a class="on" href="forecast.html">Forecast</a><a href="satradar.html">Sat radar</a></nav>
 </header>
 <div class="m" id="upd"></div>
 <div class="warn"><b>Experimental, not an official forecast.</b> Follow IMD and TNSDMA warnings for safety decisions. Days 8–16 are much less reliable than days 1–7.</div>
 
-<div class="card">
+<div class="card fc">
  <h2>16-day forecast</h2>
  <div class="row"><select id="var"><option value="rain6">Rain every 6 hours (mm)</option><option value="precipitation_sum">Rain, daily total (mm)</option><option value="temperature_2m_max">Max temperature (°C)</option><option value="temperature_2m_min">Min temperature (°C)</option><option value="wind_speed_10m_max">Max wind (km/h)</option></select>
  <select id="mod"></select></div>
@@ -53,6 +66,7 @@ button.play{border:1px solid var(--line);background:var(--paper);color:var(--ink
  <div id="info" class="m">Tap a square to see every model's forecast for that spot.</div>
 </div>
 
+<div class="rest">
 <div class="card">
  <h2>Wind flow</h2>
  <div class="chips" id="lev"></div>
@@ -68,7 +82,7 @@ button.play{border:1px solid var(--line);background:var(--paper);color:var(--ink
  <div class="wwrap" id="pw" style="margin-top:8px"><canvas id="pc"></canvas><div id="ptip" style="position:absolute;left:8px;bottom:8px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;padding:4px 8px;border-radius:6px;pointer-events:none"></div></div>
  <div class="row" style="margin-top:8px"><button class="play" id="pp">▶</button><div style="flex:1"><input type="range" id="pt" min="0" value="0"><div class="m" id="ptl"></div></div></div>
  <div class="lg" id="plg"></div>
- <div class="m" style="margin-top:6px">Mean sea-level pressure averaged across the models available at each time (listed under the slider), every 6 hours. Isobars every 2 hPa; <b style="color:#d62828">L</b> marks a low-pressure centre, <b style="color:#1d4ed8">H</b> a high. "Spread" shows how much the models disagree: large spread around a low means its position or depth is uncertain. Tap the map to read values.</div>
+ <div class="m" style="margin-top:6px">Mean sea-level pressure averaged across the models available at each time (listed under the slider), every 6 hours. Isobars every 2 hPa; <b style="color:#d62828">L</b> marks a low-pressure centre, <b style="color:#5b8ff0">H</b> a high. "Spread" shows how much the models disagree: large spread around a low means its position or depth is uncertain. Tap the map to read values.</div>
 </div>
 
 <div class="card">
@@ -93,6 +107,7 @@ button.play{border:1px solid var(--line);background:var(--paper);color:var(--ink
  <div id="vfy"></div>
 </div>
 
+</div>
 <p class="m" id="notes"></p>
 </div><script src="export.js"></script><script>
 const F=/*FDATA*/;
@@ -111,7 +126,7 @@ const SC={rain6:{b:[[0,'#ebe4d6','0 dry'],[.1,'#3cc6e6','0.1–2.4'],[2.5,'#1f5f
  wind_speed_10m_max:{b:[[0,'#eef2f6','<10'],[10,'#cfe8c8','10–20'],[20,'#9fd3ea','20–30'],[30,'#4ba3d6','30–40'],[40,'#f6b25e','40–50'],[50,'#e8693d','50–62'],[62,'#7b2a9e','62+ gale']],u:'km/h'}};
 const PER=['05:30–11:30','11:30–17:30','17:30–23:30','23:30–05:30'];
 const sv=$('tn');
-sv.innerHTML='<defs><clipPath id="cp"><path id="cl"/></clipPath></defs><g id="cg" clip-path="url(#cp)"></g><path id="ol" fill="none" stroke-width="1" stroke-linejoin="round" style="stroke:var(--ink)"/><g id="cty"></g>';
+sv.innerHTML='<defs><clipPath id="cp"><path id="cl"/></clipPath></defs><g id="cg" clip-path="url(#cp)"></g><path id="ol" fill="none" stroke-width="1" stroke-linejoin="round" style="stroke:var(--coast)"/><g id="cty"></g>';
 const PD=F.tn.map(r=>r.map((p,i)=>(i?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)).join('')+'Z').join('');
 $('cl').setAttribute('d',PD);$('ol').setAttribute('d',PD);
 const R=F.cells.map((c,i)=>{const r=document.createElementNS(NS,'rect');r.setAttribute('x',X(c.lon-F.step/2));r.setAttribute('y',Y(c.lat+F.step/2));r.setAttribute('width',F.step*100+.5);r.setAttribute('height',F.step*100+.5);r.dataset.i=i;$('cg').appendChild(r);return r});
@@ -137,8 +152,8 @@ function paint(){const v=$('var').value,m=$('mod').value,b=SC[v].b,k=K();
  $('per').style.display=is6()?'':'none';
  if(is6())$('per').innerHTML=PER.map((p,i)=>`<button class="chip${i==per?' on':''}" data-p="${i}">${p}<small>IST · ${(F.coverage6[day*4+i]||[]).length} models</small></button>`).join('');
  const OC=m=='ours'&&(v=='precipitation_sum'||v=='rain6'),ci=is6()?day:k,OP={h:1,m:.72,l:.42};
- F.cells.forEach((c,i)=>{const x=val(c,v,m,k);R[i].setAttribute('fill',x==null?'#b9c0c8':b[cls(x,b)][1]);R[i].setAttribute('fill-opacity',OC&&c.rain_conf?(OP[c.rain_conf[ci]]||1):1);R[i].setAttribute('stroke',i==sel?'#000':'none');R[i].setAttribute('stroke-width',i==sel?1.6:0);const rk=OC&&!is6()&&c.precipitation_sum.ours_reach?c.precipitation_sum.ours_reach[k]:null;if(rk!=null&&rk>=35&&i!=sel){R[i].setAttribute('stroke','#b3261e');R[i].setAttribute('stroke-width',1.3)}});
- $('lg').innerHTML=b.map(x=>`<div><i style="background:${x[1]}"></i>${x[2]}</div>`).join('')+(OC?'<div class="m" style="flex-basis:100%;display:block">Our forecast: solid squares = high confidence, lighter = medium, faint = low (models disagree, no gauge or satellite check nearby, or far ahead).'+(is6()?'':' <span style="color:#b3261e">Red outline</span> = storm risk: rain is likely there and the wettest model has 35 mm or more (tap for the amount).')+'</div>':m=='ours'?'<div class="m" style="flex-basis:100%">Our forecast is for rain only; this view shows the average of models.</div>':'')+(m!='avg'&&m!='ours'&&!cov().includes(m)?'<div class="m">'+m+' does not reach this time (grey).</div>':'');
+ F.cells.forEach((c,i)=>{const x=val(c,v,m,k);R[i].setAttribute('fill',x==null?'#2a3b52':b[cls(x,b)][1]);R[i].setAttribute('fill-opacity',OC&&c.rain_conf?(OP[c.rain_conf[ci]]||1):1);R[i].setAttribute('stroke',i==sel?'#fff':'none');R[i].setAttribute('stroke-width',i==sel?1.6:0);const rk=OC&&!is6()&&c.precipitation_sum.ours_reach?c.precipitation_sum.ours_reach[k]:null;if(rk!=null&&rk>=35&&i!=sel){R[i].setAttribute('stroke','#ff4d5e');R[i].setAttribute('stroke-width',1.3)}});
+ $('lg').innerHTML=b.map(x=>`<div><i style="background:${x[1]}"></i>${x[2]}</div>`).join('')+(OC?'<div class="m" style="flex-basis:100%;display:block">Our forecast: solid squares = high confidence, lighter = medium, faint = low (models disagree, no gauge or satellite check nearby, or far ahead).'+(is6()?'':' <span style="color:#ff6b78">Red outline</span> = storm risk: rain is likely there and the wettest model has 35 mm or more (tap for the amount).')+'</div>':m=='ours'?'<div class="m" style="flex-basis:100%">Our forecast is for rain only; this view shows the average of models.</div>':'')+(m!='avg'&&m!='ours'&&!cov().includes(m)?'<div class="m">'+m+' does not reach this time (grey).</div>':'');
  show()}
 function show(){if(sel<0)return;const c=F.cells[sel],v=$('var').value,u=SC[v].u,[a,b]=dl(F.dates[day]),k=K();
  const when=is6()?`${a} ${b}, ${PER[per]} IST`:`${a} ${b}`;
@@ -147,15 +162,16 @@ function show(){if(sel<0)return;const c=F.cells[sel],v=$('var').value,u=SC[v].u,
  const ticks=is6()?F.dates.map((d,i)=>`<text x="${(i*4+2)*bw}" y="58" font-size="7" text-anchor="middle" fill="var(--mut)">${dl(d)[1].split(' ')[0]}</text>`).join(''):F.dates.map((d,i)=>`<text x="${i*bw+bw/2}" y="58" font-size="7" text-anchor="middle" fill="var(--mut)">${dl(d)[1].split(' ')[0]}</text>`).join('');
  const bars=`<svg viewBox="0 0 320 60" style="margin-top:6px">${ser.map((x,i)=>`<rect x="${i*bw+bw*.12}" y="${48-(x||0)/mx*44}" width="${bw*.76}" height="${Math.max(.5,(x||0)/mx*44)}" rx="1" fill="${i==k?'#f08c00':'var(--acc)'}"><title>${f1(x)} ${u}</title></rect>`).join('')}${ticks}</svg>`;
  const wd=c.wind_dir[day];
- const CN={h:'high',m:'medium',l:'low'},pd=c.precipitation_sum,dk=is6()?day:k,oc=(v=='precipitation_sum'||v=='rain6')&&c[v].ours?`<br>Our forecast: <b>${f1(c[v].ours[k])} mm</b>`+(pd.ours_p&&pd.ours_p[dk]!=null?` · chance of rain <b>${pd.ours_p[dk]}%</b>`:'')+(c.rain_conf&&CN[c.rain_conf[dk]]?` · confidence <b>${CN[c.rain_conf[dk]]}</b>`:'')+(pd.ours_reach&&pd.ours_reach[dk]!=null&&!is6()?`<br><span style="color:#b3261e">Storm risk: could reach <b>${f1(pd.ours_reach[dk])} mm</b> (wettest model)</span>`:''):'';
+ const CN={h:'high',m:'medium',l:'low'},pd=c.precipitation_sum,dk=is6()?day:k,oc=(v=='precipitation_sum'||v=='rain6')&&c[v].ours?`<br>Our forecast: <b>${f1(c[v].ours[k])} mm</b>`+(pd.ours_p&&pd.ours_p[dk]!=null?` · chance of rain <b>${pd.ours_p[dk]}%</b>`:'')+(c.rain_conf&&CN[c.rain_conf[dk]]?` · confidence <b>${CN[c.rain_conf[dk]]}</b>`:'')+(pd.ours_reach&&pd.ours_reach[dk]!=null&&!is6()?`<br><span style="color:#ff6b78">Storm risk: could reach <b>${f1(pd.ours_reach[dk])} mm</b> (wettest model)</span>`:''):'';
  $('info').innerHTML=`<b>${c.lat.toFixed(2)}°N, ${c.lon.toFixed(2)}°E</b> · ${when}${oc}<br>Average: <b>${f1(val(c,v,'avg',k))} ${u}</b>`+(wd!=null&&!is6()?` · wind from ${Math.round(wd)}°`:'')+`<table>${rows}</table><div class="m">${is6()?'Every 6 hours, all 16 days':'16-day trend'} (average of models)</div>${bars}`}
 sv.addEventListener('click',e=>{const i=e.target.dataset&&e.target.dataset.i;if(i!=null){sel=+i;paint()}});
 $('var').onchange=paint;$('mod').onchange=paint;paint();
+const TH={bg:'#0b1522',ink:'#e9f0f7',mut:'#8fa3bb',acc:'#5ccfee',halo:'#0b1522',box:'rgba(255,255,255,.25)'};
 mapDownload($('info').parentNode,()=>{const v=$('var').value,b=SC[v].b,[a,dd]=dl(F.dates[day]),opt=s=>s.options[s.selectedIndex].text;
  return {svg:sv,title:'Tamil Nadu forecast: '+opt($('var'))+', '+a+' '+dd+(is6()?' '+PER[per]+' IST':''),sub:opt($('mod'))+(is6()?'':' · day runs 05:30–05:30 IST'),
   legend:b.map(x=>[x[1],x[2]+' '+SC[v].u]),legendTitle:opt($('var')),
   note:'Average of the latest GFS, ECMWF, ECMWF AI, ICON and GEM runs from the official open-data servers. Updated '+F.updated+'. Experimental, not an official forecast: follow IMD and TNSDMA warnings.',
-  file:'tn-forecast-'+v.replace(/_/g,'-')+'-'+F.dates[day]+(is6()?'-'+PER[per].slice(0,2):'')}});
+  theme:TH,file:'tn-forecast-'+v.replace(/_/g,'-')+'-'+F.dates[day]+(is6()?'-'+PER[per].slice(0,2):'')}});
 
 // ---------- wind animation
 const W=F.wind;
@@ -324,7 +340,7 @@ function vmjo(el){const MJ=D.mjo||{},M2=Array.isArray(MJ)?MJ:(MJ.days||[]),SRC=M
   const path=R.map((r,i)=>`${i?'L':'M'}${X(r.rmm1).toFixed(1)} ${Y(r.rmm2).toFixed(1)}`).join('');
   const dots=R.map((r,i)=>`<circle cx="${X(r.rmm1)}" cy="${Y(r.rmm2)}" r="${i==R.length-1?5:2.2}" fill="${i==R.length-1?'#d62828':'var(--acc)'}" opacity="${.35+.65*i/R.length}"><title>${r.date}: phase ${r.phase}, amplitude ${r.amp}</title></circle>`).join('');
   const lab=R.map((r,i)=>(i%10==0||i==R.length-1)?`<text x="${X(r.rmm1)+6}" y="${Y(r.rmm2)-5}" font-size="9" fill="var(--ink)">${r.date.slice(8)}/${r.date.slice(5,7)}</text>`:'').join('');
-  const MF=D.mjo_fc&&D.mjo_fc.tracks||{},MSTY={'GFS':['#e8771a','4 3',1.6],'ECMWF':['#1d5fd0','4 3',1.6],'GFS + ECMWF average':['#111','',2.6],'GFS ensemble mean':['#e8771a','1 3',1.8],'ECMWF ensemble mean':['#1d5fd0','1 3',1.8],'Ensembles average':['#8e24aa','',2.6]};
+  const MF=D.mjo_fc&&D.mjo_fc.tracks||{},MSTY={'GFS':['#e8771a','4 3',1.6],'ECMWF':['#5b8ff0','4 3',1.6],'GFS + ECMWF average':['#e9f0f7','',2.6],'GFS ensemble mean':['#e8771a','1 3',1.8],'ECMWF ensemble mean':['#5b8ff0','1 3',1.8],'Ensembles average':['#b26ae0','',2.6]};
   const fl=Object.entries(MF).filter(([n])=>MSTY[n]).map(([n,t])=>{const [c,da,w]=MSTY[n];const d=t.map((p,i)=>`${i?'L':'M'}${X(p[1]).toFixed(1)} ${Y(p[2]).toFixed(1)}`).join('');
     const ticks=t.map((p,i)=>i%5==0&&i?`<circle cx="${X(p[1])}" cy="${Y(p[2])}" r="2.2" fill="${c}"/>`:'').join('');const e=t[t.length-1];
     return `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-dasharray="${da}" opacity=".9"/>${ticks}<circle cx="${X(e[1])}" cy="${Y(e[2])}" r="3.4" fill="${c}"><title>${n}: ${e[0]}</title></circle>`}).join('');
@@ -367,16 +383,16 @@ const det=SY.deterministic||{},L=SY.list||[],M=SY.minor||[],E=SY.ens,sz=SY.ens_s
 const tl=k=>{const i=new Date(t0+k*216e5+5.5*3600e3);return `${DOW[i.getUTCDay()]} ${i.getUTCDate()} ${MON[i.getUTCMonth()]}, ${String(i.getUTCHours()).padStart(2,'0')}:${String(i.getUTCMinutes()).padStart(2,'0')} IST`};
 const dd=k=>{const i=new Date(t0+k*216e5+5.5*3600e3);return `${DOW[i.getUTCDay()]} ${i.getUTCDate()} ${MON[i.getUTCMonth()]}`};
 const ll=(lo,la)=>`${la.toFixed(1)}°N ${lo.toFixed(1)}°E`;
-const ENAME={'GEFS':'GFS ensemble','ECMWF ENS':'ECMWF ensemble'},ECOL={'GEFS':'#b85a0d','ECMWF ENS':'#1849a9'};
+const ENAME={'GEFS':'GFS ensemble','ECMWF ENS':'ECMWF ensemble'},ECOL={'GEFS':'#f0903a','ECMWF ENS':'#5b8ff0'};
 const nDet=Object.keys(det).length;
 if(!nDet&&!L.length&&!M.length){el.innerHTML='<p style="margin:4px 0"><b>No low-pressure system expected over the Bay of Bengal or Arabian Sea in the next 10 days</b> in any of the five main models.</p><p class="m">When a main model shows a low forming over the sea (at least 2 hPa deeper than the area 250–450 km around it and lasting 36 hours or more), this card switches on: the GFS ensemble (31 members) and ECMWF ensemble (50 members) are tracked the same way and summarised as probabilities.</p>';return}
 if(!L.length&&!M.length){el.innerHTML='<p><b>'+Object.keys(det).join(', ')+'</b> show a low in the next 10 days, but the ensembles could not be summarised in this run.</p>';return}
 let si=-1,fk=0,showMem=true;
 const TNI=SY.tn;
-const tnLine=TNI?`<div style="background:${TNI.prob>=30?'#fde2e2':TNI.prob>=10?'#fff4d6':'#e8f5ec'};border-radius:10px;padding:8px 10px;margin:4px 0 8px"><b>Chance of a low passing within 300 km of the Tamil Nadu coast in the next 10 days: ${TNI.prob}%</b><div class="m">${Object.entries(TNI.probs).map(([k,v])=>`${ENAME[k]} ${v}%`).join(' · ')}${TNI.det&&TNI.det.length?' · main models showing it: '+TNI.det.join(', '):' · none of the main models'}</div></div>`:'';
-const PC=p=>p<950?'#7a0010':p<970?'#e0306f':p<990?'#f29a1d':p<1000?'#1f7ae0':'#4a4a4a';
+const tnLine=TNI?`<div style="background:${TNI.prob>=30?'rgba(240,80,90,.16)':TNI.prob>=10?'rgba(232,163,58,.16)':'rgba(60,190,110,.13)'};border:1px solid ${TNI.prob>=30?'rgba(240,80,90,.45)':TNI.prob>=10?'rgba(232,163,58,.45)':'rgba(60,190,110,.4)'};border-radius:10px;padding:8px 10px;margin:4px 0 8px"><b>Chance of a low passing within 300 km of the Tamil Nadu coast in the next 10 days: ${TNI.prob}%</b><div class="m">${Object.entries(TNI.probs).map(([k,v])=>`${ENAME[k]} ${v}%`).join(' · ')}${TNI.det&&TNI.det.length?' · main models showing it: '+TNI.det.join(', '):' · none of the main models'}</div></div>`:'';
+const PC=p=>p<950?'#7a0010':p<970?'#e0306f':p<990?'#f29a1d':p<1000?'#3f8ff0':'#9aa3ad';
 const chips=`<div class="chips" id="syc"><button class="chip" data-s="-1">All systems<small>${L.length} found${M.length?' + '+M.length+' weak':''}</small></button>${L.map((x,i)=>`<button class="chip" data-s="${i}">${x.basin}<small>${x.prob}% · ${dd(x.genesis[0])}${x.tn_prob?` · TN ${x.tn_prob}%`:''}</small></button>`).join('')}</div>`;
-el.innerHTML=tnLine+chips+'<div id="sysum"></div><div class="wwrap" id="sywrap" style="background:#eef3f7;margin-top:6px"><canvas id="sycv"></canvas></div><div class="row" style="margin-top:8px"><div style="flex:1"><input type="range" id="syt" min="0" value="0"><div class="m" id="sytl"></div></div></div><label class="m" style="display:flex;gap:6px;align-items:center;margin-top:4px"><input type="checkbox" id="symem" checked> Show every member\'s track (coloured by central pressure)</label><div class="lg" id="sylg"></div><p class="m">Member tracks are coloured by central pressure like ECMWF-style track charts: grey above 1000 hPa, blue 990–1000, orange 970–990, pink 950–970, dark red below 950; a large dot marks where each member\'s low ends. "All systems" shows every low found from 40°E to 120°E (including lows that form over the South China Sea and move west into the Bay). For a single system, shading is the chance that the low passes within 150 km (share of all ensemble members, the two ensembles weighted equally). Dashed lines: each ensemble\'s mean track, with circles showing how far the members are spread around it once a day. Pink: our consensus, the equal-weight average of the GFS-ensemble mean, the ECMWF-ensemble mean and the main models that have the low. Thin black: individual main models. Lows are found on a 0.5° grid in smoothed sea-level pressure; a track must start over the sea, be at least 2 hPa deeper than its surroundings at some point and last 24 hours. These are pressure lows in the models, not IMD depression or cyclone classifications.</p>';
+el.innerHTML=tnLine+chips+'<div id="sysum"></div><div class="wwrap" id="sywrap" style="background:#0e1c2d;margin-top:6px"><canvas id="sycv"></canvas></div><div class="row" style="margin-top:8px"><div style="flex:1"><input type="range" id="syt" min="0" value="0"><div class="m" id="sytl"></div></div></div><label class="m" style="display:flex;gap:6px;align-items:center;margin-top:4px"><input type="checkbox" id="symem" checked> Show every member\'s track (coloured by central pressure)</label><div class="lg" id="sylg"></div><p class="m">Member tracks are coloured by central pressure like ECMWF-style track charts: grey above 1000 hPa, blue 990–1000, orange 970–990, pink 950–970, dark red below 950; a large dot marks where each member\'s low ends. "All systems" shows every low found from 40°E to 120°E (including lows that form over the South China Sea and move west into the Bay). For a single system, shading is the chance that the low passes within 150 km (share of all ensemble members, the two ensembles weighted equally). Dashed lines: each ensemble\'s mean track, with circles showing how far the members are spread around it once a day. Pink: our consensus, the equal-weight average of the GFS-ensemble mean, the ECMWF-ensemble mean and the main models that have the low. Thin white: individual main models. Lows are found on a 0.5° grid in smoothed sea-level pressure; a track must start over the sea, be at least 2 hPa deeper than its surroundings at some point and last 24 hours. These are pressure lows in the models, not IMD depression or cyclone classifications.</p>';
 function sumry(){if(si<0){const mb={};M.forEach(x=>{const b=mb[x.basin]||(mb[x.basin]={n:0,tn:0,k:0});b.n+=Object.values(x.members).reduce((a,v)=>a+v,0);b.k++;b.tn+=x.tn_prob});
   const CE=(SY.circ_ens||{}).days||[],ct=CE.filter(d=>d.tn_prob>=25).sort((a,b)=>b.tn_prob-a.tn_prob)[0];
   $('sysum').innerHTML=`<p style="margin:6px 0;font-size:13px">${L.map(x=>`<b>${x.basin}</b>: ${x.prob}% chance, forms around ${dd(x.genesis[0])} near ${ll(x.genesis[1],x.genesis[2])}${x.tn_prob?`, <b>${x.tn_prob}%</b> within 300 km of Tamil Nadu`:''}`).join('<br>')}${L.length&&M.length?'<br>':''}${M.filter(x=>x.prob>=5).map(x=>`<b>${x.basin}</b> (weak): ${x.prob}% chance, forms around ${dd(x.genesis[0])} near ${ll(x.genesis[1],x.genesis[2])}${x.tn_prob?`, ${x.tn_prob}% within 300 km of Tamil Nadu`:''}`).join('<br>')}${M.some(x=>x.prob<5)?`<br><span class="m">${M.filter(x=>x.prob<5).length} more weak signals under 5% each (${Object.keys(mb).join(', ')}).</span>`:''}${M.length?'<br><span class="m">Weak signals (under 10% of members) are drawn as faint tracks on the map.</span>':''}</p>`+
@@ -397,36 +413,36 @@ function draw(){const ALL=si<0,x=ALL?{consensus:[],det_mean:[],mean_tracks:{},de
  const wantH=ALL?Math.max(LA1-LA0,wantW/2.2):Math.max(LA1-LA0,wantW/1.25),cym=(LA0+LA1)/2;LA0=Math.max(-2,cym-wantH/2);LA1=LA0+wantH;
  const H=W*(LA1-LA0)/(LO1-LO0)/Math.cos((LA0+LA1)/2*Math.PI/180);cv.width=W*dpr;cv.height=H*dpr;cv.style.height=H+'px';
  const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);const X2=l=>(l-LO0)/(LO1-LO0)*W,Y2=a=>(LA1-a)/(LA1-LA0)*H,kmdeg=k=>k/111;
- c.fillStyle='#eef3f7';c.fillRect(0,0,W,H);
+ c.fillStyle='#0e1c2d';c.fillRect(0,0,W,H);
  // strike probability
  const SC2=[[5,'rgba(255,230,140,.75)'],[20,'rgba(250,180,70,.8)'],[40,'rgba(235,110,50,.85)'],[60,'rgba(190,30,45,.85)'],[80,'rgba(120,10,60,.9)']];
  const cw=X2(60.5)-X2(60),chh=Y2(0)-Y2(.5);
  x.strike.forEach(([i,v])=>{const lo=40+(i%161)*.5,la=-5+Math.floor(i/161)*.5;let col=null;SC2.forEach(q=>{if(v>=q[0])col=q[1]});if(col){c.fillStyle=col;c.fillRect(X2(lo-.25),Y2(la+.25),cw+.5,chh+.5)}});
- c.fillStyle='rgba(227,220,205,.85)';c.strokeStyle='#8a8170';c.lineWidth=.7;
+ c.fillStyle='#1d2f46';c.strokeStyle='#4a6283';c.lineWidth=.7;
  F.land.forEach(r=>{c.beginPath();r.forEach((p,i)=>i?c.lineTo(X2(p[0]),Y2(p[1])):c.moveTo(X2(p[0]),Y2(p[1])));c.closePath();c.fill();c.stroke()});
- c.strokeStyle=(LO1-LO0)>18?'rgba(122,75,0,.45)':'#7a4b00';c.lineWidth=(LO1-LO0)>18?.45:1.1;F.tn.forEach(r=>{c.beginPath();r.forEach((p,i)=>i?c.lineTo(X2(p[0]),Y2(p[1])):c.moveTo(X2(p[0]),Y2(p[1])));c.closePath();c.stroke()});
+ c.strokeStyle=(LO1-LO0)>18?'rgba(169,203,226,.5)':'#a9cbe2';c.lineWidth=(LO1-LO0)>18?.45:1.1;F.tn.forEach(r=>{c.beginPath();r.forEach((p,i)=>i?c.lineTo(X2(p[0]),Y2(p[1])):c.moveTo(X2(p[0]),Y2(p[1])));c.closePath();c.stroke()});
  const line=(t,col,w,dash)=>{c.strokeStyle=col;c.lineWidth=w;c.setLineDash(dash||[]);c.beginPath();t.forEach((p,i)=>i?c.lineTo(X2(p[1]),Y2(p[2])):c.moveTo(X2(p[1]),Y2(p[2])));c.stroke();c.setLineDash([])};
  const memDraw=(trs,alpha)=>trs.forEach(t=>{c.globalAlpha=alpha;for(let i=1;i<t.length;i++){c.strokeStyle=PC(Math.min(t[i-1][3],t[i][3]));c.lineWidth=1.3;c.beginPath();c.moveTo(X2(t[i-1][1]),Y2(t[i-1][2]));c.lineTo(X2(t[i][1]),Y2(t[i][2]));c.stroke()}
-  t.forEach((p,i)=>{if(p[0]%4==0){c.fillStyle='#fff';c.strokeStyle=PC(p[3]);c.lineWidth=1;c.beginPath();c.arc(X2(p[1]),Y2(p[2]),2.2,0,7);c.fill();c.stroke()}});
-  const e2=t[t.length-1];c.fillStyle=PC(Math.min(...t.map(q=>q[3])));c.strokeStyle='#222';c.lineWidth=.8;c.beginPath();c.arc(X2(e2[1]),Y2(e2[2]),4.2,0,7);c.fill();c.stroke();c.globalAlpha=1});
+  t.forEach((p,i)=>{if(p[0]%4==0){c.fillStyle='#0e1c2d';c.strokeStyle=PC(p[3]);c.lineWidth=1;c.beginPath();c.arc(X2(p[1]),Y2(p[2]),2.2,0,7);c.fill();c.stroke()}});
+  const e2=t[t.length-1];c.fillStyle=PC(Math.min(...t.map(q=>q[3])));c.strokeStyle='#0b1522';c.lineWidth=.8;c.beginPath();c.arc(X2(e2[1]),Y2(e2[2]),4.2,0,7);c.fill();c.stroke();c.globalAlpha=1});
  if(showMem&&ALL)M.forEach(y=>Object.values(y.members_tracks).forEach(trs=>memDraw(trs,.45)));
  if(showMem)(ALL?L:[x]).forEach(y=>Object.values(y.members_tracks).forEach(trs=>memDraw(trs,ALL?.8:.55)));
- if(ALL){L.forEach(y=>{if(y.consensus.length){line(y.consensus,'#fff',5);line(y.consensus,'#d61f69',2.6)}})}
- Object.values(x.det_tracks||{}).forEach(t=>line(t,'rgba(20,20,20,.75)',1.3));
+ if(ALL){L.forEach(y=>{if(y.consensus.length){line(y.consensus,'#0b1522',5);line(y.consensus,'#d61f69',2.6)}})}
+ Object.values(x.det_tracks||{}).forEach(t=>line(t,'rgba(233,240,247,.75)',1.3));
  Object.entries(x.mean_tracks).forEach(([e,t])=>{t.forEach(p=>{if(p[0]%8==0){c.strokeStyle=ECOL[e];c.globalAlpha=.3;c.lineWidth=1;c.beginPath();c.arc(X2(p[1]),Y2(p[2]),Math.max(2,X2(p[1]+kmdeg(p[5])/Math.cos(p[2]*Math.PI/180))-X2(p[1])),0,7);c.stroke();c.globalAlpha=1}});line(t,ECOL[e],2.6,[7,4])});
- const cs=x.consensus;if(cs.length){line(cs,'#fff',6);line(cs,'#d61f69',3.4);
+ const cs=x.consensus;if(cs.length){line(cs,'#0b1522',6);line(cs,'#d61f69',3.4);
   let lastXY=null;cs.forEach(p=>{if(p[0]%4==0){c.fillStyle='#d61f69';c.beginPath();c.arc(X2(p[1]),Y2(p[2]),3.4,0,7);c.fill();
-   if(!lastXY||Math.hypot(X2(p[1])-lastXY[0],Y2(p[2])-lastXY[1])>34){lastXY=[X2(p[1]),Y2(p[2])];const i2=new Date(t0+p[0]*216e5);c.font='bold 10px system-ui';c.lineWidth=3;c.strokeStyle='#fff';const s=i2.getUTCDate()+' '+MON[i2.getUTCMonth()];c.strokeText(s,X2(p[1])+6,Y2(p[2])-5);c.fillStyle='#7a0f3c';c.fillText(s,X2(p[1])+6,Y2(p[2])-5)}}})}
+   if(!lastXY||Math.hypot(X2(p[1])-lastXY[0],Y2(p[2])-lastXY[1])>34){lastXY=[X2(p[1]),Y2(p[2])];const i2=new Date(t0+p[0]*216e5);c.font='bold 10px system-ui';c.lineWidth=3;c.strokeStyle='#0b1522';const s=i2.getUTCDate()+' '+MON[i2.getUTCMonth()];c.strokeText(s,X2(p[1])+6,Y2(p[2])-5);c.fillStyle='#ff9cc8';c.fillText(s,X2(p[1])+6,Y2(p[2])-5)}}})}
  // positions at the selected time
  const mark=(t,col,r)=>{const q=t.find(p=>p[0]==fk);if(q){c.fillStyle=col;c.strokeStyle='#fff';c.lineWidth=1.5;c.beginPath();c.arc(X2(q[1]),Y2(q[2]),r,0,7);c.fill();c.stroke()}};
  Object.entries(x.mean_tracks).forEach(([e,t])=>mark(t,ECOL[e],5));mark(cs,'#d61f69',6.5);
- Object.entries(x.det_tracks||{}).forEach(([n,t])=>{const q=t.find(p=>p[0]==fk);if(q){c.fillStyle='#111';c.beginPath();c.arc(X2(q[1]),Y2(q[2]),3.5,0,7);c.fill();c.font='bold 10px system-ui';c.fillText(n,X2(q[1])+5,Y2(q[2])+12)}});
- if(ALL){c.fillStyle='rgba(20,30,40,.55)';c.font='italic 12px system-ui';c.fillText('Bay of Bengal',X2(86),Y2(6));c.fillText('Arabian Sea',X2(62),Y2(18));}
- if(ALL){$('sytl').textContent='All systems over the whole forecast (dots every 24 h, large dot = end of each member\'s track)';$('sylg').innerHTML=[['#4a4a4a','>1000 hPa'],['#1f7ae0','990–1000'],['#f29a1d','970–990'],['#e0306f','950–970'],['#7a0010','<950']].map(q=>`<div><i style="background:${q[0]}"></i>${q[1]}</div>`).join('')+'<div><i style="background:#d61f69"></i>consensus</div>';return}
- c.fillStyle='rgba(20,30,40,.55)';c.font='italic 11px system-ui';if(LO1>86)c.fillText('Bay of Bengal',X2(Math.min(LO1-7,87)),Y2(Math.max(LA0+1.5,9)));if(LO0<70)c.fillText('Arabian Sea',X2(Math.max(LO0+.5,64)),Y2(Math.max(LA0+1.5,9)));
+ Object.entries(x.det_tracks||{}).forEach(([n,t])=>{const q=t.find(p=>p[0]==fk);if(q){c.fillStyle='#e9f0f7';c.beginPath();c.arc(X2(q[1]),Y2(q[2]),3.5,0,7);c.fill();c.font='bold 10px system-ui';c.fillText(n,X2(q[1])+5,Y2(q[2])+12)}});
+ if(ALL){c.fillStyle='rgba(233,240,247,.45)';c.font='italic 12px system-ui';c.fillText('Bay of Bengal',X2(86),Y2(6));c.fillText('Arabian Sea',X2(62),Y2(18));}
+ if(ALL){$('sytl').textContent='All systems over the whole forecast (dots every 24 h, large dot = end of each member\'s track)';$('sylg').innerHTML=[['#9aa3ad','>1000 hPa'],['#3f8ff0','990–1000'],['#f29a1d','970–990'],['#e0306f','950–970'],['#7a0010','<950']].map(q=>`<div><i style="background:${q[0]}"></i>${q[1]}</div>`).join('')+'<div><i style="background:#d61f69"></i>consensus</div>';return}
+ c.fillStyle='rgba(233,240,247,.45)';c.font='italic 11px system-ui';if(LO1>86)c.fillText('Bay of Bengal',X2(Math.min(LO1-7,87)),Y2(Math.max(LA0+1.5,9)));if(LO0<70)c.fillText('Arabian Sea',X2(Math.max(LO0+.5,64)),Y2(Math.max(LA0+1.5,9)));
  const q=cs.find(p=>p[0]==fk)||Object.values(x.mean_tracks).map(t=>t.find(p=>p[0]==fk)).find(Boolean);
  $('sytl').textContent=tl(fk)+(q?` — consensus ${ll(q[1],q[2])}, about ${Math.round(q[3])} hPa`:' — no consensus position at this time');
- $('sylg').innerHTML=SC2.map(q2=>`<div><i style="background:${q2[1]}"></i>${q2[0]}%+</div>`).join('')+`<div><i style="background:${ECOL.GEFS}"></i>GFS ens. mean</div><div><i style="background:${ECOL['ECMWF ENS']}"></i>ECMWF ens. mean</div><div><i style="background:#d61f69"></i>consensus</div><div><i style="background:#222"></i>main models</div>`}
+ $('sylg').innerHTML=SC2.map(q2=>`<div><i style="background:${q2[1]}"></i>${q2[0]}%+</div>`).join('')+`<div><i style="background:${ECOL.GEFS}"></i>GFS ens. mean</div><div><i style="background:${ECOL['ECMWF ENS']}"></i>ECMWF ens. mean</div><div><i style="background:#d61f69"></i>consensus</div><div><i style="background:#e9f0f7"></i>main models</div>`}
 function pick(i){si=i;document.querySelectorAll('#syc .chip').forEach((b,j)=>b.classList.toggle('on',j-1==si));$('syt').style.display=si<0?'none':'';
  if(si<0){sumry();draw();return}const x=L[si];
  const ks=[...new Set([...x.consensus.map(p=>p[0]),...Object.values(x.mean_tracks).flat().map(p=>p[0])])].sort((a,b)=>a-b);
@@ -456,7 +472,7 @@ const ED=E&&E.days&&E.days.length?E.days:[];
 if(!C.length&&!ED.length){el.insertAdjacentHTML('beforeend','<p class="m">Circulation check unavailable in this run.</p>');return}
 const fd=s=>{const d=new Date(s+'T00:00:00');return [DOW[d.getDay()],d.getDate()+' '+MON[d.getMonth()]]};
 const ll=(lo,la)=>`${la.toFixed(1)}°N ${lo.toFixed(1)}°E`;
-const EC={'GEFS':'#0b8a8a','ECMWF ENS':'#7b2cbf'},EN={'GEFS':'GFS ensemble','ECMWF ENS':'ECMWF ensemble'};
+const EC={'GEFS':'#2cc4c4','ECMWF ENS':'#a66cf0'},EN={'GEFS':'GFS ensemble','ECMWF ENS':'ECMWF ensemble'};
 const DAYC=['#d0021b','#f06b00','#f5c400','#9ad021','#2bb24c','#16a0a0','#1f8ff0','#1f4fd0','#6a3fc8','#b02bb0'];
 const dates=[...new Set(C.map(x=>x.date).concat(ED.map(x=>x.date)))].sort();
 const cAt=d=>C.find(x=>x.date==d),eAt=d=>ED.find(x=>x.date==d);
@@ -467,7 +483,7 @@ const ensLine=ED.length?(()=>{const sz=Object.keys(E.size).map(e=>`${EN[e]||e} $
   (hi.length?'<div style="display:flex;flex-wrap:wrap;gap:4px 10px;margin-bottom:6px">'+hi.map(x=>{const [a,b]=fd(x.date),p=x.tn_prob,col=p>=50?'#d61f69':p>=25?'#f29a1d':'#5c6b75';
     return `<span>${a} ${b}: <b style="color:${col}">${p}%</b> <span class="m">(${Object.keys(x.tn).map(e=>(e=='GEFS'?'GFS ':'EC ')+x.tn[e]+'%').join(', ')})</span></span>`}).join('')+'</div>'
    :'<p class="m" style="margin:0 0 6px">Below 10% on every day.</p>')})():'';
-el.insertAdjacentHTML('beforeend',`<div id="cisum" style="font-size:14px"></div><div class="chips" id="cid"></div><div class="wwrap" style="background:#eef3f7"><canvas id="cicv"></canvas></div><div class="lg" id="cilg"></div>${ED.length?'<label class="m" style="display:flex;gap:6px;align-items:center;margin-top:4px"><input type="checkbox" id="cimem" checked> Show every ensemble member\'s centre</label>':''}<p class="m">A cyclonic circulation is air turning anticlockwise around a centre at about 1.5 km height (850 hPa), the kind IMD reports as a "cyclonic circulation". It can bring rain even with no low on the surface pressure map, and weak ones like these are what ECMWF-style track charts follow. Found automatically every run: spin of at least 2×10⁻⁵ per second at the centre and the wind turning around it on at least 3 of 4 sides. <b>Main models</b> (GFS, ECMWF, ECMWF AI; daily-average winds, 16 days): centres within about 300 km count as the same circulation and must appear in at least 2 models. <b>Ensembles</b> (GFS ensemble and ECMWF ensemble; average of 00 and 12 UTC winds, 10 days): every member is checked the same way; small dots are each member's centre and the % is the share of members that have that circulation (the two ensembles weighted equally). "All days" shows every member's centre coloured by day, so you can follow where they move, like a track chart.</p>`);
+el.insertAdjacentHTML('beforeend',`<div id="cisum" style="font-size:14px"></div><div class="chips" id="cid"></div><div class="wwrap" style="background:#0e1c2d"><canvas id="cicv"></canvas></div><div class="lg" id="cilg"></div>${ED.length?'<label class="m" style="display:flex;gap:6px;align-items:center;margin-top:4px"><input type="checkbox" id="cimem" checked> Show every ensemble member\'s centre</label>':''}<p class="m">A cyclonic circulation is air turning anticlockwise around a centre at about 1.5 km height (850 hPa), the kind IMD reports as a "cyclonic circulation". It can bring rain even with no low on the surface pressure map, and weak ones like these are what ECMWF-style track charts follow. Found automatically every run: spin of at least 2×10⁻⁵ per second at the centre and the wind turning around it on at least 3 of 4 sides. <b>Main models</b> (GFS, ECMWF, ECMWF AI; daily-average winds, 16 days): centres within about 300 km count as the same circulation and must appear in at least 2 models. <b>Ensembles</b> (GFS ensemble and ECMWF ensemble; average of 00 and 12 UTC winds, 10 days): every member is checked the same way; small dots are each member's centre and the % is the share of members that have that circulation (the two ensembles weighted equally). "All days" shows every member's centre coloured by day, so you can follow where they move, like a track chart.</p>`);
 $('cisum').innerHTML=ensLine+(near.length?'<p style="margin:2px 0 4px"><b>Main models, near Tamil Nadu:</b></p>'+near.map(x=>{const [a,b]=fd(x.d);return `<div style="margin:3px 0">${a} ${b}: `+x.c.map(c=>`near <b>${ll(c.lon,c.lat)}</b>, ${c.tn_km<60?'over or at the coast':c.tn_km+' km from the coast'} <span class="m">(${c.n} of ${x.of} model${x.of>1?"s":""})</span>`).join('; ')+'</div>'}).join(''):(C.length?'<p class="m" style="margin:2px 0 6px">Main models: no cyclonic circulation within 300 km of Tamil Nadu in the next 16 days.</p>':''));
 let di=dates.findIndex(d=>{const x=cAt(d),y=eAt(d);return (x&&x.circ.some(c=>c.tn_km<=300))||(y&&y.tn_prob>=25)});if(di<0)di=0;
 $('cid').innerHTML=(ED.length?'<button class="chip" data-i="-1">All days<small>ensembles</small></button>':'')+dates.map((d,i)=>{const [a,b]=fd(d),x=cAt(d),y=eAt(d),k=x&&x.circ.some(c=>c.tn_km<=300);
@@ -477,19 +493,19 @@ if($('cimem'))$('cimem').onchange=()=>draw();
 function draw(){document.querySelectorAll('#cid .chip').forEach(b=>b.classList.toggle('on',+b.dataset.i==di));
  const cv=$('cicv'),W=cv.parentNode.clientWidth||400,H=W*25/30/Math.cos(12*Math.PI/180),dpr=window.devicePixelRatio||1;cv.width=W*dpr;cv.height=H*dpr;cv.style.height=H+'px';
  const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);const X=l=>(l-65)/30*W,Y=a=>(25-a)/25*H;
- c.fillStyle='#eef3f7';c.fillRect(0,0,W,H);c.fillStyle='rgba(227,220,205,.9)';c.strokeStyle='#8a8170';c.lineWidth=.7;
+ c.fillStyle='#0e1c2d';c.fillRect(0,0,W,H);c.fillStyle='#1d2f46';c.strokeStyle='#4a6283';c.lineWidth=.7;
  (F.land||[]).forEach(r=>{c.beginPath();r.forEach((p,i)=>i?c.lineTo(X(p[0]),Y(p[1])):c.moveTo(X(p[0]),Y(p[1])));c.closePath();c.fill();c.stroke()});
- c.strokeStyle='#7a4b00';c.lineWidth=.6;F.tn.forEach(r=>{c.beginPath();r.forEach((p,i)=>i?c.lineTo(X(p[0]),Y(p[1])):c.moveTo(X(p[0]),Y(p[1])));c.closePath();c.stroke()});
- const mem=!$('cimem')||$('cimem').checked,lab=(t,px,py)=>{c.font='bold 11px system-ui';c.lineWidth=3;c.strokeStyle='#fff';c.strokeText(t,px,py);c.fillStyle='#14213d';c.fillText(t,px,py)};
+ c.strokeStyle='#a9cbe2';c.lineWidth=.6;F.tn.forEach(r=>{c.beginPath();r.forEach((p,i)=>i?c.lineTo(X(p[0]),Y(p[1])):c.moveTo(X(p[0]),Y(p[1])));c.closePath();c.stroke()});
+ const mem=!$('cimem')||$('cimem').checked,lab=(t,px,py)=>{c.font='bold 11px system-ui';c.lineWidth=3;c.strokeStyle='#0b1522';c.strokeText(t,px,py);c.fillStyle='#e9f0f7';c.fillText(t,px,py)};
  const dot=(lo,la,col,r)=>{c.fillStyle=col;c.beginPath();c.arc(X(lo),Y(la),r,0,7);c.fill()};
  if(di<0){ // all days: every member's centre coloured by day
   const ok=(x,g)=>g>=0&&x.circ[g]&&x.circ[g].prob>=25;
   if(mem){c.globalAlpha=.5;ED.forEach((x,k)=>Object.values(x.dots).forEach(ds=>ds.forEach(p=>{if(ok(x,p[2]))dot(p[0],p[1],DAYC[k%10],2.2)})));c.globalAlpha=1}
-  ED.forEach((x,k)=>x.circ.forEach((o,g)=>{if(!ok(x,g))return;c.strokeStyle='#14213d';c.lineWidth=1.5;c.fillStyle=DAYC[k%10];c.beginPath();c.arc(X(o.lon),Y(o.lat),3+o.prob/12,0,7);c.fill();c.stroke()}));
+  ED.forEach((x,k)=>x.circ.forEach((o,g)=>{if(!ok(x,g))return;c.strokeStyle='#e9f0f7';c.lineWidth=1.5;c.fillStyle=DAYC[k%10];c.beginPath();c.arc(X(o.lon),Y(o.lat),3+o.prob/12,0,7);c.fill();c.stroke()}));
   $('cilg').innerHTML=ED.map((x,k)=>{const [a,b]=fd(x.date);return `<div><i style="background:${DAYC[k%10]}"></i>${a} ${b}</div>`}).join('')+'<div class="m">only circulations that at least 25% of ensemble members agree on; bigger outlined circle = more members, small dots = each member\'s centre</div>';return}
  const d=dates[di],x=cAt(d),y=eAt(d);
  if(y&&mem){c.globalAlpha=.55;Object.entries(y.dots).forEach(([e,ds])=>ds.forEach(p=>dot(p[0],p[1],EC[e]||'#555',2.4)));c.globalAlpha=1}
- if(y)y.circ.filter(o=>o.prob>=15).forEach(o=>{c.strokeStyle='#14213d';c.setLineDash([3,3]);c.lineWidth=1.3;c.beginPath();c.arc(X(o.lon),Y(o.lat),9,0,7);c.stroke();c.setLineDash([]);lab(o.prob+'%',X(o.lon)-38,Y(o.lat)+4)});
+ if(y)y.circ.filter(o=>o.prob>=15).forEach(o=>{c.strokeStyle='#e9f0f7';c.setLineDash([3,3]);c.lineWidth=1.3;c.beginPath();c.arc(X(o.lon),Y(o.lat),9,0,7);c.stroke();c.setLineDash([]);lab(o.prob+'%',X(o.lon)-38,Y(o.lat)+4)});
  if(x)x.circ.forEach(o=>{const col=o.tn_km<=300?'#d61f69':o.tn_km<=600?'#f29a1d':'#8aa0ad',r=5+o.n*3,px=X(o.lon),py=Y(o.lat);
   c.strokeStyle=col;c.lineWidth=2.4;c.fillStyle=col+'33';c.beginPath();c.arc(px,py,r,0,7);c.fill();c.stroke();
   c.beginPath();c.arc(px,py,r+5,Math.PI*.15,Math.PI*1.35);c.stroke();c.beginPath();const ax=px+(r+5)*Math.cos(Math.PI*1.35),ay=py+(r+5)*Math.sin(Math.PI*1.35);c.moveTo(ax,ay);c.lineTo(ax+6,ay+1);c.moveTo(ax,ay);c.lineTo(ax+1,ay+6);c.stroke();
@@ -503,7 +519,7 @@ draw();window.addEventListener('resize',()=>setTimeout(draw,200))})();
 if(!O||!O.weeks||!O.weeks.length){el.innerHTML='<p class="m">The one-month outlook is unavailable in this run (NOAA CFSv2 data could not be read). It will return with the next update.</p>';return}
 const fd=s=>{const d=new Date(s+'T00:00:00');return d.getDate()+' '+MON[d.getMonth()]};
 const CAT=p=>p==null?'—':p<=-100?'No rain':p<=-60?'Large deficient':p<=-20?'Deficient':p<20?'Normal':p<60?'Excess':'Large excess';
-const CATC=p=>p==null?'var(--mut)':p<=-60?'#a8541a':p<=-20?'#d9883a':p<20?'var(--ink)':p<60?'#1f7ae0':'#1846a3';
+const CATC=p=>p==null?'var(--mut)':p<=-60?'#e0884a':p<=-20?'#f0a85a':p<20?'var(--ink)':p<60?'#4f9cf0':'#7fb4ff';
 const MODES={rain:{t:'Rain in the week (mm)',b:[[0,'#ebe4d6','0–4'],[5,'#3cc6e6','5–14'],[15,'#1f5fe0','15–34'],[35,'#2bb24c','35–64'],[65,'#f5c400','65–114'],[115,'#f06b00','115–199'],[200,'#d0021b','200+']]},
  dep:{t:'Rain compared with normal (IMD categories)',b:[[-1e9,'#a8541a','Large deficient (−60% or less)'],[-59.5,'#e3a868','Deficient (−59 to −20%)'],[-19.5,'#eef0e6','Normal (−19 to +19%)'],[19.5,'#8cc4ea','Excess (+20 to +59%)'],[59.5,'#1846a3','Large excess (+60% or more)']]},
  up:{t:'Chance of an above-normal week (+20% or more)',b:[[0,'#eef2f6','0–19%'],[20,'#cfe3f5','20–39%'],[40,'#8cc4ea','40–59%'],[60,'#3b8fd6','60–79%'],[80,'#1846a3','80%+']]},
@@ -544,7 +560,7 @@ mapDownload($('olg').parentNode.insertBefore(document.createElement('div'),$('oi
  return {svg:sv3,title:`Tamil Nadu one-month outlook: week ${ow+1}, ${fd(W.start)} – ${fd(W.end)}`,sub:MODES[mode].t+(useFive(ow)&&(mode=='rain'||mode=='dep')?' · average of the 5 models':' · NOAA CFSv2'),
   legend:MODES[mode].b.map(x=>[x[1],x[2]]),legendTitle:MODES[mode].t,
   note:`NOAA CFSv2, ${O.members} members (newest run ${O.newest}); normal = NOAA CPC 1991–2020. Weeks 3–4 are a broad tendency, not an amount. Updated ${F.updated}. Experimental, not an official forecast.`,
-  file:'tn-outlook-week'+(ow+1)+'-'+mode}});
+  theme:TH,file:'tn-outlook-week'+(ow+1)+'-'+mode}});
 })();
 
 // ---------- step 5: forecast check against TN SMART gauges
@@ -556,18 +572,18 @@ const wline=F.weights?`<p style="margin:4px 0">The rain average above is <b>skil
 const S=V.scores||{},names=Object.keys(S);
 if(!names.length){el.innerHTML=wline+`<p class="m">Forecasts are being saved${V.first_run?' since '+V.first_run.replace('T',' ').replace('Z',' UTC'):''}. The first scores appear once TN SMART publishes readings for a day those forecasts covered (a TN SMART day ends at 08:30 IST, so usually within two days). ${V.gauge_cells} forecast squares contain at least one TN SMART gauge.</p>`;return}
 let lead='1';
-el.innerHTML=wline+`<div class="chips" id="vld"><button class="chip" data-l="1">Next day</button><button class="chip" data-l="2">2 days ahead</button><button class="chip" data-l="3">3 days ahead</button></div><div style="overflow-x:auto"><table id="vtab" style="border-collapse:collapse;font-size:12px;width:100%"></table></div><h2 style="margin-top:12px">State-average rain: gauges vs next-day forecast</h2><svg id="vch" viewBox="0 0 340 150"></svg><div class="lg"><div><i style="background:#9aa3ad"></i>TN SMART gauges</div><div><i style="background:#0b5cab"></i>Average of models</div><div><i style="background:#e8693d"></i>Skill-weighted average</div></div>
+el.innerHTML=wline+`<div class="chips" id="vld"><button class="chip" data-l="1">Next day</button><button class="chip" data-l="2">2 days ahead</button><button class="chip" data-l="3">3 days ahead</button></div><div style="overflow-x:auto"><table id="vtab" style="border-collapse:collapse;font-size:12px;width:100%"></table></div><h2 style="margin-top:12px">State-average rain: gauges vs next-day forecast</h2><svg id="vch" viewBox="0 0 340 150"></svg><div class="lg"><div><i style="background:#9aa3ad"></i>TN SMART gauges</div><div><i style="background:#4f9cf0"></i>Average of models</div><div><i style="background:#e8693d"></i>Skill-weighted average</div></div>
 <p class="m">Scored on the ${V.gauge_cells} forecast squares (0.25°) that hold TN SMART gauges, averaging gauges in the same square, over the last ${V.window_days} days. A TN SMART day is the 24 hours to 08:30 IST; the forecast for it combines the models' 6-hour rain blocks centred on that window. Typical error: average absolute difference per square (mm). Bias: forecast total ÷ gauge total (1.0 = right amount; above 1 = too wet). Rain days caught: share of squares with 2.5 mm or more where the forecast also had 2.5 mm or more. False alarms: share of forecast rain squares that stayed dry. Skill score (ETS): 0 = no better than chance, 1 = perfect. Heavy rain: 64.5 mm or more.</p>`;
 function vt(){document.querySelectorAll('#vld .chip').forEach(c=>c.classList.toggle('on',c.dataset.l==lead));
  const rows=names.filter(n=>S[n][lead]).sort((a,b)=>S[a][lead].mae-S[b][lead].mae);const best=rows.length?S[rows[0]][lead].mae:null;
  const th=s=>`<th style="text-align:left;padding:4px 6px;border-bottom:1px solid var(--line);font-weight:600" class="m">${s}</th>`,td=(s,st)=>`<td style="padding:4px 6px;border-bottom:1px solid var(--line);${st||''}">${s}</td>`,fx=v=>v==null?'—':v;
  $('vtab').innerHTML='<tr>'+['Forecast','Typical error','Bias','Rain days caught / false alarms','Skill (ETS)','Heavy rain hit / miss / false'].map(th).join('')+'</tr>'+
- rows.map(n=>{const s=S[n][lead];return '<tr>'+td(`<b>${NM[n]||n}</b><div class="m">${s.days} days</div>`)+td(`${s.mae} mm`,s.mae==best?'font-weight:700;color:#1a7f37':'')+td(fx(s.bias))+td((s.pod==null?'—':Math.round(s.pod*100)+'%')+' / '+(s.far==null?'—':Math.round(s.far*100)+'%'))+td(fx(s.ets))+td(`${s.heavy.hit} / ${s.heavy.miss} / ${s.heavy.false}`)+'</tr>'}).join('')}
+ rows.map(n=>{const s=S[n][lead];return '<tr>'+td(`<b>${NM[n]||n}</b><div class="m">${s.days} days</div>`)+td(`${s.mae} mm`,s.mae==best?'font-weight:700;color:#5cd68a':'')+td(fx(s.bias))+td((s.pod==null?'—':Math.round(s.pod*100)+'%')+' / '+(s.far==null?'—':Math.round(s.far*100)+'%'))+td(fx(s.ets))+td(`${s.heavy.hit} / ${s.heavy.miss} / ${s.heavy.false}`)+'</tr>'}).join('')}
 function vch(){const D=(V.daily||[]).filter(r=>r.fc&&Object.keys(r.fc).length),n=D.length,svg=$('vch');if(!n){svg.innerHTML='<text x="170" y="75" text-anchor="middle" font-size="11" fill="var(--mut)">No next-day forecasts verified yet</text>';return}
  const mx=Math.max(1,...D.map(r=>Math.max(r.obs,...Object.values(r.fc)))),bw=320/n,H=118,y=v=>10+H-(v/mx)*H;
  let s=D.map((r,i)=>`<rect x="${10+i*bw+bw*.15}" y="${y(r.obs)}" width="${bw*.7}" height="${Math.max(.5,10+H-y(r.obs))}" fill="#9aa3ad" rx="1"><title>${r.date}: gauges ${r.obs} mm</title></rect>`).join('');
  const line=(k,col)=>{const p=D.map((r,i)=>r.fc[k]==null?null:[10+i*bw+bw/2,y(r.fc[k])]).filter(Boolean);return p.length?`<polyline points="${p.map(q=>q.join(',')).join(' ')}" fill="none" stroke="${col}" stroke-width="1.8"/>`+p.map(q=>`<circle cx="${q[0]}" cy="${q[1]}" r="1.8" fill="${col}"/>`).join(''):''};
- s+=line('Average','#0b5cab')+line('Weighted average','#e8693d');
+ s+=line('Average','#4f9cf0')+line('Weighted average','#e8693d');
  s+=`<text x="10" y="146" font-size="8" fill="var(--mut)">${D[0].date.slice(5)}</text><text x="330" y="146" font-size="8" text-anchor="end" fill="var(--mut)">${D[n-1].date.slice(5)}</text><text x="12" y="9" font-size="8" fill="var(--mut)">${Math.round(mx)} mm</text>`;
  svg.innerHTML=s}
 $('vld').onclick=e=>{const b=e.target.closest('[data-l]');if(b){lead=b.dataset.l;vt()}};vt();vch()})();
