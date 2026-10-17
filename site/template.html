@@ -33,13 +33,13 @@ section{padding:18px 0}
 .seg{display:inline-flex;background:var(--night);border:1px solid var(--rule);border-radius:12px;padding:3px}
 .seg button{border:0;background:none;padding:6px 16px;border-radius:9px;font-weight:600;font-size:14px;color:var(--mut);cursor:pointer}
 .seg button.on{background:var(--ink);color:var(--night)}
-.strip{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;align-items:end}
-.mo{border:0;background:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:stretch;gap:5px}
-.mo .bar{height:64px;display:flex;align-items:flex-end;border-radius:6px;background:var(--night);overflow:hidden;outline:2px solid transparent;outline-offset:1px}
-.mo .bar i{display:block;width:100%;border-radius:4px 4px 0 0}
-.mo span{font-size:11.5px;font-weight:600;color:var(--mut);text-align:center}
-.mo.on .bar{outline-color:var(--ink);outline-width:1.5px}
-.mo.on span{color:var(--ink)}
+.strip{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.mo{border:1px solid var(--rule);background:var(--night);border-radius:12px;padding:8px 6px 7px;cursor:pointer;display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto;align-items:center;text-align:left;column-gap:4px;min-width:0}
+.mo .mn{font-weight:700;font-size:14px;color:var(--ink)}
+.mo .mv{grid-column:1/3;font-size:11.5px;color:var(--mut);white-space:nowrap}
+.mo i{grid-row:1;grid-column:2;width:9px;height:9px;border-radius:50%}
+.mo.on{background:#203a5a;border-color:var(--acc)}
+.mo.on .mv{color:var(--ink)}
 .mo:disabled{cursor:default;opacity:.3}
 .pre{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
 .pre button{border:1px solid var(--rule);background:var(--night);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer}
@@ -49,16 +49,20 @@ section{padding:18px 0}
 .calhead b{font-size:15px}
 .calhead button{border:1px solid var(--rule);background:var(--night);border-radius:8px;width:36px;height:32px;font-size:18px;cursor:pointer}
 .calhead button:disabled{opacity:.3}
-.cal{display:grid;gap:2px;align-items:end;height:92px}
-.day{border:0;background:none;padding:0;cursor:pointer;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;height:100%;min-width:0;gap:3px}
-.day b{flex:1;display:flex;align-items:flex-end;background:var(--night);border-radius:4px;overflow:hidden}
-.day i{display:block;width:100%;border-radius:3px 3px 0 0}
-.day span{font-size:10px;line-height:12px;height:12px;color:var(--mut);text-align:center;font-weight:600}
-.day.in b{background:#2b4262}
-.day.end b{box-shadow:inset 0 0 0 2px var(--ink)}
-.day.end span{color:var(--ink)}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal .h{font-size:11px;color:var(--mut);text-align:center;padding-bottom:3px;font-weight:600}
+.day{border:0;background:none;border-radius:10px;aspect-ratio:1/0.92;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--ink);font-size:14px;font-weight:600;min-width:0}
+.day .dd{display:block}
+.dd{display:inline-block;border-radius:50%;flex:none}
+.dd.z{width:5px;height:5px;border:1px solid #4a5d77}
+.dd.x{width:9px;height:1.5px;border-radius:1px;background:#4a5d77}
+.day.in{background:#203a5a}
+.day.end{background:var(--ink);color:var(--night)}
+.day.end .dd.z{border-color:#7d8da3}
 .day:disabled{opacity:.25;cursor:default}
-.day.nodata b{background:repeating-linear-gradient(45deg,var(--chip),var(--chip) 2px,transparent 2px,transparent 4px)}
+.day:not(:disabled):hover{box-shadow:inset 0 0 0 1px var(--rule)}
+.calk{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:10px;font-size:12px;color:var(--mut)}
+.calk span{display:flex;align-items:center;gap:5px}
 .calh{margin:8px 0 0}
 .selt{margin:0;font-size:14px;color:var(--mut);text-align:right}
 .selt b{font-weight:700;color:var(--ink)}
@@ -128,7 +132,7 @@ table{border-collapse:collapse;width:100%}
 .notes{font-size:12.5px;color:var(--mut);line-height:1.55;max-width:75ch}
 .topo div{display:flex;align-items:center;gap:8px;font-size:13px;margin-top:6px;color:var(--mut)}
 .foot{border-top:1px solid var(--rule);margin-top:10px}
-@media (prefers-reduced-motion:no-preference){.mo .bar i{transition:height .25s}}
+
 .dl{display:flex;align-items:center;flex-wrap:wrap;gap:6px 8px;margin-top:12px;font-size:13.5px;color:var(--mut)}.dl span{margin-right:2px}.dl button{border:1px solid var(--rule);background:var(--deck2);color:var(--ink);border-radius:8px;padding:5px 12px;font:inherit;font-weight:600;font-size:13px;cursor:pointer}.dl small{flex-basis:100%;font-size:12px}
 [hidden]{display:none!important}
 @media (max-width:959px){.pre{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-left:-12px;margin-right:-12px;padding:0 12px}.pre::-webkit-scrollbar{display:none}.pre button{flex:none}}
@@ -146,7 +150,7 @@ table{border-collapse:collapse;width:100%}
   <div class="ch"><div class="seg" id="seg"><button data-m="months" class="on">Months</button><button data-m="days">Days</button></div><p class="selt" id="selt"></p></div>
   <div id="pm"><div class="strip" id="strip"></div></div>
   <div id="pd" hidden><div class="calhead"><button id="pv" aria-label="Previous month">‹</button><b id="calt"></b><button id="nx" aria-label="Next month">›</button></div>
-   <div class="cal" id="cal"></div><p class="m calh">Tap a day, or two days for a range. Bars: state average rain each day.</p></div>
+   <div class="cal" id="cal"></div><div class="calk"><span><i class="dd" style="background:#3cc6e6;width:5px;height:5px"></i>very light</span><span><i class="dd" style="background:#1f5fe0;width:5px;height:5px"></i>light</span><span><i class="dd" style="background:#2bb24c;width:7px;height:7px"></i>moderate</span><span><i class="dd" style="background:#f5c400;width:9px;height:9px"></i>heavy+</span></div><p class="m calh">State average rain each day. Tap a date, or two dates for a range.</p></div>
   <div class="pre" id="pre"></div><div id="qk" hidden></div>
  </section>
  <section class="mapp" id="mapp">
@@ -209,7 +213,7 @@ for(let m=0;m<=lastM;m++)selM.add(m);
 const mDays=m=>{const a=Math.max(0,kOf(m,1)),b=Math.min(ND-1,kOf(m+1,1)-1);return a>b?[]:Array.from({length:b-a+1},(_,i)=>a+i)};
 const mTot=MON.map((_,m)=>mDays(m).reduce((s,k)=>s+(D.sd[k]||0),0));
 const mMax=Math.max(1,...mTot);const MB=bins(30);
-$('strip').innerHTML=MON.map((n,m)=>`<button class="mo" data-m="${m}" ${m>lastM?'disabled':''} aria-pressed="false"><div class="bar"><i style="height:${m>lastM?0:Math.max(3,mTot[m]/mMax*100)}%;background:${MB[cls(mTot[m],MB)][1]}"></i></div><span>${n}</span></button>`).join('');
+$('strip').innerHTML=MON.map((n,m)=>`<button class="mo" data-m="${m}" ${m>lastM?'disabled':''} aria-pressed="false" aria-label="${MONL[m]}${m>lastM?'':', '+f0(mTot[m])+' mm'}"><span class="mn">${n}</span><span class="mv">${m>lastM?'':f0(mTot[m])+' mm'}</span><i style="background:${m>lastM?'transparent':MB[cls(mTot[m],MB)][1]}"></i></button>`).join('');
 $('strip').onclick=e=>{const b=e.target.closest('.mo');if(!b||b.disabled)return;const m=+b.dataset.m;
  PSEL=null;if(selM.has(m)){if(selM.size>1)selM.delete(m)}else selM.add(m);update()};
 // one row of quick picks: day ranges switch to Days, seasons to Months
@@ -222,14 +226,14 @@ $('pre').onclick=e=>{const b=e.target.closest('[data-p]');if(!b)return;const P=P
 $('seg').onclick=e=>{const b=e.target.closest('[data-m]');if(!b)return;mode=b.dataset.m;PSEL=null;update()};
 $('pv').onclick=()=>{if(calM>0){calM--;drawCal()}};$('nx').onclick=()=>{if(calM<lastM){calM++;drawCal()}};
 const IMDc=v=>v==null?null:IMD[cls(v,IMD)][1];
+const DOT=v=>v==null?'':v<0.1?'<i class="dd z"></i>':`<i class="dd" style="background:${IMDc(v)};width:${v>=64.5?9:v>=15.6?7:5}px;height:${v>=64.5?9:v>=15.6?7:5}px"></i>`;
 function drawCal(){$('calt').textContent=MONL[calM]+' '+YR;$('pv').disabled=calM<=0;$('nx').disabled=calM>=lastM;
- const nd=new Date(Date.UTC(YR,calM+1,0)).getUTCDate();let mx=1;
- for(let d=1;d<=nd;d++){const k=kOf(calM,d);if(k<=ND-1&&D.sd[k]!=null)mx=Math.max(mx,D.sd[k])}
- let h='';
+ const first=new Date(Date.UTC(YR,calM,1)),off=(first.getUTCDay()+6)%7,nd=new Date(Date.UTC(YR,calM+1,0)).getUTCDate();
+ let h=['Mo','Tu','We','Th','Fr','Sa','Su'].map(x=>`<div class="h">${x}</div>`).join('')+'<div></div>'.repeat(off);
  for(let d=1;d<=nd;d++){const k=kOf(calM,d),fut=k>ND-1,iso=`${YR}-${String(calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`,nod=MISS.has(iso);
-  const v=fut?null:D.sd[k],inR=!fut&&k>=dA&&k<=dB,end=!fut&&(k==dA||k==dB),ht=fut||nod||v==null?0:Math.max(5,Math.sqrt(v/mx)*100);
-  h+=`<button class="day${inR?' in':''}${end?' end':''}${nod?' nodata':''}" data-k="${k}" ${fut?'disabled':''} aria-label="${d} ${MON[calM]}${fut?'':nod?', no readings':', '+f1(v)+' mm state average'}" title="${d} ${MON[calM]}${fut?'':nod?': no readings':': '+f1(v)+' mm'}"><b><i style="height:${ht}%;background:${v==null?'transparent':IMDc(v)}"></i></b><span>${end||((d==1||d%5==0)&&!(k-1==dA||k-1==dB||k+1==dA||k+1==dB))?d:''}</span></button>`}
- $('cal').style.gridTemplateColumns=`repeat(${nd},minmax(0,1fr))`;$('cal').innerHTML=h}
+  const v=fut||nod?null:D.sd[k],inR=!fut&&k>=dA&&k<=dB,end=!fut&&(k==dA||k==dB);
+  h+=`<button class="day${inR?' in':''}${end?' end':''}${nod?' nodata':''}" data-k="${k}" ${fut?'disabled':''} aria-label="${d} ${MON[calM]}${fut?'':nod?', no readings':', '+f1(v)+' mm state average'}" title="${d} ${MON[calM]}${fut?'':nod?': no readings':': '+f1(v)+' mm'}"><span>${d}</span>${fut?'':nod?'<i class="dd x"></i>':DOT(v)}</button>`}
+ $('cal').innerHTML=h}
 $('cal').onclick=e=>{const b=e.target.closest('.day');if(!b||b.disabled)return;const k=+b.dataset.k;PSEL=null;
  if(anchor==null||anchor==k){dA=dB=k;anchor=k}else{dA=Math.min(anchor,k);dB=Math.max(anchor,k);anchor=null}update()};
 function selDays(){if(mode=='months'){return [...selM].sort((a,b)=>a-b).flatMap(mDays)}return Array.from({length:dB-dA+1},(_,i)=>dA+i)}
