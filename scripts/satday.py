@@ -23,7 +23,9 @@ NX, NY = int(round((LON1 - LON0) / STEP)), int(round((LAT1 - LAT0) / STEP))
 UTC = dt.timezone.utc
 MAIN = 'https://raw.githubusercontent.com/sridhar13294-rgb/tn-rainfall-map/main/'
 RAIN, HEAVY, FIT_DAYS = 2.5, 64.5, 14
-CUTS = [0, 1, 2, 3, 5, 7, 10, 15]                                        # mm/h, raw satellite rate
+CUTS = [0, 1, 2, 3, 5, 7, 10, 15, 45]                                    # mm/h, raw satellite rate (45: the scale's top, ~49 mm/h)
+FIT_CUTS = [0, 1, 2, 3, 5, 7, 10, 15]
+MAXR, MAX_RUN = 45.0, 4                                                   # 'maxed out', and pictures in a row that make an hour
 SCALES = [0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.5, 0.6, 0.7, 0.85, 1.0]
 UA = {'User-Agent': 'Mozilla/5.0 (tn-rainfall-map satellite daily check)'}
 
@@ -125,6 +127,8 @@ def accumulate(L, budget=48):
             continue
         npz = f'{SD}/{day}.npz'
         acc = np.load(npz)['acc'].astype(float) if os.path.exists(npz) else np.zeros((len(CUTS), NY, NX))
+        if acc.shape[0] < len(CUTS):                                   # a day started before a cut-off was added: that layer starts now
+            acc = np.concatenate([acc, np.zeros((len(CUTS) - acc.shape[0], NY, NX))])
         def safe(t):
             try: return h63(t)
             except Exception as e: return e
@@ -199,8 +203,53 @@ def wmedian(x, w):
     return float(x[np.searchsorted(c, c[-1] / 2)])
 
 
-def lin(c, a):
-    return lambda r: np.where(np.asarray(r, float) >= c, np.asarray(r, float) * a, 0.0)
+def lin(c, a, top=None):
+    """Rates below the cut-off dropped, the rest times the multiplier; maxed-out rates (the top of the satellite's scale) times
+    their own multiplier when one is given."""
+    t = a if top is None else top
+    return lambda r: (lambda r: np.where(r >= MAXR, r * t, np.where(r >= c, r * a, 0.0)))(np.asarray(r, float))
+
+
+def frames_in_order(D):
+    keys = [f'{t:%H%M}' for t in window(dt.date.fromisoformat(D['day']))]
+    return [D['frames'][k] if k in D['frames'] else None for k in keys]
+
+
+def ceiling_stats(days):
+    """Where the satellite stayed at the top of its scale for an hour or more (4 pictures in a row): how heavy was the
+    heaviest TN SMART gauge within 15 km? (the satellite places storms only to within ~10-15 km)"""
+    st = stations(); near = []
+    for d in days:
+        D, obs = d['D'], d['obs']; ids = D['gauge_ids']
+        run = np.zeros(len(ids), int); cur = np.zeros(len(ids), int)
+        for v in frames_in_order(D):
+            m = (np.array(v) >= MAXR) if v is not None else np.zeros(len(ids), bool)
+            cur = (cur + 1) * m; run = np.maximum(run, cur)
+        pos = {k: (st[k]['lon'], st[k]['lat']) for k in ids if k in st and obs.get(k) is not None}
+        for i in np.where(run >= MAX_RUN)[0]:
+            k = ids[i]
+            if k not in pos:
+                continue
+            lo, la = pos[k]
+            near.append(max(obs[h] for h, (x, y) in pos.items() if np.hypot((x - lo) * 108.6, (y - la) * 110.6) <= 15))
+    if not near:
+        return None
+    a = np.array(near)
+    return dict(cases=len(a), heavy=int((a >= HEAVY).sum()), very_heavy=int((a >= 115.6).sum()), median_near=round(float(np.median(a)), 1),
+                note='gauge-days where the satellite stayed at the top of its scale for an hour or more; heaviest TN SMART gauge within 15 km')
+
+
+def fast_day(d, st):
+    """Same pairs as pairs_for, for many candidate corrections at once (raw rates read once)."""
+    D, obs = d['D'], d['obs']; ids = D['gauge_ids']; n = len(D['frames'])
+    R_ = np.array(list(D['frames'].values()), float); k = 0.25 * 96 / max(n, 1)
+    groups = [[ids.index(g) for g in ks] for ks in cells(st, [g for g in ids if obs.get(g) is not None]).values()]
+    o = np.array([np.mean([obs[ids[i]] for i in ix]) for ix in groups])
+    hi = R_ >= MAXR; Rhi = np.where(hi, R_, 0).sum(0) * k
+    def F(c, a, t):
+        S = np.where((R_ >= c) & ~hi, R_, 0).sum(0) * k * a + Rhi * t
+        return list(zip([float(np.mean(S[ix])) for ix in groups], o))
+    return F
 
 
 def pairs_for(D, obs, corr, st):
@@ -230,10 +279,14 @@ def compare(cal, now):
     recent = days[-FIT_DAYS:]
     # raw satellite rate at each gauge square for every picture, once per day, then every candidate correction
     grid = []
-    for c in CUTS:
+    fast = [fast_day(d, st) for d in recent]
+    for c in FIT_CUTS:
         for a in SCALES:
-            P = [p for d in recent for p in pairs_for(d['D'], d['obs'], lin(c, a), st)]
-            sc = score(P); grid.append(dict(cut=c, scale=a, **{k: sc[k] for k in ('mae', 'bias', 'ets', 'pod', 'far')}))
+            for t in sorted({a, 0.5, 0.6, 0.8, 1.0, 1.2, 1.5}):
+                if t < a:
+                    continue
+                P = [p for F in fast for p in F(c, a, t)]
+                sc = score(P); grid.append(dict(cut=c, scale=a, top=t, **{k: sc[k] for k in ('mae', 'bias', 'ets', 'pod', 'far')}))
     wet = sum(1 for d in recent for s_, o in d['radar'] if o >= RAIN)
     fit, why = None, None
     if len(recent) >= 3 and wet >= 100:
@@ -244,14 +297,14 @@ def compare(cal, now):
             fit = min(grid, key=lambda g: abs(np.log(g['bias'])) if g['bias'] else 9)
     else:
         why = f'{len(recent)} day(s) and {wet} rainy gauge squares so far; the gauge fit starts after 3 days and 100 rainy squares'
-    use = lin(fit['cut'], fit['scale']) if fit else radar_corr
+    use = lin(fit['cut'], fit['scale'], fit.get('top')) if fit else radar_corr
     out = dict(updated=now.isoformat(), method='satellite day totals vs TN SMART gauges on 0.25 degree squares (same squares as the forecast check)',
                gauge_fit=fit, note=why, fit_days=[d['day'] for d in recent], radar_cut=cal.get('cut_mm_h'),
                overall=dict(radar_matched=score([p for d in recent for p in d['radar']]),
                             gauge_fitted=score([p for d in recent for p in pairs_for(d['D'], d['obs'], use, st)])),
                days=[dict(day=d['day'], frames=len(d['D']['frames']), radar_matched=score(d['radar']),
                           gauge_fitted=score(pairs_for(d['D'], d['obs'], use, st))) for d in days],
-               candidates=sorted(grid, key=lambda g: -(g['ets'] or 0))[:12])
+               candidates=sorted(grid, key=lambda g: -(g['ets'] or 0))[:12], ceiling=ceiling_stats(days))
     json.dump(out, open(f'{OUT}/satgauge.json', 'w'), indent=1)
     publish_daily(use, fit, now)
     return out
@@ -268,13 +321,16 @@ def publish_daily(corr, fit, now):
         S = sat_totals(D, corr, partial=part)
         if not S:
             continue
-        rec = dict(day=day, frames=len(D['frames']), complete=not part, correction=dict(cut=fit['cut'], scale=fit['scale']) if fit else 'radar-matched',
+        rec = dict(day=day, frames=len(D['frames']), complete=not part, correction=dict(cut=fit['cut'], scale=fit['scale'], top=fit.get('top')) if fit else 'radar-matched',
                    gauges={k: round(float(v), 1) for k, v in S.items()})
         npz = f'{SD}/{day}.npz'
         if fit and os.path.exists(npz):
             z = np.load(npz); cuts = list(z['cuts']) if 'cuts' in z else None
             if cuts and fit['cut'] in cuts and z['acc'].ndim == 3:
-                g = z['acc'][cuts.index(fit['cut'])] * fit['scale'] * (1 if part else 96 / max(1, int(z['frames'])))
+                A = z['acc'][cuts.index(fit['cut'])] * fit['scale']
+                if fit.get('top') and fit['top'] != fit['scale'] and MAXR in cuts and z['acc'].shape[0] > cuts.index(MAXR):
+                    A = A + z['acc'][cuts.index(MAXR)] * (fit['top'] - fit['scale'])
+                g = A * (1 if part else 96 / max(1, int(z['frames'])))
                 g = g.reshape(NY // 2, 2, NX // 2, 2).mean(axis=(1, 3))       # 0.1 degree
                 rec['grid'] = dict(lon0=LON0, lat0=LAT0, step=0.1, nx=NX // 2, ny=NY // 2, mm=[round(float(x), 1) for x in g.ravel()])
         json.dump(rec, open(f'{OUT}/satdaily/{day}.json', 'w'), separators=(',', ':'))
@@ -300,7 +356,8 @@ def run(L, cal, now):
     backfill_from_acc()
     acc = accumulate(L)
     out = compare(cal, now)
-    return dict(accumulated=acc, gauge_fit=out['gauge_fit'] if out else None, days_compared=len(out['days']) if out else 0)
+    return dict(accumulated=acc, gauge_fit=out['gauge_fit'] if out else None, ceiling=out.get('ceiling') if out else None,
+                days_compared=len(out['days']) if out else 0)
 
 
 if __name__ == '__main__':

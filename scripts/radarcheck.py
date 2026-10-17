@@ -419,8 +419,10 @@ def cron():
         cal = json.load(open(f'{OUT}/satcal.json')) if os.path.exists(f'{OUT}/satcal.json') else {}
         res = satday.run(L, cal, now); status['satday'] = res
         if res.get('gauge_fit') and cal:
-            g = res['gauge_fit']; cal['gauge_fit'] = dict(cut_mm_h=g['cut'], scale=g['scale'], ets=g['ets'], bias=g['bias'], mae=g['mae'],
-                                                          updated=now.isoformat())
+            g = res['gauge_fit']; cal['gauge_fit'] = dict(cut_mm_h=g['cut'], scale=g['scale'], top=g.get('top'), ets=g['ets'], bias=g['bias'],
+                                                          mae=g['mae'], updated=now.isoformat())
+            if res.get('ceiling'):
+                cal['ceiling'] = res['ceiling']
             json.dump(cal, open(f'{OUT}/satcal.json', 'w'), indent=1)
     except Exception as e:
         import traceback; traceback.print_exc(); status['satday_error'] = str(e)
