@@ -1,0 +1,33 @@
+name: Training history ECMWF TIGGE (2006-2022)
+# Runs once the repository secret ECMWF_DS_KEY exists (personal access token from https://ecds.ecmwf.int with the TIGGE
+# licence accepted). Start it by pushing a change to data/history/TIGGE_RUN on the train-data branch.
+on:
+  push:
+    branches: [train-data]
+    paths: ['scripts/hist_tigge.py', '.github/workflows/train-tigge.yml', 'data/history/TIGGE_RUN']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  tigge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        year: [2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022]
+    env:
+      ECMWF_DS_KEY: ${{ secrets.ECMWF_DS_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install -q numpy pygrib "cdsapi>=0.7.7"
+      - run: python scripts/hist_tigge.py ${{ matrix.year }}
+      - if: always()
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add data/history/tigge || true
+          git commit -qm "ECMWF TIGGE history ${{ matrix.year }}" || exit 0
+          for i in 1 2 3 4 5 6 7 8; do git pull -q --rebase origin train-data && git push -q origin HEAD:train-data && break; sleep $((RANDOM % 30 + 5)); done
