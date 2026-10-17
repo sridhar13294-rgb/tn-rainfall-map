@@ -27,15 +27,15 @@ def prefix(init):
     if model == 'ifs':
         return [f'{d}/00z/ifs/0p25/oper', f'{d}/00z/0p4-beta/oper', f'{d}/00z/ifs/0p4-beta/oper']
     return [f'{d}/00z/aifs-single/0p25/oper', f'{d}/00z/aifs/0p25/oper', f'{d}/00z/aifs/0p25-beta/oper']
-WANT = [('tp', 'sfc', None), ('tcwv', 'sfc', None), ('vo', 'pl', '850'), ('u', 'pl', '850'), ('v', 'pl', '850')]
-def step_fields(init, step):
+WANT = [('tp', 'sfc', None), ('tcwv', 'sfc', None), ('vo', 'pl', '850')]
+def step_fields(init, step, names=None):
     for p in prefix(init):
         base = f'{B}/{p}/{init:%Y%m%d%H%M%S}-{step}h-oper-fc'
         ix = get(base + '.index')
         if not ix: continue
         L = [json.loads(l) for l in ix.decode().strip().split('\n')]
         pick = {}
-        for name, lt, lev in WANT:
+        for name, lt, lev in [w for w in WANT if names is None or w[0] in names]:
             for e in L:
                 if e.get('param') == name and (lev is None or str(e.get('levelist')) == lev) and (lt != 'pl' or e.get('levtype') == 'pl'):
                     pick[name] = (e['_offset'], e['_length']); break
@@ -52,25 +52,32 @@ def step_fields(init, step):
     return None, None
 days = [dt.date(year, 10, 1) + dt.timedelta(days=k) for k in range(18 if year == 2026 else 92)]
 days = [d for d in days if d >= dt.date(2023, 1, 22)]
-KEYS = ('rain', 'tcwv', 'vo850', 'u850', 'v850')
-R = {f'{k}{w}': [[None] * len(days) for _ in CELLS] for k in KEYS for w in ('0', '1')}; used = set()
+KEYS = ('rain', 'tcwv', 'vo850'); f = f'{OUT}/{model}_{year}.json'
+old = json.load(open(f)) if os.path.exists(f) else None
+R = old['data'] if old and old.get('days') == [d.isoformat() for d in days] else {f'{k}1': [[None] * len(days) for _ in CELLS] for k in KEYS}
+done = set(old.get('done', [])) if old else set(); used = set(old.get('source', [])) if old else set()
+def save(final=False):
+    cover = {k: round(sum(x is not None for r in v for x in r) / max(1, len(CELLS) * len(days)), 2) for k, v in R.items()}
+    json.dump(dict(model=model, year=year, source=sorted(used), days=[d.isoformat() for d in days], cells=CELLS, cover=cover, data=R,
+                   done=sorted(done), complete=final), open(f, 'w'), separators=(',', ':'))
+    return cover
+t0 = time.time()
 for k, D in enumerate(days):
-    for w, lag, (a, b) in (('0', 1, (3, 27)), ('1', 2, (27, 51))):
-        init = dt.datetime(D.year, D.month, D.day) - dt.timedelta(days=lag)
-        S = {}
-        for s in range(a, b + 1, 6):
-            f, p = step_fields(init, s)
-            if f: S[s] = f; used.add(p.split('/', 2)[2])
-        if a in S and b in S and 'tp' in S[a] and 'tp' in S[b]:
-            r = np.maximum(0, (S[b]['tp'] - S[a]['tp']) * 1000)                 # metres -> mm
-            for c in range(len(CELLS)): R['rain' + w][c][k] = round(float(r[c]), 1)
-        for key, name, how in (('tcwv', 'tcwv', 'mean'), ('vo850', 'vo', 'max'), ('u850', 'u', 'mean'), ('v850', 'v', 'mean')):
-            V = [S[s][name] for s in S if name in S[s]]
-            if len(V) >= 3:
-                x = np.max(V, 0) * (1e5 if name == 'vo' else 1) if how == 'max' else np.mean(V, 0)
-                for c in range(len(CELLS)): R[key + w][c][k] = round(float(x[c]), 2)
-    print(model, D, 'Chennai day1 rain', R['rain1'][min(range(len(CELLS)), key=lambda c: (CELLS[c][0]-13.0)**2+(CELLS[c][1]-80.25)**2)][k], flush=True)
-cover = {k: round(sum(x is not None for r in v for x in r) / max(1, len(CELLS) * len(days)), 2) for k, v in R.items()}
-json.dump(dict(model=model, year=year, source=sorted(used), days=[d.isoformat() for d in days], cells=CELLS, cover=cover, data=R),
-          open(f'{OUT}/{model}_{year}.json', 'w'), separators=(',', ':'))
-print('cover', cover, sorted(used))
+    if D.isoformat() in done: continue
+    if time.time() - t0 > 4.6 * 3600: break                            # stop in time to save; the next run carries on
+    init = dt.datetime(D.year, D.month, D.day) - dt.timedelta(days=2); S = {}
+    for s_ in (27, 33, 39, 45, 51):
+        fl, p = step_fields(init, s_, ('tp', 'tcwv', 'vo') if s_ in (27, 51) else ('tcwv', 'vo'))
+        if fl: S[s_] = fl; used.add(p.split('/', 2)[2])
+    if 27 in S and 51 in S and 'tp' in S[27] and 'tp' in S[51]:
+        r = np.maximum(0, (S[51]['tp'] - S[27]['tp']) * 1000)
+        for c in range(len(CELLS)): R['rain1'][c][k] = round(float(r[c]), 1)
+    for key, name, how in (('tcwv1', 'tcwv', 'mean'), ('vo8501', 'vo', 'max')):
+        V = [S[s_][name] for s_ in S if name in S[s_]]
+        if len(V) >= 3:
+            x = np.max(V, 0) * 1e5 if how == 'max' else np.mean(V, 0)
+            for c in range(len(CELLS)): R[key][c][k] = round(float(x[c]), 2)
+    done.add(D.isoformat())
+    if len(done) % 5 == 0: save()
+    print(model, D, flush=True)
+print('cover', save(final=len(done) == len(days)), len(done), 'of', len(days))

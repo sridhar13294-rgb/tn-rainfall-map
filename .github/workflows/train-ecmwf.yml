@@ -12,13 +12,12 @@ jobs:
     timeout-minutes: 330
     strategy:
       fail-fast: false
-      max-parallel: 4
+      max-parallel: 3
       matrix:
         include:
           - {model: ifs, year: 2023}
           - {model: ifs, year: 2024}
           - {model: ifs, year: 2025}
-          - {model: ifs, year: 2026}
           - {model: aifs, year: 2024}
           - {model: aifs, year: 2025}
           - {model: aifs, year: 2026}
