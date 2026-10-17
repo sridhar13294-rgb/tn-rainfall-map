@@ -7,7 +7,7 @@ on:
   workflow_dispatch:         # "Run workflow" button for a manual update
   push:
     branches: [main]
-    paths: ['scripts/**', 'site/template.html', 'data/baseline.json', 'data/geo.json', 'data/match_overrides.json', '.github/workflows/**']
+    paths: ['scripts/**', 'site/template.html', 'site/forecast_template.html', 'site/satradar.html', 'site/export.js', 'data/baseline.json', 'data/geo.json', 'data/match_overrides.json', '.github/workflows/**']
 
 permissions:
   contents: write
