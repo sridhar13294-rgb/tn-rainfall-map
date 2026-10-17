@@ -8,7 +8,7 @@ sys.argv = [sys.argv[0], sys.argv[1]]
 import importlib.util
 spec = importlib.util.spec_from_file_location('g', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'hist_gefs.py'))
 src = open(spec.origin).read(); src = src[:src.index('year = int(sys.argv[1])')]            # reuse the helpers only
-g = {}; exec(compile(src, 'hist_gefs_helpers', 'exec'), g)
+g = {'__file__': spec.origin, '__name__': 'hist_gefs_helpers'}; exec(compile(src, spec.origin, 'exec'), g)
 BASE, CELLS, idx, values, get = g['BASE'], g['CELLS'], g['idx'], g['values'], g['get']
 OUT = os.path.join(g['ROOT'], 'data/history/gefs'); year = int(sys.argv[1])
 days = [dt.date(year, 10, 1) + dt.timedelta(days=k) for k in range(92)]
