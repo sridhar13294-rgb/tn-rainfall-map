@@ -2,12 +2,13 @@ name: Training history 2000-2019
 on:
   push:
     branches: [train-data]
-    paths: ['scripts/hist_gefs.py', '.github/workflows/train-history.yml']
+    paths: ['scripts/hist_gefs2.py']
   workflow_dispatch:
 permissions:
   contents: write
 jobs:
   tnsmart_old:
+    if: false
     runs-on: ubuntu-latest
     timeout-minutes: 300
     steps:
@@ -34,10 +35,10 @@ jobs:
       - uses: actions/setup-python@v5
         with: {python-version: '3.12'}
       - run: pip install -q numpy pygrib
-      - run: python scripts/hist_gefs.py ${{ matrix.year }}
+      - run: python scripts/hist_gefs2.py ${{ matrix.year }}
       - if: always()
         run: |
           git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
           git add data/history/gefs || true
-          git commit -qm "GEFS reforecast history ${{ matrix.year }}" || exit 0
+          git commit -qm "GEFS reforecast members and 850 hPa wind ${{ matrix.year }}" || exit 0
           for i in 1 2 3 4 5 6 7 8; do git pull -q --rebase origin train-data && git push -q origin HEAD:train-data && break; sleep $((RANDOM % 30 + 5)); done
