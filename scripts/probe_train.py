@@ -1,44 +1,29 @@
-"""Probe round 3: how far back TN SMART goes, NOAA GEFSv12 reforecasts (2000-2019) and IMD gridded rain (imdlib)."""
-import json, os, sys, urllib.request, urllib.parse, subprocess, time
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+"""Probe round 4: ECMWF open-data archive on AWS (ecmwf-forecasts bucket): which dates, resolutions, models and fields."""
+import json, os, re, urllib.request
 out = {}
-def head(u):
-    r = urllib.request.urlopen(urllib.request.Request(u, method='HEAD', headers={'User-Agent': 'tn-rainfall-map probe'}), timeout=60)
-    return dict(status=r.status, size=r.headers.get('Content-Length'))
-import update as U
-geo = U.load(U.P('data/geo.json'), None); res = {}
-for d in ['2018-11-16', '2017-11-30', '2016-12-12', '2015-12-01', '2015-11-16', '2012-10-31', '2010-11-15', '2008-11-26', '2005-10-27', '2000-11-30']:
+def get(u, t=60):
+    with urllib.request.urlopen(urllib.request.Request(u, headers={'User-Agent': 'tn-rainfall-map probe'}), timeout=t) as r: return r.read()
+B = 'https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com'
+for d in ['20230120', '20231115', '20241201', '20251101', '20261015']:
     try:
-        page = U.fetch_date(d); date, rows = U.parse_page(page, geo['d'] + list(U.ALIASES))
-        top = sorted([(r['rain'], r.get('name') or r.get('station')) for r in rows if r['rain'] is not None], key=lambda x: -x[0])[:2]
-        res[d] = dict(page_date=date, gauges=sum(r['rain'] is not None for r in rows), top=top)
+        x = get(f'{B}/?list-type=2&prefix={d}/00z/&max-keys=1000').decode()
+        keys = re.findall(r'<Key>([^<]+)</Key>', x)
+        dirs = sorted({'/'.join(k.split('/')[:5]) for k in keys})
+        out[d] = dict(n=len(keys), dirs=dirs[:20], sample=[k for k in keys if '24h' in k][:6])
     except Exception as e:
-        res[d] = 'ERR ' + str(e)[:150]
-out['tnsmart_old'] = res
-g = {}
-base = 'https://noaa-gefs-retrospective.s3.amazonaws.com/GEFSv12/reforecast'
-for y, d in [(2000, '2000100100'), (2010, '2010110100'), (2019, '2019120100'), (2020, '2020110100')]:
-    for path in [f'{base}/{y}/{d}/c00/Days:1-10/apcp_sfc_{d}_c00.grib2', f'{base}/{y}/{d}/c00/Days%3A1-10/apcp_sfc_{d}_c00.grib2']:
-        try: g[path[len(base):]] = head(path)
-        except Exception as e: g[path[len(base):]] = 'ERR ' + str(e)[:120]
+        out[d] = 'ERR ' + str(e)[:200]
 try:
-    lst = urllib.request.urlopen('https://noaa-gefs-retrospective.s3.amazonaws.com/?list-type=2&prefix=GEFSv12/reforecast/2010/2010110100/c00/&max-keys=40', timeout=60).read().decode()
-    import re; g['listing'] = re.findall(r'<Key>([^<]+)</Key><LastModified>[^<]+</LastModified><ETag>[^<]+</ETag><Size>(\d+)</Size>', lst)[:40]
+    keys = out['20231115']['sample'] if isinstance(out.get('20231115'), dict) else []
+    k = [k for k in keys if k.endswith('.index') and 'oper' in k][:1] or [k for k in keys if k.endswith('.index')][:1]
+    if k:
+        t = get(f'{B}/{k[0]}').decode().strip().split('\n')
+        out['index_sample'] = dict(key=k[0], lines=len(t), params=sorted({json.loads(l).get('param') for l in t}), first=t[0][:300])
 except Exception as e:
-    g['listing'] = 'ERR ' + str(e)[:200]
-out['gefs_reforecast'] = g
+    out['index_sample'] = 'ERR ' + str(e)[:200]
 try:
-    subprocess.run([sys.executable, '-m', 'pip', 'install', '-q', 'imdlib'], check=True, timeout=300)
-    import imdlib as imd
-    t0 = time.time(); os.makedirs('/tmp/imd', exist_ok=True)
-    data = imd.get_data('rain', 2015, 2015, fn_format='yearwise', file_dir='/tmp/imd')
-    ds = data.get_xarray(); r = ds['rain'].sel(lat=13.0, lon=80.25, method='nearest').sel(time='2015-12-01')
-    out['imd_gridded'] = dict(ok=True, seconds=round(time.time() - t0), shape=str(ds['rain'].shape), chennai_2015_12_01=float(r.values), files=os.listdir('/tmp/imd'))
-    for y in (2000, 2024, 2025):
-        try:
-            imd.get_data('rain', y, y, fn_format='yearwise', file_dir='/tmp/imd'); out['imd_gridded'][f'year_{y}'] = 'ok'
-        except Exception as e:
-            out['imd_gridded'][f'year_{y}'] = 'ERR ' + str(e)[:120]
+    keys = out['20241201']['sample'] if isinstance(out.get('20241201'), dict) else []
+    k = [k for k in keys if k.endswith('.index')]
+    out['index_2024'] = {kk: sorted({json.loads(l).get('param') for l in get(f'{B}/{kk}').decode().strip().split('\n')}) for kk in k[:4]}
 except Exception as e:
-    out['imd_gridded'] = 'ERR ' + str(e)[:300]
+    out['index_2024'] = 'ERR ' + str(e)[:200]
 os.makedirs('data', exist_ok=True); json.dump(out, open('data/probe_train.json', 'w'), indent=1); print(json.dumps(out, indent=1)[:5000])
