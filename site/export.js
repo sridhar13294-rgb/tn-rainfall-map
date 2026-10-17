@@ -5,6 +5,7 @@
   const W = 1080, PAD = 48, MAPW = W - 2 * PAD;
   const FONT = '"Anek Latin", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
   let jspdf = null;
+  let HALO = '#ffffff';
 
   function loadPdfLib() {
     if (jspdf) return Promise.resolve(jspdf);
@@ -57,7 +58,7 @@
       ctx.font = `${el.getAttribute('font-style') || ''} ${fw} ${fs}px ${FONT}`;
       const anc = el.getAttribute('text-anchor'); ctx.textAlign = anc === 'end' ? 'right' : anc === 'middle' ? 'center' : 'left';
       const x = +el.getAttribute('x'), y = +el.getAttribute('y'), sw = parseFloat(cs.strokeWidth) || 0;
-      if (sw && cs.stroke !== 'none') { ctx.strokeStyle = '#ffffff'; ctx.lineWidth = sw; ctx.lineJoin = 'round'; ctx.strokeText(el.textContent, x, y); }
+      if (sw && cs.stroke !== 'none') { ctx.strokeStyle = HALO; ctx.lineWidth = sw; ctx.lineJoin = 'round'; ctx.strokeText(el.textContent, x, y); }
       ctx.fillStyle = cs.fill && cs.fill !== 'none' ? cs.fill : '#0f2a33'; ctx.fillText(el.textContent, x, y);
     }
     ctx.restore();
@@ -66,6 +67,7 @@
   async function render(o) {
     try { await document.fonts.ready; } catch (e) {}
     const svg = o.svg, vb = [0, 0, 440, 575], k = MAPW / vb[2], mapH = vb[3] * k;
+    const T = Object.assign({ bg: '#ffffff', ink: '#0f2a33', mut: '#5b6e73', acc: '#0f6e7a', halo: '#ffffff', box: 'rgba(0,0,0,.2)' }, o.theme || {}); HALO = T.halo;
     const c = document.createElement('canvas'), ctx = c.getContext('2d');
     ctx.font = `700 40px ${FONT}`; const tl = wrap(ctx, o.title, W - 2 * PAD);
     ctx.font = `400 24px ${FONT}`; const sl = o.sub ? wrap(ctx, o.sub, W - 2 * PAD) : [];
@@ -73,11 +75,11 @@
     ctx.font = `400 20px ${FONT}`; const nl = o.note ? wrap(ctx, o.note, W - 2 * PAD) : [];
     const H = PAD + tl.length * 48 + sl.length * 32 + 20 + mapH + 30 + 32 + legRows * 36 + 16 + nl.length * 28 + 70;
     c.width = W; c.height = Math.ceil(H);
-    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = T.bg; ctx.fillRect(0, 0, W, H);
     let y = PAD;
-    ctx.fillStyle = '#0f2a33'; ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = T.ink; ctx.textBaseline = 'alphabetic';
     ctx.font = `700 40px ${FONT}`; tl.forEach(l => { y += 40; ctx.fillText(l, PAD, y); y += 8; });
-    ctx.font = `400 24px ${FONT}`; ctx.fillStyle = '#5b6e73'; sl.forEach(l => { y += 26; ctx.fillText(l, PAD, y); y += 6; });
+    ctx.font = `400 24px ${FONT}`; ctx.fillStyle = T.mut; sl.forEach(l => { y += 26; ctx.fillText(l, PAD, y); y += 6; });
     y += 20;
     ctx.save(); ctx.translate(PAD, y); ctx.scale(k, k);
     // the page's own zoom changes text and dot sizes, so draw from a reset copy
@@ -87,17 +89,17 @@
     drawNode(ctx, clone, clone);
     clone.remove(); ctx.restore();
     y += mapH + 30;
-    ctx.fillStyle = '#0f2a33'; ctx.font = `600 22px ${FONT}`; ctx.fillText(o.legendTitle || '', PAD, y); y += 16;
+    ctx.fillStyle = T.ink; ctx.font = `600 22px ${FONT}`; ctx.fillText(o.legendTitle || '', PAD, y); y += 16;
     const colW = (W - 2 * PAD) / 3;
     ctx.font = `400 20px ${FONT}`;
     o.legend.forEach((g, i) => {
       const cx = PAD + (i % 3) * colW, cy = y + Math.floor(i / 3) * 36;
-      ctx.fillStyle = g[0]; ctx.fillRect(cx, cy + 6, 26, 22); ctx.strokeStyle = 'rgba(0,0,0,.2)'; ctx.lineWidth = 1; ctx.strokeRect(cx + .5, cy + 6.5, 25, 21);
-      ctx.fillStyle = '#0f2a33'; ctx.fillText(g[1], cx + 36, cy + 24);
+      ctx.fillStyle = g[0]; ctx.fillRect(cx, cy + 6, 26, 22); ctx.strokeStyle = T.box; ctx.lineWidth = 1; ctx.strokeRect(cx + .5, cy + 6.5, 25, 21);
+      ctx.fillStyle = T.ink; ctx.fillText(g[1], cx + 36, cy + 24);
     });
     y += legRows * 36 + 16;
-    ctx.fillStyle = '#5b6e73'; ctx.font = `400 20px ${FONT}`; nl.forEach(l => { y += 22; ctx.fillText(l, PAD, y); y += 6; });
-    y += 34; ctx.fillStyle = '#0f6e7a'; ctx.font = `600 20px ${FONT}`; ctx.fillText(location.host ? location.host + location.pathname.replace(/[^/]*$/, '') : 'Tamil Nadu rainfall', PAD, y);
+    ctx.fillStyle = T.mut; ctx.font = `400 20px ${FONT}`; nl.forEach(l => { y += 22; ctx.fillText(l, PAD, y); y += 6; });
+    y += 34; ctx.fillStyle = T.acc; ctx.font = `600 20px ${FONT}`; ctx.fillText(location.host ? location.host + location.pathname.replace(/[^/]*$/, '') : 'Tamil Nadu rainfall', PAD, y);
     return c;
   }
 
