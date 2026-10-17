@@ -1,0 +1,36 @@
+name: Training history ECMWF (open-data archive, 2023 on)
+on:
+  push:
+    branches: [train-data]
+    paths: ['scripts/hist_ecmwf.py', '.github/workflows/train-ecmwf.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  ecmwf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        include:
+          - {model: ifs, year: 2023}
+          - {model: ifs, year: 2024}
+          - {model: ifs, year: 2025}
+          - {model: ifs, year: 2026}
+          - {model: aifs, year: 2024}
+          - {model: aifs, year: 2025}
+          - {model: aifs, year: 2026}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install -q numpy pygrib
+      - run: python scripts/hist_ecmwf.py ${{ matrix.model }} ${{ matrix.year }}
+      - if: always()
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add data/history/ecmwf || true
+          git commit -qm "ECMWF forecast history ${{ matrix.model }} ${{ matrix.year }}" || exit 0
+          for i in 1 2 3 4 5 6 7 8; do git pull -q --rebase origin train-data && git push -q origin HEAD:train-data && break; sleep $((RANDOM % 30 + 5)); done
