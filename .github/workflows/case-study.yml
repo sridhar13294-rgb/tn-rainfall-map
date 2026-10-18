@@ -1,0 +1,25 @@
+name: Case study data (ECMWF analyses + IMD gridded rain)
+on:
+  workflow_dispatch:
+    inputs:
+      name: {description: 'Short name', default: 'ditwah_2025'}
+      start: {description: 'First day (YYYY-MM-DD)', default: '2025-11-24'}
+      end: {description: 'Last day (YYYY-MM-DD)', default: '2025-12-04'}
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install -q numpy pygrib imdlib
+      - run: python scripts/case_fetch.py ${{ inputs.name }} ${{ inputs.start }} ${{ inputs.end }}
+      - if: always()
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add data/cases || true
+          git commit -qm "Case study data: ${{ inputs.name }}" || exit 0
+          for i in 1 2 3 4 5; do git pull -q --rebase origin ${{ github.ref_name }} && git push -q origin HEAD:${{ github.ref_name }} && break; sleep 7; done
