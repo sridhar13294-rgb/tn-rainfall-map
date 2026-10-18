@@ -1,0 +1,30 @@
+name: Case studies ERA5 every NE-monsoon day (public Google copy)
+# Runs on the cases branch when data/cases/era5/DAYS_ARCO changes; 6 runners share the years 2000-2025.
+on:
+  push:
+    branches: [cases]
+    paths: ['data/cases/era5/DAYS_ARCO']
+permissions:
+  contents: write
+jobs:
+  days:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    strategy:
+      fail-fast: false
+      matrix:
+        years: ['2000 2006 2012 2018 2024', '2001 2007 2013 2019 2025', '2002 2008 2014 2020', '2003 2009 2015 2021', '2004 2010 2016 2022', '2005 2011 2017 2023']
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install -q numpy scipy xarray zarr gcsfs
+      - run: python scripts/era5_arco_days.py ${{ matrix.years }} || true
+      - if: always()
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add data/cases/era5 || true
+          git commit -qm "ERA5 every day: ${{ matrix.years }}" || exit 0
+          for i in 1 2 3 4 5 6 7 8; do git pull -q --rebase origin cases && git push -q origin HEAD:cases && break; sleep $((RANDOM % 30 + 5)); done
