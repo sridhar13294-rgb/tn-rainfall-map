@@ -39,7 +39,7 @@ jobs:
         run: |
           sudo apt-get update -q
           sudo apt-get install -y -q libeccodes-dev
-          pip install -q eccodes numpy netCDF4
+          pip install -q eccodes numpy netCDF4 scikit-learn
           python -c "import eccodes; print('ecCodes', eccodes.codes_get_api_version())"
       - name: Latest TN SMART gauge readings (from the live branch, for the forecast check)
         if: github.ref_name != 'main'

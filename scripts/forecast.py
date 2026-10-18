@@ -231,7 +231,8 @@ class Model:
 
     def __init__(self, name):
         self.name, self.run = name, None
-        self.recs = {k: [] for k in ('tp', 't2', 'tmax', 'tmin', 'u10', 'v10', 'msl', 'mslt', 'u850', 'v850', 'band850', 'olr', 'ttr')}
+        self.recs = {k: [] for k in ('tp', 't2', 'tmax', 'tmin', 'u10', 'v10', 'msl', 'mslt', 'u850', 'v850', 'band850', 'olr', 'ttr',
+                                     'pwat', 'cape', 'u850t', 'v850t')}
         self.ok = self.failed = 0
         self.errors, self.samples, self.info = [], {}, {}
         self.bytes = 0
@@ -339,6 +340,8 @@ def gfs_collect(m, pool, pts, wpts, d0, now, wind_out):
                     m.add(var, info, step, sample(info, vals, pts, 'tn'))
                 if 'p850' in kinds:
                     add_850(m, info, step, vals, comp, wpts)
+                if 'tn850' in kinds:
+                    m.add('u850t' if comp == 'u' else 'v850t', info, step, sample(info, vals, pts, 'tn'))
                 if 'wind' in kinds:
                     lev = wanted_levels[rec['level']]
                     sw = sample(info, vals, wpts, 'wind')      # computed outside the lock
@@ -367,6 +370,10 @@ def gfs_collect(m, pool, pts, wpts, d0, now, wind_out):
                     out.append(field(step, r, 'tp', {'tn'}))
                 elif r['var'] in ('TMAX', 'TMIN') and r['level'] == '2 m above ground' and in_days and step % 6 == 0:
                     out.append(field(step, r, r['var'].lower(), {'tn'}))
+                elif r['var'] == 'PWAT' and in_days and step % 6 == 0:
+                    out.append(field(step, r, 'pwat', {'tn'}))
+                elif r['var'] == 'CAPE' and r['level'] == 'surface' and in_days and step % 6 == 0:
+                    out.append(field(step, r, 'cape', {'tn'}))
                 elif r['var'] in ('UGRD', 'VGRD') and r['level'] in wanted_levels:
                     is10 = r['level'] == '10 m above ground'
                     kinds = set()
@@ -375,7 +382,7 @@ def gfs_collect(m, pool, pts, wpts, d0, now, wind_out):
                     if step in wind_steps:
                         kinds.add('wind')
                     if r['level'] == '850 mb' and in_days and step % 6 == 0:
-                        kinds.add('p850')
+                        kinds.add('p850'); kinds.add('tn850')
                     if kinds:
                         out.append(field(step, r, 'u10' if r['var'] == 'UGRD' else 'v10', kinds))
             return out
@@ -1399,10 +1406,12 @@ def gefs_collect(pool, pts, wpts, d0, now, info, system=True):
                 if (r['var'] in ('UGRD', 'VGRD') and r['level'] == '850 mb' and s0 <= step <= ENS_HOURS
                         and (run + dt.timedelta(hours=step)).hour in (0, 12)):
                     wind.append(field(mem, step, r, 'u850' if r['var'] == 'UGRD' else 'v850'))
+                if r['var'] == 'APCP' and r['level'] == 'surface' and (system or mem <= 4):
+                    out.append(field(mem, step, r, 'tp'))
                 if not system:
                     continue
                 if r['var'] == 'APCP' and r['level'] == 'surface':
-                    out.append(field(mem, step, r, 'tp'))
+                    pass
                 elif r['var'] == 'PRMSL' and r['level'] == 'mean sea level' and s0 <= step <= s1:
                     out.append(field(mem, step, r, 'msl'))
             return out, wind
@@ -2188,6 +2197,68 @@ def main():
             json.dump(dict(status, ensembles=einfo), open(P('data/forecast_status.json'), 'w'), indent=1, default=str)
     CURRENT['deadline'] = DEADLINE
     status['ensembles'] = einfo
+    # Our forecast v4: GFS corrected with 20 north-east monsoons of TN SMART (scripts/ourfc4.py). Replaces v3's amounts and
+    # storm risk; v3's chance of rain and confidence stay. v3's amounts are still saved for the daily check ('Our v3').
+    v3_fn = ours_fn
+    try:
+        import ourfc4
+        t4 = time.time(); M4 = ourfc4.train(); g4 = ourfc4.districts(pts, json.load(open(P('data/stations.json'))))
+        gm = models['GFS']; npts = len(pts)
+        mem5 = [ens['GEFS'][k] for k in range(5)] if 'GEFS' in ens and all(k in ens['GEFS'] for k in range(5)) else None
+        mrain = [daily(m, d0, nd, npts)['rain'] for m in mem5] if mem5 else None
+        def inst(var, d, how):
+            a = d0 + dt.timedelta(days=d)
+            xs = [v for s_, v in gm.recs[var] if a <= gm.run + dt.timedelta(hours=s_) <= a + dt.timedelta(hours=24)]
+            if len(xs) < 3: return None
+            return np.max(np.stack(xs), 0) if how == 'max' else np.mean(np.stack(xs), 0)
+        def vo_day(d):
+            a = d0 + dt.timedelta(days=d); uu = dict(gm.recs['u850t']); vv = dict(gm.recs['v850t'])
+            st_ = [s_ for s_ in uu if s_ in vv and a <= gm.run + dt.timedelta(hours=s_) <= a + dt.timedelta(hours=24)]
+            return np.max(np.stack([ourfc4.vorticity(pts, uu[s_], vv[s_]) for s_ in st_]), 0) if len(st_) >= 3 else None
+        V4, used = {}, {}
+        for d in range(nd):
+            g = per['GFS']['rain'][d] if 'GFS' in per else None
+            cape, pwat, uu, vv, vo = inst('cape', d, 'max'), inst('pwat', d, 'mean'), inst('u850t', d, 'mean'), inst('v850t', d, 'mean'), vo_day(d)
+            if g is None or any(x is None for x in (cape, pwat, uu, vv, vo)):
+                continue
+            mm = [r_[d] for r_ in mrain] if mrain and all(r_[d] is not None for r_ in mrain) else None
+            out4, tag = ourfc4.predict_day(M4, g4, np.asarray(g, float), mm, cape, pwat, uu, vv, vo)
+            pat = [c['precipitation_sum']['avg'][d] or 0.0 for c in cells]
+            vals, fac = ourfc4.spread(g4, out4, pat)
+            V4[d] = (out4, vals, fac); used[dates[d]] = tag
+        for i, rec in enumerate(cells):
+            r = rec['precipitation_sum']
+            if 'ours' not in r:
+                r['ours'] = [None] * nd; r['ours_p'] = [None] * nd
+            r['ours_risk'] = [None] * nd; r['ours_reach'] = [None] * nd
+            for d, (out4, vals, fac) in V4.items():
+                if vals[i] is None: continue
+                dist = g4['sq'][i]; r['ours'][d] = vals[i]
+                r['ours_risk'][d] = int(round(out4[dist][1] * 100)); r['ours_reach'][d] = out4[dist][2]
+            if 'rain6' in rec and V4:
+                a6 = rec['rain6'].get('eq') or rec['rain6']['avg']; o6 = list(rec['rain6'].get('ours') or [None] * len(a6))
+                for k in range(len(a6)):
+                    d = k // 4
+                    if d not in V4 or a6[k] is None or r['ours'][d] is None: continue
+                    day_a = sum(x or 0 for x in a6[4 * d:4 * d + 4])
+                    o6[k] = round(a6[k] * r['ours'][d] / day_a, 1) if day_a > 0.05 else round(r['ours'][d] / 4, 1)
+                rec['rain6']['ours'] = o6
+        page_fac = {dates[d]: V4[d][2] for d in V4}
+        def ours_fn(avg_arr, max_arr, day):                # TN SMART day D (03 UTC D-1 to 03 UTC D) ~ page day D-1
+            f = page_fac.get((day - dt.timedelta(days=1)).isoformat())
+            if f is None:
+                return v3_fn(avg_arr, max_arr, day) if v3_fn else [None] * len(avg_arr)
+            return [None if f[i] is None or avg_arr[i] is None else round(max(0.0, (avg_arr[i] + 0.2) * f[i] - 0.2), 1) for i in range(len(avg_arr))]
+        status['ourfc4'] = dict(version=4, days=used, members='GEFS control + 4' if mrain else 'none (model without members)', seconds=round(time.time() - t4),
+                                districts={dates[d]: {k: v for k, v in sorted(V4[d][0].items(), key=lambda kv: -kv[1][0])[:6]} for d in list(V4)[:3]})
+        try:
+            status.setdefault('verify', {})
+            if isinstance(status['verify'], dict):
+                status['verify']['archived_days'] = verify.archive(per6, labels, W, d0, now, len(pts), ours_fn, extra={'Our v3': v3_fn} if v3_fn else None)
+        except Exception as e:
+            status['verify_archive_v4'] = f'FAILED: {e}'; traceback.print_exc()
+    except Exception as e:
+        status['ourfc4'] = f'FAILED: {e}'; traceback.print_exc()
     if want_system and ens:
         try:
             # use an ensemble for the system watch only if its pressure fields came through (>= 90% of members complete)
@@ -2238,7 +2309,7 @@ def main():
 
     runs = {n: models[n].run.strftime('%HZ %d %b') for n in labels}
     F = dict(updated=dt.datetime.now(IST).strftime('%d %b %Y, %H:%M IST'), dates=dates, models=labels, runs=runs,
-             ours=status.get('ourfc') if isinstance(status.get('ourfc'), dict) else None,
+             ours=dict(status['ourfc'], v4=status.get('ourfc4')) if isinstance(status.get('ourfc'), dict) else (dict(v4=status.get('ourfc4')) if isinstance(status.get('ourfc4'), dict) else None),
              coverage=coverage, coverage6=coverage6, cells=cells, wind=wind, mslp=mslp, drivers=drivers, systems=systems, verify=ver, weights=W, outlook=outlook_data, land=land_outline(), tn=geo['tn'], ct=geo['ct'], step=.25)
     tpl = open(P('site/forecast_template.html')).read()
     open(P('site/forecast.html'), 'w').write(tpl.replace('/*FDATA*/', json.dumps(F, separators=(',', ':'))))
