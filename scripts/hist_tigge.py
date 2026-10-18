@@ -23,12 +23,16 @@ def fetch(levtype, d0, d1, target):
     req = {'class': 'ti', 'expver': 'prod', 'origin': 'ecmf', 'type': 'cf', 'time': '00:00:00', 'step': STEPS, 'grid': '0.5/0.5',
            'date': f'{d0}/{d1}', 'levtype': levtype}
     req.update({'param': '228228/59/136'} if levtype == 'sfc' else {'param': '131/132', 'levelist': '850'})
-    for area in ('16/74/6/83', None):
-        r = dict(req, **({'area': area} if area else {}))
-        try:
-            C.retrieve('tigge-forecasts', r, target); return True
-        except Exception as e:
-            log('request failed', levtype, d0, area, repr(e)[:1200])
+    for attempt in range(40):                                  # the data store limits queued requests: wait and retry
+        for area in ('16/74/6/83', None):
+            r = dict(req, **({'area': area} if area else {}))
+            try:
+                C.retrieve('tigge-forecasts', r, target); return True
+            except Exception as e:
+                m = repr(e); log('request failed', levtype, d0, area, attempt, m[:400], '...', m[-500:])
+                if 'temporarily limited' in m: break                # same request again after a pause, area kept
+        time.sleep(240 if 'temporarily limited' in m else 600)
+        if 'temporarily limited' not in m and attempt >= 2: break  # a real MARS error: three tries, then give up
     return False
 F_ = {}                                                     # (init date, step, shortName) -> 2D field; plus lat/lon
 LL = None
