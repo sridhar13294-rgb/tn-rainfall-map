@@ -26,16 +26,20 @@ jobs:
       - name: Release for the big files
         run: |
           gh release view era5-cases >/dev/null 2>&1 || gh release create era5-cases --target cases --prerelease --title "Data - ERA5 case studies (not a site release)" --notes "Reanalysis files for the big-rain case studies. Not part of the website."
-      - name: Set-up run
+      - name: Set-up run (in the background, alongside the events)
         run: |
           if git diff --name-only HEAD~1 HEAD | grep -q '^data/cases/era5/PREP$'; then
-            python scripts/era5_prep.py || true
-            [ -f /tmp/era5_clim_1991_2020.npz ] && gh release upload era5-cases /tmp/era5_clim_1991_2020.npz --clobber || true
+            nohup python scripts/era5_prep.py > /tmp/prep.log 2>&1 &
+            echo $! > /tmp/prep.pid
           fi
       - name: Events
         run: |
           for f in $(git diff --name-only HEAD~1 HEAD -- 'data/cases/era5/*.list'); do python scripts/era5_case.py "$f" || true; done
           for f in /tmp/era5_out/*.npz; do [ -f "$f" ] && gh release upload era5-cases "$f" --clobber || true; done
+      - name: Finish the set-up run
+        run: |
+          if [ -f /tmp/prep.pid ]; then while kill -0 $(cat /tmp/prep.pid) 2>/dev/null; do sleep 20; done; fi
+          [ -f /tmp/era5_clim_1991_2020.npz ] && gh release upload era5-cases /tmp/era5_clim_1991_2020.npz --clobber || true
       - if: always()
         run: |
           git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"

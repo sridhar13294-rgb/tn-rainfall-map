@@ -50,13 +50,23 @@ def one(name, day):
         d += dt.timedelta(days=1)
     if rr:
         q, off, s = pack(np.stack(rr)); out.update(rain_days=np.array(rd), rain=q, rain__off=off, rain__scale=s)
-    np.savez_compressed(os.path.join(TMP, name + '.npz'), **out)
-    log('SAVED', len(times), 'times', len(F), 'fields', len(rd), 'rain days', os.path.getsize(os.path.join(TMP, name + '.npz')) // 1000, 'kB')
+    fn = os.path.join(TMP, name + '.npz'); np.savez_compressed(fn, **out)
+    log('SAVED', len(times), 'times', len(F), 'fields', len(rd), 'rain days', os.path.getsize(fn) // 1000, 'kB')
+    import subprocess                                           # upload straight away, so progress shows on the release
+    r = subprocess.run(['gh', 'release', 'upload', 'era5-cases', fn, '--clobber'], capture_output=True, text=True)
+    if r.returncode == 0: os.remove(fn); log('uploaded')
+    else: log('upload failed, will retry at the end', r.stderr[:300])
 if __name__ == '__main__':
     todo = []
     for line in open(sys.argv[1]):
         p = line.split('#')[0].split()
         if len(p) >= 2: todo.append((p[0], dt.date.fromisoformat(p[1])))
+    try:                                                        # quick check that the data store accepts us before queueing everything
+        client().retrieve('reanalysis-era5-single-levels', {'product_type': ['reanalysis'], 'variable': ['mean_sea_level_pressure'], 'year': ['2015'],
+                          'month': ['12'], 'day': ['01'], 'time': ['00:00'], 'area': [14, 79, 12, 81], 'grid': GRID, 'data_format': 'grib',
+                          'download_format': 'unarchived'}, '/tmp/probe.grib'); print('probe ok', flush=True)
+    except Exception as e:
+        json.dump(dict(probe_failed=repr(e)[:1500]), open(os.path.join(OUT, 'probe_' + os.path.basename(sys.argv[1]) + '.json'), 'w'), indent=1); sys.exit(1)
     with cf.ThreadPoolExecutor(int(os.environ.get('ERA5_PAR', '4'))) as ex:
         for f in [ex.submit(one, n, d) for n, d in todo]:
             try: f.result()

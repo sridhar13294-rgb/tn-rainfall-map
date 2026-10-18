@@ -57,7 +57,7 @@ th = threading.Thread(target=clim)
 if ok: th.start()
 # 2. climate indices
 IDX = os.path.join(OUT, 'indices'); os.makedirs(IDX, exist_ok=True)
-for name, url in [('rmm.txt', 'http://www.bom.gov.au/climate/mjo/graphics/rmm.74toRealtime.txt'),
+for name, url in [] if os.path.exists(os.path.join(IDX, 'omi.txt')) else [('rmm.txt', 'http://www.bom.gov.au/climate/mjo/graphics/rmm.74toRealtime.txt'),
                   ('omi.txt', 'https://psl.noaa.gov/mjo/mjoindex/omi.1x.txt'),
                   ('oni.txt', 'https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt'),
                   ('nino34_weekly.txt', 'https://www.cpc.ncep.noaa.gov/data/indices/wksst9120.for'),
@@ -70,6 +70,7 @@ for name, url in [('rmm.txt', 'http://www.bom.gov.au/climate/mjo/graphics/rmm.74
             log('index failed', name, k, repr(e)[:300]); time.sleep(10)
 # 3. IMD gridded rain over Tamil Nadu, every day 2000-2025
 try:
+    if os.path.exists(os.path.join(OUT, 'imd_tn_2000_2025.npz')): raise StopIteration('IMD grid already saved')
     import imdlib as imd
     os.makedirs('/tmp/imd', exist_ok=True); arrs, days = [], []
     for y in range(2000, 2026):
