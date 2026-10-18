@@ -24,7 +24,8 @@ jobs:
         with: {python-version: '3.12'}
       - run: pip install -q numpy pygrib imdlib "cdsapi>=0.7.7"
       - name: Release for the big files
-        run: gh release view era5-cases >/dev/null 2>&1 || gh release create era5-cases --target cases --prerelease --title "Data: ERA5 case studies (not a site release)" --notes "Reanalysis files for the big-rain case studies. Not part of the website."
+        run: |
+          gh release view era5-cases >/dev/null 2>&1 || gh release create era5-cases --target cases --prerelease --title "Data - ERA5 case studies (not a site release)" --notes "Reanalysis files for the big-rain case studies. Not part of the website."
       - name: Set-up run
         run: |
           if git diff --name-only HEAD~1 HEAD | grep -q '^data/cases/era5/PREP$'; then
