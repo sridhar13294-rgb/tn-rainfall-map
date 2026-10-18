@@ -1,0 +1,44 @@
+name: Case studies ERA5 every NE-monsoon day (for testing warning signs)
+# Runs on the cases branch when data/cases/era5/DAYS_RUN changes; that file holds the years as a JSON list.
+on:
+  push:
+    branches: [cases]
+    paths: ['data/cases/era5/DAYS_RUN']
+permissions:
+  contents: write
+jobs:
+  years:
+    runs-on: ubuntu-latest
+    outputs:
+      list: ${{ steps.y.outputs.list }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: y
+        run: echo "list=$(cat data/cases/era5/DAYS_RUN | tr -d '\n ')" >> "$GITHUB_OUTPUT"
+  days:
+    needs: years
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        year: ${{ fromJSON(needs.years.outputs.list) }}
+    env:
+      ECMWF_DS_KEY: ${{ secrets.ECMWF_DS_KEY }}
+      CDS_KEY: ${{ secrets.CDS_KEY }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install -q numpy pygrib "cdsapi>=0.7.7"
+      - run: python scripts/era5_days.py ${{ matrix.year }} || true
+      - run: |
+          [ -f /tmp/era5_out/days_${{ matrix.year }}.npz ] && gh release upload era5-cases /tmp/era5_out/days_${{ matrix.year }}.npz --clobber || true
+      - if: always()
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add data/cases/era5 || true
+          git commit -qm "ERA5 every day ${{ matrix.year }}" || exit 0
+          for i in 1 2 3 4 5 6 7 8; do git pull -q --rebase origin cases && git push -q origin HEAD:cases && break; sleep $((RANDOM % 30 + 5)); done
