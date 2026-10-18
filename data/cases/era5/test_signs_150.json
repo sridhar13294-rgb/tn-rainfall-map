@@ -1,0 +1,4865 @@
+{
+ "thr": 150.0,
+ "names": {
+  "pw": "water vapour offshore",
+  "pw_anom": "water vapour vs normal offshore",
+  "onshore925": "onshore wind at ~750 m",
+  "wind850": "wind speed at 1.5 km offshore",
+  "conv850": "air converging at 1.5 km",
+  "div200": "air spreading out at 12 km",
+  "rise500": "air rising at 5.8 km",
+  "rh700": "humidity at 3 km",
+  "cape": "storm energy (CAPE)",
+  "olr": "cloud-top heat loss (low = deep cloud)",
+  "vo_near": "strongest spin within 600 km",
+  "vo_dist": "distance to the strongest spin in the Bay",
+  "u850_swbay": "NE monsoon wind over SW Bay (u, negative = easterly)",
+  "u850_swbay_anom": "NE monsoon wind vs normal",
+  "sst_anom_swbay": "sea temperature vs normal, SW Bay",
+  "steer_mid": "steering wind at 3-6 km over SW Bay",
+  "u200_south": "12 km wind over the south (negative = easterly)",
+  "westerly_edge200": "how far south the 12 km westerlies reach",
+  "wd_anom": "western-disturbance trough depth (25-35N)",
+  "trough_south": "trough reach at 15-25N",
+  "jet": "jet stream speed",
+  "vo_max": "strongest spin anywhere in the SW Bay",
+  "msl_anom_min": "lowest surface pressure vs normal in the SW Bay",
+  "mjo_fav": "MJO strength when in phases 2-4",
+  "oni": "El Nino index",
+  "dmi": "IOD index"
+ },
+ "res": {
+  "north": {
+   "0": {
+    "n": 2293,
+    "events": 68,
+    "auc": 0.89,
+    "bss": 0.163,
+    "catch75_alerts": 321,
+    "catch75_hits": 51,
+    "catch75_false": 270,
+    "top": [
+     [
+      "pw",
+      0.9
+     ],
+     [
+      "onshore925",
+      0.68
+     ],
+     [
+      "pw_anom",
+      0.49
+     ],
+     [
+      "u200_south",
+      0.4
+     ],
+     [
+      "rh700",
+      0.39
+     ],
+     [
+      "vo_near",
+      -0.36
+     ],
+     [
+      "u850_swbay",
+      0.33
+     ],
+     [
+      "westerly_edge200",
+      0.33
+     ]
+    ],
+    "uni": {
+     "pw": {
+      "auc": 0.881,
+      "sign": "+",
+      "mean_event": 59.46,
+      "mean_other": 44.2
+     },
+     "pw_anom": {
+      "auc": 0.86,
+      "sign": "+",
+      "mean_event": 13.24,
+      "mean_other": -0.41
+     },
+     "olr": {
+      "auc": 0.851,
+      "sign": "-",
+      "mean_event": 172.6,
+      "mean_other": 245.32
+     },
+     "rise500": {
+      "auc": 0.836,
+      "sign": "+",
+      "mean_event": 0.25,
+      "mean_other": 0.0
+     },
+     "rh700": {
+      "auc": 0.836,
+      "sign": "+",
+      "mean_event": 81.57,
+      "mean_other": 53.77
+     },
+     "div200": {
+      "auc": 0.813,
+      "sign": "+",
+      "mean_event": 2.45,
+      "mean_other": 0.31
+     },
+     "wind850": {
+      "auc": 0.733,
+      "sign": "+",
+      "mean_event": 35.52,
+      "mean_other": 23.14
+     },
+     "onshore925": {
+      "auc": 0.731,
+      "sign": "+",
+      "mean_event": 25.45,
+      "mean_other": 10.53
+     },
+     "vo_near": {
+      "auc": 0.705,
+      "sign": "+",
+      "mean_event": 14.17,
+      "mean_other": 6.91
+     },
+     "msl_anom_min": {
+      "auc": 0.683,
+      "sign": "-",
+      "mean_event": -4.48,
+      "mean_other": -2.18
+     },
+     "vo_max": {
+      "auc": 0.681,
+      "sign": "+",
+      "mean_event": 16.03,
+      "mean_other": 9.77
+     },
+     "vo_dist": {
+      "auc": 0.677,
+      "sign": "-",
+      "mean_event": 553.91,
+      "mean_other": 781.24
+     },
+     "steer_mid": {
+      "auc": 0.65,
+      "sign": "+",
+      "mean_event": 7.5,
+      "mean_other": 5.74
+     },
+     "cape": {
+      "auc": 0.609,
+      "sign": "+",
+      "mean_event": 528.9,
+      "mean_other": 502.52
+     },
+     "conv850": {
+      "auc": 0.605,
+      "sign": "+",
+      "mean_event": 0.25,
+      "mean_other": -0.05
+     },
+     "mjo_fav": {
+      "auc": 0.597,
+      "sign": "+",
+      "mean_event": 0.76,
+      "mean_other": 0.49
+     },
+     "u850_swbay_anom": {
+      "auc": 0.591,
+      "sign": "-",
+      "mean_event": -1.1,
+      "mean_other": 0.03
+     },
+     "u850_swbay": {
+      "auc": 0.573,
+      "sign": "-",
+      "mean_event": -3.03,
+      "mean_other": -1.91
+     },
+     "u200_south": {
+      "auc": 0.566,
+      "sign": "-",
+      "mean_event": -9.17,
+      "mean_other": -7.74
+     },
+     "westerly_edge200": {
+      "auc": 0.564,
+      "sign": "+",
+      "mean_event": 16.44,
+      "mean_other": 15.43
+     },
+     "jet": {
+      "auc": 0.528,
+      "sign": "-",
+      "mean_event": 65.96,
+      "mean_other": 67.08
+     },
+     "oni": {
+      "auc": 0.528,
+      "sign": "-",
+      "mean_event": 0.03,
+      "mean_other": 0.01
+     },
+     "dmi": {
+      "auc": 0.527,
+      "sign": "+",
+      "mean_event": 0.07,
+      "mean_other": 0.04
+     },
+     "trough_south": {
+      "auc": 0.513,
+      "sign": "-",
+      "mean_event": -27.56,
+      "mean_other": -27.7
+     },
+     "wd_anom": {
+      "auc": 0.503,
+      "sign": "-",
+      "mean_event": -47.7,
+      "mean_other": -48.73
+     },
+     "sst_anom_swbay": {
+      "auc": 0.5,
+      "sign": "+",
+      "mean_event": 0.0,
+      "mean_other": 0.0
+     }
+    }
+   },
+   "1": {
+    "n": 2293,
+    "events": 68,
+    "auc": 0.814,
+    "bss": 0.063,
+    "catch75_alerts": 663,
+    "catch75_hits": 51,
+    "catch75_false": 612,
+    "top": [
+     [
+      "pw",
+      1.05
+     ],
+     [
+      "u850_swbay_anom",
+      -0.49
+     ],
+     [
+      "rh700",
+      0.37
+     ],
+     [
+      "onshore925",
+      0.37
+     ],
+     [
+      "wind850",
+      0.36
+     ],
+     [
+      "rise500",
+      -0.34
+     ],
+     [
+      "vo_near",
+      -0.29
+     ],
+     [
+      "msl_anom_min",
+      -0.23
+     ]
+    ],
+    "uni": {
+     "pw": {
+      "auc": 0.78,
+      "sign": "+",
+      "mean_event": 55.92,
+      "mean_other": 44.54
+     },
+     "pw_anom": {
+      "auc": 0.768,
+      "sign": "+",
+      "mean_event": 9.47,
+      "mean_other": -0.31
+     },
+     "olr": {
+      "auc": 0.755,
+      "sign": "-",
+      "mean_event": 200.63,
+      "mean_other": 243.82
+     },
+     "rh700": {
+      "auc": 0.74,
+      "sign": "+",
+      "mean_event": 75.54,
+      "mean_other": 54.34
+     },
+     "div200": {
+      "auc": 0.714,
+      "sign": "+",
+      "mean_event": 1.46,
+      "mean_other": 0.35
+     },
+     "wind850": {
+      "auc": 0.702,
+      "sign": "+",
+      "mean_event": 32.39,
+      "mean_other": 23.22
+     },
+     "onshore925": {
+      "auc": 0.695,
+      "sign": "+",
+      "mean_event": 22.1,
+      "mean_other": 10.21
+     },
+     "rise500": {
+      "auc": 0.694,
+      "sign": "+",
+      "mean_event": 0.08,
+      "mean_other": 0.01
+     },
+     "u850_swbay_anom": {
+      "auc": 0.675,
+      "sign": "-",
+      "mean_event": -2.17,
+      "mean_other": 0.06
+     },
+     "vo_max": {
+      "auc": 0.651,
+      "sign": "+",
+      "mean_event": 13.38,
+      "mean_other": 9.85
+     },
+     "msl_anom_min": {
+      "auc": 0.643,
+      "sign": "-",
+      "mean_event": -3.53,
+      "mean_other": -2.22
+     },
+     "steer_mid": {
+      "auc": 0.642,
+      "sign": "+",
+      "mean_event": 7.21,
+      "mean_other": 5.74
+     },
+     "u850_swbay": {
+      "auc": 0.633,
+      "sign": "-",
+      "mean_event": -3.99,
+      "mean_other": -1.77
+     },
+     "vo_near": {
+      "auc": 0.607,
+      "sign": "+",
+      "mean_event": 10.57,
+      "mean_other": 7.02
+     },
+     "mjo_fav": {
+      "auc": 0.602,
+      "sign": "+",
+      "mean_event": 0.77,
+      "mean_other": 0.49
+     },
+     "cape": {
+      "auc": 0.598,
+      "sign": "+",
+      "mean_event": 544.02,
+      "mean_other": 516.7
+     },
+     "u200_south": {
+      "auc": 0.581,
+      "sign": "-",
+      "mean_event": -9.49,
+      "mean_other": -7.89
+     },
+     "vo_dist": {
+      "auc": 0.573,
+      "sign": "-",
+      "mean_event": 670.68,
+      "mean_other": 775.68
+     },
+     "wd_anom": {
+      "auc": 0.558,
+      "sign": "+",
+      "mean_event": -40.7,
+      "mean_other": -48.62
+     },
+     "conv850": {
+      "auc": 0.549,
+      "sign": "+",
+      "mean_event": 0.04,
+      "mean_other": -0.04
+     },
+     "trough_south": {
+      "auc": 0.538,
+      "sign": "+",
+      "mean_event": -24.87,
+      "mean_other": -27.7
+     },
+     "jet": {
+      "auc": 0.534,
+      "sign": "-",
+      "mean_event": 65.41,
+      "mean_other": 66.86
+     },
+     "oni": {
+      "auc": 0.528,
+      "sign": "-",
+      "mean_event": 0.03,
+      "mean_other": 0.01
+     },
+     "dmi": {
+      "auc": 0.524,
+      "sign": "+",
+      "mean_event": 0.06,
+      "mean_other": 0.04
+     },
+     "westerly_edge200": {
+      "auc": 0.513,
+      "sign": "+",
+      "mean_event": 15.93,
+      "mean_other": 15.57
+     },
+     "sst_anom_swbay": {
+      "auc": 0.5,
+      "sign": "+",
+      "mean_event": 0.0,
+      "mean_other": 0.0
+     }
+    }
+   },
+   "2": {
+    "n": 2293,
+    "events": 68,
+    "auc": 0.704,
+    "bss": 0.007,
+    "catch75_alerts": 1044,
+    "catch75_hits": 51,
+    "catch75_false": 993,
+    "top": [
+     [
+      "pw",
+      0.75
+     ],
+     [
+      "vo_dist",
+      0.37
+     ],
+     [
+      "wind850",
+      0.32
+     ],
+     [
+      "rh700",
+      0.28
+     ],
+     [
+      "olr",
+      -0.26
+     ],
+     [
+      "conv850",
+      -0.25
+     ],
+     [
+      "onshore925",
+      0.23
+     ],
+     [
+      "vo_max",
+      0.19
+     ]
+    ],
+    "uni": {
+     "olr": {
+      "auc": 0.689,
+      "sign": "-",
+      "mean_event": 214.27,
+      "mean_other": 242.85
+     },
+     "pw": {
+      "auc": 0.68,
+      "sign": "+",
+      "mean_event": 52.54,
+      "mean_other": 44.88
+     },
+     "pw_anom": {
+      "auc": 0.671,
+      "sign": "+",
+      "mean_event": 5.86,
+      "mean_other": -0.2
+     },
+     "rh700": {
+      "auc": 0.667,
+      "sign": "+",
+      "mean_event": 69.92,
+      "mean_other": 54.95
+     },
+     "u850_swbay_anom": {
+      "auc": 0.65,
+      "sign": "-",
+      "mean_event": -1.84,
+      "mean_other": 0.05
+     },
+     "wind850": {
+      "auc": 0.646,
+      "sign": "+",
+      "mean_event": 28.63,
+      "mean_other": 23.28
+     },
+     "onshore925": {
+      "auc": 0.642,
+      "sign": "+",
+      "mean_event": 18.4,
+      "mean_other": 9.94
+     },
+     "mjo_fav": {
+      "auc": 0.624,
+      "sign": "+",
+      "mean_event": 0.79,
+      "mean_other": 0.48
+     },
+     "rise500": {
+      "auc": 0.621,
+      "sign": "+",
+      "mean_event": 0.05,
+      "mean_other": 0.01
+     },
+     "div200": {
+      "auc": 0.611,
+      "sign": "+",
+      "mean_event": 0.83,
+      "mean_other": 0.36
+     },
+     "u850_swbay": {
+      "auc": 0.609,
+      "sign": "-",
+      "mean_event": -3.54,
+      "mean_other": -1.68
+     },
+     "steer_mid": {
+      "auc": 0.591,
+      "sign": "+",
+      "mean_event": 6.48,
+      "mean_other": 5.76
+     },
+     "vo_max": {
+      "auc": 0.588,
+      "sign": "+",
+      "mean_event": 12.35,
+      "mean_other": 9.86
+     },
+     "msl_anom_min": {
+      "auc": 0.587,
+      "sign": "-",
+      "mean_event": -2.95,
+      "mean_other": -2.24
+     },
+     "cape": {
+      "auc": 0.576,
+      "sign": "+",
+      "mean_event": 559.09,
+      "mean_other": 530.77
+     },
+     "conv850": {
+      "auc": 0.562,
+      "sign": "-",
+      "mean_event": -0.16,
+      "mean_other": -0.03
+     },
+     "vo_near": {
+      "auc": 0.554,
+      "sign": "+",
+      "mean_event": 8.85,
+      "mean_other": 7.07
+     },
+     "u200_south": {
+      "auc": 0.546,
+      "sign": "-",
+      "mean_event": -8.87,
+      "mean_other": -8.07
+     },
+     "vo_dist": {
+      "auc": 0.546,
+      "sign": "+",
+      "mean_event": 826.83,
+      "mean_other": 767.88
+     },
+     "wd_anom": {
+      "auc": 0.543,
+      "sign": "+",
+      "mean_event": -42.37,
+      "mean_other": -48.21
+     },
+     "jet": {
+      "auc": 0.543,
+      "sign": "-",
+      "mean_event": 64.85,
+      "mean_other": 66.64
+     },
+     "oni": {
+      "auc": 0.526,
+      "sign": "-",
+      "mean_event": 0.03,
+      "mean_other": 0.01
+     },
+     "dmi": {
+      "auc": 0.523,
+      "sign": "+",
+      "mean_event": 0.06,
+      "mean_other": 0.04
+     },
+     "westerly_edge200": {
+      "auc": 0.516,
+      "sign": "+",
+      "mean_event": 16.01,
+      "mean_other": 15.71
+     },
+     "trough_south": {
+      "auc": 0.501,
+      "sign": "+",
+      "mean_event": -26.93,
+      "mean_other": -27.55
+     },
+     "sst_anom_swbay": {
+      "auc": 0.5,
+      "sign": "+",
+      "mean_event": 0.0,
+      "mean_other": 0.0
+     }
+    }
+   },
+   "3": {
+    "n": 2293,
+    "events": 68,
+    "auc": 0.625,
+    "bss": -0.006,
+    "catch75_alerts": 1312,
+    "catch75_hits": 51,
+    "catch75_false": 1261,
+    "top": [
+     [
+      "pw",
+      0.7
+     ],
+     [
+      "onshore925",
+      0.42
+     ],
+     [
+      "vo_max",
+      0.36
+     ],
+     [
+      "rh700",
+      0.34
+     ],
+     [
+      "vo_dist",
+      0.29
+     ],
+     [
+      "pw_anom",
+      -0.29
+     ],
+     [
+      "trough_south",
+      -0.21
+     ],
+     [
+      "u200_south",
+      -0.17
+     ]
+    ],
+    "uni": {
+     "rh700": {
+      "auc": 0.641,
+      "sign": "+",
+      "mean_event": 68.09,
+      "mean_other": 55.46
+     },
+     "pw": {
+      "auc": 0.635,
+      "sign": "+",
+      "mean_event": 50.8,
+      "mean_other": 45.17
+     },
+     "u850_swbay_anom": {
+      "auc": 0.62,
+      "sign": "-",
+      "mean_event": -1.54,
+      "mean_other": 0.03
+     },
+     "pw_anom": {
+      "auc": 0.614,
+      "sign": "+",
+      "mean_event": 3.9,
+      "mean_other": -0.14
+     },
+     "olr": {
+      "auc": 0.614,
+      "sign": "-",
+      "mean_event": 226.96,
+      "mean_other": 241.84
+     },
+     "mjo_fav": {
+      "auc": 0.606,
+      "sign": "+",
+      "mean_event": 0.76,
+      "mean_other": 0.48
+     },
+     "onshore925": {
+      "auc": 0.603,
+      "sign": "+",
+      "mean_event": 16.1,
+      "mean_other": 9.63
+     },
+     "u850_swbay": {
+      "auc": 0.588,
+      "sign": "-",
+      "mean_event": -3.14,
+      "mean_other": -1.6
+     },
+     "vo_dist": {
+      "auc": 0.574,
+      "sign": "+",
+      "mean_event": 851.64,
+      "mean_other": 764.44
+     },
+     "cape": {
+      "auc": 0.567,
+      "sign": "+",
+      "mean_event": 591.66,
+      "mean_other": 546.77
+     },
+     "rise500": {
+      "auc": 0.566,
+      "sign": "+",
+      "mean_event": 0.04,
+      "mean_other": 0.01
+     },
+     "vo_max": {
+      "auc": 0.565,
+      "sign": "+",
+      "mean_event": 11.06,
+      "mean_other": 9.87
+     },
+     "conv850": {
+      "auc": 0.54,
+      "sign": "-",
+      "mean_event": -0.09,
+      "mean_other": -0.02
+     },
+     "div200": {
+      "auc": 0.538,
+      "sign": "+",
+      "mean_event": 0.63,
+      "mean_other": 0.37
+     },
+     "msl_anom_min": {
+      "auc": 0.531,
+      "sign": "-",
+      "mean_event": -2.36,
+      "mean_other": -2.25
+     },
+     "wd_anom": {
+      "auc": 0.53,
+      "sign": "+",
+      "mean_event": -44.13,
+      "mean_other": -47.66
+     },
+     "oni": {
+      "auc": 0.527,
+      "sign": "-",
+      "mean_event": 0.03,
+      "mean_other": 0.01
+     },
+     "wind850": {
+      "auc": 0.524,
+      "sign": "+",
+      "mean_event": 24.0,
+      "mean_other": 23.4
+     },
+     "dmi": {
+      "auc": 0.522,
+      "sign": "+",
+      "mean_event": 0.06,
+      "mean_other": 0.04
+     },
+     "steer_mid": {
+      "auc": 0.52,
+      "sign": "+",
+      "mean_event": 5.86,
+      "mean_other": 5.76
+     },
+     "trough_south": {
+      "auc": 0.517,
+      "sign": "-",
+      "mean_event": -28.58,
+      "mean_other": -27.29
+     },
+     "vo_near": {
+      "auc": 0.516,
+      "sign": "-",
+      "mean_event": 7.29,
+      "mean_other": 7.11
+     },
+     "u200_south": {
+      "auc": 0.515,
+      "sign": "-",
+      "mean_event": -8.53,
+      "mean_other": -8.26
+     },
+     "jet": {
+      "auc": 0.514,
+      "sign": "-",
+      "mean_event": 65.39,
+      "mean_other": 66.37
+     },
+     "westerly_edge200": {
+      "auc": 0.502,
+      "sign": "-",
+      "mean_event": 15.79,
+      "mean_other": 15.86
+     },
+     "sst_anom_swbay": {
+      "auc": 0.5,
+      "sign": "+",
+      "mean_event": 0.0,
+      "mean_other": 0.0
+     }
+    }
+   },
+   "5": {
+    "n": 2293,
+    "events": 68,
+    "auc": 0.528,
+    "bss": -0.012,
+    "catch75_alerts": 1682,
+    "catch75_hits": 51,
+    "catch75_false": 1631,
+    "top": [
+     [
+      "u850_swbay",
+      -0.64
+     ],
+     [
+      "pw",
+      0.64
+     ],
+     [
+      "onshore925",
+      -0.48
+     ],
+     [
+      "mjo_fav",
+      0.29
+     ],
+     [
+      "trough_south",
+      -0.22
+     ],
+     [
+      "pw_anom",
+      -0.2
+     ],
+     [
+      "rh700",
+      0.16
+     ],
+     [
+      "wd_anom",
+      0.13
+     ]
+    ],
+    "uni": {
+     "mjo_fav": {
+      "auc": 0.629,
+      "sign": "+",
+      "mean_event": 0.81,
+      "mean_other": 0.48
+     },
+     "rh700": {
+      "auc": 0.59,
+      "sign": "+",
+      "mean_event": 64.37,
+      "mean_other": 56.48
+     },
+     "pw": {
+      "auc": 0.589,
+      "sign": "+",
+      "mean_event": 49.57,
+      "mean_other": 45.69
+     },
+     "u850_swbay_anom": {
+      "auc": 0.58,
+      "sign": "-",
+      "mean_event": -1.0,
+      "mean_other": 0.01
+     },
+     "pw_anom": {
+      "auc": 0.57,
+      "sign": "+",
+      "mean_event": 2.24,
+      "mean_other": -0.09
+     },
+     "cape": {
+      "auc": 0.57,
+      "sign": "+",
+      "mean_event": 623.05,
+      "mean_other": 580.61
+     },
+     "vo_near": {
+      "auc": 0.56,
+      "sign": "-",
+      "mean_event": 7.06,
+      "mean_other": 7.15
+     },
+     "u850_swbay": {
+      "auc": 0.559,
+      "sign": "-",
+      "mean_event": -2.34,
+      "mean_other": -1.41
+     },
+     "jet": {
+      "auc": 0.554,
+      "sign": "-",
+      "mean_event": 64.09,
+      "mean_other": 65.92
+     },
+     "rise500": {
+      "auc": 0.554,
+      "sign": "+",
+      "mean_event": 0.03,
+      "mean_other": 0.01
+     },
+     "olr": {
+      "auc": 0.553,
+      "sign": "-",
+      "mean_event": 234.37,
+      "mean_other": 240.49
+     },
+     "u200_south": {
+      "auc": 0.533,
+      "sign": "+",
+      "mean_event": -7.53,
+      "mean_other": -8.63
+     },
+     "oni": {
+      "auc": 0.529,
+      "sign": "-",
+      "mean_event": 0.02,
+      "mean_other": 0.01
+     },
+     "vo_dist": {
+      "auc": 0.524,
+      "sign": "+",
+      "mean_event": 786.19,
+      "mean_other": 760.22
+     },
+     "steer_mid": {
+      "auc": 0.523,
+      "sign": "-",
+      "mean_event": 5.55,
+      "mean_other": 5.72
+     },
+     "westerly_edge200": {
+      "auc": 0.523,
+      "sign": "-",
+      "mean_event": 15.59,
+      "mean_other": 16.17
+     },
+     "trough_south": {
+      "auc": 0.523,
+      "sign": "-",
+      "mean_event": -31.14,
+      "mean_other": -26.68
+     },
+     "msl_anom_min": {
+      "auc": 0.523,
+      "sign": "-",
+      "mean_event": -2.45,
+      "mean_other": -2.24
+     },
+     "dmi": {
+      "auc": 0.523,
+      "sign": "+",
+      "mean_event": 0.06,
+      "mean_other": 0.04
+     },
+     "vo_max": {
+      "auc": 0.52,
+      "sign": "-",
+      "mean_event": 10.06,
+      "mean_other": 9.84
+     },
+     "onshore925": {
+      "auc": 0.519,
+      "sign": "+",
+      "mean_event": 10.09,
+      "mean_other": 8.99
+     },
+     "wd_anom": {
+      "auc": 0.514,
+      "sign": "+",
+      "mean_event": -44.41,
+      "mean_other": -46.8
+     },
+     "div200": {
+      "auc": 0.513,
+      "sign": "+",
+      "mean_event": 0.39,
+      "mean_other": 0.38
+     },
+     "wind850": {
+      "auc": 0.508,
+      "sign": "-",
+      "mean_event": 22.83,
+      "mean_other": 23.36
+     },
+     "conv850": {
+      "auc": 0.505,
+      "sign": "-",
+      "mean_event": -0.02,
+      "mean_other": -0.01
+     },
+     "sst_anom_swbay": {
+      "auc": 0.5,
+      "sign": "+",
+      "mean_event": 0.0,
+      "mean_other": 0.0
+     }
+    }
+   },
+   "7": {
+    "n": 2293,
+    "events": 68,
+    "auc": 0.562,
+    "bss": -0.007,
+    "catch75_alerts": 1379,
+    "catch75_hits": 51,
+    "catch75_false": 1328,
+    "top": [
+     [
+      "rh700",
+      0.62
+     ],
+     [
+      "pw_anom",
+      -0.45
+     ],
+     [
+      "rise500",
+      0.4
+     ],
+     [
+      "mjo_fav",
+      0.33
+     ],
+     [
+      "pw",
+      0.33
+     ],
+     [
+      "olr",
+      0.33
+     ],
+     [
+      "conv850",
+      -0.3
+     ],
+     [
+      "u850_swbay_anom",
+      0.24
+     ]
+    ],
+    "uni": {
+     "mjo_fav": {
+      "auc": 0.6,
+      "sign": "+",
+      "mean_event": 0.74,
+      "mean_other": 0.48
+     },
+     "rh700": {
+      "auc": 0.596,
+      "sign": "+",
+      "mean_event": 66.96,
+      "mean_other": 57.26
+     },
+     "cape": {
+      "auc": 0.593,
+      "sign": "+",
+      "mean_event": 743.2,
+      "mean_other": 611.55
+     },
+     "pw": {
+      "auc": 0.57,
+      "sign": "+",
+      "mean_event": 49.39,
+      "mean_other": 46.14
+     },
+     "vo_dist": {
+      "auc": 0.55,
+      "sign": "-",
+      "mean_event": 703.78,
+      "mean_other": 757.66
+     },
+     "rise500": {
+      "auc": 0.549,
+      "sign": "+",
+      "mean_event": 0.06,
+      "mean_other": 0.01
+     },
+     "pw_anom": {
+      "auc": 0.548,
+      "sign": "+",
+      "mean_event": 1.63,
+      "mean_other": -0.11
+     },
+     "olr": {
+      "auc": 0.54,
+      "sign": "-",
+      "mean_event": 236.05,
+      "mean_other": 239.67
+     },
+     "conv850": {
+      "auc": 0.538,
+      "sign": "-",
+      "mean_event": -0.07,
+      "mean_other": 0.01
+     },
+     "trough_south": {
+      "auc": 0.535,
+      "sign": "-",
+      "mean_event": -29.97,
+      "mean_other": -26.32
+     },
+     "u200_south": {
+      "auc": 0.533,
+      "sign": "+",
+      "mean_event": -7.88,
+      "mean_other": -8.97
+     },
+     "u850_swbay_anom": {
+      "auc": 0.532,
+      "sign": "-",
+      "mean_event": -0.48,
+      "mean_other": -0.01
+     },
+     "jet": {
+      "auc": 0.528,
+      "sign": "-",
+      "mean_event": 64.28,
+      "mean_other": 65.35
+     },
+     "oni": {
+      "auc": 0.526,
+      "sign": "-",
+      "mean_event": 0.02,
+      "mean_other": 0.01
+     },
+     "onshore925": {
+      "auc": 0.525,
+      "sign": "+",
+      "mean_event": 9.48,
+      "mean_other": 8.18
+     },
+     "steer_mid": {
+      "auc": 0.521,
+      "sign": "+",
+      "mean_event": 5.76,
+      "mean_other": 5.68
+     },
+     "westerly_edge200": {
+      "auc": 0.521,
+      "sign": "-",
+      "mean_event": 15.91,
+      "mean_other": 16.46
+     },
+     "u850_swbay": {
+      "auc": 0.52,
+      "sign": "-",
+      "mean_event": -1.56,
+      "mean_other": -1.22
+     },
+     "dmi": {
+      "auc": 0.52,
+      "sign": "+",
+      "mean_event": 0.06,
+      "mean_other": 0.04
+     },
+     "wd_anom": {
+      "auc": 0.514,
+      "sign": "+",
+      "mean_event": -43.23,
+      "mean_other": -45.94
+     },
+     "wind850": {
+      "auc": 0.51,
+      "sign": "-",
+      "mean_event": 23.4,
+      "mean_other": 23.33
+     },
+     "vo_near": {
+      "auc": 0.508,
+      "sign": "-",
+      "mean_event": 7.45,
+      "mean_other": 7.15
+     },
+     "vo_max": {
+      "auc": 0.505,
+      "sign": "-",
+      "mean_event": 9.79,
+      "mean_other": 9.8
+     },
+     "sst_anom_swbay": {
+      "auc": 0.5,
+      "sign": "+",
+      "mean_event": 0.0,
+      "mean_other": 0.0
+     },
+     "msl_anom_min": {
+      "auc": 0.5,
+      "sign": "+",
+      "mean_event": -2.29,
+      "mean_other": -2.23
+     },
+     "div200": {
+      "auc": 0.5,
+      "sign": "-",
+      "mean_event": 0.43,
+      "mean_other": 0.38
+     }
+    }
+   }
+  },
+  "delta": {
+   "0": {
+    "n": 2294,
+    "events": 120,
+    "auc": 0.881,
+    "bss": 0.188,
+    "catch75_alerts": 456,
+    "catch75_hits": 90,
+    "catch75_false": 366,
+    "top": [
+     [
+      "pw",
+      1.19
+     ],
+     [
+      "rh700",
+      0.7
+     ],
+     [
+      "u850_swbay",
+      -0.61
+     ],
+     [
+      "pw_anom",
+      -0.38
+     ],
+     [
+      "wind850",
+      0.35
+     ],
+     [
+      "dmi",
+      -0.28
+     ],
+     [
+      "olr",
+      -0.27
+     ],
+     [
+      "conv850",
+      -0.27
+     ]
+    ],
+    "uni": {
+     "pw_anom": {
+      "auc": 0.838,
+      "sign": "+",
+      "mean_event": 9.97,
+      "mean_other": -0.56
+     },
+     "pw": {
+      "auc": 0.834,
+      "sign": "+",
+      "mean_event": 58.24,
+      "mean_other": 47.32
+     },
+     "olr": {
+      "auc": 0.821,
+      "sign": "-",
+      "mean_event": 175.14,
+      "mean_other": 236.63
+     },
+     "rh700": {
+      "auc": 0.811,
+      "sign": "+",
+      "mean_event": 81.5,
+      "mean_other": 59.23
+     },
+     "rise500": {
+      "auc": 0.792,
+      "sign": "+",
+      "mean_event": 0.24,
+      "mean_other": 0.02
+     },
+     "div200": {
+      "auc": 0.777,
+      "sign": "+",
+      "mean_event": 2.22,
+      "mean_other": 0.5
+     },
+     "wind850": {
+      "auc": 0.763,
+      "sign": "+",
+      "mean_event": 33.84,
+      "mean_other": 22.64
+     },
+     "onshore925": {
+      "auc": 0.732,
+      "sign": "+",
+      "mean_event": 19.85,
+      "mean_other": 6.65
+     },
+     "u850_swbay": {
+      "auc": 0.731,
+      "sign": "-",
+      "mean_event": -5.38,
+      "mean_other": -1.75
+     },
+     "vo_near": {
+      "auc": 0.717,
+      "sign": "+",
+      "mean_event": 13.33,
+      "mean_other": 7.35
+     },
+     "u850_swbay_anom": {
+      "auc": 0.704,
+      "sign": "-",
+      "mean_event": -2.37,
+      "mean_other": 0.13
+     },
+     "steer_mid": {
+      "auc": 0.695,
+      "sign": "+",
+      "mean_event": 7.48,
+      "mean_other": 5.7
+     },
+     "vo_dist": {
+      "auc": 0.684,
+      "sign": "-",
+      "mean_event": 494.15,
+      "mean_other": 732.35
+     },
+     "vo_max": {
+      "auc": 0.676,
+      "sign": "+",
+      "mean_event": 14.31,
+      "mean_other": 9.72
+     },
+     "conv850": {
+      "auc": 0.637,
+      "sign": "+",
+      "mean_event": 0.41,
+      "mean_other": -0.01
+     },
+     "msl_anom_min": {
+      "auc": 0.619,
+      "sign": "-",
+      "mean_event": -3.27,
+      "mean_other": -2.19
+     },
+     "mjo_fav": {
+      "auc": 0.613,
+      "sign": "+",
+      "mean_event": 0.75,
+      "mean_other": 0.48
+     },
+     "jet": {
+      "auc": 0.553,
+      "sign": "+",
+      "mean_event": 68.83,
+      "mean_other": 66.95
+     },
+     "cape": {
+      "auc": 0.542,
+      "sign": "+",
+      "mean_event": 435.3,
+      "mean_other": 460.65
+     },
+     "oni": {
+      "auc": 0.541,
+      "sign": "-",
+      "mean_event": -0.05,
+      "mean_other": 0.02
+     },
+     "u200_south": {
+      "auc": 0.538,
+      "sign": "-",
+      "mean_event": -8.71,
+      "mean_other": -7.72
+     },
+     "dmi": {
+      "auc": 0.529,
+      "sign": "-",
+      "mean_event": -0.0,
+      "mean_other": 0.04
+     },
+     "wd_anom": {
+      "auc": 0.517,
+      "sign": "-",
+      "mean_event": -48.71,
+      "mean_other": -48.66
+     },
+     "westerly_edge200": {
+      "auc": 0.511,
+      "sign": "-",
+      "mean_event": 15.26,
+      "mean_other": 15.46
+     },
+     "trough_south": {
+      "auc": 0.507,
+      "sign": "-",
+      "mean_event": -26.57,
+      "mean_other": -27.75
+     },
+     "sst_anom_swbay": {
+      "auc": 0.5,
+      "sign": "+",
+      "mean_event": 0.0,
+      "mean_other": 0.0
+     }
+    }
+   },
+   "1": {
+    "n": 2294,
+    "events": 120,
+    "auc": 0.833,
+    "bss": 0.113,
+    "catch75_alerts": 578,
+    "catch75_hits": 90,
+    "catch75_false": 488,
+    "top": [
+     [
+      "pw",
+      1.45
+     ],
+     [
+      "u850_swbay",
+      -1.0
+     ],
+     [
+      "wind850",
+      0.43
+     ],
+     [
+      "pw_anom",
+      -0.41
+     ],
+     [
+      "u200_south",
+      -0.33
+     ],
+     [
+      "dmi",
+      -0.27
+     ],
+     [
+      "trough_south",
+      -0.21
+     ],
+     [
+      "westerly_edge200",
+      -0.18
+     ]
+    ],
+    "uni": {
+     "pw_anom": {
+      "auc": 0.767,
+      "sign": "+",
+      "mean_event": 7.92,
+      "mean_other": -0.44
+     },
+     "pw": {
+      "auc": 0.763,
+      "sign": "+",
+      "mean_event": 56.4,
+      "mean_other": 47.61
+     },
+     "u850_swbay": {
+      "auc": 0.754,
+      "sign": "-",
+      "mean_event": -5.52,
+      "mean_other": -1.64
+     },
+     "olr": {
+      "auc": 0.75,
+      "sign": "-",
+      "mean_event": 189.86,
+      "mean_other": 235.2
+     },
+     "wind850": {
+      "auc": 0.742,
+      "sign": "+",
+      "mean_event": 32.33,
+      "mean_other": 22.71
+     },
+     "rise500": {
+      "auc": 0.73,
+      "sign": "+",
+      "mean_event": 0.17,
+      "mean_other": 0.02
+     },
+     "u850_swbay_anom": {
+      "auc": 0.724,
+      "sign": "-",
+      "mean_event": -2.6,
+      "mean_other": 0.14
+     },
+     "rh700": {
+      "auc": 0.71,
+      "sign": "+",
+      "mean_event": 75.46,
+      "mean_other": 59.89
+     },
+     "onshore925": {
+      "auc": 0.708,
+      "sign": "+",
+      "mean_event": 18.97,
+      "mean_other": 6.25
+     },
+     "div200": {
+      "auc": 0.707,
+      "sign": "+",
+      "mean_event": 1.85,
+      "mean_other": 0.52
+     },
+     "steer_mid": {
+      "auc": 0.682,
+      "sign": "+",
+      "mean_event": 7.26,
+      "mean_other": 5.71
+     },
+     "vo_max": {
+      "auc": 0.646,
+      "sign": "+",
+      "mean_event": 12.83,
+      "mean_other": 9.8
+     },
+     "vo_near": {
+      "auc": 0.639,
+      "sign": "+",
+      "mean_event": 11.18,
+      "mean_other": 7.46
+     },
+     "mjo_fav": {
+      "auc": 0.612,
+      "sign": "+",
+      "mean_event": 0.76,
+      "mean_other": 0.48
+     },
+     "conv850": {
+      "auc": 0.608,
+      "sign": "+",
+      "mean_event": 0.29,
+      "mean_other": 0.0
+     },
+     "msl_anom_min": {
+      "auc": 0.607,
+      "sign": "-",
+      "mean_event": -3.03,
+      "mean_other": -2.21
+     },
+     "vo_dist": {
+      "auc": 0.589,
+      "sign": "-",
+      "mean_event": 597.67,
+      "mean_other": 725.39
+     },
+     "oni": {
+      "auc": 0.541,
+      "sign": "-",
+      "mean_event": -0.05,
+      "mean_other": 0.02
+     },
+     "u200_south": {
+      "auc": 0.539,
+      "sign": "-",
+      "mean_event": -8.89,
+      "mean_other": -7.88
+     },
+     "westerly_edge200": {
+      "auc": 0.538,
+      "sign": "-",
+      "mean_event": 15.15,
+      "mean_other": 15.6
+     },
+     "jet": {
+      "auc": 0.537,
+      "sign": "+",
+      "mean_event": 68.09,
+      "mean_other": 66.74
+     },
+     "cape": {
+      "auc": 0.533,
+      "sign": "+",
+      "mean_event": 446.37,
+      "mean_other": 470.72
+     },
+     "dmi": {
+      "auc": 0.529,
+      "sign": "-",
+      "mean_event": 0.0,
+      "mean_other": 0.04
+     },
+     "trough_south": {
+      "auc": 0.518,
+      "sign": "-",
+      "mean_event": -27.52,
+      "mean_other": -27.58
+     },
+     "wd_anom": {
+      "auc": 0.517,
+      "sign": "-",
+      "mean_event": -49.42,
+      "mean_other": -48.27
+     },
+     "sst_anom_swbay": {
+      "auc": 0.5,
+      "sign": "+",
+      "mean_event": 0.0,
+      "mean_other": 0.0
+     }
+    }
+   },
+   "2": {
+    "n": 2294,
+    "events": 120,
+    "auc": 0.75,
+    "bss": 0.054,
+    "catch75_alerts": 882,
+    "catch75_hits": 90,
+    "catch75_false": 792,
+    "top": [
+     [
+      "pw",
+      1.35
+     ],
+     [
+      "u850_swbay",
+      -0.9
+     ],
+     [
+      "pw_anom",
+      -0.68
+     ],
+     [
+      "olr",
+      -0.47
+     ],
+     [
+      "u200_south",
+      -0.3
+     ],
+     [
+      "westerly_edge200",
+      -0.28
+     ],
+     [
+      "dmi",
+      -0.25
+     ],
+     [
+      "wind850",
+      0.25
+     ]
+    ],
+    "uni": {
+     "u850_swbay": {
+      "auc": 0.694,
+      "sign": "-",
+      "mean_event": -4.66,
+      "mean_other": -1.58
+     },
+     "olr": {
+      "auc": 0.693,
+      "sign": "-",
+      "mean_event": 200.38,
+      "mean_other": 233.99
+     },
+     "pw": {
+      "auc": 0.669,
+      "sign": "+",
+      "mean_event": 53.65,
+      "mean_other": 47.95
+     },
+     "pw_anom": {
+      "auc": 0.668,
+      "sign": "+",
+      "mean_event": 4.96,
+      "mean_other": -0.27
+     },
+     "wind850": {
+      "auc": 0.663,
+      "sign": "+",
+      "mean_event": 29.08,
+      "mean_other": 22.81
+     },
+     "onshore925": {
+      "auc": 0.656,
+      "sign": "+",
+      "mean_event": 16.03,
+      "mean_other": 6.0
+     },
+     "u850_swbay_anom": {
+      "auc": 0.654,
+      "sign": "-",
+      "mean_event": -1.84,
+      "mean_other": 0.09
+     },
+     "div200": {
+      "auc": 0.644,
+      "sign": "+",
+      "mean_event": 1.31,
+      "mean_other": 0.55
+     },
+     "steer_mid": {
+      "auc": 0.637,
+      "sign": "+",
+      "mean_event": 6.85,
+      "mean_other": 5.72
+     },
+     "rh700": {
+      "auc": 0.626,
+      "sign": "+",
+      "mean_event": 69.64,
+      "mean_other": 60.66
+     },
+     "mjo_fav": {
+      "auc": 0.62,
+      "sign": "+",
+      "mean_event": 0.77,
+      "mean_other": 0.48
+     },
+     "rise500": {
+      "auc": 0.613,
+      "sign": "+",
+      "mean_event": 0.08,
+      "mean_other": 0.03
+     },
+     "msl_anom_min": {
+      "auc": 0.597,
+      "sign": "-",
+      "mean_event": -2.82,
+      "mean_other": -2.23
+     },
+     "vo_max": {
+      "auc": 0.59,
+      "sign": "+",
+      "mean_event": 11.43,
+      "mean_other": 9.85
+     },
+     "vo_near": {
+      "auc": 0.57,
+      "sign": "+",
+      "mean_event": 9.4,
+      "mean_other": 7.55
+     },
+     "westerly_edge200": {
+      "auc": 0.553,
+      "sign": "-",
+      "mean_event": 15.04,
+      "mean_other": 15.75
+     },
+     "oni": {
+      "auc": 0.541,
+      "sign": "-",
+      "mean_event": -0.05,
+      "mean_other": 0.02
+     },
+     "wd_anom": {
+      "auc": 0.538,
+      "sign": "-",
+      "mean_event": -52.24,
+      "mean_other": -47.74
+     },
+     "trough_south": {
+      "auc": 0.534,
+      "sign": "-",
+      "mean_event": -29.09,
+      "mean_other": -27.4
+     },
+     "dmi": {
+      "auc": 0.532,
+      "sign": "-",
+      "mean_event": -0.0,
+      "mean_other": 0.04
+     },
+     "jet": {
+      "auc": 0.531,
+      "sign": "+",
+      "mean_event": 67.64,
+      "mean_other": 66.52
+     },
+     "vo_dist": {
+      "auc": 0.528,
+      "sign": "-",
+      "mean_event": 675.31,
+      "mean_other": 717.1
+     },
+     "u200_south": {
+      "auc": 0.516,
+      "sign": "-",
+      "mean_event": -8.48,
+      "mean_other": -8.07
+     },
+     "conv850": {
+      "auc": 0.513,
+      "sign": "+",
+      "mean_event": 0.01,
+      "mean_other": 0.02
+     },
+     "cape": {
+      "auc": 0.504,
+      "sign": "+",
+      "mean_event": 431.31,
+      "mean_other": 482.09
+     },
+     "sst_anom_swbay": {
+      "auc": 0.5,
+      "sign": "+",
+      "mean_event": 0.0,
+      "mean_other": 0.0
+     }
+    }
+   },
+   "3": {
+    "n": 2294,
+    "events": 120,
+    "auc": 0.674,
+    "bss": 0.01,
+    "catch75_alerts": 1155,
+    "catch75_hits": 90,
+    "catch75_false": 1065,
+    "top": [
+     [
+      "pw",
+      1.37
+     ],
+     [
+      "u850_swbay",
+      -0.88
+     ],
+     [
+      "pw_anom",
+      -0.74
+     ],
+     [
+      "u850_swbay_anom",
+      0.31
+     ],
+     [
+      "cape",
+      -0.26
+     ],
+     [
+      "westerly_edge200",
+      -0.24
+     ],
+     [
+      "dmi",
+      -0.22
+     ],
+     [
+      "u200_south",
+      -0.19
+     ]
+    ],
+    "uni": {
+     "u850_swbay": {
+      "auc": 0.652,
+      "sign": "-",
+      "mean_event": -4.07,
+      "mean_other": -1.51
+     },
+     "mjo_fav": {
+      "auc": 0.631,
+      "sign": "+",
+      "mean_event": 0.8,
+      "mean_other": 0.47
+     },
+     "onshore925": {
+      "auc": 0.625,
+      "sign": "+",
+      "mean_event": 13.97,
+      "mean_other": 5.7
+     },
+     "olr": {
+      "auc": 0.621,
+      "sign": "-",
+      "mean_event": 213.57,
+      "mean_other": 232.9
+     },
+     "pw": {
+      "auc": 0.612,
+      "sign": "+",
+      "mean_event": 52.06,
+      "mean_other": 48.23
+     },
+     "pw_anom": {
+      "auc": 0.612,
+      "sign": "+",
+      "mean_event": 3.17,
+      "mean_other": -0.16
+     },
+     "u850_swbay_anom": {
+      "auc": 0.607,
+      "sign": "-",
+      "mean_event": -1.35,
+      "mean_other": 0.06
+     },
+     "rise500": {
+      "auc": 0.595,
+      "sign": "+",
+      "mean_event": 0.07,
+      "mean_other": 0.03
+     },
+     "div200": {
+      "auc": 0.594,
+      "sign": "+",
+      "mean_event": 1.03,
+      "mean_other": 0.56
+     },
+     "wind850": {
+      "auc": 0.587,
+      "sign": "+",
+      "mean_event": 25.84,
+      "mean_other": 22.9
+     },
+     "rh700": {
+      "auc": 0.584,
+      "sign": "+",
+      "mean_event": 67.33,
+      "mean_other": 61.15
+     },
+     "steer_mid": {
+      "auc": 0.581,
+      "sign": "+",
+      "mean_event": 6.41,
+      "mean_other": 5.73
+     },
+     "vo_max": {
+      "auc": 0.58,
+      "sign": "+",
+      "mean_event": 10.63,
+      "mean_other": 9.87
+     },
+     "westerly_edge200": {
+      "auc": 0.558,
+      "sign": "-",
+      "mean_event": 14.97,
+      "mean_other": 15.91
+     },
+     "wd_anom": {
+      "auc": 0.553,
+      "sign": "-",
+      "mean_event": -52.07,
+      "mean_other": -47.24
+     },
+     "msl_anom_min": {
+      "auc": 0.544,
+      "sign": "-",
+      "mean_event": -2.39,
+      "mean_other": -2.25
+     },
+     "conv850": {
+      "auc": 0.544,
+      "sign": "+",
+      "mean_event": 0.1,
+      "mean_other": 0.02
+     },
+     "oni": {
+      "auc": 0.54,
+      "sign": "-",
+      "mean_event": -0.05,
+      "mean_other": 0.02
+     },
+     "vo_near": {
+      "auc": 0.535,
+      "sign": "+",
+      "mean_event": 8.16,
+      "mean_other": 7.59
+     },
+     "dmi": {
+      "auc": 0.534,
+      "sign": "-",
+      "mean_event": -0.0,
+      "mean_other": 0.04
+     },
+     "vo_dist": {
+      "auc": 0.53,
+      "sign": "+",
+      "mean_event": 744.31,
+      "mean_other": 710.52
+     },
+     "cape": {
+      "auc": 0.528,
+      "sign": "-",
+      "mean_event": 407.59,
+      "mean_other": 496.79
+     },
+     "jet": {
+      "auc": 0.525,
+      "sign": "+",
+      "mean_event": 67.17,
+      "mean_other": 66.29
+     },
+     "trough_south": {
+      "auc": 0.517,
+      "sign": "-",
+      "mean_event": -28.61,
+      "mean_other": -27.2
+     },
+     "u200_south": {
+      "auc": 0.512,
+      "sign": "+",
+      "mean_event": -8.07,
+      "mean_other": -8.27
+     },
+     "sst_anom_swbay": {
+      "auc": 0.5,
+      "sign": "+",
+      "mean_event": 0.0,
+      "mean_other": 0.0
+     }
+    }
+   },
+   "5": {
+    "n": 2294,
+    "events": 120,
+    "auc": 0.654,
+    "bss": 0.008,
+    "catch75_alerts": 1206,
+    "catch75_hits": 90,
+    "catch75_false": 1116,
+    "top": [
+     [
+      "u850_swbay",
+      -1.21
+     ],
+     [
+      "pw",
+      1.08
+     ],
+     [
+      "pw_anom",
+      -0.83
+     ],
+     [
+      "westerly_edge200",
+      -0.58
+     ],
+     [
+      "u850_swbay_anom",
+      0.54
+     ],
+     [
+      "onshore925",
+      -0.51
+     ],
+     [
+      "u200_south",
+      -0.42
+     ],
+     [
+      "mjo_fav",
+      0.34
+     ]
+    ],
+    "uni": {
+     "mjo_fav": {
+      "auc": 0.633,
+      "sign": "+",
+      "mean_event": 0.8,
+      "mean_other": 0.47
+     },
+     "u850_swbay": {
+      "auc": 0.61,
+      "sign": "-",
+      "mean_event": -3.42,
+      "mean_other": -1.33
+     },
+     "onshore925": {
+      "auc": 0.58,
+      "sign": "+",
+      "mean_event": 10.92,
+      "mean_other": 4.95
+     },
+     "rise500": {
+      "auc": 0.575,
+      "sign": "+",
+      "mean_event": 0.07,
+      "mean_other": 0.03
+     },
+     "u850_swbay_anom": {
+      "auc": 0.571,
+      "sign": "-",
+      "mean_event": -0.93,
+      "mean_other": 0.03
+     },
+     "westerly_edge200": {
+      "auc": 0.569,
+      "sign": "-",
+      "mean_event": 14.97,
+      "mean_other": 16.21
+     },
+     "pw": {
+      "auc": 0.565,
+      "sign": "+",
+      "mean_event": 51.08,
+      "mean_other": 48.63
+     },
+     "olr": {
+      "auc": 0.565,
+      "sign": "-",
+      "mean_event": 220.21,
+      "mean_other": 231.65
+     },
+     "pw_anom": {
+      "auc": 0.562,
+      "sign": "+",
+      "mean_event": 1.78,
+      "mean_other": -0.1
+     },
+     "wd_anom": {
+      "auc": 0.551,
+      "sign": "-",
+      "mean_event": -51.54,
+      "mean_other": -46.41
+     },
+     "wind850": {
+      "auc": 0.549,
+      "sign": "+",
+      "mean_event": 24.47,
+      "mean_other": 22.85
+     },
+     "rh700": {
+      "auc": 0.545,
+      "sign": "+",
+      "mean_event": 66.33,
+      "mean_other": 61.88
+     },
+     "dmi": {
+      "auc": 0.541,
+      "sign": "-",
+      "mean_event": -0.01,
+      "mean_other": 0.05
+     },
+     "oni": {
+      "auc": 0.54,
+      "sign": "-",
+      "mean_event": -0.05,
+      "mean_other": 0.02
+     },
+     "jet": {
+      "auc": 0.537,
+      "sign": "+",
+      "mean_event": 67.01,
+      "mean_other": 65.8
+     },
+     "steer_mid": {
+      "auc": 0.535,
+      "sign": "+",
+      "mean_event": 6.02,
+      "mean_other": 5.7
+     },
+     "div200": {
+      "auc": 0.534,
+      "sign": "+",
+      "mean_event": 0.79,
+      "mean_other": 0.58
+     },
+     "vo_max": {
+      "auc": 0.52,
+      "sign": "+",
+      "mean_event": 9.82,
+      "mean_other": 9.85
+     },
+     "u200_south": {
+      "auc": 0.514,
+      "sign": "+",
+      "mean_event": -8.23,
+      "mean_other": -8.62
+     },
+     "conv850": {
+      "auc": 0.513,
+      "sign": "-",
+      "mean_event": 0.02,
+      "mean_other": 0.03
+     },
+     "trough_south": {
+      "auc": 0.512,
+      "sign": "+",
+      "mean_event": -24.94,
+      "mean_other": -26.87
+     },
+     "msl_anom_min": {
+      "auc": 0.51,
+      "sign": "+",
+      "mean_event": -2.05,
+      "mean_other": -2.26
+     },
+     "cape": {
+      "auc": 0.51,
+      "sign": "+",
+      "mean_event": 487.47,
+      "mean_other": 518.24
+     },
+     "vo_near": {
+      "auc": 0.505,
+      "sign": "-",
+      "mean_event": 7.8,
+      "mean_other": 7.62
+     },
+     "vo_dist": {
+      "auc": 0.505,
+      "sign": "-",
+      "mean_event": 716.76,
+      "mean_other": 705.47
+     },
+     "sst_anom_swbay": {
+      "auc": 0.5,
+      "sign": "+",
+      "mean_event": 0.0,
+      "mean_other": 0.0
+     }
+    }
+   },
+   "7": {
+    "n": 2294,
+    "events": 120,
+    "auc": 0.628,
+    "bss": -0.006,
+    "catch75_alerts": 1383,
+    "catch75_hits": 90,
+    "catch75_false": 1293,
+    "top": [
+     [
+      "pw_anom",
+      -1.02
+     ],
+     [
+      "pw",
+      0.91
+     ],
+     [
+      "u850_swbay",
+      -0.9
+     ],
+     [
+      "u850_swbay_anom",
+      0.63
+     ],
+     [
+      "westerly_edge200",
+      -0.41
+     ],
+     [
+      "vo_near",
+      0.38
+     ],
+     [
+      "vo_max",
+      -0.35
+     ],
+     [
+      "rh700",
+      0.31
+     ]
+    ],
+    "uni": {
+     "mjo_fav": {
+      "auc": 0.602,
+      "sign": "+",
+      "mean_event": 0.76,
+      "mean_other": 0.47
+     },
+     "u850_swbay": {
+      "auc": 0.598,
+      "sign": "-",
+      "mean_event": -2.82,
+      "mean_other": -1.14
+     },
+     "steer_mid": {
+      "auc": 0.576,
+      "sign": "+",
+      "mean_event": 6.3,
+      "mean_other": 5.64
+     },
+     "onshore925": {
+      "auc": 0.572,
+      "sign": "+",
+      "mean_event": 9.27,
+      "mean_other": 4.15
+     },
+     "olr": {
+      "auc": 0.563,
+      "sign": "-",
+      "mean_event": 223.2,
+      "mean_other": 230.88
+     },
+     "westerly_edge200": {
+      "auc": 0.56,
+      "sign": "-",
+      "mean_event": 15.41,
+      "mean_other": 16.5
+     },
+     "wd_anom": {
+      "auc": 0.56,
+      "sign": "-",
+      "mean_event": -51.8,
+      "mean_other": -45.48
+     },
+     "rise500": {
+      "auc": 0.554,
+      "sign": "+",
+      "mean_event": 0.06,
+      "mean_other": 0.03
+     },
+     "rh700": {
+      "auc": 0.553,
+      "sign": "+",
+      "mean_event": 66.34,
+      "mean_other": 62.61
+     },
+     "u850_swbay_anom": {
+      "auc": 0.549,
+      "sign": "-",
+      "mean_event": -0.58,
+      "mean_other": 0.01
+     },
+     "wind850": {
+      "auc": 0.539,
+      "sign": "+",
+      "mean_event": 24.47,
+      "mean_other": 22.75
+     },
+     "div200": {
+      "auc": 0.539,
+      "sign": "+",
+      "mean_event": 0.81,
+      "mean_other": 0.58
+     },
+     "dmi": {
+      "auc": 0.539,
+      "sign": "-",
+      "mean_event": -0.01,
+      "mean_other": 0.05
+     },
+     "oni": {
+      "auc": 0.538,
+      "sign": "-",
+      "mean_event": -0.05,
+      "mean_other": 0.02
+     },
+     "pw": {
+      "auc": 0.531,
+      "sign": "+",
+      "mean_event": 50.39,
+      "mean_other": 48.98
+     },
+     "pw_anom": {
+      "auc": 0.525,
+      "sign": "+",
+      "mean_event": 0.71,
+      "mean_other": -0.06
+     },
+     "u200_south": {
+      "auc": 0.521,
+      "sign": "+",
+      "mean_event": -8.49,
+      "mean_other": -8.95
+     },
+     "trough_south": {
+      "auc": 0.521,
+      "sign": "+",
+      "mean_event": -25.12,
+      "mean_other": -26.48
+     },
+     "jet": {
+      "auc": 0.52,
+      "sign": "+",
+      "mean_event": 65.77,
+      "mean_other": 65.3
+     },
+     "vo_dist": {
+      "auc": 0.508,
+      "sign": "+",
+      "mean_event": 705.97,
+      "mean_other": 699.38
+     },
+     "vo_max": {
+      "auc": 0.504,
+      "sign": "-",
+      "mean_event": 9.8,
+      "mean_other": 9.79
+     },
+     "conv850": {
+      "auc": 0.504,
+      "sign": "-",
+      "mean_event": 0.04,
+      "mean_other": 0.04
+     },
+     "msl_anom_min": {
+      "auc": 0.503,
+      "sign": "-",
+      "mean_event": -2.19,
+      "mean_other": -2.23
+     },
+     "cape": {
+      "auc": 0.501,
+      "sign": "+",
+      "mean_event": 501.48,
+      "mean_other": 543.58
+     },
+     "sst_anom_swbay": {
+      "auc": 0.5,
+      "sign": "+",
+      "mean_event": 0.0,
+      "mean_other": 0.0
+     },
+     "vo_near": {
+      "auc": 0.5,
+      "sign": "+",
+      "mean_event": 8.37,
+      "mean_other": 7.59
+     }
+    }
+   }
+  },
+  "south": {
+   "0": {
+    "n": 2296,
+    "events": 93,
+    "auc": 0.801,
+    "bss": 0.081,
+    "catch75_alerts": 649,
+    "catch75_hits": 70,
+    "catch75_false": 579,
+    "top": [
+     [
+      "u850_swbay",
+      -0.53
+     ],
+     [
+      "pw",
+      0.52
+     ],
+     [
+      "rh700",
+      0.38
+     ],
+     [
+      "rise500",
+      0.33
+     ],
+     [
+      "pw_anom",
+      0.32
+     ],
+     [
+      "vo_dist",
+      -0.23
+     ],
+     [
+      "oni",
+      -0.21
+     ],
+     [
+      "jet",
+      -0.2
+     ]
+    ],
+    "uni": {
+     "pw": {
+      "auc": 0.8,
+      "sign": "+",
+      "mean_event": 56.41,
+      "mean_other": 48.38
+     },
+     "pw_anom": {
+      "auc": 0.777,
+      "sign": "+",
+      "mean_event": 7.12,
+      "mean_other": -0.3
+     },
+     "olr": {
+      "auc": 0.766,
+      "sign": "-",
+      "mean_event": 188.59,
+      "mean_other": 233.3
+     },
+     "rh700": {
+      "auc": 0.763,
+      "sign": "+",
+      "mean_event": 79.64,
+      "mean_other": 62.58
+     },
+     "rise500": {
+      "auc": 0.748,
+      "sign": "+",
+      "mean_event": 0.17,
+      "mean_other": 0.01
+     },
+     "u850_swbay_anom": {
+      "auc": 0.742,
+      "sign": "-",
+      "mean_event": -2.83,
+      "mean_other": 0.11
+     },
+     "u850_swbay": {
+      "auc": 0.733,
+      "sign": "-",
+      "mean_event": -5.34,
+      "mean_other": -1.81
+     },
+     "div200": {
+      "auc": 0.692,
+      "sign": "+",
+      "mean_event": 1.45,
+      "mean_other": 0.37
+     },
+     "vo_dist": {
+      "auc": 0.682,
+      "sign": "-",
+      "mean_event": 522.49,
+      "mean_other": 799.21
+     },
+     "steer_mid": {
+      "auc": 0.625,
+      "sign": "+",
+      "mean_event": 6.64,
+      "mean_other": 5.75
+     },
+     "conv850": {
+      "auc": 0.62,
+      "sign": "+",
+      "mean_event": 0.53,
+      "mean_other": 0.16
+     },
+     "mjo_fav": {
+      "auc": 0.617,
+      "sign": "+",
+      "mean_event": 0.81,
+      "mean_other": 0.48
+     },
+     "vo_near": {
+      "auc": 0.614,
+      "sign": "+",
+      "mean_event": 9.73,
+      "mean_other": 6.95
+     },
+     "onshore925": {
+      "auc": 0.58,
+      "sign": "+",
+      "mean_event": 6.74,
+      "mean_other": 0.47
+     },
+     "westerly_edge200": {
+      "auc": 0.576,
+      "sign": "-",
+      "mean_event": 14.44,
+      "mean_other": 15.49
+     },
+     "dmi": {
+      "auc": 0.572,
+      "sign": "+",
+      "mean_event": 0.14,
+      "mean_other": 0.04
+     },
+     "u200_south": {
+      "auc": 0.556,
+      "sign": "+",
+      "mean_event": -6.69,
+      "mean_other": -7.82
+     },
+     "trough_south": {
+      "auc": 0.552,
+      "sign": "+",
+      "mean_event": -22.12,
+      "mean_other": -27.91
+     },
+     "jet": {
+      "auc": 0.547,
+      "sign": "-",
+      "mean_event": 65.41,
+      "mean_other": 67.12
+     },
+     "wind850": {
+      "auc": 0.532,
+      "sign": "+",
+      "mean_event": 24.46,
+      "mean_other": 23.19
+     },
+     "vo_max": {
+      "auc": 0.529,
+      "sign": "+",
+      "mean_event": 10.69,
+      "mean_other": 9.93
+     },
+     "wd_anom": {
+      "auc": 0.519,
+      "sign": "+",
+      "mean_event": -44.99,
+      "mean_other": -48.8
+     },
+     "cape": {
+      "auc": 0.515,
+      "sign": "+",
+      "mean_event": 272.87,
+      "mean_other": 294.87
+     },
+     "oni": {
+      "auc": 0.507,
+      "sign": "-",
+      "mean_event": 0.05,
+      "mean_other": 0.02
+     },
+     "msl_anom_min": {
+      "auc": 0.506,
+      "sign": "+",
+      "mean_event": -2.05,
+      "mean_other": -2.25
+     },
+     "sst_anom_swbay": {
+      "auc": 0.5,
+      "sign": "+",
+      "mean_event": 0.0,
+      "mean_other": 0.0
+     }
+    }
+   },
+   "1": {
+    "n": 2296,
+    "events": 93,
+    "auc": 0.778,
+    "bss": 0.04,
+    "catch75_alerts": 829,
+    "catch75_hits": 70,
+    "catch75_false": 759,
+    "top": [
+     [
+      "pw",
+      0.87
+     ],
+     [
+      "u850_swbay",
+      -0.83
+     ],
+     [
+      "olr",
+      0.41
+     ],
+     [
+      "vo_near",
+      0.38
+     ],
+     [
+      "onshore925",
+      -0.34
+     ],
+     [
+      "westerly_edge200",
+      -0.33
+     ],
+     [
+      "div200",
+      0.27
+     ],
+     [
+      "u850_swbay_anom",
+      -0.26
+     ]
+    ],
+    "uni": {
+     "pw": {
+      "auc": 0.748,
+      "sign": "+",
+      "mean_event": 55.3,
+      "mean_other": 48.54
+     },
+     "u850_swbay_anom": {
+      "auc": 0.734,
+      "sign": "-",
+      "mean_event": -3.01,
+      "mean_other": 0.12
+     },
+     "pw_anom": {
+      "auc": 0.732,
+      "sign": "+",
+      "mean_event": 5.9,
+      "mean_other": -0.24
+     },
+     "u850_swbay": {
+      "auc": 0.729,
+      "sign": "-",
+      "mean_event": -5.4,
+      "mean_other": -1.69
+     },
+     "olr": {
+      "auc": 0.677,
+      "sign": "-",
+      "mean_event": 202.38,
+      "mean_other": 232.2
+     },
+     "rh700": {
+      "auc": 0.675,
+      "sign": "+",
+      "mean_event": 75.57,
+      "mean_other": 62.96
+     },
+     "div200": {
+      "auc": 0.656,
+      "sign": "+",
+      "mean_event": 1.25,
+      "mean_other": 0.38
+     },
+     "rise500": {
+      "auc": 0.635,
+      "sign": "+",
+      "mean_event": 0.09,
+      "mean_other": 0.01
+     },
+     "vo_dist": {
+      "auc": 0.623,
+      "sign": "-",
+      "mean_event": 603.1,
+      "mean_other": 796.57
+     },
+     "vo_near": {
+      "auc": 0.615,
+      "sign": "+",
+      "mean_event": 9.7,
+      "mean_other": 6.94
+     },
+     "mjo_fav": {
+      "auc": 0.609,
+      "sign": "+",
+      "mean_event": 0.79,
+      "mean_other": 0.48
+     },
+     "steer_mid": {
+      "auc": 0.606,
+      "sign": "+",
+      "mean_event": 6.61,
+      "mean_other": 5.75
+     },
+     "westerly_edge200": {
+      "auc": 0.583,
+      "sign": "-",
+      "mean_event": 14.34,
+      "mean_other": 15.63
+     },
+     "conv850": {
+      "auc": 0.566,
+      "sign": "+",
+      "mean_event": 0.34,
+      "mean_other": 0.17
+     },
+     "dmi": {
+      "auc": 0.566,
+      "sign": "+",
+      "mean_event": 0.13,
+      "mean_other": 0.04
+     },
+     "onshore925": {
+      "auc": 0.56,
+      "sign": "+",
+      "mean_event": 5.31,
+      "mean_other": 0.04
+     },
+     "jet": {
+      "auc": 0.551,
+      "sign": "-",
+      "mean_event": 65.13,
+      "mean_other": 66.88
+     },
+     "u200_south": {
+      "auc": 0.548,
+      "sign": "+",
+      "mean_event": -6.83,
+      "mean_other": -7.98
+     },
+     "trough_south": {
+      "auc": 0.546,
+      "sign": "+",
+      "mean_event": -22.5,
+      "mean_other": -27.79
+     },
+     "vo_max": {
+      "auc": 0.537,
+      "sign": "+",
+      "mean_event": 10.68,
+      "mean_other": 9.92
+     },
+     "wind850": {
+      "auc": 0.524,
+      "sign": "+",
+      "mean_event": 24.09,
+      "mean_other": 23.26
+     },
+     "msl_anom_min": {
+      "auc": 0.514,
+      "sign": "-",
+      "mean_event": -2.16,
+      "mean_other": -2.26
+     },
+     "wd_anom": {
+      "auc": 0.513,
+      "sign": "+",
+      "mean_event": -45.62,
+      "mean_other": -48.42
+     },
+     "oni": {
+      "auc": 0.506,
+      "sign": "-",
+      "mean_event": 0.05,
+      "mean_other": 0.02
+     },
+     "cape": {
+      "auc": 0.505,
+      "sign": "-",
+      "mean_event": 274.44,
+      "mean_other": 299.52
+     },
+     "sst_anom_swbay": {
+      "auc": 0.5,
+      "sign": "+",
+      "mean_event": 0.0,
+      "mean_other": 0.0
+     }
+    }
+   },
+   "2": {
+    "n": 2296,
+    "events": 93,
+    "auc": 0.709,
+    "bss": 0.017,
+    "catch75_alerts": 1006,
+    "catch75_hits": 70,
+    "catch75_false": 936,
+    "top": [
+     [
+      "u850_swbay",
+      -1.14
+     ],
+     [
+      "pw",
+      0.63
+     ],
+     [
+      "onshore925",
+      -0.63
+     ],
+     [
+      "vo_max",
+      -0.36
+     ],
+     [
+      "msl_anom_min",
+      -0.35
+     ],
+     [
+      "olr",
+      0.29
+     ],
+     [
+      "dmi",
+      0.28
+     ],
+     [
+      "vo_dist",
+      0.21
+     ]
+    ],
+    "uni": {
+     "u850_swbay_anom": {
+      "auc": 0.69,
+      "sign": "-",
+      "mean_event": -2.45,
+      "mean_other": 0.09
+     },
+     "u850_swbay": {
+      "auc": 0.684,
+      "sign": "-",
+      "mean_event": -4.73,
+      "mean_other": -1.62
+     },
+     "pw": {
+      "auc": 0.631,
+      "sign": "+",
+      "mean_event": 52.52,
+      "mean_other": 48.79
+     },
+     "pw_anom": {
+      "auc": 0.609,
+      "sign": "+",
+      "mean_event": 3.03,
+      "mean_other": -0.09
+     },
+     "olr": {
+      "auc": 0.589,
+      "sign": "-",
+      "mean_event": 219.29,
+      "mean_other": 231.07
+     },
+     "mjo_fav": {
+      "auc": 0.588,
+      "sign": "+",
+      "mean_event": 0.74,
+      "mean_other": 0.48
+     },
+     "div200": {
+      "auc": 0.579,
+      "sign": "+",
+      "mean_event": 0.74,
+      "mean_other": 0.4
+     },
+     "rh700": {
+      "auc": 0.57,
+      "sign": "+",
+      "mean_event": 69.62,
+      "mean_other": 63.55
+     },
+     "dmi": {
+      "auc": 0.569,
+      "sign": "+",
+      "mean_event": 0.13,
+      "mean_other": 0.04
+     },
+     "u200_south": {
+      "auc": 0.566,
+      "sign": "+",
+      "mean_event": -6.7,
+      "mean_other": -8.15
+     },
+     "rise500": {
+      "auc": 0.565,
+      "sign": "+",
+      "mean_event": 0.03,
+      "mean_other": 0.01
+     },
+     "westerly_edge200": {
+      "auc": 0.561,
+      "sign": "-",
+      "mean_event": 14.76,
+      "mean_other": 15.75
+     },
+     "onshore925": {
+      "auc": 0.56,
+      "sign": "+",
+      "mean_event": 4.6,
+      "mean_other": -0.41
+     },
+     "steer_mid": {
+      "auc": 0.558,
+      "sign": "+",
+      "mean_event": 6.21,
+      "mean_other": 5.76
+     },
+     "trough_south": {
+      "auc": 0.549,
+      "sign": "+",
+      "mean_event": -23.2,
+      "mean_other": -27.65
+     },
+     "jet": {
+      "auc": 0.547,
+      "sign": "-",
+      "mean_event": 64.79,
+      "mean_other": 66.66
+     },
+     "cape": {
+      "auc": 0.532,
+      "sign": "-",
+      "mean_event": 264.94,
+      "mean_other": 305.56
+     },
+     "conv850": {
+      "auc": 0.529,
+      "sign": "-",
+      "mean_event": 0.12,
+      "mean_other": 0.18
+     },
+     "vo_near": {
+      "auc": 0.529,
+      "sign": "+",
+      "mean_event": 7.84,
+      "mean_other": 7.01
+     },
+     "wind850": {
+      "auc": 0.526,
+      "sign": "+",
+      "mean_event": 23.49,
+      "mean_other": 23.27
+     },
+     "wd_anom": {
+      "auc": 0.519,
+      "sign": "+",
+      "mean_event": -43.56,
+      "mean_other": -48.15
+     },
+     "vo_max": {
+      "auc": 0.516,
+      "sign": "-",
+      "mean_event": 9.47,
+      "mean_other": 9.95
+     },
+     "vo_dist": {
+      "auc": 0.507,
+      "sign": "-",
+      "mean_event": 772.35,
+      "mean_other": 784.22
+     },
+     "oni": {
+      "auc": 0.507,
+      "sign": "-",
+      "mean_event": 0.05,
+      "mean_other": 0.02
+     },
+     "msl_anom_min": {
+      "auc": 0.501,
+      "sign": "-",
+      "mean_event": -2.07,
+      "mean_other": -2.26
+     },
+     "sst_anom_swbay": {
+      "auc": 0.5,
+      "sign": "+",
+      "mean_event": 0.0,
+      "mean_other": 0.0
+     }
+    }
+   },
+   "3": {
+    "n": 2296,
+    "events": 93,
+    "auc": 0.604,
+    "bss": 0.006,
+    "catch75_alerts": 1461,
+    "catch75_hits": 70,
+    "catch75_false": 1391,
+    "top": [
+     [
+      "u850_swbay",
+      -0.82
+     ],
+     [
+      "pw",
+      0.54
+     ],
+     [
+      "msl_anom_min",
+      -0.34
+     ],
+     [
+      "pw_anom",
+      -0.34
+     ],
+     [
+      "onshore925",
+      -0.32
+     ],
+     [
+      "dmi",
+      0.32
+     ],
+     [
+      "vo_max",
+      -0.23
+     ],
+     [
+      "olr",
+      0.23
+     ]
+    ],
+    "uni": {
+     "u850_swbay_anom": {
+      "auc": 0.638,
+      "sign": "-",
+      "mean_event": -1.78,
+      "mean_other": 0.06
+     },
+     "u850_swbay": {
+      "auc": 0.634,
+      "sign": "-",
+      "mean_event": -3.94,
+      "mean_other": -1.55
+     },
+     "mjo_fav": {
+      "auc": 0.59,
+      "sign": "+",
+      "mean_event": 0.74,
+      "mean_other": 0.48
+     },
+     "pw": {
+      "auc": 0.579,
+      "sign": "+",
+      "mean_event": 51.28,
+      "mean_other": 48.94
+     },
+     "u200_south": {
+      "auc": 0.573,
+      "sign": "+",
+      "mean_event": -6.39,
+      "mean_other": -8.34
+     },
+     "onshore925": {
+      "auc": 0.571,
+      "sign": "+",
+      "mean_event": 4.62,
+      "mean_other": -0.89
+     },
+     "westerly_edge200": {
+      "auc": 0.569,
+      "sign": "-",
+      "mean_event": 14.62,
+      "mean_other": 15.91
+     },
+     "dmi": {
+      "auc": 0.568,
+      "sign": "+",
+      "mean_event": 0.14,
+      "mean_other": 0.04
+     },
+     "trough_south": {
+      "auc": 0.555,
+      "sign": "+",
+      "mean_event": -23.38,
+      "mean_other": -27.43
+     },
+     "pw_anom": {
+      "auc": 0.555,
+      "sign": "+",
+      "mean_event": 1.7,
+      "mean_other": -0.03
+     },
+     "div200": {
+      "auc": 0.551,
+      "sign": "+",
+      "mean_event": 0.56,
+      "mean_other": 0.41
+     },
+     "rise500": {
+      "auc": 0.548,
+      "sign": "+",
+      "mean_event": 0.04,
+      "mean_other": 0.01
+     },
+     "wd_anom": {
+      "auc": 0.547,
+      "sign": "+",
+      "mean_event": -41.22,
+      "mean_other": -47.74
+     },
+     "jet": {
+      "auc": 0.547,
+      "sign": "-",
+      "mean_event": 64.76,
+      "mean_other": 66.41
+     },
+     "rh700": {
+      "auc": 0.538,
+      "sign": "+",
+      "mean_event": 67.43,
+      "mean_other": 63.91
+     },
+     "vo_max": {
+      "auc": 0.535,
+      "sign": "-",
+      "mean_event": 9.11,
+      "mean_other": 9.94
+     },
+     "wind850": {
+      "auc": 0.533,
+      "sign": "+",
+      "mean_event": 23.92,
+      "mean_other": 23.22
+     },
+     "olr": {
+      "auc": 0.532,
+      "sign": "-",
+      "mean_event": 224.8,
+      "mean_other": 230.65
+     },
+     "conv850": {
+      "auc": 0.526,
+      "sign": "-",
+      "mean_event": 0.14,
+      "mean_other": 0.18
+     },
+     "cape": {
+      "auc": 0.526,
+      "sign": "-",
+      "mean_event": 287.83,
+      "mean_other": 310.44
+     },
+     "vo_near": {
+      "auc": 0.521,
+      "sign": "-",
+      "mean_event": 7.14,
+      "mean_other": 7.04
+     },
+     "steer_mid": {
+      "auc": 0.516,
+      "sign": "+",
+      "mean_event": 5.84,
+      "mean_other": 5.76
+     },
+     "msl_anom_min": {
+      "auc": 0.508,
+      "sign": "+",
+      "mean_event": -1.98,
+      "mean_other": -2.27
+     },
+     "vo_dist": {
+      "auc": 0.508,
+      "sign": "+",
+      "mean_event": 785.48,
+      "mean_other": 780.31
+     },
+     "oni": {
+      "auc": 0.508,
+      "sign": "-",
+      "mean_event": 0.04,
+      "mean_other": 0.02
+     },
+     "sst_anom_swbay": {
+      "auc": 0.5,
+      "sign": "+",
+      "mean_event": 0.0,
+      "mean_other": 0.0
+     }
+    }
+   },
+   "5": {
+    "n": 2296,
+    "events": 93,
+    "auc": 0.563,
+    "bss": -0.009,
+    "catch75_alerts": 1565,
+    "catch75_hits": 70,
+    "catch75_false": 1495,
+    "top": [
+     [
+      "pw",
+      0.68
+     ],
+     [
+      "pw_anom",
+      -0.41
+     ],
+     [
+      "dmi",
+      0.31
+     ],
+     [
+      "wind850",
+      -0.3
+     ],
+     [
+      "wd_anom",
+      0.27
+     ],
+     [
+      "oni",
+      -0.26
+     ],
+     [
+      "mjo_fav",
+      0.23
+     ],
+     [
+      "u200_south",
+      0.18
+     ]
+    ],
+    "uni": {
+     "u200_south": {
+      "auc": 0.582,
+      "sign": "+",
+      "mean_event": -6.42,
+      "mean_other": -8.69
+     },
+     "wind850": {
+      "auc": 0.581,
+      "sign": "-",
+      "mean_event": 20.3,
+      "mean_other": 23.39
+     },
+     "dmi": {
+      "auc": 0.565,
+      "sign": "+",
+      "mean_event": 0.13,
+      "mean_other": 0.04
+     },
+     "westerly_edge200": {
+      "auc": 0.564,
+      "sign": "-",
+      "mean_event": 14.81,
+      "mean_other": 16.2
+     },
+     "wd_anom": {
+      "auc": 0.564,
+      "sign": "+",
+      "mean_event": -38.72,
+      "mean_other": -47.02
+     },
+     "pw": {
+      "auc": 0.552,
+      "sign": "+",
+      "mean_event": 50.91,
+      "mean_other": 49.19
+     },
+     "mjo_fav": {
+      "auc": 0.552,
+      "sign": "+",
+      "mean_event": 0.64,
+      "mean_other": 0.48
+     },
+     "rh700": {
+      "auc": 0.548,
+      "sign": "+",
+      "mean_event": 67.83,
+      "mean_other": 64.5
+     },
+     "u850_swbay": {
+      "auc": 0.547,
+      "sign": "-",
+      "mean_event": -2.43,
+      "mean_other": -1.4
+     },
+     "vo_near": {
+      "auc": 0.547,
+      "sign": "-",
+      "mean_event": 6.34,
+      "mean_other": 7.08
+     },
+     "u850_swbay_anom": {
+      "auc": 0.544,
+      "sign": "-",
+      "mean_event": -0.53,
+      "mean_other": 0.0
+     },
+     "vo_dist": {
+      "auc": 0.543,
+      "sign": "+",
+      "mean_event": 842.28,
+      "mean_other": 769.42
+     },
+     "cape": {
+      "auc": 0.542,
+      "sign": "-",
+      "mean_event": 286.67,
+      "mean_other": 321.28
+     },
+     "onshore925": {
+      "auc": 0.54,
+      "sign": "+",
+      "mean_event": 2.19,
+      "mean_other": -1.72
+     },
+     "vo_max": {
+      "auc": 0.538,
+      "sign": "-",
+      "mean_event": 9.89,
+      "mean_other": 9.84
+     },
+     "pw_anom": {
+      "auc": 0.537,
+      "sign": "+",
+      "mean_event": 1.16,
+      "mean_other": 0.04
+     },
+     "msl_anom_min": {
+      "auc": 0.535,
+      "sign": "+",
+      "mean_event": -2.12,
+      "mean_other": -2.25
+     },
+     "trough_south": {
+      "auc": 0.53,
+      "sign": "+",
+      "mean_event": -25.04,
+      "mean_other": -26.85
+     },
+     "steer_mid": {
+      "auc": 0.524,
+      "sign": "-",
+      "mean_event": 5.48,
+      "mean_other": 5.72
+     },
+     "olr": {
+      "auc": 0.523,
+      "sign": "-",
+      "mean_event": 227.54,
+      "mean_other": 229.88
+     },
+     "conv850": {
+      "auc": 0.511,
+      "sign": "-",
+      "mean_event": 0.17,
+      "mean_other": 0.18
+     },
+     "oni": {
+      "auc": 0.51,
+      "sign": "-",
+      "mean_event": 0.04,
+      "mean_other": 0.02
+     },
+     "div200": {
+      "auc": 0.509,
+      "sign": "+",
+      "mean_event": 0.41,
+      "mean_other": 0.42
+     },
+     "rise500": {
+      "auc": 0.502,
+      "sign": "+",
+      "mean_event": 0.01,
+      "mean_other": 0.01
+     },
+     "jet": {
+      "auc": 0.501,
+      "sign": "+",
+      "mean_event": 65.82,
+      "mean_other": 65.87
+     },
+     "sst_anom_swbay": {
+      "auc": 0.5,
+      "sign": "+",
+      "mean_event": 0.0,
+      "mean_other": 0.0
+     }
+    }
+   },
+   "7": {
+    "n": 2296,
+    "events": 93,
+    "auc": 0.543,
+    "bss": -0.013,
+    "catch75_alerts": 1630,
+    "catch75_hits": 70,
+    "catch75_false": 1560,
+    "top": [
+     [
+      "pw",
+      0.66
+     ],
+     [
+      "pw_anom",
+      -0.48
+     ],
+     [
+      "trough_south",
+      0.39
+     ],
+     [
+      "msl_anom_min",
+      -0.38
+     ],
+     [
+      "westerly_edge200",
+      -0.32
+     ],
+     [
+      "dmi",
+      0.31
+     ],
+     [
+      "oni",
+      -0.25
+     ],
+     [
+      "wind850",
+      -0.24
+     ]
+    ],
+    "uni": {
+     "trough_south": {
+      "auc": 0.588,
+      "sign": "+",
+      "mean_event": -20.8,
+      "mean_other": -26.66
+     },
+     "dmi": {
+      "auc": 0.561,
+      "sign": "+",
+      "mean_event": 0.13,
+      "mean_other": 0.04
+     },
+     "wd_anom": {
+      "auc": 0.559,
+      "sign": "+",
+      "mean_event": -39.81,
+      "mean_other": -46.1
+     },
+     "u200_south": {
+      "auc": 0.548,
+      "sign": "+",
+      "mean_event": -7.64,
+      "mean_other": -8.98
+     },
+     "vo_dist": {
+      "auc": 0.548,
+      "sign": "-",
+      "mean_event": 694.77,
+      "mean_other": 769.08
+     },
+     "u850_swbay": {
+      "auc": 0.545,
+      "sign": "-",
+      "mean_event": -2.19,
+      "mean_other": -1.19
+     },
+     "onshore925": {
+      "auc": 0.545,
+      "sign": "+",
+      "mean_event": 0.94,
+      "mean_other": -2.65
+     },
+     "pw": {
+      "auc": 0.543,
+      "sign": "+",
+      "mean_event": 50.62,
+      "mean_other": 49.36
+     },
+     "olr": {
+      "auc": 0.538,
+      "sign": "-",
+      "mean_event": 225.62,
+      "mean_other": 229.66
+     },
+     "wind850": {
+      "auc": 0.537,
+      "sign": "-",
+      "mean_event": 21.45,
+      "mean_other": 23.4
+     },
+     "westerly_edge200": {
+      "auc": 0.531,
+      "sign": "-",
+      "mean_event": 15.44,
+      "mean_other": 16.48
+     },
+     "u850_swbay_anom": {
+      "auc": 0.529,
+      "sign": "-",
+      "mean_event": -0.55,
+      "mean_other": -0.0
+     },
+     "div200": {
+      "auc": 0.529,
+      "sign": "+",
+      "mean_event": 0.52,
+      "mean_other": 0.41
+     },
+     "rise500": {
+      "auc": 0.529,
+      "sign": "+",
+      "mean_event": 0.02,
+      "mean_other": 0.01
+     },
+     "steer_mid": {
+      "auc": 0.527,
+      "sign": "+",
+      "mean_event": 5.83,
+      "mean_other": 5.67
+     },
+     "pw_anom": {
+      "auc": 0.527,
+      "sign": "+",
+      "mean_event": 0.77,
+      "mean_other": 0.06
+     },
+     "conv850": {
+      "auc": 0.525,
+      "sign": "-",
+      "mean_event": 0.16,
+      "mean_other": 0.19
+     },
+     "vo_max": {
+      "auc": 0.519,
+      "sign": "-",
+      "mean_event": 10.5,
+      "mean_other": 9.76
+     },
+     "jet": {
+      "auc": 0.514,
+      "sign": "+",
+      "mean_event": 65.72,
+      "mean_other": 65.32
+     },
+     "rh700": {
+      "auc": 0.514,
+      "sign": "+",
+      "mean_event": 66.33,
+      "mean_other": 65.12
+     },
+     "msl_anom_min": {
+      "auc": 0.512,
+      "sign": "+",
+      "mean_event": -2.34,
+      "mean_other": -2.23
+     },
+     "oni": {
+      "auc": 0.51,
+      "sign": "-",
+      "mean_event": 0.03,
+      "mean_other": 0.01
+     },
+     "vo_near": {
+      "auc": 0.509,
+      "sign": "-",
+      "mean_event": 7.52,
+      "mean_other": 7.03
+     },
+     "cape": {
+      "auc": 0.503,
+      "sign": "-",
+      "mean_event": 329.23,
+      "mean_other": 330.16
+     },
+     "sst_anom_swbay": {
+      "auc": 0.5,
+      "sign": "+",
+      "mean_event": 0.0,
+      "mean_other": 0.0
+     },
+     "mjo_fav": {
+      "auc": 0.5,
+      "sign": "-",
+      "mean_event": 0.5,
+      "mean_other": 0.49
+     }
+    }
+   }
+  },
+  "tn": {
+   "0": {
+    "n": 2297,
+    "events": 290,
+    "auc": 0.817,
+    "bss": 0.208,
+    "catch75_alerts": 846,
+    "catch75_hits": 218,
+    "catch75_false": 628,
+    "top": [
+     [
+      "pw",
+      0.8
+     ],
+     [
+      "vo_near",
+      0.55
+     ],
+     [
+      "vo_max",
+      -0.51
+     ],
+     [
+      "onshore925",
+      0.41
+     ],
+     [
+      "rise500",
+      0.34
+     ],
+     [
+      "cape",
+      0.32
+     ],
+     [
+      "rh700",
+      0.27
+     ],
+     [
+      "olr",
+      -0.22
+     ]
+    ],
+    "uni": {
+     "pw": {
+      "auc": 0.785,
+      "sign": "+",
+      "mean_event": 58.49,
+      "mean_other": 50.86
+     },
+     "olr": {
+      "auc": 0.779,
+      "sign": "-",
+      "mean_event": 172.24,
+      "mean_other": 223.17
+     },
+     "rise500": {
+      "auc": 0.773,
+      "sign": "+",
+      "mean_event": 0.27,
+      "mean_other": 0.06
+     },
+     "pw_anom": {
+      "auc": 0.754,
+      "sign": "+",
+      "mean_event": 10.57,
+      "mean_other": 3.44
+     },
+     "rh700": {
+      "auc": 0.745,
+      "sign": "+",
+      "mean_event": 82.96,
+      "mean_other": 67.71
+     },
+     "div200": {
+      "auc": 0.738,
+      "sign": "+",
+      "mean_event": 2.57,
+      "mean_other": 1.14
+     },
+     "onshore925": {
+      "auc": 0.674,
+      "sign": "+",
+      "mean_event": 21.17,
+      "mean_other": 11.35
+     },
+     "vo_near": {
+      "auc": 0.663,
+      "sign": "+",
+      "mean_event": 12.0,
+      "mean_other": 7.64
+     },
+     "vo_dist": {
+      "auc": 0.654,
+      "sign": "-",
+      "mean_event": 430.81,
+      "mean_other": 641.91
+     },
+     "u850_swbay_anom": {
+      "auc": 0.643,
+      "sign": "-",
+      "mean_event": -1.47,
+      "mean_other": 0.2
+     },
+     "wind850": {
+      "auc": 0.633,
+      "sign": "+",
+      "mean_event": 33.43,
+      "mean_other": 27.38
+     },
+     "u850_swbay": {
+      "auc": 0.623,
+      "sign": "-",
+      "mean_event": -3.57,
+      "mean_other": -1.72
+     },
+     "conv850": {
+      "auc": 0.614,
+      "sign": "+",
+      "mean_event": 0.83,
+      "mean_other": 0.47
+     },
+     "steer_mid": {
+      "auc": 0.609,
+      "sign": "+",
+      "mean_event": 6.65,
+      "mean_other": 5.66
+     },
+     "cape": {
+      "auc": 0.598,
+      "sign": "+",
+      "mean_event": 627.33,
+      "mean_other": 583.75
+     },
+     "vo_max": {
+      "auc": 0.593,
+      "sign": "+",
+      "mean_event": 12.44,
+      "mean_other": 9.6
+     },
+     "mjo_fav": {
+      "auc": 0.586,
+      "sign": "+",
+      "mean_event": 0.68,
+      "mean_other": 0.47
+     },
+     "msl_anom_min": {
+      "auc": 0.578,
+      "sign": "-",
+      "mean_event": -2.92,
+      "mean_other": -2.14
+     },
+     "u200_south": {
+      "auc": 0.527,
+      "sign": "-",
+      "mean_event": -8.3,
+      "mean_other": -7.69
+     },
+     "oni": {
+      "auc": 0.526,
+      "sign": "-",
+      "mean_event": -0.02,
+      "mean_other": 0.02
+     },
+     "jet": {
+      "auc": 0.525,
+      "sign": "-",
+      "mean_event": 66.2,
+      "mean_other": 67.17
+     },
+     "westerly_edge200": {
+      "auc": 0.517,
+      "sign": "+",
+      "mean_event": 15.64,
+      "mean_other": 15.42
+     },
+     "wd_anom": {
+      "auc": 0.507,
+      "sign": "+",
+      "mean_event": -46.55,
+      "mean_other": -48.93
+     },
+     "dmi": {
+      "auc": 0.506,
+      "sign": "+",
+      "mean_event": 0.05,
+      "mean_other": 0.04
+     },
+     "trough_south": {
+      "auc": 0.505,
+      "sign": "+",
+      "mean_event": -25.96,
+      "mean_other": -27.91
+     },
+     "sst_anom_swbay": {
+      "auc": 0.5,
+      "sign": "+",
+      "mean_event": 0.0,
+      "mean_other": 0.0
+     }
+    }
+   },
+   "1": {
+    "n": 2297,
+    "events": 290,
+    "auc": 0.774,
+    "bss": 0.151,
+    "catch75_alerts": 968,
+    "catch75_hits": 218,
+    "catch75_false": 750,
+    "top": [
+     [
+      "pw",
+      1.13
+     ],
+     [
+      "u850_swbay",
+      -0.48
+     ],
+     [
+      "vo_near",
+      0.32
+     ],
+     [
+      "u850_swbay_anom",
+      -0.31
+     ],
+     [
+      "rise500",
+      0.28
+     ],
+     [
+      "conv850",
+      -0.24
+     ],
+     [
+      "u200_south",
+      -0.23
+     ],
+     [
+      "westerly_edge200",
+      -0.18
+     ]
+    ],
+    "uni": {
+     "pw": {
+      "auc": 0.747,
+      "sign": "+",
+      "mean_event": 57.67,
+      "mean_other": 51.15
+     },
+     "rise500": {
+      "auc": 0.726,
+      "sign": "+",
+      "mean_event": 0.22,
+      "mean_other": 0.07
+     },
+     "olr": {
+      "auc": 0.721,
+      "sign": "-",
+      "mean_event": 181.69,
+      "mean_other": 221.02
+     },
+     "pw_anom": {
+      "auc": 0.711,
+      "sign": "+",
+      "mean_event": 9.5,
+      "mean_other": 3.58
+     },
+     "rh700": {
+      "auc": 0.685,
+      "sign": "+",
+      "mean_event": 80.04,
+      "mean_other": 68.43
+     },
+     "div200": {
+      "auc": 0.681,
+      "sign": "+",
+      "mean_event": 2.29,
+      "mean_other": 1.19
+     },
+     "u850_swbay_anom": {
+      "auc": 0.659,
+      "sign": "-",
+      "mean_event": -1.76,
+      "mean_other": 0.25
+     },
+     "onshore925": {
+      "auc": 0.651,
+      "sign": "+",
+      "mean_event": 19.87,
+      "mean_other": 11.05
+     },
+     "vo_near": {
+      "auc": 0.644,
+      "sign": "+",
+      "mean_event": 11.34,
+      "mean_other": 7.72
+     },
+     "u850_swbay": {
+      "auc": 0.639,
+      "sign": "-",
+      "mean_event": -3.74,
+      "mean_other": -1.57
+     },
+     "wind850": {
+      "auc": 0.619,
+      "sign": "+",
+      "mean_event": 32.82,
+      "mean_other": 27.48
+     },
+     "vo_max": {
+      "auc": 0.606,
+      "sign": "+",
+      "mean_event": 12.25,
+      "mean_other": 9.62
+     },
+     "steer_mid": {
+      "auc": 0.603,
+      "sign": "+",
+      "mean_event": 6.62,
+      "mean_other": 5.67
+     },
+     "mjo_fav": {
+      "auc": 0.585,
+      "sign": "+",
+      "mean_event": 0.68,
+      "mean_other": 0.47
+     },
+     "msl_anom_min": {
+      "auc": 0.583,
+      "sign": "-",
+      "mean_event": -2.91,
+      "mean_other": -2.16
+     },
+     "vo_dist": {
+      "auc": 0.583,
+      "sign": "-",
+      "mean_event": 497.85,
+      "mean_other": 631.38
+     },
+     "cape": {
+      "auc": 0.577,
+      "sign": "+",
+      "mean_event": 624.35,
+      "mean_other": 600.18
+     },
+     "conv850": {
+      "auc": 0.572,
+      "sign": "+",
+      "mean_event": 0.68,
+      "mean_other": 0.5
+     },
+     "jet": {
+      "auc": 0.539,
+      "sign": "-",
+      "mean_event": 65.53,
+      "mean_other": 66.99
+     },
+     "u200_south": {
+      "auc": 0.537,
+      "sign": "-",
+      "mean_event": -8.62,
+      "mean_other": -7.83
+     },
+     "oni": {
+      "auc": 0.526,
+      "sign": "-",
+      "mean_event": -0.02,
+      "mean_other": 0.02
+     },
+     "wd_anom": {
+      "auc": 0.512,
+      "sign": "+",
+      "mean_event": -46.34,
+      "mean_other": -48.56
+     },
+     "westerly_edge200": {
+      "auc": 0.505,
+      "sign": "-",
+      "mean_event": 15.54,
+      "mean_other": 15.58
+     },
+     "dmi": {
+      "auc": 0.505,
+      "sign": "+",
+      "mean_event": 0.05,
+      "mean_other": 0.04
+     },
+     "trough_south": {
+      "auc": 0.502,
+      "sign": "-",
+      "mean_event": -26.58,
+      "mean_other": -27.7
+     },
+     "sst_anom_swbay": {
+      "auc": 0.5,
+      "sign": "+",
+      "mean_event": 0.0,
+      "mean_other": 0.0
+     }
+    }
+   },
+   "2": {
+    "n": 2297,
+    "events": 290,
+    "auc": 0.703,
+    "bss": 0.06,
+    "catch75_alerts": 1222,
+    "catch75_hits": 218,
+    "catch75_false": 1004,
+    "top": [
+     [
+      "pw",
+      1.13
+     ],
+     [
+      "u850_swbay",
+      -0.43
+     ],
+     [
+      "rh700",
+      -0.41
+     ],
+     [
+      "conv850",
+      -0.28
+     ],
+     [
+      "vo_near",
+      0.21
+     ],
+     [
+      "trough_south",
+      -0.2
+     ],
+     [
+      "pw_anom",
+      -0.19
+     ],
+     [
+      "jet",
+      -0.18
+     ]
+    ],
+    "uni": {
+     "pw": {
+      "auc": 0.676,
+      "sign": "+",
+      "mean_event": 56.1,
+      "mean_other": 51.57
+     },
+     "olr": {
+      "auc": 0.652,
+      "sign": "-",
+      "mean_event": 192.59,
+      "mean_other": 218.69
+     },
+     "rise500": {
+      "auc": 0.644,
+      "sign": "+",
+      "mean_event": 0.15,
+      "mean_other": 0.08
+     },
+     "pw_anom": {
+      "auc": 0.64,
+      "sign": "+",
+      "mean_event": 7.69,
+      "mean_other": 3.84
+     },
+     "u850_swbay_anom": {
+      "auc": 0.623,
+      "sign": "-",
+      "mean_event": -1.32,
+      "mean_other": 0.18
+     },
+     "div200": {
+      "auc": 0.609,
+      "sign": "+",
+      "mean_event": 1.83,
+      "mean_other": 1.25
+     },
+     "u850_swbay": {
+      "auc": 0.602,
+      "sign": "-",
+      "mean_event": -3.18,
+      "mean_other": -1.54
+     },
+     "rh700": {
+      "auc": 0.602,
+      "sign": "+",
+      "mean_event": 76.03,
+      "mean_other": 69.45
+     },
+     "onshore925": {
+      "auc": 0.598,
+      "sign": "+",
+      "mean_event": 17.16,
+      "mean_other": 10.95
+     },
+     "mjo_fav": {
+      "auc": 0.59,
+      "sign": "+",
+      "mean_event": 0.69,
+      "mean_other": 0.47
+     },
+     "steer_mid": {
+      "auc": 0.584,
+      "sign": "+",
+      "mean_event": 6.42,
+      "mean_other": 5.68
+     },
+     "vo_near": {
+      "auc": 0.584,
+      "sign": "+",
+      "mean_event": 10.13,
+      "mean_other": 7.88
+     },
+     "wind850": {
+      "auc": 0.582,
+      "sign": "+",
+      "mean_event": 31.2,
+      "mean_other": 27.66
+     },
+     "vo_max": {
+      "auc": 0.57,
+      "sign": "+",
+      "mean_event": 11.5,
+      "mean_other": 9.71
+     },
+     "msl_anom_min": {
+      "auc": 0.57,
+      "sign": "-",
+      "mean_event": -2.77,
+      "mean_other": -2.18
+     },
+     "cape": {
+      "auc": 0.552,
+      "sign": "+",
+      "mean_event": 613.2,
+      "mean_other": 617.42
+     },
+     "jet": {
+      "auc": 0.535,
+      "sign": "-",
+      "mean_event": 65.28,
+      "mean_other": 66.77
+     },
+     "oni": {
+      "auc": 0.526,
+      "sign": "-",
+      "mean_event": -0.02,
+      "mean_other": 0.02
+     },
+     "vo_dist": {
+      "auc": 0.519,
+      "sign": "-",
+      "mean_event": 579.46,
+      "mean_other": 615.22
+     },
+     "u200_south": {
+      "auc": 0.515,
+      "sign": "-",
+      "mean_event": -8.36,
+      "mean_other": -8.05
+     },
+     "trough_south": {
+      "auc": 0.509,
+      "sign": "-",
+      "mean_event": -27.49,
+      "mean_other": -27.45
+     },
+     "wd_anom": {
+      "auc": 0.504,
+      "sign": "+",
+      "mean_event": -46.72,
+      "mean_other": -48.11
+     },
+     "dmi": {
+      "auc": 0.504,
+      "sign": "+",
+      "mean_event": 0.05,
+      "mean_other": 0.04
+     },
+     "westerly_edge200": {
+      "auc": 0.502,
+      "sign": "-",
+      "mean_event": 15.7,
+      "mean_other": 15.71
+     },
+     "conv850": {
+      "auc": 0.502,
+      "sign": "+",
+      "mean_event": 0.54,
+      "mean_other": 0.52
+     },
+     "sst_anom_swbay": {
+      "auc": 0.5,
+      "sign": "+",
+      "mean_event": 0.0,
+      "mean_other": 0.0
+     }
+    }
+   },
+   "3": {
+    "n": 2297,
+    "events": 290,
+    "auc": 0.618,
+    "bss": 0.018,
+    "catch75_alerts": 1446,
+    "catch75_hits": 218,
+    "catch75_false": 1228,
+    "top": [
+     [
+      "pw",
+      0.86
+     ],
+     [
+      "u850_swbay",
+      -0.54
+     ],
+     [
+      "pw_anom",
+      -0.45
+     ],
+     [
+      "olr",
+      -0.19
+     ],
+     [
+      "conv850",
+      -0.17
+     ],
+     [
+      "vo_near",
+      0.16
+     ],
+     [
+      "rh700",
+      -0.15
+     ],
+     [
+      "onshore925",
+      -0.13
+     ]
+    ],
+    "uni": {
+     "pw": {
+      "auc": 0.611,
+      "sign": "+",
+      "mean_event": 54.83,
+      "mean_other": 51.9
+     },
+     "olr": {
+      "auc": 0.605,
+      "sign": "-",
+      "mean_event": 199.15,
+      "mean_other": 217.2
+     },
+     "u850_swbay_anom": {
+      "auc": 0.599,
+      "sign": "-",
+      "mean_event": -1.1,
+      "mean_other": 0.14
+     },
+     "mjo_fav": {
+      "auc": 0.594,
+      "sign": "+",
+      "mean_event": 0.7,
+      "mean_other": 0.46
+     },
+     "rise500": {
+      "auc": 0.58,
+      "sign": "+",
+      "mean_event": 0.13,
+      "mean_other": 0.08
+     },
+     "u850_swbay": {
+      "auc": 0.579,
+      "sign": "-",
+      "mean_event": -2.84,
+      "mean_other": -1.48
+     },
+     "pw_anom": {
+      "auc": 0.573,
+      "sign": "+",
+      "mean_event": 6.03,
+      "mean_other": 4.04
+     },
+     "rh700": {
+      "auc": 0.57,
+      "sign": "+",
+      "mean_event": 74.72,
+      "mean_other": 69.97
+     },
+     "onshore925": {
+      "auc": 0.564,
+      "sign": "+",
+      "mean_event": 15.0,
+      "mean_other": 10.81
+     },
+     "div200": {
+      "auc": 0.561,
+      "sign": "+",
+      "mean_event": 1.61,
+      "mean_other": 1.28
+     },
+     "vo_max": {
+      "auc": 0.554,
+      "sign": "+",
+      "mean_event": 10.83,
+      "mean_other": 9.77
+     },
+     "vo_near": {
+      "auc": 0.545,
+      "sign": "+",
+      "mean_event": 9.13,
+      "mean_other": 8.0
+     },
+     "msl_anom_min": {
+      "auc": 0.543,
+      "sign": "-",
+      "mean_event": -2.48,
+      "mean_other": -2.22
+     },
+     "steer_mid": {
+      "auc": 0.542,
+      "sign": "+",
+      "mean_event": 6.08,
+      "mean_other": 5.72
+     },
+     "wind850": {
+      "auc": 0.541,
+      "sign": "+",
+      "mean_event": 29.34,
+      "mean_other": 27.88
+     },
+     "cape": {
+      "auc": 0.537,
+      "sign": "+",
+      "mean_event": 627.71,
+      "mean_other": 633.23
+     },
+     "jet": {
+      "auc": 0.536,
+      "sign": "-",
+      "mean_event": 65.05,
+      "mean_other": 66.53
+     },
+     "oni": {
+      "auc": 0.527,
+      "sign": "-",
+      "mean_event": -0.02,
+      "mean_other": 0.02
+     },
+     "wd_anom": {
+      "auc": 0.514,
+      "sign": "+",
+      "mean_event": -44.59,
+      "mean_other": -47.86
+     },
+     "westerly_edge200": {
+      "auc": 0.513,
+      "sign": "-",
+      "mean_event": 15.62,
+      "mean_other": 15.89
+     },
+     "vo_dist": {
+      "auc": 0.508,
+      "sign": "+",
+      "mean_event": 606.77,
+      "mean_other": 607.32
+     },
+     "u200_south": {
+      "auc": 0.503,
+      "sign": "+",
+      "mean_event": -8.17,
+      "mean_other": -8.27
+     },
+     "conv850": {
+      "auc": 0.503,
+      "sign": "-",
+      "mean_event": 0.51,
+      "mean_other": 0.53
+     },
+     "dmi": {
+      "auc": 0.502,
+      "sign": "+",
+      "mean_event": 0.05,
+      "mean_other": 0.04
+     },
+     "trough_south": {
+      "auc": 0.501,
+      "sign": "-",
+      "mean_event": -26.87,
+      "mean_other": -27.3
+     },
+     "sst_anom_swbay": {
+      "auc": 0.5,
+      "sign": "+",
+      "mean_event": 0.0,
+      "mean_other": 0.0
+     }
+    }
+   },
+   "5": {
+    "n": 2297,
+    "events": 290,
+    "auc": 0.574,
+    "bss": 0.001,
+    "catch75_alerts": 1592,
+    "catch75_hits": 218,
+    "catch75_false": 1374,
+    "top": [
+     [
+      "u850_swbay",
+      -0.75
+     ],
+     [
+      "pw",
+      0.57
+     ],
+     [
+      "onshore925",
+      -0.49
+     ],
+     [
+      "pw_anom",
+      -0.46
+     ],
+     [
+      "mjo_fav",
+      0.23
+     ],
+     [
+      "u850_swbay_anom",
+      0.22
+     ],
+     [
+      "msl_anom_min",
+      -0.21
+     ],
+     [
+      "wind850",
+      -0.19
+     ]
+    ],
+    "uni": {
+     "mjo_fav": {
+      "auc": 0.594,
+      "sign": "+",
+      "mean_event": 0.69,
+      "mean_other": 0.46
+     },
+     "olr": {
+      "auc": 0.557,
+      "sign": "-",
+      "mean_event": 205.81,
+      "mean_other": 215.04
+     },
+     "u850_swbay_anom": {
+      "auc": 0.555,
+      "sign": "-",
+      "mean_event": -0.67,
+      "mean_other": 0.07
+     },
+     "pw": {
+      "auc": 0.552,
+      "sign": "+",
+      "mean_event": 53.92,
+      "mean_other": 52.38
+     },
+     "rh700": {
+      "auc": 0.549,
+      "sign": "+",
+      "mean_event": 73.96,
+      "mean_other": 70.81
+     },
+     "rise500": {
+      "auc": 0.54,
+      "sign": "+",
+      "mean_event": 0.11,
+      "mean_other": 0.09
+     },
+     "cape": {
+      "auc": 0.538,
+      "sign": "+",
+      "mean_event": 677.26,
+      "mean_other": 663.79
+     },
+     "u850_swbay": {
+      "auc": 0.536,
+      "sign": "-",
+      "mean_event": -2.15,
+      "mean_other": -1.35
+     },
+     "jet": {
+      "auc": 0.529,
+      "sign": "-",
+      "mean_event": 64.95,
+      "mean_other": 66.01
+     },
+     "wind850": {
+      "auc": 0.528,
+      "sign": "-",
+      "mean_event": 26.91,
+      "mean_other": 28.2
+     },
+     "div200": {
+      "auc": 0.527,
+      "sign": "+",
+      "mean_event": 1.41,
+      "mean_other": 1.32
+     },
+     "vo_near": {
+      "auc": 0.527,
+      "sign": "-",
+      "mean_event": 7.7,
+      "mean_other": 8.22
+     },
+     "oni": {
+      "auc": 0.527,
+      "sign": "-",
+      "mean_event": -0.02,
+      "mean_other": 0.02
+     },
+     "pw_anom": {
+      "auc": 0.526,
+      "sign": "+",
+      "mean_event": 4.79,
+      "mean_other": 4.2
+     },
+     "wd_anom": {
+      "auc": 0.523,
+      "sign": "+",
+      "mean_event": -43.23,
+      "mean_other": -47.19
+     },
+     "vo_dist": {
+      "auc": 0.523,
+      "sign": "+",
+      "mean_event": 634.06,
+      "mean_other": 594.34
+     },
+     "u200_south": {
+      "auc": 0.516,
+      "sign": "+",
+      "mean_event": -8.18,
+      "mean_other": -8.65
+     },
+     "westerly_edge200": {
+      "auc": 0.511,
+      "sign": "-",
+      "mean_event": 15.83,
+      "mean_other": 16.19
+     },
+     "conv850": {
+      "auc": 0.511,
+      "sign": "-",
+      "mean_event": 0.51,
+      "mean_other": 0.54
+     },
+     "onshore925": {
+      "auc": 0.51,
+      "sign": "+",
+      "mean_event": 11.58,
+      "mean_other": 10.36
+     },
+     "steer_mid": {
+      "auc": 0.509,
+      "sign": "-",
+      "mean_event": 5.64,
+      "mean_other": 5.72
+     },
+     "vo_max": {
+      "auc": 0.509,
+      "sign": "-",
+      "mean_event": 9.63,
+      "mean_other": 9.87
+     },
+     "trough_south": {
+      "auc": 0.507,
+      "sign": "+",
+      "mean_event": -25.95,
+      "mean_other": -26.9
+     },
+     "msl_anom_min": {
+      "auc": 0.504,
+      "sign": "-",
+      "mean_event": -2.23,
+      "mean_other": -2.24
+     },
+     "sst_anom_swbay": {
+      "auc": 0.5,
+      "sign": "+",
+      "mean_event": 0.0,
+      "mean_other": 0.0
+     },
+     "dmi": {
+      "auc": 0.5,
+      "sign": "-",
+      "mean_event": 0.05,
+      "mean_other": 0.04
+     }
+    }
+   },
+   "7": {
+    "n": 2297,
+    "events": 290,
+    "auc": 0.563,
+    "bss": -0.004,
+    "catch75_alerts": 1596,
+    "catch75_hits": 218,
+    "catch75_false": 1378,
+    "top": [
+     [
+      "u850_swbay",
+      -0.62
+     ],
+     [
+      "pw_anom",
+      -0.6
+     ],
+     [
+      "pw",
+      0.52
+     ],
+     [
+      "u850_swbay_anom",
+      0.32
+     ],
+     [
+      "onshore925",
+      -0.26
+     ],
+     [
+      "cape",
+      0.26
+     ],
+     [
+      "westerly_edge200",
+      -0.25
+     ],
+     [
+      "rise500",
+      0.23
+     ]
+    ],
+    "uni": {
+     "mjo_fav": {
+      "auc": 0.571,
+      "sign": "+",
+      "mean_event": 0.65,
+      "mean_other": 0.47
+     },
+     "cape": {
+      "auc": 0.559,
+      "sign": "+",
+      "mean_event": 769.9,
+      "mean_other": 688.46
+     },
+     "olr": {
+      "auc": 0.548,
+      "sign": "-",
+      "mean_event": 206.7,
+      "mean_other": 214.1
+     },
+     "u850_swbay_anom": {
+      "auc": 0.547,
+      "sign": "-",
+      "mean_event": -0.62,
+      "mean_other": 0.06
+     },
+     "rise500": {
+      "auc": 0.544,
+      "sign": "+",
+      "mean_event": 0.12,
+      "mean_other": 0.08
+     },
+     "rh700": {
+      "auc": 0.542,
+      "sign": "+",
+      "mean_event": 74.33,
+      "mean_other": 71.41
+     },
+     "u850_swbay": {
+      "auc": 0.541,
+      "sign": "-",
+      "mean_event": -1.84,
+      "mean_other": -1.15
+     },
+     "jet": {
+      "auc": 0.54,
+      "sign": "-",
+      "mean_event": 63.96,
+      "mean_other": 65.54
+     },
+     "trough_south": {
+      "auc": 0.538,
+      "sign": "+",
+      "mean_event": -24.06,
+      "mean_other": -26.78
+     },
+     "pw": {
+      "auc": 0.53,
+      "sign": "+",
+      "mean_event": 53.86,
+      "mean_other": 52.66
+     },
+     "div200": {
+      "auc": 0.528,
+      "sign": "+",
+      "mean_event": 1.48,
+      "mean_other": 1.3
+     },
+     "oni": {
+      "auc": 0.527,
+      "sign": "-",
+      "mean_event": -0.02,
+      "mean_other": 0.02
+     },
+     "onshore925": {
+      "auc": 0.521,
+      "sign": "+",
+      "mean_event": 10.93,
+      "mean_other": 9.49
+     },
+     "conv850": {
+      "auc": 0.516,
+      "sign": "-",
+      "mean_event": 0.53,
+      "mean_other": 0.54
+     },
+     "steer_mid": {
+      "auc": 0.515,
+      "sign": "+",
+      "mean_event": 5.75,
+      "mean_other": 5.67
+     },
+     "wd_anom": {
+      "auc": 0.515,
+      "sign": "+",
+      "mean_event": -44.3,
+      "mean_other": -46.07
+     },
+     "wind850": {
+      "auc": 0.509,
+      "sign": "-",
+      "mean_event": 27.73,
+      "mean_other": 28.11
+     },
+     "vo_near": {
+      "auc": 0.509,
+      "sign": "-",
+      "mean_event": 8.16,
+      "mean_other": 8.16
+     },
+     "vo_max": {
+      "auc": 0.508,
+      "sign": "-",
+      "mean_event": 9.59,
+      "mean_other": 9.82
+     },
+     "westerly_edge200": {
+      "auc": 0.507,
+      "sign": "-",
+      "mean_event": 16.13,
+      "mean_other": 16.48
+     },
+     "u200_south": {
+      "auc": 0.506,
+      "sign": "+",
+      "mean_event": -8.74,
+      "mean_other": -8.95
+     },
+     "msl_anom_min": {
+      "auc": 0.506,
+      "sign": "+",
+      "mean_event": -2.16,
+      "mean_other": -2.24
+     },
+     "vo_dist": {
+      "auc": 0.506,
+      "sign": "-",
+      "mean_event": 588.98,
+      "mean_other": 594.22
+     },
+     "pw_anom": {
+      "auc": 0.501,
+      "sign": "+",
+      "mean_event": 4.39,
+      "mean_other": 4.19
+     },
+     "sst_anom_swbay": {
+      "auc": 0.5,
+      "sign": "+",
+      "mean_event": 0.0,
+      "mean_other": 0.0
+     },
+     "dmi": {
+      "auc": 0.5,
+      "sign": "-",
+      "mean_event": 0.05,
+      "mean_other": 0.04
+     }
+    }
+   }
+  }
+ }
+}
