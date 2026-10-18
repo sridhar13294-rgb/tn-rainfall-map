@@ -207,7 +207,7 @@ function place(ll){const G=window.SATGEO,d=inTN(ll);if(d)return d+' district';
  const [lo,la]=ll;return lo<77.5?'the Arabian Sea':(lo>79.5&&lo<82.2&&la>5.8&&la<10)?'Sri Lanka':lo>92?'the Andaman Sea':la<5?'the southern Bay of Bengal':'the Bay of Bengal'}
 // ---- maxed out: the satellite's rain scale stops at about 49 mm/h, so a place that stays at the top of the scale for an
 // hour or more may be getting far more (a cloudburst gives 100 mm/h). Checked on 10-17 Oct 2026: around such places the
-// heaviest TN SMART gauge within 15 km had 64.5 mm or more in 21 of 37 cases (median 85 mm).
+// heaviest TN SMART gauge within 15 km had 64.5 mm or more in 21 of 37 cases (median 85 mm); with 18 Oct: 104 of 193 (median 71 mm).
 function maxedOut(past){MAXF=null;MAXREG=[];const n=NX*NY,run=new Uint8Array(n),alive=new Uint8Array(n).fill(1);let prevT=null,used=0;
  for(let k=past.length-1;k>=0;k--){const f=past[k],m=f.v.mx;if(!m)break;if(prevT&&prevT-f.t>P.pastStep*60e3*1.5)break;prevT=f.t;let any=0;
   for(let i=0;i<n;i++)if(alive[i]){if(m[i]){run[i]++;any=1}else alive[i]=0}
@@ -229,7 +229,7 @@ function renderAlert(){const el=$('alert');if(!MAXREG.length){el.hidden=true;el.
   const lt=LT?LT.s10.filter(p=>kmBetween(p,ll)<=r+15).length:0;
   return `<b>${pl}</b> (${dur(g.mins)}${g.atLeast?'+':''}${lt?', <span class="lt">lightning</span>':''})`});
  const extra=MAXREG.length>3?`${MAXREG.length-3} smaller area${MAXREG.length>4?'s':''}`:null,all=extra?items.concat([extra]):items,list=all.length>1?all.slice(0,-1).join(', ')+' and '+all[all.length-1]:all[0],more='';
- const cs=CALINFO&&CALINFO.ceiling,stat=cs&&cs.cases>=10?`In past checks, 64.5 mm or more fell nearby in <b>${cs.heavy} of ${cs.cases}</b> such cases.`:'In the 10–17 Oct checks, 64.5 mm or more fell nearby in <b>21 of 37</b> such cases.';
+ const cs=CALINFO&&CALINFO.ceiling,stat=cs&&cs.cases>=10?`In past checks, 64.5 mm or more fell nearby in <b>${cs.heavy} of ${cs.cases}</b> such cases.`:'In the 10–18 Oct checks, 64.5 mm or more fell nearby in <b>104 of 193</b> such cases.';
  el.innerHTML=`<b class="at">Very heavy rain likely</b>The satellite has been at its maximum (purple) over ${list}${more}. It cannot measure above about 50 mm an hour, so the real rain may be much heavier than shown. ${stat}`;
  el.hidden=false}
 function findCells(v,M){const lab=new Int32Array(NX*NY).fill(-1),cells=[],minPx=Math.max(4,P.minKm2/(KMX*KMY));
