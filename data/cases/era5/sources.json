@@ -1,0 +1,173 @@
+{
+ "weatherbench2": {
+  "ok": true,
+  "info": {
+   "1959-2023_01_10-wb13-6h-1440x721_with_derived_variables.zarr": {
+    "vars": [
+     "10m_u_component_of_wind",
+     "10m_v_component_of_wind",
+     "10m_wind_speed",
+     "2m_dewpoint_temperature",
+     "2m_temperature",
+     "above_ground",
+     "ageostrophic_wind_speed",
+     "angle_of_sub_gridscale_orography",
+     "anisotropy_of_sub_gridscale_orography",
+     "boundary_layer_height",
+     "divergence",
+     "eddy_kinetic_energy",
+     "geopotential",
+     "geopotential_at_surface",
+     "geostrophic_wind_speed",
+     "high_vegetation_cover",
+     "integrated_vapor_transport",
+     "lake_cover",
+     "land_sea_mask",
+     "lapse_rate",
+     "leaf_area_index_high_vegetation",
+     "leaf_area_index_low_vegetation",
+     "low_vegetation_cover",
+     "mean_sea_level_pressure",
+     "mean_surface_latent_heat_flux",
+     "mean_surface_net_long_wave_radiation_flux",
+     "mean_surface_net_short_wave_radiation_flux",
+     "mean_surface_sensible_heat_flux",
+     "mean_top_downward_short_wave_radiation_flux",
+     "mean_top_net_long_wave_radiation_flux",
+     "mean_top_net_short_wave_radiation_flux",
+     "mean_vertically_integrated_moisture_divergence",
+     "potential_vorticity",
+     "relative_humidity",
+     "sea_ice_cover",
+     "sea_surface_temperature",
+     "slope_of_sub_gridscale_orography",
+     "snow_depth",
+     "soil_type",
+     "specific_humidity"
+    ],
+    "dims": {
+     "time": 93544,
+     "latitude": 721,
+     "longitude": 1440,
+     "level": 13
+    },
+    "chunks": "(1, 13, 721, 1440)",
+    "t0": "1959-01-01T00:00:00.000000000",
+    "t1": "2023-01-10T18:00:00.000000000"
+   },
+   "1959-2023_01_10-6h-240x121_equiangular_with_poles_conservative.zarr": {
+    "vars": [
+     "10m_u_component_of_wind",
+     "10m_v_component_of_wind",
+     "10m_wind_speed",
+     "2m_dewpoint_temperature",
+     "2m_temperature",
+     "above_ground",
+     "ageostrophic_wind_speed",
+     "angle_of_sub_gridscale_orography",
+     "anisotropy_of_sub_gridscale_orography",
+     "boundary_layer_height",
+     "divergence",
+     "eddy_kinetic_energy",
+     "geopotential",
+     "geopotential_at_surface",
+     "geostrophic_wind_speed",
+     "high_vegetation_cover",
+     "integrated_vapor_transport",
+     "lake_cover",
+     "land_sea_mask",
+     "lapse_rate",
+     "leaf_area_index_high_vegetation",
+     "leaf_area_index_low_vegetation",
+     "low_vegetation_cover",
+     "mean_sea_level_pressure",
+     "mean_surface_latent_heat_flux",
+     "mean_surface_net_long_wave_radiation_flux",
+     "mean_surface_net_short_wave_radiation_flux",
+     "mean_surface_sensible_heat_flux",
+     "mean_top_downward_short_wave_radiation_flux",
+     "mean_top_net_long_wave_radiation_flux",
+     "mean_top_net_short_wave_radiation_flux",
+     "mean_vertically_integrated_moisture_divergence",
+     "potential_vorticity",
+     "relative_humidity",
+     "sea_ice_cover",
+     "sea_surface_temperature",
+     "slope_of_sub_gridscale_orography",
+     "snow_depth",
+     "soil_type",
+     "specific_humidity"
+    ],
+    "dims": {
+     "time": 93544,
+     "longitude": 240,
+     "latitude": 121,
+     "level": 13
+    },
+    "chunks": "(8, 13, 240, 121)",
+    "t0": "1959-01-01T00:00:00.000000000",
+    "t1": "2023-01-10T18:00:00.000000000"
+   }
+  },
+  "s": 2.7
+ },
+ "arco_era5": {
+  "ok": true,
+  "info": {
+   "dims": {
+    "time": 1323648,
+    "latitude": 721,
+    "longitude": 1440,
+    "level": 37
+   },
+   "chunks": "(1, 37, 721, 1440)",
+   "t1": "2050-12-31T23:00:00.000000000",
+   "sample_shape": [
+    161,
+    241
+   ],
+   "one_read_s": 2.0,
+   "attrs": {
+    "last_updated": "2026-10-18 06:17:06.855355+00:00",
+    "valid_time_start": "1940-01-01",
+    "valid_time_stop": "2026-06-30",
+    "valid_time_stop_era5t": "2026-10-12"
+   }
+  },
+  "s": 2.6
+ },
+ "ncar_s3": {
+  "ok": true,
+  "info": {
+   "sample": [
+    "nsf-ncar-era5/e5.oper.an.pl/201512/",
+    "nsf-ncar-era5/e5.oper.an.pl/201512/e5.oper.an.pl.128_060_pv.ll025sc.2015120100_2015120123.nc",
+    "nsf-ncar-era5/e5.oper.an.pl/201512/e5.oper.an.pl.128_060_pv.ll025sc.2015120200_2015120223.nc",
+    "nsf-ncar-era5/e5.oper.an.pl/201512/e5.oper.an.pl.128_060_pv.ll025sc.2015120300_2015120323.nc",
+    "nsf-ncar-era5/e5.oper.an.pl/201512/e5.oper.an.pl.128_060_pv.ll025sc.2015120400_2015120423.nc",
+    "nsf-ncar-era5/e5.oper.an.pl/201512/e5.oper.an.pl.128_060_pv.ll025sc.2015120500_2015120523.nc"
+   ],
+   "file": "nsf-ncar-era5/e5.oper.an.pl/201512/e5.oper.an.pl.128_131_u.ll025uv.2015120100_2015120123.nc",
+   "shape": [
+    24,
+    37,
+    721,
+    1440
+   ],
+   "chunks": [
+    1,
+    37,
+    721,
+    1440
+   ],
+   "compression": "gzip",
+   "size_mb": 1556
+  },
+  "s": 1.1
+ },
+ "rda_thredds": {
+  "ok": true,
+  "info": "Dataset {\n    Grid {\n     ARRAY:\n        Float32 U[time = 24][level = 37][latitude = 721][longitude = 1440];\n     MAPS:\n        Int32 time[time = 24];\n        Float64 level[level = 37];\n        Float64 latitude[latitude = 721];\n        Float64 longitude[longitude = 1440];\n    } U;\n    Float64 latitu",
+  "s": 8.1
+ }
+}
