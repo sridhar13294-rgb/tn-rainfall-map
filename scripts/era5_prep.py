@@ -16,9 +16,9 @@ log('key present' if KEY else 'NO KEY', len(KEY))
 ok = False
 try:
     c = client()
-    c.retrieve('reanalysis-era5-single-levels', {'product_type': ['reanalysis'], 'variable': ['mean_sea_level_pressure'],
+    retrieve(c, 'reanalysis-era5-single-levels', {'product_type': ['reanalysis'], 'variable': ['mean_sea_level_pressure'],
                'year': ['2015'], 'month': ['12'], 'day': ['01'], 'time': ['00:00'], 'area': [14, 79, 12, 81], 'grid': GRID,
-               'data_format': 'grib', 'download_format': 'unarchived'}, '/tmp/probe.grib')
+               'data_format': 'grib', 'download_format': 'unarchived'}, '/tmp/probe.grib', log, hours=2.0)
     import pygrib
     m = pygrib.open('/tmp/probe.grib').message(1); log('PROBE OK: ERA5 msl near Chennai 1 Dec 2015 00 UTC =', round(float(m.values.mean()) / 100, 1), 'hPa')
     ok = True
@@ -36,13 +36,10 @@ def clim():
                    'data_format': 'grib', 'download_format': 'unarchived'}
             if lev: req['pressure_level'] = lev
             fn = f'/tmp/clim_{var}.grib'
-            for k in range(3):
-                try:
-                    c.retrieve(ds, req, fn); break
-                except Exception as e:
-                    log('clim request failed', var, k, repr(e)[:600]); time.sleep(30)
-            else:
-                continue
+            try:
+                retrieve(c, ds, req, fn, log)
+            except Exception as e:
+                log('clim request failed', var, repr(e)[:600]); continue
             G = {}
             la, lo = read_grib(fn, G, lambda m: (m.validDate.year, m.validDate.month)); os.remove(fn)
             if la is not None: lat, lon = la, lo

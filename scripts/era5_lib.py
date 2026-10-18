@@ -52,3 +52,22 @@ def read_grib(fn, fields, keyf):
         fields.setdefault(k, {})[keyf(m)] = scale(name, v)
     g.close()
     return lat, lon
+
+def retrieve(c, name, req, fn, log=print, hours=5.0):
+    """CDS retrieve that waits out the data store's 'queued requests temporarily limited' throttle (for up to `hours`)
+    and retries other errors three times.  Raises on licence/policy errors at once."""
+    t_end = time.time() + hours * 3600; other = 0; waits = 0
+    while True:
+        try:
+            c.retrieve(name, req, fn); return True
+        except Exception as e:
+            m = repr(e)
+            if 'licence' in m or 'policies' in m: raise
+            if 'temporarily limited' in m:
+                waits += 1
+                if waits == 1 or waits % 10 == 0: log('data store busy (queue limit), waiting', waits)
+                if time.time() > t_end: raise
+                time.sleep(150); continue
+            other += 1; log('request error', other, m[:300], '...', m[-300:])
+            if other >= 3: raise
+            time.sleep(90)

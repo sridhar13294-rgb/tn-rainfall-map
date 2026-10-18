@@ -21,13 +21,10 @@ def job(args):
     if kind == 'pl': req = dict(base, variable=PL, pressure_level=LV); name = 'reanalysis-era5-pressure-levels'
     else: req = dict(base, variable=SL); name = 'reanalysis-era5-single-levels'
     fn = f'/tmp/days_{YEAR}_{m}_{kind}.grib'
-    for k in range(4):
-        try:
-            t0 = time.time(); c.retrieve(name, req, fn); log(kind, m, 'ok', int(time.time() - t0), 's'); break
-        except Exception as e:
-            log('failed', kind, m, k, repr(e)[:600]); time.sleep(60)
-    else:
-        return {}, None, None
+    try:
+        t0 = time.time(); retrieve(c, name, req, fn, log, hours=4.5); log(kind, m, 'ok', int(time.time() - t0), 's')
+    except Exception as e:
+        log('failed', kind, m, repr(e)[:600]); return {}, None, None
     F = {}; la, lo = read_grib(fn, F, lambda g: g.validDate.strftime('%Y%m%d%H')); os.remove(fn)
     return F, la, lo
 jobs = [(m, ds, kind) for (y, m, ds) in month_groups(dt.date(YEAR, 9, 23), dt.date(YEAR, 12, 31)) for kind in ('pl', 'sl')]
