@@ -1,7 +1,11 @@
 {
  "name": "interior_2005_nov",
  "day": "2005-11-23",
+ "source": "ARCO-ERA5 (Google Cloud public copy)",
  "log": [
-  "request failed reanalysis-era5-pressure-levels 2005 11 0 HTTPError(\"403 Client Error: Forbidden for url: https://cds.climate.copernicus.eu/api/retrieve/v1/processes/reanalysis-era5-pressure-levels/execution\\nuser didn't accept all required site policies\\nMissing policies are: Terms of use of the Copernicus Climate Data Store (rev. 11) - https://cds.climate.copernicus.eu/licences/terms-of-use-cds, Data protection and privacy statement (rev. 24) - https://cds.climate.copernicus.eu/licences/data-protection-privacy-statement\")"
+  "variables missing in ARCO: ['relative_humidity']",
+  "fields read in 59 s",
+  "SAVED 44 times 44751 kB, total 68 s",
+  "uploaded"
  ]
 }
