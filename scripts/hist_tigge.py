@@ -10,7 +10,7 @@ KEY = os.environ.get('ECMWF_DS_KEY', '').strip()
 LOG = []
 def log(*a):
     m = ' '.join(str(x) for x in a); print(m, flush=True); LOG.append(m[:1500])
-    json.dump(dict(year=sys.argv[1], log=LOG), open(os.path.join(OUT, f'_status_{sys.argv[1]}.json'), 'w'), indent=1)
+    json.dump(dict(year=sys.argv[1], month=os.environ.get('TIGGE_MONTH'), log=LOG), open(os.path.join(OUT, f'_status_{sys.argv[1]}' + (f"_{int(os.environ['TIGGE_MONTH']):02d}" if os.environ.get('TIGGE_MONTH') else '') + '.json'), 'w'), indent=1)
 if not KEY:
     log('No ECMWF_DS_KEY secret: nothing to do.'); sys.exit(0)
 log('key present, length', len(KEY), 'looks like', 'UUID' if KEY.count('-') == 4 else ('uid:key (old style)' if ':' in KEY else 'other'))
@@ -37,6 +37,10 @@ def fetch(levtype, d0, d1, target):
 F_ = {}                                                     # (init date, step, shortName) -> 2D field; plus lat/lon
 LL = None
 months = [(dt.date(year, 9, 29), dt.date(year, 10, 31)), (dt.date(year, 11, 1), dt.date(year, 11, 30)), (dt.date(year, 12, 1), dt.date(year, 12, 30))]
+MON = int(os.environ.get('TIGGE_MONTH') or 0)                 # one month per job, so a slow archive cannot time out a whole year
+if MON:
+    first = dt.date(year, MON, 1); last = dt.date(year, MON, calendar.monthrange(year, MON)[1])
+    months = [(first - dt.timedelta(days=2), last - dt.timedelta(days=1))]
 if os.environ.get('TIGGE_PROBE'):
     months = [(dt.date(year, 11, 14), dt.date(year, 11, 16))]
 for d0, d1 in months:
@@ -64,6 +68,7 @@ def vort(u, v):
     dy = 0.5 * 110.6e3; dx = 0.5 * 111.32e3 * np.cos(np.radians(LL[0]))
     return (np.gradient(v, axis=1) / dx - np.gradient(u, axis=0) / (-dy)) * 1e5   # rows run north to south
 days = [dt.date(year, 10, 1) + dt.timedelta(days=k) for k in range(92)]
+if MON: days = [d for d in days if d.month == MON]
 R = {f'{k}{w}': [[None] * len(days) for _ in CELLS] for k in ('rain', 'cape', 'tcw', 'vo850') for w in '01'}
 for k, D in enumerate(days):
     for w, lag, (a, b) in (('0', 1, (3, 27)), ('1', 2, (27, 51))):
@@ -83,5 +88,5 @@ for k, D in enumerate(days):
             for c in range(len(CELLS)): R['vo850' + w][c][k] = round(float(x[c]), 2)
 cover = {k: round(sum(x is not None for r in v for x in r) / (len(CELLS) * len(days)), 2) for k, v in R.items()}
 json.dump(dict(model='ECMWF (TIGGE control forecast, 0.5 deg)', year=year, days=[d.isoformat() for d in days], cells=CELLS, cover=cover, data=R),
-          open(f'{OUT}/{year}.json', 'w'), separators=(',', ':'))
+          open(f'{OUT}/{year}' + (f'_{MON:02d}' if MON else '') + '.json', 'w'), separators=(',', ':'))
 log('cover', cover)
