@@ -27,7 +27,7 @@ GAP_DAYS = 7             # past week of model errors; each day back counts half 
 SATGAUGE = 'https://raw.githubusercontent.com/sridhar13294-rgb/tn-rainfall-map/sat-radar/data/satradar/satgauge.json'
 OUT = verify.P('data', 'verify', 'ourfc.json')
 NAME = 'Our forecast'
-MODEL_SKIP = ('Average', 'Weighted average', NAME)
+MODEL_SKIP = ('Average', 'Weighted average', NAME, 'Our v3')
 
 
 def _sat_weight():

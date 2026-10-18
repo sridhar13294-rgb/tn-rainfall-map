@@ -72,7 +72,7 @@ def gauge_days(d0, nper, now, max_days=5):
     return out
 
 
-def archive(per6, labels, weights, d0, now, npts, ours=None):
+def archive(per6, labels, weights, d0, now, npts, ours=None, extra=None):
     """Save each model's (and the averages') rain for the coming TN SMART days. per6: {model: [6-hourly arrays]}."""
     os.makedirs(FC_DIR, exist_ok=True)
     nper = max(len(v) for v in per6.values())
@@ -91,6 +91,12 @@ def archive(per6, labels, weights, d0, now, npts, ours=None):
             try:
                 o = ours([x / 10 for x in rec['Average']], [max(float(vals[n][i]) for n in vals) for i in range(npts)], day)
                 rec['Our forecast'] = [int(round((x or 0) * 10)) for x in o]
+            except Exception:
+                pass
+        for name, fn in (extra or {}).items():             # earlier versions of our forecast, scored side by side
+            try:
+                o = fn([x / 10 for x in rec['Average']], [max(float(vals[n][i]) for n in vals) for i in range(npts)], day)
+                rec[name] = [int(round((x or 0) * 10)) for x in o]
             except Exception:
                 pass
         if weights:
@@ -258,7 +264,7 @@ def verify(pts, now):
 
     scores = {n: {str(l): _summary(s, len(verified[n][l])) for l, s in by.items()} for n, by in stats.items()}
     # weights for the model average: inverse mean absolute error at leads 1-2, once every model has MIN_DAYS days
-    models = [n for n in scores if n not in ('Average', 'Weighted average', 'Our forecast')]
+    models = [n for n in scores if n not in ('Average', 'Weighted average', 'Our forecast', 'Our v3')]
     weights, note, use_sat, detail = None, None, False, {}
     if models:
         mae, ok = {}, True
