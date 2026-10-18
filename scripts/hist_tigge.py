@@ -7,8 +7,13 @@ import json, os, sys, datetime as dt, time, calendar
 import numpy as np
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); OUT = os.path.join(ROOT, 'data/history/tigge'); os.makedirs(OUT, exist_ok=True)
 KEY = os.environ.get('ECMWF_DS_KEY', '').strip()
+LOG = []
+def log(*a):
+    m = ' '.join(str(x) for x in a); print(m, flush=True); LOG.append(m[:1500])
+    json.dump(dict(year=sys.argv[1], log=LOG), open(os.path.join(OUT, f'_status_{sys.argv[1]}.json'), 'w'), indent=1)
 if not KEY:
-    print('No ECMWF_DS_KEY secret yet: nothing to do.'); sys.exit(0)
+    log('No ECMWF_DS_KEY secret: nothing to do.'); sys.exit(0)
+log('key present, length', len(KEY), 'looks like', 'UUID' if KEY.count('-') == 4 else ('uid:key (old style)' if ':' in KEY else 'other'))
 import cdsapi, pygrib
 C = cdsapi.Client(url='https://ecds.ecmwf.int/api', key=KEY, quiet=False, timeout=600, retry_max=20)
 h = open(os.path.join(ROOT, 'site/forecast.html')).read(); i = h.index('const F=') + 8; F, _ = json.JSONDecoder().raw_decode(h[i:])
@@ -23,11 +28,13 @@ def fetch(levtype, d0, d1, target):
         try:
             C.retrieve('tigge-forecasts', r, target); return True
         except Exception as e:
-            print('request failed', levtype, d0, area, str(e)[:300], flush=True)
+            log('request failed', levtype, d0, area, repr(e)[:1200])
     return False
 F_ = {}                                                     # (init date, step, shortName) -> 2D field; plus lat/lon
 LL = None
 months = [(dt.date(year, 9, 29), dt.date(year, 10, 31)), (dt.date(year, 11, 1), dt.date(year, 11, 30)), (dt.date(year, 12, 1), dt.date(year, 12, 30))]
+if os.environ.get('TIGGE_PROBE'):
+    months = [(dt.date(year, 11, 14), dt.date(year, 11, 16))]
 for d0, d1 in months:
     for lt in ('sfc', 'pl'):
         fn = f'/tmp/tigge_{year}_{d0:%m}_{lt}.grib'
@@ -38,7 +45,7 @@ for d0, d1 in months:
             F_[(m.dataDate, m.endStep if hasattr(m, 'endStep') else m.step, m.shortName)] = m.values.astype(float)
         g.close(); os.remove(fn)
 if not F_:
-    print('no data'); sys.exit(1)
+    log('no data'); sys.exit(1)
 lat1 = LL[0][:, 0]; lon1 = LL[1][0, :] % 360
 II = [int(np.abs(lat1 - a).argmin()) for a, _ in CELLS]; JJ = [int(np.abs(lon1 - b % 360).argmin()) for _, b in CELLS]
 at = lambda v: np.array([v[a, b] for a, b in zip(II, JJ)])
@@ -73,4 +80,4 @@ for k, D in enumerate(days):
 cover = {k: round(sum(x is not None for r in v for x in r) / (len(CELLS) * len(days)), 2) for k, v in R.items()}
 json.dump(dict(model='ECMWF (TIGGE control forecast, 0.5 deg)', year=year, days=[d.isoformat() for d in days], cells=CELLS, cover=cover, data=R),
           open(f'{OUT}/{year}.json', 'w'), separators=(',', ':'))
-print('cover', cover)
+log('cover', cover)
