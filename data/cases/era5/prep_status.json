@@ -1,8 +1,9 @@
 {
  "log": [
   "key present 36",
-  "PROBE FAILED HTTPError('400 Client Error: Bad Request for url: https://cds.climate.copernicus.eu/api/retrieve/v1/jobs/0d6f3385-86ac-43db-b082-8876d3be9c22/results\\nThe job has been rejected\\nNumber queued requests for this dataset is temporarily limited. Please configure your scripts accordingly ')",
-  "IMD FAILED StopIteration('IMD grid already saved')",
-  "prep finished"
+  "data store busy (queue limit), waiting 1",
+  "data store busy (queue limit), waiting 10",
+  "data store busy (queue limit), waiting 20",
+  "data store busy (queue limit), waiting 30"
  ]
 }
