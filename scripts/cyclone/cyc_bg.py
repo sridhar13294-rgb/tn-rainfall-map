@@ -8,7 +8,8 @@ ARCO = 'gs://gcp-public-data-arco-era5/ar/full_37-1h-0p25deg-chunk-1.zarr-v3'
 VARS = ['geopotential', 'u_component_of_wind', 'v_component_of_wind']
 LEVS = [850, 500, 200]
 LATS = np.arange(0, 40.1, 1.5); LONS = np.arange(60, 110.1, 1.5)
-def log(*a): print(*a, flush=True)
+LOGF = open('data/cyclone/bg_log.txt', 'w')
+def log(*a): print(*a, flush=True); print(*a, file=LOGF, flush=True)
 L = json.load(open('data/cyclone/bg_list.json'))
 times = set()
 for s in L:
@@ -16,26 +17,30 @@ for s in L:
     s['all'] = [(t0 - dt.timedelta(hours=48)).strftime('%Y-%m-%dT%H'), (t0 - dt.timedelta(hours=24)).strftime('%Y-%m-%dT%H')] + s['times']
     times.update(s['all'])
 times = sorted(times); log(len(times), 'times')
-W = xr.open_zarr(WB2, storage_options={'token': 'anon'}, chunks=None); log('wb2', dict(W.sizes))
+W = xr.open_zarr(WB2, storage_options={'token': 'anon'}, chunks=None); log('wb2', dict(W.sizes)); log('wb2 coords', {c: (str(W[c].values[:3]), str(W[c].values[-2:])) for c in W.coords}); log('wb2 vars', sorted(W.data_vars)[:40])
 wlat = 'latitude' if 'latitude' in W.dims else 'lat'; wlon = 'longitude' if 'longitude' in W.dims else 'lon'
 A = None
 out = np.full((len(times), 3, 3, len(LATS), len(LONS)), np.nan, np.float32)
 for i, t in enumerate(times):
     T = np.datetime64(dt.datetime.strptime(t, '%Y-%m-%dT%H'))
-    try:
-        if T < np.datetime64('2023-01-09T00'):
+    done = False
+    if T < np.datetime64('2023-01-09T00'):
+        try:
             for k, v in enumerate(VARS):
-                x = W[v].sel(time=T, level=LEVS).sel({wlat: LATS, wlon: LONS}, method='nearest').values
-                out[i, k] = x
-        else:
+                out[i, k] = W[v].sel(time=T).sel(level=LEVS).sel({wlat: LATS, wlon: LONS}, method='nearest').values
+            done = True
+        except Exception as e:
+            log(i, t, 'WB2 failed', repr(e)[:300])
+    if not done:
+        try:
             if A is None:
                 A = xr.open_zarr(ARCO, storage_options={'token': 'anon'}, chunks=None); log('arco', dict(A.sizes))
             for k, v in enumerate(VARS):
-                x = A[v].sel(time=T, level=LEVS).sel(latitude=LATS, longitude=LONS, method='nearest').values
-                out[i, k] = x
-        log(i, t, 'ok', float(np.nanmean(out[i, 0, 1])) / 9.80665)
-    except Exception as e:
-        log(i, t, 'FAILED', repr(e)[:200])
+                out[i, k] = A[v].sel(time=T).sel(level=LEVS).sel(latitude=LATS, longitude=LONS, method='nearest').values
+            done = True
+        except Exception as e:
+            log(i, t, 'ARCO failed', repr(e)[:300])
+    log(i, t, 'ok' if done else 'MISSING', float(np.nanmean(out[i, 0, 1])) / 9.80665 if done else '')
 os.makedirs('/tmp/cyc_out', exist_ok=True)
 np.savez_compressed('/tmp/cyc_out/bg_fields.npz', data=out, times=np.array(times), lats=LATS, lons=LONS, vars=np.array(['z', 'u', 'v']), levs=np.array(LEVS))
 log('saved', os.path.getsize('/tmp/cyc_out/bg_fields.npz'))
