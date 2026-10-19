@@ -1,0 +1,46 @@
+name: Cyclone study (latest forecasts, best tracks, ERA5 steering winds)
+# Runs on the cases branch when data/cyclone/RUN changes. The file's first word picks the jobs: "all", "fc" or "hist".
+on:
+  push:
+    branches: [cases]
+    paths: ['data/cyclone/RUN']
+permissions:
+  contents: write
+jobs:
+  forecasts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install -q numpy pygrib
+      - run: |
+          w=$(head -c 4 data/cyclone/RUN)
+          if [ "$w" = "all " ] || [ "$w" = "fc" ] || [ "$w" = "fc " ]; then python scripts/cyclone/cyc_fetch.py $(sed -n 2p data/cyclone/RUN) || true; fi
+          for f in /tmp/cyc_out/*.npz; do [ -f "$f" ] && gh release upload era5-cases "$f" --clobber || true; done
+      - if: always()
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add data/cyclone || true
+          git commit -qm "Cyclone study: forecast fetch log" || exit 0
+          for i in 1 2 3 4 5 6; do git pull -q --rebase origin cases && git push -q origin HEAD:cases && break; sleep $((RANDOM % 20 + 5)); done
+  history:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install -q numpy xarray zarr gcsfs
+      - run: |
+          w=$(head -c 4 data/cyclone/RUN)
+          if [ "$w" = "all " ] || [ "$w" = "hist" ]; then python scripts/cyclone/cyc_hist.py || true; fi
+      - if: always()
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add data/cyclone || true
+          git commit -qm "Cyclone study: best tracks and ERA5 steering winds" || exit 0
+          for i in 1 2 3 4 5 6; do git pull -q --rebase origin cases && git push -q origin HEAD:cases && break; sleep $((RANDOM % 20 + 5)); done
