@@ -56,8 +56,9 @@ def noaa_key(r):
         c = 'u' if r['var'] == 'UGRD' else 'v'
         if r['level'] == '10 m above ground': return c + '10'
         if r['level'].endswith(' mb'):
-            p = int(r['level'].split()[0])
-            if p in LEVS: return f'{c}{p}'
+            try: p = float(r['level'].split()[0])
+            except ValueError: return None
+            if p == int(p) and int(p) in LEVS: return f'{c}{int(p)}'
     return None
 def latest_run(test, cycles=(0, 6, 12, 18)):
     now = dt.datetime.utcnow()
