@@ -18,7 +18,7 @@ def log(src, *a):
 def http(url, rng=None, tries=5, method='GET'):
     for i in range(tries):
         h = {'User-Agent': 'tn-rainfall-map cyclone study'}
-        if rng: h['Range'] = f'bytes={rng[0]}-{rng[1]}'
+        if rng: h['Range'] = f'bytes={rng[0]}-' + ('' if rng[1] is None else str(rng[1]))
         try:
             with urllib.request.urlopen(urllib.request.Request(url, headers=h, method=method), timeout=90) as r:
                 return r.read() if method == 'GET' else b''
@@ -77,7 +77,7 @@ def fetch_noaa(src, members, url_fn, kind, par=24):
         n = 0
         for r in parse_idx(txt.decode()):
             k = noaa_key(r)
-            if k is None or r['end'] is None or (kind == 'ens' and k not in ENS_VARS): continue
+            if k is None or (kind == 'ens' and k not in ENS_VARS): continue
             b = http(url_fn(run, mem, st), (r['start'], r['end']))
             if b:
                 try: A[mi, si, VARS.index(k)] = subset(b); n += 1
@@ -148,6 +148,7 @@ if __name__ == '__main__':
             'GEFS': lambda: fetch_noaa('GEFS', list(range(31)), gefs_url, 'ens'),
             'HRES': lambda: fetch_ec('HRES', 'oper'), 'ENS': lambda: fetch_ec('ENS', 'ens', par=32)}
     with cf.ThreadPoolExecutor(len(which)) as ex:
-        for f in [ex.submit(jobs[w]) for w in which]:
+        for w, f in [(w, ex.submit(jobs[w])) for w in which]:
             try: f.result()
-            except Exception as e: print('FAILED', repr(e)[:400], flush=True)
+            except Exception as e:
+                import traceback; log(w, 'FAILED', repr(e)[:300], traceback.format_exc()[-600:])
