@@ -1,22 +1,11 @@
 {
+ "GFS": [
+  "run 2026-10-18 18:00:00 members 1 steps 51",
+  "FAILED ValueError(\"invalid literal for int() with base 10: '0.01'\") -rainfall-map/scripts/cyclone/cyc_fetch.py\", line 88, in <lambda>\n    tot = sum(ex.map(lambda a: job(*a), [(mi, si) for mi in range(len(members)) for si in range(len(steps))]))\n                               ^^^^^^^\n  File \"/home/runner/work/tn-rainfall-map/tn-rainfall-map/scripts/cyclone/cyc_fetch.py\", line 79, in job\n    k = noaa_key(r)\n        ^^^^^^^^^^^\n  File \"/home/runner/work/tn-rainfall-map/tn-rainfall-map/scripts/cyclo"
+ ],
  "GEFS": [
   "run 2026-10-18 18:00:00 members 31 steps 31",
-  "fields ok 7688 in 152 s; coverage {'msl': 0.0, 'u10': 0.0, 'v10': 0.0, 'u850': 1.0, 'v850': 1.0, 'u700': 1.0, 'v700': 1.0, 'u500': 1.0, 'v500': 1.0, 'u300': 0.0, 'v300': 0.0, 'u250': 0.0, 'v250': 0.0, 'u200': 1.0, 'v200': 1.0}",
-  "saved /tmp/cyc_out/fc_GEFS_2026101818.npz 51054 kB"
- ],
- "GFS": [
-  "run 2026-10-18 18:00:00 members 1 steps 51"
- ],
- "HRES": [
-  "run 2026-10-18 12:00:00 steps 51",
-  "fields to fetch 765",
-  "fields ok 765 in 70 s; coverage {'msl': 1.0, 'u10': 1.0, 'v10': 1.0, 'u850': 1.0, 'v850': 1.0, 'u700': 1.0, 'v700': 1.0, 'u500': 1.0, 'v500': 1.0, 'u300': 1.0, 'v300': 1.0, 'u250': 1.0, 'v250': 1.0, 'u200': 1.0, 'v200': 1.0}",
-  "saved /tmp/cyc_out/fc_HRES_2026101812.npz 4992 kB"
- ],
- "ENS": [
-  "run 2026-10-18 12:00:00 steps 31",
-  "fields to fetch 13950",
-  "fields ok 13950 in 660 s; coverage {'msl': 0.98, 'u10': 0.0, 'v10': 0.0, 'u850': 0.98, 'v850': 0.98, 'u700': 0.98, 'v700': 0.98, 'u500': 0.98, 'v500': 0.98, 'u300': 0.0, 'v300': 0.0, 'u250': 0.0, 'v250': 0.0, 'u200': 0.98, 'v200': 0.98}",
-  "saved /tmp/cyc_out/fc_ENS_2026101812.npz 89975 kB"
+  "fields ok 8649 in 171 s; coverage {'msl': 1.0, 'u10': 0.0, 'v10': 0.0, 'u850': 1.0, 'v850': 1.0, 'u700': 1.0, 'v700': 1.0, 'u500': 1.0, 'v500': 1.0, 'u300': 0.0, 'v300': 0.0, 'u250': 0.0, 'v250': 0.0, 'u200': 1.0, 'v200': 1.0}",
+  "saved /tmp/cyc_out/fc_GEFS_2026101818.npz 52614 kB"
  ]
 }
