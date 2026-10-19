@@ -9,7 +9,7 @@ OUT = os.path.join(ROOT, 'data', 'cyclone'); os.makedirs(OUT, exist_ok=True); TM
 LA0, LA1, LO0, LO1, RES = 0.0, 30.0, 70.0, 105.0, 0.5
 LATS = np.arange(LA0, LA1 + 1e-6, RES); LONS = np.arange(LO0, LO1 + 1e-6, RES)
 LEVS = [850, 700, 500, 300, 250, 200]
-VARS = ['msl', 'u10', 'v10'] + [f'{c}{p}' for p in LEVS for c in 'uv']
+VARS = ['msl', 'u10', 'v10'] + [f'{c}{p}' for p in LEVS for c in 'uv'] + ['z500', 'z200']     # z = geopotential height (m)
 LOG = {}; LK = threading.Lock()
 def log(src, *a):
     m = ' '.join(str(x) for x in a); print(src, m, flush=True)
@@ -52,6 +52,7 @@ def parse_idx(txt):
     return out
 def noaa_key(r):
     if r['var'] == 'PRMSL' and r['level'] == 'mean sea level': return 'msl'
+    if r['var'] == 'HGT' and r['level'] in ('500 mb', '200 mb'): return 'z' + r['level'].split()[0]
     if r['var'] in ('UGRD', 'VGRD'):
         c = 'u' if r['var'] == 'UGRD' else 'v'
         if r['level'] == '10 m above ground': return c + '10'
@@ -66,7 +67,7 @@ def latest_run(test, cycles=(0, 6, 12, 18)):
         run = (now - dt.timedelta(hours=h)).replace(minute=0, second=0, microsecond=0)
         if run.hour in cycles and test(run): return run
     return None
-ENS_VARS = {'msl', 'u850', 'v850', 'u700', 'v700', 'u500', 'v500', 'u200', 'v200'}     # ensembles: lighter set
+ENS_VARS = {'msl', 'u850', 'v850', 'u700', 'v700', 'u500', 'v500', 'u200', 'v200', 'z500', 'z200'}     # ensembles: lighter set
 def fetch_noaa(src, members, url_fn, kind, par=24):
     run = latest_run(lambda r: http(url_fn(r, members[-1], 360) + '.idx', method='HEAD') is not None)
     if run is None: log(src, 'no complete run'); return
@@ -99,6 +100,7 @@ def ec_key(r):
     if lt == 'sfc':
         return {'msl': 'msl', '10u': 'u10', '10v': 'v10'}.get(p)
     if lt == 'pl' and p in ('u', 'v') and int(r.get('levelist', 0)) in LEVS: return f"{p}{int(r['levelist'])}"
+    if lt == 'pl' and p == 'gh' and int(r.get('levelist', 0)) in (500, 200): return f"z{int(r['levelist'])}"
     return None
 def fetch_ec(src, kind, par=24):
     base = EC[0]
