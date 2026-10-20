@@ -109,7 +109,7 @@ button.play{border:1px solid var(--rule);background:var(--night);color:var(--ink
 
 </div>
 <p class="m" id="notes"></p>
-</div><script src="export.js"></script><script>
+</div><script src="sky.js"></script><script src="export.js"></script><script>
 const F=/*FDATA*/;
 const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
 const DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -147,7 +147,14 @@ $('days').onclick=e=>{const b=e.target.closest('[data-d]');if(b){day=+b.dataset.
 $('per').onclick=e=>{const b=e.target.closest('[data-p]');if(b){per=+b.dataset.p;paint()}};
 function cls(v,b){let k=0;b.forEach((x,i)=>{if(v>=x[0])k=i});return k}
 function val(c,v,m,k){const s=c[v];if(!s)return null;if(m=='eq'&&!s.eq)m='avg';if(m=='ours'&&!s.ours)m='avg';return m=='avg'?s.avg[k]:(s[m]||[])[k]}
-function paint(){const v=$('var').value,m=$('mod').value,b=SC[v].b,k=K();
+// weather background: storm, rain or sun from the forecast rain across Tamil Nadu for the chosen day or 6-hour block
+function skyFc(){if(!window.Sky)return;const six=is6(),k=K(),m=$('mod').value,v=six?'rain6':'precipitation_sum';
+ const xs=F.cells.map(c=>val(c,v,m,k)).filter(x=>x!=null);if(!xs.length){Sky.set('clear',0,false);return}
+ const a=xs.reduce((p,q)=>p+q,0)/xs.length*(six?4:1),wet=xs.filter(x=>x>=(six?1:2.5)).length/xs.length;
+ let risk=0;if(!six){F.cells.forEach(c=>{const p=c.precipitation_sum,rs=p.ours_risk?p.ours_risk[k]:null,rk=p.ours_reach?p.ours_reach[k]:null;if(rs!=null?rs>=50:(rk!=null&&rk>=35))risk++});risk/=F.cells.length}
+ let mood='clear',lv=0;if(a>=14||risk>=.06||(a>=8&&wet>=.6)){mood='storm';lv=Math.min(1,Math.max(a/30,risk*5))}else if(a>=3.5||wet>=.4){mood='rain';lv=Math.min(1,a/12)}
+ Sky.set(mood,lv,six&&per>=2)}
+function paint(){skyFc();const v=$('var').value,m=$('mod').value,b=SC[v].b,k=K();
  document.querySelectorAll('#days .chip').forEach((c,i)=>c.classList.toggle('on',i==day));
  $('per').style.display=is6()?'':'none';
  if(is6())$('per').innerHTML=PER.map((p,i)=>`<button class="chip${i==per?' on':''}" data-p="${i}">${p}<small>IST · ${(F.coverage6[day*4+i]||[]).length} models</small></button>`).join('');

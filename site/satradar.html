@@ -77,7 +77,7 @@ select{font:inherit;font-size:14px;color:var(--ink);background:var(--deck);borde
 <p class="m" style="margin:0">Forecast frames (purple label) move the latest rain along its recent track: the page compares pictures 30 minutes apart, works out how each part of the rain is moving, and carries each rain cell forward in its own direction and speed (the arrows). The direction mainly follows the storm cores (the coldest cloud tops on infrared, which move with the storm instead of spreading like the cloud shield), blended with the rain track and with the winds 1.5–5 km up from the latest GFS model run. How much each counts is tuned automatically: every 30 minutes the direction methods are checked against how storms actually moved on IMD's Chennai and Karaikal radars. When the satellite track flips between pictures or disagrees with those winds (common on afternoons with weak winds, when storms grow and collapse faster than they move), the cell follows the winds and its arrow is dashed orange and marked "direction uncertain". Each cell is also checked for growth: its rain now is compared with 30 minutes earlier, and the infrared picture shows whether its cloud tops are cooling (rising, strengthening) or warming (collapsing). Cells are marked intensifying or weakening, and that trend is carried into the first hour of the forecast and then eased off. Places where cloud tops cooled by 8 °C or more in 30 minutes are circled as developing storms, often before heavy rain shows. Lightning comes from IMD's lightning network: a background job reads IMD's lightning maps every 15 minutes (they show strikes up to about 10–20 minutes ago, so they are fresher than the rain picture) and keeps only the strike positions; the maps themselves are not shown here. Lightning marks storms that are active right now (yellow diamonds on the map), flags new thunderstorms before rain shows on the satellite picture ("new storm"), helps decide whether a cell is intensifying or weakening, and gives a fourth direction estimate, from how the lightning shifted over 30 minutes. That estimate is scored against the radars like the other three, and its weight is tuned the same way. Brand-new storms that have not started yet cannot be seen by any satellite or radar nowcast, so trust the first hour more than the second. South India looks 4 hours ahead across the peninsula and the Bay of Bengal. Long range covers both seas and looks 6 hours ahead using pictures 30 minutes apart; after 3 hours its forecast is shown faded, as a rough guide to direction and timing only. Short range uses the same satellite pictures zoomed in, so it is good for timing but each square is still about 3–4 km across. "Now" is itself a forecast, because the newest picture is already 45–55 minutes old.</p>
 </div>
 </div>
-<script src="satgeo.js"></script><script src="export.js"></script>
+<script src="satgeo.js"></script><script src="sky.js"></script><script src="export.js"></script>
 <script>
 (function(){
 const $=id=>document.getElementById(id);
@@ -238,7 +238,15 @@ let FR=[],cur=0,timer=null,lastT=null;
 function poly(r){c.beginPath();r.forEach((p,i)=>i?c.lineTo(X(p[0]),Y(p[1])):c.moveTo(X(p[0]),Y(p[1])));c.closePath()}
 function label(t,sz){const x=X(t[1]),y=Y(t[2]);if(x<0||x>W||y<0||y>H)return;c.font=`600 ${sz}px "Anek Latin",system-ui`;c.fillStyle='#e9f0f7';c.beginPath();c.arc(x,y,2.6,0,7);c.fill();
  c.lineWidth=3;c.strokeStyle='rgba(11,21,34,.9)';const tx=t[3]=='end'?x-5:x+5;c.textAlign=t[3]=='end'?'right':'left';c.strokeText(t[0],tx,y+4);c.fillText(t[0],tx,y+4)}
-function draw(){const G=window.SATGEO||{tn:[],land:[],ct:[]},f=FR[cur];
+// weather background from the latest satellite picture in view: storm, rain, or clear (sun by day, stars by night, IST)
+let SKYT='';
+function skySat(){if(!window.Sky)return;const o=FR.filter(q=>!q.fc&&q.v).pop();if(!o)return;const key=o.t.getTime()+MODE;if(key===SKYT)return;SKYT=key;
+ let w=0,h=0,mx=0;const n=o.v.length;for(let i=0;i<n;i++){const x=o.v[i];if(x>=1)w++;if(x>=10)h++;if(x>mx)mx=x}
+ let lt=0;if(LT&&Array.isArray(LT.s))LT.s.forEach(p=>{if(p&&p[0]>=LON0&&p[0]<=LON1&&p[1]>=LAT0&&p[1]<=LAT1)lt++});
+ const cov=w/n,hv=h/n,hr=(o.t.getUTCHours()+o.t.getUTCMinutes()/60+5.5)%24;let mood='clear',lv=0;
+ if((cov>=.02&&(hv>=.004||lt>=5||(DEV&&DEV.length)))||hv>=.01){mood='storm';lv=Math.min(1,Math.max(cov*6,hv*40,lt/40))}else if(cov>=.012||mx>=8){mood='rain';lv=Math.min(1,cov*12)}
+ Sky.set(mood,lv,hr<6||hr>=18.25)}
+function draw(){skySat();const G=window.SATGEO||{tn:[],land:[],ct:[]},f=FR[cur];
  c.fillStyle='#0e1c2d';c.fillRect(0,0,W,H);c.fillStyle='#1d2f46';c.strokeStyle='#4a6283';c.lineWidth=.8;(MODE==='long'?G.land2:MODE==='south'?G.land3:G.land).forEach(r=>{poly(r);c.fill();c.stroke()});
  if(f){const d=rain.data,fade=f.fc&&MODE==='long'&&(f.t-lastT)>3*3600e3;for(let y=0;y<NY;y++)for(let x=0;x<NX;x++){const v=f.v[(NY-1-y)*NX+x],p=(y*NX+x)*4;let b=-1;for(let q=BINS.length-1;q>=0;q--)if(v>=BINS[q][0]){b=q;break}
    if(b<0){d[p+3]=0;continue}d[p]=RGB[b][0];d[p+1]=RGB[b][1];d[p+2]=RGB[b][2];d[p+3]=fade?110:f.fc?185:220}
