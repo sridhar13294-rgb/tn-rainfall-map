@@ -2,10 +2,11 @@
 python ours_live_h.py LIVE_NPZ LIVEH_NPZ SST_JSON LIVE_INPUTS_JSON OUT_JSON
 Start: today's GFS analysis over the hemisphere (only the observed state). The westerly troughs already over Iran,
 Afghanistan and Central Asia are inside the model and move east by the equations; the planetary-scale pattern
-(monsoon flow, subtropical highs) is held steady by a constant forcing; the storm's heating builds an outflow high.
+(monsoon flow, subtropical highs) is held steady by a constant forcing. (A storm-heating option exists in tc2.py but did
+not improve the past-storm score, so it is off.)
 Member 0 = the analysis as it is. Members 1-50: the analysis changed where it is uncertain (trough depth and position,
 small random wind errors, start position, which circulation develops) and the model settings varied (deformation radius,
-vortex response, how far the storm's winds reach, heating, random tendency noise), spread evenly with a fixed sequence."""
+vortex response, how far the storm's winds reach, random tendency noise), spread evenly with a fixed sequence."""
 import sys, os, json, math, pickle, datetime as dt, numpy as np
 from scipy import ndimage as nd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -16,7 +17,7 @@ from ours_live_s import precursors
 from hemi_pert import perturb, phys
 HOURS = 168; LEVS = [850, 700, 500, 200]
 LW = {850: 0.3, 700: 0.3, 500: 0.25, 200: 0.15}; UW = {200: 1.0}
-SET = dict(steady_ls=6, resid=True, cmul=0.0, heat=1500, nudge_upper=False, tau_cool=48)
+SET = dict(steady_ls=10, resid=False, cmul=0.0)          # best-scoring setting on the 84 past storms (heating did not help there; see the page)
 def lvl(x): return min(2, int(x * 3))
 FACTORS = [('Which circulation becomes the depression', ['southern seedling', 'merger of the two', 'east-central Bay circulation']),
            ('Westerly trough depth (start)', ['up to 20% shallower', 'about as analysed', 'up to 20% deeper']),
@@ -25,7 +26,6 @@ FACTORS = [('Which circulation becomes the depression', ['southern seedling', 'm
            ('Deformation radius (how the layers couple)', ['900-1,100 km', '1,100-1,300 km', '1,300-1,500 km']),
            ('Vortex response to the strength model', ['quick (3-5 h)', 'medium (5-7 h)', 'slow (7-9 h)']),
            ('How far out the storm’s winds reach', ['fall off fast', 'typical', 'fall off slowly']),
-           ('Storm heating (outflow high aloft)', ['weak', 'medium', 'strong']),
            ('Random model noise during the run', ['small', 'medium', 'large']),
            ('How fast it strengthens', ['slowly', 'normally', 'fast']),
            ('When the depression forms', ['in 12-24 h', 'in 24-42 h', 'in 42-54 h'])]
@@ -59,7 +59,7 @@ def main(LIVE, LIVEH, SSTJ, LIJ, OUTJ, NPROC=1, PART=None):
         rate = 0 if mi == 0 else lvl(p['rate']) - 1
         kw = dict(SET)
         if mi:
-            kw['heat'] = SET['heat'] * p['heat_f']
+            if SET.get('heat'): kw['heat'] = SET['heat'] * p['heat_f']
             if p['sppt'] > 0.02: kw['sppt'] = dict(seed=1000 + mi, amp=p['sppt'])
         M = tc2.TC2(-6.0, 64.0, 1.0, 149.0, res=0.75, Ld15=p['Ld15'] if mi else 1.2e6); reg = lambda a: M.regrid(a, lats, lons)
         L_ = lambda XX, w: reg(sum(wt * XX[LEVS.index(l)] for l, wt in w.items()))
@@ -91,7 +91,7 @@ def main(LIVE, LIVEH, SSTJ, LIJ, OUTJ, NPROC=1, PART=None):
             if not on_land(a[2], a[1]) and on_land(c[2], c[1]): lf = dict(t=a[0] + (c[0] - a[0]) / 2, lat=(a[1] + c[1]) / 2, lon=(a[2] + c[2]) / 2, wind=a[3]); break
         g = next((q for q in pts if (q[0] - t0).total_seconds() / 3600 >= gen), pts[0])
         levels = [1] * len(FACTORS) if mi == 0 else [lvl(p['prec']), lvl((p['trough_scale'] - 0.8) / 0.4), lvl(p['trough_shift'] / 6 + 0.5), lvl(p['dla'] + 0.5),
-                                                    lvl((p['Ld15'] - 0.9e6) / 0.6e6), lvl((p['tau_v'] - 3) / 6), 2 - lvl((p['xo'] - 0.4) / 0.2), lvl(p['heat_f'] - 0.5),
+                                                    lvl((p['Ld15'] - 0.9e6) / 0.6e6), lvl((p['tau_v'] - 3) / 6), 2 - lvl((p['xo'] - 0.4) / 0.2),
                                                     lvl(p['sppt'] / 0.25), lvl(p['rate']), lvl(p['gen'])]
         RES.append(dict(member=mi, levels=levels, prec=prec, seg=O.segment(lf['lat'], lf['lon']) if lf else 'no landfall',
                         gen=dict(t=g[0].isoformat(), lat=round(g[1], 2), lon=round(g[2], 2)),

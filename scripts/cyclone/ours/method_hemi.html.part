@@ -1,0 +1,27 @@
+<section>
+  <h2>How the runs are made (hemisphere-wide physics)</h2>
+  <ul>
+    <li><b>Start:</b> today’s GFS analysis winds over 9°S–72°N, 0–150°E (observed state only, no forecast steps). The westerly troughs over Iran, Afghanistan and Central Asia that usually turn Bay storms north are inside the model from the start.</li>
+    <li><b>Equations:</b> two layers (lower = 850–200 hPa deep mean, upper = 200 hPa), each carrying potential vorticity on the rotating Earth, coupled through the layer thickness. Troughs and ridges move and grow by these equations; the storm sits inside the flow, is carried by it, drifts north-west under its own spin, and can stall, loop or interact with a second circulation.</li>
+    <li><b>What is held:</b> the planetary-scale pattern (smoother than about 10°: the monsoon flow and the subtropical highs) is kept steady by a constant forcing that stands in for the heating, mountains and friction a two-layer model does not have. Without it the model forecast the steering wind worse than simply keeping today’s winds.</li>
+    <li><b>Strength:</b> from our 12-hour strength model (sea temperature, MJO, shear, landfall); the vortex is spun up toward it.</li>
+    <li><b>51 members, no storylines:</b> member 0 is today’s analysis with standard settings. Members 1–50 change only what is genuinely uncertain, spread evenly with a fixed sequence: the westerly trough’s depth (±20%) and position (±3°), small large-scale wind errors (1 m/s low, 2 m/s aloft), start position (±0.5°), which circulation develops, and the model settings (layer coupling, vortex response, how far the storm’s winds reach, random tendency noise, strengthening rate, formation time).</li>
+  </ul>
+</section>
+<section>
+  <h2>How far to trust it</h2>
+  <div class="tblwrap"><table>
+    <thead><tr><th>Test on 83 past Oct–Dec Bay storms (start: real position)</th><th>24 h</th><th>48 h</th><th>72 h</th></tr></thead>
+    <tbody>
+      <tr><td><b>This ensemble</b>, mean track error</td><td class="n">175 km</td><td class="n">332 km</td><td class="n">608 km</td></tr>
+      <tr><td>Same model given the <i>real</i> later winds (the physics’ ceiling)</td><td class="n">~150 km</td><td class="n">~260 km</td><td class="n">~340–420 km</td></tr>
+      <tr><td>“Average motion” (simple baseline)</td><td class="n">185 km</td><td class="n">279 km</td><td class="n">397 km</td></tr>
+      <tr><td>ECMWF, typical for the Bay</td><td class="n">~80 km</td><td class="n">~130 km</td><td class="n">~180 km</td></tr>
+    </tbody>
+  </table></div>
+  <ul class="note">
+    <li>Landfall stretch: worse than climatology (Brier skill −28%); the real stretch was among the 51 members’ outcomes for 61% of storms. Storms end ~1.5° too far south at 72 h on average.</li>
+    <li>Experimental: it matches the simple baseline at 1 day and is worse after that. Follow IMD for warnings.</li>
+  </ul>
+</section>
+</div>
