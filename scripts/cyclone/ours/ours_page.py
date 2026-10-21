@@ -15,7 +15,7 @@ for r in E['runs']:
     for q in r['pts']: p += [round(q[1], 2), round(q[2], 2), round(q[3])]
     lf = r['lf']; g = r['gen']
     runs.append([SEGS.index(r['seg']), [lf['lat'], lf['lon'], H(lf['t']), lf['wind']] if lf else None, r['levels'], p,
-                 [g['lat'], g['lon'], H(g['t'])] if g else None, round(r['vmax'], 1)])
+                 [g['lat'], g['lon'], H(g['t'])] if g else None, round(r['vmax'], 1), r.get('story'), r.get('timing'), r.get('magnitude')])
 land = []          # full-resolution Natural Earth 1:50m coast, clipped to 66-106E 0-30N (points outside are pulled onto the box edge)
 BX = (66.0, 106.0, 0.0, 30.0)
 for ring in json.load(open(os.path.join(REPO, 'data', 'cyclone', 'land.json'))):
@@ -45,8 +45,12 @@ def clean(x):
     if isinstance(x, (list, tuple)): return [clean(v) for v in x]
     return x
 E = clean(E); obs = E['obs']
-D = dict(t0=E['run'], run_label=label, obs=obs, analogs=E['analogs'], factors=E['factors'], runs=runs, land=land, hist=hist)
+D = dict(t0=E['run'], run_label=label, obs=obs, analogs=E['analogs'], factors=E['factors'], stories=E.get('stories'), runs=runs, land=land, hist=hist)
 css = open(os.path.join(HERE, 'style.css.part')).read(); body = open(os.path.join(HERE, 'body.html.part')).read()
+if METHOD == 'scenarios':
+    i = body.index('<section>\n  <h2>How the runs are made</h2>'); body = body[:i] + open(os.path.join(HERE, 'method_scen.html.part')).read()
+    body = body.replace('<h3>The 13 inputs and their three settings</h3>', '<h3>The storylines</h3>').replace('<h2>Which inputs move the landfall in this run</h2>', '<h2>Where each storyline takes the storm</h2>')
+    body = body.replace('Because every setting of every input meets every other, each input’s own effect can be read off directly: the bar runs from its lowest to its highest share of members landing in Tamil Nadu or south Andhra Pradesh (south of 15.9°N) across its three settings. The thin line marks all 51 together.', 'Each bar is the share of that storyline’s members landing in Tamil Nadu or south Andhra Pradesh (south of 15.9°N). The thin line marks all 51 together.')
 if METHOD == 'inputs':
     i = body.index('<section>\n  <h2>How the runs are made</h2>'); body = body[:i] + open(os.path.join(HERE, 'method_inputs.html.part')).read()
     body = body.replace('<h1>Our own ensemble: where the coming Bay storm could cross the coast</h1>', '<h1>Our own ensemble, input-driven: where today’s winds, changed by the inputs, take the storm</h1>')

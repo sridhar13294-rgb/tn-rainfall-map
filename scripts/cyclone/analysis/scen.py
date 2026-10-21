@@ -164,7 +164,7 @@ def run_track(M, env, P, hours=240, dt_h=6):
     while (t - P['gen_t']).total_seconds() / 3600 < hours:
         age = (t - P['gen_t']).total_seconds() / 3600
         c = 0 if v < 34 else (1 if v < 64 else 2)
-        U, V = env.at(t); x = ring(U, V, la, lo)
+        U, V = env.at(t, (la, lo, v)) if getattr(env, 'wants_storm', False) else env.at(t); x = ring(U, V, la, lo)
         if x is None: break
         m = M[c]; u = m[0].predict([x])[0]; w = m[1].predict([x])[0]
         u += (P['beta'] - 1) * m[0].intercept_; w += (P['beta'] - 1) * m[1].intercept_

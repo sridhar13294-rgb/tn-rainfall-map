@@ -11,7 +11,11 @@ const ist=h=>new Date(T0+(h+5.5)*3600e3);
 const dstr=h=>{const d=ist(h);return d.getUTCDate()+' '+MON[d.getUTCMonth()]};
 const tstr=h=>{const d=ist(h);return dstr(h)+' '+String(d.getUTCHours()).padStart(2,'0')+':'+String(d.getUTCMinutes()).padStart(2,'0')};
 const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
-const LK=D.runs.map((r,i)=>({i,seg:r[0],lf:r[1],lv:r[2],p3:r[3],gen:r[4],vmax:r[5]}));
+const LK=D.runs.map((r,i)=>({i,seg:r[0],lf:r[1],lv:r[2]||[],p3:r[3],gen:r[4],vmax:r[5],story:r[6],timing:r[7],mag:r[8]}));
+const STORY={};(D.stories||[]).forEach(s=>STORY[s.key]=s);
+const sgn=x=>(x>0?'+':x<0?'−':'±')+Math.abs(x).toFixed(1);
+const changed=r=>{if(D.stories){const s=STORY[r.story];return s?(r.story==='control'?s.name:s.name+' — happens '+(Math.abs(r.timing)<0.05?'on time':sgn(r.timing)+' day')+', '+Math.round(r.mag*100)+'% strength'):''}
+  const FT=D.factors;return r.lv.map((v,k)=>v===1||FT[k][1][0]===FT[k][1][2]?null:FT[k][0]+': '+FT[k][1][v]).filter(Boolean).join(' · ')||'everything as observed'};
 let SEL=null,ONLY=null,cv,cx,W,H,X0v=76,X1v=96,Y0v=5,Y1v=24;const K=Math.cos(15*Math.PI/180);
 let FIXW=0;function size(){const w=FIXW||cv.clientWidth||600,dpr=FIXW?2:Math.min(2,window.devicePixelRatio||1);const h=w*(Y1v-Y0v)/((X1v-X0v)*K);cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);if(!FIXW)cv.style.height=h+'px';cx.setTransform(dpr,0,0,dpr,0,0);return [w,h]}
 const px=lo=>(lo-X0v)/(X1v-X0v)*W, py=la=>(Y1v-la)/(Y1v-Y0v)*H;
@@ -72,15 +76,17 @@ function memberView(i,ids){const r=LK[i],p=r.p3,n=p.length/3;memberMap(document.
 function shares(){const n=LK.length,c=new Array(9).fill(0);LK.forEach(r=>c[r.seg]++);
   document.getElementById('shares2').innerHTML=SEGS.map((s,k)=>{const p=100*c[k]/n;return '<div class="row"><span>'+s+'</span><div class="bar"><div style="width:'+p.toFixed(1)+'%;background:var('+GVAR[GROUP[k]]+')"></div></div><span class="v">'+c[k]+'</span></div>'}).join('');return c}
 function table51(){
-  const FT=D.factors;document.getElementById('facts51').innerHTML='<thead><tr><th>Input</th><th>Low</th><th>As observed</th><th>High</th></tr></thead><tbody>'+FT.map(f=>'<tr><td>'+f[0]+'</td><td>'+f[1][0]+'</td><td>'+f[1][1]+'</td><td>'+f[1][2]+'</td></tr>').join('')+'</tbody>';
-  const rows=LK.map(r=>{const diff=r.lv.map((v,k)=>v===1||FT[k][1][0]===FT[k][1][2]?null:FT[k][0]+': '+FT[k][1][v]).filter(Boolean).join(' · ')||'everything as observed';
+  const FT=D.factors;if(D.stories){document.getElementById('facts51').innerHTML='<thead><tr><th>Storyline</th><th>Members</th><th>What happens</th><th>Where they land</th></tr></thead><tbody>'+D.stories.map(s=>'<tr><td><b>'+s.name+'</b></td><td class="n">'+s.n+'</td><td>'+s.text+'</td><td>'+Object.entries(s.outcome).sort((a,b)=>b[1]-a[1]).map(([k,v])=>k+' '+v).join(', ')+'</td></tr>').join('')+'</tbody>'}else document.getElementById('facts51').innerHTML='<thead><tr><th>Input</th><th>Low</th><th>As observed</th><th>High</th></tr></thead><tbody>'+FT.map(f=>'<tr><td>'+f[0]+'</td><td>'+f[1][0]+'</td><td>'+f[1][1]+'</td><td>'+f[1][2]+'</td></tr>').join('')+'</tbody>';
+  const rows=LK.map(r=>{const diff=changed(r);
     return '<tr data-m="'+r.i+'" tabindex="0" style="cursor:pointer"><td class="n">'+r.i+'</td><td><i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var('+GVAR[GROUP[r.seg]]+');margin-right:6px"></i>'+SEGS[r.seg]+'</td><td class="n">'+(r.lf?r.lf[0].toFixed(1)+'°N':'–')+'</td><td>'+(r.lf?tstr(r.lf[2]):'–')+'</td><td>'+IAB[icat(r.vmax)]+' '+Math.round(r.vmax)+' kt</td><td>'+(r.lf?IAB[icat(r.lf[3])]+' '+Math.round(r.lf[3])+' kt':'–')+'</td><td class="muted" style="min-width:18em">'+diff+'</td></tr>'}).join('');
-  const t=document.getElementById('members');t.innerHTML='<thead><tr><th>#</th><th>Landfall</th><th>Lat</th><th>When (IST)</th><th>Peak</th><th>At landfall</th><th>Inputs changed from observed</th></tr></thead><tbody>'+rows+'</tbody>';
+  const t=document.getElementById('members');t.innerHTML='<thead><tr><th>#</th><th>Landfall</th><th>Lat</th><th>When (IST)</th><th>Peak</th><th>At landfall</th><th>'+(D.stories?'Storyline':'Inputs changed from observed')+'</th></tr></thead><tbody>'+rows+'</tbody>';
   const pick=e=>{const tr=e.target.closest('tr[data-m]');if(!tr)return;SEL=+tr.dataset.m;t.querySelectorAll('tr[data-m]').forEach(x=>x.style.background=x===tr?'var(--chip)':'');
     const r=LK[SEL];document.getElementById('selnote').textContent='Member '+SEL+': '+SEGS[r.seg]+(r.lf?' at '+r.lf[0].toFixed(1)+'°N, '+tstr(r.lf[2])+' IST, '+Math.round(r.lf[3])+' kt':'')+'. Highlighted on the map and the strength chart.';MI=SEL;memInfo();drawM51();drawChart();document.getElementById('map2').scrollIntoView({behavior:'smooth',block:'center'})};
   t.addEventListener('click',pick);t.addEventListener('keydown',e=>{if(e.key==='Enter')pick(e)});
 }
 function drivers(){const south=r=>r.seg>=0&&r.seg<=3;const all=100*LK.filter(south).length/LK.length;
+  if(D.stories){const rows=D.stories.filter(s=>s.key!=='control').map(s=>{const m=LK.filter(r=>r.story===s.key);const p=100*m.filter(south).length/m.length;return {t:s.name,p,n:m.length}});
+    document.getElementById('drivers').innerHTML=rows.map(r=>'<div class="drow"><span>'+r.t+'<br><span class="muted" style="font-size:.78rem">'+Math.round(r.p)+'% of its '+r.n+' members land in Tamil Nadu or south Andhra Pradesh</span></span><div class="track"><div class="mid" style="left:'+all+'%"></div><div class="rng" style="left:0;width:'+Math.max(1,r.p)+'%"></div></div></div>').join('')+'<div class="axis"><span></span><div><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div></div>';return}
   const rows=D.factors.map((f,k)=>{if(f[1][0]===f[1][2])return null;const p=[0,1,2].map(v=>{const s=LK.filter(r=>r.lv[k]===v);return s.length?100*s.filter(south).length/s.length:0});
     const lo=Math.min(...p),hi=Math.max(...p);return {t:f[0],lo,hi,lab:f[1][p.indexOf(lo)]+' '+Math.round(lo)+'% → '+f[1][p.indexOf(hi)]+' '+Math.round(hi)+'%'}}).filter(Boolean).sort((a,b)=>(b.hi-b.lo)-(a.hi-a.lo));
   const M=Math.max(40,Math.ceil(Math.max(...rows.map(r=>r.hi),all)/10)*10);
@@ -106,14 +112,14 @@ function summary(c){
    ['MJO',o.mjo_label+(o.mjo_date?', amplitude '+o.mjo_amp+' ('+o.mjo_date+')':''),'NOAA PSL real-time OMI'],
    ['Ridge (500 hPa)',o.ridge?'axis '+Object.entries(o.ridge.axis).map(([k,v])=>v.toFixed(1)+'°N at '+k).join(', ')+' (typical for Oct–Nov: about 18°N); highs '+o.ridge.highs.map(h=>h[1].toFixed(0)+'°N '+h[0].toFixed(0)+'°E').join(', ')+'. Past-storm winds moved '+(o.ridge.anchor_shift>=0?'north ':'south ')+Math.abs(o.ridge.anchor_shift).toFixed(1)+'° so their ridge starts where today’s is, and kept there all run.':'not measured','GFS analysis'],
    ['Troughs, easterlies, shear','in the analysis winds; fade into the past-storm history over 2 days','GFS analysis + ERA5'],
-   ['Closest past storms',D.analogs.slice(0,6).map(a=>(a[0]==='Unnamed'?'a '+a[1]+' low':a[0]+' '+a[1])+' '+Math.round(a[3]*100)+'%').join(', '),'ERA5, 84 Oct–Dec Bay systems 2000–2025']
+   ...(D.analogs&&D.analogs.length?[['Closest past storms',D.analogs.slice(0,6).map(a=>(a[0]==='Unnamed'?'a '+a[1]+' low':a[0]+' '+a[1])+' '+Math.round(a[3]*100)+'%').join(', '),'ERA5, 84 Oct–Dec Bay systems 2000–2025']]:[])
   ].map(x=>'<tr><td>'+x[0]+'</td><td>'+x[1]+'</td><td class="muted">'+x[2]+'</td></tr>').join('')+'</tbody>';
   document.getElementById('hist').innerHTML='<thead><tr><th>Analysis</th><th>TN</th><th>South AP</th><th>Central AP</th><th>North AP</th><th>Odisha/WB</th><th>Bangladesh/Myanmar</th><th>No landfall</th><th>Control landfall</th></tr></thead><tbody>'+
    D.hist.slice().reverse().map(h=>{const s=h.shares,g=k=>s[k]||0;return '<tr><td>'+h.label+'</td><td class="n">'+(g('south TN')+g('north TN'))+'</td><td class="n">'+g('south AP')+'</td><td class="n">'+g('central AP')+'</td><td class="n">'+g('north AP')+'</td><td class="n">'+g('Odisha/WB')+'</td><td class="n">'+g('Bangladesh/Myanmar')+'</td><td class="n">'+g('no landfall')+'</td><td>'+h.control+'</td></tr>'}).join('')+'</tbody>';
 }
 let MI=0;
-function memInfo(){const r=LK[MI],FT=D.factors;const diff=r.lv.map((v,k)=>v===1||FT[k][1][0]===FT[k][1][2]?null:FT[k][0]+': '+FT[k][1][v]).filter(Boolean).join(' · ')||'everything as observed (the control)';
-  document.getElementById('minfo').innerHTML='<b>Member '+MI+'</b>: '+SEGS[r.seg]+(r.lf?' at '+r.lf[0].toFixed(1)+'°N, '+tstr(r.lf[2])+' IST, '+Math.round(r.lf[3])+' kt':'')+'; peak '+IAB[icat(r.vmax)]+' '+Math.round(r.vmax)+' kt'+(r.gen?'; depression forms '+tstr(r.gen[2])+' IST at '+r.gen[0].toFixed(1)+'°N '+r.gen[1].toFixed(1)+'°E':'')+'.<br>Inputs changed from observed: '+diff;
+function memInfo(){const r=LK[MI];const diff=changed(r);
+  document.getElementById('minfo').innerHTML='<b>Member '+MI+'</b>: '+SEGS[r.seg]+(r.lf?' at '+r.lf[0].toFixed(1)+'°N, '+tstr(r.lf[2])+' IST, '+Math.round(r.lf[3])+' kt':'')+'; peak '+IAB[icat(r.vmax)]+' '+Math.round(r.vmax)+' kt'+(r.gen?'; depression forms '+tstr(r.gen[2])+' IST at '+r.gen[0].toFixed(1)+'°N '+r.gen[1].toFixed(1)+'°E':'')+'.<br>'+(D.stories?'Storyline: ':'Inputs changed from observed: ')+diff;
   document.getElementById('msel').value=MI;memberView(MI,{map:'memmap',chart:'memchart',table:'memtable'})}
 function draw(){drawM51();drawChart();memberView(0,{map:'opmap',chart:'opchart',table:'optable'});memInfo()}
 // ---- JPG downloads ----
