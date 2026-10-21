@@ -14,26 +14,27 @@ def real_at(P0, t):
             f = (t - a[0]).total_seconds() / max(1, (b[0] - a[0]).total_seconds()); return (a[1] + f * (b[1] - a[1]), a[2] + f * (b[2] - a[2]))
     return None
 storms = [s for s in O.LIBL if not C.get('storms') or s['name'] in C['storms']]
-M = mm.Model(C.get('grid', 'T85'), C.get('dt_min', 6.0), C.get('set')); res = []
+res = []
 for i, s in enumerate(storms):
     if i % NCH != CH: continue
     g = O.gen_time(s); key = g.strftime('%Y-%m-%dT%H')
     if key not in TT: continue
     k = TT.index(key); P0 = O.path_of(s); st0 = real_at(P0, g)
     if not st0: continue
-    try:
-        t = time.time()
-        f3 = {v: Z['f3'][k, V3.index(v)] for v in V3}
-        state = M.init(f3, Z['levs'], Z['lats'], Z['lons'], Z['f2'][k, V2.index('surface_pressure')], Z['f2'][k, V2.index('geopotential_at_surface')] / 9.80616,
-                       Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')])
-        f, dfi = M.runner(C.get('hours', 120), moist=C.get('moist', True))           # rebuilt: sea temperature and terrain differ per storm
-        if C.get('dfi', True): state = dfi(state)
-        _, traj = f(state); traj = {k_: np.asarray(v) for k_, v in traj.items()}
-        if not np.isfinite(traj['ps']).all(): raise RuntimeError('model blew up')
-        trk = M.track(traj, *st0)
-        res.append(dict(name=s['name'], season=s['season'], t0=key, real=[((p[0] - g).total_seconds() / 3600, p[1], p[2], p[3]) for p in P0],
-                        truth=O.segment(*s['lf']) if s['lf'] else 'no landfall', truth_lf=s['lf'], trk=trk, sec=round(time.time() - t)))
-        print(s['name'], s['season'], 'sec', round(time.time() - t), trk[::4], flush=True)
-    except Exception as e:
-        res.append(dict(name=s['name'], season=s['season'], err=repr(e)[:400])); print(s['name'], 'FAILED', repr(e)[:400], flush=True)
+    f3 = {v: Z['f3'][k, V3.index(v)] for v in V3}
+    for var in (C.get('variants') or [dict(name='control')]):
+        try:
+            t = time.time(); M = mm.Model(var.get('grid', C.get('grid', 'T85')), C.get('dt_min', 6.0), dict(C.get('set') or {}, **var.get('set', {})))
+            state = M.init(f3, Z['levs'], Z['lats'], Z['lons'], Z['f2'][k, V2.index('surface_pressure')], Z['f2'][k, V2.index('geopotential_at_surface')] / 9.80616,
+                           Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')])
+            f, dfi = M.runner(C.get('hours', 120), moist=var.get('moist', C.get('moist', True)))     # rebuilt: sea temperature and terrain differ per storm
+            if var.get('dfi', C.get('dfi', True)): state = dfi(state)
+            _, traj = f(state); traj = {k_: np.asarray(v) for k_, v in traj.items()}
+            if not np.isfinite(traj['ps']).all(): raise RuntimeError('model blew up')
+            trk = M.track(traj, *st0)
+            res.append(dict(name=s['name'], season=s['season'], var=var['name'], t0=key, real=[((p[0] - g).total_seconds() / 3600, p[1], p[2], p[3]) for p in P0],
+                            truth=O.segment(*s['lf']) if s['lf'] else 'no landfall', truth_lf=s['lf'], trk=trk, sec=round(time.time() - t)))
+            print(s['name'], s['season'], var['name'], 'sec', round(time.time() - t), trk[::4], flush=True)
+        except Exception as e:
+            res.append(dict(name=s['name'], season=s['season'], var=var['name'], err=repr(e)[:400])); print(s['name'], var['name'], 'FAILED', repr(e)[:400], flush=True)
 json.dump(res, open(OUT, 'w'), default=float)

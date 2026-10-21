@@ -147,23 +147,25 @@ class Model:
         return f, dfi
     # ---------------------------------------------------------------- follow the storm
     def track(self, traj, la0, lo0, every_h=6):
-        """centre = minimum of surface pressure (smoothed, relative to its 600-1000 km surroundings) near the last
-        position, refined with 850 hPa vorticity; strength = max lowest-layer wind within 250 km."""
+        """centre = maximum of smoothed 850 hPa vorticity near where the storm should be (last position + last motion),
+        refined to sub-grid by a vorticity-weighted centroid; no jumps over 3.5 deg in 6 h. Strength: max lowest-layer
+        wind within 250 km (kt) and the surface-pressure dip against its 600-1000 km surroundings (hPa, sea only)."""
+        from scipy import ndimage as ndi
         ps = np.asarray(traj['ps']); vo = np.asarray(traj['vo']); ul = np.asarray(traj['ul']); vl = np.asarray(traj['vl'])
         LO, LA = np.meshgrid(self.lon, self.lat, indexing='ij'); out = []; la, lo = la0, lo0; vel = (0.0, 0.0)
+        dist = lambda a, b: np.hypot(LA - a, ((LO - b + 180) % 360 - 180) * math.cos(math.radians(a)))
         for i in range(ps.shape[0]):
-            g = (la + vel[0], lo + vel[1])
-            d = np.hypot(LA - g[0], ((LO - g[1] + 180) % 360 - 180) * math.cos(math.radians(g[0])))
-            near = d <= 4.0
-            if not near.any(): break
-            s = np.where(near, vo[i] * (1 if g[0] >= 0 else -1), -1e9); j = np.unravel_index(np.argmax(s), s.shape)
-            pm = np.where(d <= 3.0, ps[i], 1e9); jp = np.unravel_index(np.argmin(pm), pm.shape)
-            cand = (LA[jp], LO[jp]) if math.hypot(LA[jp] - LA[j], LO[jp] - LO[j]) < 2.5 else (LA[j], LO[j])
-            nl, no = float(cand[0]), float(cand[1])
-            if i: vel = (nl - la, ((no - lo + 180) % 360) - 180)
-            la, lo = nl, no
-            dd = np.hypot(LA - la, ((LO - lo + 180) % 360 - 180) * math.cos(math.radians(la)))
-            wmax = float(np.hypot(ul[i], vl[i])[dd <= 2.3].max()) if (dd <= 2.3).any() else 0.0
-            ring = (dd > 5) & (dd < 9); dp = float(ps[i][ring].mean() - ps[i][dd <= 1.5].min()) / 100 if ring.any() else 0.0
-            out.append((i * every_h, round(la, 2), round(lo % 360, 2), round(wmax / 0.5144, 1), round(dp, 1), round(float(vo[i][j]) * 1e5, 1)))
+            vs = ndi.uniform_filter(vo[i] * np.sign(la0 or 1), 3, mode='wrap')
+            g = (la + vel[0], lo + vel[1]); d = dist(*g)
+            s_ = np.where(d <= 3.5, vs, -1e9); j = np.unravel_index(np.argmax(s_), s_.shape)
+            dj = dist(LA[j], LO[j]); w = np.clip(vs - 0.5 * vs[j], 0, None) * (dj <= 2.0)
+            if w.sum() > 0:
+                nl = float((w * LA).sum() / w.sum()); dlo = ((LO - LO[j] + 180) % 360 - 180); no = float(LO[j] + (w * dlo).sum() / w.sum())
+            else: nl, no = float(LA[j]), float(LO[j])
+            if i: vel = (0.7 * (nl - la), 0.7 * (((no - lo + 180) % 360) - 180))
+            la, lo = nl, no % 360
+            dd = dist(la, lo); wmax = float(np.hypot(ul[i], vl[i])[dd <= 2.3].max()) if (dd <= 2.3).any() else 0.0
+            ring = (dd > 5) & (dd < 9); sea = (np.asarray(self.land) == 0)
+            dp = float(ps[i][ring & sea].mean() - ps[i][(dd <= 1.5) & sea].min()) / 100 if (ring & sea).any() and ((dd <= 1.5) & sea).any() else None
+            out.append((i * every_h, round(la, 2), round(lo, 2), round(wmax / 0.5144, 1), None if dp is None else round(dp, 1), round(float(vs[j]) * 1e5, 1)))
         return out
