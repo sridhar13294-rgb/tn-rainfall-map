@@ -28,7 +28,7 @@ jobs:
       - if: matrix.chunk < fromJSON(steps.n.outputs.n)
         run: mkdir -p /tmp/w && gh release download era5-cases -p libm_fields.npz -D /tmp/w
       - if: matrix.chunk < fromJSON(steps.n.outputs.n)
-        run: cd /tmp/w && (python -W ignore $GITHUB_WORKSPACE/scripts/cyclone/mm/hind.py libm_fields.npz $GITHUB_WORKSPACE/data/cyclone/MM.json ${{ matrix.chunk }} 42 mm_${{ matrix.chunk }}.json > mm_${{ matrix.chunk }}.log 2>&1 || true); tail -40 mm_${{ matrix.chunk }}.log
+        run: cd /tmp/w && (python -W ignore $GITHUB_WORKSPACE/scripts/cyclone/mm/$(python -c "import json;print(json.load(open('$GITHUB_WORKSPACE/data/cyclone/MM.json')).get('script','hind.py'))") libm_fields.npz $GITHUB_WORKSPACE/data/cyclone/MM.json ${{ matrix.chunk }} 42 mm_${{ matrix.chunk }}.json > mm_${{ matrix.chunk }}.log 2>&1 || true); tail -40 mm_${{ matrix.chunk }}.log
       - if: matrix.chunk < fromJSON(steps.n.outputs.n)
         run: |
           T=$(python -c "import json;print(json.load(open('data/cyclone/MM.json')).get('tag','mm'))")
