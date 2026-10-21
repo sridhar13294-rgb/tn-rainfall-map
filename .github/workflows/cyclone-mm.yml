@@ -24,7 +24,7 @@ jobs:
         uses: actions/setup-python@v5
         with: {python-version: '3.12'}
       - if: matrix.chunk < fromJSON(steps.n.outputs.n)
-        run: pip install -q "jax[cpu]" numpy scipy xarray "git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0"
+        run: pip install -q "jax[cpu]" numpy scipy xarray matplotlib scikit-learn "git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0"
       - if: matrix.chunk < fromJSON(steps.n.outputs.n)
         run: mkdir -p /tmp/w && gh release download era5-cases -p libm_fields.npz -D /tmp/w
       - if: matrix.chunk < fromJSON(steps.n.outputs.n)
