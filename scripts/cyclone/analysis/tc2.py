@@ -35,7 +35,7 @@ class TC2(T.TC):
     def invert(self, q1, q2, Bt, Bc):
         Pt = self.poisson(0.5 * (q1 + q2) - self.f, Bt); Pc = self.helm(0.5 * (q1 - q2), Bc); return Pt + Pc, Pt - Pc
     def run2(self, uL, vL, uU, vU, start, hours, vmax_fn, rmw=120.0, size=700.0, dt=450.0, nu=1.0e4, robert=0.1, tau_h=9.0,
-             every=6, land_fn=None, xo=0.5, size_grow=0.0, sppt=None, kmh_track=None, tau_v=1.5, cmul=1.0):
+             every=6, land_fn=None, xo=0.5, size_grow=0.0, sppt=None, kmh_track=None, tau_v=1.5, cmul=1.0, tau_env=None, env_r=(600.0, 1200.0), env_fn=None, resid=False):
         """vmax_fn(t_hours, lat, lon, over_land) -> storm max wind in kt. Returns [(hour, lat, lon)]."""
         if sppt:
             rs = np.random.default_rng(sppt['seed']); K = 6; amp = sppt['amp']; Lw = sppt.get('scale_deg', 10.0); Th = sppt.get('hours', 36.0)
@@ -44,6 +44,13 @@ class TC2(T.TC):
             pert = lambda th, i: amp * np.sqrt(2.0 / K) * sum(np.sin(kx[k] * self.LON + ky[k] * self.LAT + om[k] * th + ph[i, k]) for k in range(K))
         else: pert = None
         z1 = self.vort(uU, vU); z2 = self.vort(uL, vL); B1 = self.boundary_psi(uU, vU); B2 = self.boundary_psi(uL, vL)
+        if resid:
+            # the part of the analysed wind a stream function cannot carry (the divergent, in/outflow part and edge effects):
+            # u_in - u_rot. It can be several m/s near the storm, so it is kept and carries the PV along with the rest
+            R = []
+            for (uu, vv, zz, BB) in ((uU, vU, z1, B1), (uL, vL, z2, B2)):
+                Pp = self.poisson(zz, BB); R.append((nd.uniform_filter(uu + self.m * self.dy(Pp), 3), nd.uniform_filter(vv - self.m * self.dx(Pp), 3)))
+            self.resid_w = R
         Bt, Bc = 0.5 * (B1 + B2), 0.5 * (B1 - B2); la, lo = start; edges = np.arange(0, 1801, 50.0); rc = 0.5 * (edges[1:] + edges[:-1])
         def targets(vkt, sz):
             vl = 0.6 * vkt * 0.5144; s = float(np.clip((vkt - 34) / 60, 0, 1))
@@ -65,6 +72,14 @@ class TC2(T.TC):
             d, idx, prof = self.sym_profile(z, la, lo, edges); ring = (rc >= 1000) & (rc <= 1400); base = prof[ring].mean()
             ok = (idx >= 0) & (idx < len(tgt)) & (d <= 900); f = np.zeros_like(z)
             f[ok] = (tgt - (prof - base))[idx[ok]] * np.clip(1 - d[ok] / 900, 0, 1); return f
+        # the large-scale flow without the storm, as PV: the target the far-away flow is kept near (tau_env hours). A one- or
+        # two-layer model lets the big monsoon/ridge patterns run off as fast Rossby waves that the real (3-D, heated,
+        # damped) atmosphere does not do; holding the far field near its analysis (or near a storyline's changed state via
+        # env_fn(t_hours) -> (uL, vL, uU, vU)) keeps the steering realistic while the storm and its surroundings interact freely.
+        def env_q(uL_, vL_, uU_, vU_):
+            a1 = self.vort(uU_, vU_); a2 = self.vort(uL_, vL_); b1 = self.poisson(a1, self.boundary_psi(uU_, vU_)); b2 = self.poisson(a2, self.boundary_psi(uL_, vL_))
+            return a1 + self.f + self.F * (b2 - b1), a2 + self.f + self.F * (b1 - b2)
+        qe1, qe2 = env_q(uL, vL, uU, vU) if tau_env else (None, None)
         v0 = vmax_fn(0, la, lo, False); tu, tl = targets(v0, size)
         z1 = z1 + nudge(z1, tu, la, lo); z2 = z2 + nudge(z2, tl, la, lo)
         P1 = self.poisson(z1, B1); P2 = self.poisson(z2, B2)                  # starting stream functions from each layer's winds
@@ -91,12 +106,20 @@ class TC2(T.TC):
                 tq1, tq2 = qtargets(vk, size * (1 + size_grow * vk / 64.0), la)
                 f1 = nudge(q1 - self.f, tq1, la, lo) / (tau_v * 3600); f2 = nudge(q2 - self.f, tq2, la, lo) / (tau_v * 3600)
             a1 = -self.m ** 2 * self.jac(P1, q1); a2 = -self.m ** 2 * self.jac(P2, q2)
+            if resid:
+                (ru1, rv1), (ru2, rv2) = self.resid_w
+                a1 = a1 - self.m * (ru1 * self.dx(q1) + rv1 * self.dy(q1)); a2 = a2 - self.m * (ru2 * self.dx(q2) + rv2 * self.dy(q2))
             if pert is not None:
                 if n % 2 == 0: self._p1, self._p2 = 1 + pert(th, 0), 1 + pert(th, 1)
                 a1 = a1 * self._p1; a2 = a2 * self._p2
             t1 = a1 + f1 - self.sponge * (q1 - q1i)
             t2 = a2 + f2 - self.sponge * (q2 - q2i)
             t1 = t1 + nu * lap(q1 - self.f); t2 = t2 + nu * lap(q2 - self.f)
+            if tau_env:
+                if n % 4 == 1:
+                    if env_fn is not None and n % 24 == 1: qe1, qe2 = env_q(*env_fn(th))
+                    wenv = np.clip((self.dist_km(la, lo) - env_r[0]) / (env_r[1] - env_r[0]), 0, 1) / (tau_env * 3600)
+                t1 = t1 - wenv * (q1 - qe1); t2 = t2 - wenv * (q2 - qe2)
             for t in (t1, t2): t[0, :] = t[-1, :] = t[:, 0] = t[:, -1] = 0
             if n == 1: n1, n2 = q1 + dt * t1, q2 + dt * t2
             else: n1, n2 = q1o + 2 * dt * t1, q2o + 2 * dt * t2
