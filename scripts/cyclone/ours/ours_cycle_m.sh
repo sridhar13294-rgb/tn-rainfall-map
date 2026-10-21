@@ -10,7 +10,7 @@ git config user.email noreply@anthropic.com; git config user.name Claude
 git pull -q --rebase origin cases
 LIVE=$(python3 -c "import json;print(json.load(open('data/cyclone/ours/live_inputs.json'))['file'])"); RUNID=${LIVE#live_GFS_}; RUNID=${RUNID%.npz}
 gh api $R/releases/tags/era5-cases -q ".assets[]|select(.name==\"live_GFSM_$RUNID.npz\")|.name" | grep -q GFSM || { echo "NO GFSM $RUNID"; exit 1; }
-if [ ! -f data/cyclone/mm/live/$RUNID/ens.json ]; then
+if [ ! -f data/cyclone/mm/live/$RUNID/ens.json ] && [ "$(head -n 1 data/cyclone/MMLIVE 2>/dev/null)" != "$RUNID" ]; then
   printf '%s\n#moist model live ensemble %s\n' "$RUNID" "$(date -u +%FT%H:%MZ)" > data/cyclone/MMLIVE
   git add data/cyclone/MMLIVE; git commit -qm "Moist model: live ensemble on GFS $RUNID" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01AXxjaemsi36VrJDzeKZ8zA"

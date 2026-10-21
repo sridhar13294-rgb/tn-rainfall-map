@@ -339,3 +339,34 @@ class Model:
             res.append((i * every_h, round(la, 2), round(lo, 2), round(wmax, 1), None if pmin is None else round(pmin, 1), round(vo, 1), len(keep)))
             if weak >= 3: break
         return res
+
+# ---------------------------------------------------------------------------------------------------- ensemble helpers
+def integrate(M, state, carry, hours):
+    """run without saving output; returns the final (state, carry)."""
+    n = int(round(hours * 3600 / M.dt_s))
+    def one(c, _):
+        st, cr = c; M._carry = cr; st2 = M.step(st); return (st2, M.surface(st2, cr)), None
+    return jax.jit(lambda s, c: jax.lax.scan(one, (s, c), None, length=n)[0])(state, carry)
+def bred_vectors(M, state, carry, n=6, hours=12.0, seed=0, amp=1.0):
+    """bred vectors (NCEP-style): small random seeds are grown by the model itself for `hours`; what grows is the part of
+    today's uncertainty that matters (troughs, the storm's surroundings). Each is scaled so its 850-hPa-ish wind
+    difference is `amp` m/s rms over the tropics and subtropics (40S-40N)."""
+    hor = M.coords.horizontal; rs = np.random.default_rng(seed)
+    ctl, _ = integrate(M, state, carry, hours); k = int(np.argmin(abs(M.sig - 0.85)))
+    band = jnp.asarray(np.abs(M.LA) <= 40)
+    def wind_rms(d):
+        u, v = spherical_harmonic.vor_div_to_uv_nodal(hor, d.vorticity, d.divergence)
+        return jnp.sqrt(((u[k] / M.MPS) ** 2 + (v[k] / M.MPS) ** 2)[band].mean())
+    out = []
+    for j in range(n):
+        noise = rs.standard_normal(np.asarray(state.vorticity).shape).astype(np.float32)
+        L = np.arange(noise.shape[-1])[None, None, :]; noise = noise * (L < 40) * (L > 3)
+        seedp = state.replace(vorticity=state.vorticity + 0.02 * jnp.std(state.vorticity) * noise)
+        pj, _ = integrate(M, seedp, carry, hours)
+        d = jax.tree_util.tree_map(lambda a, b: a - b, pj, ctl)
+        out.append(jax.tree_util.tree_map(lambda x: x * (amp / jnp.maximum(wind_rms(d), 1e-6)), d))
+    return out
+def add_perturbation(state, bvs, coefs):
+    pert = state
+    for c, b in zip(coefs, bvs): pert = jax.tree_util.tree_map(lambda a, x: a + c * x, pert, b)
+    q = pert.tracers['specific_humidity']; return pert.replace(tracers={'specific_humidity': jnp.maximum(q, 0.0)})
