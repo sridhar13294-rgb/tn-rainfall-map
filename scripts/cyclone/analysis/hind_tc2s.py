@@ -16,8 +16,8 @@ from cyc import on_land
 LIB, CH, NCH, OUT = sys.argv[1], int(sys.argv[2]), int(sys.argv[3]), sys.argv[4]
 Z = np.load(LIB); TT = [str(t) for t in Z['times']]; lats, lons = Z['lats'], Z['lons']; DATA = Z['data']; LEVS = [int(x) for x in Z['levs']]
 LAg, LOg = np.meshgrid(lats, lons, indexing='ij')
-LW = (0.35, 0.35, 0.3, 0.0); UW = (0.0, 0.0, 0.0, 1.0)            # lower layer 850/700/500, upper layer 200 hPa
-SET = dict(tau_v=6.0, cmul=0.0, resid=True, tau_env=2.0, env_r=(300.0, 700.0))
+LW = (0.3, 0.3, 0.25, 0.15); UW = (0.0, 0.0, 0.0, 1.0)          # lower layer = deep mean 850-200, upper layer 200 hPa
+SET = dict(tau_v=6.0, cmul=0.0, resid=True, tau_env=2.0, env_r=(150.0, 400.0))
 def rmv(F, la, lo, R=5.0):
     d = np.hypot(LAg - la, (LOg - lo) * math.cos(math.radians(la))); m = d <= R; F = F.copy()
     for idx in np.ndindex(F.shape[:-2]):
