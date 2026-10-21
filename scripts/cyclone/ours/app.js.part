@@ -20,12 +20,15 @@ function base(){cx.fillStyle=css('--sea');cx.fillRect(0,0,W,H);cx.strokeStyle=cs
   cx.fillStyle=css('--muted');cx.font='11px '+css('--f-mono');cx.textAlign='left';
   for(let la=Math.ceil(Y0v/2)*2;la<=Y1v-0.5;la+=2){if(py(la)>H-20)continue;cx.fillText(la+'°N',4,py(la)+4)}
   const st=(X1v-X0v)>14?4:2;for(let lo=Math.ceil(X0v/st)*st;lo<=X1v-0.5;lo+=st)cx.fillText(lo+'°E',px(lo)-12,H-6);cx.lineCap='round';cx.lineJoin='round'}
+function ridge(){const R=D.obs.ridge;if(!R)return;cx.save();cx.setLineDash([7,5]);cx.strokeStyle=css('--ink');cx.globalAlpha=0.75;cx.lineWidth=2;cx.beginPath();let f=true;
+  Object.entries(R.axis).forEach(([k,v])=>{const [a,b]=k.replace('E','').split('-').map(Number);if(f){cx.moveTo(px(a),py(v));f=false}else cx.lineTo(px(a),py(v));cx.lineTo(px(b),py(v))});cx.stroke();cx.restore();
+  cx.font='800 15px '+css('--f-body');cx.textAlign='center';R.highs.forEach(h=>{if(h[0]<X0v||h[0]>X1v||h[1]<Y0v||h[1]>Y1v)return;cx.fillStyle='#7b1d1d';cx.beginPath();cx.arc(px(h[0]),py(h[1]),10,0,7);cx.fill();cx.fillStyle='#fff';cx.fillText('H',px(h[0]),py(h[1])+5)});cx.textAlign='left'}
 function star(){const sx=px(D.obs.bay.lon),sy=py(D.obs.bay.lat);cx.fillStyle=css('--star');cx.beginPath();for(let k=0;k<10;k++){const rr=k%2?4:10,an=-Math.PI/2+k*Math.PI/5;cx.lineTo(sx+rr*Math.cos(an),sy+rr*Math.sin(an))}cx.closePath();cx.fill()}
 function drawM51(){
   cv=document.getElementById('map2');cx=cv.getContext('2d');[W,H]=size();base();const IC=[0,1,2,3,4,5,6,7].map(k=>css('--i'+k));
   const seg=(r,w,alpha,outline)=>{const p=r.p3;if(outline){cx.globalAlpha=1;cx.strokeStyle=outline;cx.lineWidth=w+3;cx.beginPath();for(let k=0;k<p.length;k+=3){const x=px(p[k+1]),y=py(p[k]);k?cx.lineTo(x,y):cx.moveTo(x,y)}cx.stroke()}
     cx.globalAlpha=alpha;cx.lineWidth=w;for(let k=3;k<p.length;k+=3){cx.strokeStyle=IC[icat(p[k-1])];cx.beginPath();cx.moveTo(px(p[k-2]),py(p[k-3]));cx.lineTo(px(p[k+1]),py(p[k]));cx.stroke()}cx.globalAlpha=1};
-  LK.forEach(r=>{if(r.i&&r.i!==SEL)seg(r,1.4,SEL?0.25:0.6,null)});
+  LK.forEach(r=>{if(r.i&&r.i!==SEL)seg(r,1.4,SEL?0.25:0.6,null)});ridge();
   cx.strokeStyle=css('--ink');cx.lineWidth=1.2;LK.forEach(r=>{if(r.gen){cx.beginPath();cx.arc(px(r.gen[1]),py(r.gen[0]),3.5,0,7);cx.stroke()}});
   seg(LK[0],3.2,1,css('--ink'));if(SEL)seg(LK[SEL],3.2,1,css('--accent'));
   LK.forEach(r=>{if(!r.lf)return;const big=r.i===0||r.i===SEL;if(SEL&&!big)return;cx.fillStyle='#fff';cx.strokeStyle=css('--ink');cx.lineWidth=1.2;cx.beginPath();cx.arc(px(r.lf[1]),py(r.lf[0]),big?5:3,0,7);cx.fill();cx.stroke()});
@@ -100,7 +103,8 @@ function summary(c){
    ['Arabian Sea system',A.present?A.lat.toFixed(1)+'°N '+A.lon.toFixed(1)+'°E, pressure dip '+A.depth+' hPa':'none found','GFS analysis'],
    ['Bay sea temperature anomaly',(o.sst>=0?'+':'')+o.sst.toFixed(2)+' °C ('+o.sst_date+')','NOAA OISST, 1991–2020 normal'],
    ['MJO',o.mjo_label+(o.mjo_date?', amplitude '+o.mjo_amp+' ('+o.mjo_date+')':''),'NOAA PSL real-time OMI'],
-   ['Ridge, troughs, easterlies, shear','in the analysis winds; fade into the past-storm history over 2 days','GFS analysis + ERA5'],
+   ['Ridge (500 hPa)',o.ridge?'axis '+Object.entries(o.ridge.axis).map(([k,v])=>v.toFixed(1)+'°N at '+k).join(', ')+' (typical for Oct–Nov: about 18°N); highs '+o.ridge.highs.map(h=>h[1].toFixed(0)+'°N '+h[0].toFixed(0)+'°E').join(', ')+'. Past-storm winds moved '+(o.ridge.anchor_shift>=0?'north ':'south ')+Math.abs(o.ridge.anchor_shift).toFixed(1)+'° so their ridge starts where today’s is, and kept there all run.':'not measured','GFS analysis'],
+   ['Troughs, easterlies, shear','in the analysis winds; fade into the past-storm history over 2 days','GFS analysis + ERA5'],
    ['Closest past storms',D.analogs.slice(0,6).map(a=>(a[0]==='Unnamed'?'a '+a[1]+' low':a[0]+' '+a[1])+' '+Math.round(a[3]*100)+'%').join(', '),'ERA5, 84 Oct–Dec Bay systems 2000–2025']
   ].map(x=>'<tr><td>'+x[0]+'</td><td>'+x[1]+'</td><td class="muted">'+x[2]+'</td></tr>').join('')+'</tbody>';
   document.getElementById('hist').innerHTML='<thead><tr><th>Analysis</th><th>TN</th><th>South AP</th><th>Central AP</th><th>North AP</th><th>Odisha/WB</th><th>Bangladesh/Myanmar</th><th>No landfall</th><th>Control landfall</th></tr></thead><tbody>'+

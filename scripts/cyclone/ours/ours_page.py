@@ -1,4 +1,5 @@
-"""Build the live ensemble page: python ours_page.py ENS_JSON OUT_HTML
+"""Build the live ensemble page: python ours_page.py ENS_JSON OUT_HTML [--site SITE_HTML]
+With --site it also writes the website version (site/cyclone.html: the site's own header, tabs and dark look).
 Appends this run to data/cyclone/ours/live_history.json (one row per analysis cycle)."""
 import sys, os, json, datetime as dt, numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__)); REPO = os.path.abspath(os.path.join(HERE, '..', '..', '..'))
@@ -31,9 +32,28 @@ obs = E['obs']
 for k in ('bay', 'arabian', 'sw_bay'):
     for kk, vv in list(obs[k].items()):
         if isinstance(vv, float): obs[k][kk] = round(vv, 2)
+def clean(x):
+    if isinstance(x, float): return None if x != x or x in (float('inf'), float('-inf')) else x
+    if isinstance(x, dict): return {k: clean(v) for k, v in x.items()}
+    if isinstance(x, (list, tuple)): return [clean(v) for v in x]
+    return x
+E = clean(E); obs = E['obs']
 D = dict(t0=E['run'], run_label=label, obs=obs, analogs=E['analogs'], factors=E['factors'], runs=runs, land=land, hist=hist)
 css = open(os.path.join(HERE, 'style.css.part')).read(); body = open(os.path.join(HERE, 'body.html.part')).read(); js = open(os.path.join(HERE, 'app.js.part')).read()
 html = ('<title>Bay Storm Scenarios</title>\n<meta name="claude:viewport-fit-sides" content="cover">\n'
         '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">\n'
         + css + body + '\n<script id="data" type="application/json">' + json.dumps(D, separators=(',', ':'), default=str).replace('</', '<\\/') + '</script>\n<script>\n' + js + '</script>\n')
 open(sys.argv[2], 'w').write(html); print('page', len(html) // 1000, 'kB', label)
+if '--site' in sys.argv:
+    out = sys.argv[sys.argv.index('--site') + 1]
+    scss = open(os.path.join(HERE, 'site_style.css.part')).read()
+    head = ('<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="color-scheme" content="dark"><meta name="theme-color" content="#0b1522">'
+            '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Tamil Nadu cyclone ensemble</title>'
+            '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
+            '<link href="https://fonts.googleapis.com/css2?family=Anek+Latin:wdth,wght@75..125,300..800&family=Anek+Tamil:wght@600..800&display=swap" rel="stylesheet">')
+    nav = ('<header class="top"><a class="brand" href="index.html"><span class="ta" lang="ta">மழை</span><h1><b>Tamil Nadu</b> cyclone ensemble</h1></a>'
+           '<nav class="tabs"><a href="index.html">Rainfall</a><a href="forecast.html">Forecast</a><a href="satradar.html">Sat radar</a><a class="on" href="cyclone.html">Cyclone</a></nav></header>'
+           '<div class="warnx"><b>Experimental.</b> Our own ensemble, built from observed data and past storms without any forecast model. Updated every 6 hours. Not an official forecast: follow IMD for warnings.</div>')
+    sb = body.replace('<div class="wrap">', '<div class="wrap">' + nav, 1)
+    shtml = head + scss + '</head><body>' + sb + '\n<script id="data" type="application/json">' + json.dumps(D, separators=(',', ':'), default=str).replace('</', '<\\/') + '</script>\n<script>\n' + js + '</script>\n</body></html>\n'
+    open(out, 'w').write(shtml); print('site page', len(shtml) // 1000, 'kB ->', out)

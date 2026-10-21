@@ -23,12 +23,28 @@ def detect(fn):
         s = np.where(k, (v8 + v7) / 2, -99); s[k] = np.where(sea, s[k], -99)
         j = np.unravel_index(np.argmax(s), s.shape); a, b = float(la[j[0]]), float(lo[j[1]])
         d = np.hypot(LA - a, (LO - b) * math.cos(math.radians(a)))
-        cmin = float(p[d <= 1.5].min()); ring = float(p[(d >= 2.5) & (d <= 4)].mean())
+        cmin = float(np.nanmin(p[d <= 1.5])); ring = float(np.nanmean(p[(d >= 2.5) & (d <= 4)]))
         out = dict(lat=a, lon=b, vort850=round(float(v8[j]), 1), vort700=round(float(v7[j]), 1), depth=round(ring - cmin, 1), msl=round(cmin, 1))
         edge = a in (box[0], box[1]) or b in (box[2], box[3])        # a maximum on the box edge is not a circulation inside it
         out['present'] = bool(out['vort850'] >= need[0] and out['depth'] >= need[1] and not edge) if need else True
         return out
     return dict(bay=find((4, 20, 80.5, 99), None), arabian=find((5, 20, 60, 77), (4.0, 1.0)), sw_bay=find((7, 14, 78, 83.5), (3.0, 0.0)))
+def O_ridge(u, lo0=80, lo1=96):
+    import bgdiag_ridge as BR
+    return BR.ridge(u, O.LA, O.LO, lo0, lo1)
+def ridge_now(fn):
+    """500 hPa ridge from the analysis: axis latitude (highest height) per longitude band, the east-west wind turning
+    line over 80-96E, and the main closed highs."""
+    import bgdiag_ridge as BR
+    Z = np.load(fn); V = [str(v) for v in Z['vars']]; X = Z['data'][0, 0].astype(float); la, lo = Z['lats'], Z['lons']
+    z5 = X[V.index('z500')]; u5 = X[V.index('u500')]
+    bands = {f'{a}-{b}E': round(BR.ridge_z(z5, la, lo, a, b), 1) for a, b in ((70, 80), (80, 88), (88, 96), (96, 105))}
+    zs = nd.uniform_filter(z5, 5); mx = nd.maximum_filter(zs, size=21); hs = []
+    for j, i in np.argwhere(zs >= mx - 1e-6):
+        if 8 < la[j] < 30 and 62 < lo[i] < 106 and all(abs(la[j] - h[1]) + abs(lo[i] - h[0]) > 6 for h in hs):
+            hs.append((float(lo[i]), float(la[j]), round(float(zs[j, i]))))
+    u0 = BR.ridge(u5, la, lo, 80, 96)
+    return dict(axis=bands, u0_80_96=round(u0, 1) if u0 else None, highs=sorted(hs, key=lambda h: -h[2])[:4])
 MJO_STATE = lambda ph, amp: (0.0, 0.0, 'weak (amplitude below 1)') if amp < 1 else \
     ((1.5, 1.0, f'active over the Indian Ocean (phase {ph})') if ph in (2, 3, 4) else
      ((0.8, 0.0, f'over the Maritime Continent (phase {ph})') if ph in (5, 6) else (-0.8, -1.0, f'suppressed over the Indian Ocean (phase {ph})')))
@@ -84,6 +100,13 @@ if __name__ == '__main__':
     now = S.ana_raw(LIVE); st = O.analysis_state(LIVE)[1]; R = O.match(st, St, sc); C, top = S.composite(R, RAW)
     sd = (b['lat'], b['lon']); now = S.remove_vortex(now, sd[0], sd[1])
     if obs['sw_bay']['present']: now = S.remove_vortex(now, obs['sw_bay']['lat'], obs['sw_bay']['lon'], R=3.5)
+    # ridge, measured in the analysis every run, and anchored: the past-storm winds are moved north/south so that their
+    # starting ridge (east-west wind turning line, 500 hPa, 80-96E) sits where today's ridge is; that offset is kept all run.
+    obs['ridge'] = ridge_now(LIVE)
+    rc = O_ridge(C[0, 0, 2]); ra = obs['ridge']['u0_80_96']
+    shift = float(np.clip(ra - rc, -3, 3)) if (ra is not None and rc is not None) else 0.0
+    obs['ridge']['composite_start'] = rc; obs['ridge']['anchor_shift'] = round(shift, 2)
+    if shift: C = nd.shift(C, (0, 0, 0, shift / 1.5, 0), order=1, mode='nearest')
     E = S.base_env(now, C); F, PS = build(obs, t0, sd); RES = []
     for P in PS:
         pts, lf = S.run_track(M, S.Env(E, t0, P), P)

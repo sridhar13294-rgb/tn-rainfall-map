@@ -180,7 +180,9 @@ def run_track(M, env, P, hours=240, dt_h=6):
             if age < dt_h: v = max(v, 17.0)
             sh = IN.shear_at(U, V, la, lo) or 10.0
             dv = float(IM.predict([IN.feats(v, sh * shs, la, dvp, age)])[0]) + off
+            if v_lf is not None: dv = min(dv, 2.0)              # back over sea after landfall: little room to regrow
             v = min(140.0, max(10.0, v + dv * dt_h / 12)); acc += dv * dt_h / 12
+            if v_lf is not None: v = min(v, 0.6 * v_lf)
             if int(age) % 12 == 0: dvp = acc; acc = 0.0
         t2 = t + dt.timedelta(hours=dt_h)
         if lf is None and not land_now and on_land(lo2, la2):
