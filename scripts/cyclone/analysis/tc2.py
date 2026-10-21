@@ -138,7 +138,7 @@ class TC2(T.TC):
                 (ru1, rv1), (ru2, rv2) = self.resid_w
                 a1 = a1 - self.m * (ru1 * self.dx(q1) + rv1 * self.dy(q1)); a2 = a2 - self.m * (ru2 * self.dx(q2) + rv2 * self.dy(q2))
             if pert is not None:
-                if n % 2 == 0: self._p1, self._p2 = 1 + pert(th, 0), 1 + pert(th, 1)
+                if n % 2 == 0 or n == 1: self._p1, self._p2 = 1 + pert(th, 0), 1 + pert(th, 1)
                 a1 = a1 * self._p1; a2 = a2 * self._p2
             t1 = a1 + f1 + G1 - self.sponge * (q1 - q1i)
             t2 = a2 + f2 + G2 - self.sponge * (q2 - q2i)
