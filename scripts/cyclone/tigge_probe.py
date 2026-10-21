@@ -1,12 +1,18 @@
-"""Probe the TIGGE cyclone-track archive (NCAR GDEX/RDA d330003) layout from a GitHub runner; writes data/cyclone/tigge_probe.txt."""
-import urllib.request, ssl, re
-out = open('data/cyclone/tigge_probe.txt', 'w')
-def get(u, n=3000):
-    try:
-        r = urllib.request.urlopen(urllib.request.Request(u, headers={'User-Agent': 'Mozilla/5.0'}), timeout=60); b = r.read(); return r.status, r.geturl(), b[:n].decode('utf-8', 'replace'), b
-    except Exception as e: return None, u, repr(e)[:300], b''
-for u in ['https://data.rda.ucar.edu/d330003/', 'https://data.rda.ucar.edu/ds330.3/', 'https://data.gdex.ucar.edu/d330003/', 'https://osdf-director.osg-htc.org/ncar/rda/d330003/',
-          'https://data.rda.ucar.edu/d330003/ecmf/', 'https://data.rda.ucar.edu/d330003/ecmf/2023/', 'https://data.gdex.ucar.edu/d330003/ecmf/2023/',
-          'https://gdex.ucar.edu/datasets/d330003/filelist/', 'https://rda.ucar.edu/datasets/ds330.3/filelist/']:
-    s, fu, txt, _ = get(u); print('==', u, s, fu, file=out); print(re.sub(r'\s+', ' ', txt)[:1500], file=out)
+"""Probe the TIGGE cyclone-track archive layout (OSDF mirror of NCAR d330003); writes data/cyclone/tigge_probe.txt."""
+import urllib.request, re
+out = open('data/cyclone/tigge_probe.txt', 'w'); B = 'https://osdf-director.osg-htc.org/ncar/rda/d330003/'
+def ls(u):
+    try: t = urllib.request.urlopen(urllib.request.Request(u, headers={'User-Agent': 'Mozilla/5.0'}), timeout=90).read().decode('utf-8', 'replace')
+    except Exception as e: return ['ERR ' + repr(e)[:200]]
+    return re.findall(r'<a href="([^"]+)"', t)
+for sub in ['', 'ecmf/', 'kwbc/']:
+    L = ls(B + sub); print('==', sub, len(L), L[:40], file=out)
+L = ls(B + 'ecmf/'); print('ecmf entries', L[-10:], file=out)
+for y in ('2018', '2023'):
+    for c in ('ecmf', 'kwbc'):
+        L = ls(B + f'{c}/{y}/'); print('==', c, y, len(L), L[:15], L[-5:], file=out)
+        if L and not L[0].startswith('ERR'):
+            d = [x for x in L if '1112' in x or '1111' in x][:2] or L[:2]
+            for x in d:
+                L2 = ls(B + f'{c}/{y}/' + x.rstrip('/').split('/')[-1] + '/'); print('   ', x, len(L2), L2[:12], file=out)
 out.close()
