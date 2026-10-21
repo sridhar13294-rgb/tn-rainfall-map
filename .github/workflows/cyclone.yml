@@ -1,5 +1,5 @@
 name: Cyclone study (latest forecasts, best tracks, ERA5 steering winds)
-# Runs on the cases branch when data/cyclone/RUN changes. The file's first word picks the jobs: "all", "fc", "hist", "bg" (background fields for past storms) or "lib" (ERA5 for the analogue library).
+# Runs on the cases branch when data/cyclone/RUN changes. The file's first word picks the jobs: "all", "fc", "ours" (live inputs for our own ensemble), "hist", "bg" (background fields for past storms) or "lib" (ERA5 for the analogue library).
 on:
   push:
     branches: [cases]
@@ -20,6 +20,7 @@ jobs:
       - run: |
           w=$(head -c 4 data/cyclone/RUN)
           if [ "$w" = "all " ] || [ "$w" = "fc" ] || [ "$w" = "fc " ]; then python scripts/cyclone/cyc_fetch.py $(sed -n 2p data/cyclone/RUN) || true; fi
+          if [ "$w" = "ours" ]; then python scripts/cyclone/ours_fetch.py || true; fi
           for f in /tmp/cyc_out/*.npz; do [ -f "$f" ] && gh release upload era5-cases "$f" --clobber || true; done
       - if: always()
         run: |
