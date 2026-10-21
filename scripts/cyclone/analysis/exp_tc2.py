@@ -26,14 +26,14 @@ for i, s in enumerate(O.LIBL):
     if key not in TT: continue
     F = DATA[TT.index(key)].astype(float)
     if not np.isfinite(F).all(): continue
-    P0 = O.path_of(s); la0, lo0 = P0[0][1], P0[0][2]
+    P0 = O.path_of(s); la0, lo0 = real_at(P0, g) or (P0[0][1], P0[0][2])     # where the storm really was at the start time
     W = {l: (rmv(F[1, LEVS.index(l)], la0, lo0), rmv(F[2, LEVS.index(l)], la0, lo0)) for l in LEVS}
     peak = max((p[3] or 0) for p in P0)
     row = dict(name=s['name'], season=s['season'], t0=key, real=[((p[0] - g).total_seconds() / 3600, p[1], p[2]) for p in P0], truth=O.segment(*s['lf']) if s['lf'] else 'no landfall', truth_lf=s['lf'], runs={})
     real = {h: real_at(P0, g + dt.timedelta(hours=h)) for h in (24, 48, 72, 96)}
     for c in CFGS:
         try:
-            M = tc2.TC2(1.5, 38.5, 61.5, 108.5, res=0.5, Ld15=c.get('Ld15', 1.2e6))
+            M = tc2.TC2(-2.5, 38.5, 61.5, 108.5, res=0.5, Ld15=c.get('Ld15', 1.2e6))
             # level weights for each layer, e.g. "lw": {"850": 0.4, "700": 0.4, "500": 0.2}, "uw": {"500": 0.5, "200": 0.5}
             lw = {int(k): v for k, v in c.get('lw', {'850': 0.5, '700': 0.5}).items()}; uw = {int(k): v for k, v in c.get('uw', {'500': 0.5, '200': 0.5}).items()}
             uL = sum(w * W[l][0] for l, w in lw.items()); vL = sum(w * W[l][1] for l, w in lw.items())
@@ -57,7 +57,7 @@ for i, s in enumerate(O.LIBL):
                             G = DATA[TT.index(k_)].astype(float); Wt = {l: (rmv(G[1, LEVS.index(l)], *p_), rmv(G[2, LEVS.index(l)], *p_)) for l in LEVS}
                             cache[hh] = [reg(sum(w * Wt[l][q] for l, w in ws.items())) for ws in (lw, uw) for q in (0, 1)]
                     return cache[hh]
-                def env_fn(th):
+                def env_fn(th, storm=None):
                     h0 = int(th // 12) * 12; a_ = lay(h0); b_ = lay(h0 + 12)
                     if a_ is None: return None
                     if b_ is None: b_ = a_

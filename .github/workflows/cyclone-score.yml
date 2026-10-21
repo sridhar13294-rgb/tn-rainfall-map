@@ -9,7 +9,7 @@ permissions:
 jobs:
   score:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 150
     strategy:
       fail-fast: false
       matrix:
@@ -22,9 +22,13 @@ jobs:
         with: {python-version: '3.12'}
       - run: pip install -q numpy scipy scikit-learn matplotlib
       - run: mkdir -p /tmp/w && gh release download era5-cases -p lib_fields.npz -D /tmp/w
-      - run: cd /tmp/w && python -W ignore $GITHUB_WORKSPACE/scripts/cyclone/analysis/hind_tcens.py lib_fields.npz ${{ matrix.chunk }} 21 chunk_${{ matrix.chunk }}.json
+      # data/cyclone/SCORE may say which hindcast to run and where to keep it: "script=hind_tc2s.py tag=tc2s"
       - run: |
-          mkdir -p data/cyclone/ours/score && cp /tmp/w/chunk_${{ matrix.chunk }}.json data/cyclone/ours/score/
+          SC=$(grep -o 'script=[^ ]*' data/cyclone/SCORE | cut -d= -f2); SC=${SC:-hind_tcens.py}
+          TG=$(grep -o 'tag=[^ ]*' data/cyclone/SCORE | cut -d= -f2); echo "SC=$SC" >> $GITHUB_ENV; echo "OUTD=data/cyclone/ours/score${TG:+_$TG}" >> $GITHUB_ENV
+      - run: cd /tmp/w && python -W ignore $GITHUB_WORKSPACE/scripts/cyclone/analysis/$SC lib_fields.npz ${{ matrix.chunk }} 21 chunk_${{ matrix.chunk }}.json
+      - run: |
+          mkdir -p $OUTD && cp /tmp/w/chunk_${{ matrix.chunk }}.json $OUTD/
           git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
-          git add data/cyclone/ours/score; git commit -qm "Cyclone study: physics ensemble score, chunk ${{ matrix.chunk }}"
+          git add $OUTD; git commit -qm "Cyclone study: physics ensemble score, chunk ${{ matrix.chunk }}"
           for i in 1 2 3 4 5 6 7 8 9 10; do git pull -q --rebase origin cases && git push -q origin HEAD:cases && break; sleep $((RANDOM % 25 + 5)); done

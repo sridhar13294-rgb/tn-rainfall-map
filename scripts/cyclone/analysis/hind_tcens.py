@@ -31,7 +31,7 @@ def one(s):
     if key not in TT: return None
     F0 = DATA[TT.index(key), 1:3].astype(float)
     if not np.isfinite(F0).all(): return None
-    P0 = O.path_of(s); la0, lo0 = P0[0][1], P0[0][2]; Fc = rmv(F0, la0, lo0)
+    P0 = O.path_of(s); la0, lo0 = real_at(P0, g) or (P0[0][1], P0[0][2]); Fc = rmv(F0, la0, lo0)
     A0 = RAW.get(key); U0 = [A0[0, l] for l in range(4)] if A0 is not None else None; V0 = [A0[1, l] for l in range(4)] if A0 is not None else None
     mem = []
     for mi, lv in enumerate(DES):

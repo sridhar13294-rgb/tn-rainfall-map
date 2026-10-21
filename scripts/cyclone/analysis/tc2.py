@@ -75,12 +75,12 @@ class TC2(T.TC):
         # the large-scale flow without the storm, as PV: the target the far-away flow is kept near (tau_env hours). A one- or
         # two-layer model lets the big monsoon/ridge patterns run off as fast Rossby waves that the real (3-D, heated,
         # damped) atmosphere does not do; holding the far field near its analysis (or near a storyline's changed state via
-        # env_fn(t_hours) -> (uL, vL, uU, vU)) keeps the steering realistic while the storm and its surroundings interact freely.
+        # env_fn(t_hours, (lat, lon, vmax_kt)) -> (uL, vL, uU, vU) or None) keeps the steering realistic while the storm and its surroundings interact freely.
         def env_q(uL_, vL_, uU_, vU_):
             a1 = self.vort(uU_, vU_); a2 = self.vort(uL_, vL_); b1 = self.poisson(a1, self.boundary_psi(uU_, vU_)); b2 = self.poisson(a2, self.boundary_psi(uL_, vL_))
             return a1 + self.f + self.F * (b2 - b1), a2 + self.f + self.F * (b1 - b2)
         qe1, qe2 = env_q(uL, vL, uU, vU) if tau_env else (None, None)
-        v0 = vmax_fn(0, la, lo, False); tu, tl = targets(v0, size)
+        v0 = vmax_fn(0, la, lo, False); vnow_ = v0; tu, tl = targets(v0, size)
         z1 = z1 + nudge(z1, tu, la, lo); z2 = z2 + nudge(z2, tl, la, lo)
         P1 = self.poisson(z1, B1); P2 = self.poisson(z2, B2)                  # starting stream functions from each layer's winds
         q1 = z1 + self.f + self.F * (P2 - P1); q2 = z2 + self.f + self.F * (P1 - P2)
@@ -95,7 +95,7 @@ class TC2(T.TC):
                 # rebuilds both layers' vortex at that shared centre (this is what keeps a real storm upright and makes a deep
                 # storm feel the upper winds and a shallow one only the lower winds)
                 g = (la + vel[0] * 0.5, lo + vel[1] * 0.5); cl = self.center(z2now, g)
-                vk = vmax_fn(th, la, lo, land_fn(lo, la) if land_fn else False); s_ = float(np.clip((vk - 34) / 60, 0, 1)); au = 0.2 + 0.55 * s_
+                vk = vmax_fn(th, la, lo, land_fn(lo, la) if land_fn else False); vnow_ = vk; s_ = float(np.clip((vk - 34) / 60, 0, 1)); au = 0.2 + 0.55 * s_
                 cu = self.center(lap(P1), cl, rad=1.5); wu = cmul * au / (1 + au)
 
                 if math.hypot(cu[0] - cl[0], cu[1] - cl[1]) > 1.0: cu = cl                 # upper centre not found near the storm: ignore it
@@ -118,7 +118,7 @@ class TC2(T.TC):
             if tau_env:
                 if n % 4 == 1:
                     if env_fn is not None and n % 24 == 1:
-                        ef = env_fn(th)
+                        ef = env_fn(th, (la, lo, vnow_))
                         if ef is not None: qe1, qe2 = env_q(*ef)
                     wenv = np.clip((self.dist_km(la, lo) - env_r[0]) / (env_r[1] - env_r[0]), 0, 1) / (tau_env * 3600)
                 t1 = t1 - wenv * (q1 - qe1); t2 = t2 - wenv * (q2 - qe2)
