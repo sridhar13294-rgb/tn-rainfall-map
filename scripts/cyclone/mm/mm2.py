@@ -53,7 +53,7 @@ class Model:
         la2 = lats[::-1] if lats[0] > lats[-1] else lats; a = a[..., ::-1, :] if lats[0] > lats[-1] else a
         ext = np.concatenate([a, a[..., :1]], -1); lo2 = np.concatenate([lons, [lons[0] + 360]]); pts = np.stack([self.LA.ravel(), self.LO.ravel()], -1)
         f = lambda x: RGI((la2, lo2), x, bounds_error=False, fill_value=None)(pts).reshape(self.LO.shape)
-        return np.stack([f(x) for x in a]) if a.ndim == 3 else f(a)
+        return np.stack([f(x) for x in ext]) if ext.ndim == 3 else f(ext)
     def init(self, f3, levs, lats, lons, ps_pa, zs_m, sst_k, lsm, storm=None):
         """f3: temperature, specific_humidity, u/v_component_of_wind, geopotential -> [lev, lat, lon]. storm: dict(lat, lon,
         vmax_kt, rmw_km) to replace the analysis vortex with a balanced one."""
