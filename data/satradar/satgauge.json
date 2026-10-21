@@ -1,14 +1,14 @@
 {
- "updated": "2026-10-21T04:10:49.554666+00:00",
+ "updated": "2026-10-21T05:09:11.996827+00:00",
  "method": "satellite day totals vs TN SMART gauges on 0.25 degree squares (same squares as the forecast check)",
  "gauge_fit": {
   "cut": 5,
   "scale": 0.25,
   "mae": 5.9,
-  "bias": 0.93,
+  "bias": 0.89,
   "ets": 0.41,
   "pod": 0.75,
-  "far": 0.27
+  "far": 0.26
  },
  "note": null,
  "fit_days": [
@@ -22,39 +22,40 @@
   "2026-10-17",
   "2026-10-18",
   "2026-10-19",
-  "2026-10-20"
+  "2026-10-20",
+  "2026-10-21"
  ],
- "radar_cut": 23.09,
+ "radar_cut": 22.98,
  "overall": {
   "radar_matched": {
-   "cells": 2024,
-   "mae": 6.8,
-   "bias": 0.11,
-   "pod": 0.24,
-   "far": 0.09,
-   "ets": 0.15,
+   "cells": 2208,
+   "mae": 7.0,
+   "bias": 0.1,
+   "pod": 0.22,
+   "far": 0.08,
+   "ets": 0.14,
    "heavy": {
     "hit": 0,
-    "miss": 30,
+    "miss": 32,
     "false": 0
    },
    "sat_mean": 0.8,
-   "gauge_mean": 7.5
+   "gauge_mean": 7.7
   },
   "gauge_fitted": {
-   "cells": 2024,
+   "cells": 2208,
    "mae": 5.9,
-   "bias": 0.93,
+   "bias": 0.89,
    "pod": 0.75,
-   "far": 0.27,
+   "far": 0.26,
    "ets": 0.41,
    "heavy": {
     "hit": 10,
-    "miss": 20,
+    "miss": 22,
     "false": 8
    },
-   "sat_mean": 7.0,
-   "gauge_mean": 7.5
+   "sat_mean": 6.8,
+   "gauge_mean": 7.7
   }
  },
  "days": [
@@ -267,11 +268,11 @@
    "frames": 96,
    "radar_matched": {
     "cells": 184,
-    "mae": 16.8,
+    "mae": 16.7,
     "bias": 0.09,
-    "pod": 0.36,
+    "pod": 0.37,
     "far": 0.04,
-    "ets": 0.14,
+    "ets": 0.15,
     "heavy": {
      "hit": 0,
      "miss": 9,
@@ -301,7 +302,7 @@
    "frames": 96,
    "radar_matched": {
     "cells": 184,
-    "mae": 15.8,
+    "mae": 15.7,
     "bias": 0.05,
     "pod": 0.13,
     "far": 0.28,
@@ -403,7 +404,7 @@
    "frames": 96,
    "radar_matched": {
     "cells": 184,
-    "mae": 5.5,
+    "mae": 5.4,
     "bias": 0.12,
     "pod": 0.2,
     "far": 0.05,
@@ -431,115 +432,149 @@
     "sat_mean": 9.8,
     "gauge_mean": 6.1
    }
+  },
+  {
+   "day": "2026-10-21",
+   "frames": 96,
+   "radar_matched": {
+    "cells": 184,
+    "mae": 9.1,
+    "bias": 0.04,
+    "pod": 0.07,
+    "far": 0.0,
+    "ets": 0.04,
+    "heavy": {
+     "hit": 0,
+     "miss": 2,
+     "false": 0
+    },
+    "sat_mean": 0.3,
+    "gauge_mean": 9.4
+   },
+   "gauge_fitted": {
+    "cells": 184,
+    "mae": 6.2,
+    "bias": 0.57,
+    "pod": 0.73,
+    "far": 0.14,
+    "ets": 0.46,
+    "heavy": {
+     "hit": 0,
+     "miss": 2,
+     "false": 0
+    },
+    "sat_mean": 5.3,
+    "gauge_mean": 9.4
+   }
   }
  ],
  "candidates": [
   {
+   "cut": 0,
+   "scale": 0.15,
+   "mae": 5.6,
+   "bias": 0.65,
+   "ets": 0.42,
+   "pod": 0.79,
+   "far": 0.28
+  },
+  {
    "cut": 2,
    "scale": 0.15,
-   "mae": 5.4,
-   "bias": 0.63,
-   "ets": 0.42,
-   "pod": 0.75,
-   "far": 0.26
-  },
-  {
-   "cut": 7,
-   "scale": 0.4,
-   "mae": 7.9,
-   "bias": 1.38,
-   "ets": 0.42,
-   "pod": 0.76,
-   "far": 0.27
-  },
-  {
-   "cut": 7,
-   "scale": 0.5,
-   "mae": 9.7,
-   "bias": 1.72,
-   "ets": 0.42,
-   "pod": 0.78,
-   "far": 0.28
-  },
-  {
-   "cut": 7,
-   "scale": 0.7,
-   "mae": 14.0,
-   "bias": 2.41,
-   "ets": 0.42,
-   "pod": 0.8,
-   "far": 0.29
-  },
-  {
-   "cut": 7,
-   "scale": 0.85,
-   "mae": 17.5,
-   "bias": 2.92,
-   "ets": 0.42,
-   "pod": 0.81,
-   "far": 0.3
-  },
-  {
-   "cut": 10,
-   "scale": 1.0,
-   "mae": 19.2,
-   "bias": 3.09,
-   "ets": 0.42,
-   "pod": 0.75,
-   "far": 0.27
-  },
-  {
-   "cut": 0,
-   "scale": 0.1,
-   "mae": 5.7,
-   "bias": 0.45,
-   "ets": 0.41,
-   "pod": 0.71,
-   "far": 0.24
-  },
-  {
-   "cut": 0,
-   "scale": 0.15,
    "mae": 5.5,
-   "bias": 0.67,
-   "ets": 0.41,
-   "pod": 0.79,
-   "far": 0.29
-  },
-  {
-   "cut": 1,
-   "scale": 0.15,
-   "mae": 5.4,
-   "bias": 0.65,
-   "ets": 0.41,
-   "pod": 0.76,
-   "far": 0.28
-  },
-  {
-   "cut": 3,
-   "scale": 0.15,
-   "mae": 5.4,
-   "bias": 0.6,
-   "ets": 0.41,
-   "pod": 0.73,
+   "bias": 0.61,
+   "ets": 0.42,
+   "pod": 0.75,
    "far": 0.25
   },
   {
    "cut": 3,
-   "scale": 0.2,
-   "mae": 5.6,
-   "bias": 0.8,
-   "ets": 0.41,
+   "scale": 0.15,
+   "mae": 5.5,
+   "bias": 0.58,
+   "ets": 0.42,
+   "pod": 0.73,
+   "far": 0.24
+  },
+  {
+   "cut": 7,
+   "scale": 0.4,
+   "mae": 7.7,
+   "bias": 1.32,
+   "ets": 0.42,
+   "pod": 0.76,
+   "far": 0.26
+  },
+  {
+   "cut": 7,
+   "scale": 0.5,
+   "mae": 9.5,
+   "bias": 1.65,
+   "ets": 0.42,
    "pod": 0.77,
+   "far": 0.27
+  },
+  {
+   "cut": 7,
+   "scale": 0.6,
+   "mae": 11.5,
+   "bias": 1.98,
+   "ets": 0.42,
+   "pod": 0.78,
+   "far": 0.27
+  },
+  {
+   "cut": 7,
+   "scale": 0.7,
+   "mae": 13.7,
+   "bias": 2.31,
+   "ets": 0.42,
+   "pod": 0.79,
    "far": 0.28
   },
   {
-   "cut": 5,
-   "scale": 0.25,
-   "mae": 5.9,
-   "bias": 0.93,
-   "ets": 0.41,
+   "cut": 7,
+   "scale": 0.85,
+   "mae": 17.0,
+   "bias": 2.8,
+   "ets": 0.42,
+   "pod": 0.81,
+   "far": 0.28
+  },
+  {
+   "cut": 7,
+   "scale": 1.0,
+   "mae": 20.5,
+   "bias": 3.29,
+   "ets": 0.42,
+   "pod": 0.81,
+   "far": 0.29
+  },
+  {
+   "cut": 10,
+   "scale": 1.0,
+   "mae": 18.6,
+   "bias": 2.94,
+   "ets": 0.42,
    "pod": 0.75,
+   "far": 0.25
+  },
+  {
+   "cut": 0,
+   "scale": 0.1,
+   "mae": 5.8,
+   "bias": 0.43,
+   "ets": 0.41,
+   "pod": 0.71,
+   "far": 0.23
+  },
+  {
+   "cut": 1,
+   "scale": 0.15,
+   "mae": 5.5,
+   "bias": 0.63,
+   "ets": 0.41,
+   "pod": 0.76,
    "far": 0.27
   }
  ]
