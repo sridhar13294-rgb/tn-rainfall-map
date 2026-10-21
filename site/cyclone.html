@@ -73,7 +73,7 @@ a{color:var(--accent)}
 @media (max-width:520px){.drow,.axis{grid-template-columns:minmax(0,1fr)}.axis span:first-child{display:none}.row{grid-template-columns:8.5em minmax(0,1fr) 3em}}
 @media (prefers-reduced-motion:reduce){.bar>div{transition:none}}
 .dlrow,.memctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.memctl select{flex:1 1 9em;min-width:0;width:100%;font:inherit;font-size:.95rem;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 10px;max-width:100%}
+.memctl select{flex:1 1 8em;min-width:0;width:100%;font:inherit;font-size:.95rem;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 10px;max-width:100%}
 </style></head><body>
 <div class="wrap"><header class="top"><a class="brand" href="index.html"><span class="ta" lang="ta">மழை</span><h1><b>Tamil Nadu</b> cyclone ensemble</h1></a><nav class="tabs"><a href="index.html">Rainfall</a><a href="forecast.html">Forecast</a><a href="satradar.html">Sat radar</a><a class="on" href="cyclone.html">Cyclone</a></nav></header><div class="warnx"><b>Experimental.</b> Our own ensemble, built from observed data and past storms without any forecast model. Updated every 6 hours. Not an official forecast: follow IMD for warnings.</div>
 <header>
@@ -104,6 +104,7 @@ a{color:var(--accent)}
   <h2>The 51 members</h2>
   <div class="work">
     <div style="display:grid;gap:10px;min-width:0">
+      <div class="memctl"><label for="mapsel" class="note" style="margin:0">Show on the map:</label><button class="btn" type="button" id="aprev" aria-label="Previous member">◀</button><select id="mapsel" aria-label="Choose which members to show"></select><button class="btn" type="button" id="anext" aria-label="Next member">▶</button></div>
       <div class="mapbox"><canvas id="map2" width="900" height="880" aria-label="Map of the 51 ensemble members"></canvas></div>
       <div class="dlrow"><button class="btn" type="button" data-dl="all">Download this map as JPG</button><button class="btn" type="button" data-dl="stamps">Download all 51 members, one map each (JPG)</button></div>
       <div class="legend" id="ilegend"></div>
@@ -117,14 +118,10 @@ a{color:var(--accent)}
       <div class="tblwrap"><table id="facts51"></table></div>
     </div>
   </div>
-  <div class="panel" style="display:grid;gap:8px"><h3>Strength over time, all 51 members</h3>
-    <canvas id="ichart" width="900" height="380" aria-label="Wind speed over time for all members"></canvas>
-    <p class="note">Grey lines are members, the black line is the control, the coloured line is the member you picked. Dots mark landfall. Bands show the IMD categories.</p></div>
-  <div class="tblwrap panel" style="padding:0"><table id="members"></table></div>
 </section>
 
-<section>
-  <h2>Individual members</h2>
+<section id="member">
+  <h2>Individual members (each one on its own)</h2>
   <div class="memctl"><button class="btn" type="button" id="mprev" aria-label="Previous member">◀</button>
     <select id="msel" aria-label="Choose a member"></select>
     <button class="btn" type="button" id="mnext" aria-label="Next member">▶</button>
@@ -140,6 +137,13 @@ a{color:var(--accent)}
       <div class="tblwrap"><table id="memtable"></table></div>
     </div>
   </div>
+</section>
+
+<section>
+  <div class="panel" style="display:grid;gap:8px"><h3>Strength over time, all 51 members</h3>
+    <canvas id="ichart" width="900" height="380" aria-label="Wind speed over time for all members"></canvas>
+    <p class="note">Grey lines are members, the black line is the control, the coloured line is the member you picked. Dots mark landfall. Bands show the IMD categories.</p></div>
+  <div class="tblwrap panel" style="padding:0"><table id="members"></table></div>
 </section>
 
 <section>
@@ -205,7 +209,7 @@ const dstr=h=>{const d=ist(h);return d.getUTCDate()+' '+MON[d.getUTCMonth()]};
 const tstr=h=>{const d=ist(h);return dstr(h)+' '+String(d.getUTCHours()).padStart(2,'0')+':'+String(d.getUTCMinutes()).padStart(2,'0')};
 const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const LK=D.runs.map((r,i)=>({i,seg:r[0],lf:r[1],lv:r[2],p3:r[3],gen:r[4],vmax:r[5]}));
-let SEL=null,cv,cx,W,H,X0v=76,X1v=96,Y0v=5,Y1v=24;const K=Math.cos(15*Math.PI/180);
+let SEL=null,ONLY=null,cv,cx,W,H,X0v=76,X1v=96,Y0v=5,Y1v=24;const K=Math.cos(15*Math.PI/180);
 let FIXW=0;function size(){const w=FIXW||cv.clientWidth||600,dpr=FIXW?2:Math.min(2,window.devicePixelRatio||1);const h=w*(Y1v-Y0v)/((X1v-X0v)*K);cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);if(!FIXW)cv.style.height=h+'px';cx.setTransform(dpr,0,0,dpr,0,0);return [w,h]}
 const px=lo=>(lo-X0v)/(X1v-X0v)*W, py=la=>(Y1v-la)/(Y1v-Y0v)*H;
 function base(){cx.fillStyle=css('--sea');cx.fillRect(0,0,W,H);cx.strokeStyle=css('--coast');cx.lineWidth=0.8;cx.fillStyle=css('--landc');
@@ -221,12 +225,12 @@ function drawM51(c){
   cv=c||document.getElementById('map2');cx=cv.getContext('2d');[W,H]=size();base();const IC=[0,1,2,3,4,5,6,7].map(k=>css('--i'+k));
   const seg=(r,w,alpha,outline)=>{const p=r.p3;if(outline){cx.globalAlpha=1;cx.strokeStyle=outline;cx.lineWidth=w+3;cx.beginPath();for(let k=0;k<p.length;k+=3){const x=px(p[k+1]),y=py(p[k]);k?cx.lineTo(x,y):cx.moveTo(x,y)}cx.stroke()}
     cx.globalAlpha=alpha;cx.lineWidth=w;for(let k=3;k<p.length;k+=3){cx.strokeStyle=IC[icat(p[k-1])];cx.beginPath();cx.moveTo(px(p[k-2]),py(p[k-3]));cx.lineTo(px(p[k+1]),py(p[k]));cx.stroke()}cx.globalAlpha=1};
-  LK.forEach(r=>{if(r.i&&r.i!==SEL)seg(r,1.4,SEL?0.25:0.6,null)});ridge();
-  cx.strokeStyle=css('--ink');cx.lineWidth=1.2;LK.forEach(r=>{if(r.gen){cx.beginPath();cx.arc(px(r.gen[1]),py(r.gen[0]),3.5,0,7);cx.stroke()}});
-  seg(LK[0],3.2,1,css('--ink'));if(SEL)seg(LK[SEL],3.2,1,css('--accent'));
-  LK.forEach(r=>{if(!r.lf)return;const big=r.i===0||r.i===SEL;if(SEL&&!big)return;cx.fillStyle='#fff';cx.strokeStyle=css('--ink');cx.lineWidth=1.2;cx.beginPath();cx.arc(px(r.lf[1]),py(r.lf[0]),big?5:3,0,7);cx.fill();cx.stroke()});
-  star();cx.fillStyle=css('--ink');cx.font='600 11px '+css('--f-body');cx.textAlign='left';const p=LK[0].p3;let lx=-99,ly=-99;
-  for(let k=12;k<p.length;k+=12){const h=6*k/3,x=px(p[k+1]),y=py(p[k]);if(Math.hypot(x-lx,y-ly)<22)continue;if(icat(p[k+2])===0&&LK[0].lf&&h>LK[0].lf[2])break;cx.fillText(dstr(h)+' '+IAB[icat(p[k+2])],x+7,y+4);lx=x;ly=y}
+  if(ONLY===null)LK.forEach(r=>{if(r.i&&r.i!==SEL)seg(r,1.4,SEL?0.25:0.6,null)});ridge();
+  cx.strokeStyle=css('--ink');cx.lineWidth=1.2;LK.forEach(r=>{if(ONLY!==null&&r.i!==ONLY)return;if(r.gen){cx.beginPath();cx.arc(px(r.gen[1]),py(r.gen[0]),3.5,0,7);cx.stroke()}});
+  if(ONLY===null||ONLY===0)seg(LK[0],3.2,1,css('--ink'));if(ONLY)seg(LK[ONLY],3.2,1,css('--accent'));else if(SEL)seg(LK[SEL],3.2,1,css('--accent'));
+  LK.forEach(r=>{if(!r.lf)return;const big=r.i===0||r.i===SEL||r.i===ONLY;if((SEL||ONLY!==null)&&!big)return;if(ONLY!==null&&r.i!==ONLY)return;cx.fillStyle='#fff';cx.strokeStyle=css('--ink');cx.lineWidth=1.2;cx.beginPath();cx.arc(px(r.lf[1]),py(r.lf[0]),big?5:3,0,7);cx.fill();cx.stroke()});
+  star();cx.fillStyle=css('--ink');cx.font='600 11px '+css('--f-body');cx.textAlign='left';const LB=LK[ONLY===null?0:ONLY],p=LB.p3;let lx=-99,ly=-99;
+  for(let k=12;k<p.length;k+=12){const h=6*k/3,x=px(p[k+1]),y=py(p[k]);if(Math.hypot(x-lx,y-ly)<22)continue;if(icat(p[k+2])===0&&LB.lf&&h>LB.lf[2])break;cx.fillText(dstr(h)+' '+IAB[icat(p[k+2])],x+7,y+4);lx=x;ly=y}
 }
 function windChart(id,runs,opts){
   const c=document.getElementById(id),g=c.getContext('2d'),w=c.clientWidth||600,h=Math.max(220,Math.min(opts.h,w*0.55)),dpr=Math.min(2,window.devicePixelRatio||1);
@@ -332,6 +336,11 @@ document.querySelectorAll('[data-dl]').forEach(b=>b.addEventListener('click',()=
   draw()}));
 const msel=document.getElementById('msel');msel.innerHTML=LK.map(r=>'<option value="'+r.i+'">Member '+r.i+(r.i?'':' (control)')+' — '+SEGS[r.seg]+(r.lf?' '+r.lf[0].toFixed(1)+'°N':'')+'</option>').join('');
 msel.addEventListener('change',()=>{MI=+msel.value;memInfo()});
+const asel=document.getElementById('mapsel');asel.innerHTML='<option value="">All 51 members</option>'+msel.innerHTML;
+const showOne=v=>{ONLY=v===''?null:+v;asel.value=v;if(ONLY!==null){MI=ONLY;memInfo()}drawM51();document.getElementById('selnote').textContent=ONLY===null?'Tap a row in the table, or pick a member above, to see it alone.':'Showing member '+ONLY+' only. Pick “All 51 members” to see them all again; the member’s details are in the next section.'};
+asel.addEventListener('change',()=>showOne(asel.value));
+document.getElementById('aprev').onclick=()=>showOne(String(ONLY===null?LK.length-1:(ONLY+LK.length-1)%LK.length));
+document.getElementById('anext').onclick=()=>showOne(String(ONLY===null?0:(ONLY+1)%LK.length));
 document.getElementById('mprev').onclick=()=>{MI=(MI+LK.length-1)%LK.length;memInfo()};document.getElementById('mnext').onclick=()=>{MI=(MI+1)%LK.length;memInfo()};
 const c=shares();table51();drivers();summary(c);
 document.getElementById('ilegend').innerHTML=IAB.map((a,k)=>'<span><i style="background:var(--i'+k+');border-radius:2px"></i>'+ICAT[k]+(k?' ('+ILIM[k]+(ILIM[k+1]?'–'+(ILIM[k+1]-1):'+')+' kt)':' (below 17 kt)')+'</span>').join('');
