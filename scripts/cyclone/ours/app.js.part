@@ -13,7 +13,7 @@ const tstr=h=>{const d=ist(h);return dstr(h)+' '+String(d.getUTCHours()).padStar
 const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const LK=D.runs.map((r,i)=>({i,seg:r[0],lf:r[1],lv:r[2],p3:r[3],gen:r[4],vmax:r[5]}));
 let SEL=null,cv,cx,W,H,X0v=76,X1v=96,Y0v=5,Y1v=24;const K=Math.cos(15*Math.PI/180);
-function size(){const w=cv.clientWidth||600,dpr=Math.min(2,window.devicePixelRatio||1);const h=w*(Y1v-Y0v)/((X1v-X0v)*K);cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);cv.style.height=h+'px';cx.setTransform(dpr,0,0,dpr,0,0);return [w,h]}
+let FIXW=0;function size(){const w=FIXW||cv.clientWidth||600,dpr=FIXW?2:Math.min(2,window.devicePixelRatio||1);const h=w*(Y1v-Y0v)/((X1v-X0v)*K);cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);if(!FIXW)cv.style.height=h+'px';cx.setTransform(dpr,0,0,dpr,0,0);return [w,h]}
 const px=lo=>(lo-X0v)/(X1v-X0v)*W, py=la=>(Y1v-la)/(Y1v-Y0v)*H;
 function base(){cx.fillStyle=css('--sea');cx.fillRect(0,0,W,H);cx.strokeStyle=css('--coast');cx.lineWidth=0.8;cx.fillStyle=css('--landc');
   D.land.forEach(ring=>{cx.beginPath();ring.forEach((p,k)=>k?cx.lineTo(px(p[0]),py(p[1])):cx.moveTo(px(p[0]),py(p[1])));cx.closePath();cx.fill();cx.stroke()});
@@ -24,8 +24,8 @@ function ridge(){const R=D.obs.ridge;if(!R)return;cx.save();cx.setLineDash([7,5]
   Object.entries(R.axis).forEach(([k,v])=>{const [a,b]=k.replace('E','').split('-').map(Number);if(f){cx.moveTo(px(a),py(v));f=false}else cx.lineTo(px(a),py(v));cx.lineTo(px(b),py(v))});cx.stroke();cx.restore();
   cx.font='800 15px '+css('--f-body');cx.textAlign='center';R.highs.forEach(h=>{if(h[0]<X0v||h[0]>X1v||h[1]<Y0v||h[1]>Y1v)return;cx.fillStyle='#7b1d1d';cx.beginPath();cx.arc(px(h[0]),py(h[1]),10,0,7);cx.fill();cx.fillStyle='#fff';cx.fillText('H',px(h[0]),py(h[1])+5)});cx.textAlign='left'}
 function star(){const sx=px(D.obs.bay.lon),sy=py(D.obs.bay.lat);cx.fillStyle=css('--star');cx.beginPath();for(let k=0;k<10;k++){const rr=k%2?4:10,an=-Math.PI/2+k*Math.PI/5;cx.lineTo(sx+rr*Math.cos(an),sy+rr*Math.sin(an))}cx.closePath();cx.fill()}
-function drawM51(){
-  cv=document.getElementById('map2');cx=cv.getContext('2d');[W,H]=size();base();const IC=[0,1,2,3,4,5,6,7].map(k=>css('--i'+k));
+function drawM51(c){
+  cv=c||document.getElementById('map2');cx=cv.getContext('2d');[W,H]=size();base();const IC=[0,1,2,3,4,5,6,7].map(k=>css('--i'+k));
   const seg=(r,w,alpha,outline)=>{const p=r.p3;if(outline){cx.globalAlpha=1;cx.strokeStyle=outline;cx.lineWidth=w+3;cx.beginPath();for(let k=0;k<p.length;k+=3){const x=px(p[k+1]),y=py(p[k]);k?cx.lineTo(x,y):cx.moveTo(x,y)}cx.stroke()}
     cx.globalAlpha=alpha;cx.lineWidth=w;for(let k=3;k<p.length;k+=3){cx.strokeStyle=IC[icat(p[k-1])];cx.beginPath();cx.moveTo(px(p[k-2]),py(p[k-3]));cx.lineTo(px(p[k+1]),py(p[k]));cx.stroke()}cx.globalAlpha=1};
   LK.forEach(r=>{if(r.i&&r.i!==SEL)seg(r,1.4,SEL?0.25:0.6,null)});ridge();
@@ -50,8 +50,8 @@ function windChart(id,runs,opts){
 }
 function drawChart(){const n=Math.max(...LK.map(r=>r.p3.length/3));const runs=LK.filter(r=>r.i).map(r=>[r,css('--muted'),1,0.35]);runs.push([LK[0],css('--ink'),3,1]);if(SEL)runs.push([LK[SEL],css('--accent'),3,1]);
   windChart('ichart',runs,{h:380,tEnd:Math.min(6*(n-1),264),vmax:Math.max(80,Math.ceil(Math.max(...LK.map(r=>r.vmax))/20)*20)})}
-function opView(){
-  const r=LK[0],p=r.p3,n=p.length/3;cv=document.getElementById('opmap');cx=cv.getContext('2d');
+function memberMap(c,r){
+  const p=r.p3,n=p.length/3;cv=c;cx=c.getContext('2d');
   const lats=[],lons=[];for(let k=0;k<p.length;k+=3){lats.push(p[k]);lons.push(p[k+1])}
   const sv=[X0v,X1v,Y0v,Y1v];X0v=Math.min(...lons)-3;X1v=Math.max(...lons)+3;Y0v=Math.min(...lats)-2.5;Y1v=Math.max(...lats)+2.5;
   [W,H]=size();base();const IC=[0,1,2,3,4,5,6,7].map(k=>css('--i'+k));
@@ -62,11 +62,12 @@ function opView(){
     if(Math.hypot(x-lx,y-ly)<26)continue;const lab=tstr(h).replace(':30','')+'  '+IAB[icat(p[k+2])]+' '+Math.round(p[k+2])+' kt',tw=cx.measureText(lab).width;const right=x+9+tw>W-4;cx.textAlign=right?'right':'left';cx.fillText(lab,right?x-9:x+9,y+4);cx.textAlign='left';lx=x;ly=y}
   if(r.lf){const x=px(r.lf[1]),y=py(r.lf[0]);cx.fillStyle='#fff';cx.strokeStyle=css('--ink');cx.lineWidth=2;cx.beginPath();cx.arc(x,y,7,0,7);cx.fill();cx.stroke();
     cx.fillStyle=css('--ink');const lt='Landfall '+tstr(r.lf[2]);const left=x-11-cx.measureText(lt).width<4;cx.textAlign=left?'left':'right';cx.fillText(lt,left?x+11:x-11,y-12);cx.textAlign='left'}
-  star();[X0v,X1v,Y0v,Y1v]=sv;
-  windChart('opchart',[[r,null,3.5,1,true]],{h:320,tEnd:6*(n-1)+6,vmax:Math.max(80,Math.ceil(r.vmax/20)*20),label:true});
+  star();[X0v,X1v,Y0v,Y1v]=sv;}
+function memberView(i,ids){const r=LK[i],p=r.p3,n=p.length/3;memberMap(document.getElementById(ids.map),r);
+  windChart(ids.chart,[[r,null,3.5,1,true]],{h:320,tEnd:6*(n-1)+6,vmax:Math.max(80,Math.ceil(r.vmax/20)*20),label:true});
   let prev=-1,rows=[];for(let k=0;k<n;k++){const v=p[3*k+2],c=icat(v);if(c!==prev){rows.push([6*k,c,v,p[3*k],p[3*k+1]]);prev=c}}
   if(r.lf)rows.push([r.lf[2],-1,r.lf[3],r.lf[0],r.lf[1]]);rows.sort((a,b)=>a[0]-b[0]);rows.push([6*(n-1),-2,p[3*n-1],p[3*n-3],p[3*n-2]]);
-  document.getElementById('optable').innerHTML='<thead><tr><th>When (IST)</th><th>Stage</th><th>Wind</th><th>Position</th></tr></thead><tbody>'+rows.map(q=>'<tr><td>'+tstr(q[0])+'</td><td>'+(q[1]===-1?'<b>Landfall</b>':q[1]===-2?'Remnant low fills':ICAT[q[1]])+'</td><td class="n" style="white-space:nowrap">'+Math.round(q[2])+' kt</td><td class="mono">'+q[3].toFixed(1)+'°N '+q[4].toFixed(1)+'°E</td></tr>').join('')+'</tbody>';
+  document.getElementById(ids.table).innerHTML='<thead><tr><th>When (IST)</th><th>Stage</th><th>Wind</th><th>Position</th></tr></thead><tbody>'+rows.map(q=>'<tr><td>'+tstr(q[0])+'</td><td>'+(q[1]===-1?'<b>Landfall</b>':q[1]===-2?'Remnant low fills':ICAT[q[1]])+'</td><td class="n" style="white-space:nowrap">'+Math.round(q[2])+' kt</td><td class="mono">'+q[3].toFixed(1)+'°N '+q[4].toFixed(1)+'°E</td></tr>').join('')+'</tbody>';
 }
 function shares(){const n=LK.length,c=new Array(9).fill(0);LK.forEach(r=>c[r.seg]++);
   document.getElementById('shares2').innerHTML=SEGS.map((s,k)=>{const p=100*c[k]/n;return '<div class="row"><span>'+s+'</span><div class="bar"><div style="width:'+p.toFixed(1)+'%;background:var('+GVAR[GROUP[k]]+')"></div></div><span class="v">'+c[k]+'</span></div>'}).join('');return c}
@@ -76,7 +77,7 @@ function table51(){
     return '<tr data-m="'+r.i+'" tabindex="0" style="cursor:pointer"><td class="n">'+r.i+'</td><td><i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var('+GVAR[GROUP[r.seg]]+');margin-right:6px"></i>'+SEGS[r.seg]+'</td><td class="n">'+(r.lf?r.lf[0].toFixed(1)+'°N':'–')+'</td><td>'+(r.lf?tstr(r.lf[2]):'–')+'</td><td>'+IAB[icat(r.vmax)]+' '+Math.round(r.vmax)+' kt</td><td>'+(r.lf?IAB[icat(r.lf[3])]+' '+Math.round(r.lf[3])+' kt':'–')+'</td><td class="muted" style="min-width:18em">'+diff+'</td></tr>'}).join('');
   const t=document.getElementById('members');t.innerHTML='<thead><tr><th>#</th><th>Landfall</th><th>Lat</th><th>When (IST)</th><th>Peak</th><th>At landfall</th><th>Inputs changed from observed</th></tr></thead><tbody>'+rows+'</tbody>';
   const pick=e=>{const tr=e.target.closest('tr[data-m]');if(!tr)return;SEL=+tr.dataset.m;t.querySelectorAll('tr[data-m]').forEach(x=>x.style.background=x===tr?'var(--chip)':'');
-    const r=LK[SEL];document.getElementById('selnote').textContent='Member '+SEL+': '+SEGS[r.seg]+(r.lf?' at '+r.lf[0].toFixed(1)+'°N, '+tstr(r.lf[2])+' IST, '+Math.round(r.lf[3])+' kt':'')+'. Highlighted on the map and the strength chart.';drawM51();drawChart();document.getElementById('map2').scrollIntoView({behavior:'smooth',block:'center'})};
+    const r=LK[SEL];document.getElementById('selnote').textContent='Member '+SEL+': '+SEGS[r.seg]+(r.lf?' at '+r.lf[0].toFixed(1)+'°N, '+tstr(r.lf[2])+' IST, '+Math.round(r.lf[3])+' kt':'')+'. Highlighted on the map and the strength chart.';MI=SEL;memInfo();drawM51();drawChart();document.getElementById('map2').scrollIntoView({behavior:'smooth',block:'center'})};
   t.addEventListener('click',pick);t.addEventListener('keydown',e=>{if(e.key==='Enter')pick(e)});
 }
 function drivers(){const south=r=>r.seg>=0&&r.seg<=3;const all=100*LK.filter(south).length/LK.length;
@@ -110,7 +111,35 @@ function summary(c){
   document.getElementById('hist').innerHTML='<thead><tr><th>Analysis</th><th>TN</th><th>South AP</th><th>Central AP</th><th>North AP</th><th>Odisha/WB</th><th>Bangladesh/Myanmar</th><th>No landfall</th><th>Control landfall</th></tr></thead><tbody>'+
    D.hist.slice().reverse().map(h=>{const s=h.shares,g=k=>s[k]||0;return '<tr><td>'+h.label+'</td><td class="n">'+(g('south TN')+g('north TN'))+'</td><td class="n">'+g('south AP')+'</td><td class="n">'+g('central AP')+'</td><td class="n">'+g('north AP')+'</td><td class="n">'+g('Odisha/WB')+'</td><td class="n">'+g('Bangladesh/Myanmar')+'</td><td class="n">'+g('no landfall')+'</td><td>'+h.control+'</td></tr>'}).join('')+'</tbody>';
 }
-function draw(){drawM51();drawChart();opView()}
+let MI=0;
+function memInfo(){const r=LK[MI],FT=D.factors;const diff=r.lv.map((v,k)=>v===1||FT[k][1][0]===FT[k][1][2]?null:FT[k][0]+': '+FT[k][1][v]).filter(Boolean).join(' · ')||'everything as observed (the control)';
+  document.getElementById('minfo').innerHTML='<b>Member '+MI+'</b>: '+SEGS[r.seg]+(r.lf?' at '+r.lf[0].toFixed(1)+'°N, '+tstr(r.lf[2])+' IST, '+Math.round(r.lf[3])+' kt':'')+'; peak '+IAB[icat(r.vmax)]+' '+Math.round(r.vmax)+' kt'+(r.gen?'; depression forms '+tstr(r.gen[2])+' IST at '+r.gen[0].toFixed(1)+'°N '+r.gen[1].toFixed(1)+'°E':'')+'.<br>Inputs changed from observed: '+diff;
+  document.getElementById('msel').value=MI;memberView(MI,{map:'memmap',chart:'memchart',table:'memtable'})}
+function draw(){drawM51();drawChart();memberView(0,{map:'opmap',chart:'opchart',table:'optable'});memInfo()}
+// ---- JPG downloads ----
+function band(c,title,sub){const g=c.getContext('2d');g.setTransform(2,0,0,2,0,0);g.fillStyle=css('--bg')||'#0b1522';g.fillRect(0,0,c.width/2,58);g.fillStyle=css('--ink');g.font='700 20px '+css('--f-body');g.textAlign='left';g.fillText(title,14,26);g.fillStyle=css('--muted');g.font='13px '+css('--f-body');g.fillText(sub,14,46)}
+function legendBand(g,y,w){g.font='12px '+css('--f-body');let x=14;IAB.forEach((a,k)=>{g.fillStyle=css('--i'+k);g.fillRect(x,y,14,10);g.fillStyle=css('--ink');g.fillText(a,x+18,y+10);x+=g.measureText(a).width+34});g.fillStyle=css('--muted');g.fillText('Our own ensemble, no forecast model · tn-rainfall-map',x+6,y+10)}
+function compose(drawFn,title,sub,w){const tmp=document.createElement('canvas');FIXW=w;const sv=[cv,cx,W,H];drawFn(tmp);FIXW=0;[cv,cx,W,H]=sv;
+  const out=document.createElement('canvas');out.width=tmp.width;out.height=tmp.height+2*(58+30);band(out,title,sub);const g=out.getContext('2d');g.setTransform(1,0,0,1,0,0);g.drawImage(tmp,0,2*58);g.setTransform(2,0,0,2,0,0);
+  g.fillStyle=css('--bg')||'#0b1522';g.fillRect(0,58+tmp.height/2,w,30);legendBand(g,58+tmp.height/2+10,w);return out}
+function save(c,name){c.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000)},'image/jpeg',0.92)}
+const RUNTAG=D.t0.replace(/[-:T]/g,'').slice(0,10)+'Z';
+function stamps(){const cols=6,cw=300,ch=Math.round(cw*(Y1v-Y0v)/((X1v-X0v)*K))+24,rows=Math.ceil(LK.length/cols);const out=document.createElement('canvas');out.width=2*cols*cw;out.height=2*(rows*ch+58+30);band(out,'Our 51-member ensemble · run '+D.run_label,'One map per member · line colour = strength (IMD scale) · white dot = landfall');
+  const g=out.getContext('2d');g.setTransform(1,0,0,1,0,0);g.fillStyle=css('--bg')||'#0b1522';g.fillRect(0,2*58,out.width,out.height-2*58);LK.forEach((r,i)=>{const tmp=document.createElement('canvas');FIXW=cw;cv=tmp;cx=tmp.getContext('2d');[W,H]=size();base();const IC=[0,1,2,3,4,5,6,7].map(k=>css('--i'+k));const p=r.p3;cx.lineWidth=2.4;
+    for(let k=3;k<p.length;k+=3){cx.strokeStyle=IC[icat(p[k-1])];cx.beginPath();cx.moveTo(px(p[k-2]),py(p[k-3]));cx.lineTo(px(p[k+1]),py(p[k]));cx.stroke()}
+    if(r.lf){cx.fillStyle='#fff';cx.strokeStyle='#000';cx.lineWidth=1;cx.beginPath();cx.arc(px(r.lf[1]),py(r.lf[0]),4,0,7);cx.fill();cx.stroke()}
+    const x=(i%cols)*cw,y=58+Math.floor(i/cols)*ch;g.setTransform(1,0,0,1,0,0);g.drawImage(tmp,2*x,2*(y+22));g.setTransform(2,0,0,2,0,0);g.fillStyle=css('--bg')||'#0b1522';g.fillRect(x,y,cw,22);
+    g.fillStyle=css('--ink');g.font='600 12px '+css('--f-body');g.textAlign='left';g.fillText((i?'#'+i:'#0 control')+' · '+(r.lf?SEGS[r.seg].replace('Andhra Pradesh','AP').replace('Tamil Nadu','TN')+' '+r.lf[0].toFixed(1)+'°N '+dstr(r.lf[2]):'no landfall')+' · '+IAB[icat(r.vmax)],x+6,y+15)});
+  FIXW=0;g.setTransform(2,0,0,2,0,0);g.fillStyle=css('--bg')||'#0b1522';g.fillRect(0,58+rows*ch,cols*cw,30);legendBand(g,58+rows*ch+10,cols*cw);return out}
+document.querySelectorAll('[data-dl]').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.dl;let c,name;
+  if(k==='all'){c=compose(t=>drawM51(t),'Our 51-member ensemble · run '+D.run_label,'Bold line = control (member 0) · line colour = strength · white dots = landfall · dashed = 500 hPa ridge, H = highs',1100);name='ensemble_'+RUNTAG+'.jpg'}
+  else if(k==='stamps'){c=stamps();name='ensemble_members_'+RUNTAG+'.jpg'}
+  else{const i=k==='op'?0:MI;const r=LK[i];c=compose(t=>memberMap(t,r),(i?'Member '+i:'Operational run (member 0)')+' · run '+D.run_label,(r.lf?'Landfall '+SEGS[r.seg]+' '+r.lf[0].toFixed(1)+'°N, '+tstr(r.lf[2])+' IST, '+Math.round(r.lf[3])+' kt':'No landfall')+' · peak '+IAB[icat(r.vmax)]+' '+Math.round(r.vmax)+' kt',1000);name='member'+String(i).padStart(2,'0')+'_'+RUNTAG+'.jpg'}
+  try{save(c,name)}catch(e){const t=b.textContent;b.textContent='Download works on the website page';setTimeout(()=>b.textContent=t,3000)}
+  draw()}));
+const msel=document.getElementById('msel');msel.innerHTML=LK.map(r=>'<option value="'+r.i+'">Member '+r.i+(r.i?'':' (control)')+' — '+SEGS[r.seg]+(r.lf?' '+r.lf[0].toFixed(1)+'°N':'')+'</option>').join('');
+msel.addEventListener('change',()=>{MI=+msel.value;memInfo()});
+document.getElementById('mprev').onclick=()=>{MI=(MI+LK.length-1)%LK.length;memInfo()};document.getElementById('mnext').onclick=()=>{MI=(MI+1)%LK.length;memInfo()};
 const c=shares();table51();drivers();summary(c);
 document.getElementById('ilegend').innerHTML=IAB.map((a,k)=>'<span><i style="background:var(--i'+k+');border-radius:2px"></i>'+ICAT[k]+(k?' ('+ILIM[k]+(ILIM[k+1]?'–'+(ILIM[k+1]-1):'+')+' kt)':' (below 17 kt)')+'</span>').join('');
 draw();

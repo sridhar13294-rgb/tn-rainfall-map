@@ -16,11 +16,17 @@ for r in E['runs']:
     lf = r['lf']; g = r['gen']
     runs.append([SEGS.index(r['seg']), [lf['lat'], lf['lon'], H(lf['t']), lf['wind']] if lf else None, r['levels'], p,
                  [g['lat'], g['lon'], H(g['t'])] if g else None, round(r['vmax'], 1)])
-land = []
+land = []          # full-resolution Natural Earth 1:50m coast, clipped to 66-106E 0-30N (points outside are pulled onto the box edge)
+BX = (66.0, 106.0, 0.0, 30.0)
 for ring in json.load(open(os.path.join(REPO, 'data', 'cyclone', 'land.json'))):
-    a = np.array(ring)
-    if a[:, 0].max() < 70 or a[:, 0].min() > 100 or a[:, 1].min() > 27 or a[:, 1].max() < 3 or len(a) < 4: continue
-    st = max(1, len(a) // 400); land.append([[round(x, 2), round(y, 2)] for x, y in a[::st]])
+    a = np.array(ring, float)
+    if a[:, 0].max() < BX[0] or a[:, 0].min() > BX[1] or a[:, 1].min() > BX[3] or a[:, 1].max() < BX[2] or len(a) < 4: continue
+    a[:, 0] = np.clip(a[:, 0], BX[0], BX[1]); a[:, 1] = np.clip(a[:, 1], BX[2], BX[3])
+    out = []
+    for x, y in a:
+        q = [round(float(x), 2), round(float(y), 2)]
+        if not out or q != out[-1]: out.append(q)
+    if len(out) > 3: land.append(out)
 hp = os.path.join(REPO, 'data', 'cyclone', 'ours', 'live_history.json')
 hist = json.load(open(hp)) if os.path.exists(hp) else []
 c0 = E['runs'][0]; lf0 = c0['lf']

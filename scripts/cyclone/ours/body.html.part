@@ -14,6 +14,7 @@
   <div class="work">
     <div style="display:grid;gap:10px;min-width:0">
       <div class="mapbox"><canvas id="opmap" width="900" height="880" aria-label="Track of the operational run coloured by strength"></canvas></div>
+      <div class="dlrow"><button class="btn" type="button" data-dl="op">Download as JPG</button></div>
     </div>
     <div class="panel" style="display:grid;gap:12px;min-width:0">
       <h3>Strength along the way</h3>
@@ -28,6 +29,7 @@
   <div class="work">
     <div style="display:grid;gap:10px;min-width:0">
       <div class="mapbox"><canvas id="map2" width="900" height="880" aria-label="Map of the 51 ensemble members"></canvas></div>
+      <div class="dlrow"><button class="btn" type="button" data-dl="all">Download this map as JPG</button><button class="btn" type="button" data-dl="stamps">Download all 51 members, one map each (JPG)</button></div>
       <div class="legend" id="ilegend"></div>
       <p class="note">Each line starts at the observed seedling (moved by that member’s start setting). Rings mark where its depression forms. The dashed line is today’s 500 hPa ridge axis and H marks today’s highs. Line colour shows strength (IMD scale). The thick outlined line is the control; white dots mark landfall; lines end where the remnant low fills.</p>
       <p class="note" id="selnote">Tap a row in the table to highlight that member.</p>
@@ -43,6 +45,25 @@
     <canvas id="ichart" width="900" height="380" aria-label="Wind speed over time for all members"></canvas>
     <p class="note">Grey lines are members, the black line is the control, the coloured line is the member you picked. Dots mark landfall. Bands show the IMD categories.</p></div>
   <div class="tblwrap panel" style="padding:0"><table id="members"></table></div>
+</section>
+
+<section>
+  <h2>Individual members</h2>
+  <div class="memctl"><button class="btn" type="button" id="mprev" aria-label="Previous member">◀</button>
+    <select id="msel" aria-label="Choose a member"></select>
+    <button class="btn" type="button" id="mnext" aria-label="Next member">▶</button>
+    <button class="btn" type="button" data-dl="mem">Download as JPG</button></div>
+  <p class="note" id="minfo"></p>
+  <div class="work">
+    <div style="display:grid;gap:10px;min-width:0">
+      <div class="mapbox"><canvas id="memmap" width="900" height="880" aria-label="Track of the chosen member coloured by strength"></canvas></div>
+    </div>
+    <div class="panel" style="display:grid;gap:12px;min-width:0">
+      <h3>Strength along the way</h3>
+      <canvas id="memchart" width="600" height="320" aria-label="Wind speed over time for the chosen member"></canvas>
+      <div class="tblwrap"><table id="memtable"></table></div>
+    </div>
+  </div>
 </section>
 
 <section>
