@@ -1,0 +1,31 @@
+name: Cyclone study - model experiments on past storms
+# Runs when data/cyclone/EXP.json changes on cases: every config in it, on all 84 past storms, in 21 parallel jobs.
+on:
+  push:
+    branches: [cases]
+    paths: ['data/cyclone/EXP.json']
+permissions:
+  contents: write
+jobs:
+  exp:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        chunk: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install -q numpy scipy scikit-learn matplotlib
+      - run: mkdir -p /tmp/w && gh release download era5-cases -p lib_fields.npz -D /tmp/w
+      - run: cd /tmp/w && python -W ignore $GITHUB_WORKSPACE/scripts/cyclone/analysis/exp_tc2.py lib_fields.npz $GITHUB_WORKSPACE/data/cyclone/EXP.json ${{ matrix.chunk }} 21 exp_${{ matrix.chunk }}.json
+      - run: |
+          T=$(python -c "import json;print(json.load(open('data/cyclone/EXP.json'))[0].get('tag','exp'))")
+          mkdir -p data/cyclone/ours/exp/$T && cp /tmp/w/exp_${{ matrix.chunk }}.json data/cyclone/ours/exp/$T/
+          git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add data/cyclone/ours/exp; git commit -qm "Cyclone study: experiment $T chunk ${{ matrix.chunk }}"
+          for i in 1 2 3 4 5 6 7 8 9 10; do git pull -q --rebase origin cases && git push -q origin HEAD:cases && break; sleep $((RANDOM % 25 + 5)); done
