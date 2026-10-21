@@ -62,7 +62,7 @@ def one(s):
             except Exception as e: print(s['name'], centre, 'parse failed', repr(e)[:100], flush=True); continue
             for name, dists in P.items():
                 key = ('GFS-' if '_GFS_' in f else '') + name
-                r0 = real_at(P0, init + dt.timedelta(hours=lag)) or real_at(P0, g)
+                r0 = real_at(P0, g) or (P0[0][1], P0[0][2])
                 best = None
                 for fx in dists:
                     first = min(fx, key=lambda q: abs(q[0] - lag))
@@ -74,8 +74,11 @@ def one(s):
         print(s['name'], s['season'], centre, init, 'files', len(want), 'members matched', len(mem), flush=True)
     return f"{s['name']}|{s['season']}|{g:%Y-%m-%dT%H}", res
 out = {}
+def safe(s):
+    try: return one(s)
+    except Exception as e: print(s['name'], s['season'], 'FAILED', repr(e)[:200], flush=True); return None
 with cf.ThreadPoolExecutor(8) as ex:
-    for r in ex.map(one, O.LIBL):
+    for r in ex.map(safe, O.LIBL):
         if r: out[r[0]] = r[1]
 json.dump(out, open('data/cyclone/tigge_tracks.json', 'w'))
 print('storms', len(out), 'with ECMWF members', sum(1 for v in out.values() if v.get('ECMWF', {}).get('members')), 'with GEFS', sum(1 for v in out.values() if v.get('GEFS', {}).get('members')))
