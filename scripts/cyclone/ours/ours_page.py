@@ -45,13 +45,14 @@ def clean(x):
     if isinstance(x, (list, tuple)): return [clean(v) for v in x]
     return x
 E = clean(E); obs = E['obs']
-D = dict(t0=E['run'], run_label=label, obs=obs, analogs=E['analogs'], factors=E['factors'], stories=E.get('stories'), precursors=E.get('precursors'), runs=runs, land=land, hist=hist)
+D = dict(t0=E['run'], run_label=label, obs=obs, analogs=E['analogs'], factors=E['factors'], stories=E.get('stories'), precursors=E.get('precursors'), runs=runs, land=land, hist=hist,
+         strike=E.get('strike'), district_rain=E.get('district_rain'))
 css = open(os.path.join(HERE, 'style.css.part')).read(); body = open(os.path.join(HERE, 'body.html.part')).read()
 if METHOD == 'physics':
     i = body.index('<section>\n  <h2>How the runs are made</h2>'); body = body[:i] + open(os.path.join(HERE, 'method_phys.html.part')).read()
     body = body.replace('<h1>Our own ensemble: where the coming Bay storm could cross the coast</h1>', '<h1>Our own physics ensemble: the storm inside the physics</h1>')
     body = body.replace('<h3>The 13 inputs and their three settings</h3>', '<h3>What each member changes at the start</h3>').replace('Each line starts at the observed seedling (moved by that member’s start setting).', 'Each line starts at the circulation that member develops.')
-if METHOD == 'moist':
+if METHOD in ('moist', 'moist2'):
     i = body.index('<section>\n  <h2>How the runs are made</h2>'); body = body[:i] + open(os.path.join(HERE, 'method_moist.html.part')).read()
     body = body.replace('<h1>Our own ensemble: where the coming Bay storm could cross the coast</h1>', '<h1>Our own weather model: moist, multi-level, global</h1>')
     body = body.replace('<h3>The 13 inputs and their three settings</h3>', '<h3>What each member changes</h3>').replace('Each line starts at the observed seedling (moved by that member’s start setting).', 'Each line follows the model’s own storm from where it is found at the start.')
@@ -71,6 +72,9 @@ if METHOD == 'bve':
     i = body.index('<section>\n  <h2>How the runs are made</h2>'); body = body[:i] + open(os.path.join(HERE, 'method_bve.html.part')).read()
     body = body.replace('<h1>Our own ensemble: where the coming Bay storm could cross the coast</h1>', '<h1>Our own ensemble, physics version: where today’s winds and the inputs alone would take the storm</h1>')
 js = open(os.path.join(HERE, 'app.js.part')).read()
+if E.get('strike') or E.get('district_rain'):                                     # forecaster products (moist model v2)
+    k = js.rindex('draw();'); js = js[:k] + open(os.path.join(HERE, 'products.js.part')).read() + '\n' + js[k:]                # same scope as the page code
+    i = body.index('<section>\n  <h2>Today’s observed inputs</h2>'); body = body[:i] + open(os.path.join(HERE, 'products.html.part')).read() + body[i:]
 html = ('<title>Bay Storm Scenarios</title>\n<meta name="claude:viewport-fit-sides" content="cover">\n'
         '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">\n'
         + css + body + '\n<script id="data" type="application/json">' + json.dumps(D, separators=(',', ':'), default=str).replace('</', '<\\/') + '</script>\n<script>\n' + js + '</script>\n')

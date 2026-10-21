@@ -1,0 +1,16 @@
+<section id="products">
+  <h2>Strike probability and Tamil Nadu rain</h2>
+  <div class="work">
+    <div class="panel">
+      <h3>Chance the storm passes within 120 km (next 7 days)</h3>
+      <div class="mapbox"><canvas id="strikemap" width="900" height="880" aria-label="Map of the chance that the storm centre passes within 120 km of each place"></canvas></div>
+      <div class="legend" id="strikeleg"></div>
+      <p class="note">Share of the 51 members whose storm centre comes within 120 km of each point at any time in the next 7 days.</p>
+    </div>
+    <div class="panel">
+      <h3>District rain, next days (median of 51 members)</h3>
+      <div class="tblwrap"><table id="distrain"></table></div>
+      <p class="note">Model rain averaged over each district’s TN SMART rain-gauge sites, for each 24 h from the run time (column = the day ending on that date, IST). In brackets: the chance of a heavy-rain day (≥ 64.5 mm, IMD “heavy”). The model is coarse (about 1.4°), so local extremes are smoothed out; use it for where and when, not for exact amounts.</p>
+    </div>
+  </div>
+</section>

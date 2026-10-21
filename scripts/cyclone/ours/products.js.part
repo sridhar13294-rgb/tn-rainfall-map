@@ -1,0 +1,12 @@
+function strikeMap(){if(!D.strike)return;const c=document.getElementById('strikemap');const sv=[cv,cx,W,H];cv=c;cx=c.getContext('2d');[W,H]=size();base();
+  const S=D.strike,lat=S.lat,lon=S.lon,dl=(lat[1]-lat[0])/2,dk=(lon[1]-lon[0])/2;const col=p=>p>=.6?'#7f1d1d':p>=.4?'#c2410c':p>=.2?'#f59e0b':p>=.1?'#fde68a':null;
+  cx.globalAlpha=0.72;S.p.forEach((row,i)=>row.forEach((p,j)=>{const cc=col(p);if(!cc)return;cx.fillStyle=cc;cx.fillRect(px(lon[j]-dk),py(lat[i]+dl),px(lon[j]+dk)-px(lon[j]-dk)+0.5,py(lat[i]-dl)-py(lat[i]+dl)+0.5)}));cx.globalAlpha=1;
+  cx.strokeStyle=css('--coast');cx.lineWidth=0.9;D.land.forEach(ring=>{cx.beginPath();ring.forEach((p,k)=>k?cx.lineTo(px(p[0]),py(p[1])):cx.moveTo(px(p[0]),py(p[1])));cx.closePath();cx.stroke()});
+  star();[cv,cx,W,H]=sv;
+  document.getElementById('strikeleg').innerHTML=[['10–20%','#fde68a'],['20–40%','#f59e0b'],['40–60%','#c2410c'],['≥ 60%','#7f1d1d']].map(([t,c])=>'<span><i style="background:'+c+'"></i>'+t+'</span>').join('')}
+function distRain(){const R=D.district_rain;const t=document.getElementById('distrain');if(!R){t.innerHTML='<tbody><tr><td>No rain output in this run.</td></tr></tbody>';return}
+  const days=R.days.map(d=>{const x=new Date(Date.parse(d+'Z')+5.5*3600e3);return 'to '+x.getUTCDate()+' '+MON[x.getUTCMonth()]});
+  const ord=R.districts.map((d,i)=>i).sort((a,b)=>R.total_median[b]-R.total_median[a]);
+  const cell=(v,h)=>{const bg=v>=115.6?'#7f1d1d':v>=64.5?'#c2410c':v>=35.5?'#f59e0b55':'',fg=v>=64.5?'#fff':'';return '<td class="n"'+(bg?' style="background:'+bg+(fg?';color:'+fg:'')+'"':'')+'>'+Math.round(v)+(h>=0.1?' <span style="opacity:.8">('+Math.round(h*100)+'%)</span>':'')+'</td>'};
+  t.innerHTML='<thead><tr><th>District</th>'+days.map(d=>'<th>'+d+'</th>').join('')+'<th>Total</th></tr></thead><tbody>'+ord.map(i=>'<tr><td>'+R.districts[i]+'</td>'+R.median[i].map((v,k)=>cell(v,R.heavy[i][k])).join('')+'<td class="n"><b>'+Math.round(R.total_median[i])+'</b></td></tr>').join('')+'</tbody>'}
+window.addEventListener('resize',()=>setTimeout(strikeMap,200));setTimeout(strikeMap,0);distRain();
