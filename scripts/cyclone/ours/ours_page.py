@@ -15,7 +15,7 @@ for r in E['runs']:
     for q in r['pts']: p += [round(q[1], 2), round(q[2], 2), round(q[3])]
     lf = r['lf']; g = r['gen']
     runs.append([SEGS.index(r['seg']), [lf['lat'], lf['lon'], H(lf['t']), lf['wind']] if lf else None, r['levels'], p,
-                 [g['lat'], g['lon'], H(g['t'])] if g else None, round(r['vmax'], 1), r.get('story'), r.get('timing'), r.get('magnitude')])
+                 [g['lat'], g['lon'], H(g['t'])] if g else None, round(r['vmax'], 1), r.get('story'), r.get('timing'), r.get('magnitude'), r.get('prec')])
 land = []          # full-resolution Natural Earth 1:50m coast, clipped to 66-106E 0-30N (points outside are pulled onto the box edge)
 BX = (66.0, 106.0, 0.0, 30.0)
 for ring in json.load(open(os.path.join(REPO, 'data', 'cyclone', 'land.json'))):
@@ -45,7 +45,7 @@ def clean(x):
     if isinstance(x, (list, tuple)): return [clean(v) for v in x]
     return x
 E = clean(E); obs = E['obs']
-D = dict(t0=E['run'], run_label=label, obs=obs, analogs=E['analogs'], factors=E['factors'], stories=E.get('stories'), runs=runs, land=land, hist=hist)
+D = dict(t0=E['run'], run_label=label, obs=obs, analogs=E['analogs'], factors=E['factors'], stories=E.get('stories'), precursors=E.get('precursors'), runs=runs, land=land, hist=hist)
 css = open(os.path.join(HERE, 'style.css.part')).read(); body = open(os.path.join(HERE, 'body.html.part')).read()
 if METHOD == 'scenarios':
     i = body.index('<section>\n  <h2>How the runs are made</h2>'); body = body[:i] + open(os.path.join(HERE, 'method_scen.html.part')).read()
