@@ -28,11 +28,11 @@ jobs:
       - if: matrix.chunk < fromJSON(steps.n.outputs.n)
         run: mkdir -p /tmp/w && gh release download era5-cases -p libm_fields.npz -D /tmp/w
       - if: matrix.chunk < fromJSON(steps.n.outputs.n)
-        run: cd /tmp/w && python -W ignore $GITHUB_WORKSPACE/scripts/cyclone/mm/hind.py libm_fields.npz $GITHUB_WORKSPACE/data/cyclone/MM.json ${{ matrix.chunk }} 42 mm_${{ matrix.chunk }}.json 2>&1 | tail -60
+        run: cd /tmp/w && (python -W ignore $GITHUB_WORKSPACE/scripts/cyclone/mm/hind.py libm_fields.npz $GITHUB_WORKSPACE/data/cyclone/MM.json ${{ matrix.chunk }} 42 mm_${{ matrix.chunk }}.json > mm_${{ matrix.chunk }}.log 2>&1 || true); tail -40 mm_${{ matrix.chunk }}.log
       - if: matrix.chunk < fromJSON(steps.n.outputs.n)
         run: |
           T=$(python -c "import json;print(json.load(open('data/cyclone/MM.json')).get('tag','mm'))")
-          mkdir -p data/cyclone/mm/$T && cp /tmp/w/mm_${{ matrix.chunk }}.json data/cyclone/mm/$T/
+          mkdir -p data/cyclone/mm/$T && cp /tmp/w/mm_${{ matrix.chunk }}.* data/cyclone/mm/$T/ || true; tail -c 20000 /tmp/w/mm_${{ matrix.chunk }}.log > data/cyclone/mm/$T/mm_${{ matrix.chunk }}.log || true
           git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
           git add data/cyclone/mm; git commit -qm "Cyclone study: moist model $T chunk ${{ matrix.chunk }}"
           for i in 1 2 3 4 5 6 7 8 9 10; do git pull -q --rebase origin cases && git push -q origin HEAD:cases && break; sleep $((RANDOM % 25 + 5)); done
