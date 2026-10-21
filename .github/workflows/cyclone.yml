@@ -46,7 +46,8 @@ jobs:
           if [ "$w" = "bg" ]; then python scripts/cyclone/cyc_bg.py || true; fi
           if [ "$w" = "lib" ]; then python scripts/cyclone/cyc_lib.py || true; fi
           if [ "$w" = "libh" ]; then python scripts/cyclone/cyc_libh.py || true; fi
-          for f in /tmp/cyc_out/bg_fields.npz /tmp/cyc_out/lib_fields.npz /tmp/cyc_out/libh_fields.npz; do [ -f $f ] && gh release upload era5-cases $f --clobber || true; done
+          if [ "$w" = "libm" ]; then python scripts/cyclone/cyc_libm.py || true; fi
+          for f in /tmp/cyc_out/bg_fields.npz /tmp/cyc_out/lib_fields.npz /tmp/cyc_out/libh_fields.npz /tmp/cyc_out/libm_fields.npz; do [ -f $f ] && gh release upload era5-cases $f --clobber || true; done
       - if: always()
         run: |
           git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
