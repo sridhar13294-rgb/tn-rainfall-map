@@ -19,7 +19,7 @@ LEVS = [850, 700, 500, 200]
 GLA, GLO = np.meshgrid(LA, LO, indexing='ij')
 # ---------------- track model by intensity class ----------------
 def train():
-    D = '/tmp/claude-0/-home-claude/2c3b34a9-cc00-53e0-8864-49737f9cdb93/scratchpad/cyclone/data/'
+    D = O.REPO + '/data/cyclone/'
     T = json.load(open(D + 'ibtracs_bob.json')); pos = {}
     for s in T:
         for p in s['pts']: pos[(s['sid'], p[0])] = (p[1], p[2], p[3])
@@ -152,11 +152,11 @@ SHEAR_SCALE = {'low shear, moist': 0.75, 'moderate': 1.0, 'high shear or dry air
 def run_track(M, env, P, hours=240, dt_h=6):
     """track + intensity (kt) from the seedling to dissipation. pts: (t, lat, lon, wind_kt)."""
     global IM
-    if IM is None: IM = pickle.load(open('data/intens_model.pkl', 'rb'))
+    if IM is None: IM = pickle.load(open(O.REPO + '/data/cyclone/ours/intens_model.pkl', 'rb'))
     t = P.get('start_t', P['gen_t']); la, lo = P.get('start_lat', P['gen_lat']), P.get('start_lon', P['gen_lon'])
-    v = 12.0 if 'start_t' in P else 17.0; dvp = 0.0; pts = [(t, la, lo, v)]; lf = None; land_h = 0.0; v_lf = None; acc = 0.0
-    off = 1.5 * (P['sst'] - 0.3) + {0.4: 1.0, 0.2: 0.0, -0.2: -1.0}.get(P['mjo_i'], 0.0)
-    shs = SHEAR_SCALE.get(P.get('shear'), 1.0)
+    v = P.get('start_v', 12.0 if 'start_t' in P else 17.0); dvp = 0.0; pts = [(t, la, lo, v)]; lf = None; land_h = 0.0; v_lf = None; acc = 0.0
+    off = 1.5 * (P['sst'] - 0.3) + (P['mjo_kt'] if 'mjo_kt' in P else {0.4: 1.0, 0.2: 0.0, -0.2: -1.0}.get(P['mjo_i'], 0.0))
+    shs = P['shear_scale'] if 'shear_scale' in P else SHEAR_SCALE.get(P.get('shear'), 1.0)
     while (t - P['gen_t']).total_seconds() / 3600 < hours:
         age = (t - P['gen_t']).total_seconds() / 3600
         c = 0 if v < 34 else (1 if v < 64 else 2)

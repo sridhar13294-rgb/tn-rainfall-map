@@ -6,10 +6,11 @@ Usage: python ourens.py LIB_NPZ ANALYSIS_NPZ [ANALYSIS_NPZ ...]       (last anal
        python ourens.py LIB_NPZ --hindcast                            (leave-one-season-out test of the method)"""
 import sys, json, math, datetime as dt, numpy as np
 from collections import Counter, defaultdict
-sys.path.insert(0, '/home/claude/tn-rainfall-map/scripts/cyclone/analysis')
+sys.path.insert(0, __import__('os').path.dirname(__import__('os').path.abspath(__file__)))
+REPO = __import__('os').path.abspath(__import__('os').path.join(__import__('os').path.dirname(__import__('os').path.abspath(__file__)), '..', '..', '..'))
 from cyc import on_land
 from scipy import ndimage as nd
-LIBL = json.load(open('/home/claude/tn-rainfall-map/data/cyclone/lib_list.json'))
+LIBL = json.load(open(REPO + '/data/cyclone/lib_list.json'))
 SEG = [(12.0, 'south TN'), (13.6, 'north TN'), (15.9, 'south AP'), (17.1, 'central AP'), (19.1, 'north AP'), (99, 'Odisha/WB')]
 ORDER = ['Sri Lanka', 'south TN', 'north TN', 'south AP', 'central AP', 'north AP', 'Odisha/WB', 'Bangladesh/Myanmar', 'no landfall']
 def segment(lat, lon):

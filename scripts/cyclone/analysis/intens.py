@@ -60,7 +60,7 @@ if __name__ == '__main__':
     e, e0, ec = evaluate(X, Y, S)
     print(f'12-h wind change, leave-one-season-out: model MAE {e:.1f} kt | "no change" {e0:.1f} kt | "average change" {ec:.1f} kt')
     M = fit(X, Y); print('coef [V, V^2/100, shear, shear*V/100, lat-13, dV prev, age d]', np.round(M.coef_, 3), 'intercept', round(M.intercept_, 2))
-    import pickle; pickle.dump(M, open('data/intens_model.pkl', 'wb'))
+    import pickle; pickle.dump(M, open(O.REPO + '/data/cyclone/ours/intens_model.pkl', 'wb'))
 def iter_test(RAW, remove_vortex, X, Y, S):
     """from genesis: run the model forward 12 h at a time along the real track in the real environment; compare
     with persistence and with the average Oct-Dec intensity curve (by age); leave-one-season-out."""
