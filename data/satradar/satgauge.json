@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-21T18:07:17.836294+00:00",
+ "updated": "2026-10-21T19:22:32.476514+00:00",
  "method": "satellite day totals vs TN SMART gauges on 0.25 degree squares (same squares as the forecast check)",
  "gauge_fit": {
   "cut": 5,
@@ -25,21 +25,21 @@
   "2026-10-20",
   "2026-10-21"
  ],
- "radar_cut": 22.64,
+ "radar_cut": 22.58,
  "overall": {
   "radar_matched": {
    "cells": 2208,
-   "mae": 7.0,
-   "bias": 0.1,
+   "mae": 6.9,
+   "bias": 0.12,
    "pod": 0.23,
-   "far": 0.09,
+   "far": 0.1,
    "ets": 0.15,
    "heavy": {
     "hit": 0,
     "miss": 31,
     "false": 0
    },
-   "sat_mean": 0.8,
+   "sat_mean": 0.9,
    "gauge_mean": 7.7
   },
   "gauge_fitted": {
@@ -201,10 +201,10 @@
    "radar_matched": {
     "cells": 184,
     "mae": 1.4,
-    "bias": 0.02,
+    "bias": 0.03,
     "pod": 0.0,
-    "far": null,
-    "ets": 0.0,
+    "far": 1.0,
+    "ets": -0.01,
     "heavy": {
      "hit": 0,
      "miss": 0,
@@ -234,7 +234,7 @@
    "frames": 96,
    "radar_matched": {
     "cells": 184,
-    "mae": 7.8,
+    "mae": 7.7,
     "bias": 0.05,
     "pod": 0.11,
     "far": 0.0,
@@ -268,8 +268,8 @@
    "frames": 96,
    "radar_matched": {
     "cells": 184,
-    "mae": 16.8,
-    "bias": 0.1,
+    "mae": 16.6,
+    "bias": 0.11,
     "pod": 0.37,
     "far": 0.04,
     "ets": 0.15,
@@ -278,7 +278,7 @@
      "miss": 9,
      "false": 0
     },
-    "sat_mean": 1.8,
+    "sat_mean": 2.0,
     "gauge_mean": 18.5
    },
    "gauge_fitted": {
@@ -302,11 +302,11 @@
    "frames": 96,
    "radar_matched": {
     "cells": 184,
-    "mae": 15.7,
-    "bias": 0.05,
-    "pod": 0.15,
-    "far": 0.25,
-    "ets": 0.0,
+    "mae": 15.6,
+    "bias": 0.06,
+    "pod": 0.16,
+    "far": 0.27,
+    "ets": -0.0,
     "heavy": {
      "hit": 0,
      "miss": 2,
@@ -336,17 +336,17 @@
    "frames": 96,
    "radar_matched": {
     "cells": 184,
-    "mae": 17.4,
-    "bias": 0.22,
+    "mae": 16.4,
+    "bias": 0.27,
     "pod": 0.59,
     "far": 0.05,
-    "ets": 0.23,
+    "ets": 0.24,
     "heavy": {
      "hit": 0,
      "miss": 16,
      "false": 0
     },
-    "sat_mean": 4.7,
+    "sat_mean": 5.7,
     "gauge_mean": 21.7
    },
    "gauge_fitted": {
@@ -371,7 +371,7 @@
    "radar_matched": {
     "cells": 184,
     "mae": 2.6,
-    "bias": 0.17,
+    "bias": 0.18,
     "pod": 0.33,
     "far": 0.24,
     "ets": 0.24,
