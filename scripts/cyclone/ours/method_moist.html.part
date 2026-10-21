@@ -1,0 +1,27 @@
+<section>
+  <h2>How the runs are made (our moist multi-level model)</h2>
+  <ul>
+    <li><b>Start:</b> today’s GFS analysis over the whole globe (observed state only, no forecast steps): temperature, humidity and winds on 13 levels, surface pressure, terrain and the real sea temperature.</li>
+    <li><b>Dynamics:</b> the full hydrostatic primitive equations on 20 terrain-following levels over the whole globe (spectral T85, about 1.4°), solved with Dinosaur, Google Research’s open-source dynamical core. Water vapour is carried by the winds and makes air lighter. Troughs, ridges, the monsoon flow and the storm all move by the equations; nothing is held fixed.</li>
+    <li><b>Our physics:</b> evaporation and heat from the warm sea and friction (bulk formulas); boundary-layer mixing; deep convection (simplified Betts–Miller: buoyant columns adjust toward the moist adiabat, with the latent heat balanced by the rain); condensation and rain; radiative cooling. This is what lets the storm build its own warm core and outflow and what makes the tropics behave.</li>
+    <li><b>51 members:</b> member 0 is today’s analysis with standard physics. Members 1–50 change only what is genuinely uncertain, spread evenly with a fixed sequence: smooth errors in the starting winds (~1 m/s), temperature (~0.5 K) and humidity (~5%), sea temperature (±0.5 K), and the physics settings (convection time scale and the humidity it leaves, sea-surface evaporation, boundary-layer depth).</li>
+    <li><b>Strength:</b> the model’s own lowest-level wind. At 1.4° the model cannot resolve a storm’s core, so it under-states the strength badly; read the colours as a relative guide only.</li>
+  </ul>
+</section>
+<section>
+  <h2>How far to trust it</h2>
+  <div class="tblwrap"><table>
+    <thead><tr><th>Test on past Oct–Dec Bay storms (start: real position)</th><th>24 h</th><th>48 h</th><th>72 h</th><th>96 h</th></tr></thead>
+    <tbody>
+      <tr><td><b>This model</b> (control run), track error</td><td class="n">129 km</td><td class="n">229 km</td><td class="n">418 km</td><td class="n">690 km</td></tr>
+      <tr><td>Same model without moisture</td><td class="n">203 km</td><td class="n">539 km</td><td class="n">1,068 km</td><td class="n">1,623 km</td></tr>
+      <tr><td>“Average motion” (simple baseline)</td><td class="n">185 km</td><td class="n">279 km</td><td class="n">397 km</td><td class="n">416 km</td></tr>
+      <tr><td>ECMWF, typical for the Bay</td><td class="n">~80 km</td><td class="n">~130 km</td><td class="n">~180 km</td><td class="n">~250 km</td></tr>
+    </tbody>
+  </table></div>
+  <ul class="note">
+    <li>The first of our own models to beat the simple baseline: clearly better at 1–2 days, level at 3 days, worse after that, when its storms run about 2.5° too far west and 1–2° too far south.</li>
+    <li>Experimental; follow IMD for warnings.</li>
+  </ul>
+</section>
+</div>
