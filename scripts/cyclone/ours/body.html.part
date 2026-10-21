@@ -28,6 +28,7 @@
   <h2>The 51 members</h2>
   <div class="work">
     <div style="display:grid;gap:10px;min-width:0">
+      <div class="memctl"><label for="mapsel" class="note" style="margin:0">Show on the map:</label><button class="btn" type="button" id="aprev" aria-label="Previous member">◀</button><select id="mapsel" aria-label="Choose which members to show"></select><button class="btn" type="button" id="anext" aria-label="Next member">▶</button></div>
       <div class="mapbox"><canvas id="map2" width="900" height="880" aria-label="Map of the 51 ensemble members"></canvas></div>
       <div class="dlrow"><button class="btn" type="button" data-dl="all">Download this map as JPG</button><button class="btn" type="button" data-dl="stamps">Download all 51 members, one map each (JPG)</button></div>
       <div class="legend" id="ilegend"></div>
@@ -41,14 +42,10 @@
       <div class="tblwrap"><table id="facts51"></table></div>
     </div>
   </div>
-  <div class="panel" style="display:grid;gap:8px"><h3>Strength over time, all 51 members</h3>
-    <canvas id="ichart" width="900" height="380" aria-label="Wind speed over time for all members"></canvas>
-    <p class="note">Grey lines are members, the black line is the control, the coloured line is the member you picked. Dots mark landfall. Bands show the IMD categories.</p></div>
-  <div class="tblwrap panel" style="padding:0"><table id="members"></table></div>
 </section>
 
-<section>
-  <h2>Individual members</h2>
+<section id="member">
+  <h2>Individual members (each one on its own)</h2>
   <div class="memctl"><button class="btn" type="button" id="mprev" aria-label="Previous member">◀</button>
     <select id="msel" aria-label="Choose a member"></select>
     <button class="btn" type="button" id="mnext" aria-label="Next member">▶</button>
@@ -64,6 +61,13 @@
       <div class="tblwrap"><table id="memtable"></table></div>
     </div>
   </div>
+</section>
+
+<section>
+  <div class="panel" style="display:grid;gap:8px"><h3>Strength over time, all 51 members</h3>
+    <canvas id="ichart" width="900" height="380" aria-label="Wind speed over time for all members"></canvas>
+    <p class="note">Grey lines are members, the black line is the control, the coloured line is the member you picked. Dots mark landfall. Bands show the IMD categories.</p></div>
+  <div class="tblwrap panel" style="padding:0"><table id="members"></table></div>
 </section>
 
 <section>
