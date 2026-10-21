@@ -87,13 +87,14 @@ class Model:
             return X
         U3, V3 = fill(U3), fill(V3)
         f0 = 2 * 7.292e-5 * math.sin(math.radians(lat)); Vm = vmax_kt * 0.5144 / 0.85; rho = 1.15
-        dP = rho * math.e * Vm ** 2 / B                                                         # Holland: Vm^2 = B dP / (rho e)
+        # wind profile (modified Rankine, gently tapered beyond R_out), then the balancing geopotential from gradient balance
+        rr = np.linspace(0, R_out + 900, 600) * 1e3; rk = rr / 1e3
+        Vr = np.where(rk < rm, Vm * rk / rm, Vm * (rm / np.maximum(rk, 1e-3)) ** 0.5) * np.exp(-(np.maximum(rk - R_out, 0) / 400.0) ** 2)
+        dph1 = Vr ** 2 / np.maximum(rr, 1.0) + abs(f0) * Vr
+        ph1 = -np.cumsum((dph1 * np.gradient(rr))[::-1])[::-1]                                  # phi(r) - phi(far), negative
         r = np.maximum(d, 1.0) * 1e3
-        Fp = np.interp(levs, [100, 150, 400, 850, 1100], [0.0, 0.0, 0.35, 1.0, 1.0])            # vertical structure
-        dlnp = np.gradient(np.log(levs)); dF = np.gradient(Fp) / dlnp
-        sgn = 1.0 if lat >= 0 else -1.0
-        rr = np.linspace(0, R_out + 900, 400) * 1e3; ph1 = -(dP / rho) * np.exp(-(rm * 1e3 / np.maximum(rr, 1e3)) ** B) * np.exp(-(np.maximum(rr / 1e3 - R_out, 0) / 300.0) ** 2)
-        dph1 = np.gradient(ph1, rr)
+        Fp = np.interp(levs, [100, 150, 250, 400, 600, 850, 1100], [0.0, 0.05, 0.25, 0.6, 0.85, 1.0, 1.0])   # vertical structure (warm core near 300-400 hPa)
+        dF = np.gradient(Fp) / np.gradient(np.log(levs)); sgn = 1.0 if lat >= 0 else -1.0
         for k, p in enumerate(levs):
             g_ = np.interp(r, rr, dph1) * Fp[k]                                                 # d(phi)/dr at this level
             Vt = -abs(f0) * r / 2 + np.sqrt((f0 * r / 2) ** 2 + np.maximum(r * g_, 0))          # gradient wind
