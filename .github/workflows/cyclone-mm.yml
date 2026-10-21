@@ -1,0 +1,38 @@
+name: Cyclone study - moist multi-level model
+# Runs when data/cyclone/MM.json changes on cases: the moist multi-level model (scripts/cyclone/mm) on past storms.
+on:
+  push:
+    branches: [cases]
+    paths: ['data/cyclone/MM.json']
+permissions:
+  contents: write
+jobs:
+  mm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      matrix:
+        chunk: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41]
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: n
+        run: echo "n=$(python3 -c "import json;print(json.load(open('data/cyclone/MM.json')).get('nchunk',42))")" >> $GITHUB_OUTPUT
+      - if: matrix.chunk < fromJSON(steps.n.outputs.n)
+        uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - if: matrix.chunk < fromJSON(steps.n.outputs.n)
+        run: pip install -q "jax[cpu]" numpy scipy xarray "git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0"
+      - if: matrix.chunk < fromJSON(steps.n.outputs.n)
+        run: mkdir -p /tmp/w && gh release download era5-cases -p libm_fields.npz -D /tmp/w
+      - if: matrix.chunk < fromJSON(steps.n.outputs.n)
+        run: cd /tmp/w && python -W ignore $GITHUB_WORKSPACE/scripts/cyclone/mm/hind.py libm_fields.npz $GITHUB_WORKSPACE/data/cyclone/MM.json ${{ matrix.chunk }} 42 mm_${{ matrix.chunk }}.json 2>&1 | tail -60
+      - if: matrix.chunk < fromJSON(steps.n.outputs.n)
+        run: |
+          T=$(python -c "import json;print(json.load(open('data/cyclone/MM.json')).get('tag','mm'))")
+          mkdir -p data/cyclone/mm/$T && cp /tmp/w/mm_${{ matrix.chunk }}.json data/cyclone/mm/$T/
+          git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add data/cyclone/mm; git commit -qm "Cyclone study: moist model $T chunk ${{ matrix.chunk }}"
+          for i in 1 2 3 4 5 6 7 8 9 10; do git pull -q --rebase origin cases && git push -q origin HEAD:cases && break; sleep $((RANDOM % 25 + 5)); done
