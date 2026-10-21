@@ -1,0 +1,25 @@
+<section>
+  <h2>How the runs are made (physics version)</h2>
+  <ul>
+    <li><b>Start:</b> today’s GFS analysis winds (observed state, no forecast steps). The three circulations that could become the depression are found in it: the southern seedling, the east-central Bay circulation and the pressure dip between them.</li>
+    <li><b>The storm is inside the physics.</b> The deep-layer (850–200 hPa) flow and the storm’s own vortex are stepped forward together with the vorticity equation on the rotating Earth (0.5° grid). The storm is carried by the steering, drifts north-west under its own spin (beta drift), can stall where the steering is weak, loop when the steering turns while it is slow, and rotate around a second circulation. None of this is written in; it comes out of the physics. No forecast model and no past-storm winds are used.</li>
+    <li><b>Strength:</b> the vortex is spun up or down toward our 12-hour strength model (warm sea, MJO, shear, landfall), because a one-layer model has no heating of its own.</li>
+    <li><b>51 members:</b> member 0 starts from today’s state as observed; members 1–50 change the start by realistic amounts in a fixed balanced design (no random numbers): which circulation becomes the depression, its position and size, how fast it strengthens, when it forms, the ridge’s position and strength, a westerly trough over north-west India and the monsoon easterlies. After the start, the physics decides everything.</li>
+  </ul>
+</section>
+<section>
+  <h2>How far to trust it</h2>
+  <div class="tblwrap"><table>
+    <thead><tr><th>Test on the 84 past Oct–Dec Bay storms</th><th>24 h</th><th>48 h</th><th>72 h</th></tr></thead>
+    <tbody>
+      <tr><td><b>This physics model</b>, track error</td><td class="n">191 km</td><td class="n">448 km</td><td class="n">820 km</td></tr>
+      <tr><td>“Average motion” (always west-north-west at ~16 km/h)</td><td class="n">182 km</td><td class="n">301 km</td><td class="n">425 km</td></tr>
+      <tr><td>ECMWF, typical for the Bay</td><td class="n">~80 km</td><td class="n">~130 km</td><td class="n">~180 km</td></tr>
+    </tbody>
+  </table></div>
+  <ul class="note">
+    <li>Landfall: right coast stretch 24% of storms; landfall latitude error 1.5°, landing 0.9° too far south on average.</li>
+    <li>It can stall and loop like real storms, but at 2–3 days it is still worse than the simple average-motion forecast: one layer cannot hold the opposite low-level monsoon westerlies and upper easterlies, it has no heating, and the starting analysis is coarse. Experimental; follow IMD for warnings.</li>
+  </ul>
+</section>
+</div>

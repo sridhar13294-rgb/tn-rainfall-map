@@ -47,6 +47,10 @@ def clean(x):
 E = clean(E); obs = E['obs']
 D = dict(t0=E['run'], run_label=label, obs=obs, analogs=E['analogs'], factors=E['factors'], stories=E.get('stories'), precursors=E.get('precursors'), runs=runs, land=land, hist=hist)
 css = open(os.path.join(HERE, 'style.css.part')).read(); body = open(os.path.join(HERE, 'body.html.part')).read()
+if METHOD == 'physics':
+    i = body.index('<section>\n  <h2>How the runs are made</h2>'); body = body[:i] + open(os.path.join(HERE, 'method_phys.html.part')).read()
+    body = body.replace('<h1>Our own ensemble: where the coming Bay storm could cross the coast</h1>', '<h1>Our own physics ensemble: the storm inside the physics</h1>')
+    body = body.replace('<h3>The 13 inputs and their three settings</h3>', '<h3>What each member changes at the start</h3>').replace('Each line starts at the observed seedling (moved by that member’s start setting).', 'Each line starts at the circulation that member develops.')
 if METHOD == 'scenarios':
     i = body.index('<section>\n  <h2>How the runs are made</h2>'); body = body[:i] + open(os.path.join(HERE, 'method_scen.html.part')).read()
     body = body.replace('<h3>The 13 inputs and their three settings</h3>', '<h3>The storylines</h3>').replace('<h2>Which inputs move the landfall in this run</h2>', '<h2>Where each storyline takes the storm</h2>')
