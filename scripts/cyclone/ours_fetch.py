@@ -11,7 +11,6 @@ run = C.latest_run(lambda r: C.http(C.gfs_url(r, 0) + '.idx', method='HEAD') is 
 print('GFS analysis', run, flush=True)
 idx = C.parse_idx(C.http(C.gfs_url(run, 0) + '.idx').decode())
 A = np.full((1, 1, len(C.VARS), len(C.LATS), len(C.LONS)), np.nan, np.float32)
-print('msl records', [r for r in idx if 'MSL' in r['var']], flush=True)
 for r in idx:
     k = C.noaa_key(r) or ('msl' if r['var'] == 'PRMSL' else None)
     if k in C.VARS:
@@ -20,6 +19,7 @@ for r in idx:
             if buf: A[0, 0, C.VARS.index(k)] = C.subset(buf)
             else: print('no bytes', k, flush=True)
         except Exception as e: print('decode failed', k, repr(e)[:200], flush=True)
+A[0, 0, C.VARS.index('msl')] /= 100.0                       # hPa, as in the fc_ files (float16 cannot hold Pa)
 fn = f'/tmp/cyc_out/live_GFS_{run:%Y%m%d%H}.npz'
 np.savez_compressed(fn, data=A.astype(np.float16), vars=np.array(C.VARS), lats=C.LATS, lons=C.LONS, steps=np.array([0]), members=np.array([0]), run=f'{run:%Y%m%d%H}')
 print('saved', fn, 'coverage', {v: float(np.isfinite(A[0, 0, i]).mean()) for i, v in enumerate(C.VARS)}, flush=True)
@@ -37,5 +37,5 @@ try:
     mjo['rows'] = mjo['rows'][-10:]
 except Exception as e:
     mjo['error'] = repr(e)[:200]
-json.dump(dict(run=f'{run:%Y-%m-%d %H}Z', file=os.path.basename(fn), coverage={v: round(float(np.isfinite(A[0, 0, i]).mean()), 2) for i, v in enumerate(C.VARS)}, msl_records=[r for r in idx if 'MSL' in r['var']], mjo=mjo), open(os.path.join(OUT, 'live_inputs.json'), 'w'), indent=1)
+json.dump(dict(run=f'{run:%Y-%m-%d %H}Z', file=os.path.basename(fn), coverage={v: round(float(np.isfinite(A[0, 0, i]).mean()), 2) for i, v in enumerate(C.VARS)}, mjo=mjo), open(os.path.join(OUT, 'live_inputs.json'), 'w'), indent=1)
 print('mjo', mjo['rows'][-1:] if mjo['rows'] else mjo)

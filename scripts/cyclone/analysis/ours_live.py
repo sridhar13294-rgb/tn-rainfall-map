@@ -15,7 +15,7 @@ def detect(fn):
     def vo(l):
         u, v = X[V.index('u' + l)], X[V.index('v' + l)]
         return nd.uniform_filter((np.gradient(v, axis=1) / dx - np.gradient(u, axis=0) / dy) * 1e5, int(round(3.5 / res)) | 1)
-    v8, v7 = vo('850'), vo('700'); p = nd.uniform_filter(X[V.index('msl')] / 100.0, 3)
+    v8, v7 = vo('850'), vo('700'); p = nd.uniform_filter(X[V.index('msl')], 3)                     # hPa
     LA, LO = np.meshgrid(la, lo, indexing='ij')
     def find(box, need):
         k = (LA >= box[0]) & (LA <= box[1]) & (LO >= box[2]) & (LO <= box[3])
