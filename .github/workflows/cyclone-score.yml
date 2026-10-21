@@ -1,0 +1,30 @@
+name: Cyclone study - score our physics ensemble on past storms
+# Runs when data/cyclone/SCORE changes on the cases branch: 21 parallel jobs, 4 storms each, 51 members per storm.
+on:
+  push:
+    branches: [cases]
+    paths: ['data/cyclone/SCORE']
+permissions:
+  contents: write
+jobs:
+  score:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        chunk: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install -q numpy scipy scikit-learn matplotlib
+      - run: mkdir -p /tmp/w && gh release download era5-cases -p lib_fields.npz -D /tmp/w
+      - run: cd /tmp/w && python -W ignore $GITHUB_WORKSPACE/scripts/cyclone/analysis/hind_tcens.py lib_fields.npz ${{ matrix.chunk }} 21 chunk_${{ matrix.chunk }}.json
+      - run: |
+          mkdir -p data/cyclone/ours/score && cp /tmp/w/chunk_${{ matrix.chunk }}.json data/cyclone/ours/score/
+          git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add data/cyclone/ours/score; git commit -qm "Cyclone study: physics ensemble score, chunk ${{ matrix.chunk }}"
+          for i in 1 2 3 4 5 6 7 8 9 10; do git pull -q --rebase origin cases && git push -q origin HEAD:cases && break; sleep $((RANDOM % 25 + 5)); done
