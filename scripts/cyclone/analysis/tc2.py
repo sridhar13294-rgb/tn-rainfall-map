@@ -117,7 +117,9 @@ class TC2(T.TC):
             t1 = t1 + nu * lap(q1 - self.f); t2 = t2 + nu * lap(q2 - self.f)
             if tau_env:
                 if n % 4 == 1:
-                    if env_fn is not None and n % 24 == 1: qe1, qe2 = env_q(*env_fn(th))
+                    if env_fn is not None and n % 24 == 1:
+                        ef = env_fn(th)
+                        if ef is not None: qe1, qe2 = env_q(*ef)
                     wenv = np.clip((self.dist_km(la, lo) - env_r[0]) / (env_r[1] - env_r[0]), 0, 1) / (tau_env * 3600)
                 t1 = t1 - wenv * (q1 - qe1); t2 = t2 - wenv * (q2 - qe2)
             for t in (t1, t2): t[0, :] = t[-1, :] = t[:, 0] = t[:, -1] = 0

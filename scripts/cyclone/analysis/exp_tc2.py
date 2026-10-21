@@ -44,7 +44,27 @@ for i, s in enumerate(O.LIBL):
                 else: st['v'] = min(max(25.0, peak), 25 + (max(25.0, peak) - 25) * min(1.0, th / 60))
                 st['h'] = th; return st['v']
             reg = lambda a: M.regrid(a, lats, lons)
-            out = M.run2(reg(uL), reg(vL), reg(uU), reg(vU), (la0, lo0), 120, vfn, tau_v=c.get('tau_v', 9.0), tau_h=c.get('tau_h', 9.0), land_fn=on_land, xo=c.get('xo', 0.5), **c.get('kw', {}))
+            kw = dict(c.get('kw', {}))
+            if c.get('env') == 'truth':
+                # check only: the far field follows the REAL later analyses (storm removed around its real position), to see
+                # how good the storm physics is when the troughs and ridge changes are right
+                cache = {}
+                def lay(hh):
+                    if hh not in cache:
+                        t = g + dt.timedelta(hours=hh); k_ = t.strftime('%Y-%m-%dT%H'); p_ = real_at(P0, t) or (la0, lo0)
+                        if k_ not in TT: cache[hh] = None
+                        else:
+                            G = DATA[TT.index(k_)].astype(float); Wt = {l: (rmv(G[1, LEVS.index(l)], *p_), rmv(G[2, LEVS.index(l)], *p_)) for l in LEVS}
+                            cache[hh] = [reg(sum(w * Wt[l][q] for l, w in ws.items())) for ws in (lw, uw) for q in (0, 1)]
+                    return cache[hh]
+                def env_fn(th):
+                    h0 = int(th // 12) * 12; a_ = lay(h0); b_ = lay(h0 + 12)
+                    if a_ is None: return None
+                    if b_ is None: b_ = a_
+                    f_ = (th - h0) / 12; uL_, vL_, uU_, vU_ = [(1 - f_) * x + f_ * y for x, y in zip(a_, b_)]
+                    return uL_, vL_, uU_, vU_
+                kw['env_fn'] = env_fn
+            out = M.run2(reg(uL), reg(vL), reg(uU), reg(vU), (la0, lo0), 120, vfn, tau_v=c.get('tau_v', 9.0), tau_h=c.get('tau_h', 9.0), land_fn=on_land, xo=c.get('xo', 0.5), **kw)
             lf = None
             for (h1, a1, b1), (h2, a2, b2) in zip(out, out[1:]):
                 if not on_land(b1, a1) and on_land(b2, a2): lf = ((a1 + a2) / 2, (b1 + b2) / 2); break
