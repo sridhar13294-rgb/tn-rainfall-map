@@ -36,7 +36,7 @@ def subset(buf):
     ii = np.round((LATS - la0) / dla).astype(int); jj = np.round(((LONS - lo0) % 360) / dlo).astype(int)
     return v[np.ix_(ii, jj)]
 def steps_for(kind, last=360):
-    if kind == 'ens': return list(range(0, last + 1, 12))
+    if kind in ('ens', 'aifsens'): return list(range(0, last + 1, 12))
     return list(range(0, 241, 6)) + list(range(252, last + 1, 12))
 # ------------------------------------------------------------------ NOAA (GFS 0.25, GEFS 0.5)
 GFS = 'https://noaa-gfs-bdp-pds.s3.amazonaws.com'; GEFS = 'https://noaa-gefs-pds.s3.amazonaws.com'
@@ -94,6 +94,7 @@ def fetch_noaa(src, members, url_fn, kind, par=24):
 EC = ['https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com', 'https://data.ecmwf.int/forecasts']
 def ec_url(base, run, step, kind):
     if kind == 'ens': return f"{base}/{run:%Y%m%d}/{run:%H}z/ifs/0p25/enfo/{run:%Y%m%d%H}0000-{step}h-enfo-ef"
+    if kind == 'aifsens': return f"{base}/{run:%Y%m%d}/{run:%H}z/aifs-ens/0p25/enfo/{run:%Y%m%d%H}0000-{step}h-enfo-ef"
     return f"{base}/{run:%Y%m%d}/{run:%H}z/ifs/0p25/oper/{run:%Y%m%d%H}0000-{step}h-oper-fc"
 def ec_key(r):
     p = r.get('param'); lt = r.get('levtype')
@@ -104,9 +105,9 @@ def ec_key(r):
     return None
 def fetch_ec(src, kind, par=24):
     base = EC[0]
-    run = latest_run(lambda r: http(ec_url(base, r, 360 if kind == 'ens' else 240, kind) + '.index', method='HEAD') is not None, cycles=(0, 12))
+    run = latest_run(lambda r: http(ec_url(base, r, 360 if kind in ('ens', 'aifsens') else 240, kind) + '.index', method='HEAD') is not None, cycles=(0, 12))
     if run is None: log(src, 'no complete run'); return
-    members = list(range(51)) if kind == 'ens' else [0]
+    members = list(range(51)) if kind in ('ens', 'aifsens') else [0]
     steps = steps_for(kind); log(src, 'run', run, 'steps', len(steps))
     A = np.full((len(members), len(steps), len(VARS), len(LATS), len(LONS)), np.nan, np.float32)
     tasks = []
@@ -117,7 +118,7 @@ def fetch_ec(src, kind, par=24):
         for l in txt.decode().splitlines():
             if not l.strip(): continue
             r = json.loads(l); k = ec_key(r)
-            if k is None or (kind == 'ens' and k not in ENS_VARS): continue
+            if k is None or (kind in ('ens', 'aifsens') and k not in ENS_VARS): continue
             mem = int(r.get('number', 0)) if r.get('type') == 'pf' else 0
             if kind == 'oper' and r.get('type') not in (None, 'fc'): continue
             out.append((si, mem, k, r['_offset'], r['_offset'] + r['_length'] - 1))
@@ -149,7 +150,7 @@ if __name__ == '__main__':
     which = sys.argv[1:] or ['GFS', 'HRES', 'GEFS', 'ENS']
     jobs = {'GFS': lambda: fetch_noaa('GFS', [0], lambda r, m, s: gfs_url(r, s), 'det'),
             'GEFS': lambda: fetch_noaa('GEFS', list(range(31)), gefs_url, 'ens'),
-            'HRES': lambda: fetch_ec('HRES', 'oper'), 'ENS': lambda: fetch_ec('ENS', 'ens', par=32)}
+            'HRES': lambda: fetch_ec('HRES', 'oper'), 'ENS': lambda: fetch_ec('ENS', 'ens', par=32), 'AIENS': lambda: fetch_ec('AIENS', 'aifsens', par=32)}
     with cf.ThreadPoolExecutor(len(which)) as ex:
         for w, f in [(w, ex.submit(jobs[w])) for w in which]:
             try: f.result()
