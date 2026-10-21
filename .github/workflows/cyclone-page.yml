@@ -1,0 +1,33 @@
+name: Cyclone page publish
+# Republishes the site when our live cyclone ensemble page (site/cyclone.html) is updated (every 6 hours).
+on:
+  push:
+    branches: [main]
+    paths: ['site/cyclone.html']
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+  publish:
+    needs: build
+    concurrency:            # the rainfall, forecast and cyclone robots publish one at a time
+      group: pages-deploy
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4
