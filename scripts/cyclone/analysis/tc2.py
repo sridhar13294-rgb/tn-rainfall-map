@@ -15,20 +15,27 @@ class TC2(T.TC):
     def __init__(self, *a, Ld15=1.2e6, **k):
         super().__init__(*a, **k)
         s15 = math.sin(math.radians(15)); self.F0 = (np.sin(np.radians(self.LAT)) / s15) ** 2 / Ld15 ** 2; self.F = self.F0.copy()
-        self.cF = 2 * self.F / self.m ** 2; self.cbar = float(self.cF.mean())
+        self.cF = 2 * self.F / self.m ** 2; self.cbar = float(self.cF.max())      # max (not mean) so the iteration always converges
         self.eigH = self.eig - self.cbar
-    def helm(self, rhs, Pb, iters=4):
-        """solve (lap_xy - 2F/m^2) psi = rhs/m^2 with psi = Pb on the edge (variable coefficient by fixed-point iteration)."""
-        h2 = self.h ** 2; P = Pb.copy(); R0 = rhs / self.m ** 2
-        for _ in range(iters):
-            r = (R0 + (self.cF - self.cbar) * P)[1:-1, 1:-1].copy()
-            r[0, :] -= Pb[0, 1:-1] / h2; r[-1, :] -= Pb[-1, 1:-1] / h2; r[:, 0] -= Pb[1:-1, 0] / h2; r[:, -1] -= Pb[1:-1, -1] / h2
-            P[1:-1, 1:-1] = idstn(dstn(r, type=1) / self.eigH, type=1)
-        return P
+    def helm(self, rhs, Pb):
+        """solve (lap_xy - 2F/m^2) psi = rhs/m^2 with psi = Pb on the edge. F and m vary only with latitude, so: sine
+        transform across longitude, then an exact tridiagonal solve along latitude for every wavenumber (Thomas, vectorised)."""
+        h2 = self.h ** 2; r = (rhs / self.m ** 2)[1:-1, 1:-1].copy(); c = self.cF[1:-1, 1]                     # c(lat)
+        r[0, :] -= Pb[0, 1:-1] / h2; r[-1, :] -= Pb[-1, 1:-1] / h2; r[:, 0] -= Pb[1:-1, 0] / h2; r[:, -1] -= Pb[1:-1, -1] / h2
+        nx = r.shape[1]; lx = (2 * np.cos(np.pi * np.arange(1, nx + 1) / (nx + 1)) - 2) / h2
+        R = dstn(r, type=1, axes=[1])                                                                          # (ny, nx)
+        ny = r.shape[0]; a_ = 1 / h2; bdiag = -2 / h2 + lx[None, :] - c[:, None]                                # (ny, nx)
+        cp = np.zeros((ny, nx)); dp = np.zeros((ny, nx))
+        cp[0] = a_ / bdiag[0]; dp[0] = R[0] / bdiag[0]
+        for j in range(1, ny):
+            den = bdiag[j] - a_ * cp[j - 1]; cp[j] = a_ / den; dp[j] = (R[j] - a_ * dp[j - 1]) / den
+        X = np.zeros((ny, nx)); X[-1] = dp[-1]
+        for j in range(ny - 2, -1, -1): X[j] = dp[j] - cp[j] * X[j + 1]
+        P = Pb.copy(); P[1:-1, 1:-1] = idstn(X, type=1, axes=[1]); return P
     def invert(self, q1, q2, Bt, Bc):
         Pt = self.poisson(0.5 * (q1 + q2) - self.f, Bt); Pc = self.helm(0.5 * (q1 - q2), Bc); return Pt + Pc, Pt - Pc
     def run2(self, uL, vL, uU, vU, start, hours, vmax_fn, rmw=120.0, size=700.0, dt=450.0, nu=1.0e4, robert=0.1, tau_h=9.0,
-             every=6, land_fn=None, xo=0.5, size_grow=0.0, sppt=None, kmh_track=None, tau_v=1.5):
+             every=6, land_fn=None, xo=0.5, size_grow=0.0, sppt=None, kmh_track=None, tau_v=1.5, cmul=1.0):
         """vmax_fn(t_hours, lat, lon, over_land) -> storm max wind in kt. Returns [(hour, lat, lon)]."""
         if sppt:
             rs = np.random.default_rng(sppt['seed']); K = 6; amp = sppt['amp']; Lw = sppt.get('scale_deg', 10.0); Th = sppt.get('hours', 36.0)
@@ -42,11 +49,22 @@ class TC2(T.TC):
             vl = 0.6 * vkt * 0.5144; s = float(np.clip((vkt - 34) / 60, 0, 1))
             tl = T.vortex_zeta(rc, vl, rmw, sz, xo)
             # weak storms are shallow (little upper cyclone); strong ones are deep, with an outflow anticyclone far out aloft
-            tu = T.vortex_zeta(rc, (0.2 + 0.55 * s) * vl, rmw, 0.8 * sz, xo) + T.vortex_zeta(rc, -0.15 * vl * s, 500.0, 1400.0, 0.5)
+            tu = T.vortex_zeta(rc, (0.2 + 0.55 * s) * vl, rmw, 0.8 * sz, xo) + T.vortex_zeta(rc, -0.15 * vl * s, 400.0, 900.0, 0.5)
             return tu, tl
+        def psi_r(zt):                     # stream function profile of a symmetric vorticity profile (zero far out)
+            r = rc * 1e3; dr = 50e3; V = np.cumsum(zt * r * dr) / r; return -np.cumsum((V * dr)[::-1])[::-1]
+        Fc = lambda la: float(np.interp(la, self.lat, self.F0[:, 0]))
+        def qtargets(vkt, sz, la):
+            # the same storm written as potential vorticity in each layer: vorticity plus the layer-thickness part. Nudging
+            # PV (not vorticity) toward this keeps the storm's PV fixed; any PV the shear carries away is not refilled forever
+            tu, tl = targets(vkt, sz); pu, pl = psi_r(tu), psi_r(tl); F_ = Fc(la)
+            return tu + F_ * (pl - pu), tl + F_ * (pu - pl)
         def nudge(z, tgt, la, lo):
-            d, idx, prof = self.sym_profile(z, la, lo, edges); ok = (idx >= 0) & (idx < len(tgt)); f = np.zeros_like(z)
-            f[ok] = (tgt - prof)[idx[ok]] * np.clip(1 - d[ok] / 1800, 0, 1); return f
+            # only the storm's own part: the symmetric vorticity relative to its surroundings (1,000-1,400 km ring, outside the nudged area so the
+            # nudge cannot feed back on its own reference), within 900 km
+            d, idx, prof = self.sym_profile(z, la, lo, edges); ring = (rc >= 1000) & (rc <= 1400); base = prof[ring].mean()
+            ok = (idx >= 0) & (idx < len(tgt)) & (d <= 900); f = np.zeros_like(z)
+            f[ok] = (tgt - (prof - base))[idx[ok]] * np.clip(1 - d[ok] / 900, 0, 1); return f
         v0 = vmax_fn(0, la, lo, False); tu, tl = targets(v0, size)
         z1 = z1 + nudge(z1, tu, la, lo); z2 = z2 + nudge(z2, tl, la, lo)
         P1 = self.poisson(z1, B1); P2 = self.poisson(z2, B2)                  # starting stream functions from each layer's winds
@@ -63,11 +81,15 @@ class TC2(T.TC):
                 # storm feel the upper winds and a shallow one only the lower winds)
                 g = (la + vel[0] * 0.5, lo + vel[1] * 0.5); cl = self.center(z2now, g)
                 vk = vmax_fn(th, la, lo, land_fn(lo, la) if land_fn else False); s_ = float(np.clip((vk - 34) / 60, 0, 1)); au = 0.2 + 0.55 * s_
-                cu = self.center(lap(P1), cl, rad=1.5); wu = au / (1 + au)
+                cu = self.center(lap(P1), cl, rad=1.5); wu = cmul * au / (1 + au)
 
-                la2, lo2 = (1 - wu) * cl[0] + wu * cu[0], (1 - wu) * cl[1] + wu * cu[1]; vel = (la2 - la, lo2 - lo); la, lo = la2, lo2
-                tu, tl = targets(vk, size * (1 + size_grow * vk / 64.0))
-                f1 = nudge(lap(P1), tu, la, lo) / (tau_v * 3600); f2 = nudge(z2now, tl, la, lo) / (tau_v * 3600)
+                if math.hypot(cu[0] - cl[0], cu[1] - cl[1]) > 1.0: cu = cl                 # upper centre not found near the storm: ignore it
+                la2, lo2 = (1 - wu) * cl[0] + wu * cu[0], (1 - wu) * cl[1] + wu * cu[1]
+                st_ = math.hypot(la2 - la, lo2 - lo)
+                if st_ > 0.3: la2, lo2 = la + (la2 - la) * 0.3 / st_, lo + (lo2 - lo) * 0.3 / st_   # no jumps: at most 0.3 deg per half hour (~65 km/h)
+                vel = (la2 - la, lo2 - lo); la, lo = la2, lo2
+                tq1, tq2 = qtargets(vk, size * (1 + size_grow * vk / 64.0), la)
+                f1 = nudge(q1 - self.f, tq1, la, lo) / (tau_v * 3600); f2 = nudge(q2 - self.f, tq2, la, lo) / (tau_v * 3600)
             a1 = -self.m ** 2 * self.jac(P1, q1); a2 = -self.m ** 2 * self.jac(P2, q2)
             if pert is not None:
                 if n % 2 == 0: self._p1, self._p2 = 1 + pert(th, 0), 1 + pert(th, 1)

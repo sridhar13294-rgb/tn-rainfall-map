@@ -34,16 +34,17 @@ for i, s in enumerate(O.LIBL):
     for c in CFGS:
         try:
             M = tc2.TC2(1.5, 38.5, 61.5, 108.5, res=0.5, Ld15=c.get('Ld15', 1.2e6))
-            wl = c.get('wl', (0.5, 0.5)); wu = c.get('wu', (0.5, 0.5))
-            uL = wl[0] * W[850][0] + wl[1] * W[700][0]; vL = wl[0] * W[850][1] + wl[1] * W[700][1]
-            uU = wu[0] * W[500][0] + wu[1] * W[200][0]; vU = wu[0] * W[500][1] + wu[1] * W[200][1]
+            # level weights for each layer, e.g. "lw": {"850": 0.4, "700": 0.4, "500": 0.2}, "uw": {"500": 0.5, "200": 0.5}
+            lw = {int(k): v for k, v in c.get('lw', {'850': 0.5, '700': 0.5}).items()}; uw = {int(k): v for k, v in c.get('uw', {'500': 0.5, '200': 0.5}).items()}
+            uL = sum(w * W[l][0] for l, w in lw.items()); vL = sum(w * W[l][1] for l, w in lw.items())
+            uU = sum(w * W[l][0] for l, w in uw.items()); vU = sum(w * W[l][1] for l, w in uw.items())
             st = dict(v=25.0, h=0.0, landh=0.0, vlf=None)
             def vfn(th, la, lo, land):           # strength: the storm's real peak reached after 2-3 days (we test track, not strength)
                 if land: st['landh'] += max(0.0, th - st['h']); st['vlf'] = st['vlf'] or st['v']; st['v'] = IN.inland(st['vlf'], st['landh'])
                 else: st['v'] = min(max(25.0, peak), 25 + (max(25.0, peak) - 25) * min(1.0, th / 60))
                 st['h'] = th; return st['v']
             reg = lambda a: M.regrid(a, lats, lons)
-            out = M.run2(reg(uL), reg(vL), reg(uU), reg(vU), (la0, lo0), 120, vfn, tau_v=c.get('tau_v', 9.0), tau_h=c.get('tau_h', 9.0), land_fn=on_land, xo=c.get('xo', 0.5))
+            out = M.run2(reg(uL), reg(vL), reg(uU), reg(vU), (la0, lo0), 120, vfn, tau_v=c.get('tau_v', 9.0), tau_h=c.get('tau_h', 9.0), land_fn=on_land, xo=c.get('xo', 0.5), **c.get('kw', {}))
             lf = None
             for (h1, a1, b1), (h2, a2, b2) in zip(out, out[1:]):
                 if not on_land(b1, a1) and on_land(b2, a2): lf = ((a1 + a2) / 2, (b1 + b2) / 2); break
