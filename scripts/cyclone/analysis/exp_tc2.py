@@ -29,7 +29,7 @@ for i, s in enumerate(O.LIBL):
     P0 = O.path_of(s); la0, lo0 = P0[0][1], P0[0][2]
     W = {l: (rmv(F[1, LEVS.index(l)], la0, lo0), rmv(F[2, LEVS.index(l)], la0, lo0)) for l in LEVS}
     peak = max((p[3] or 0) for p in P0)
-    row = dict(name=s['name'], season=s['season'], truth=O.segment(*s['lf']) if s['lf'] else 'no landfall', truth_lf=s['lf'], runs={})
+    row = dict(name=s['name'], season=s['season'], t0=key, real=[((p[0] - g).total_seconds() / 3600, p[1], p[2]) for p in P0], truth=O.segment(*s['lf']) if s['lf'] else 'no landfall', truth_lf=s['lf'], runs={})
     real = {h: real_at(P0, g + dt.timedelta(hours=h)) for h in (24, 48, 72, 96)}
     for c in CFGS:
         try:
@@ -49,7 +49,7 @@ for i, s in enumerate(O.LIBL):
             for (h1, a1, b1), (h2, a2, b2) in zip(out, out[1:]):
                 if not on_land(b1, a1) and on_land(b2, a2): lf = ((a1 + a2) / 2, (b1 + b2) / 2); break
             te = {h: km((x[1], x[2]), real[h]) for h in real for x in out if abs(x[0] - h) < 0.1 and real[h]}
-            row['runs'][c['name']] = dict(seg=O.segment(*lf) if lf else 'no landfall', lf=lf, te=te)
+            row['runs'][c['name']] = dict(seg=O.segment(*lf) if lf else 'no landfall', lf=lf, te=te, trk=[(round(h, 1), round(a, 2), round(b, 2)) for h, a, b in out])
         except Exception as e:
             row['runs'][c['name']] = dict(err=repr(e)[:200])
     res.append(row); print(s['name'], s['season'], {k: (v.get('seg'), {h: round(x) for h, x in v.get('te', {}).items()}) for k, v in row['runs'].items()}, flush=True)
