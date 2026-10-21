@@ -1,56 +1,56 @@
 {
- "updated": "2026-10-21T02:35:37.168005+00:00",
+ "updated": "2026-10-21T03:11:50.205030+00:00",
  "method": "quantile",
- "cut_mm_h": 23.34,
+ "cut_mm_h": 23.27,
  "scale": 0.052,
  "lut": [
   [
-   23.34,
+   23.27,
    1.0
   ],
   [
-   25.67,
+   25.53,
    1.13
   ],
   [
-   28.39,
+   28.23,
    1.29
   ],
   [
-   32.03,
+   31.83,
    1.48
   ],
   [
-   36.06,
+   35.81,
    1.71
   ],
   [
-   40.94,
+   40.78,
    2.02
   ],
   [
-   46.22,
+   46.03,
    2.43
   ],
   [
    49.19,
-   3.13
+   3.12
   ]
  ],
- "pairs": 300,
+ "pairs": 301,
  "csi": 0.143,
  "area_bias": 1.0,
  "radar_p90": 6.5,
  "radars": {
   "Chennai": {
    "working": true,
-   "scan_utc": "2026-10-21T01:57:00+00:00",
+   "scan_utc": "2026-10-21T02:57:00+00:00",
    "note": ""
   },
   "Karaikal": {
-   "working": true,
-   "scan_utc": "2026-10-21T02:10:27+00:00",
-   "note": ""
+   "working": false,
+   "scan_utc": null,
+   "note": "download failed: <urlopen error _ssl.c:999: The handshake operation timed out>"
   }
  },
  "gauge_fit": {
@@ -59,6 +59,6 @@
   "ets": 0.41,
   "bias": 0.93,
   "mae": 5.9,
-  "updated": "2026-10-21T02:35:37.168005+00:00"
+  "updated": "2026-10-21T03:11:50.205030+00:00"
  }
 }
