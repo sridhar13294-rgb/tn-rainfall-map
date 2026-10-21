@@ -168,6 +168,7 @@ def run_track(M, env, P, hours=240, dt_h=6):
         if x is None: break
         m = M[c]; u = m[0].predict([x])[0]; w = m[1].predict([x])[0]
         u += (P['beta'] - 1) * m[0].intercept_; w += (P['beta'] - 1) * m[1].intercept_
+        u += P.get('de', 0.0); w += P.get('dn', 0.0)               # calibration drift (km/h), see hind_bve.py
         u *= P['speed']; w *= P['speed']
         la2 = la + w * dt_h / 111.2; lo2 = lo + u * dt_h / (111.2 * math.cos(math.radians(la)))
         land_now = on_land(lo, la)

@@ -5,9 +5,16 @@ Every input's middle setting is today's observed value; low/high are fixed steps
 import sys, os, json, math, datetime as dt, numpy as np
 from scipy import ndimage as nd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import ourens as O, scen as S
+import ourens as O, scen as S, live_env as LE
 from cyc import on_land
 SEGS = ['Sri Lanka', 'south TN', 'north TN', 'south AP', 'central AP', 'north AP', 'Odisha/WB', 'Bangladesh/Myanmar', 'no landfall']
+def remove_vortex_grid(F, lats, lons, la, lo, R=4.5):
+    LA, LO = np.meshgrid(lats, lons, indexing='ij'); d = np.hypot(LA - la, (LO - lo) * math.cos(math.radians(la))); m = d <= R; F = F.copy()
+    for idx in np.ndindex(F.shape[:-2]):
+        f = F[idx]; f[m] = np.nanmean(f[(d > R) & (d <= R + 2)])
+        for _ in range(120): f[m] = nd.uniform_filter(f, 5, mode='nearest')[m]
+        F[idx] = f
+    return F
 def detect(fn):
     """observed circulations in the analysis: (lat, lon, vort850, vort700 [1e-5/s], closed-low depth hPa)"""
     Z = np.load(fn); V = [str(v) for v in Z['vars']]; X = Z['data'][0, 0].astype(float); la, lo = Z['lats'], Z['lons']
@@ -60,10 +67,11 @@ def factors(obs, t0):
         ('sst', 'Bay sea temperature anomaly', ['%+.1f C' % (obs['sst'] - 0.2), '%+.1f C (observed)' % obs['sst'], '%+.1f C' % (obs['sst'] + 0.2)], [obs['sst'] - 0.2, obs['sst'], obs['sst'] + 0.2]),
         ('mjo', 'MJO effect', ['weaker than now', 'as now: ' + obs['mjo_label'], 'stronger than now'], [-1, 0, 1]),
         ('shear', 'Wind shear / dry air', ['more hostile', 'as now', 'more favourable'], [1.35, 1.0, 0.75]),
-        ('wd', 'Western disturbance / trough', ['weaker', 'as now', 'deeper'], [-4, 0, 4]),
+        ('wd', 'Westerly trough over NW India', ['weaker', 'as now', 'deeper'], [-4, 0, 4]),
         ('surge', 'NE-monsoon easterlies', ['weaker', 'as now', 'stronger'], [2, 0, -2]),
-        ('as', 'Arabian Sea system', ['stalls', 'moves north', 'moves north-west'] if obs['arabian']['present'] else ['none in the analysis'] * 3, [0, 1, 2]),
+        ('as', 'Arabian Sea system', ['weaker', 'as observed', 'stronger'] if obs['arabian']['present'] else ['none in the analysis'] * 3, [-8, 0, 8]),
         ('size', 'Storm size (beta drift)', ['smaller', 'typical', 'bigger'], [0.8, 1.0, 1.2])]
+DRIFT_N = float(os.environ.get('OURS_DN', 0.0))       # optional northward calibration drift, km/h (hind_bve.py)
 def build(obs, t0, sd):
     F = factors(obs, t0); out = []
     a = obs['arabian']; g = obs['sw_bay']
@@ -75,15 +83,10 @@ def build(obs, t0, sd):
                  gen_t=t0 + dt.timedelta(hours=v['gen'] + round(j(jt))), gen_lat=None, gen_lon=None,
                  ridge_dlat=v['rlat'], ridge_dlon=v['rlon'], ridge_str=v['rstr'], ridge_dt=0, sst=round(v['sst'], 2),
                  mjo=F[7][2][lv[7]], mjo_i=0, mjo_u=obs['mjo_u'] + 0.75 * v['mjo'], mjo_kt=obs['mjo_kt'] + 1.0 * v['mjo'],
-                 shear=F[8][2][lv[8]], shear_i=0, shear_scale=v['shear'], wd_amp=v['wd'], wd_day=4.0, surge_u=v['surge'], surge_day=1.0,
-                 beta=v['size'], speed=1.0, as_sys=F[11][2][lv[11]], gom='observed')
+                 shear=F[8][2][lv[8]], shear_i=0, shear_scale=v['shear'], wd_amp=v['wd'], wd_lon=72.0, surge_u=v['surge'],
+                 beta=v['size'], speed=1.0, as_sys=F[11][2][lv[11]], vortices=[(a['lat'], a['lon'], v['as'])] if (a['present'] and v['as']) else [])
+        P['dn'] = DRIFT_N
         if obs['formed']: P['start_v'] = 17.0
-        if a['present']:
-            tr = {0: [(0, a['lat'], a['lon']), (6, a['lat'] + 0.8, a['lon'] - 0.3)], 1: [(0, a['lat'], a['lon']), (3, a['lat'] + 4.5, a['lon'] - 1.5), (6, a['lat'] + 9.5, a['lon'] - 3)],
-                  2: [(0, a['lat'], a['lon']), (2, a['lat'] + 1.5, a['lon'] - 3.5), (6, a['lat'] + 5, a['lon'] - 11.5)]}[v['as']]
-            P['as_track'] = [(t0 + dt.timedelta(days=d), x, y) for d, x, y in tr]
-        else: P['as_track'] = None
-        P['gom_track'] = [(t0, g['lat'], g['lon']), (t0 + dt.timedelta(days=1), g['lat'] + 0.1, g['lon'] - 0.3)] if g['present'] else None
         out.append(P)
     return F, out
 if __name__ == '__main__':
@@ -96,20 +99,17 @@ if __name__ == '__main__':
     if rows:
         r = rows[-1]; mu, mk, lab = MJO_STATE(r['phase'], r['amp']); obs.update(mjo_u=mu, mjo_kt=mk, mjo_label=lab, mjo_date=r['date'], mjo_phase=r['phase'], mjo_amp=r['amp'])
     else: obs.update(mjo_u=0.0, mjo_kt=0.0, mjo_label='unknown (no MJO data)', mjo_date=None)
-    M = S.train(); St = O.lib_states(LIB); sc = O.scales(St); RAW = S.lib_raw(LIB)
-    now = S.ana_raw(LIVE); st = O.analysis_state(LIVE)[1]; R = O.match(st, St, sc); C, top = S.composite(R, RAW)
-    sd = (b['lat'], b['lon']); now = S.remove_vortex(now, sd[0], sd[1])
-    if obs['sw_bay']['present']: now = S.remove_vortex(now, obs['sw_bay']['lat'], obs['sw_bay']['lon'], R=3.5)
-    # ridge, measured in the analysis every run, and anchored: the past-storm winds are moved north/south so that their
-    # starting ridge (east-west wind turning line, 500 hPa, 80-96E) sits where today's ridge is; that offset is kept all run.
+    M = S.train()
+    # today's analysis on its own grid (0.5 deg); the seedling's own swirl is taken out so it is not steered by itself.
+    Zl = np.load(LIVE); V = [str(v) for v in Zl['vars']]; X = Zl['data'][0, 0].astype(float); lats, lons = Zl['lats'], Zl['lons']
+    Fa = np.stack([np.stack([X[V.index(f'{c}{l}')] for l in LE.LEVS]) for c in 'uv'])
+    sd = (b['lat'], b['lon']); Fa = remove_vortex_grid(Fa, lats, lons, sd[0], sd[1])
     obs['ridge'] = ridge_now(LIVE)
-    rc = O_ridge(C[0, 0, 2]); ra = obs['ridge']['u0_80_96']
-    shift = float(np.clip(ra - rc, -3, 3)) if (ra is not None and rc is not None) else 0.0
-    obs['ridge']['composite_start'] = rc; obs['ridge']['anchor_shift'] = round(shift, 2)
-    if shift: C = nd.shift(C, (0, 0, 0, shift / 1.5, 0), order=1, mode='nearest')
-    E = S.base_env(now, C); F, PS = build(obs, t0, sd); RES = []
+    F, PS = build(obs, t0, sd); RES = []; top = []
+    box = (float(lats[0]) + 1, float(lats[-1]) - 1, float(lons[0]) + 1, float(lons[-1]) - 1)
     for P in PS:
-        pts, lf = S.run_track(M, S.Env(E, t0, P), P)
+        env = LE.EnvB(LE.perturb(Fa, lats, lons, P), lats, lons, O.LA, O.LO, t0, P, hours=264, box=box)
+        pts, lf = S.run_track(M, env, P)
         g = P.get('gen_pos')
         RES.append(dict(member=P['member'], levels=P['levels'], seg=O.segment(lf['lat'], lf['lon']) if lf else 'no landfall',
                         gen=dict(t=P['gen_t'].isoformat(), lat=round(g[0], 2), lon=round(g[1], 2)) if g else None,
@@ -122,4 +122,4 @@ if __name__ == '__main__':
                 vmax_mid=round(float(np.median([r['vmax'] for r in RES])), 1), control=dict(seg=RES[0]['seg'], lf=RES[0]['lf'], vmax=RES[0]['vmax']))
     json.dump(dict(run=t0.isoformat(), obs=obs, analogs=top, factors=[[t, labs] for _, t, labs, _ in F], runs=RES, summary=summ), open(OUTJ, 'w'), default=str)
     print(t0, 'formed' if obs['formed'] else 'not yet formed', 'seedling', b, '| arabian', obs['arabian'], '| sw bay', obs['sw_bay'])
-    print('sst', obs['sst'], obs['sst_date'], '| mjo', obs['mjo_label'], obs.get('mjo_date')); print('analogs', top[:5]); print(summ)
+    print('sst', obs['sst'], obs['sst_date'], '| mjo', obs['mjo_label'], obs.get('mjo_date')); print(summ)

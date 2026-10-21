@@ -19,7 +19,8 @@ gh api -H 'Accept: application/octet-stream' $R/releases/assets/$ID > "$W/$LIVE"
 if [ ! -s "$W/lib_fields.npz" ]; then LID=$(gh api $R/releases/tags/era5-cases -q '.assets[]|select(.name=="lib_fields.npz")|.id'); gh api -H 'Accept: application/octet-stream' $R/releases/assets/$LID > "$W/lib_fields.npz"; fi
 git fetch -q origin main; git show origin/main:data/sst_indices.json > "$W/sst.json"
 RUNID=${LIVE#live_GFS_}; RUNID=${RUNID%.npz}
-(cd "$W" && python3 -W ignore "$OLDPWD/scripts/cyclone/analysis/ours_live.py" lib_fields.npz "$LIVE" sst.json "$OLDPWD/data/cyclone/ours/live_inputs.json" "ens_$RUNID.json")
+MODE=$(cat data/cyclone/ours/ENV 2>/dev/null || echo past); SCRIPT=ours_live_past.py; [ "$MODE" = "bve" ] && SCRIPT=ours_live.py
+(cd "$W" && python3 -W ignore "$OLDPWD/scripts/cyclone/analysis/$SCRIPT" lib_fields.npz "$LIVE" sst.json "$OLDPWD/data/cyclone/ours/live_inputs.json" "ens_$RUNID.json")
 python3 scripts/cyclone/ours/ours_page.py "$W/ens_$RUNID.json" "$W/bay-storm-scenarios.html" --site "$W/cyclone.html"
 python3 -c "
 import json,sys;E=json.load(open('$W/ens_$RUNID.json'))
