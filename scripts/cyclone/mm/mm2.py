@@ -244,7 +244,7 @@ class Model:
         diag = dict(rain=Psurf + Pc * 0.0, H=H, E=E, ust=ust, V1=V1, sw_sfc=Fsfc * (1 - jnp.where(sea, S['alb_sea'], S['alb_land'])), lw_dn=Dbot[-1], Ts=Ts)
         return dict(T=dT, q=dq, u=du, v=dv), diag
     # ------------------------------------------------------------------------------------------------ dynamics + time loop
-    def build(self, when_utc):
+    def build(self, when_utc, split=False):
         """when_utc: datetime of the start (sun position)."""
         self.doy0 = float(when_utc.timetuple().tm_yday); self.utc0 = float(when_utc.hour); hor = self.coords.horizontal; M = self
         self.eq = primitive_equations.SemiLagrangianPrimitiveEquations(self.ref_t, self.oro, self.coords, self.ps, humidity_key='specific_humidity',
@@ -264,8 +264,17 @@ class Model:
         self.phys = Phys()
         res = hor.latitude_nodes / 128; tau = self.ps.nondimensionalize(8.6 / (2.4 ** np.log2(res)) * units.hours)
         self.filt = primitive_equations.step_filter_excluding_nodal_tracers(time_integration.horizontal_diffusion_step_filter(hor, dt=self.dt, tau=tau, order=2), nodal_tracers=('specific_humidity',))
-        eqs = time_integration.compose_equations([self.eq, self.phys])
-        self.step = time_integration.step_with_filters(time_integration.semi_lagrangian_crank_nicolson_rk2(eqs, self.dt, off_centering=0.05, warm_start_corrector=True), [self.filt])
+        if split:
+            # process splitting: dynamics first, then the physics once per step from the new state (half the physics cost;
+            # how most operational models couple their physics)
+            dyn = time_integration.step_with_filters(time_integration.semi_lagrangian_crank_nicolson_rk2(self.eq, self.dt, off_centering=0.05, warm_start_corrector=True), [self.filt])
+            def step(st):
+                st = dyn(st); tnd = self.phys.explicit_terms(st)
+                return jax.tree_util.tree_map(lambda a, b: a + self.dt * b, st, tnd)
+            self.step = step
+        else:
+            eqs = time_integration.compose_equations([self.eq, self.phys])
+            self.step = time_integration.step_with_filters(time_integration.semi_lagrangian_crank_nicolson_rk2(eqs, self.dt, off_centering=0.05, warm_start_corrector=True), [self.filt])
     def dfi(self, state):
         f = jax.jit(time_integration.digital_filter_initialization(equation=self.eq, ode_solver=functools.partial(time_integration.semi_lagrangian_crank_nicolson_rk2, warm_start_corrector=True, off_centering=0.05),
                                                                   filters=[self.filt], time_span=self.ps.nondimensionalize(6 * units.hour), cutoff_period=self.ps.nondimensionalize(6 * units.hour), dt=self.dt))

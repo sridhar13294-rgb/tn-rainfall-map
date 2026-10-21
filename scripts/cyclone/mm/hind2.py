@@ -27,7 +27,7 @@ for i, s in enumerate(storms):
             storm = dict(lat=st0[0], lon=st0[1], vmax_kt=st0[2] or 25.0) if var.get('bogus', True) else None
             state, carry = M.init(f3, Z['levs'], Z['lats'], Z['lons'], Z['f2'][k, V2.index('surface_pressure')], Z['f2'][k, V2.index('geopotential_at_surface')] / 9.80616,
                                   Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')], storm=storm)
-            M.build(g); print('built', round(time.time() - t), flush=True)
+            M.build(g, split=var.get('split', C.get('split', False))); print('built', round(time.time() - t), flush=True)
             if var.get('dfi', True): state = M.dfi(state); print('dfi done', round(time.time() - t), flush=True)
             out = M.run(state, carry, C.get('hours', 120))
             if not np.isfinite(out['mslp']).all(): raise RuntimeError('model blew up')
