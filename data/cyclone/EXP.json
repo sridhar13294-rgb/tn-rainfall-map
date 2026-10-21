@@ -1,10 +1,7 @@
 [
- {"tag":"tc2_h","name":"T0_ref","env":"truth","tau_v":6,"lw":{"850":0.35,"700":0.35,"500":0.3},"uw":{"200":1.0},"kw":{"cmul":0.0,"resid":true,"tau_env":2,"env_r":[300,700]}},
- {"name":"T1_lowdeep","env":"truth","tau_v":6,"lw":{"850":0.3,"700":0.3,"500":0.25,"200":0.15},"uw":{"200":1.0},"kw":{"cmul":0.0,"resid":true,"tau_env":2,"env_r":[300,700]}},
- {"name":"T2_deflay_c1","env":"truth","tau_v":6,"kw":{"cmul":1.0,"resid":true,"tau_env":2,"env_r":[300,700]}},
- {"name":"T3_c05","env":"truth","tau_v":6,"lw":{"850":0.35,"700":0.35,"500":0.3},"uw":{"200":1.0},"kw":{"cmul":0.5,"resid":true,"tau_env":2,"env_r":[300,700]}},
- {"name":"T4_xo06","env":"truth","tau_v":6,"xo":0.6,"lw":{"850":0.35,"700":0.35,"500":0.3},"uw":{"200":1.0},"kw":{"cmul":0.0,"resid":true,"tau_env":2,"env_r":[300,700]}},
- {"name":"T5_noresid","env":"truth","tau_v":6,"lw":{"850":0.35,"700":0.35,"500":0.3},"uw":{"200":1.0},"kw":{"cmul":0.0,"resid":false,"tau_env":2,"env_r":[300,700]}},
- {"name":"T6_lowdeep_noresid","env":"truth","tau_v":6,"lw":{"850":0.3,"700":0.3,"500":0.25,"200":0.15},"uw":{"200":1.0},"kw":{"cmul":0.0,"resid":false,"tau_env":2,"env_r":[300,700]}},
- {"name":"T7_lowdeep_tight","env":"truth","tau_v":6,"lw":{"850":0.3,"700":0.3,"500":0.25,"200":0.15},"uw":{"200":1.0},"kw":{"cmul":0.0,"resid":true,"tau_env":1,"env_r":[200,500]}}
+ {"tag":"tc2_i","name":"R0_ref_upd","env":"truth","tau_v":6,"lw":{"850":0.35,"700":0.35,"500":0.3},"uw":{"200":1.0},"kw":{"cmul":0.0,"resid":true,"tau_env":2,"env_r":[300,700]}},
+ {"name":"R1_lowdeep_upd","env":"truth","tau_v":6,"lw":{"850":0.3,"700":0.3,"500":0.25,"200":0.15},"uw":{"200":1.0},"kw":{"cmul":0.0,"resid":true,"tau_env":2,"env_r":[300,700]}},
+ {"name":"R2_lowdeep_upd_near","env":"truth","tau_v":6,"lw":{"850":0.3,"700":0.3,"500":0.25,"200":0.15},"uw":{"200":1.0},"kw":{"cmul":0.0,"resid":true,"tau_env":2,"env_r":[150,400]}},
+ {"name":"R3_ref_upd_near","env":"truth","tau_v":6,"lw":{"850":0.35,"700":0.35,"500":0.3},"uw":{"200":1.0},"kw":{"cmul":0.0,"resid":true,"tau_env":2,"env_r":[150,400]}},
+ {"name":"R4_lowdeep_hold","tau_v":6,"lw":{"850":0.3,"700":0.3,"500":0.25,"200":0.15},"uw":{"200":1.0},"kw":{"cmul":0.0,"resid":true,"tau_env":2,"env_r":[300,700]}}
 ]

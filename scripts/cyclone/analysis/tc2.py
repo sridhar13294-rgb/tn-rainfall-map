@@ -35,7 +35,7 @@ class TC2(T.TC):
     def invert(self, q1, q2, Bt, Bc):
         Pt = self.poisson(0.5 * (q1 + q2) - self.f, Bt); Pc = self.helm(0.5 * (q1 - q2), Bc); return Pt + Pc, Pt - Pc
     def run2(self, uL, vL, uU, vU, start, hours, vmax_fn, rmw=120.0, size=700.0, dt=450.0, nu=1.0e4, robert=0.1, tau_h=9.0,
-             every=6, land_fn=None, xo=0.5, size_grow=0.0, sppt=None, kmh_track=None, tau_v=1.5, cmul=1.0, tau_env=None, env_r=(600.0, 1200.0), env_fn=None, resid=False):
+             every=6, land_fn=None, xo=0.5, size_grow=0.0, sppt=None, kmh_track=None, tau_v=1.5, cmul=1.0, tau_env=None, env_r=(600.0, 1200.0), env_fn=None, resid=False, resid_upd=True):
         """vmax_fn(t_hours, lat, lon, over_land) -> storm max wind in kt. Returns [(hour, lat, lon)]."""
         if sppt:
             rs = np.random.default_rng(sppt['seed']); K = 6; amp = sppt['amp']; Lw = sppt.get('scale_deg', 10.0); Th = sppt.get('hours', 36.0)
@@ -44,13 +44,14 @@ class TC2(T.TC):
             pert = lambda th, i: amp * np.sqrt(2.0 / K) * sum(np.sin(kx[k] * self.LON + ky[k] * self.LAT + om[k] * th + ph[i, k]) for k in range(K))
         else: pert = None
         z1 = self.vort(uU, vU); z2 = self.vort(uL, vL); B1 = self.boundary_psi(uU, vU); B2 = self.boundary_psi(uL, vL)
-        if resid:
+        def resid_of(uL_, vL_, uU_, vU_):
             # the part of the analysed wind a stream function cannot carry (the divergent, in/outflow part and edge effects):
             # u_in - u_rot. It can be several m/s near the storm, so it is kept and carries the PV along with the rest
             R = []
-            for (uu, vv, zz, BB) in ((uU, vU, z1, B1), (uL, vL, z2, B2)):
-                Pp = self.poisson(zz, BB); R.append((nd.uniform_filter(uu + self.m * self.dy(Pp), 3), nd.uniform_filter(vv - self.m * self.dx(Pp), 3)))
-            self.resid_w = R
+            for (uu, vv) in ((uU_, vU_), (uL_, vL_)):
+                Pp = self.poisson(self.vort(uu, vv), self.boundary_psi(uu, vv)); R.append((nd.uniform_filter(uu + self.m * self.dy(Pp), 3), nd.uniform_filter(vv - self.m * self.dx(Pp), 3)))
+            return R
+        if resid: self.resid_w = resid_of(uL, vL, uU, vU)
         Bt, Bc = 0.5 * (B1 + B2), 0.5 * (B1 - B2); la, lo = start; edges = np.arange(0, 1801, 50.0); rc = 0.5 * (edges[1:] + edges[:-1])
         def targets(vkt, sz):
             vl = 0.6 * vkt * 0.5144; s = float(np.clip((vkt - 34) / 60, 0, 1))
@@ -119,7 +120,9 @@ class TC2(T.TC):
                 if n % 4 == 1:
                     if env_fn is not None and n % 24 == 1:
                         ef = env_fn(th, (la, lo, vnow_))
-                        if ef is not None: qe1, qe2 = env_q(*ef)
+                        if ef is not None:
+                            qe1, qe2 = env_q(*ef)
+                            if resid and resid_upd: self.resid_w = resid_of(*ef)      # the divergent part changes with the environment too
                     wenv = np.clip((self.dist_km(la, lo) - env_r[0]) / (env_r[1] - env_r[0]), 0, 1) / (tau_env * 3600)
                 t1 = t1 - wenv * (q1 - qe1); t2 = t2 - wenv * (q2 - qe2)
             for t in (t1, t2): t[0, :] = t[-1, :] = t[:, 0] = t[:, -1] = 0
