@@ -11,14 +11,23 @@ run = C.latest_run(lambda r: C.http(C.gfs_url(r, 0) + '.idx', method='HEAD') is 
 print('GFS analysis', run, flush=True)
 idx = C.parse_idx(C.http(C.gfs_url(run, 0) + '.idx').decode())
 A = np.full((1, 1, len(C.VARS), len(C.LATS), len(C.LONS)), np.nan, np.float32)
+# also a hemisphere-wide copy (9S-72N, 0-150E, 1 deg, winds only) for the hemispheric physics model
+HL, HO = np.arange(-9, 72 + 1e-6, 1.0), np.arange(0, 150 + 1e-6, 1.0); HV = [v for v in C.VARS if v[0] in 'uv' and v[1:].isdigit()]
+AH = np.full((len(HV), len(HL), len(HO)), np.nan, np.float32)
 for r in idx:
     k = C.noaa_key(r) or ('msl' if r['var'] == 'PRMSL' else None)
     if k in C.VARS:
         buf = C.http(C.gfs_url(run, 0), rng=(r['start'], r['end']))
         try:
-            if buf: A[0, 0, C.VARS.index(k)] = C.subset(buf)
+            if buf:
+                A[0, 0, C.VARS.index(k)] = C.subset(buf)
+                if k in HV:
+                    L0, O0 = C.LATS, C.LONS; C.LATS, C.LONS = HL, HO
+                    try: AH[HV.index(k)] = C.subset(buf)
+                    finally: C.LATS, C.LONS = L0, O0
             else: print('no bytes', k, flush=True)
         except Exception as e: print('decode failed', k, repr(e)[:200], flush=True)
+np.savez_compressed(f'/tmp/cyc_out/live_GFSH_{run:%Y%m%d%H}.npz', data=AH.astype(np.float16), vars=np.array(HV), lats=HL, lons=HO, run=f'{run:%Y%m%d%H}')
 A[0, 0, C.VARS.index('msl')] /= 100.0                       # hPa, as in the fc_ files (float16 cannot hold Pa)
 fn = f'/tmp/cyc_out/live_GFS_{run:%Y%m%d%H}.npz'
 np.savez_compressed(fn, data=A.astype(np.float16), vars=np.array(C.VARS), lats=C.LATS, lons=C.LONS, steps=np.array([0]), members=np.array([0]), run=f'{run:%Y%m%d%H}')
