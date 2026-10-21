@@ -323,13 +323,13 @@ class Model:
             for key, s_ in (('mslp', -1), ('vo850', sgn), ('vo700', sgn), ('z850', -1), ('z700', -1)):
                 F = ndi.uniform_filter(np.asarray(out[key][i], float), 3) * s_
                 m = np.where(d <= (330 if i else 250), F, -np.inf); j = np.unravel_index(np.argmax(m), m.shape)
-                dj = dist(LA[j], LO[j]); w = np.clip(F - np.percentile(F[dj <= 400], 60), 0, None) * (dj <= 150)
+                dj = dist(LA[j], LO[j]); w = np.clip(F - np.percentile(F[dj <= 400], 75), 0, None) * (dj <= 160) * np.exp(-(dj / 120.0) ** 2)
                 if w.sum() > 0: fixes.append(((w * LA).sum() / w.sum(), LO[j] + (w * ((LO - LO[j] + 180) % 360 - 180)).sum() / w.sum()))
             if not fixes: break
-            fa = np.array(fixes); mla, mlo = fa.mean(0)
+            fa = np.array(fixes); mla, mlo = np.median(fa, 0)                                    # median first: one stray fix cannot drag the mean
             keep = [f for f in fixes if math.hypot(f[0] - mla, (f[1] - mlo) * math.cos(math.radians(mla))) * 111.2 <= 225]
-            if len(keep) < 2 and i: break
-            nl, no = np.array(keep or fixes).mean(0)
+            if not keep: keep = [min(fixes, key=lambda f: math.hypot(f[0] - g[0], (f[1] - g[1]) * math.cos(math.radians(g[0]))))]
+            nl, no = np.array(keep).mean(0)
             if i: vel = (nl - la, ((no - lo + 180) % 360) - 180)
             la, lo = float(nl), float(no % 360); dd = dist(la, lo)
             wmax = float(np.hypot(out['ul'][i], out['vl'][i])[dd <= 300].max()) * 0.85 / 0.5144 if (dd <= 300).any() else 0.0
@@ -337,7 +337,7 @@ class Model:
             vo = float(np.asarray(out['vo850'][i])[dd <= 150].mean()) * sgn * 1e5 if (dd <= 150).any() else 0.0
             weak = weak + 1 if vo < 1.0 else 0
             res.append((i * every_h, round(la, 2), round(lo, 2), round(wmax, 1), None if pmin is None else round(pmin, 1), round(vo, 1), len(keep)))
-            if weak >= 3: break
+            if weak >= 4: break                                                                   # vortex gone for 24 h
         return res
 
 # ---------------------------------------------------------------------------------------------------- ensemble helpers
