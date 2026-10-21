@@ -1,0 +1,30 @@
+<section>
+  <h2>How the runs are made (physics version)</h2>
+  <ul>
+    <li><b>Live data each cycle.</b> The latest GFS analysis (observed state only, no forecast steps), Bay sea temperature (NOAA OISST) and the latest real-time MJO index (NOAA PSL). The seedling, the ridge, troughs, any Arabian Sea low and the south-west Bay circulation are all read from that analysis.</li>
+    <li><b>The inputs change the starting winds.</b> Each member shifts the ridge north–south and east–west and changes its strength, deepens or weakens the westerly trough over north-west India, strengthens or weakens the north-east monsoon easterlies, and strengthens or weakens any Arabian Sea low. The seedling’s own swirl is taken out so it is not steered by itself.</li>
+    <li><b>Future winds come from physics, not from a list.</b> The deep-layer steering flow (850/700/500/200 hPa) is stepped forward with a barotropic vorticity model on a 1° grid: ridges, troughs, highs and other circulations are carried by the flow and drift west-north-west under the earth’s rotation. Nothing has a fixed path or speed. The MJO’s low-level westerly anomaly is held through the run.</li>
+    <li><b>Track.</b> Our steering model, fitted on every Bay storm since 1980, moves the storm with the computed winds in a 2–6° ring around it plus its own north-west drift.</li>
+    <li><b>Strength.</b> 12-hour change model fitted on the 84 past storms (wind, last change, age, latitude, shear from the computed winds), with hand-set nudges for sea temperature and MJO; inland decay over land.</li>
+    <li><b>51 combinations.</b> Member 0 has every input at today’s value; members 1–50 come from an orthogonal design over the 13 inputs, so every setting of every input meets every setting of every other input.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>How far to trust it</h2>
+  <div class="tblwrap"><table>
+    <thead><tr><th>Test on the past storms (start 24 h before genesis)</th><th>Right coast stretch</th><th>Typical landfall-latitude error</th><th>Bias</th></tr></thead>
+    <tbody>
+      <tr><td>Plain climatology</td><td class="n">14%</td><td class="n">3.5°</td><td>–</td></tr>
+      <tr><td>Previous method (past-storm winds after day 2)</td><td class="n">23%</td><td class="n">1.5°</td><td>none clear</td></tr>
+      <tr><td><b>This physics method</b></td><td class="n"><b>33%</b></td><td class="n"><b>1.5°</b></td><td><b>lands 1.6° too far south on average; south of the real point in 32 of 45</b></td></tr>
+      <tr><td>Our track model in the storm’s real winds (upper limit)</td><td class="n">49%</td><td class="n">1.0°</td><td>–</td></tr>
+    </tbody>
+  </table></div>
+  <ul class="note">
+    <li><b>Why the southward bias:</b> a one-layer physics model cannot create the trough or weakness that usually turns Bay storms north in October–November; that needs vertical structure and heating. So it tends to keep storms moving west with today’s easterlies.</li>
+    <li>ECMWF and GFS ensembles, and our previous method, all turn this system north toward Andhra Pradesh / Odisha. This page shows what today’s winds and your inputs alone would do.</li>
+    <li>Strength error from formation along the real track: 4 kt at 24 h, 8 kt at 48 h, 15 kt at 72 h; treat strength as one category either way. Shares are of these 51 members, not calibrated probabilities.</li>
+  </ul>
+</section>
+</div>

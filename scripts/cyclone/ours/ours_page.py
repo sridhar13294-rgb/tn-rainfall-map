@@ -27,7 +27,8 @@ for ring in json.load(open(os.path.join(REPO, 'data', 'cyclone', 'land.json'))):
         q = [round(float(x), 2), round(float(y), 2)]
         if not out or q != out[-1]: out.append(q)
     if len(out) > 3: land.append(out)
-hp = os.path.join(REPO, 'data', 'cyclone', 'ours', 'live_history.json')
+METHOD = sys.argv[sys.argv.index('--method') + 1] if '--method' in sys.argv else 'past'
+hp = os.path.join(REPO, 'data', 'cyclone', 'ours', 'live_history.json' if METHOD == 'past' else f'live_history_{METHOD}.json')
 hist = json.load(open(hp)) if os.path.exists(hp) else []
 c0 = E['runs'][0]; lf0 = c0['lf']
 row = dict(run=E['run'], label=label, shares=E['summary']['shares'],
@@ -45,7 +46,11 @@ def clean(x):
     return x
 E = clean(E); obs = E['obs']
 D = dict(t0=E['run'], run_label=label, obs=obs, analogs=E['analogs'], factors=E['factors'], runs=runs, land=land, hist=hist)
-css = open(os.path.join(HERE, 'style.css.part')).read(); body = open(os.path.join(HERE, 'body.html.part')).read(); js = open(os.path.join(HERE, 'app.js.part')).read()
+css = open(os.path.join(HERE, 'style.css.part')).read(); body = open(os.path.join(HERE, 'body.html.part')).read()
+if METHOD == 'bve':
+    i = body.index('<section>\n  <h2>How the runs are made</h2>'); body = body[:i] + open(os.path.join(HERE, 'method_bve.html.part')).read()
+    body = body.replace('<h1>Our own ensemble: where the coming Bay storm could cross the coast</h1>', '<h1>Our own ensemble, physics version: where today’s winds and the inputs alone would take the storm</h1>')
+js = open(os.path.join(HERE, 'app.js.part')).read()
 html = ('<title>Bay Storm Scenarios</title>\n<meta name="claude:viewport-fit-sides" content="cover">\n'
         '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">\n'
         + css + body + '\n<script id="data" type="application/json">' + json.dumps(D, separators=(',', ':'), default=str).replace('</', '<\\/') + '</script>\n<script>\n' + js + '</script>\n')
