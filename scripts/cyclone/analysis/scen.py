@@ -236,12 +236,12 @@ def sample_likely(n, t0, seed, sd):
         out.append(P)
     return out
 FACT51 = [  # (key, title, three settings low / as observed / high)
-    ('gen', 'When the low forms', ['22 Oct evening', '23 Oct', '24 Oct evening']),
-    ('start', 'Seedling position / early path', ['0.8 deg south-west', 'as observed', '0.8 deg north-east']),
+    ('gen', 'When the depression forms', ['22 Oct evening', '23 Oct midday', '24 Oct evening']),
+    ('glat', 'Where it forms, south-north', ['10.5N', '12N', '13.5N']),
+    ('glon', 'Where it forms, west-east', ['86.5E', '88.5E', '90.5E']),
     ('rlat', 'Ridge north-south', ['1 deg south', 'as now', '1 deg north']),
     ('rlon', 'Ridge east-west', ['1.5 deg west', 'as now', '1.5 deg east']),
     ('rstr', 'Ridge strength', ['15% weaker', 'as now', '15% stronger']),
-    ('rdt', 'Ridge timing', ['12 h earlier', 'as now', '12 h later']),
     ('sst', 'Bay sea temperature', ['+1.2 C', '+1.4 C (observed)', '+1.6 C']),
     ('mjo', 'MJO', ['weak / fades', 'moves on to phase 4-5', 'active, phase 3 (Indian Ocean)']),
     ('shear', 'Wind shear / dry air', ['high shear or dry air', 'moderate', 'low shear, moist']),
@@ -267,10 +267,9 @@ def sample51(t0, sd):
         mjo = ['weak / fades', 'moves on to phase 4-5', 'active, phase 3 (Indian Ocean)'][f['mjo']]; mu, mi, mdt = MJO_OPTS[mjo]
         sh = ['high shear or dry air', 'moderate', 'low shear, moist'][f['shear']]
         asn = ['none', 'stalls off Kerala/Karnataka', 'moves N toward Gujarat'][f['as']]
-        off = (f['start'] - 1) * 0.8 / math.sqrt(2)
-        P = dict(member=m, levels=lv, start_t=t0, start_lat=round(sd[0] + off, 2), start_lon=round(sd[1] + off, 2),
-                 gen_t=t0 + dt.timedelta(hours=[36, 48, 84][f['gen']]), gen_lat=None, gen_lon=None,
-                 ridge_dlat=[-1, 0, 1][f['rlat']], ridge_dlon=[-1.5, 0, 1.5][f['rlon']], ridge_str=[0.85, 1, 1.15][f['rstr']], ridge_dt=[-12, 0, 12][f['rdt']],
+        jr = np.random.default_rng(100 + m); j = (lambda w: float(jr.uniform(-w, w))) if m else (lambda w: 0.0)   # spread inside each setting's band
+        P = dict(member=m, levels=lv, gen_t=t0 + dt.timedelta(hours=[36, 54, 84][f['gen']] + round(j(6))), gen_lat=round([10.5, 12.0, 13.5][f['glat']] + j(0.75), 2), gen_lon=round([86.5, 88.5, 90.5][f['glon']] + j(1.0), 2),
+                 ridge_dlat=[-1, 0, 1][f['rlat']], ridge_dlon=[-1.5, 0, 1.5][f['rlon']], ridge_str=[0.85, 1, 1.15][f['rstr']], ridge_dt=0,
                  sst=[1.2, 1.4, 1.6][f['sst']], mjo=mjo, mjo_u=mu, mjo_i=mi, shear=sh, shear_i=SHEAR_OPTS[sh],
                  wd_amp=[0, 4, 8][f['wd']], wd_day=5.5, surge_u=[0, -2, -4][f['surge']], surge_day=3.0,
                  beta=[0.8, 1.0, 1.2][f['size']], speed=1.0, as_sys=asn, gom='fades in a day')
