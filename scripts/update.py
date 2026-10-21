@@ -82,8 +82,11 @@ def save_day(page, districts, stations, want=None):
         raise RuntimeError(f'asked for {want}, page shows {date}')
     if not rows:
         raise RuntimeError('page downloaded but no station rows recognised (layout may have changed)')
+    fix = load(P('data/station_positions.json'), {})     # TN SMART positions known to be wrong (checked by hand)
     for r in rows:
         stations[r['id']] = {k: r[k] for k in ('id', 'name', 'district', 'taluk', 'lat', 'lon')}
+        if r['id'] in fix:
+            stations[r['id']].update(lat=fix[r['id']]['lat'], lon=fix[r['id']]['lon'])
     vals = {r['id']: r['rain'] for r in rows if r['rain'] is not None}
     if date and vals:
         save(P('data/daily', date + '.json'), vals)
