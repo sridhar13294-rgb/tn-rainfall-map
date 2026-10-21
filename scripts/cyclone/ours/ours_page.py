@@ -47,6 +47,10 @@ def clean(x):
 E = clean(E); obs = E['obs']
 D = dict(t0=E['run'], run_label=label, obs=obs, analogs=E['analogs'], factors=E['factors'], runs=runs, land=land, hist=hist)
 css = open(os.path.join(HERE, 'style.css.part')).read(); body = open(os.path.join(HERE, 'body.html.part')).read()
+if METHOD == 'inputs':
+    i = body.index('<section>\n  <h2>How the runs are made</h2>'); body = body[:i] + open(os.path.join(HERE, 'method_inputs.html.part')).read()
+    body = body.replace('<h1>Our own ensemble: where the coming Bay storm could cross the coast</h1>', '<h1>Our own ensemble, input-driven: where today’s winds, changed by the inputs, take the storm</h1>')
+    body = body.replace('Each line starts at the observed seedling', 'Each line starts at the observed seedling')
 if METHOD == 'bve':
     i = body.index('<section>\n  <h2>How the runs are made</h2>'); body = body[:i] + open(os.path.join(HERE, 'method_bve.html.part')).read()
     body = body.replace('<h1>Our own ensemble: where the coming Bay storm could cross the coast</h1>', '<h1>Our own ensemble, physics version: where today’s winds and the inputs alone would take the storm</h1>')
