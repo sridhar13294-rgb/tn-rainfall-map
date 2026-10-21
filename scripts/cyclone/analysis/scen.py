@@ -147,10 +147,12 @@ def peak_class(P):
     I = 0.9 * (P['sst'] - 0.8) + P['mjo_i'] + P['shear_i']
     return 0 if I < 0 else (1 if I < 0.8 else 2)
 def run_track(M, env, P, hours=192, dt_h=6):
-    t = P['gen_t']; la, lo = P['gen_lat'], P['gen_lon']; pk = peak_class(P); pts = [(t, la, lo, 0)]; inland = 0; lf = None
+    t = P.get('start_t', P['gen_t']); la, lo = P.get('start_lat', P['gen_lat']), P.get('start_lon', P['gen_lon']); pk = peak_class(P); pts = [(t, la, lo, 0)]; inland = 0; lf = None
     while (t - P['gen_t']).total_seconds() / 3600 < hours:
         age = (t - P['gen_t']).total_seconds() / 3600
         c = 0 if age < 24 else (min(pk, 1) if age < 48 else pk)
+        if age < 0 and 'gen_pos' not in P: pass
+        if age >= 0 and 'gen_pos' not in P: P['gen_pos'] = (la, lo)
         if inland: c = 0
         U, V = env.at(t); x = ring(U, V, la, lo)
         if x is None: break
@@ -200,6 +202,66 @@ def sample(n, t0, seed=1):
         P['gom_track'] = [(t0 + dt.timedelta(days=d), a, b) for d, a, b in GOM_OPTS[gom]]
         out.append(P)
     return out
+def sample_likely(n, t0, seed, sd):
+    """Inputs narrowed to what today's observations support: every run starts from the observed seedling and moves with it."""
+    rng = np.random.default_rng(seed); out = []
+    for i in range(n):
+        u = rng.random
+        mjo = rng.choice(list(MJO_OPTS), p=[0.6, 0.3, 0.1]); mu, mi, mdt = MJO_OPTS[mjo]
+        asn = rng.choice(list(AS_OPTS), p=[0.7, 0.1, 0.1, 0.1]); gom = rng.choice(list(GOM_OPTS)); sh = rng.choice(list(SHEAR_OPTS), p=[0.3, 0.5, 0.2])
+        P = dict(start_t=t0, start_lat=round(sd[0] + rng.normal(0, 0.4), 2), start_lon=round(sd[1] + rng.normal(0, 0.4), 2),
+                 gen_t=t0 + dt.timedelta(hours=36 + 48 * u() + mdt / 2), gen_lat=None, gen_lon=None,
+                 ridge_dlat=round(rng.normal(0, 0.5), 2), ridge_dlon=round(rng.normal(0, 1.0), 2), ridge_str=round(1 + rng.normal(0, 0.07), 2), ridge_dt=round(rng.normal(0, 8), 1),
+                 sst=round(1.4 + rng.normal(0, 0.15), 2), mjo=str(mjo), mjo_u=mu, mjo_i=mi, shear=str(sh), shear_i=SHEAR_OPTS[sh],
+                 wd_amp=[0, 4][int(u() * 2)], wd_day=round(4 + 4 * u(), 1), surge_u=round(-2 * u(), 2), surge_day=round(2 + 5 * u(), 1),
+                 beta=round(1 + rng.normal(0, 0.12), 2), speed=round(1 + rng.normal(0, 0.06), 2), as_sys=str(asn), gom=str(gom))
+        P['as_track'] = [(t0 + dt.timedelta(days=d), a, b) for d, a, b in AS_OPTS[asn]] if AS_OPTS[asn] else None
+        P['gom_track'] = [(t0 + dt.timedelta(days=d), a, b) for d, a, b in GOM_OPTS[gom]]
+        out.append(P)
+    return out
+FACT51 = [  # (key, title, three settings low / as observed / high)
+    ('gen', 'When the low forms', ['22 Oct evening', '23 Oct', '24 Oct evening']),
+    ('start', 'Seedling position / early path', ['0.8 deg south-west', 'as observed', '0.8 deg north-east']),
+    ('rlat', 'Ridge north-south', ['1 deg south', 'as now', '1 deg north']),
+    ('rlon', 'Ridge east-west', ['1.5 deg west', 'as now', '1.5 deg east']),
+    ('rstr', 'Ridge strength', ['15% weaker', 'as now', '15% stronger']),
+    ('rdt', 'Ridge timing', ['12 h earlier', 'as now', '12 h later']),
+    ('sst', 'Bay sea temperature', ['+1.2 C', '+1.4 C (observed)', '+1.6 C']),
+    ('mjo', 'MJO', ['weak / fades', 'moves on to phase 4-5', 'active, phase 3 (Indian Ocean)']),
+    ('shear', 'Wind shear / dry air', ['high shear or dry air', 'moderate', 'low shear, moist']),
+    ('wd', 'Western disturbance', ['none', 'moderate', 'deep']),
+    ('surge', 'NE-monsoon easterly surge', ['none', 'moderate', 'strong']),
+    ('as', 'Arabian Sea system', ['none', 'stalls off Kerala/Karnataka', 'moves N toward Gujarat']),
+    ('size', 'Storm size (beta drift)', ['smaller', 'typical', 'bigger'])]
+def design51():
+    """member 0 = control (every factor as observed); 1-27 = L27 orthogonal array (every pair of settings of any two
+    factors together exactly 3 times); 28-50 = a second, shifted L27 block for more mixing."""
+    combos = [(1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 1, 0), (1, 2, 0), (1, 0, 1), (1, 0, 2), (0, 1, 1), (0, 1, 2), (1, 1, 1), (1, 1, 2), (1, 2, 1), (1, 2, 2)]
+    L = [[(a * x + b * y + c * z) % 3 for (x, y, z) in combos] for a in range(3) for b in range(3) for c in range(3)]
+    rows = [[1] * 13] + L
+    seen = {tuple(r) for r in rows}
+    for r in L:
+        r2 = [(v + 1 + (j % 2)) % 3 for j, v in enumerate(r[5:] + r[:5])]
+        if tuple(r2) not in seen and len(rows) < 51: rows.append(r2); seen.add(tuple(r2))
+    return rows
+def sample51(t0, sd):
+    out = []
+    for m, lv in enumerate(design51()):
+        f = {k: lv[i] for i, (k, _, _) in enumerate(FACT51)}
+        mjo = ['weak / fades', 'moves on to phase 4-5', 'active, phase 3 (Indian Ocean)'][f['mjo']]; mu, mi, mdt = MJO_OPTS[mjo]
+        sh = ['high shear or dry air', 'moderate', 'low shear, moist'][f['shear']]
+        asn = ['none', 'stalls off Kerala/Karnataka', 'moves N toward Gujarat'][f['as']]
+        off = (f['start'] - 1) * 0.8 / math.sqrt(2)
+        P = dict(member=m, levels=lv, start_t=t0, start_lat=round(sd[0] + off, 2), start_lon=round(sd[1] + off, 2),
+                 gen_t=t0 + dt.timedelta(hours=[36, 48, 84][f['gen']]), gen_lat=None, gen_lon=None,
+                 ridge_dlat=[-1, 0, 1][f['rlat']], ridge_dlon=[-1.5, 0, 1.5][f['rlon']], ridge_str=[0.85, 1, 1.15][f['rstr']], ridge_dt=[-12, 0, 12][f['rdt']],
+                 sst=[1.2, 1.4, 1.6][f['sst']], mjo=mjo, mjo_u=mu, mjo_i=mi, shear=sh, shear_i=SHEAR_OPTS[sh],
+                 wd_amp=[0, 4, 8][f['wd']], wd_day=5.5, surge_u=[0, -2, -4][f['surge']], surge_day=3.0,
+                 beta=[0.8, 1.0, 1.2][f['size']], speed=1.0, as_sys=asn, gom='fades in a day')
+        P['as_track'] = [(t0 + dt.timedelta(days=d), a, b) for d, a, b in AS_OPTS[asn]] if AS_OPTS[asn] else None
+        P['gom_track'] = [(t0 + dt.timedelta(days=d), a, b) for d, a, b in GOM_OPTS['fades in a day']]
+        out.append(P)
+    return out
 def scen_summary(R):
     c = Counter(r['seg'] for r in R); n = len(R)
     return {k: round(100 * c[k] / n, 1) for k in ORDER if c[k]}
@@ -242,14 +304,15 @@ if __name__ == '__main__':
     print('seedling 700 hPa', sd, '| Gulf of Mannar 850 hPa', gm)
     now = remove_vortex(remove_vortex(now, sd[0], sd[1]), gm[0], gm[1], R=3.5)
     E = base_env(now, C)
-    N = int(sys.argv[3]); PS = sample(N, t0); RES = []
+    N = int(sys.argv[3]); PS = sample51(t0, sd) if len(sys.argv) > 4 and sys.argv[4] == '51' else (sample_likely(N, t0, 7, sd) if len(sys.argv) > 4 and sys.argv[4] == 'likely' else sample(N, t0)); RES = []
     for i, P in enumerate(PS):
         pts, lf = run_track(M, Env(E, t0, P), P)
-        r = {k: (v.isoformat() if isinstance(v, dt.datetime) else v) for k, v in P.items() if k not in ('as_track', 'gom_track')}
+        if P.get('gen_pos'): P['gen_lat'], P['gen_lon'] = round(P['gen_pos'][0], 2), round(P['gen_pos'][1], 2)
+        r = {k: (v.isoformat() if isinstance(v, dt.datetime) else v) for k, v in P.items() if k not in ('as_track', 'gom_track', 'gen_pos')}
         r.update(peak=peak_class(P), seg=segment(lf['lat'], lf['lon']) if lf else 'no landfall',
                  lf=dict(t=lf['t'].isoformat(), lat=round(lf['lat'], 2), lon=round(lf['lon'], 2), cls=lf['cls']) if lf else None,
                  pts=[(p[0].isoformat(), round(p[1], 2), round(p[2], 2), p[3]) for p in pts[::2]])
         RES.append(r)
         if i % 200 == 0: print(i, scen_summary(RES), flush=True)
-    json.dump(dict(t0=t0.isoformat(), analogs=top, seedling=sd, gom=gm, runs=RES), open('data/scen.json', 'w'))
+    json.dump(dict(t0=t0.isoformat(), analogs=top, seedling=sd, gom=gm, runs=RES), open(('data/scen_%s.json' % sys.argv[4]) if len(sys.argv) > 4 else 'data/scen.json', 'w'))
     print('ALL', len(RES), scen_summary(RES))
