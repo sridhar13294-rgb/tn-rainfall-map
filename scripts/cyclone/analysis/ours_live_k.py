@@ -12,37 +12,42 @@ def halton(i, b):
     while i > 0: f /= b; r += f * (i % b); i //= b
     return r
 def factors(obs):
-    A, G = obs['arabian'], obs['sw_bay']
+    A, G = obs['arabian'], obs['sw_bay']; f = obs['formed']
     return [
+        ('gen', 'When the depression forms', ['already formed'] * 3 if f else ['in 12 h', 'in 30 h', 'in 54 h'], [0, 0, 0] if f else [12, 30, 54]),
+        ('slat', 'Start position north-south', ['0.4 deg south', 'as observed', '0.4 deg north'] if f else ['1 deg south', 'as observed', '1 deg north'], [-0.4, 0, 0.4] if f else [-1, 0, 1]),
+        ('slon', 'Start position west-east', ['0.4 deg west', 'as observed', '0.4 deg east'] if f else ['1.5 deg west', 'as observed', '1.5 deg east'], [-0.4, 0, 0.4] if f else [-1.5, 0, 1.5]),
         ('rlat', 'Ridge position north-south (now)', ['1 deg south', 'as observed', '1 deg north'], [-1, 0, 1]),
         ('rrate', 'Ridge movement', ['drifts south 0.4 deg/day', 'stays', 'drifts north 0.4 deg/day'], [-0.4, 0, 0.4]),
-        ('rtrend', 'Ridge strength trend (easterlies)', ['weakens 15% in 3 days', 'steady', 'strengthens 15% in 3 days'], [-0.15, 0, 0.15]),
+        ('rtrend', 'Ridge strength trend (easterlies)', ['weakens 30% in 3 days', 'steady', 'strengthens 15% in 3 days'], [-0.3, 0, 0.15]),
         ('rlon', 'Ridge position east-west', ['1.5 deg west', 'as observed', '1.5 deg east'], [-1.5, 0, 1.5]),
+        ('rbreak', 'Ridge break over the central Bay (day 2-3)', ['no break', 'partial (weak south-westerlies)', 'full (south-westerlies)'], [0, 3, 6]),
+        ('east', 'Myanmar-Thailand high', ['moves west 1 deg/day', 'stays', 'retreats east 1 deg/day'], [-1, 0, 1]),
         ('wdday', 'Next westerly trough reaches 80E', ['in 3 days', 'in 5 days', 'in 7 days'], [3, 5, 7]),
         ('wdamp', 'Next westerly trough depth', ['none', 'moderate', 'deep'], [0, 5, 10]),
         ('wdreach', 'How far south the trough digs', ['to 22N', 'to 18N', 'to 14N'], [22, 18, 14]),
         ('mjo', 'MJO over the next days', ['fades and moves east', 'holds over the Bay', 'strengthens over the Bay'], [0, 1, 2]),
+        ('xeq', 'Cross-equatorial westerlies (south Bay)', ['weaker', 'as now', 'stronger'], [-2, 0, 2]),
         ('surge', 'NE-monsoon easterlies', ['weaker', 'as now', 'stronger'], [2, 0, -2]),
+        ('ewave', 'Easterly wave from the South China Sea', ['none', 'weak', 'strong'], [0, 2, 4]),
         ('jet', 'Upper westerly jet (200 hPa)', ['20% weaker', 'as now', '20% stronger'], [0.8, 1.0, 1.2]),
         ('as', 'Arabian Sea low', ['stalls', 'moves north', 'moves north-west'] if A['present'] else ['none observed'] * 3, [0, 1, 2]),
         ('sw', 'South-west Bay circulation', ['fades in a day', 'drifts into Tamil Nadu', 'lingers, moving north'] if G['present'] else ['none observed'] * 3, [0, 1, 2]),
+        ('sst', 'Bay sea temperature anomaly', ['%+.1f C' % (obs['sst'] - 0.2), '%+.1f C (observed)' % obs['sst'], '%+.1f C' % (obs['sst'] + 0.2)], [obs['sst'] - 0.2, obs['sst'], obs['sst'] + 0.2]),
+        ('shear', 'Wind shear / dry air', ['more hostile', 'as now', 'more favourable'], [1.35, 1.0, 0.75]),
         ('size', 'Storm size (beta drift)', ['smaller', 'typical', 'bigger'], [0.8, 1.0, 1.2])]
+DESIGN = json.load(open(os.path.join(O.REPO, 'data', 'cyclone', 'ours', 'design22.json')))
 def build(obs, t0, sd):
     F = factors(obs); out = []; A, G = obs['arabian'], obs['sw_bay']
-    for m, lv in enumerate(S.design51()):
+    for m, lv in enumerate(DESIGN):
         v = {k: vals[lv[i]] for i, (k, _, _, vals) in enumerate(F)}
-        h = (lambda b: 0.5) if m == 0 else (lambda b: halton(m, b))
-        formed = obs['formed']
-        gen_h = 0 if formed else 12 + 42 * h(2)
-        slat = (h(3) - 0.5) * (0.8 if formed else 2.0); slon = (h(5) - 0.5) * (0.8 if formed else 3.0)
-        sst = obs['sst'] - 0.2 + 0.4 * h(7); shs = 0.75 + 0.6 * h(11)
         mu = obs['mjo_u']; mt, mc = [(-1.0, 5.0), (0.0, 0.0), (0.5, 0.0)][v['mjo']]
-        P = dict(member=m, levels=lv, start_t=t0, start_lat=round(sd[0] + slat, 2), start_lon=round(sd[1] + slon, 2),
-                 gen_t=t0 + dt.timedelta(hours=round(gen_h)), gen_lat=None, gen_lon=None,
-                 ridge_dlat=v['rlat'], ridge_rate=v['rrate'], ridge_trend=v['rtrend'], ridge_dlon=v['rlon'], ridge_str=1.0,
-                 wd_amp=v['wdamp'], wd_day80=v['wdday'], wd_speed=8.0, wd_reach=v['wdreach'], surge_u=v['surge'], jet=v['jet'],
+        P = dict(member=m, levels=lv, start_t=t0, start_lat=round(sd[0] + v['slat'], 2), start_lon=round(sd[1] + v['slon'], 2),
+                 gen_t=t0 + dt.timedelta(hours=v['gen']), gen_lat=None, gen_lon=None,
+                 ridge_dlat=v['rlat'], ridge_rate=v['rrate'], ridge_trend=v['rtrend'], ridge_dlon=v['rlon'], ridge_str=1.0, ridge_break=v['rbreak'], east_rate=v['east'],
+                 wd_amp=v['wdamp'], wd_day80=v['wdday'], wd_speed=8.0, wd_reach=v['wdreach'], surge_u=v['surge'], jet=v['jet'], xeq=v['xeq'], ewave=v['ewave'],
                  mjo_u=mu, mjo_trend=mt, mjo_move=mc, mjo_kt=obs['mjo_kt'] + (-1.0, 0.0, 0.5)[v['mjo']], mjo_i=0,
-                 sst=round(sst, 2), shear_scale=round(shs, 2), shear=None, beta=v['size'], speed=1.0)
+                 sst=round(v['sst'], 2), shear_scale=v['shear'], shear=None, beta=v['size'], speed=1.0)
         if A['present']:
             a, b = A['lat'], A['lon']
             P['as_path'] = {0: [(0, a, b, 1), (6, a + 0.8, b - 0.3, 1)], 1: [(0, a, b, 1), (3, a + 4.5, b - 1.5, 1), (6, a + 9.5, b - 3, 0.6)],
@@ -51,7 +56,7 @@ def build(obs, t0, sd):
             a, b = G['lat'], G['lon']
             P['sw_path'] = {0: [(0, a, b, 1), (1, a + 0.1, b - 0.3, 0)], 1: [(0, a, b, 1), (1.5, a + 0.4, b - 1.9, 0.3)],
                             2: [(0, a, b, 1), (2, a + 1, b - 0.2, 0.8), (4, a + 2, b - 0.3, 0.5)]}[v['sw']]
-        if formed: P['start_v'] = 17.0
+        if obs['formed']: P['start_v'] = 17.0
         out.append(P)
     return F, out
 if __name__ == '__main__':

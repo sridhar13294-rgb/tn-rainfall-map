@@ -7,7 +7,11 @@ inputs, each evolving in time:
   MJO        - low-level westerly anomaly over the south Bay: fades and moves east / holds / strengthens
   NE-monsoon easterly surge - weaker / as now / stronger from day 1
   upper westerly jet (200 hPa, north of 20N) - weaker / as now / stronger
-  Arabian Sea low and south-west Bay circulation - each moves along its chosen path (stall / north / north-west etc.)"""
+  Arabian Sea low and south-west Bay circulation - each moves along its chosen path (stall / north / north-west etc.)
+  ridge break - mid/upper easterlies over the central Bay (about 10-20N, 80-95E) giving way to south-westerlies from day 1.5 to day 3
+  cross-equatorial westerlies - low-level westerlies over the south Bay (0-8N) weaker / stronger
+  Myanmar-Thailand high - its part of the ridge (east of 92E) moving west / staying / retreating east
+  easterly wave - a wave in the low-level easterlies coming in from the South China Sea, moving west 6 deg a day"""
 import math, numpy as np
 from scipy import ndimage as nd
 LEVS = [850, 700, 500, 200]
@@ -34,11 +38,27 @@ class EnvK:
         F = self.F
         if dl:
             Fs = nd.shift(F, (0, 0, dl / self.res, 0), order=1, mode='nearest'); F = self.wr * Fs + (1 - self.wr) * F
+        er = P.get('east_rate', 0.0)
+        if er:
+            Fe = nd.shift(F, (0, 0, 0, er * d / self.res), order=1, mode='nearest'); we = np.clip((LO - 90) / 4, 0, 1) * self.wr; F = we * Fe + (1 - we) * F
         U = [F[0, l].copy() for l in range(4)]; V = [F[1, l].copy() for l in range(4)]
         s = P.get('ridge_str', 1.0) * (1 + P.get('ridge_trend', 0.0) * min(d / 3, 1.5))
         for l in (0, 1, 2): U[l] = np.where((LA < 20) & (U[l] < 0), U[l] * s, U[l])
         j = P.get('jet', 1.0)
         if j != 1.0: U[3] = np.where((LA > 20) & (U[3] > 0), U[3] * j, U[3])
+        rb = P.get('ridge_break', 0.0)
+        if rb:
+            # a gap in the ridge: over the central Bay the mid/upper easterlies give way to south-westerlies (what turns storms north)
+            ramp = float(np.clip((d - 1.5) / 1.5, 0, 1)); m = np.exp(-((LA - 15) / 5) ** 2 - ((LO - 87) / 8) ** 2) * ramp
+            for l, k in ((1, 0.5), (2, 1.0), (3, 1.0)):
+                U[l] = (1 - m * k) * U[l] + m * k * 0.75 * rb; V[l] = V[l] + m * k * rb
+        ce = P.get('xeq', 0.0)
+        if ce:
+            m = np.clip((10 - LA) / 4, 0, 1) * (LA >= 0) * ((LO >= 78) & (LO <= 98)); U[0] = U[0] + ce * m; U[1] = U[1] + 0.6 * ce * m
+        ew = P.get('ewave', 0.0)
+        if ew:
+            x = 102 - 6 * d; dl = LO - x; vv = ew * np.sin(np.pi * dl / 10) * (abs(dl) < 10) * np.exp(-((LA - 12) / 5) ** 2)
+            V[0] = V[0] + vv; V[1] = V[1] + 0.8 * vv
         A = P.get('wd_amp', 0.0)
         if A:
             x = 80 + P.get('wd_speed', 8.0) * (d - P.get('wd_day80', 5.0)); ramp = min(1.0, max(0.0, d + 1) / 2)
