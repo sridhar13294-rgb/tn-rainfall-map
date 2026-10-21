@@ -26,11 +26,11 @@ def real_at(P0, t):
             f = (t - a[0]).total_seconds() / max(1, (b[0] - a[0]).total_seconds()); return (a[1] + f * (b[1] - a[1]), a[2] + f * (b[2] - a[2]))
     return None
 storms = [s for i, s in enumerate(O.LIBL) if i % NCH == CH]; res = []
-for s in storms:
+def one(s):
     g = O.gen_time(s); key = g.strftime('%Y-%m-%dT%H')
-    if key not in TT: continue
+    if key not in TT: return None
     F0 = DATA[TT.index(key), 1:3].astype(float)
-    if not np.isfinite(F0).all(): continue
+    if not np.isfinite(F0).all(): return None
     P0 = O.path_of(s); la0, lo0 = P0[0][1], P0[0][2]; Fc = rmv(F0, la0, lo0)
     A0 = RAW.get(key); U0 = [A0[0, l] for l in range(4)] if A0 is not None else None; V0 = [A0[1, l] for l in range(4)] if A0 is not None else None
     mem = []
@@ -58,6 +58,11 @@ for s in storms:
             if not on_land(b1, a1) and on_land(b2, a2): lf = ((a1 + a2) / 2, (b1 + b2) / 2); break
         mem.append(dict(seg=O.segment(*lf) if lf else 'no landfall', lf=lf, pos={int(h): (a, b) for h, a, b in out if int(h) in (24, 48, 72, 96, 120)}))
     real = {h: real_at(P0, g + dt.timedelta(hours=h)) for h in (24, 48, 72, 96, 120)}
-    res.append(dict(name=s['name'], season=s['season'], truth=O.segment(*s['lf']) if s['lf'] else 'no landfall', truth_lf=s['lf'], members=mem, real=real))
-    print(s['name'], s['season'], 'done', flush=True)
+    return dict(name=s['name'], season=s['season'], truth=O.segment(*s['lf']) if s['lf'] else 'no landfall', truth_lf=s['lf'], members=mem, real=real)
+for s in storms:
+    try:
+        r = one(s)
+        if r: res.append(r); print(s['name'], s['season'], 'done', flush=True)
+    except Exception as e:
+        print(s['name'], s['season'], 'FAILED', repr(e)[:300], flush=True)
 json.dump(res, open(OUT, 'w'), default=float)
