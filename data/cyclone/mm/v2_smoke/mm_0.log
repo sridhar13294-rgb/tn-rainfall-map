@@ -1,0 +1,24 @@
+Traceback (most recent call last):
+  File "/home/runner/work/tn-rainfall-map/tn-rainfall-map/scripts/cyclone/mm/hind2.py", line 28, in <module>
+    state, carry = M.init(f3, Z['levs'], Z['lats'], Z['lons'], Z['f2'][k, V2.index('surface_pressure')], Z['f2'][k, V2.index('geopotential_at_surface')] / 9.80616,
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/tn-rainfall-map/tn-rainfall-map/scripts/cyclone/mm/mm2.py", line 61, in init
+    T3, Q3, U3, V3 = [N(f3[k]) for k in ('temperature', 'specific_humidity', 'u_component_of_wind', 'v_component_of_wind')]
+                      ^^^^^^^^
+  File "/home/runner/work/tn-rainfall-map/tn-rainfall-map/scripts/cyclone/mm/mm2.py", line 60, in <lambda>
+    levs = np.asarray(levs, float); N = lambda x: self.to_nodes(x, lats, lons)
+                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/tn-rainfall-map/tn-rainfall-map/scripts/cyclone/mm/mm2.py", line 56, in to_nodes
+    return np.stack([f(x) for x in a]) if a.ndim == 3 else f(a)
+                     ^^^^
+  File "/home/runner/work/tn-rainfall-map/tn-rainfall-map/scripts/cyclone/mm/mm2.py", line 55, in <lambda>
+    f = lambda x: RGI((la2, lo2), x, bounds_error=False, fill_value=None)(pts).reshape(self.LO.shape)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/scipy/interpolate/_rgi.py", line 316, in __init__
+    self._check_dimensionality(self._grid, self._values)
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/scipy/interpolate/_rgi.py", line 346, in _check_dimensionality
+    _check_dimensionality(grid, values)
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/scipy/interpolate/_rgi.py", line 53, in _check_dimensionality
+    raise ValueError(
+ValueError: There are 241 points and 240 values in dimension 1
+Michaung v2 FAILED ValueError('There are 241 points and 240 values in dimension 1')
