@@ -93,7 +93,9 @@ class Model:
         dph1 = Vr ** 2 / np.maximum(rr, 1.0) + abs(f0) * Vr
         ph1 = -np.cumsum((dph1 * np.gradient(rr))[::-1])[::-1]                                  # phi(r) - phi(far), negative
         r = np.maximum(d, 1.0) * 1e3
-        Fp = np.interp(levs, [100, 150, 250, 400, 600, 850, 1100], [0.0, 0.05, 0.25, 0.6, 0.85, 1.0, 1.0])   # vertical structure (warm core near 300-400 hPa)
+        dpth = float(np.clip((vmax_kt - 20.0) / 50.0, 0.0, 1.0)) if self.S.get('bogus_depth', 'auto') == 'auto' else float(self.S['bogus_depth'])
+        hi = np.array([0.0, 0.05, 0.25, 0.6, 0.85, 1.0, 1.0]); lo_ = np.array([0.0, 0.0, 0.03, 0.2, 0.6, 1.0, 1.0])   # deep (strong) vs shallow (weak)
+        Fp = np.interp(levs, [100, 150, 250, 400, 600, 850, 1100], lo_ + dpth * (hi - lo_))      # vertical structure: depressions are shallow
         dF = np.gradient(Fp) / np.gradient(np.log(levs)); sgn = 1.0 if lat >= 0 else -1.0
         for k, p in enumerate(levs):
             g_ = np.interp(r, rr, dph1) * Fp[k]                                                 # d(phi)/dr at this level
