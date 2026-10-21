@@ -25,9 +25,10 @@ def detect(fn):
         d = np.hypot(LA - a, (LO - b) * math.cos(math.radians(a)))
         cmin = float(p[d <= 1.5].min()); ring = float(p[(d >= 2.5) & (d <= 4)].mean())
         out = dict(lat=a, lon=b, vort850=round(float(v8[j]), 1), vort700=round(float(v7[j]), 1), depth=round(ring - cmin, 1), msl=round(cmin, 1))
-        out['present'] = bool(out['vort850'] >= need[0] and out['depth'] >= need[1]) if need else True
+        edge = a in (box[0], box[1]) or b in (box[2], box[3])        # a maximum on the box edge is not a circulation inside it
+        out['present'] = bool(out['vort850'] >= need[0] and out['depth'] >= need[1] and not edge) if need else True
         return out
-    return dict(bay=find((4, 20, 80.5, 99), None), arabian=find((5, 20, 58, 77), (4.0, 1.0)), sw_bay=find((7, 14, 78, 83.5), (3.0, 0.0)))
+    return dict(bay=find((4, 20, 80.5, 99), None), arabian=find((5, 20, 60, 77), (4.0, 1.0)), sw_bay=find((7, 14, 78, 83.5), (3.0, 0.0)))
 MJO_STATE = lambda ph, amp: (0.0, 0.0, 'weak (amplitude below 1)') if amp < 1 else \
     ((1.5, 1.0, f'active over the Indian Ocean (phase {ph})') if ph in (2, 3, 4) else
      ((0.8, 0.0, f'over the Maritime Continent (phase {ph})') if ph in (5, 6) else (-0.8, -1.0, f'suppressed over the Indian Ocean (phase {ph})')))

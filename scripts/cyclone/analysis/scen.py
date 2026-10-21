@@ -75,6 +75,10 @@ def pos_at(s, t):
 TAU = list(range(0, 241, 12))
 def composite(ranked, RAW, K=12):
     top = ranked[:K]; d = np.array([r[0] for r in top]); w = np.exp(-(d - d.min()) / max(0.02, d.std())); w /= w.sum()
+    for _ in range(20):                                   # no single past storm may carry more than a quarter of the weight
+        over = w > 0.25
+        if not over.any(): break
+        ex = (w[over] - 0.25).sum(); w[over] = 0.25; w[~over] += ex * w[~over] / w[~over].sum()
     C = np.zeros((len(TAU), 2, 4, len(LA), len(LO))); W = np.zeros(len(TAU))
     for (dd, sid, lag), ww in zip(top, w):
         s = SID[sid]; g = O.gen_time(s); last = None

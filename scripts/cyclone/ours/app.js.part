@@ -1,0 +1,116 @@
+(function(){
+const D=JSON.parse(document.getElementById('data').textContent);
+const T0=Date.parse(D.t0+'Z');
+const SEGS=['Sri Lanka','South Tamil Nadu','North Tamil Nadu','South Andhra Pradesh','Central Andhra Pradesh','North Andhra Pradesh','Odisha / West Bengal','Bangladesh / Myanmar','No landfall'];
+const GROUP=[0,0,0,1,1,1,2,2,3],GVAR=['--tn','--ap','--north','--none'];
+const ICAT=['Low pressure area','Depression','Deep depression','Cyclonic storm','Severe cyclonic storm','Very severe cyclonic storm','Extremely severe cyclonic storm','Super cyclonic storm'];
+const IAB=['Low','D','DD','CS','SCS','VSCS','ESCS','SuCS'],ILIM=[0,17,28,34,48,64,90,120];
+const icat=v=>{let c=0;ILIM.forEach((l,k)=>{if(v>=l)c=k});return c};
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const ist=h=>new Date(T0+(h+5.5)*3600e3);
+const dstr=h=>{const d=ist(h);return d.getUTCDate()+' '+MON[d.getUTCMonth()]};
+const tstr=h=>{const d=ist(h);return dstr(h)+' '+String(d.getUTCHours()).padStart(2,'0')+':'+String(d.getUTCMinutes()).padStart(2,'0')};
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const LK=D.runs.map((r,i)=>({i,seg:r[0],lf:r[1],lv:r[2],p3:r[3],gen:r[4],vmax:r[5]}));
+let SEL=null,cv,cx,W,H,X0v=76,X1v=96,Y0v=5,Y1v=24;const K=Math.cos(15*Math.PI/180);
+function size(){const w=cv.clientWidth||600,dpr=Math.min(2,window.devicePixelRatio||1);const h=w*(Y1v-Y0v)/((X1v-X0v)*K);cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);cv.style.height=h+'px';cx.setTransform(dpr,0,0,dpr,0,0);return [w,h]}
+const px=lo=>(lo-X0v)/(X1v-X0v)*W, py=la=>(Y1v-la)/(Y1v-Y0v)*H;
+function base(){cx.fillStyle=css('--sea');cx.fillRect(0,0,W,H);cx.strokeStyle=css('--coast');cx.lineWidth=0.8;cx.fillStyle=css('--landc');
+  D.land.forEach(ring=>{cx.beginPath();ring.forEach((p,k)=>k?cx.lineTo(px(p[0]),py(p[1])):cx.moveTo(px(p[0]),py(p[1])));cx.closePath();cx.fill();cx.stroke()});
+  cx.fillStyle=css('--muted');cx.font='11px '+css('--f-mono');cx.textAlign='left';
+  for(let la=Math.ceil(Y0v/2)*2;la<=Y1v-0.5;la+=2){if(py(la)>H-20)continue;cx.fillText(la+'°N',4,py(la)+4)}
+  const st=(X1v-X0v)>14?4:2;for(let lo=Math.ceil(X0v/st)*st;lo<=X1v-0.5;lo+=st)cx.fillText(lo+'°E',px(lo)-12,H-6);cx.lineCap='round';cx.lineJoin='round'}
+function star(){const sx=px(D.obs.bay.lon),sy=py(D.obs.bay.lat);cx.fillStyle=css('--star');cx.beginPath();for(let k=0;k<10;k++){const rr=k%2?4:10,an=-Math.PI/2+k*Math.PI/5;cx.lineTo(sx+rr*Math.cos(an),sy+rr*Math.sin(an))}cx.closePath();cx.fill()}
+function drawM51(){
+  cv=document.getElementById('map2');cx=cv.getContext('2d');[W,H]=size();base();const IC=[0,1,2,3,4,5,6,7].map(k=>css('--i'+k));
+  const seg=(r,w,alpha,outline)=>{const p=r.p3;if(outline){cx.globalAlpha=1;cx.strokeStyle=outline;cx.lineWidth=w+3;cx.beginPath();for(let k=0;k<p.length;k+=3){const x=px(p[k+1]),y=py(p[k]);k?cx.lineTo(x,y):cx.moveTo(x,y)}cx.stroke()}
+    cx.globalAlpha=alpha;cx.lineWidth=w;for(let k=3;k<p.length;k+=3){cx.strokeStyle=IC[icat(p[k-1])];cx.beginPath();cx.moveTo(px(p[k-2]),py(p[k-3]));cx.lineTo(px(p[k+1]),py(p[k]));cx.stroke()}cx.globalAlpha=1};
+  LK.forEach(r=>{if(r.i&&r.i!==SEL)seg(r,1.4,SEL?0.25:0.6,null)});
+  cx.strokeStyle=css('--ink');cx.lineWidth=1.2;LK.forEach(r=>{if(r.gen){cx.beginPath();cx.arc(px(r.gen[1]),py(r.gen[0]),3.5,0,7);cx.stroke()}});
+  seg(LK[0],3.2,1,css('--ink'));if(SEL)seg(LK[SEL],3.2,1,css('--accent'));
+  LK.forEach(r=>{if(!r.lf)return;const big=r.i===0||r.i===SEL;if(SEL&&!big)return;cx.fillStyle='#fff';cx.strokeStyle=css('--ink');cx.lineWidth=1.2;cx.beginPath();cx.arc(px(r.lf[1]),py(r.lf[0]),big?5:3,0,7);cx.fill();cx.stroke()});
+  star();cx.fillStyle=css('--ink');cx.font='600 11px '+css('--f-body');cx.textAlign='left';const p=LK[0].p3;let lx=-99,ly=-99;
+  for(let k=12;k<p.length;k+=12){const h=6*k/3,x=px(p[k+1]),y=py(p[k]);if(Math.hypot(x-lx,y-ly)<22)continue;if(icat(p[k+2])===0&&LK[0].lf&&h>LK[0].lf[2])break;cx.fillText(dstr(h)+' '+IAB[icat(p[k+2])],x+7,y+4);lx=x;ly=y}
+}
+function windChart(id,runs,opts){
+  const c=document.getElementById(id),g=c.getContext('2d'),w=c.clientWidth||600,h=Math.max(220,Math.min(opts.h,w*0.55)),dpr=Math.min(2,window.devicePixelRatio||1);
+  c.width=w*dpr;c.height=h*dpr;c.style.height=h+'px';g.setTransform(dpr,0,0,dpr,0,0);
+  const L=40,Rr=46,T=10,B=26,x1=opts.tEnd,vm=opts.vmax;const X=t=>L+t/x1*(w-L-Rr),Y=v=>T+(1-Math.min(v,vm)/vm)*(h-T-B);
+  g.fillStyle=css('--panel');g.fillRect(0,0,w,h);
+  for(let k=1;k<ILIM.length&&ILIM[k]<vm;k++){const a=ILIM[k],b=Math.min(vm,ILIM[k+1]||vm);g.fillStyle=css('--i'+k);g.globalAlpha=0.13;g.fillRect(L,Y(b),w-L-Rr,Y(a)-Y(b));g.globalAlpha=1;g.fillStyle=css('--muted');g.font='10px '+css('--f-mono');g.textAlign='left';g.fillText(IAB[k],w-Rr+4,(Y(a)+Y(b))/2+3)}
+  g.strokeStyle=css('--line');g.lineWidth=1;g.fillStyle=css('--muted');g.font='10px '+css('--f-mono');g.textAlign='right';for(let v=0;v<=vm;v+=20){g.beginPath();g.moveTo(L,Y(v));g.lineTo(w-Rr,Y(v));g.stroke();g.fillText(v+' kt',L-4,Y(v)+3)}
+  g.textAlign='center';const step=w<520?48:24;for(let t=0;t<=x1;t+=step)g.fillText(dstr(t),X(t),h-8);
+  runs.forEach(([r,col,lw,a,colour])=>{const p=r.p3;g.globalAlpha=a;g.lineWidth=lw;g.lineCap='round';
+    for(let k=3;k<p.length;k+=3){const t0=6*(k-3)/3,t1=6*k/3;if(t1>x1)break;g.strokeStyle=colour?css('--i'+icat(p[k-1])):col;g.beginPath();g.moveTo(X(t0),Y(p[k-1]));g.lineTo(X(t1),Y(p[k+2]));g.stroke()}
+    g.globalAlpha=1;if(r.lf&&r.lf[2]<=x1){g.fillStyle=colour?css('--ink'):col;g.beginPath();g.arc(X(r.lf[2]),Y(r.lf[3]),lw>2?4.5:2,0,7);g.fill();
+      if(opts.label){g.textAlign='left';g.font='600 11px '+css('--f-body');g.fillText('landfall '+Math.round(r.lf[3])+' kt',X(r.lf[2])+8,Y(r.lf[3])-5)}}});
+}
+function drawChart(){const n=Math.max(...LK.map(r=>r.p3.length/3));const runs=LK.filter(r=>r.i).map(r=>[r,css('--muted'),1,0.35]);runs.push([LK[0],css('--ink'),3,1]);if(SEL)runs.push([LK[SEL],css('--accent'),3,1]);
+  windChart('ichart',runs,{h:380,tEnd:Math.min(6*(n-1),264),vmax:Math.max(80,Math.ceil(Math.max(...LK.map(r=>r.vmax))/20)*20)})}
+function opView(){
+  const r=LK[0],p=r.p3,n=p.length/3;cv=document.getElementById('opmap');cx=cv.getContext('2d');
+  const lats=[],lons=[];for(let k=0;k<p.length;k+=3){lats.push(p[k]);lons.push(p[k+1])}
+  const sv=[X0v,X1v,Y0v,Y1v];X0v=Math.min(...lons)-3;X1v=Math.max(...lons)+3;Y0v=Math.min(...lats)-2.5;Y1v=Math.max(...lats)+2.5;
+  [W,H]=size();base();const IC=[0,1,2,3,4,5,6,7].map(k=>css('--i'+k));
+  cx.strokeStyle=css('--ink');cx.lineWidth=8;cx.beginPath();for(let k=0;k<p.length;k+=3){k?cx.lineTo(px(p[k+1]),py(p[k])):cx.moveTo(px(p[k+1]),py(p[k]))}cx.stroke();
+  cx.lineWidth=5;for(let k=3;k<p.length;k+=3){cx.strokeStyle=IC[icat(p[k-1])];cx.beginPath();cx.moveTo(px(p[k-2]),py(p[k-3]));cx.lineTo(px(p[k+1]),py(p[k]));cx.stroke()}
+  cx.font='600 12px '+css('--f-body');let lx=-99,ly=-99;
+  for(let k=0;k<p.length;k+=6){const x=px(p[k+1]),y=py(p[k]),h=6*k/3;cx.fillStyle=css('--ink');cx.beginPath();cx.arc(x,y,3.5,0,7);cx.fill();
+    if(Math.hypot(x-lx,y-ly)<26)continue;const lab=tstr(h).replace(':30','')+'  '+IAB[icat(p[k+2])]+' '+Math.round(p[k+2])+' kt',tw=cx.measureText(lab).width;const right=x+9+tw>W-4;cx.textAlign=right?'right':'left';cx.fillText(lab,right?x-9:x+9,y+4);cx.textAlign='left';lx=x;ly=y}
+  if(r.lf){const x=px(r.lf[1]),y=py(r.lf[0]);cx.fillStyle='#fff';cx.strokeStyle=css('--ink');cx.lineWidth=2;cx.beginPath();cx.arc(x,y,7,0,7);cx.fill();cx.stroke();
+    cx.fillStyle=css('--ink');const lt='Landfall '+tstr(r.lf[2]);const left=x-11-cx.measureText(lt).width<4;cx.textAlign=left?'left':'right';cx.fillText(lt,left?x+11:x-11,y-12);cx.textAlign='left'}
+  star();[X0v,X1v,Y0v,Y1v]=sv;
+  windChart('opchart',[[r,null,3.5,1,true]],{h:320,tEnd:6*(n-1)+6,vmax:Math.max(80,Math.ceil(r.vmax/20)*20),label:true});
+  let prev=-1,rows=[];for(let k=0;k<n;k++){const v=p[3*k+2],c=icat(v);if(c!==prev){rows.push([6*k,c,v,p[3*k],p[3*k+1]]);prev=c}}
+  if(r.lf)rows.push([r.lf[2],-1,r.lf[3],r.lf[0],r.lf[1]]);rows.sort((a,b)=>a[0]-b[0]);rows.push([6*(n-1),-2,p[3*n-1],p[3*n-3],p[3*n-2]]);
+  document.getElementById('optable').innerHTML='<thead><tr><th>When (IST)</th><th>Stage</th><th>Wind</th><th>Position</th></tr></thead><tbody>'+rows.map(q=>'<tr><td>'+tstr(q[0])+'</td><td>'+(q[1]===-1?'<b>Landfall</b>':q[1]===-2?'Remnant low fills':ICAT[q[1]])+'</td><td class="n" style="white-space:nowrap">'+Math.round(q[2])+' kt</td><td class="mono">'+q[3].toFixed(1)+'°N '+q[4].toFixed(1)+'°E</td></tr>').join('')+'</tbody>';
+}
+function shares(){const n=LK.length,c=new Array(9).fill(0);LK.forEach(r=>c[r.seg]++);
+  document.getElementById('shares2').innerHTML=SEGS.map((s,k)=>{const p=100*c[k]/n;return '<div class="row"><span>'+s+'</span><div class="bar"><div style="width:'+p.toFixed(1)+'%;background:var('+GVAR[GROUP[k]]+')"></div></div><span class="v">'+c[k]+'</span></div>'}).join('');return c}
+function table51(){
+  const FT=D.factors;document.getElementById('facts51').innerHTML='<thead><tr><th>Input</th><th>Low</th><th>As observed</th><th>High</th></tr></thead><tbody>'+FT.map(f=>'<tr><td>'+f[0]+'</td><td>'+f[1][0]+'</td><td>'+f[1][1]+'</td><td>'+f[1][2]+'</td></tr>').join('')+'</tbody>';
+  const rows=LK.map(r=>{const diff=r.lv.map((v,k)=>v===1||FT[k][1][0]===FT[k][1][2]?null:FT[k][0]+': '+FT[k][1][v]).filter(Boolean).join(' · ')||'everything as observed';
+    return '<tr data-m="'+r.i+'" tabindex="0" style="cursor:pointer"><td class="n">'+r.i+'</td><td><i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var('+GVAR[GROUP[r.seg]]+');margin-right:6px"></i>'+SEGS[r.seg]+'</td><td class="n">'+(r.lf?r.lf[0].toFixed(1)+'°N':'–')+'</td><td>'+(r.lf?tstr(r.lf[2]):'–')+'</td><td>'+IAB[icat(r.vmax)]+' '+Math.round(r.vmax)+' kt</td><td>'+(r.lf?IAB[icat(r.lf[3])]+' '+Math.round(r.lf[3])+' kt':'–')+'</td><td class="muted" style="min-width:18em">'+diff+'</td></tr>'}).join('');
+  const t=document.getElementById('members');t.innerHTML='<thead><tr><th>#</th><th>Landfall</th><th>Lat</th><th>When (IST)</th><th>Peak</th><th>At landfall</th><th>Inputs changed from observed</th></tr></thead><tbody>'+rows+'</tbody>';
+  const pick=e=>{const tr=e.target.closest('tr[data-m]');if(!tr)return;SEL=+tr.dataset.m;t.querySelectorAll('tr[data-m]').forEach(x=>x.style.background=x===tr?'var(--chip)':'');
+    const r=LK[SEL];document.getElementById('selnote').textContent='Member '+SEL+': '+SEGS[r.seg]+(r.lf?' at '+r.lf[0].toFixed(1)+'°N, '+tstr(r.lf[2])+' IST, '+Math.round(r.lf[3])+' kt':'')+'. Highlighted on the map and the strength chart.';drawM51();drawChart();document.getElementById('map2').scrollIntoView({behavior:'smooth',block:'center'})};
+  t.addEventListener('click',pick);t.addEventListener('keydown',e=>{if(e.key==='Enter')pick(e)});
+}
+function drivers(){const south=r=>r.seg>=0&&r.seg<=3;const all=100*LK.filter(south).length/LK.length;
+  const rows=D.factors.map((f,k)=>{if(f[1][0]===f[1][2])return null;const p=[0,1,2].map(v=>{const s=LK.filter(r=>r.lv[k]===v);return s.length?100*s.filter(south).length/s.length:0});
+    const lo=Math.min(...p),hi=Math.max(...p);return {t:f[0],lo,hi,lab:f[1][p.indexOf(lo)]+' '+Math.round(lo)+'% → '+f[1][p.indexOf(hi)]+' '+Math.round(hi)+'%'}}).filter(Boolean).sort((a,b)=>(b.hi-b.lo)-(a.hi-a.lo));
+  const M=Math.max(40,Math.ceil(Math.max(...rows.map(r=>r.hi),all)/10)*10);
+  document.getElementById('drivers').innerHTML=rows.map(r=>'<div class="drow"><span>'+r.t+'<br><span class="muted" style="font-size:.78rem">'+r.lab+'</span></span><div class="track"><div class="mid" style="left:'+(all/M*100)+'%"></div><div class="rng" style="left:'+(r.lo/M*100)+'%;width:'+Math.max(1,(r.hi-r.lo)/M*100)+'%"></div></div></div>').join('')+
+    '<div class="axis"><span></span><div>'+[0,1,2,3,4].map(k=>'<span>'+Math.round(M*k/4)+'%</span>').join('')+'</div></div>'}
+function summary(c){
+  const o=D.obs,r0=LK[0],n=LK.length,tn=c[1]+c[2];const vm=LK.map(r=>r.vmax).sort((a,b)=>a-b),mid=vm[Math.floor(n/2)];
+  const order=[...c.keys()].filter(k=>c[k]).sort((a,b)=>c[b]-c[a]);
+  document.getElementById('eyebrow').textContent='Bay of Bengal · our own 51-member ensemble · run from the '+D.run_label+' observed analysis';
+  document.getElementById('lede').innerHTML='51 members built from live observed data without any model forecast. The seedling is at '+o.bay.lat.toFixed(1)+'°N '+o.bay.lon.toFixed(1)+'°E'+(o.formed?' and already looks like a depression':' and has not yet become a depression')+'. Most members go to <b>'+SEGS[order[0]]+'</b> ('+c[order[0]]+' of 51)'+(order[1]!==undefined?', then '+SEGS[order[1]]+' ('+c[order[1]]+')':'')+'. The control lands in <b>'+SEGS[r0.seg]+(r0.lf?' ('+r0.lf[0].toFixed(1)+'°N) on '+tstr(r0.lf[2])+' IST as a '+ICAT[icat(r0.lf[3])].toLowerCase()+' ('+Math.round(r0.lf[3])+' kt)':'')+'</b>. <b>'+tn+' of 51 reach Tamil Nadu.</b>';
+  const lft=LK.filter(r=>r.lf).map(r=>r.lf[2]).sort((a,b)=>a-b);
+  document.getElementById('facts').innerHTML=[
+   ['tn',tn+' of 51','members crossing the Tamil Nadu coast'],
+   ['',r0.lf?SEGS[r0.seg]:'No landfall','control landfall'+(r0.lf?', '+tstr(r0.lf[2])+' IST, '+Math.round(r0.lf[3])+' kt':'')],
+   ['',IAB[icat(mid)]+' '+Math.round(mid)+' kt','middle peak strength of the 51 members'],
+   ['',lft.length?dstr(lft[Math.floor(lft.length/2)]):'–','middle landfall date (IST)'+(lft.length>4?'; 80% between '+dstr(lft[Math.floor(lft.length*0.1)])+' and '+dstr(lft[Math.floor(lft.length*0.9)]):'')]].map(f=>'<div class="fact '+f[0]+'"><b>'+f[1]+'</b><span>'+f[2]+'</span></div>').join('');
+  const A=o.arabian,G=o.sw_bay;
+  document.getElementById('obs').innerHTML='<thead><tr><th>Input</th><th>Observed now</th><th>Source</th></tr></thead><tbody>'+[
+   ['Seedling (Bay)',o.bay.lat.toFixed(1)+'°N '+o.bay.lon.toFixed(1)+'°E; spin '+o.bay.vort850+' (850 hPa), '+o.bay.vort700+' (700 hPa) ×10⁻⁵/s; pressure dip '+o.bay.depth+' hPa; '+(o.formed?'treated as a depression':'not yet a depression'),'GFS analysis '+D.run_label],
+   ['South-west Bay circulation',G.present?G.lat.toFixed(1)+'°N '+G.lon.toFixed(1)+'°E (included, fades within a day)':'none found','GFS analysis'],
+   ['Arabian Sea system',A.present?A.lat.toFixed(1)+'°N '+A.lon.toFixed(1)+'°E, pressure dip '+A.depth+' hPa':'none found','GFS analysis'],
+   ['Bay sea temperature anomaly',(o.sst>=0?'+':'')+o.sst.toFixed(2)+' °C ('+o.sst_date+')','NOAA OISST, 1991–2020 normal'],
+   ['MJO',o.mjo_label+(o.mjo_date?', amplitude '+o.mjo_amp+' ('+o.mjo_date+')':''),'NOAA PSL real-time OMI'],
+   ['Ridge, troughs, easterlies, shear','in the analysis winds; fade into the past-storm history over 2 days','GFS analysis + ERA5'],
+   ['Closest past storms',D.analogs.slice(0,6).map(a=>(a[0]==='Unnamed'?'a '+a[1]+' low':a[0]+' '+a[1])+' '+Math.round(a[3]*100)+'%').join(', '),'ERA5, 84 Oct–Dec Bay systems 2000–2025']
+  ].map(x=>'<tr><td>'+x[0]+'</td><td>'+x[1]+'</td><td class="muted">'+x[2]+'</td></tr>').join('')+'</tbody>';
+  document.getElementById('hist').innerHTML='<thead><tr><th>Analysis</th><th>TN</th><th>South AP</th><th>Central AP</th><th>North AP</th><th>Odisha/WB</th><th>Bangladesh/Myanmar</th><th>No landfall</th><th>Control landfall</th></tr></thead><tbody>'+
+   D.hist.slice().reverse().map(h=>{const s=h.shares,g=k=>s[k]||0;return '<tr><td>'+h.label+'</td><td class="n">'+(g('south TN')+g('north TN'))+'</td><td class="n">'+g('south AP')+'</td><td class="n">'+g('central AP')+'</td><td class="n">'+g('north AP')+'</td><td class="n">'+g('Odisha/WB')+'</td><td class="n">'+g('Bangladesh/Myanmar')+'</td><td class="n">'+g('no landfall')+'</td><td>'+h.control+'</td></tr>'}).join('')+'</tbody>';
+}
+function draw(){drawM51();drawChart();opView()}
+const c=shares();table51();drivers();summary(c);
+document.getElementById('ilegend').innerHTML=IAB.map((a,k)=>'<span><i style="background:var(--i'+k+');border-radius:2px"></i>'+ICAT[k]+(k?' ('+ILIM[k]+(ILIM[k+1]?'–'+(ILIM[k+1]-1):'+')+' kt)':' (below 17 kt)')+'</span>').join('');
+draw();
+let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(draw,120)});
+if(window.matchMedia)matchMedia('(prefers-color-scheme: dark)').addEventListener('change',draw);
+new MutationObserver(draw).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+})();

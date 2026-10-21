@@ -1,0 +1,93 @@
+
+<div class="wrap">
+<header>
+  <div class="eyebrow" id="eyebrow">Bay of Bengal · our own 51-member ensemble</div>
+  <h1>Our own ensemble: where the coming Bay storm could cross the coast</h1>
+  <p class="lede" id="lede"></p>
+</header>
+
+<section><div class="facts" id="facts"></div></section>
+
+<section>
+  <h2>Operational run (member 0, the control)</h2>
+  <p class="muted">Every input at today’s observed value, run on its own like a deterministic forecast. Line colour shows strength; labels every 12 h.</p>
+  <div class="work">
+    <div style="display:grid;gap:10px;min-width:0">
+      <div class="mapbox"><canvas id="opmap" width="900" height="880" aria-label="Track of the operational run coloured by strength"></canvas></div>
+    </div>
+    <div class="panel" style="display:grid;gap:12px;min-width:0">
+      <h3>Strength along the way</h3>
+      <canvas id="opchart" width="600" height="320" aria-label="Wind speed over time for the operational run"></canvas>
+      <div class="tblwrap"><table id="optable"></table></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>The 51 members</h2>
+  <div class="work">
+    <div style="display:grid;gap:10px;min-width:0">
+      <div class="mapbox"><canvas id="map2" width="900" height="880" aria-label="Map of the 51 ensemble members"></canvas></div>
+      <div class="legend" id="ilegend"></div>
+      <p class="note">Each line starts at the observed seedling (moved by that member’s start setting). Rings mark where its depression forms. Line colour shows strength (IMD scale). The thick outlined line is the control; white dots mark landfall; lines end where the remnant low fills.</p>
+      <p class="note" id="selnote">Tap a row in the table to highlight that member.</p>
+    </div>
+    <div class="panel" style="display:grid;gap:12px;min-width:0">
+      <h3>Where the 51 members cross the coast</h3>
+      <div class="shares" id="shares2"></div>
+      <h3>The 13 inputs and their three settings</h3>
+      <div class="tblwrap"><table id="facts51"></table></div>
+    </div>
+  </div>
+  <div class="panel" style="display:grid;gap:8px"><h3>Strength over time, all 51 members</h3>
+    <canvas id="ichart" width="900" height="380" aria-label="Wind speed over time for all members"></canvas>
+    <p class="note">Grey lines are members, the black line is the control, the coloured line is the member you picked. Dots mark landfall. Bands show the IMD categories.</p></div>
+  <div class="tblwrap panel" style="padding:0"><table id="members"></table></div>
+</section>
+
+<section>
+  <h2>Which inputs move the landfall in this run</h2>
+  <p class="muted">Because every setting of every input meets every other, each input’s own effect can be read off directly: the bar runs from its lowest to its highest share of members landing in Tamil Nadu or south Andhra Pradesh (south of 15.9°N) across its three settings. The thin line marks all 51 together.</p>
+  <div class="panel drivers" id="drivers"></div>
+</section>
+
+<section>
+  <h2>Today’s observed inputs</h2>
+  <div class="tblwrap"><table id="obs"></table></div>
+</section>
+
+<section>
+  <h2>Run history</h2>
+  <p class="muted">One row per analysis cycle (every 6 hours). Shares are members out of 51.</p>
+  <div class="tblwrap"><table id="hist"></table></div>
+</section>
+
+<section>
+  <h2>How the runs are made</h2>
+  <ul>
+    <li><b>Live data each cycle.</b> The latest GFS analysis (the observed state at 00, 06, 12 or 18 UTC; no forecast steps), Bay sea temperature from NOAA OISST (as on your forecast page), and the latest real-time MJO index (NOAA PSL). The seedling, any Arabian Sea low and the south-west Bay circulation are found in that analysis.</li>
+    <li><b>Winds after the start.</b> Today’s winds at 850, 700, 500 and 200 hPa fade over about 2 days into the real ERA5 history of the 12 past Oct–Dec Bay systems (2000–2025) whose state best matches today. No past storm may carry more than a quarter of the weight.</li>
+    <li><b>Track.</b> Our steering model, fitted on every Bay storm since 1980: the storm moves with the ring-mean wind 2–6° around it plus the north-west drift, using the weak, moderate or strong version according to its current strength.</li>
+    <li><b>Strength.</b> Over sea, a 12-hour change model fitted on the 84 past storms (current wind, last change, age, latitude, 200–850 hPa shear), plus hand-set nudges for sea temperature (+1.5 kt per 12 h per °C above the library average) and MJO (±1 kt per 12 h). Over land, the Kaplan–DeMaria inland decay.</li>
+    <li><b>51 combinations.</b> Member 0 has every input at today’s value. Members 1–27 are an L27 orthogonal array over the 13 inputs (each pair of settings of any two inputs together exactly 3 times); members 28–50 are a second, shifted block of the same array. Start position and formation time are spread a little inside each setting (fixed seed per member).</li>
+  </ul>
+</section>
+
+<section>
+  <h2>How far to trust it</h2>
+  <div class="tblwrap"><table>
+    <thead><tr><th>Test on the 84 past storms (own season left out)</th><th>Right coast stretch</th><th>Typical landfall-latitude error</th></tr></thead>
+    <tbody>
+      <tr><td>Plain climatology</td><td class="n">14%</td><td class="n">3.5°</td></tr>
+      <tr><td>Past-storm matching alone</td><td class="n">22%</td><td class="n">2.1°</td></tr>
+      <tr><td>Our track model in the matched environment</td><td class="n">23%</td><td class="n">1.5°</td></tr>
+      <tr><td>Our track model in the storm’s real environment (upper limit)</td><td class="n">49%</td><td class="n">1.0°</td></tr>
+    </tbody>
+  </table></div>
+  <ul class="note">
+    <li>Strength error from formation along the real track: 4 kt at 24 h, 8 kt at 48 h, 15 kt at 72 h. Treat strength as one IMD category either way.</li>
+    <li>The weakest part is the wind pattern beyond 2 days, which comes from past storms, not from a forecast. Runs can jump between cycles when the closest past storms change.</li>
+    <li>The low and high settings are fixed steps either side of today’s value, chosen by us. The percentages are shares of these 51 members, not calibrated probabilities.</li>
+  </ul>
+</section>
+</div>
