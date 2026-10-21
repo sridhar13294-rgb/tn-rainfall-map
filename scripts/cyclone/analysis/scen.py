@@ -146,28 +146,44 @@ def ring(U, V, la, lo, r0=2, r1=6):
 def peak_class(P):
     I = 0.9 * (P['sst'] - 0.8) + P['mjo_i'] + P['shear_i']
     return 0 if I < 0 else (1 if I < 0.8 else 2)
-def run_track(M, env, P, hours=192, dt_h=6):
-    t = P.get('start_t', P['gen_t']); la, lo = P.get('start_lat', P['gen_lat']), P.get('start_lon', P['gen_lon']); pk = peak_class(P); pts = [(t, la, lo, 0)]; inland = 0; lf = None
+import pickle, intens as IN
+IM = None
+SHEAR_SCALE = {'low shear, moist': 0.75, 'moderate': 1.0, 'high shear or dry air': 1.35}
+def run_track(M, env, P, hours=240, dt_h=6):
+    """track + intensity (kt) from the seedling to dissipation. pts: (t, lat, lon, wind_kt)."""
+    global IM
+    if IM is None: IM = pickle.load(open('data/intens_model.pkl', 'rb'))
+    t = P.get('start_t', P['gen_t']); la, lo = P.get('start_lat', P['gen_lat']), P.get('start_lon', P['gen_lon'])
+    v = 12.0 if 'start_t' in P else 17.0; dvp = 0.0; pts = [(t, la, lo, v)]; lf = None; land_h = 0.0; v_lf = None; acc = 0.0
+    off = 1.5 * (P['sst'] - 0.3) + {0.4: 1.0, 0.2: 0.0, -0.2: -1.0}.get(P['mjo_i'], 0.0)
+    shs = SHEAR_SCALE.get(P.get('shear'), 1.0)
     while (t - P['gen_t']).total_seconds() / 3600 < hours:
         age = (t - P['gen_t']).total_seconds() / 3600
-        c = 0 if age < 24 else (min(pk, 1) if age < 48 else pk)
-        if age < 0 and 'gen_pos' not in P: pass
-        if age >= 0 and 'gen_pos' not in P: P['gen_pos'] = (la, lo)
-        if inland: c = 0
+        c = 0 if v < 34 else (1 if v < 64 else 2)
         U, V = env.at(t); x = ring(U, V, la, lo)
         if x is None: break
-        m = M[c]; u = m[0].predict([x])[0]; v = m[1].predict([x])[0]
-        u += (P['beta'] - 1) * m[0].intercept_; v += (P['beta'] - 1) * m[1].intercept_
-        u *= P['speed']; v *= P['speed']
-        la2 = la + v * dt_h / 111.2; lo2 = lo + u * dt_h / (111.2 * math.cos(math.radians(la)))
+        m = M[c]; u = m[0].predict([x])[0]; w = m[1].predict([x])[0]
+        u += (P['beta'] - 1) * m[0].intercept_; w += (P['beta'] - 1) * m[1].intercept_
+        u *= P['speed']; w *= P['speed']
+        la2 = la + w * dt_h / 111.2; lo2 = lo + u * dt_h / (111.2 * math.cos(math.radians(la)))
+        land_now = on_land(lo, la)
+        # intensity
+        if land_now:
+            land_h += dt_h; v = IN.inland(v_lf or v, land_h)
+        elif age < 0:
+            v = min(16.5, v + 0.6 * dt_h / 6)
+        else:
+            if age < dt_h: v = max(v, 17.0)
+            sh = IN.shear_at(U, V, la, lo) or 10.0
+            dv = float(IM.predict([IN.feats(v, sh * shs, la, dvp, age)])[0]) + off
+            v = min(140.0, max(10.0, v + dv * dt_h / 12)); acc += dv * dt_h / 12
+            if int(age) % 12 == 0: dvp = acc; acc = 0.0
         t2 = t + dt.timedelta(hours=dt_h)
-        if lf is None and not on_land(lo, la) and on_land(lo2, la2):
-            lf = dict(t=t + dt.timedelta(hours=dt_h / 2), lat=(la + la2) / 2, lon=(lo + lo2) / 2, cls=c)
-        la, lo, t = la2, lo2, t2; pts.append((t, la, lo, c))
-        if on_land(lo, la):
-            inland += dt_h
-            if inland >= 18: break
-        if not (2 < la < 28 and 72 < lo < 103): break
+        if lf is None and not land_now and on_land(lo2, la2):
+            lf = dict(t=t + dt.timedelta(hours=dt_h / 2), lat=(la + la2) / 2, lon=(lo + lo2) / 2, cls=c, wind=round(v, 1)); v_lf = v; land_h = 0.0
+        la, lo, t = la2, lo2, t2; pts.append((t, la, lo, round(v, 1)))
+        if on_land(lo, la) and v < 12: break                                      # remnant low has filled
+        if not (2 < la < 29 and 71 < lo < 104.5): break
     return pts, lf
 # ---------------- scenario sampling ----------------
 def lhs(n, k, rng):
@@ -309,9 +325,9 @@ if __name__ == '__main__':
         pts, lf = run_track(M, Env(E, t0, P), P)
         if P.get('gen_pos'): P['gen_lat'], P['gen_lon'] = round(P['gen_pos'][0], 2), round(P['gen_pos'][1], 2)
         r = {k: (v.isoformat() if isinstance(v, dt.datetime) else v) for k, v in P.items() if k not in ('as_track', 'gom_track', 'gen_pos')}
-        r.update(peak=peak_class(P), seg=segment(lf['lat'], lf['lon']) if lf else 'no landfall',
-                 lf=dict(t=lf['t'].isoformat(), lat=round(lf['lat'], 2), lon=round(lf['lon'], 2), cls=lf['cls']) if lf else None,
-                 pts=[(p[0].isoformat(), round(p[1], 2), round(p[2], 2), p[3]) for p in pts[::2]])
+        r.update(peak=peak_class(P), vmax=max(p[3] for p in pts), seg=segment(lf['lat'], lf['lon']) if lf else 'no landfall',
+                 lf=dict(t=lf['t'].isoformat(), lat=round(lf['lat'], 2), lon=round(lf['lon'], 2), cls=lf['cls'], wind=lf.get('wind')) if lf else None,
+                 pts=[(p[0].isoformat(), round(p[1], 2), round(p[2], 2), p[3]) for p in (pts if len(sys.argv) > 4 and sys.argv[4] == '51' else pts[::2])])
         RES.append(r)
         if i % 200 == 0: print(i, scen_summary(RES), flush=True)
     json.dump(dict(t0=t0.isoformat(), analogs=top, seedling=sd, gom=gm, runs=RES), open(('data/scen_%s.json' % sys.argv[4]) if len(sys.argv) > 4 else 'data/scen.json', 'w'))
