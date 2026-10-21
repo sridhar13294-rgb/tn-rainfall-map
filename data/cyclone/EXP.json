@@ -1,8 +1,8 @@
 [
- {"tag":"hemi_a","script":"exp_hemi.py","lib":"libh_fields.npz","name":"S0_st6","kw":{"steady_ls":6,"resid":true,"cmul":0.0}},
- {"name":"S1_st6_noresid","kw":{"steady_ls":6,"resid":false,"cmul":0.0}},
- {"name":"S2_st6_heat300","kw":{"steady_ls":6,"resid":true,"cmul":0.0,"heat":300,"nudge_upper":false,"tau_cool":48}},
- {"name":"S3_st8","kw":{"steady_ls":8,"resid":true,"cmul":0.0}},
- {"name":"S4_st6_low3","lw":{"850":0.35,"700":0.35,"500":0.3},"kw":{"steady_ls":6,"resid":true,"cmul":0.0}},
- {"name":"S5_st6_heat150","kw":{"steady_ls":6,"resid":true,"cmul":0.0,"heat":150,"nudge_upper":false,"tau_cool":48}}
+ {"tag":"hemi_b","script":"exp_hemi.py","lib":"libh_fields.npz","name":"A_st6_resid","kw":{"steady_ls":6,"resid":true,"cmul":0.0}},
+ {"name":"B_st6_noresid","kw":{"steady_ls":6,"resid":false,"cmul":0.0}},
+ {"name":"C_st6_resid_heat","kw":{"steady_ls":6,"resid":true,"cmul":0.0,"heat":1500,"nudge_upper":false,"tau_cool":48}},
+ {"name":"D_st6_noresid_eq4","lw":{"850":0.25,"700":0.25,"500":0.25,"200":0.25},"kw":{"steady_ls":6,"resid":false,"cmul":0.0}},
+ {"name":"E_st10_noresid","kw":{"steady_ls":10,"resid":false,"cmul":0.0}},
+ {"name":"F_st6_noresid_Ld900","Ld15":9e5,"kw":{"steady_ls":6,"resid":false,"cmul":0.0}}
 ]

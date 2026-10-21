@@ -101,6 +101,9 @@ class TC2(T.TC):
             s1 = self.vort(a, b); s2 = self.vort(c_, d_); p1 = self.poisson(s1, self.boundary_psi(a, b)); p2 = self.poisson(s2, self.boundary_psi(c_, d_))
             qs1 = s1 + self.f + self.F * (p2 - p1); qs2 = s2 + self.f + self.F * (p1 - p2)
             G1 = self.m ** 2 * self.jac(p1, qs1); G2 = self.m ** 2 * self.jac(p2, qs2)
+            if resid:                                           # the kept divergent wind's push on that pattern is cancelled too
+                (ru1, rv1), (ru2, rv2) = self.resid_w
+                G1 = G1 + self.m * (ru1 * self.dx(qs1) + rv1 * self.dy(qs1)); G2 = G2 + self.m * (ru2 * self.dx(qs2) + rv2 * self.dy(qs2))
         latw = np.clip((env_lat[1] - self.LAT) / (env_lat[1] - env_lat[0]), 0, 1) if env_lat else 1.0
         kc = max(1, int(round(1800 / dt))); hf = 0.0
         v0 = vmax_fn(0, la, lo, False); vnow_ = v0; tu, tl = targets(v0, size)
