@@ -7,7 +7,7 @@ set -e
 W=${1:?workdir}; mkdir -p "$W"; R=repos/sridhar13294-rgb/tn-rainfall-map
 git config user.email noreply@anthropic.com; git config user.name Claude
 git pull -q --rebase origin cases
-printf 'ours\n\n#live ensemble %s\n' "$(date -u +%FT%H:%MZ)" > data/cyclone/RUN
+printf 'oursm\n\n#live ensemble %s\n' "$(date -u +%FT%H:%MZ)" > data/cyclone/RUN
 git add data/cyclone/RUN; git commit -qm "Cyclone study: live inputs for our ensemble" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01AXxjaemsi36VrJDzeKZ8zA"; git push -q origin HEAD:cases
 sleep 15; RID=$(gh run list --workflow cyclone.yml -L 1 --json databaseId -q '.[0].databaseId')
