@@ -1,8 +1,4 @@
 [
- {"tag":"hemi_b","script":"exp_hemi.py","lib":"libh_fields.npz","name":"A_st6_resid","kw":{"steady_ls":6,"resid":true,"cmul":0.0}},
- {"name":"B_st6_noresid","kw":{"steady_ls":6,"resid":false,"cmul":0.0}},
- {"name":"C_st6_resid_heat","kw":{"steady_ls":6,"resid":true,"cmul":0.0,"heat":1500,"nudge_upper":false,"tau_cool":48}},
- {"name":"D_st6_noresid_eq4","lw":{"850":0.25,"700":0.25,"500":0.25,"200":0.25},"kw":{"steady_ls":6,"resid":false,"cmul":0.0}},
- {"name":"E_st10_noresid","kw":{"steady_ls":10,"resid":false,"cmul":0.0}},
- {"name":"F_st6_noresid_Ld900","Ld15":9e5,"kw":{"steady_ls":6,"resid":false,"cmul":0.0}}
+ {"tag":"hemi_ens","script":"exp_hemi.py","lib":"libh_fields.npz","name":"ENS_st10","ens":50,"kw":{"steady_ls":10,"resid":false,"cmul":0.0}},
+ {"name":"ENS_st6_heat","ens":50,"kw":{"steady_ls":6,"resid":true,"cmul":0.0,"heat":1500,"nudge_upper":false,"tau_cool":48}}
 ]
