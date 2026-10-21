@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: '3.12'}
-      - run: pip install -q numpy pygrib
+      - run: pip install -q numpy pygrib matplotlib scikit-learn scipy
       - run: |
           w=$(head -c 4 data/cyclone/RUN)
           if [ "$w" = "all " ] || [ "$w" = "fc" ] || [ "$w" = "fc " ]; then python scripts/cyclone/cyc_fetch.py $(sed -n 2p data/cyclone/RUN) || true; fi
