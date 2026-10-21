@@ -12,9 +12,10 @@ from scipy.fft import dstn, idstn
 from scipy import ndimage as nd
 import tcmodel as T
 class TC2(T.TC):
-    def __init__(self, *a, Ld15=1.2e6, **k):
+    def __init__(self, *a, Ld15=1.2e6, Ld_min=7.0e5, **k):
         super().__init__(*a, **k)
-        s15 = math.sin(math.radians(15)); self.F0 = (np.sin(np.radians(self.LAT)) / s15) ** 2 / Ld15 ** 2; self.F = self.F0.copy()
+        # 1/Ld^2 grows as f^2 away from the equator, but the real deformation radius stays ~700+ km in the mid-latitudes
+        s15 = math.sin(math.radians(15)); self.F0 = np.minimum((np.sin(np.radians(self.LAT)) / s15) ** 2 / Ld15 ** 2, 1 / Ld_min ** 2); self.F = self.F0.copy()
         self.cF = 2 * self.F / self.m ** 2; self.cbar = float(self.cF.max())      # max (not mean) so the iteration always converges
         self.eigH = self.eig - self.cbar
     def helm(self, rhs, Pb):
@@ -35,8 +36,15 @@ class TC2(T.TC):
     def invert(self, q1, q2, Bt, Bc):
         Pt = self.poisson(0.5 * (q1 + q2) - self.f, Bt); Pc = self.helm(0.5 * (q1 - q2), Bc); return Pt + Pc, Pt - Pc
     def run2(self, uL, vL, uU, vU, start, hours, vmax_fn, rmw=120.0, size=700.0, dt=450.0, nu=1.0e4, robert=0.1, tau_h=9.0,
-             every=6, land_fn=None, xo=0.5, size_grow=0.0, sppt=None, kmh_track=None, tau_v=1.5, cmul=1.0, tau_env=None, env_r=(600.0, 1200.0), env_fn=None, resid=False, resid_upd=True):
-        """vmax_fn(t_hours, lat, lon, over_land) -> storm max wind in kt. Returns [(hour, lat, lon)]."""
+             every=6, land_fn=None, xo=0.5, size_grow=0.0, sppt=None, kmh_track=None, tau_v=1.5, cmul=1.0, tau_env=None, env_r=(600.0, 1200.0), env_fn=None, resid=False, resid_upd=True,
+             env_lat=None, heat=0.0, heat_r=300.0, nudge_upper=True, tau_cool=None, steady_ls=None, env_decay=None):
+        """vmax_fn(t_hours, lat, lon, over_land) -> storm max wind in kt. Returns [(hour, lat, lon)].
+        Hemisphere-wide use: env_lat=(lat_full, lat_free) holds the flow near its analysis only in the tropics (fully south
+        of lat_full, free north of lat_free), so mid-latitude troughs and ridges move by the equations alone.
+        heat: the storm's heating (m^2/s^3 at full strength) moves mass from the lower to the upper layer inside heat_r km:
+        a cyclone below, an outflow anticyclone above that spreads and is carried by the upper winds (this is how a strong
+        storm erodes the ridge). With nudge_upper=False the upper layer is shaped by heating alone. tau_cool (h): the upper
+        layer relaxes back toward the analysis everywhere (radiative cooling), so heating cannot pile up forever."""
         if sppt:
             rs = np.random.default_rng(sppt['seed']); K = 6; amp = sppt['amp']; Lw = sppt.get('scale_deg', 10.0); Th = sppt.get('hours', 36.0)
             kx = rs.uniform(0.5, 1.5, K) * 2 * np.pi / Lw; ky = rs.uniform(0.5, 1.5, K) * 2 * np.pi / Lw * rs.choice([-1, 1], K)
@@ -80,7 +88,21 @@ class TC2(T.TC):
         def env_q(uL_, vL_, uU_, vU_):
             a1 = self.vort(uU_, vU_); a2 = self.vort(uL_, vL_); b1 = self.poisson(a1, self.boundary_psi(uU_, vU_)); b2 = self.poisson(a2, self.boundary_psi(uL_, vL_))
             return a1 + self.f + self.F * (b2 - b1), a2 + self.f + self.F * (b1 - b2)
-        qe1, qe2 = env_q(uL, vL, uU, vU) if tau_env else (None, None)
+        qe1, qe2 = env_q(uL, vL, uU, vU) if (tau_env or tau_cool) else (None, None)
+        G1 = G2 = 0.0
+        if steady_ls:
+            # the planetary-scale pattern (smoothed over steady_ls degrees) is made a steady state by a constant forcing that
+            # cancels its own initial tendency (like the forcing that keeps the real monsoon / subtropical highs in place:
+            # heating, mountains, friction, none of which a two-layer model has). Troughs and ridges smaller than that
+            # still move and grow by the equations. Classic forced-barotropic idea.
+            sg = steady_ls / float(self.lon[1] - self.lon[0])
+            def ls(uu, vv): return nd.gaussian_filter(uu, sg, mode='nearest'), nd.gaussian_filter(vv, sg, mode='nearest')
+            a, b = ls(uU, vU); c_, d_ = ls(uL, vL)
+            s1 = self.vort(a, b); s2 = self.vort(c_, d_); p1 = self.poisson(s1, self.boundary_psi(a, b)); p2 = self.poisson(s2, self.boundary_psi(c_, d_))
+            qs1 = s1 + self.f + self.F * (p2 - p1); qs2 = s2 + self.f + self.F * (p1 - p2)
+            G1 = self.m ** 2 * self.jac(p1, qs1); G2 = self.m ** 2 * self.jac(p2, qs2)
+        latw = np.clip((env_lat[1] - self.LAT) / (env_lat[1] - env_lat[0]), 0, 1) if env_lat else 1.0
+        kc = max(1, int(round(1800 / dt))); hf = 0.0
         v0 = vmax_fn(0, la, lo, False); vnow_ = v0; tu, tl = targets(v0, size)
         z1 = z1 + nudge(z1, tu, la, lo); z2 = z2 + nudge(z2, tl, la, lo)
         P1 = self.poisson(z1, B1); P2 = self.poisson(z2, B2)                  # starting stream functions from each layer's winds
@@ -91,7 +113,7 @@ class TC2(T.TC):
         lap = lambda a: self.m ** 2 * ((np.roll(a, 1, 1) + np.roll(a, -1, 1) + np.roll(a, 1, 0) + np.roll(a, -1, 0) - 4 * a) / self.h ** 2)
         for n in range(1, nstep + 1):
             th = n * dt / 3600; z2now = lap(P2)
-            if n % 4 == 0:
+            if n % kc == 0:
                 # the storm's centre: lower- and upper-layer vortex centres weighted by how deep the storm is now; heating then
                 # rebuilds both layers' vortex at that shared centre (this is what keeps a real storm upright and makes a deep
                 # storm feel the upper winds and a shallow one only the lower winds)
@@ -102,10 +124,12 @@ class TC2(T.TC):
                 if math.hypot(cu[0] - cl[0], cu[1] - cl[1]) > 1.0: cu = cl                 # upper centre not found near the storm: ignore it
                 la2, lo2 = (1 - wu) * cl[0] + wu * cu[0], (1 - wu) * cl[1] + wu * cu[1]
                 st_ = math.hypot(la2 - la, lo2 - lo)
-                if st_ > 0.3: la2, lo2 = la + (la2 - la) * 0.3 / st_, lo + (lo2 - lo) * 0.3 / st_   # no jumps: at most 0.3 deg per half hour (~65 km/h)
+                cap = 0.3 * kc * dt / 1800
+                if st_ > cap: la2, lo2 = la + (la2 - la) * cap / st_, lo + (lo2 - lo) * cap / st_   # no jumps: at most 0.3 deg per half hour (~65 km/h)
                 vel = (la2 - la, lo2 - lo); la, lo = la2, lo2
                 tq1, tq2 = qtargets(vk, size * (1 + size_grow * vk / 64.0), la)
-                f1 = nudge(q1 - self.f, tq1, la, lo) / (tau_v * 3600); f2 = nudge(q2 - self.f, tq2, la, lo) / (tau_v * 3600)
+                f1 = nudge(q1 - self.f, tq1, la, lo) / (tau_v * 3600) if nudge_upper else 0.0; f2 = nudge(q2 - self.f, tq2, la, lo) / (tau_v * 3600)
+                if heat: hf = heat * float(np.clip((vk - 17) / 60, 0, 1.5)) * np.exp(-(self.dist_km(la, lo) / heat_r) ** 2) * self.F
             a1 = -self.m ** 2 * self.jac(P1, q1); a2 = -self.m ** 2 * self.jac(P2, q2)
             if resid:
                 (ru1, rv1), (ru2, rv2) = self.resid_w
@@ -113,17 +137,19 @@ class TC2(T.TC):
             if pert is not None:
                 if n % 2 == 0: self._p1, self._p2 = 1 + pert(th, 0), 1 + pert(th, 1)
                 a1 = a1 * self._p1; a2 = a2 * self._p2
-            t1 = a1 + f1 - self.sponge * (q1 - q1i)
-            t2 = a2 + f2 - self.sponge * (q2 - q2i)
+            t1 = a1 + f1 + G1 - self.sponge * (q1 - q1i)
+            t2 = a2 + f2 + G2 - self.sponge * (q2 - q2i)
             t1 = t1 + nu * lap(q1 - self.f); t2 = t2 + nu * lap(q2 - self.f)
+            if heat: t1 = t1 - hf; t2 = t2 + hf
+            if tau_cool: t1 = t1 - (q1 - qe1) / (tau_cool * 3600)
             if tau_env:
-                if n % 4 == 1:
-                    if env_fn is not None and n % 24 == 1:
+                if n % kc == 1 or kc == 1:
+                    if env_fn is not None and n % (6 * kc) == 1:
                         ef = env_fn(th, (la, lo, vnow_))
                         if ef is not None:
                             qe1, qe2 = env_q(*ef)
                             if resid and resid_upd: self.resid_w = resid_of(*ef)      # the divergent part changes with the environment too
-                    wenv = np.clip((self.dist_km(la, lo) - env_r[0]) / (env_r[1] - env_r[0]), 0, 1) / (tau_env * 3600)
+                    wenv = (math.exp(-th / env_decay) if env_decay else 1.0) * latw * np.clip((self.dist_km(la, lo) - env_r[0]) / (env_r[1] - env_r[0]), 0, 1) / (tau_env * 3600)
                 t1 = t1 - wenv * (q1 - qe1); t2 = t2 - wenv * (q2 - qe2)
             for t in (t1, t2): t[0, :] = t[-1, :] = t[:, 0] = t[:, -1] = 0
             if n == 1: n1, n2 = q1 + dt * t1, q2 + dt * t2

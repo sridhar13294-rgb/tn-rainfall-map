@@ -1,7 +1,8 @@
 [
- {"tag":"tc2_i","name":"R0_ref_upd","env":"truth","tau_v":6,"lw":{"850":0.35,"700":0.35,"500":0.3},"uw":{"200":1.0},"kw":{"cmul":0.0,"resid":true,"tau_env":2,"env_r":[300,700]}},
- {"name":"R1_lowdeep_upd","env":"truth","tau_v":6,"lw":{"850":0.3,"700":0.3,"500":0.25,"200":0.15},"uw":{"200":1.0},"kw":{"cmul":0.0,"resid":true,"tau_env":2,"env_r":[300,700]}},
- {"name":"R2_lowdeep_upd_near","env":"truth","tau_v":6,"lw":{"850":0.3,"700":0.3,"500":0.25,"200":0.15},"uw":{"200":1.0},"kw":{"cmul":0.0,"resid":true,"tau_env":2,"env_r":[150,400]}},
- {"name":"R3_ref_upd_near","env":"truth","tau_v":6,"lw":{"850":0.35,"700":0.35,"500":0.3},"uw":{"200":1.0},"kw":{"cmul":0.0,"resid":true,"tau_env":2,"env_r":[150,400]}},
- {"name":"R4_lowdeep_hold","tau_v":6,"lw":{"850":0.3,"700":0.3,"500":0.25,"200":0.15},"uw":{"200":1.0},"kw":{"cmul":0.0,"resid":true,"tau_env":2,"env_r":[300,700]}}
+ {"tag":"hemi_a","script":"exp_hemi.py","lib":"libh_fields.npz","name":"S0_st6","kw":{"steady_ls":6,"resid":true,"cmul":0.0}},
+ {"name":"S1_st6_noresid","kw":{"steady_ls":6,"resid":false,"cmul":0.0}},
+ {"name":"S2_st6_heat300","kw":{"steady_ls":6,"resid":true,"cmul":0.0,"heat":300,"nudge_upper":false,"tau_cool":48}},
+ {"name":"S3_st8","kw":{"steady_ls":8,"resid":true,"cmul":0.0}},
+ {"name":"S4_st6_low3","lw":{"850":0.35,"700":0.35,"500":0.3},"kw":{"steady_ls":6,"resid":true,"cmul":0.0}},
+ {"name":"S5_st6_heat150","kw":{"steady_ls":6,"resid":true,"cmul":0.0,"heat":150,"nudge_upper":false,"tau_cool":48}}
 ]

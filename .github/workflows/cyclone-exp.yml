@@ -9,11 +9,11 @@ permissions:
 jobs:
   exp:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 200
     strategy:
       fail-fast: false
       matrix:
-        chunk: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+        chunk: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41]
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
@@ -21,8 +21,12 @@ jobs:
       - uses: actions/setup-python@v5
         with: {python-version: '3.12'}
       - run: pip install -q numpy scipy scikit-learn matplotlib
-      - run: mkdir -p /tmp/w && gh release download era5-cases -p lib_fields.npz -D /tmp/w
-      - run: cd /tmp/w && python -W ignore $GITHUB_WORKSPACE/scripts/cyclone/analysis/exp_tc2.py lib_fields.npz $GITHUB_WORKSPACE/data/cyclone/EXP.json ${{ matrix.chunk }} 21 exp_${{ matrix.chunk }}.json
+      # EXP.json's first entry may name the script and the data file: {"script": "exp_hemi.py", "lib": "libh_fields.npz", ...}
+      - run: |
+          echo "SC=$(python -c "import json;print(json.load(open('data/cyclone/EXP.json'))[0].get('script','exp_tc2.py'))")" >> $GITHUB_ENV
+          echo "LB=$(python -c "import json;print(json.load(open('data/cyclone/EXP.json'))[0].get('lib','lib_fields.npz'))")" >> $GITHUB_ENV
+      - run: mkdir -p /tmp/w && gh release download era5-cases -p $LB -D /tmp/w
+      - run: cd /tmp/w && python -W ignore $GITHUB_WORKSPACE/scripts/cyclone/analysis/$SC $LB $GITHUB_WORKSPACE/data/cyclone/EXP.json ${{ matrix.chunk }} 42 exp_${{ matrix.chunk }}.json
       - run: |
           T=$(python -c "import json;print(json.load(open('data/cyclone/EXP.json'))[0].get('tag','exp'))")
           mkdir -p data/cyclone/ours/exp/$T && cp /tmp/w/exp_${{ matrix.chunk }}.json data/cyclone/ours/exp/$T/
