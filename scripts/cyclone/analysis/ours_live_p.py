@@ -17,10 +17,16 @@ FACT = [('prec', 'Which circulation becomes the depression', ['southern seedling
         ('rstr', 'Ridge strength (start)', ['15% weaker', 'as observed', '15% stronger'], [0.85, 1.0, 1.15]),
         ('wd', 'Westerly trough over NW India (start)', ['none added', 'moderate', 'deep'], [0, 5, 10]),
         ('surge', 'NE-monsoon easterlies (start)', ['weaker', 'as observed', 'stronger'], [2, 0, -2]),
-        ('grow', 'How fast it strengthens', ['slowly (dry air, shear)', 'normally', 'fast (warm sea, active MJO)'], [-1, 0, 1]),
-        ('gen', 'When the depression forms', ['in 12 h', 'in 30 h', 'in 54 h'], [12, 30, 54])]
-DES = json.load(open(os.path.join(O.REPO, 'data', 'cyclone', 'ours', 'design10.json')))
-def main(LIVE, SSTJ, LIJ, OUTJ):
+        ('rate', 'How fast it strengthens', ['slowly (dry air, shear)', 'normally', 'fast (warm sea, active MJO)'], [-1, 0, 1]),
+        ('gen', 'When the depression forms', ['in 12 h', 'in 30 h', 'in 54 h'], [12, 30, 54]),
+        ('ana', 'Starting data (analysis)', ['GFS analysis', 'half-way to ECMWF', 'ECMWF analysis'], [0.0, 0.5, 1.0]),
+        ('depth', 'Steering layer used', ['shallow (mostly 850-700 hPa)', 'standard (850-200 hPa)', 'deep (more 500-200 hPa)'], [(0.45, 0.35, 0.15, 0.05), (0.3, 0.3, 0.25, 0.15), (0.2, 0.25, 0.3, 0.25)]),
+        ('sppt', 'Model uncertainty during the run', ['small (15%)', 'medium (30%)', 'large (45%)'], [0.15, 0.3, 0.45]),
+        ('xo', 'How far out the storm’s winds reach', ['fall off fast', 'typical', 'fall off slowly'], [0.6, 0.5, 0.4]),
+        ('grow', 'Storm widens as it strengthens', ['no', 'some', 'a lot'], [0.0, 0.3, 0.6]),
+        ('phys', 'Model smoothing / vortex response', ['less smoothing, quick response', 'standard', 'more smoothing, slow response'], [(0.5e4, 6.0), (1.0e4, 9.0), (2.0e4, 14.0)])]
+DES = json.load(open(os.path.join(O.REPO, 'data', 'cyclone', 'ours', 'design16.json')))
+def main(LIVE, SSTJ, LIJ, OUTJ, DIFF=None):
     t0 = dt.datetime.strptime(str(np.load(LIVE)['run']), '%Y%m%d%H')
     obs = detect(LIVE); b = obs['bay']; obs['formed'] = bool(b['vort850'] >= 7.0 and b['depth'] >= 2.5)
     sst = json.load(open(SSTJ)); k = sorted(sst)[-1]; obs['sst'] = float(sst[k]['bob']); obs['sst_date'] = k
@@ -40,6 +46,14 @@ def main(LIVE, SSTJ, LIJ, OUTJ):
             F[idx] = f
         return F
     FC = {k: rmv(Fa, v['lat'], v['lon']) for k, v in PR.items()}
+    DF = np.zeros_like(Fa)                                          # ECMWF minus GFS analysis (same time), where both exist
+    if DIFF and os.path.exists(DIFF):
+        dz = np.load(DIFF); from scipy.interpolate import RegularGridInterpolator as RGI
+        pts_ = np.stack([LAg.ravel(), LOg.ravel()], -1); inside = (LAg >= dz['lats'][0]) & (LAg <= dz['lats'][-1]) & (LOg >= dz['lons'][0]) & (LOg <= dz['lons'][-1])
+        tap = nd.uniform_filter(inside.astype(float), 9)
+        for c in range(2):
+            for l in range(4): DF[c, l] = RGI((dz['lats'], dz['lons']), dz['d'][c, l], bounds_error=False, fill_value=0.0)(pts_).reshape(LAg.shape) * tap
+        obs['ana_diff'] = dict(rms=round(float(np.sqrt((DF ** 2).mean())), 2), run=str(dz['run']))
     shear_now = lambda la, lo: IN.shear_at(*[[S.ana_raw(LIVE)[c, l] for l in range(4)] for c in (0, 1)], la, lo)
     A0 = S.ana_raw(LIVE); U0 = [A0[0, l] for l in range(4)]; V0 = [A0[1, l] for l in range(4)]
     IM = pickle.load(open(os.path.join(O.REPO, 'data', 'cyclone', 'ours', 'intens_model.pkl'), 'rb'))
@@ -50,9 +64,9 @@ def main(LIVE, SSTJ, LIJ, OUTJ):
         if obs['formed']: v['gen'] = 0
         pr = PR[v['prec']]; start = (pr['lat'] + v['slat'], pr['lon'] + v['slon'])
         P = dict(ridge_dlat=v['rlat'], ridge_dlon=0, ridge_str=v['rstr'], wd_amp=v['wd'], wd_lon=72.0, surge_u=v['surge'])
-        F = LE.perturb(FC[v['prec']], lats, lons, P)
-        u = sum(w * F[0, i] for i, w in enumerate(bve.WTS.values())); vv = sum(w * F[1, i] for i, w in enumerate(bve.WTS.values()))
-        off = 1.5 * (obs['sst'] - 0.3) + obs['mjo_kt'] + 1.5 * v['grow']; shs = (1.25, 1.0, 0.8)[v['grow'] + 1]
+        F = LE.perturb(FC[v['prec']] + v['ana'] * DF, lats, lons, P)
+        u = sum(w * F[0, i] for i, w in enumerate(v['depth'])); vv = sum(w * F[1, i] for i, w in enumerate(v['depth']))
+        off = 1.5 * (obs['sst'] - 0.3) + obs['mjo_kt'] + 1.5 * v['rate']; shs = (1.25, 1.0, 0.8)[v['rate'] + 1]
         st = dict(v=17.0 if obs['formed'] else 12.0, dvp=0.0, h=0.0, vlf=None, landh=0.0, hist=[])
         def vfn(th, la, lo, land):
             dtp = th - st['h']
@@ -72,7 +86,8 @@ def main(LIVE, SSTJ, LIJ, OUTJ):
         hist = []
         def vfn_rec(th, la, lo, land):
             x = vfn(th, la, lo, land); hist.append((th, la, lo, st['v'])); return x
-        out = M.run_storm(M.regrid(u, lats, lons), M.regrid(vv, lats, lons), start, 216, vfn_rec, size=v['size'], land_fn=on_land)
+        out = M.run_storm(M.regrid(u, lats, lons), M.regrid(vv, lats, lons), start, 216, vfn_rec, size=v['size'], land_fn=on_land, xo=v['xo'], size_grow=v['grow'],
+                          nu=v['phys'][0], tau_h=v['phys'][1], sppt=dict(seed=1000 + mi, amp=v['sppt'], scale_deg=10.0, hours=36.0) if mi else None)
         pts = []
         for h, la, lo in out:
             w = min(hist, key=lambda q: abs(q[0] - h))[3] if hist else 12.0; pts.append((t0 + dt.timedelta(hours=h), la, lo, round(w, 1)))
@@ -94,4 +109,4 @@ def main(LIVE, SSTJ, LIJ, OUTJ):
     if obs['formed']: F[-1] = ['When the depression forms', ['already formed'] * 3]
     json.dump(dict(run=t0.isoformat(), method='physics', obs=obs, analogs=[], factors=F, runs=RES, summary=summ), open(OUTJ, 'w'), default=str)
     print(t0, summ)
-if __name__ == '__main__': main(*sys.argv[1:5])
+if __name__ == '__main__': main(*sys.argv[1:6])
