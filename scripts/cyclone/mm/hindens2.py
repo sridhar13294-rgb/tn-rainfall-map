@@ -23,20 +23,23 @@ for i, s in enumerate(storms):
     k = TT.index(key); P0 = O.path_of(s); st0 = at(P0, g)
     if not st0: continue
     f3 = {v: Z['f3'][k, V3.index(v)] for v in V3}; mems = []; bv = None; t = time.time()
+    M = mm2.Model(C.get('grid', 'T85'), 32, 30.0, dict(sppt_on=True))                          # compiled once per storm, reused by every member
     for m in range(0, C.get('members', 10) + 1):
         try:
-            mb = member(m); M = mm2.Model(C.get('grid', 'T85'), 32, 30.0, mb['set'])
+            mb = member(m); tm = time.time()
             ins = C.get('bogus', False) or (C.get('bogus_mix', False) and m % 2 == 1)          # storm insertion in half the members: the start vortex is uncertain too
             storm = dict(lat=st0[0], lon=st0[1], vmax_kt=st0[2] or 25.0) if ins else None
             st, cr = M.init(f3, Z['levs'], Z['lats'], Z['lons'], Z['f2'][k, V2.index('surface_pressure')], Z['f2'][k, V2.index('geopotential_at_surface')] / 9.80616,
                             Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')], storm=storm)
-            M.build(g, split=C.get('split', False)); st = M.dfi(st)
+            cr = M.with_params(cr, mb['set'])
+            if getattr(M, 'built_for', None) != g: M.build(g, split=C.get('split', False))
+            st = M.dfi(st)
             if m:
-                if bv is None: bv = mm2.bred_vectors(M, st, cr, n=6, hours=12.0, seed=77, amp=1.0)
+                if bv is None: bv = mm2.bred_vectors(M, st, M.with_params(cr, {}), n=6, hours=12.0, seed=77, amp=1.0)
                 rs = np.random.default_rng(3000 + m); st = mm2.add_perturbation(st, bv, rs.standard_normal(6) / math.sqrt(6))
             out = M.run(st, cr, C.get('hours', 120))
             if not np.isfinite(out['mslp']).all(): raise RuntimeError('blew up')
-            mems.append(dict(member=m, trk=M.track(out, st0[0], st0[1])))
+            mems.append(dict(member=m, trk=M.track(out, st0[0], st0[1]), sec=round(time.time() - tm)))
         except Exception as e:
             mems.append(dict(member=m, err=repr(e)[:300])); print(s['name'], m, 'FAILED', repr(e)[:300], flush=True)
     res.append(dict(name=s['name'], season=s['season'], t0=key, real=[((p[0] - g).total_seconds() / 3600, p[1], p[2], p[3]) for p in P0],
