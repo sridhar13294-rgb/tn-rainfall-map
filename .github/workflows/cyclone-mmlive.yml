@@ -12,6 +12,7 @@ jobs:
     timeout-minutes: 300
     strategy:
       fail-fast: false
+      max-parallel: 11   # leave GitHub slots free for the live site's own jobs (20 slots in total)
       matrix:
         part: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
     env:
