@@ -2,7 +2,7 @@
 CONFIG: {"tag", "grid", "dt_min", "hours", "storms": [names] or null, "nchunk", "variants": [{"name", "grid"?, "bogus"?, "dfi"?, "set"?}]}"""
 import sys, os, json, time, datetime as dt, numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE); sys.path.insert(0, os.path.join(HERE, '..', 'analysis'))
-import mm2, ourens as O
+import mm2, ourens as O, landinit
 LIB, CFG, CH, NCH, OUT = sys.argv[1], sys.argv[2], int(sys.argv[3]), int(sys.argv[4]), sys.argv[5]
 C = json.load(open(CFG)); NCH = C.get('nchunk', NCH)
 if CH >= NCH: json.dump([], open(OUT, 'w')); sys.exit(0)
@@ -29,7 +29,8 @@ for i, s in enumerate(storms):
             M = MODELS[var['name']]
             storm = dict(lat=st0[0], lon=st0[1], vmax_kt=st0[2] or 25.0) if var.get('bogus', True) else None
             state, carry = M.init(f3, Z['levs'], Z['lats'], Z['lons'], Z['f2'][k, V2.index('surface_pressure')], Z['f2'][k, V2.index('geopotential_at_surface')] / 9.80616,
-                                  Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')], storm=storm, ocean=C.get('ocean'), when=g)
+                                  Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')], storm=storm, ocean=C.get('ocean'), when=g,
+                                  **(landinit.land_kwargs(Z['f2'][k], V2) if C.get('land_init', True) else {}))
             M.build(g, split=var.get('split', C.get('split', False))); print('built', round(time.time() - t), flush=True)
             if var.get('dfi', True): state = M.dfi(state); print('dfi done', round(time.time() - t), flush=True)
             out = M.run(state, carry, C.get('hours', 120), box=tuple(C.get('box', (30.0, 120.0, -42.0, 35.0))))

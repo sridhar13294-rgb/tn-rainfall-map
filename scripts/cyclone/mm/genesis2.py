@@ -7,7 +7,7 @@ Per storm and variant: the strongest 850-hPa vortex within 500 km of the real fo
 import sys, os, json, time, math, datetime as dt, numpy as np
 from scipy import ndimage as ndi
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE); sys.path.insert(0, os.path.join(HERE, '..', 'analysis'))
-import mm2, ourens as O
+import mm2, ourens as O, landinit
 LIB, CFG, CH, NCH, OUT = sys.argv[1], sys.argv[2], int(sys.argv[3]), int(sys.argv[4]), sys.argv[5]
 C = json.load(open(CFG)); NCH = C.get('nchunk', NCH); LEAD = C.get('lead', 48); HRS = C.get('hours', 120)
 VAR = C.get('variants') or {'ctl': {}}
@@ -37,7 +37,8 @@ for i, s in enumerate(storms):
             if key_s not in started:                                                               # this storm's start state for this scheme
                 M = MODELS[key_s][0]; started.add(key_s)
                 st, cr = M.init(f3, Z['levs'], Z['lats'], Z['lons'], Z['f2'][k, V2.index('surface_pressure')], Z['f2'][k, V2.index('geopotential_at_surface')] / 9.80616,
-                                Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')], ocean=C.get('ocean'), when=t0)
+                                Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')], ocean=C.get('ocean'), when=t0,
+                                **(landinit.land_kwargs(Z['f2'][k], V2) if C.get('land_init', True) else {}))
                 M.build(t0); st = M.dfi(st); MODELS[key_s][1:] = [st, cr]
             M, st, cr = MODELS[key_s]; out = M.run(st, M.with_params(cr, dyn), HRS, box=tuple(C.get('box', (30.0, 120.0, -42.0, 35.0))))
             if not np.isfinite(out['mslp']).all(): raise RuntimeError('blew up')

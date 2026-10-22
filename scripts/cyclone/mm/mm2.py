@@ -18,6 +18,7 @@ from scipy.interpolate import RegularGridInterpolator as RGI
 from scipy import ndimage as ndi
 from ocean import step as ocean_step, profile_from_clim
 import radcloud
+import landinit                                   # starting land state from analysed soil fields (numpy; test_land_init.py)
 from dinosaur import coordinate_systems, spherical_harmonic, sigma_coordinates, primitive_equations, scales, time_integration, filtering, vertical_interpolation
 units = scales.units
 G, RD, RV, CP, LV, SB, KARM = 9.80616, 287.04, 461.5, 1004.6, 2.5e6, 5.67e-8, 0.4; KAP = RD / CP
@@ -77,9 +78,10 @@ class Model:
         ext = np.concatenate([a, a[..., :1]], -1); lo2 = np.concatenate([lons, [lons[0] + 360]]); pts = np.stack([self.LA.ravel(), self.LO.ravel()], -1)
         f = lambda x: RGI((la2, lo2), x, bounds_error=False, fill_value=None)(pts).reshape(self.LO.shape)
         return np.stack([f(x) for x in ext]) if ext.ndim == 3 else f(ext)
-    def init(self, f3, levs, lats, lons, ps_pa, zs_m, sst_k, lsm, storm=None, ocean=None, when=None):
+    def init(self, f3, levs, lats, lons, ps_pa, zs_m, sst_k, lsm, storm=None, ocean=None, when=None, soil_vol=None, soil_t=None, skin_t=None):
         """f3: temperature, specific_humidity, u/v_component_of_wind, geopotential -> [lev, lat, lon]. storm: dict(lat, lon,
-        vmax_kt, rmw_km) to replace the analysis vortex with a balanced one."""
+        vmax_kt, rmw_km) to replace the analysis vortex with a balanced one. soil_vol (top-layer volumetric soil water, m3 m-3),
+        soil_t / skin_t (K), [lat, lon] like sst_k: analysed land state for land points (landinit.py); None = the old guesses."""
         levs = np.asarray(levs, float); N = lambda x: self.to_nodes(x, lats, lons)
         T3, Q3, U3, V3 = [N(f3[k]) for k in ('temperature', 'specific_humidity', 'u_component_of_wind', 'v_component_of_wind')]
         ps = N(ps_pa); zs = np.maximum(N(zs_m), 0.0); land = N(lsm) > 0.5
@@ -94,7 +96,10 @@ class Model:
         self.oro = filtering.exponential_filter(hor, order=2)(hor.to_modal(zs[None] * self.M))
         self.zs = jnp.asarray(zs, jnp.float32); self.land = jnp.asarray(land); self.T0 = jnp.asarray(sg['t'])
         sst = sst + self.S['sst_off'] * (sst > 0); self.sst0 = jnp.asarray(sst, jnp.float32)
-        carry = dict(sst=jnp.asarray(sst, jnp.float32), tl=jnp.asarray(sg['t'][-1], jnp.float32), w=jnp.full(zs.shape, 0.6 * self.S['bucket'] * 1000, jnp.float32),
+        # land temperature and soil-moisture bucket: analysed values on land when given (bucket = soil water / porosity 0.45 x
+        # capacity; skin, else soil temperature); otherwise, and at sea, the old start (lowest-level temperature, bucket 60 % full)
+        tl0, w0 = landinit.land_start(N, sg['t'][-1], land, self.S['bucket'], soil_vol, soil_t, skin_t)
+        carry = dict(sst=jnp.asarray(sst, jnp.float32), tl=jnp.asarray(tl0, jnp.float32), w=jnp.asarray(w0, jnp.float32),
                      rain=jnp.zeros(zs.shape, jnp.float32), t=jnp.float32(0.0), sst0=jnp.asarray(sst, jnp.float32), T0=jnp.asarray(sg['t'], jnp.float32),
                      prm=self.params())
         if ocean is not None:                                                                       # 1-D ocean column under every sea point (ocean.py)

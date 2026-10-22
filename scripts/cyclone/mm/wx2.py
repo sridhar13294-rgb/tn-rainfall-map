@@ -4,7 +4,7 @@ python wx2.py LIBM_WX_NPZ CONFIG_JSON CHUNK NCHUNK OUT_JSON
 CONFIG: {"tag", "truth": wx_truth_2020.npz path, "grid", "dt_min", "days": 10, "ocean": path?, "variants": [{"name", "set"?}]}"""
 import sys, os, json, time, datetime as dt, numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE); sys.path.insert(0, os.path.join(HERE, '..', 'analysis'))
-import mm2, wxscore as WS
+import mm2, wxscore as WS, landinit
 LIB, CFG, CH, NCH, OUT = sys.argv[1], sys.argv[2], int(sys.argv[3]), int(sys.argv[4]), sys.argv[5]
 C = json.load(open(CFG)); ND = int(C.get('days', 10)); TRU = C['truth']
 Z = dict(np.load(LIB)); TT = [str(t) for t in Z['times']]; V3 = [str(v) for v in Z['v3']]; V2 = [str(v) for v in Z['v2']]
@@ -20,7 +20,8 @@ for n, key in enumerate(TT):
             if var['name'] not in MODELS: MODELS[var['name']] = mm2.Model(var.get('grid', C.get('grid', 'T85')), 32, C.get('dt_min'), var.get('set'))
             M = MODELS[var['name']]
             st, cr = M.init(f3, Z['levs'], Z['lats'], Z['lons'], Z['f2'][k, V2.index('surface_pressure')], Z['f2'][k, V2.index('geopotential_at_surface')] / 9.80616,
-                            Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')], ocean=C.get('ocean'), when=t0)
+                            Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')], ocean=C.get('ocean'), when=t0,
+                            **(landinit.land_kwargs(Z['f2'][k], V2) if C.get('land_init', True) else {}))
             M.build(t0); st = M.dfi(st)
             out = M.run_wx(st, cr, 24 * ND, 24)
             if not np.isfinite(out['mslp']).all(): raise RuntimeError('blew up')

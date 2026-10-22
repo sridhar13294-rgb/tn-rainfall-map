@@ -3,7 +3,7 @@ ensemble builds them (bred vectors + physics settings + SPPT; no ECMWF analysis 
 python hindens2.py LIBM_NPZ CONFIG_JSON CHUNK NCHUNK OUT_JSON      CONFIG: {"tag", "grid", "members", "hours", "bogus", "split", "storms", "nchunk", "from_year"}"""
 import sys, os, json, time, math, datetime as dt, numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE); sys.path.insert(0, os.path.join(HERE, '..', 'analysis'))
-import mm2, ourens as O
+import mm2, ourens as O, landinit
 from live2 import member
 LIB, CFG, CH, NCH, OUT = sys.argv[1], sys.argv[2], int(sys.argv[3]), int(sys.argv[4]), sys.argv[5]
 C = json.load(open(CFG)); NCH = C.get('nchunk', NCH)
@@ -30,7 +30,8 @@ for i, s in enumerate(storms):
             ins = C.get('bogus', False) or (C.get('bogus_mix', False) and m % 2 == 1)          # storm insertion in half the members: the start vortex is uncertain too
             storm = dict(lat=st0[0], lon=st0[1], vmax_kt=st0[2] or 25.0) if ins else None
             st, cr = M.init(f3, Z['levs'], Z['lats'], Z['lons'], Z['f2'][k, V2.index('surface_pressure')], Z['f2'][k, V2.index('geopotential_at_surface')] / 9.80616,
-                            Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')], storm=storm, ocean=C.get('ocean'), when=g)
+                            Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')], storm=storm, ocean=C.get('ocean'), when=g,
+                            **(landinit.land_kwargs(Z['f2'][k], V2) if C.get('land_init', True) else {}))
             cr = M.with_params(cr, mb['set'])
             if m == 0: M.build(g, split=C.get('split', False))                                     # new start date (no recompile)
             st = M.dfi(st)

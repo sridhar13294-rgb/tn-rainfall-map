@@ -27,7 +27,7 @@ def member(k):
     return dict(h=h, alpha=-0.5 + 2.0 * h[0], set=dict(rh_deep=0.7 + 0.2 * h[2], tau_deep=1800 + 3600 * h[3], ck=1.2e-3 * (0.8 + 0.4 * h[4]), ent=0.3 + 0.6 * h[5],
                                                         k_evap=2e-5 * (0.5 + h[6]), sppt=0.1 + 0.2 * h[7], sppt_seed=1000 + k))
 def run(LIVEM, LIVE, PART, NPART, OUT, CFG=None):
-    import mm2, jax.numpy as jnp
+    import mm2, landinit, jax.numpy as jnp
     from ours_live import detect
     from ours_live_s import precursors
     C = json.load(open(CFG)) if CFG and os.path.exists(CFG) else {}
@@ -65,7 +65,8 @@ def run(LIVEM, LIVE, PART, NPART, OUT, CFG=None):
             else: fk = {v: f3[v] + (mb['alpha'] * D[v] if D is not None and v in D else 0.0) for v in V3}; psk = Z['f2'][0, V2.index('surface_pressure')]
             storm = VS if (VS and k % 2 == 1) else (dict(lat=b['lat'], lon=b['lon'], vmax_kt=25.0) if (formed and k % 2 == 1) else None)   # storm insertion in half the members
             st, cr = M.init(fk, Z['levs'], Z['lats'], Z['lons'], psk, Z['f2'][0, V2.index('geopotential_at_surface')] / 9.80616,
-                            Z['f2'][0, V2.index('sea_surface_temperature')], Z['f2'][0, V2.index('land_sea_mask')], storm=storm)
+                            Z['f2'][0, V2.index('sea_surface_temperature')], Z['f2'][0, V2.index('land_sea_mask')], storm=storm,
+                            **(landinit.land_kwargs(Z['f2'][0], V2) if C.get('land_init', True) else {}))
             cr = M.with_params(cr, mb['set'])
             if getattr(M, 'built_for', None) != t0: M.build(t0)
             st = M.dfi(st)
