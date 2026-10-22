@@ -1,6 +1,6 @@
-tn-gen-mf4
-libm48_fields.npz
-bash ../kaggle/par.sh genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_mf4.json /kaggle/working/gen
+tn-t170-terr0
+libm_fields.npz
+XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/t170_terr.json 0 2 /kaggle/working/t170_0.json > /kaggle/working/t170_0.log 2>&1; tail -3 /kaggle/working/t170_0.log
 NvidiaTeslaT4
-4
-#convection repair round 3: stronger trigger kick (28 storms) 2026-10-22T20:34Z
+2
+#T170 Bay storms with terrain fix + new radiation, first half 2026-10-22T20:34Z
