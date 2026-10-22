@@ -18,6 +18,7 @@ jobs:
         with: {python-version: '3.12'}
       - run: pip install -q numpy pygrib matplotlib scikit-learn scipy
       - run: pip install -q eccodes || true   # optional second GRIB decoder for the ICON/CMC fetch (centres_m.py); never blocks the job
+      - run: pip install -q h5py || true      # NetCDF4 reader for the Met Office files (centres_m.py, UKMO); never blocks the job
       - run: |
           w=$(head -c 4 data/cyclone/RUN)
           if [ "$w" = "all " ] || [ "$w" = "fc" ] || [ "$w" = "fc " ]; then python scripts/cyclone/cyc_fetch.py $(sed -n 2p data/cyclone/RUN) || true; fi

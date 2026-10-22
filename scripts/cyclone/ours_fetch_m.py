@@ -1,13 +1,20 @@
 """Live start data for the moist multi-level model: the latest GFS analysis (step 0 only - observed state, no forecast),
 global, 1.5 deg, same layout as the ERA5 file for past storms (cyc_libm.py): temperature, specific humidity, u, v,
-geopotential on 13 levels; surface pressure, sea temperature, land mask, terrain. -> /tmp/cyc_out/live_GFSM_<run>.npz"""
+geopotential on 13 levels; surface pressure, sea temperature, land mask, terrain. -> /tmp/cyc_out/live_GFSM_<run>.npz
+Land state appended to f2/v2 (old order kept; ERA5 names, model start: mm/landinit.py): volumetric_soil_water_layer_1
+(SOILW 0-0.1 m, m3 m-3), soil_temperature_level_1 (TSOIL 0-0.1 m, K), skin_temperature (TMP:surface everywhere, K),
+snow_depth (WEASD / 1000: m of water equivalent, as ERA5's snow_depth), snow_depth_physical (SNOD, m).
+live_ECM_<run>.npz gets the ECMWF open-data equivalents (vsw/sot layer 1, skt, sd) as f2/v2 with the four land names."""
 import os, sys, numpy as np, datetime as dt
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import cyc_fetch as C
 C.LATS = np.arange(-90, 90.1, 1.5); C.LONS = np.arange(0, 360, 1.5)
 LEVS = [50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000]
 V3 = {'TMP': 'temperature', 'SPFH': 'specific_humidity', 'UGRD': 'u_component_of_wind', 'VGRD': 'v_component_of_wind', 'HGT': 'geopotential'}
-V2 = {('PRES', 'surface'): 'surface_pressure', ('TMP', 'surface'): 'sea_surface_temperature', ('LAND', 'surface'): 'land_sea_mask', ('HGT', 'surface'): 'geopotential_at_surface'}
+V2 = {('PRES', 'surface'): 'surface_pressure', ('TMP', 'surface'): 'sea_surface_temperature', ('LAND', 'surface'): 'land_sea_mask', ('HGT', 'surface'): 'geopotential_at_surface',
+      ('SOILW', '0-0.1 m below ground'): 'volumetric_soil_water_layer_1', ('TSOIL', '0-0.1 m below ground'): 'soil_temperature_level_1',
+      ('TMP', 'skin'): 'skin_temperature', ('WEASD', 'surface'): 'snow_depth', ('SNOD', 'surface'): 'snow_depth_physical'}   # ('TMP', 'skin'): copy of TMP:surface
+SC2 = {('HGT', 'surface'): 9.80665, ('WEASD', 'surface'): 0.001}                                   # height -> geopotential; kg m-2 -> m of water
 run = C.latest_run(lambda r: C.http(C.gfs_url(r, 0) + '.idx', method='HEAD') is not None); print('GFS analysis', run, flush=True)
 idx = C.parse_idx(C.http(C.gfs_url(run, 0) + '.idx').decode())
 f3 = np.full((len(V3), len(LEVS), len(C.LATS), len(C.LONS)), np.nan, np.float32); f2 = np.full((len(V2), len(C.LATS), len(C.LONS)), np.nan, np.float32)
@@ -24,7 +31,8 @@ for r in idx:
     if not buf: print('no bytes', r, flush=True); continue
     a = C.subset(buf)
     if tgt[0] == '3': f3[tgt[1], tgt[2]] = a * (9.80665 if r['var'] == 'HGT' else 1.0)          # height -> geopotential, as ERA5
-    else: f2[tgt[1]] = a * (9.80665 if tgt[1] == 3 else 1.0)
+    else: f2[tgt[1]] = a * SC2.get(k2[tgt[1]], 1.0)
+f2[k2.index(('TMP', 'skin'))] = f2[1]                                                               # skin temperature everywhere (land state)
 land = f2[2] > 0.5; f2[1] = np.where(land, np.nan, f2[1])                                           # sea temperature only over sea
 fn = f'/tmp/cyc_out/live_GFSM_{run:%Y%m%d%H}.npz'; os.makedirs('/tmp/cyc_out', exist_ok=True)
 np.savez_compressed(fn, f3=f3[None], f2=f2[None], times=np.array([f'{run:%Y-%m-%dT%H}']), lats=C.LATS, lons=C.LONS,
@@ -47,6 +55,11 @@ def ecu(base, r, step):
     kind = 'oper' if r.hour in (0, 12) else 'scda'
     return f"{base}/{r:%Y%m%d}/{r:%H}z/ifs/0p25/{kind}/{r:%Y%m%d%H}0000-{step}h-{kind}-fc"
 EP = {'t': 'temperature', 'q': 'specific_humidity', 'u': 'u_component_of_wind', 'v': 'v_component_of_wind', 'gh': 'geopotential'}
+# land state from the same ECMWF file (open data since 2025: levtype 'sol' vsw/sot with levelist 1 = 0-7 cm; older names too)
+EL = {'vsw': 'volumetric_soil_water_layer_1', 'swvl1': 'volumetric_soil_water_layer_1', 'sot': 'soil_temperature_level_1',
+      'stl1': 'soil_temperature_level_1', 'skt': 'skin_temperature', 'sd': 'snow_depth'}
+ELV = ['volumetric_soil_water_layer_1', 'soil_temperature_level_1', 'skin_temperature', 'snow_depth']
+el = np.full((len(ELV), len(C.LATS), len(C.LONS)), np.nan, np.float32); egot = []
 e3 = np.full((len(V3), len(LEVS), len(C.LATS), len(C.LONS)), np.nan, np.float32); esp = np.full((len(C.LATS), len(C.LONS)), np.nan, np.float32); got = 0; used = None
 for lag in (0, 6, 12, 18):
     r0 = run - dt.timedelta(hours=lag)
@@ -62,14 +75,25 @@ for lag in (0, 6, 12, 18):
             elif lt == 'sfc' and p == 'sp':
                 buf = grab(ecu(base, r0, lag) + '.grib2', (r['_offset'], r['_offset'] + r['_length'] - 1))
                 if buf: esp = C.subset(buf); got += 1
+            elif lt in ('sol', 'sfc') and p in EL and str(r.get('levelist', '1')) == '1' and EL[p] not in egot:
+                buf = grab(ecu(base, r0, lag) + '.grib2', (r['_offset'], r['_offset'] + r['_length'] - 1))
+                if buf:
+                    a = C.subset(buf)
+                    if p == 'sd':                                                                   # m of water equivalent, as ERA5
+                        try: u = str(C.pygrib.fromstring(buf)['units'])
+                        except Exception: u = '?'
+                        if 'kg' in u: a = a / 1000.0
+                        print('ECMWF sd units', u, flush=True)
+                    el[ELV.index(EL[p])] = a; egot.append(EL[p])
         if got: used = f'{r0:%Y%m%d%H}+{lag}h'; break
     if got: break
 if got:
-    np.savez_compressed(f'/tmp/cyc_out/live_ECM_{run:%Y%m%d%H}.npz', f3=e3[None], sp=esp[None], source=str(used), lats=C.LATS, lons=C.LONS, v3=np.array([V3[k] for k in k3]), levs=np.array(LEVS))
-print('ECMWF', used, 'fields', got, 'coverage', float(np.isfinite(e3).mean()), flush=True)
-# ---- the latest North Indian Ocean storm vitals (vitals.py -> data/cyclone/vitals_<run>.json) and two more starting analyses
-# on this grid and these levels (centres_m.py: DWD ICON -> live_ICON_<run>.npz, Canadian GDPS -> live_CMC_<run>.npz; the GFS
-# surface fields fill any gaps). Logged to data/cyclone/fetch_status.json; a failure here leaves the files above untouched.
+    np.savez_compressed(f'/tmp/cyc_out/live_ECM_{run:%Y%m%d%H}.npz', f3=e3[None], sp=esp[None], source=str(used), lats=C.LATS, lons=C.LONS, v3=np.array([V3[k] for k in k3]), levs=np.array(LEVS),
+                        f2=el[None], v2=np.array(ELV))                                              # land state only (no surface pressure / terrain: consensus unchanged)
+print('ECMWF', used, 'fields', got, 'coverage', float(np.isfinite(e3).mean()), 'land', egot, flush=True)
+# ---- the latest North Indian Ocean storm vitals (vitals.py -> data/cyclone/vitals_<run>.json) and more starting analyses
+# on this grid and these levels (centres_m.py -> live_<ICON|CMC|ARPEGE|UKMO|GEOS|NAVGEM>_<run>.npz; the GFS surface fields
+# fill any gaps). Logged to data/cyclone/fetch_status.json; a failure here leaves the files above untouched.
 for _what, _go in (('vitals', lambda: __import__('vitals').save(run)), ('centres', lambda: __import__('centres_m').fetch_all(run, f2, LEVS, C.LATS, C.LONS))):
     try: _go()
     except (Exception, SystemExit) as e: print(_what, 'FAILED', repr(e)[:300], flush=True)

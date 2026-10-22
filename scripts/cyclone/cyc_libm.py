@@ -1,13 +1,17 @@
 """Global multi-level ERA5 at each past storm's start time, for the moist multi-level model (scripts/cyclone/mm/).
 13 pressure levels (50-1000 hPa): temperature, specific humidity, u, v, geopotential; plus surface pressure, sea-surface
 temperature, land-sea mask and terrain height. 1.5 deg global. WeatherBench2 ERA5 up to Jan 2023, ARCO-ERA5 after.
+Land state (appended to v2, model start: mm/landinit.py): volumetric_soil_water_layer_1 (m3 m-3, 0-7 cm),
+soil_temperature_level_1 (K), skin_temperature (K), snow_depth (m of water equivalent). Each is taken from WeatherBench2
+when that store has it, else from ARCO-ERA5 (0.25 deg, nearest point); the source per variable is logged.
 Output: /tmp/cyc_out/libm_fields.npz; with LIBM_LEAD=48 the times are 48 h before each start (genesis test set),
 output libm48_fields.npz."""
 import json, os, datetime as dt, numpy as np, xarray as xr
 WB2 = 'gs://weatherbench2/datasets/era5/1959-2023_01_10-6h-240x121_equiangular_with_poles_conservative.zarr'
 ARCO = 'gs://gcp-public-data-arco-era5/ar/full_37-1h-0p25deg-chunk-1.zarr-v3'
 V3 = ['temperature', 'specific_humidity', 'u_component_of_wind', 'v_component_of_wind', 'geopotential']
-V2 = ['surface_pressure', 'sea_surface_temperature', 'land_sea_mask', 'geopotential_at_surface']
+LAND = ['volumetric_soil_water_layer_1', 'soil_temperature_level_1', 'skin_temperature', 'snow_depth']
+V2 = ['surface_pressure', 'sea_surface_temperature', 'land_sea_mask', 'geopotential_at_surface'] + LAND   # old order kept, land appended
 LEVS = [50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000]
 LATS = np.arange(-90, 90.1, 1.5); LONS = np.arange(0, 360, 1.5)
 os.makedirs('data/cyclone', exist_ok=True); LEAD = int(os.environ.get('LIBM_LEAD', '0')); NAME = 'libm%s_fields.npz' % (LEAD or '')
@@ -34,6 +38,8 @@ def grab(ds, var, T, lev):
     return x.transpose(*((['level'] if lev else []) + ['latitude', 'longitude'])).values
 W = xr.open_zarr(WB2, storage_options={'token': 'anon'}, chunks=None); A = None
 log('WB2 vars', [v for v in V3 + V2 if v not in W])
+LSRC = {v: 'W' if v in W else 'A' for v in LAND}                                                  # land fields WB2 lacks: ARCO-ERA5
+log('land fields from (W = WeatherBench2 1.5 deg conservative, A = ARCO-ERA5 0.25 deg nearest point; times from 2023-01-09: A)', LSRC)
 F3 = np.full((len(times), len(V3), len(LEVS), len(LATS), len(LONS)), np.nan, np.float32)
 F2 = np.full((len(times), len(V2), len(LATS), len(LONS)), np.nan, np.float32)
 for i, t in enumerate(times):
@@ -47,7 +53,11 @@ for i, t in enumerate(times):
                 ds = A
             for k, v in enumerate(V3): F3[i, k] = grab(ds, v, T, True)
             for k, v in enumerate(V2):
-                try: F2[i, k] = grab(ds, v, T, False)
+                try:
+                    if src[0] == 'W' and LSRC.get(v) == 'A':                                     # per-variable fallback to ARCO
+                        if A is None: A = xr.open_zarr(ARCO, storage_options={'token': 'anon'}, chunks=None)
+                        F2[i, k] = grab(A, v, T, False)
+                    else: F2[i, k] = grab(ds, v, T, False)
                 except Exception as e: log(i, t, src[0], v, 'missing', repr(e)[:120])
             break
         except Exception as e: log(i, t, src[0], 'failed', repr(e)[:300])

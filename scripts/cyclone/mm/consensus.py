@@ -2,6 +2,9 @@
 Centre files of one run (ours_fetch_m.py, RUN word "oursm"), all on the 1.5 deg grid and 13 levels of live_GFSM:
   GFSM  live_GFSM_<run>.npz  GFS analysis (f3, f2)              ECM  live_ECM_<run>.npz  ECMWF (f3 and sp only, no f2)
   ICON  live_ICON_<run>.npz  DWD ICON (f3, f2)                  CMC  live_CMC_<run>.npz  Canadian GDPS (f3, f2)
+  ARPEGE live_ARPEGE_<run>.npz Météo-France ARPEGE (f3, f2)      UKMO live_UKMO_<run>.npz Met Office global (f3, f2)
+  GEOS  live_GEOS_<run>.npz  NASA GEOS-FP (f3, f2)               NAVGEM live_NAVGEM_<run>.npz US Navy NAVGEM (f3, f2)
+  (centres_m.py; a centre whose file is missing is simply left out)
 load_centres(folder, run)    -> {name: dict(f3 [var, lev, lat, lon], v3, levs, lats, lons, source, and the f2 fields by name)}
                                 on the reference centre's variable/level order (GFSM if present)
 consensus(C, weights=None)   -> dict(f3={var: [lev, lat, lon]} consensus mean, f2={v2 name: [lat, lon]},
@@ -27,7 +30,7 @@ that centre (they would vote twice for GFS)."""
 import os, re, sys, json, warnings, numpy as np
 V3 = ['temperature', 'specific_humidity', 'u_component_of_wind', 'v_component_of_wind', 'geopotential']
 V2 = ['surface_pressure', 'sea_surface_temperature', 'land_sea_mask', 'geopotential_at_surface']
-CENTRES = ('GFSM', 'ECM', 'ICON', 'CMC')
+CENTRES = ('GFSM', 'ECM', 'ICON', 'CMC', 'ARPEGE', 'UKMO', 'GEOS', 'NAVGEM')
 G = 9.80665; RD = 287.04
 BOUNDS = {'temperature': (150.0, 340.0), 'specific_humidity': (-1e-4, 0.05), 'u_component_of_wind': (-150.0, 150.0),
           'v_component_of_wind': (-150.0, 150.0), 'surface_pressure': (40000.0, 110000.0), 'sea_surface_temperature': (260.0, 320.0)}
