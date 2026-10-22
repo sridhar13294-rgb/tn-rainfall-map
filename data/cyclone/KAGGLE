@@ -1,6 +1,6 @@
-tn-wx-diag5
-libm_wx2020_fields.npz,wx_truth_2020.npz
-python -W ignore wx_diag.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz /kaggle/working/diag.json 3
+tn-gen-mf4
+libm48_fields.npz
+bash ../kaggle/par.sh genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_mf4.json /kaggle/working/gen
 NvidiaTeslaT4
-3
-#check: ECMWF-style sea-level pressure, 2-m temperature, below-ground 850 hPa 2026-10-22T20:34Z
+4
+#convection repair round 3: stronger trigger kick (28 storms) 2026-10-22T20:34Z
