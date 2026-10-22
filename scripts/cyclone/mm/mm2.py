@@ -108,12 +108,25 @@ class Model:
         decaying upward (weak above 400 hPa), in gradient balance; warm core from hydrostatic balance; moist core."""
         cosl = math.cos(math.radians(lat)); d = np.hypot(self.LA - lat, ((self.LO - lon + 180) % 360 - 180) * cosl) * 111.2      # km
         grid_km = 111.2 * 180.0 / len(self.lat); rm = max(rmw_km or (150.0 if vmax_kt < 34 else 100.0), 1.3 * grid_km)
-        def fill(X, R=4.0):
-            m = d <= R * 111.2; X = X.copy()
+        def fill(X, R=4.0, dd=None):
+            dd = d if dd is None else dd; m = dd <= R * 111.2; X = X.copy()
             for k in range(X.shape[0] if X.ndim == 3 else 1):
-                f = X[k] if X.ndim == 3 else X; f[m] = np.nanmean(f[(d > R * 111.2) & (d <= (R + 2) * 111.2)])
+                f = X[k] if X.ndim == 3 else X; f[m] = np.nanmean(f[(dd > R * 111.2) & (dd <= (R + 2) * 111.2)])
                 for _ in range(80): f[m] = ndi.uniform_filter(f, 5, mode='wrap')[m]
             return X
+        if self.S.get('storm_mode', 'bogus') == 'relocate':
+            # NCEP-style relocation: split each field into environment (vortex filled in from the ring 4-6 deg out) and the
+            # analysis' own vortex, move the vortex to the observed centre, put it back. Keeps the analysed structure and size.
+            P = ndi.uniform_filter(ps, 3, mode='wrap'); near = d <= 350.0
+            ja = np.unravel_index(np.argmin(np.where(near, P, np.inf)), P.shape)
+            dlon = ((lon - self.LO[ja] + 180) % 360) - 180; dlat = lat - self.LA[ja]
+            dx = float(np.mean(np.diff(self.lon))); dy = float(np.mean(np.diff(self.lat)))
+            sh = (dlon / dx, dlat / dy)
+            da = np.hypot(self.LA - self.LA[ja], ((self.LO - self.LO[ja] + 180) % 360 - 180) * cosl) * 111.2   # around the analysis' own centre
+            def move(X):
+                E_ = fill(X, dd=da); return E_ + ndi.shift(X - E_, ((0,) if X.ndim == 3 else ()) + sh, order=1, mode='nearest')
+            T3, Q3, U3, V3 = move(T3), np.maximum(move(Q3), 0.0), move(U3), move(V3); ps = move(ps[None])[0]
+            return T3, Q3, U3, V3, ps
         U3, V3 = fill(U3), fill(V3)
         f0 = 2 * 7.292e-5 * math.sin(math.radians(lat)); Vm = vmax_kt * 0.5144 / 0.85; rho = 1.15
         # wind profile (modified Rankine, decay exponent x, tapered to calm beyond R_out), then the balancing geopotential from
