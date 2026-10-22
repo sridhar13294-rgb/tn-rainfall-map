@@ -87,13 +87,26 @@ class Model:
         ps = N(ps_pa); zs = np.maximum(N(zs_m), 0.0); land = N(lsm) > 0.5
         sst = N(np.where(np.isfinite(sst_k), sst_k, 0.0)); sst = np.where(land | (sst < 260), 0.0, sst)
         if storm and storm.get('vmax_kt', 0) >= 15: T3, Q3, U3, V3, ps = self.bogus(T3, Q3, U3, V3, ps, levs, **storm)
+        # the model's own terrain is the spectrally smoothed one (self.oro); the analysis' surface pressure belongs to the real
+        # terrain. Move the surface pressure to the model terrain hypsometrically (temperature and humidity of the analysis at
+        # the surface), as ECMWF/GFS do. Without this the start had false pressure gradients near mountains and their spectral
+        # ripples (500 hPa height off by up to 1400 m over the Andes, 250 m over India, at hour 0).
+        hor = self.coords.horizontal
+        self.oro = filtering.exponential_filter(hor, order=2)(hor.to_modal(zs[None] * self.M))
+        zs_mod = np.asarray(hor.to_nodal(self.oro))[0] / self.M
+        lp = np.log(levs)[:, None, None]; lps = np.log(ps / 100.0)[None]; L = len(levs)
+        k1 = np.clip((lp < lps).sum(0), 1, L - 1); k0 = k1 - 1
+        g_ = lambda X, k: np.take_along_axis(X, k[None], 0)[0]
+        wgt = np.clip((lps[0] - g_(lp * np.ones_like(T3), k0)) / (g_(lp * np.ones_like(T3), k1) - g_(lp * np.ones_like(T3), k0)), 0.0, 1.0)
+        Ts = g_(T3, k0) + wgt * (g_(T3, k1) - g_(T3, k0)); Qs = np.maximum(g_(Q3, k0) + wgt * (g_(Q3, k1) - g_(Q3, k0)), 0.0)
+        dz = zs_mod - zs; Tm = (Ts - 0.0065 * dz / 2) * (1 + 0.608 * Qs)
+        ps = ps * np.exp(-G * dz / (RD * Tm)); zs = zs_mod
         pc = vertical_interpolation.PressureCoordinates(levs)
         sg = vertical_interpolation.interp_pressure_to_sigma({'t': T3, 'q': np.maximum(Q3, 0), 'u': U3, 'v': V3}, pc, self.coords.vertical, ps[None] / 100.0)
-        sg = {k: np.asarray(v, np.float32) for k, v in sg.items()}; hor = self.coords.horizontal
+        sg = {k: np.asarray(v, np.float32) for k, v in sg.items()}
         vor, div = spherical_harmonic.uv_nodal_to_vor_div_modal(hor, sg['u'] * self.MPS, sg['v'] * self.MPS)
         st = primitive_equations.State(vorticity=vor, divergence=div, temperature_variation=hor.to_modal(sg['t'] * self.K - self.ref_t[:, None, None]),
                                        log_surface_pressure=hor.to_modal(np.log(ps[None] * self.PA)), tracers={'specific_humidity': jnp.asarray(sg['q'])})
-        self.oro = filtering.exponential_filter(hor, order=2)(hor.to_modal(zs[None] * self.M))
         self.zs = jnp.asarray(zs, jnp.float32); self.land = jnp.asarray(land); self.T0 = jnp.asarray(sg['t'])
         sst = sst + self.S['sst_off'] * (sst > 0); self.sst0 = jnp.asarray(sst, jnp.float32)
         # land temperature and soil-moisture bucket: analysed values on land when given (bucket = soil water / porosity 0.45 x
