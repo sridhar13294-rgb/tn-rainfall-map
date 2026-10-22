@@ -1,7 +1,7 @@
 name: Cyclone study - model on Kaggle GPU
 # Runs when data/cyclone/KAGGLE changes on cases. Line 1: job name (slug). Line 2: input files from the era5-cases release
 # (comma-separated). Line 3: command run inside repo/scripts/cyclone/mm on Kaggle. Line 4: accelerator (NvidiaTeslaT4,
-# NvidiaTeslaP100, TpuV38; default NvidiaTeslaT4). Line 5: account 1-4 (1 = Sridhar's; 2-4 = KAGGLE2/3/4 secrets; default 1).
+# NvidiaTeslaP100, TpuV38; default NvidiaTeslaT4). Line 5: account 1-6 (1 = Sridhar's; 2-6 = KAGGLE2..6 secrets; default 1).
 # Results go to data/cyclone/kaggle/<slug>/.
 on:
   push:
@@ -24,9 +24,13 @@ jobs:
           T3: ${{ secrets.KAGGLE3_API_TOKEN }}
           U4: ${{ secrets.KAGGLE4_USERNAME }}
           T4: ${{ secrets.KAGGLE4_API_TOKEN }}
+          U5: ${{ secrets.KAGGLE5_USERNAME }}
+          T5: ${{ secrets.KAGGLE5_API_TOKEN }}
+          U6: ${{ secrets.KAGGLE6_USERNAME }}
+          T6: ${{ secrets.KAGGLE6_API_TOKEN }}
         run: |
           A=$(sed -n 5p data/cyclone/KAGGLE | tr -d ' '); U=$U1; T=$T1
-          case "$A" in 2) [ -n "$U2" ] && { U=$U2; T=$T2; };; 3) [ -n "$U3" ] && { U=$U3; T=$T3; };; 4) [ -n "$U4" ] && { U=$U4; T=$T4; };; esac
+          case "$A" in 2) [ -n "$U2" ] && { U=$U2; T=$T2; };; 3) [ -n "$U3" ] && { U=$U3; T=$T3; };; 4) [ -n "$U4" ] && { U=$U4; T=$T4; };; 5) [ -n "$U5" ] && { U=$U5; T=$T5; };; 6) [ -n "$U6" ] && { U=$U6; T=$T6; };; esac
           echo "::add-mask::$T"; { echo "KAGGLE_USERNAME=$U"; echo "KAGGLE_API_TOKEN=$T"; echo "KAGGLE_KEY=$T"; } >> $GITHUB_ENV
       - uses: actions/setup-python@v5
         with: {python-version: '3.12'}

@@ -1,6 +1,6 @@
-tn-mm2-t170b
+tn-mm2-base-new
 libm_fields.npz
-bash ../kaggle/par.sh hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/t170.json /kaggle/working/t170
+bash ../kaggle/par.sh hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/base_new.json /kaggle/working/bn
 NvidiaTeslaT4
-1
-#T170 past storms, compile once per job, new tracker and storm size 2026-10-22T13:32Z
+4
+#new baseline (sub-grid tracker, realistic storm): old conv, new conv, new conv + radiation 2026-10-22T13:50Z
