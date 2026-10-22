@@ -205,6 +205,22 @@ def extrapolate_below(f3, notes):
         n += int(m.sum())
     if n: notes.append(f'below-ground points extrapolated ({n})')
 
+def fill_z_hypsometric(f3, notes):
+    """fill geopotential on levels where it is missing from the nearest level that has it, layer by layer with the
+    hypsometric equation dPhi = Rd * Tv_mean * ln(p_lower / p_upper) (Tv = T (1 + 0.608 q))."""
+    iT, iQ, iZ = V3.index('temperature'), V3.index('specific_humidity'), V3.index('geopotential'); L = len(LEVS)
+    have = [bool(np.isfinite(f3[iZ, k]).mean() > 0.9) for k in range(L)]
+    if all(have) or not any(have) or np.isfinite(f3[iT]).mean() < 0.9: return
+    Tv = f3[iT] * (1 + 0.608 * np.nan_to_num(f3[iQ]))
+    order = sorted(range(L), key=lambda k: LEVS[k])                                          # top (low p) to bottom
+    filled = []
+    for _ in range(L):
+        for a_, b_ in zip(order, order[1:]):                                                 # a_ above b_
+            if have[a_] and not have[b_]:
+                f3[iZ, b_] = f3[iZ, a_] - 287.04 * 0.5 * (Tv[a_] + Tv[b_]) * np.log(LEVS[b_] / LEVS[a_]); have[b_] = True; filled.append(LEVS[b_])
+            elif have[b_] and not have[a_]:
+                f3[iZ, a_] = f3[iZ, b_] + 287.04 * 0.5 * (Tv[a_] + Tv[b_]) * np.log(LEVS[b_] / LEVS[a_]); have[a_] = True; filled.append(LEVS[a_])
+    if filled: notes.append('geopotential from hypsometric equation at ' + ','.join(str(int(x)) for x in sorted(filled)))
 def finish(src, run, r0, lag, f3, f2, gfs_f2, notes, raw, fill_below=False):
     """unit fixes, humidity, surface substitutes, checks, save. fill_below: extrapolate missing below-ground points."""
     iT, iQ, iZ = V3.index('temperature'), V3.index('specific_humidity'), V3.index('geopotential')
@@ -223,6 +239,7 @@ def finish(src, run, r0, lag, f3, f2, gfs_f2, notes, raw, fill_below=False):
         elif 'depr' in raw and np.isfinite(raw['depr'][k]).any() and np.isfinite(f3[iT, k]).any():
             f3[iQ, k] = q_from_e(es_water(f3[iT, k] - raw['depr'][k]), p)
             if 'q from dew-point depression' not in notes: notes.append('q from dew-point depression')
+    fill_z_hypsometric(f3, notes)                                                             # heights missing on some levels (UK Met Office)
     if fill_below: extrapolate_below(f3, notes)
     # surface fields
     if np.isfinite(f2[3]).mean() < 0.9 and gfs_f2 is not None: f2[3] = gfs_f2[3]; notes.append('geopotential_at_surface from GFS')
@@ -874,7 +891,7 @@ class Geos:
         t0 = time.time(); ds3 = f'{GDS}/assim/inst3_3d_asm_Np'; ds2 = f'{GDS}/assim/inst3_2d_asm_Nx'; lag = 0; r0 = run
         ti = self.index(ds3, run)
         if ti is None:                                                                         # newest forecast valid at this time
-            names = [n.rstrip('/') for n in listing(f'{GDS}/fcast/inst3_3d_asm_Np/')]
+            names = [re.sub(r'\.(das|dds|html|info|ascii)$', '', n.rstrip('/')) for n in listing(f'{GDS}/fcast/inst3_3d_asm_Np/')]   # listing entries carry a .das suffix
             log('GEOS', 'forecast datasets', len(names), names[-4:])
             for lg in (6, 12, 18, 24, 30, 36):
                 rr = run - dt.timedelta(hours=lg); nm = next((n for n in names if f'{rr:%Y%m%d_%H}' in n), None)
@@ -882,7 +899,7 @@ class Geos:
                 ds3 = f'{GDS}/fcast/inst3_3d_asm_Np/{nm}'; ti = self.index(ds3, run)
                 if ti is not None:
                     r0, lag = rr, lg; n2 = [n.rstrip('/') for n in listing(f'{GDS}/fcast/inst3_2d_asm_Nx/')]
-                    m2 = next((n for n in n2 if f'{rr:%Y%m%d_%H}' in n), None); ds2 = f'{GDS}/fcast/inst3_2d_asm_Nx/{m2}' if m2 else None; break
+                    m2 = next((re.sub(r'\.(das|dds|html|info|ascii)$', '', n) for n in n2 if f'{rr:%Y%m%d_%H}' in n), None); ds2 = f'{GDS}/fcast/inst3_2d_asm_Nx/{m2}' if m2 else None; break
             if ti is None: log('GEOS', 'no analysis or forecast for', f'{run:%Y%m%d%H}'); return None
         b = C.http(f'{ds3}.ascii?lev', tries=3); lev = gds_values(b.decode('latin-1', 'replace')) if b else np.array([])
         if lev.size < 13: lev = np.array([1000, 975, 950, 925, 900, 875, 850, 825, 800, 775, 750, 725, 700, 650, 600, 550, 500, 450, 400, 350, 300, 250, 200,
