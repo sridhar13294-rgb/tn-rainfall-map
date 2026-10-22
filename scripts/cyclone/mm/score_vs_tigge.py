@@ -32,14 +32,15 @@ for r in OUR:
         if e:
             m, s, n = mean_at([[q[:3] for q in mm['trk']] for mm in e['members'] if 'trk' in mm], h, 5); cand['ours ens mean'] = m
         ec = T.get('ECMWF', {}).get('members', {}); ge = T.get('GEFS', {}).get('members', {})
+        le = T.get('ECMWF', {}).get('lag', 0.0) or 0.0; lg = T.get('GEFS', {}).get('lag', 0.0) or 0.0     # their run started lag h before ours
         ecm = [v for k, v in ec.items() if k.startswith('m') and k != 'm0']
-        if ecm: cand['ECMWF ens mean'] = mean_at([[q[:3] for q in v] for v in ecm], h, 10)[0]
+        if ecm: cand['ECMWF ens mean'] = mean_at([[q[:3] for q in v] for v in ecm], h + le, 10)[0]
         det = [v for k, v in ec.items() if k.startswith('det')]
-        if det: cand['ECMWF HRES'] = at([q[:3] for q in det[0]], h)
+        if det: cand['ECMWF HRES'] = at([q[:3] for q in det[0]], h + le)
         gm = [v for k, v in ge.items() if k.startswith('m') and k != 'm0' and not k.startswith('GFS')]
-        if gm: cand['GEFS mean'] = mean_at([[q[:3] for q in v] for v in gm], h, 5)[0]
+        if gm: cand['GEFS mean'] = mean_at([[q[:3] for q in v] for v in gm], h + lg, 5)[0]
         gd = [v for k, v in ge.items() if k.startswith('GFS-det')]
-        if gd: cand['GFS'] = at([q[:3] for q in gd[0]], h)
+        if gd: cand['GFS'] = at([q[:3] for q in gd[0]], h + lg)
         rows.setdefault(h, []).append((key, {k: (km(v, tru) if v else None) for k, v in cand.items()}))
 for ref in ('ECMWF ens mean', 'ECMWF HRES', 'GEFS mean', 'GFS'):
     print(f'--- storms where {ref} exists (same storms, same leads)')
@@ -47,4 +48,5 @@ for ref in ('ECMWF ens mean', 'ECMWF HRES', 'GEFS mean', 'GFS'):
         R = [d for _, d in rows.get(h, []) if d.get(ref) is not None and d.get('ours control') is not None]
         if len(R) < 3: continue
         line = f'{h:3d}h n={len(R):2d} ' + ' | '.join(f"{k} {np.median([d[k] for d in R if d.get(k) is not None]):4.0f}" for k in ('ours control', 'ours ens mean', ref) if any(d.get(k) is not None for d in R))
-        print(line)
+        o = np.median([d['ours control'] for d in R]); rf = np.median([d[ref] for d in R])
+        print(line + f'   ours/{ref} = {o / max(rf, 1):.2f}')
