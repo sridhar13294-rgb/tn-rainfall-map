@@ -35,6 +35,14 @@ print('saved', fn, 'coverage 3d', float(np.isfinite(f3).mean()), '2d', [float(np
 import json as _json
 # ECMWF open data appears ~7 h after the run, so use the newest ECMWF run that is out: its analysis (step 0) if it is for
 # this time, else its short forecast valid at this time (6 or 12 h ahead).
+def grab(url, rng, tries=4):
+    """byte-range download with retries (single fields were silently missing: q700, q850, u700, v500, v850 on 22 Oct 06Z)"""
+    import time as _t
+    for i in range(tries):
+        buf = C.http(url, rng)
+        if buf: return buf
+        _t.sleep(2 + 3 * i)
+    return None
 def ecu(base, r, step):
     kind = 'oper' if r.hour in (0, 12) else 'scda'
     return f"{base}/{r:%Y%m%d}/{r:%H}z/ifs/0p25/{kind}/{r:%Y%m%d%H}0000-{step}h-{kind}-fc"
@@ -49,10 +57,10 @@ for lag in (0, 6, 12, 18):
             if not l.strip(): continue
             r = _json.loads(l); p = r.get('param'); lt = r.get('levtype')
             if lt == 'pl' and p in EP and int(r.get('levelist', 0)) in LEVS:
-                buf = C.http(ecu(base, r0, lag) + '.grib2', (r['_offset'], r['_offset'] + r['_length'] - 1))
+                buf = grab(ecu(base, r0, lag) + '.grib2', (r['_offset'], r['_offset'] + r['_length'] - 1))
                 if buf: e3[[V3[k] for k in k3].index(EP[p]), LEVS.index(int(r['levelist']))] = C.subset(buf) * (9.80665 if p == 'gh' else 1.0); got += 1
             elif lt == 'sfc' and p == 'sp':
-                buf = C.http(ecu(base, r0, lag) + '.grib2', (r['_offset'], r['_offset'] + r['_length'] - 1))
+                buf = grab(ecu(base, r0, lag) + '.grib2', (r['_offset'], r['_offset'] + r['_length'] - 1))
                 if buf: esp = C.subset(buf); got += 1
         if got: used = f'{r0:%Y%m%d%H}+{lag}h'; break
     if got: break
