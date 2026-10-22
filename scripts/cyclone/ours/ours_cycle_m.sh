@@ -10,7 +10,13 @@ git config user.email noreply@anthropic.com; git config user.name Claude
 git pull -q --rebase origin cases
 LIVE=$(python3 -c "import json;print(json.load(open('data/cyclone/ours/live_inputs.json'))['file'])"); RUNID=${LIVE#live_GFS_}; RUNID=${RUNID%.npz}
 gh api $R/releases/tags/era5-cases -q ".assets[]|select(.name==\"live_GFSM_$RUNID.npz\")|.name" | grep -q GFSM || { echo "NO GFSM $RUNID"; exit 1; }
-LSC=$(cat data/cyclone/mm/live_script 2>/dev/null || echo live.py); SUF=""; [ "$LSC" = live2.py ] && SUF=-v2; LD=data/cyclone/mm/live/$RUNID$SUF
+# which model: version 2 once a depression has formed (it is better on formed storms), version 1 before (v2 cannot yet
+# build one coherent storm from a weak seedling). data/cyclone/mm/live_script, if present, overrides.
+[ -s "$W/$LIVE" ] || { ID=$(gh api $R/releases/tags/era5-cases -q ".assets[]|select(.name==\"$LIVE\")|.id"); gh api -H 'Accept: application/octet-stream' $R/releases/assets/$ID > "$W/$LIVE"; }
+FORMED=$(cd scripts/cyclone/analysis && python3 -W ignore -c "
+from ours_live import detect; b=detect('$W/$LIVE')['bay']; print(int(b['vort850'] >= 7.0 and b['depth'] >= 2.5))" 2>/dev/null || echo 0)
+LSC=$(cat data/cyclone/mm/live_script 2>/dev/null || { [ "$FORMED" = 1 ] && echo live2.py || echo live.py; }); SUF=""; [ "$LSC" = live2.py ] && SUF=-v2; LD=data/cyclone/mm/live/$RUNID$SUF
+echo "formed=$FORMED model=$LSC" 
 if [ ! -f $LD/ens.json ] && [ "$(head -n 2 data/cyclone/MMLIVE 2>/dev/null | tr '\n' ' ')" != "$RUNID $LSC " ]; then
   printf '%s\n%s\n#moist model live ensemble %s\n' "$RUNID" "$LSC" "$(date -u +%FT%H:%MZ)" > data/cyclone/MMLIVE
   git add data/cyclone/MMLIVE; git commit -qm "Moist model: live ensemble on GFS $RUNID" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
