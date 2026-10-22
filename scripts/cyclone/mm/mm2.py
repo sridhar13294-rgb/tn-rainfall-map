@@ -40,11 +40,11 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='bmj', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='gray', rad_every=1,
-                mf_kick_t=0.0, mf_kick_q=0.0, mf_org=0.0, mf_wup=0.0)
+                mf_kick_t=0.0, mf_kick_q=0.0, mf_org=0.0, mf_wup=0.0, mf_dd=0.0)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
-DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt', 'entr', 'mf_kick_t', 'mf_kick_q', 'mf_org', 'mf_wup')
+DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt', 'entr', 'mf_kick_t', 'mf_kick_q', 'mf_org', 'mf_wup', 'mf_dd')
 NWAVE = 8
 class Model:
     def __init__(self, grid='T170', layers=32, dt_min=None, set_=None):
@@ -241,7 +241,28 @@ class Model:
             pb = jnp.take_along_axis(p * jnp.ones_like(Tn), kb[None], 0)[0]
             Mb = jnp.maximum(Mb, conv_q / jnp.maximum(qsat(Tb, pb) - qb, 5e-4))
         Mb = jnp.clip(Mb, 0.0, jnp.minimum(S['mf_cap'] * mmin / dt, 1.0)) * deep
-        return dT1 * Mb, dq1 * Mb, P1 * Mb, inc & deep[None], deep
+        # downdraft (mf_dd = its mass flux as a share of the updraft's, ECMWF ~0.3): air from the level of free sink (lower
+        # third of the cloud) is cooled to saturation by evaporating rain and sinks moist-adiabatically (moist static energy of
+        # that level kept) to the ground, where it spreads out: cools and moistens the lowest layers, takes rain back up.
+        sig_lfs = sig_src - 0.35 * (sig_src - sig_top); k_lfs = jnp.argmin(jnp.abs(sig - sig_lfs[None]), axis=0)
+        h_d = jnp.take_along_axis(h_e, k_lfs[None], 0)[0]
+        ind = (ii >= k_lfs[None]) & deep[None]                                                     # LFS down to the ground
+        Td = Tn
+        for _ in range(4):
+            qs_ = qsat(Td, p); f_ = CP * Td + G * zc + LV * qs_ - h_d[None]; df = CP + LV * qs_ * 17.67 * 243.5 / (Td - 29.65) ** 2
+            Td = jnp.clip(Td - f_ / df, 150.0, 350.0)
+        q_d = qsat(Td, p); hd3 = h_d[None] * jnp.ones_like(Tn)
+        last = ii == L - 1
+        Fhd = jnp.where(ind & ~last, hd3 - sh(h_e), 0.0); Fqd = jnp.where(ind & ~last, q_d - sh(qn), 0.0)          # down across each layer's bottom
+        q_prev = jnp.concatenate([qn[:1], q_d[:-1]], 0)
+        Ev = jnp.where(ind, jnp.maximum(jnp.where(ii == k_lfs[None], q_d - qn, q_d - q_prev), 0.0), 0.0)             # evaporation into the downdraft, per unit flux
+        Ed = (Ev).sum(0); Pu = (P1 * Mb).sum(0)
+        a_dd = S['mf_dd'] * jnp.minimum(1.0, Pu / jnp.maximum(S['mf_dd'] * Mb * Ed, 1e-12))                     # cannot evaporate more rain than the updraft made
+        Md = a_dd * Mb
+        dh_dd = (top(Fhd) - Fhd) / mass * Md; dq_dd = ((top(Fqd) - Fqd) + Ev) / mass * Md
+        Pscale = jnp.clip(1.0 - Md * Ed / jnp.maximum(Pu, 1e-12), 0.0, 1.0)
+        dT_dd = (dh_dd - LV * dq_dd) / CP
+        return dT1 * Mb + dT_dd, dq1 * Mb + dq_dd, P1 * Mb * Pscale, inc & deep[None], deep
     def column(self, T, q, u, v, ps, cr, want_diag=False, rad_fresh=False, div=None):
         """All arrays nodal: T, q, u, v [L, X, Y] (SI); ps [X, Y] Pa; cr = surface carry. Returns tendencies (per second)
         and diagnostics (surface rain, surface fluxes)."""
