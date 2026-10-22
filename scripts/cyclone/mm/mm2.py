@@ -321,7 +321,7 @@ class Model:
         (sN, cN), traj = f(state, carry); first = jax.jit(post)(state, carry)
         return {k: np.concatenate([np.asarray(first[k])[None], np.asarray(v)], 0) for k, v in traj.items()}
     # ------------------------------------------------------------------------------------------------ storm tracker (GFDL style)
-    def track(self, out, la0, lo0, every_h=6):
+    def track(self, out, la0, lo0, every_h=6, keep_h=0):
         """centre from up to five fixes near the expected position (last position + 0.75 x last motion): minimum MSLP, maximum
         850 and 700 hPa vorticity, minimum 850 and 700 hPa height; each a weighted centroid within 150 km of its extremum.
         Fixes further than 225 km from their mean are dropped; the rest are averaged. Stops when fewer than 2 fixes agree or
@@ -341,14 +341,16 @@ class Model:
             keep = [f for f in fixes if math.hypot(f[0] - mla, (f[1] - mlo) * math.cos(math.radians(mla))) * 111.2 <= 225]
             if not keep: keep = [min(fixes, key=lambda f: math.hypot(f[0] - g[0], (f[1] - g[1]) * math.cos(math.radians(g[0]))))]
             nl, no = np.array(keep).mean(0)
-            if i: vel = (nl - la, ((no - lo + 180) % 360) - 180)
+            if i:
+                vel = (nl - la, ((no - lo + 180) % 360) - 180); sp = math.hypot(*vel)
+                if sp > 3.0: nl, no = la + vel[0] * 3.0 / sp, lo + vel[1] * 3.0 / sp; vel = (vel[0] * 3.0 / sp, vel[1] * 3.0 / sp)   # no jumps over 3 deg in 6 h
             la, lo = float(nl), float(no % 360); dd = dist(la, lo)
             wmax = float(np.hypot(out['ul'][i], out['vl'][i])[dd <= 300].max()) * 0.85 / 0.5144 if (dd <= 300).any() else 0.0
             pmin = float(np.asarray(out['mslp'][i])[dd <= 200].min()) / 100 if (dd <= 200).any() else None
             vo = float(np.asarray(out['vo850'][i])[dd <= 150].mean()) * sgn * 1e5 if (dd <= 150).any() else 0.0
             weak = weak + 1 if vo < 1.0 else 0
             res.append((i * every_h, round(la, 2), round(lo, 2), round(wmax, 1), None if pmin is None else round(pmin, 1), round(vo, 1), len(keep)))
-            if weak >= 4: break                                                                   # vortex gone for 24 h
+            if weak >= 4 and i * every_h >= keep_h: break                                         # vortex gone for 24 h (after keep_h: a seedling may be weak at first)
         return res
 
 # ---------------------------------------------------------------------------------------------------- ensemble helpers

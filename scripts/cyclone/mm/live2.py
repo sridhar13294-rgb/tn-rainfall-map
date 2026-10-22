@@ -55,7 +55,7 @@ def run(LIVEM, LIVE, PART, NPART, OUT, CFG=None):
                 rs = np.random.default_rng(3000 + k); c = rs.standard_normal(6) / math.sqrt(6) * (1 if lvl(mb['h'][1]) != 1 else 1.2)
                 st = mm2.add_perturbation(st, bv_cache[grid], c)
             out = M.run(st, cr, HOURS)
-            T = {pk: M.track(out, p['lat'], p['lon']) for pk, p in PR.items()}
+            T = {pk: M.track(out, p['lat'], p['lon'], keep_h=0 if formed else 96) for pk, p in PR.items()}
             rain = None
             if st_names:                                                                              # cumulative rain (mm) at each TN site, every 6 h
                 from scipy.interpolate import RegularGridInterpolator as RGI
