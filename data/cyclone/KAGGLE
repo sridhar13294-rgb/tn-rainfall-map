@@ -1,6 +1,6 @@
-tn-wx-rad
+tn-wx-tend
 libm_wx2020_fields.npz,wx_truth_2020.npz
-bash ../kaggle/par.sh wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/wx_rad.json /kaggle/working/wx
+python -W ignore wx_tend.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz /kaggle/working/tend.json 4
 NvidiaTeslaT4
-1
-#general exam: new radiation, ECMWF-style output, mass-flux with kick 2026-10-22T20:35Z
+3
+#which physics warms the lower air too fast (24 h, one process off at a time) 2026-10-22T21:37Z
