@@ -1,6 +1,6 @@
-tn-wx-base2
-libm_wx2020_fields.npz,wx_truth_2020.npz
-bash ../kaggle/par.sh wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/wx_base.json /kaggle/working/wx
+tn-base-terr
+libm_fields.npz
+bash ../kaggle/par.sh hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/base_terr.json /kaggle/working/bt
 NvidiaTeslaT4
-1
-#general weather exam rerun with the terrain fix 2026-10-22T19:00Z
+2
+#84 Bay storms with the terrain fix (base and new radiation) 2026-10-22T19:00Z
