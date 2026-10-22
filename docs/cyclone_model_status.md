@@ -5,6 +5,14 @@ close to ECMWF as possible; products (website Cyclone tab, rain, strike maps) on
 (main/website changes) only when everything is complete and tested on branch `cases`, and only on Sridhar's word.
 Claude usage is limited (resets Mon 26 Oct 22:30 IST): no helper agents, few short messages, batch GPU tests.
 
+## Scope and live document (22 Oct)
+- It is a GENERAL daily weather model (like ECMWF/GFS, 00Z+12Z, 10-day + 51-member 15-day), not a cyclone-only model. Every change
+  must pass all exams: general weather exam (wx2.py vs ECMWF HRES, 2020), storms (1980-2025 Indian Ocean), storm forming, TN rain.
+- Live document (keep updated whenever a part/setting/result changes, add a Change log row):
+  https://claude.ai/artifact/GttzHBxsJbyAh9HSW1NcFi  (Claude Docs; doc id 80b80cf7-5280-4a80-9a72-f62fe1df27e9, body node fae0a72b-c1fd)
+- Order after the 11 fixes (Sridhar): 3-D ocean (currents/upwelling, then Veros coupled), then India in detail (9 km all India,
+  3 km windows where weather is active; full 3 km needs a GPU regional model).
+
 ## Rules
 - Branch `cases` only. Commit trailer: `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>` +
   `Claude-Session: https://claude.ai/code/session_01AXxjaemsi36VrJDzeKZ8zA`. Git identity Claude <noreply@anthropic.com>.
