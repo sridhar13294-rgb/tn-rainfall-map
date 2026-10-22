@@ -292,8 +292,9 @@ class Model:
         dq = dq - cond + evap; dT = dT + LV / CP * (cond - evap)
         # ---------------- radiation
         Tn = T + dt * dT; qn = jnp.maximum(q + dt * dq, 0)
-        t_h = cr['t'] / 3600.0; doy = self.doy0 + t_h / 24.0; decl = math.radians(23.44) * jnp.sin(2 * jnp.pi * (doy - 81) / 365.0)
-        hour = (self.utc0 + t_h) % 24.0; ha = jnp.radians(15.0 * (hour - 12.0) + jnp.asarray(self.LO))
+        doy0 = cr['doy0'] if 'doy0' in cr else self.doy0; utc0 = cr['utc0'] if 'utc0' in cr else self.utc0   # start date as data: no recompile per start
+        t_h = cr['t'] / 3600.0; doy = doy0 + t_h / 24.0; decl = math.radians(23.44) * jnp.sin(2 * jnp.pi * (doy - 81) / 365.0)
+        hour = (utc0 + t_h) % 24.0; ha = jnp.radians(15.0 * (hour - 12.0) + jnp.asarray(self.LO))
         latr = jnp.radians(jnp.asarray(self.LA)); mu0 = jnp.maximum(jnp.sin(latr) * jnp.sin(decl) + jnp.cos(latr) * jnp.cos(decl) * jnp.cos(ha), 0.0)
         if S['rad'] == 'radcloud':
             # radcloud.py: diagnostic clouds (Sundqvist large-scale, Slingo convective + anvil, max-random overlap),
@@ -352,7 +353,11 @@ class Model:
     def build(self, when_utc, split=False):
         """when_utc: datetime of the start (sun position)."""
         self.doy0 = float(when_utc.timetuple().tm_yday); self.utc0 = float(when_utc.hour); hor = self.coords.horizontal; M = self
-        self._jit = {}; self.built_for = when_utc                                                 # new start: compile afresh
+        same = (getattr(self, '_built', None) is not None and self._built[0] == split and np.array_equal(self._built[1], np.asarray(self.oro))
+                and np.array_equal(self._built[2], np.asarray(self.zs)) and np.array_equal(self._built[3], np.asarray(self.land)))
+        self.built_for = when_utc
+        if same: return                                                                             # same grid, terrain and coast: reuse the compiled model
+        self._jit = {}; self._built = (split, np.asarray(self.oro), np.asarray(self.zs), np.asarray(self.land))
         self.eq = primitive_equations.SemiLagrangianPrimitiveEquations(self.ref_t, self.oro, self.coords, self.ps, humidity_key='specific_humidity',
                                                                        monotone_tracers=True, nodal_tracers=('specific_humidity',), departure_iterations=1, monotone_dynamics=True)
         cl = hor.cos_lat
@@ -435,6 +440,7 @@ class Model:
         key = ('run', hours, every_h, tuple(box))
         if key not in self._jit: self._jit[key] = (jax.jit(lambda s, c: jax.lax.scan(block, (s, c), None, length=outer)), jax.jit(post))
         f, fpost = self._jit[key]
+        carry = dict(carry, doy0=jnp.float32(self.doy0), utc0=jnp.float32(self.utc0))
         (sN, cN), traj = f(state, carry); first = fpost(state, carry)
         return {k: np.concatenate([np.asarray(first[k])[None], np.asarray(v)], 0) for k, v in traj.items()}
     # ------------------------------------------------------------------------------------------------ storm tracker (GFDL style)
@@ -494,7 +500,7 @@ def integrate(M, state, carry, hours):
     def one(c, _):
         st, cr = c; M._carry = cr; st2 = M.step(st); return (st2, M.surface(st2, cr)), None
     if key not in M._jit: M._jit[key] = jax.jit(lambda s, c: jax.lax.scan(one, (s, c), None, length=n)[0])
-    return M._jit[key](state, carry)
+    return M._jit[key](state, dict(carry, doy0=jnp.float32(M.doy0), utc0=jnp.float32(M.utc0)))
 def bred_vectors(M, state, carry, n=6, hours=12.0, seed=0, amp=1.0):
     """bred vectors (NCEP-style): small random seeds are grown by the model itself for `hours`; what grows is the part of
     today's uncertainty that matters (troughs, the storm's surroundings). Each is scaled so its 850-hPa-ish wind

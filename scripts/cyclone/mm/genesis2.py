@@ -21,24 +21,25 @@ def at(P0, t):
             f = (t - a[0]).total_seconds() / max(1, (b[0] - a[0]).total_seconds())
             return tuple(a[i] + f * (b[i] - a[i]) if a[i] is not None and b[i] is not None else (a[i] or b[i]) for i in (1, 2, 3))
     return None
-storms = [s for s in O.LIBL if (not C.get('storms') or s['name'] in C['storms'])]; res = []
+storms = [s for s in O.LIBL if (not C.get('storms') or s['name'] in C['storms'])]; res = []; MODELS = {}
 for i, s in enumerate(storms):
     if i % NCH != CH: continue
     g = O.gen_time(s); g = g.replace(hour=g.hour // 6 * 6); t0 = g - dt.timedelta(hours=LEAD); key = t0.strftime('%Y-%m-%dT%H')
     if key not in TT: continue
     k = TT.index(key); P0 = O.path_of(s); gp = tuple(s['gen'])
     f3 = {v: Z['f3'][k, V3.index(v)] for v in V3}; t = time.time(); runs = {}
-    models = {}
+    started = set()
     for vn, vs in VAR.items():
         try:
             tm = time.time(); stat = {kk: vs[kk] for kk in STATIC if kk in vs}; dyn = {kk: v for kk, v in vs.items() if kk not in STATIC}
             key_s = json.dumps(stat, sort_keys=True)
-            if key_s not in models:                                                                # one compiled model per scheme choice, shared by its variants
-                M = mm2.Model(C.get('grid', 'T85'), 32, None, dict(sppt_on=False, **stat))
+            if key_s not in MODELS: MODELS[key_s] = [mm2.Model(C.get('grid', 'T85'), 32, None, dict(sppt_on=False, **stat)), None, None]   # compiled once per job
+            if key_s not in started:                                                               # this storm's start state for this scheme
+                M = MODELS[key_s][0]; started.add(key_s)
                 st, cr = M.init(f3, Z['levs'], Z['lats'], Z['lons'], Z['f2'][k, V2.index('surface_pressure')], Z['f2'][k, V2.index('geopotential_at_surface')] / 9.80616,
                                 Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')], ocean=C.get('ocean'), when=t0)
-                M.build(t0); st = M.dfi(st); models = {key_s: (M, st, cr)}                           # keep only the current one (memory)
-            M, st, cr = models[key_s]; out = M.run(st, M.with_params(cr, dyn), HRS)
+                M.build(t0); st = M.dfi(st); MODELS[key_s][1:] = [st, cr]
+            M, st, cr = MODELS[key_s]; out = M.run(st, M.with_params(cr, dyn), HRS)
             if not np.isfinite(out['mslp']).all(): raise RuntimeError('blew up')
             LO, LA = np.meshgrid(M.blon, M.blat, indexing='ij'); sgn = 1 if gp[0] >= 0 else -1
             d = np.hypot(LA - gp[0], ((LO - gp[1] + 180) % 360 - 180) * math.cos(math.radians(gp[0]))) * 111.2

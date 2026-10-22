@@ -13,7 +13,7 @@ def at(P0, t, k=None):
             f = (t - a[0]).total_seconds() / max(1, (b[0] - a[0]).total_seconds())
             return tuple(a[i] + f * (b[i] - a[i]) if a[i] is not None and b[i] is not None else (a[i] or b[i]) for i in (1, 2, 3))
     return None
-storms = [s for s in O.LIBL if not C.get('storms') or s['name'] in C['storms']]; res = []
+storms = [s for s in O.LIBL if not C.get('storms') or s['name'] in C['storms']]; res = []; MODELS = {}
 for i, s in enumerate(storms):
     if i % NCH != CH: continue
     g = O.gen_time(s); key = g.strftime('%Y-%m-%dT%H')
@@ -23,7 +23,10 @@ for i, s in enumerate(storms):
     f3 = {v: Z['f3'][k, V3.index(v)] for v in V3}
     for var in (C.get('variants') or [dict(name='control')]):
         try:
-            t = time.time(); M = mm2.Model(var.get('grid', C.get('grid', 'T170')), var.get('layers', 32), var.get('dt_min', C.get('dt_min', 30.0)), var.get('set'))
+            t = time.time()
+            if var['name'] not in MODELS:                                                         # one compiled model per variant for the whole job
+                MODELS[var['name']] = mm2.Model(var.get('grid', C.get('grid', 'T170')), var.get('layers', 32), var.get('dt_min', C.get('dt_min', 30.0)), var.get('set'))
+            M = MODELS[var['name']]
             storm = dict(lat=st0[0], lon=st0[1], vmax_kt=st0[2] or 25.0) if var.get('bogus', True) else None
             state, carry = M.init(f3, Z['levs'], Z['lats'], Z['lons'], Z['f2'][k, V2.index('surface_pressure')], Z['f2'][k, V2.index('geopotential_at_surface')] / 9.80616,
                                   Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')], storm=storm, ocean=C.get('ocean'), when=g)

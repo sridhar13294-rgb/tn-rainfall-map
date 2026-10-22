@@ -23,7 +23,7 @@ for i, s in enumerate(storms):
     k = TT.index(key); P0 = O.path_of(s); st0 = at(P0, g)
     if not st0: continue
     f3 = {v: Z['f3'][k, V3.index(v)] for v in V3}; mems = []; bv = None; t = time.time()
-    M = mm2.Model(C.get('grid', 'T85'), 32, 30.0, dict(sppt_on=True))                          # compiled once per storm, reused by every member
+    if 'M' not in dir(): M = mm2.Model(C.get('grid', 'T85'), 32, 30.0, dict(sppt_on=True))   # compiled once per job, reused by every storm and member
     for m in range(0, C.get('members', 10) + 1):
         try:
             mb = member(m); tm = time.time()
@@ -32,7 +32,7 @@ for i, s in enumerate(storms):
             st, cr = M.init(f3, Z['levs'], Z['lats'], Z['lons'], Z['f2'][k, V2.index('surface_pressure')], Z['f2'][k, V2.index('geopotential_at_surface')] / 9.80616,
                             Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')], storm=storm, ocean=C.get('ocean'), when=g)
             cr = M.with_params(cr, mb['set'])
-            if getattr(M, 'built_for', None) != g: M.build(g, split=C.get('split', False))
+            if m == 0: M.build(g, split=C.get('split', False))                                     # new start date (no recompile)
             st = M.dfi(st)
             if m:
                 if bv is None: bv = mm2.bred_vectors(M, st, M.with_params(cr, {}), n=6, hours=12.0, seed=77, amp=1.0)
