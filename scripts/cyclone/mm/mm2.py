@@ -39,11 +39,12 @@ def tridiag(a, b, c, d):
 DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 3600.0, k_evap=2e-5, ck=1.2e-3, charnock=0.018, cd_cap=2.4e-3,
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
-                conv='bmj', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='gray', rad_every=1)
+                conv='bmj', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='gray', rad_every=1,
+                mf_kick_t=0.0, mf_kick_q=0.0, mf_org=0.0, mf_wup=0.0)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
-DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt', 'entr')
+DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt', 'entr', 'mf_kick_t', 'mf_kick_q', 'mf_org', 'mf_wup')
 NWAVE = 8
 class Model:
     def __init__(self, grid='T170', layers=32, dt_min=None, set_=None):
@@ -185,10 +186,16 @@ class Model:
         tau_deep. Returns dT, dq (per s), rain production per layer (kg m-2 s-1), cloud mask, deep flag."""
         L = Tn.shape[0]; ii = jnp.arange(L)[:, None, None]; h_e = CP * Tn + G * zc + LV * qn
         rh_e = jnp.clip(qn / qsat(Tn, p), 0, 1); sig_src = jnp.take_along_axis(sig * jnp.ones_like(Tn), ksrc[None], 0)[0]
+        qs_e = qsat(Tn, p); qs_src = jnp.maximum(jnp.take_along_axis(qs_e, ksrc[None], 0)[0], 1e-6)
+        # parcel kick (mf_kick_t K, mf_kick_q kg/kg): the extra warmth and moisture of rising boundary-layer thermals, as in
+        # ECMWF's trigger test; organised entrainment (mf_org > 0): mixing falls off with height as (qsat / qsat at the
+        # source)^(3 mf_org) (Bechtold et al. 2008), so a deep moist plume can reach the upper troposphere
+        h_kick = CP * S['mf_kick_t'] + LV * S['mf_kick_q']
         def plume(c, x):
             hu, qu, alive, lfc, started, zp = c; Te, qe, he, pk, zk, sk, rk, k = x
-            src = (k == ksrc); eps = S['entr'] * (1.3 - rk); dz = jnp.maximum(zk - zp, 0.0)
-            hu1 = jnp.where(src, he, hu + eps * dz * (he - hu)); qu1 = jnp.where(src, qe, qu + eps * dz * (qe - qu))
+            src = (k == ksrc); dz = jnp.maximum(zk - zp, 0.0)
+            eps = S['entr'] * (1.3 - rk) * jnp.power(jnp.clip(qsat(Te, pk) / qs_src, 1e-3, 1.0), 3.0 * S['mf_org'])
+            hu1 = jnp.where(src, he + h_kick, hu + eps * dz * (he - hu)); qu1 = jnp.where(src, qe + S['mf_kick_q'], qu + eps * dz * (qe - qu))
             Td = (hu1 - G * zk - LV * qu1) / CP; sat = qu1 > qsat(Td, pk); Tu = Te
             for _ in range(4):
                 qs_ = qsat(Tu, pk); f_ = CP * Tu + G * zk + LV * qs_ - hu1; df = CP + LV * qs_ * 17.67 * 243.5 / (Tu - 29.65) ** 2
@@ -199,7 +206,7 @@ class Model:
             lfc2 = jnp.where(run, lfc | (b > 0), lfc)
             alv2 = jnp.where(src, True, jnp.where(run, alive & ((b > 0) | (~lfc & (sig_src - sk < 0.2))) & (sk > 0.08), alive & ~started))
             act = st2 & alv2 & (run | src)
-            nh = jnp.where(act, jnp.where(src, he, hu1), hu); nq = jnp.where(act, jnp.where(src, qe, qv), qu)
+            nh = jnp.where(act, jnp.where(src, he + h_kick, hu1), hu); nq = jnp.where(act, jnp.where(src, qe + S['mf_kick_q'], qv), qu)
             return (nh, nq, alv2, lfc2, st2, jnp.where(act | ~st2, zk, zp)), (act, jnp.where(run & act, b, 0.0), jnp.where(run & act, cond, 0.0), nh, nq)
         z0 = jnp.zeros_like(ps); f0 = jnp.zeros(ps.shape, bool)
         xs = tuple(a[::-1] for a in (Tn, qn, h_e, p * jnp.ones_like(Tn), zc, sig * jnp.ones_like(Tn), rh_e, ii * jnp.ones(Tn.shape, jnp.int32)))
@@ -219,7 +226,11 @@ class Model:
         dhs = jnp.take_along_axis(dh1, ksrc[None], 0)[0]
         dcape = (RD * (dhs[None] / (CP * (1 + gam)) - dT1) * dsig / sig * (inc & (ii != ksrc))).sum(0)    # CAPE change per unit mass flux
         mmin = jnp.min(jnp.where(eta > 0, mass, 1e9), axis=0)
-        Mb = cape / (S['tau_deep'] * jnp.maximum(-dcape, 1e-6))                                    # CAPE closure (Bechtold / ECMWF today)
+        # CAPE closure (Bechtold / ECMWF): CAPE removed over tau; with mf_wup > 0, tau = cloud depth / updraft speed (ECMWF's
+        # convective turnover time), between 10 min and tau_deep
+        zsrc = jnp.take_along_axis(zc, ksrc[None], 0)[0]; ztop = jnp.max(jnp.where(inc, zc, 0.0), axis=0)
+        tau = jnp.where(S['mf_wup'] > 0, jnp.clip((ztop - zsrc) / jnp.maximum(S['mf_wup'], 1e-3), 600.0, S['tau_deep']), S['tau_deep'])
+        Mb = cape / (tau * jnp.maximum(-dcape, 1e-6))
         if S['mf_closure'] == 'hybrid' and div is not None:
             # moisture-convergence closure (Tiedtke 1989, ECMWF's original scheme): the updraft carries away at least the moisture
             # that the boundary layer gathers by low-level inflow plus surface evaporation. This ties convection to the low's
