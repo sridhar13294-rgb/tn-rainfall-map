@@ -1,5 +1,5 @@
-tn-mm2-bench
+tn-mm2-t170
 libm_fields.npz
-python -W ignore gpu_bench.py /kaggle/working/libm_fields.npz /kaggle/working/bench.json T85,T119,T170,T213 120 Hamoon
+bash ../kaggle/par.sh hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/t170.json /kaggle/working/t170
 NvidiaTeslaT4
-#GPU benchmark 2026-10-22T10:39Z
+#T170 past-storm test on 2 GPUs 2026-10-22T11:08Z
