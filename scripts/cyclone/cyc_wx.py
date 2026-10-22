@@ -28,7 +28,8 @@ def opn(paths):
 def grab(ds, key, **sel):
     var, lev, sc = VARS[key]
     if var not in ds: return None
-    x = ds[var].sel(**sel)
+    x = ds[var]
+    for kk, vv in sel.items(): x = x.sel({kk: vv}, method='nearest') if kk in ('time', 'prediction_timedelta') else x.sel({kk: vv})
     if lev is not None: x = x.sel(level=lev)
     la = 'latitude' if 'latitude' in x.dims else 'lat'; lo = 'longitude' if 'longitude' in x.dims else 'lon'
     x = x.sortby(la).transpose(la, lo).values.astype(np.float64) * sc
@@ -55,6 +56,7 @@ if not DAYS_DONE: np.savez_compressed('/tmp/cyc_out/wx_truth_2020.npz', days=np.
 log('truth ready', os.path.getsize('/tmp/cyc_out/wx_truth_2020.npz'))
 H = opn(HRES); res = []
 if H is not None:
+    log('hres prediction_timedelta', str(H['prediction_timedelta'].values[:6]), H['prediction_timedelta'].dtype, 'time', str(H['time'].values[:2]), H['time'].dtype)
     di = {d: i for i, d in enumerate(DAYS)}
     for s in STARTS:
         row = dict(start=s.strftime('%Y-%m-%d'), days={})
@@ -62,7 +64,7 @@ if H is not None:
             v = s + dt.timedelta(days=ld); j = di[v]; sc = {}
             for k in VARS:
                 try:
-                    f = grab(H, k, time=np.datetime64(s, 'ns'), prediction_timedelta=np.timedelta64(ld * 24, 'h').astype('timedelta64[ns]'))
+                    f = grab(H, k, time=np.datetime64(s, 'ns'), prediction_timedelta=np.timedelta64(ld * 24 * 3600 * 10**9, 'ns'))
                     if f is not None: sc[k] = WS.scores(f, T[k][j], CL[k][j] if np.isfinite(CL[k][j]).any() else None)
                 except Exception as e:
                     if ld == 1 and s == STARTS[0]: log('hres', k, repr(e)[:150])
