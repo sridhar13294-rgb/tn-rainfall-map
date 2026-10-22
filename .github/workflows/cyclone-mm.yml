@@ -26,9 +26,9 @@ jobs:
       - if: matrix.chunk < fromJSON(steps.n.outputs.n)
         run: pip install -q "jax[cpu]" numpy scipy xarray matplotlib scikit-learn "git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0"
       - if: matrix.chunk < fromJSON(steps.n.outputs.n)
-        run: mkdir -p /tmp/w && gh release download era5-cases -p libm_fields.npz -D /tmp/w
+        run: mkdir -p /tmp/w && gh release download era5-cases -p $(python3 -c "import json;print(json.load(open('data/cyclone/MM.json')).get('lib','libm_fields.npz'))") -D /tmp/w
       - if: matrix.chunk < fromJSON(steps.n.outputs.n)
-        run: cd /tmp/w && (python -W ignore $GITHUB_WORKSPACE/scripts/cyclone/mm/$(python -c "import json;print(json.load(open('$GITHUB_WORKSPACE/data/cyclone/MM.json')).get('script','hind.py'))") libm_fields.npz $GITHUB_WORKSPACE/data/cyclone/MM.json ${{ matrix.chunk }} 42 mm_${{ matrix.chunk }}.json > mm_${{ matrix.chunk }}.log 2>&1 || echo EXIT $? >> mm_${{ matrix.chunk }}.log; free -m >> mm_${{ matrix.chunk }}.log); tail -40 mm_${{ matrix.chunk }}.log
+        run: cd /tmp/w && (python -W ignore $GITHUB_WORKSPACE/scripts/cyclone/mm/$(python -c "import json;print(json.load(open('$GITHUB_WORKSPACE/data/cyclone/MM.json')).get('script','hind.py'))") $(python3 -c "import json;print(json.load(open('$GITHUB_WORKSPACE/data/cyclone/MM.json')).get('lib','libm_fields.npz'))") $GITHUB_WORKSPACE/data/cyclone/MM.json ${{ matrix.chunk }} 42 mm_${{ matrix.chunk }}.json > mm_${{ matrix.chunk }}.log 2>&1 || echo EXIT $? >> mm_${{ matrix.chunk }}.log; free -m >> mm_${{ matrix.chunk }}.log); tail -40 mm_${{ matrix.chunk }}.log
       - if: always() && matrix.chunk < fromJSON(steps.n.outputs.n)
         run: |
           T=$(python -c "import json;print(json.load(open('data/cyclone/MM.json')).get('tag','mm'))")
