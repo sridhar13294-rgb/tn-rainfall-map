@@ -62,12 +62,13 @@ def run(LIVEM, LIVE, PART, NPART, OUT, CFG=None):
             if not np.isfinite(out['mslp']).all(): raise RuntimeError('model blew up')
             T = {pk: M.track(out, p['lat'], p['lon'], keep_h=0 if formed else 96) for pk, p in PR.items()}
             T['peak'] = mm2.track_from_peak(M, out)                                                   # the Bay system at its strongest, followed both ways
+            systems = mm2.track_all(M, out)                                                           # every Bay / Arabian Sea system, with mergers
             rain = None
             if st_names:                                                                              # cumulative rain (mm) at each TN site, every 6 h
                 from scipy.interpolate import RegularGridInterpolator as RGI
                 pts = np.array([[s_[2], s_[1]] for s_ in st_names])                                  # (lon, lat)
                 rain = [np.round(RGI((M.blon, M.blat), np.asarray(out['rain'][i]), bounds_error=False, fill_value=0.0)(pts), 1).tolist() for i in range(out['rain'].shape[0])]
-            res.append(dict(member=k, h=mb['h'], alpha=mb['alpha'], grid=grid, tracks=T, rain=rain)); print(k, grid, {pk: max([t[3] for t in v] or [0]) for pk, v in T.items()}, '%.0fs' % (time.time() - t_a), flush=True)
+            res.append(dict(member=k, h=mb['h'], alpha=mb['alpha'], grid=grid, tracks=T, rain=rain, systems=systems)); print(k, grid, {pk: max([t[3] for t in v] or [0]) for pk, v in T.items()}, '%.0fs' % (time.time() - t_a), flush=True)
         except Exception as e:
             import traceback; traceback.print_exc(); res.append(dict(member=k, err=repr(e)[:300])); print(k, 'FAILED', repr(e)[:300], flush=True)
     json.dump(dict(obs=obs, precursors=PR, ecm=D is not None, members=res), open(OUT, 'w'), default=float)
@@ -123,8 +124,18 @@ def merge(LIVE, SSTJ, LIJ, SITES, OUT, parts):
             dr['median'].append(np.round(np.median(dm, 0), 1).tolist()); dr['heavy'].append(np.round((dm >= 64.5).mean(0), 2).tolist())
             dr['very_heavy'].append(np.round((dm >= 115.6).mean(0), 2).tolist()); dr['total_median'].append(round(float(np.median(dm.sum(1))), 1))
     c = Counter(r['seg'] for r in RES)
+    # scenarios: which system ends up dominant (lowest pressure), whether another merged into it, where it lands
+    def scen(m):
+        sy = m.get('systems') or {}; tr = {t['id']: t for t in sy.get('tracks', [])}
+        if sy.get('dominant') is None: return 'no organised system'
+        d = tr[sy['dominant']]; merged = [t for t in tr.values() if t.get('merged_into') == d['id']]
+        seg = 'stays at sea'
+        for a, b in zip(d['pts'], d['pts'][1:]):
+            if not on_land(a[2], a[1]) and on_land(b[2], b[1]): seg = O.segment((a[1] + b[1]) / 2, (a[2] + b[2]) / 2); break
+        return d['basin'] + ' system dominant' + (' (absorbs the ' + ('Arabian Sea' if merged[0]['basin'] == 'Arabian Sea' else 'other Bay') + ' system)' if merged else '') + ' -> ' + seg
+    scenarios = Counter(scen(m) for m in mem if m['member'] not in failed)
     summ = dict(shares={s: c[s] for s in SEGS if c[s]}, tn=c['south TN'] + c['north TN'], vmax_mid=round(float(np.median([r['vmax'] for r in RES])), 1),
-                control=dict(seg=RES[0]['seg'], lf=RES[0]['lf'], vmax=RES[0]['vmax']) if RES and RES[0]['member'] == 0 else None, n=len(RES), failed=failed)
+                control=dict(seg=RES[0]['seg'], lf=RES[0]['lf'], vmax=RES[0]['vmax']) if RES and RES[0]['member'] == 0 else None, n=len(RES), failed=failed, scenarios=dict(scenarios.most_common()))
     json.dump(dict(run=t0.isoformat(), method='moist2', obs=obs, analogs=[], factors=[[t, l] for t, l in FACTORS], runs=RES, summary=summ, strike=strike, district_rain=dr),
               open(OUT, 'w'), default=str)
     print(t0, summ)

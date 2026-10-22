@@ -479,3 +479,47 @@ def track_from_peak(M, out, box=(5.0, 22.0, 78.0, 99.0), every_h=6, t_from=24, t
     bwd = M.track({k: v[:ip + 1][::-1] for k, v in out.items()}, la, lo, every_h, keep_h=10 ** 6)
     trk = [((ip - t[0] // every_h) * every_h,) + tuple(t[1:]) for t in bwd[1:]][::-1] + [((ip + t[0] // every_h) * every_h,) + tuple(t[1:]) for t in fwd]
     return trk
+
+# ---------------------------------------------------------------------------------------------------- every system, mergers
+def track_all(M, out, box=(0.0, 25.0, 50.0, 100.0), every_h=6, vo_min=3.5, link_km=450.0, merge_km=800.0, min_len=3):
+    """All low-level vortices in the Bay of Bengal and Arabian Sea (box: lat0, lat1, lon0, lon1), not just one.
+    Each output time: centres = local maxima of smoothed 850-hPa vorticity >= vo_min (1e-5/s) over sea or near the coast,
+    at least 500 km apart. Centres are linked into tracks (nearest within link_km of the expected position). When a
+    track ends within merge_km of another live track, it is recorded as merged into it (the survivor). Returns tracks
+    [{id, basin, pts: [(h, lat, lon, vo, pmin_hPa, wmax_kt)], merged_into, merged_at}] longest-lived first, and the
+    dominant one (lowest pressure reached)."""
+    LO, LA = np.meshgrid(M.blon, M.blat, indexing='ij'); inb = (LA >= box[0]) & (LA <= box[1]) & (LO >= box[2]) & (LO <= box[3])
+    km = lambda a, b, c, d: math.hypot(a - c, ((b - d + 180) % 360 - 180) * math.cos(math.radians((a + c) / 2))) * 111.2
+    tracks = []; live = []
+    for i in range(out['vo850'].shape[0]):
+        sgn = np.where(LA >= 0, 1.0, -1.0); F = ndi.uniform_filter(np.asarray(out['vo850'][i], float) * sgn * 1e5, 3)
+        pk = (F == ndi.maximum_filter(F, size=5)) & (F >= vo_min) & inb
+        cand = sorted([(F[j], float(LA[j]), float(LO[j])) for j in zip(*np.where(pk))], reverse=True); cent = []
+        for c in cand:
+            if all(km(c[1], c[2], x[1], x[2]) >= 500 for x in cent): cent.append(c)
+        P = np.asarray(out['mslp'][i]) / 100; W = np.hypot(out['ul'][i], out['vl'][i]) * 0.85 / 0.5144
+        def info(la, lo):
+            d = np.hypot(LA - la, ((LO - lo + 180) % 360 - 180) * math.cos(math.radians(la))) * 111.2
+            return float(P[d <= 200].min()), float(W[d <= 300].max())
+        used = set(); nxt = []
+        for tr in sorted(live, key=lambda t: -t['pts'][-1][3]):                                   # strongest tracks pick first
+            h, la, lo = tr['pts'][-1][:3]
+            if len(tr['pts']) > 1: la, lo = la + 0.75 * (la - tr['pts'][-2][1]), lo + 0.75 * (lo - tr['pts'][-2][2])
+            best = min(((km(la, lo, c[1], c[2]), n) for n, c in enumerate(cent) if n not in used), default=None)
+            if best and best[0] <= link_km:
+                c = cent[best[1]]; used.add(best[1]); tr['pts'].append((i * every_h, round(c[1], 2), round(c[2], 2), round(c[0], 1)) + tuple(round(x, 1) for x in info(c[1], c[2]))); nxt.append(tr)
+            else: tr['end'] = i * every_h
+        for n, c in enumerate(cent):
+            if n not in used:
+                tr = dict(id=len(tracks), basin='Arabian Sea' if c[2] < 77.5 else 'Bay of Bengal', pts=[(i * every_h, round(c[1], 2), round(c[2], 2), round(c[0], 1)) + tuple(round(x, 1) for x in info(c[1], c[2]))])
+                tracks.append(tr); nxt.append(tr)
+        for tr in live:                                                                           # ended next to a survivor: merged
+            if 'end' in tr and 'merged_into' not in tr:
+                h, la, lo = tr['pts'][-1][:3]
+                near = [(km(la, lo, o['pts'][-1][1], o['pts'][-1][2]), o['id']) for o in nxt]
+                if near and min(near)[0] <= merge_km: tr['merged_into'] = min(near)[1]; tr['merged_at'] = i * every_h
+        live = nxt
+    tracks = [t for t in tracks if len(t['pts']) >= min_len]
+    for t in tracks: t.pop('end', None); t['pmin'] = min(p[4] for p in t['pts'])
+    dom = min(tracks, key=lambda t: t['pmin'])['id'] if tracks else None
+    return dict(tracks=sorted(tracks, key=lambda t: -len(t['pts'])), dominant=dom)
