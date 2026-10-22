@@ -40,18 +40,22 @@ def run(LIVEM, LIVE, PART, NPART, OUT, CFG=None):
         E = np.load(ecm); EV = [str(v) for v in E['v3']]
         D = {v: np.nan_to_num(E['f3'][0, EV.index(v)].astype(float) - f3[v]) for v in V3 if v in EV}
     st_names = json.load(open(os.path.join(HERE, '..', '..', '..', 'data', 'cyclone', 'mm', 'tn_sites.json'))) if os.path.exists(os.path.join(HERE, '..', '..', '..', 'data', 'cyclone', 'mm', 'tn_sites.json')) else None
-    res = []; bv_cache = {}
+    res = []; bv_cache = {}; models = {}; import time
     for k in range(int(PART), 51, int(NPART)):
         try:
+            t_a = time.time()
             mb = member(k); grid = C.get('control_grid', 'T85') if k == 0 else C.get('grid', 'T85')
-            M = mm2.Model(grid, 32, 30.0, mb['set'])
+            if grid not in models: models[grid] = mm2.Model(grid, 32, 30.0, dict(sppt_on=True))           # one compiled model per grid, reused by every member
+            M = models[grid]
             fk = {v: f3[v] + (mb['alpha'] * D[v] if D is not None and v in D else 0.0) for v in V3}
             storm = dict(lat=b['lat'], lon=b['lon'], vmax_kt=25.0) if (formed and k % 2 == 1) else None     # balanced storm inserted in half the members
             st, cr = M.init(fk, Z['levs'], Z['lats'], Z['lons'], Z['f2'][0, V2.index('surface_pressure')], Z['f2'][0, V2.index('geopotential_at_surface')] / 9.80616,
                             Z['f2'][0, V2.index('sea_surface_temperature')], Z['f2'][0, V2.index('land_sea_mask')], storm=storm)
-            M.build(t0); st = M.dfi(st)
+            cr = M.with_params(cr, mb['set'])
+            if getattr(M, 'built_for', None) != t0: M.build(t0)
+            st = M.dfi(st)
             if k:
-                if grid not in bv_cache: bv_cache[grid] = mm2.bred_vectors(M, st, cr, n=6, hours=12.0, seed=77, amp=1.0)
+                if grid not in bv_cache: bv_cache[grid] = mm2.bred_vectors(M, st, M.with_params(cr, {}), n=6, hours=12.0, seed=77, amp=1.0)
                 rs = np.random.default_rng(3000 + k); c = rs.standard_normal(6) / math.sqrt(6) * (1 if lvl(mb['h'][1]) != 1 else 1.2)
                 st = mm2.add_perturbation(st, bv_cache[grid], c)
             out = M.run(st, cr, HOURS)
@@ -63,7 +67,7 @@ def run(LIVEM, LIVE, PART, NPART, OUT, CFG=None):
                 from scipy.interpolate import RegularGridInterpolator as RGI
                 pts = np.array([[s_[2], s_[1]] for s_ in st_names])                                  # (lon, lat)
                 rain = [np.round(RGI((M.blon, M.blat), np.asarray(out['rain'][i]), bounds_error=False, fill_value=0.0)(pts), 1).tolist() for i in range(out['rain'].shape[0])]
-            res.append(dict(member=k, h=mb['h'], alpha=mb['alpha'], grid=grid, tracks=T, rain=rain)); print(k, grid, {pk: max([t[3] for t in v] or [0]) for pk, v in T.items()}, flush=True)
+            res.append(dict(member=k, h=mb['h'], alpha=mb['alpha'], grid=grid, tracks=T, rain=rain)); print(k, grid, {pk: max([t[3] for t in v] or [0]) for pk, v in T.items()}, '%.0fs' % (time.time() - t_a), flush=True)
         except Exception as e:
             import traceback; traceback.print_exc(); res.append(dict(member=k, err=repr(e)[:300])); print(k, 'FAILED', repr(e)[:300], flush=True)
     json.dump(dict(obs=obs, precursors=PR, ecm=D is not None, members=res), open(OUT, 'w'), default=float)

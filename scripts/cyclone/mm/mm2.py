@@ -35,7 +35,10 @@ def tridiag(a, b, c, d):
     _, X = jax.lax.scan(bwd, z, (C[::-1], D[::-1])); return X[::-1]
 DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 3600.0, k_evap=2e-5, ck=1.2e-3, charnock=0.018, cd_cap=2.4e-3,
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
-                h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0)
+                h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None)
+# settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
+DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt')
+NWAVE = 8
 class Model:
     def __init__(self, grid='T170', layers=32, dt_min=30.0, set_=None):
         self.S = dict(DEFAULTS); self.S.update(set_ or {})
@@ -48,6 +51,19 @@ class Model:
         self.sig = self.coords.vertical.centers.astype(np.float32); self.dsig = self.coords.vertical.layer_thickness.astype(np.float32)
         self.sigb = self.coords.vertical.boundaries.astype(np.float32)
         self.ref_t = np.full(len(self.sig), 250.0, np.float32) * self.K
+        # SPPT code is compiled in when any member may use it (set sppt_on=True for an ensemble whose control has sppt=0)
+        self.sppt_on = bool(self.S['sppt'] > 0) if self.S.get('sppt_on') is None else bool(self.S['sppt_on'])
+        self._jit = {}                                                                              # compiled functions, reused across members
+    def params(self, set_=None):
+        """the member-varying settings as numbers (plus the SPPT wave pattern drawn from sppt_seed)."""
+        S = dict(self.S); S.update(set_ or {}); rs = np.random.default_rng(int(S['sppt_seed'])); K = NWAVE
+        P = {k: jnp.float32(S[k]) for k in DYN}
+        P.update(kx=jnp.asarray(rs.integers(2, 12, K), jnp.float32), ky=jnp.asarray(rs.uniform(-1, 1, K) * 10, jnp.float32),
+                 ph=jnp.asarray(rs.uniform(0, 2 * np.pi, K), jnp.float32), om=jnp.asarray(rs.uniform(0.5, 1.5, K) * 2 * np.pi / (2 * 86400.0), jnp.float32))
+        return P
+    def with_params(self, carry, set_):
+        """same start, different member settings: no recompiling."""
+        c = dict(carry); c['prm'] = self.params(set_); return c
     # ------------------------------------------------------------------------------------------------ start state
     def to_nodes(self, a, lats, lons):
         la2 = lats[::-1] if lats[0] > lats[-1] else lats; a = a[..., ::-1, :] if lats[0] > lats[-1] else a
@@ -72,7 +88,8 @@ class Model:
         self.zs = jnp.asarray(zs, jnp.float32); self.land = jnp.asarray(land); self.T0 = jnp.asarray(sg['t'])
         sst = sst + self.S['sst_off'] * (sst > 0); self.sst0 = jnp.asarray(sst, jnp.float32)
         carry = dict(sst=jnp.asarray(sst, jnp.float32), tl=jnp.asarray(sg['t'][-1], jnp.float32), w=jnp.full(zs.shape, 0.6 * self.S['bucket'] * 1000, jnp.float32),
-                     rain=jnp.zeros(zs.shape, jnp.float32), t=jnp.float32(0.0))
+                     rain=jnp.zeros(zs.shape, jnp.float32), t=jnp.float32(0.0), sst0=jnp.asarray(sst, jnp.float32), T0=jnp.asarray(sg['t'], jnp.float32),
+                     prm=self.params())
         return st, carry
     def bogus(self, T3, Q3, U3, V3, ps, levs, lat, lon, vmax_kt, rmw_km=None, R_out=600.0, B=1.4, t_hours=None):
         """Replace the analysis vortex by a balanced Holland vortex: lowest-level max wind vmax_kt/0.85 at radius rmw_km,
@@ -113,7 +130,7 @@ class Model:
     def column(self, T, q, u, v, ps, cr, want_diag=False):
         """All arrays nodal: T, q, u, v [L, X, Y] (SI); ps [X, Y] Pa; cr = surface carry. Returns tendencies (per second)
         and diagnostics (surface rain, surface fluxes)."""
-        S = self.S; dt = self.dt_s; sig = jnp.asarray(self.sig)[:, None, None]; dsig = jnp.asarray(self.dsig)[:, None, None]
+        S = dict(self.S); S.update(cr['prm']); dt = self.dt_s; sig = jnp.asarray(self.sig)[:, None, None]; dsig = jnp.asarray(self.dsig)[:, None, None]
         sb = jnp.asarray(self.sigb)[:, None, None]; p = sig * ps; dp = dsig * ps; mass = dp / G; L = T.shape[0]
         land = self.land; sea = (~land) & (cr['sst'] > 0)
         Ts = jnp.where(sea, cr['sst'], cr['tl'])
@@ -231,17 +248,15 @@ class Model:
             a_ = x; ab = Fd * a_; return Fd - ab, ab
         Fsfc, swab = jax.lax.scan(sw, S0 * (1 - alb), absw)
         swh = swab * G / (CP * dp)
-        rad = jnp.where(sig > 0.12, lw + swh, -(Tn - self.T0) / S['tau_strat'])
+        rad = jnp.where(sig > 0.12, lw + swh, -(Tn - cr['T0']) / S['tau_strat'])
         dT = dT + rad
         dq = dq + jnp.maximum(-q, 0) / dt                                                            # keep humidity non-negative
         # ---------------- top sponge
         spg = jnp.where(sig < 0.05, 1.0 / S['sponge'], 0.0); du = du - spg * u; dv = dv - spg * v
         # ---------------- SPPT-like noise on the physics (not radiation)
-        if S['sppt'] > 0:
-            rs = np.random.default_rng(int(S['sppt_seed'])); K = 8
-            kx = rs.integers(2, 12, K); ky = rs.uniform(-1, 1, K) * 10; ph = rs.uniform(0, 2 * np.pi, K); om = rs.uniform(0.5, 1.5, K) * 2 * np.pi / (2 * 86400.0)
-            lonr = jnp.radians(jnp.asarray(self.LO)); latr2 = jnp.radians(jnp.asarray(self.LA))
-            pat = sum(jnp.sin(kx[i] * lonr + ky[i] * latr2 + ph[i] + om[i] * cr['t']) for i in range(K)) / math.sqrt(K / 2)
+        if self.sppt_on:
+            lonr = jnp.radians(jnp.asarray(self.LO, jnp.float32)); latr2 = jnp.radians(jnp.asarray(self.LA, jnp.float32))
+            pat = sum(jnp.sin(S['kx'][i] * lonr + S['ky'][i] * latr2 + S['ph'][i] + S['om'][i] * cr['t']) for i in range(NWAVE)) / math.sqrt(NWAVE / 2)
             fac = 1 + jnp.clip(S['sppt'] * pat, -0.5, 0.5)
             # noise on convection, condensation and rain only: scaling the implicit boundary-layer mixing past 1 overshoots
             # and blows the run up (seen in 1 of 3 test runs)
@@ -252,6 +267,7 @@ class Model:
     def build(self, when_utc, split=False):
         """when_utc: datetime of the start (sun position)."""
         self.doy0 = float(when_utc.timetuple().tm_yday); self.utc0 = float(when_utc.hour); hor = self.coords.horizontal; M = self
+        self._jit = {}; self.built_for = when_utc                                                 # new start: compile afresh
         self.eq = primitive_equations.SemiLagrangianPrimitiveEquations(self.ref_t, self.oro, self.coords, self.ps, humidity_key='specific_humidity',
                                                                        monotone_tracers=True, nodal_tracers=('specific_humidity',), departure_iterations=1, monotone_dynamics=True)
         cl = hor.cos_lat
@@ -281,24 +297,25 @@ class Model:
             eqs = time_integration.compose_equations([self.eq, self.phys])
             self.step = time_integration.step_with_filters(time_integration.semi_lagrangian_crank_nicolson_rk2(eqs, self.dt, off_centering=0.05, warm_start_corrector=True), [self.filt])
     def dfi(self, state):
-        f = jax.jit(time_integration.digital_filter_initialization(equation=self.eq, ode_solver=functools.partial(time_integration.semi_lagrangian_crank_nicolson_rk2, warm_start_corrector=True, off_centering=0.05),
+        if 'dfi' in self._jit: return self._jit['dfi'](state)
+        f = self._jit['dfi'] = jax.jit(time_integration.digital_filter_initialization(equation=self.eq, ode_solver=functools.partial(time_integration.semi_lagrangian_crank_nicolson_rk2, warm_start_corrector=True, off_centering=0.05),
                                                                   filters=[self.filt], time_span=self.ps.nondimensionalize(6 * units.hour), cutoff_period=self.ps.nondimensionalize(6 * units.hour), dt=self.dt))
         return f(state)
     def surface(self, state, cr):
         """after each step: ocean mixed layer, land temperature and soil moisture, rain total."""
-        hor = self.coords.horizontal; cl = hor.cos_lat; S = self.S
+        hor = self.coords.horizontal; cl = hor.cos_lat; S = dict(self.S); S.update(cr['prm'])
         aux = primitive_equations.compute_diagnostic_state_sigma(state.replace(tracers={}), self.coords)
         T = (aux.temperature_variation + self.ref_t[:, None, None]) / self.K; q = state.tracers['specific_humidity']
         u = aux.cos_lat_u[0] / cl / self.MPS; v = aux.cos_lat_u[1] / cl / self.MPS; ps = jnp.exp(hor.to_nodal(state.log_surface_pressure))[0] / self.PA
         _, d = self.column(T, q, u, v, ps, cr); dt = self.dt_s; sea = (~self.land) & (cr['sst'] > 0)
         # mixed layer: strong winds stir up cooler water (about ent K/day at 25 m/s), recovering slowly toward the start
         cool = -S['ent'] / 86400.0 * jnp.maximum(d['V1'] - 10.0, 0) ** 2 / 225.0 * (40.0 / S['h_ml'])
-        warm = (self.sst0 - cr['sst']) / (5 * 86400.0)
-        sst = jnp.where(sea, jnp.maximum(cr['sst'] + dt * (cool + warm), self.sst0 - 5.0), cr['sst'])
+        warm = (cr['sst0'] - cr['sst']) / (5 * 86400.0)
+        sst = jnp.where(sea, jnp.maximum(cr['sst'] + dt * (cool + warm), cr['sst0'] - 5.0), cr['sst'])
         net = d['sw_sfc'] + d['lw_dn'] - SB * cr['tl'] ** 4 - d['H'] - LV * d['E']
         tl = jnp.where(self.land, jnp.clip(cr['tl'] + dt * net / S['cap_land'], 230.0, 330.0), cr['tl'])
         w = jnp.where(self.land, jnp.clip(cr['w'] + dt * (d['rain'] - d['E']), 0.0, S['bucket'] * 1000), cr['w'])
-        return dict(sst=sst, tl=tl, w=w, rain=cr['rain'] + dt * d['rain'], t=cr['t'] + dt)
+        return dict(cr, sst=sst, tl=tl, w=w, rain=cr['rain'] + dt * d['rain'], t=cr['t'] + dt)
     def run(self, state, carry, hours, every_h=6, box=(40.0, 120.0, -10.0, 45.0)):
         """returns per-output dict of cropped fields (lon/lat box): mslp, vo850, vo700, z850, z700, u/v lowest level, rain total."""
         hor = self.coords.horizontal; k850 = int(np.argmin(abs(self.sig - 0.85))); k700 = int(np.argmin(abs(self.sig - 0.70)))
@@ -320,8 +337,10 @@ class Model:
             st, cr = c; self._carry = cr; st2 = self.step(st); cr2 = self.surface(st2, cr); return (st2, cr2), None
         def block(c, _):
             c, _ = jax.lax.scan(one, c, None, length=inner); return c, post(*c)
-        f = jax.jit(lambda s, c: jax.lax.scan(block, (s, c), None, length=outer))
-        (sN, cN), traj = f(state, carry); first = jax.jit(post)(state, carry)
+        key = ('run', hours, every_h, tuple(box))
+        if key not in self._jit: self._jit[key] = (jax.jit(lambda s, c: jax.lax.scan(block, (s, c), None, length=outer)), jax.jit(post))
+        f, fpost = self._jit[key]
+        (sN, cN), traj = f(state, carry); first = fpost(state, carry)
         return {k: np.concatenate([np.asarray(first[k])[None], np.asarray(v)], 0) for k, v in traj.items()}
     # ------------------------------------------------------------------------------------------------ storm tracker (GFDL style)
     def track(self, out, la0, lo0, every_h=6, keep_h=0):
@@ -360,10 +379,11 @@ class Model:
 # ---------------------------------------------------------------------------------------------------- ensemble helpers
 def integrate(M, state, carry, hours):
     """run without saving output; returns the final (state, carry)."""
-    n = int(round(hours * 3600 / M.dt_s))
+    n = int(round(hours * 3600 / M.dt_s)); key = ('int', n)
     def one(c, _):
         st, cr = c; M._carry = cr; st2 = M.step(st); return (st2, M.surface(st2, cr)), None
-    return jax.jit(lambda s, c: jax.lax.scan(one, (s, c), None, length=n)[0])(state, carry)
+    if key not in M._jit: M._jit[key] = jax.jit(lambda s, c: jax.lax.scan(one, (s, c), None, length=n)[0])
+    return M._jit[key](state, carry)
 def bred_vectors(M, state, carry, n=6, hours=12.0, seed=0, amp=1.0):
     """bred vectors (NCEP-style): small random seeds are grown by the model itself for `hours`; what grows is the part of
     today's uncertainty that matters (troughs, the storm's surroundings). Each is scaled so its 850-hPa-ish wind
