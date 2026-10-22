@@ -1,6 +1,6 @@
-tn-mm2-v3-all
-libm_fields.npz,ocean_clim.npz
-bash ../kaggle/par.sh hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/v3_all.json /kaggle/working/v3
+tn-mm2-t170b
+libm_fields.npz
+bash ../kaggle/par.sh hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/t170.json /kaggle/working/t170
 NvidiaTeslaT4
-2
-#combined v3 (mass-flux + radcloud + ocean) on 84 storms 2026-10-22T13:13Z
+1
+#T170 past storms, compile once per job, new tracker and storm size 2026-10-22T13:32Z
