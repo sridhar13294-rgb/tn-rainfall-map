@@ -7,13 +7,24 @@ HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE); sys
 import jax, jax.numpy as jnp, mm2, ourens as O
 from dinosaur import primitive_equations
 LIB, OUT = sys.argv[1], sys.argv[2]; GRID = sys.argv[3] if len(sys.argv) > 3 else 'T85'
+# variants: 'name:key=val;key=val,name2:...' (default: old vs new convection)
+def parse(x):
+    out = {}
+    for item in x.split(','):
+        n, _, kv = item.partition(':'); d = {}
+        for p_ in filter(None, kv.split(';')):
+            k_, v_ = p_.split('='); d[k_] = float(v_) if v_.replace('.', '', 1).replace('e-', '', 1).isdigit() else v_
+        out[n] = d
+    return out
+VARS = parse(sys.argv[4]) if len(sys.argv) > 4 else {'bmj': dict(conv='bmj'), 'mf': dict(conv='mf')}
+OCEAN = sys.argv[5] if len(sys.argv) > 5 else None
 Z = dict(np.load(LIB)); TT = [str(t) for t in Z['times']]; V3 = [str(v) for v in Z['v3']]; V2 = [str(v) for v in Z['v2']]
 s = next(x for x in O.LIBL if x['name'] == 'Hamoon'); g = O.gen_time(s); k = TT.index(g.strftime('%Y-%m-%dT%H'))
 f3 = {v: Z['f3'][k, V3.index(v)] for v in V3}; res = {}
-def setup(conv):
-    M = mm2.Model(GRID, 32, None, dict(conv=conv))
+def setup(conv, extra=None):
+    M = mm2.Model(GRID, 32, None, dict(dict(conv=conv), **(extra or {})))
     st, cr = M.init(f3, Z['levs'], Z['lats'], Z['lons'], Z['f2'][k, V2.index('surface_pressure')], Z['f2'][k, V2.index('geopotential_at_surface')] / 9.80616,
-                    Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')])
+                    Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')], ocean=(OCEAN if (extra or {}).get('ocean') else None), when=g)
     M.build(g); return M, M.dfi(st), cr
 # ---- 1. budgets of the mass-flux scheme on the start state
 M, st, cr = setup('mf'); hor = M.coords.horizontal; cl = hor.cos_lat
@@ -33,9 +44,10 @@ res['budget'] = dict(energy_max_Wm2=float(np.abs(E).max()), heating_max_Wm2=floa
                      dT_max_Kday=float(np.abs(np.asarray(dT)).max() * 86400), finite=bool(np.isfinite(np.asarray(dT)).all()))
 print('budget', res['budget'], flush=True)
 # ---- 2. 48-h runs
-for conv in ('bmj', 'mf'):
+for conv, ex in VARS.items():
     try:
-        M, st, cr = setup(conv); t = time.time(); out = M.run(st, cr, 48, box=(0.0, 359.9, -15.0, 15.0))
+        ex = dict(ex); cv = ex.pop('conv', 'bmj'); t = time.time(); M, st, cr = setup(cv, {k_: v_ for k_, v_ in ex.items() if k_ != 'ocean'} | ({'ocean': 1} if ex.get('ocean') else {}))
+        out = M.run(st, cr, 48, box=(0.0, 359.9, -15.0, 15.0))
         r = np.asarray(out['rain'][-1]); LO, LA = np.meshgrid(M.blon, M.blat, indexing='ij')
         res[conv] = dict(finite=bool(np.isfinite(out['mslp']).all()), rain_trop_mean_mmday=float(np.nanmean(r) / 2.0), rain_max_mm48h=float(np.nanmax(r)),
                          mslp_min=float(np.nanmin(out['mslp'][-1]) / 100), sec=round(time.time() - t))
