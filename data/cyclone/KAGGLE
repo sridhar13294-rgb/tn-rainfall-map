@@ -1,6 +1,6 @@
-tn-t170-sh0
+tn-base-sh
 libm_fields.npz
-XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/t170_terr.json 0 2 /kaggle/working/t170_0.json > /kaggle/working/t170_0.log 2>&1; tail -3 /kaggle/working/t170_0.log
+bash ../kaggle/par.sh hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/base_sh.json /kaggle/working/bt
 NvidiaTeslaT4
-2
-#T170 Bay storms first half with shallow fix 2026-10-22T23:04Z
+4
+#84 Bay storms with shallow fix (old convection vs mass-flux kick) 2026-10-22T23:05Z
