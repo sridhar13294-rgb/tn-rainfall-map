@@ -33,11 +33,11 @@ for i, s in enumerate(storms):
             st, cr = M.init(f3, Z['levs'], Z['lats'], Z['lons'], Z['f2'][k, V2.index('surface_pressure')], Z['f2'][k, V2.index('geopotential_at_surface')] / 9.80616,
                             Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')], storm=storm, ocean=C.get('ocean'), when=g,
                             **(landinit.land_kwargs(Z['f2'][k], V2) if C.get('land_init', True) else {}))
-            cr = M.with_params(cr, mb['set'])
+            cr = M.with_params(cr, dict(mb['set'], sppt=mb['set'].get('sppt', 0.0) * float(C.get('sppt_scale', 1.0))) if m else mb['set'])
             if m == 0: M.build(g, split=C.get('split', False))                                     # new start date (no recompile)
             st = M.dfi(st)
             if m:
-                if bv is None: bv = mm2.bred_vectors(M, st, M.with_params(cr, {}), n=6, hours=12.0, seed=77, amp=1.0)
+                if bv is None: bv = mm2.bred_vectors(M, st, M.with_params(cr, {}), n=6, hours=12.0, seed=77, amp=float(C.get('bv_amp', 1.0)))   # starting-difference size (spread tuning, fix #8)
                 rs = np.random.default_rng(3000 + m); st = mm2.add_perturbation(st, bv, rs.standard_normal(6) / math.sqrt(6))
             out = M.run(st, cr, C.get('hours', 120), box=tuple(C.get('box', (30.0, 120.0, -42.0, 35.0))))
             if not np.isfinite(out['mslp']).all(): raise RuntimeError('blew up')
