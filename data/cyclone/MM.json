@@ -1,2 +1,2 @@
-{"tag": "v2_t106", "script": "hind2.py", "grid": "T106", "dt_min": 30.0, "hours": 120, "storms": null, "nchunk": 42,
- "variants": [{"name": "T106_nobogus", "bogus": false}]}
+{"tag": "gen48_v2", "script": "genesis2.py", "lib": "libm48_fields.npz", "grid": "T85", "hours": 120, "lead": 48, "nchunk": 42,
+ "variants": {"ctl": {}, "moist": {"rh_deep": 0.9}, "slow": {"tau_deep": 4800.0}, "flux": {"ck": 1.5e-3}, "moist_flux": {"rh_deep": 0.9, "ck": 1.5e-3}}}
