@@ -384,3 +384,21 @@ def add_perturbation(state, bvs, coefs):
     pert = state
     for c, b in zip(coefs, bvs): pert = jax.tree_util.tree_map(lambda a, x: a + c * x, pert, b)
     q = pert.tracers['specific_humidity']; return pert.replace(tracers={'specific_humidity': jnp.maximum(q, 0.0)})
+
+def track_from_peak(M, out, box=(5.0, 22.0, 78.0, 99.0), every_h=6, t_from=24, t_to=144):
+    """The Bay system at its strongest: the highest smoothed 850-hPa vorticity over the Bay sea (box) between t_from and
+    t_to h; then followed backward to the start and forward to the end with the same tracker. Useful before a
+    depression has formed, when today's seedlings are weak and several compete."""
+    from cyc import on_land
+    LO, LA = np.meshgrid(M.blon, M.blat, indexing='ij'); inb = (LA >= box[0]) & (LA <= box[1]) & (LO >= box[2]) & (LO <= box[3])
+    sea = inb & ~np.vectorize(lambda a, b: on_land(b, a))(LA, LO)
+    best = None
+    for i in range(int(t_from // every_h), min(out['vo850'].shape[0], int(t_to // every_h) + 1)):
+        F = ndi.uniform_filter(np.asarray(out['vo850'][i], float), 3); m = np.where(sea, F, -np.inf); j = np.unravel_index(np.argmax(m), m.shape)
+        if best is None or m[j] > best[0]: best = (m[j], i, float(LA[j]), float(LO[j]))
+    if best is None: return []
+    _, ip, la, lo = best
+    fwd = M.track({k: v[ip:] for k, v in out.items()}, la, lo, every_h, keep_h=10 ** 6)
+    bwd = M.track({k: v[:ip + 1][::-1] for k, v in out.items()}, la, lo, every_h, keep_h=10 ** 6)
+    trk = [((ip - t[0] // every_h) * every_h,) + tuple(t[1:]) for t in bwd[1:]][::-1] + [((ip + t[0] // every_h) * every_h,) + tuple(t[1:]) for t in fwd]
+    return trk

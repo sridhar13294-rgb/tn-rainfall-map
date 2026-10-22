@@ -56,6 +56,7 @@ def run(LIVEM, LIVE, PART, NPART, OUT, CFG=None):
                 st = mm2.add_perturbation(st, bv_cache[grid], c)
             out = M.run(st, cr, HOURS)
             T = {pk: M.track(out, p['lat'], p['lon'], keep_h=0 if formed else 96) for pk, p in PR.items()}
+            T['peak'] = mm2.track_from_peak(M, out)                                                   # the Bay system at its strongest, followed both ways
             rain = None
             if st_names:                                                                              # cumulative rain (mm) at each TN site, every 6 h
                 from scipy.interpolate import RegularGridInterpolator as RGI
@@ -82,7 +83,7 @@ def merge(LIVE, SSTJ, LIJ, SITES, OUT, parts):
     for m in mem:
         cand = [kv for kv in m['tracks'].items() if kv[1]]
         if not cand: failed.append(m['member']); continue
-        best = max(cand, key=lambda kv: max([t[3] for t in kv[1] if 5 <= t[1] <= 22 and 78 <= t[2] <= 99] or [0]))
+        best = next((kv for kv in cand if kv[0] == 'peak' and len(kv[1]) >= 8), None) or max(cand, key=lambda kv: max([t[3] for t in kv[1] if 5 <= t[1] <= 22 and 78 <= t[2] <= 99] or [0]))
         pk, tr = best; pts = []
         for t in tr:
             pts.append((t0 + dt.timedelta(hours=t[0]), t[1], t[2], t[3], t[4]))
