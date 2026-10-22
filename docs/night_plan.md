@@ -1,4 +1,6 @@
-# Night work plan (from 23 Oct 00:30 IST) — hourly work cycle, status to Sridhar every 3 hours
+# Night work plan (from 23 Oct 00:30 IST) — hourly work cycle
+
+MESSAGES TO SRIDHAR: none between 00:30 and 07:00 IST (he sleeps). Daytime (07:00-00:30 IST): one short status every 3 hours.
 
 State file (scratchpad, not in repo): /tmp/claude-0/-home-claude/2c3b34a9-cc00-53e0-8864-49737f9cdb93/scratchpad/cycle_state.json
 {"last_status_utc": "...", "notes": [...]}. Status due when >= 3 h since last_status_utc.

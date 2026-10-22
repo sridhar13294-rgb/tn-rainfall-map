@@ -64,7 +64,7 @@ if H is not None:
             v = s + dt.timedelta(days=ld); j = di[v]; sc = {}
             for k in VARS:
                 try:
-                    f = grab(H, k, time=np.datetime64(s, 'ns'), prediction_timedelta=np.timedelta64(ld * 24 * 3600 * 10**9, 'ns'))
+                    f = grab(H, k, time=np.datetime64(s, 'ns'), prediction_timedelta=(ld * 24 if np.issubdtype(H['prediction_timedelta'].dtype, np.integer) else np.timedelta64(ld * 24 * 3600 * 10**9, 'ns')))   # this archive stores lead time as integer hours
                     if f is not None: sc[k] = WS.scores(f, T[k][j], CL[k][j] if np.isfinite(CL[k][j]).any() else None)
                 except Exception as e:
                     if ld == 1 and s == STARTS[0]: log('hres', k, repr(e)[:150])
