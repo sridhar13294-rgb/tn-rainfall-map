@@ -37,11 +37,13 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
+DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
 DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt')
 NWAVE = 8
 class Model:
-    def __init__(self, grid='T170', layers=32, dt_min=30.0, set_=None):
+    def __init__(self, grid='T170', layers=32, dt_min=None, set_=None):
         self.S = dict(DEFAULTS); self.S.update(set_ or {})
+        if dt_min is None or (dt_min > DT_MAX.get(grid, 15.0)): dt_min = DT_MAX.get(grid, 15.0)   # longest stable step per grid (Kaggle benchmark: T119 blew up at 30 min)
         self.coords = coordinate_systems.CoordinateSystem(getattr(spherical_harmonic.Grid, grid)(), sigma_coordinates.SigmaCoordinates(sigma_bounds(layers)))
         self.ps = primitive_equations.PrimitiveEquationsSpecs.from_si(); nd = self.ps.nondimensionalize
         self.K, self.SEC, self.MPS, self.PA, self.M = [float(nd(1 * u)) for u in (units.degK, units.s, units.m / units.s, units.pascal, units.m)]
@@ -257,7 +259,8 @@ class Model:
         if self.sppt_on:
             lonr = jnp.radians(jnp.asarray(self.LO, jnp.float32)); latr2 = jnp.radians(jnp.asarray(self.LA, jnp.float32))
             pat = sum(jnp.sin(S['kx'][i] * lonr + S['ky'][i] * latr2 + S['ph'][i] + S['om'][i] * cr['t']) for i in range(NWAVE)) / math.sqrt(NWAVE / 2)
-            fac = 1 + jnp.clip(S['sppt'] * pat, -0.5, 0.5)
+            taper = jnp.clip((sig - 0.1) / 0.15, 0, 1) * jnp.clip((0.97 - sig) / 0.1, 0, 1)            # off near the ground and in the stratosphere (as ECMWF's SPPT)
+            fac = 1 + jnp.clip(S['sppt'] * pat, -0.5, 0.5) * taper
             # noise on convection, condensation and rain only: scaling the implicit boundary-layer mixing past 1 overshoots
             # and blows the run up (seen in 1 of 3 test runs)
             dT = dTbl + (dT - rad - dTbl) * fac + rad; dq = dqbl + (dq - dqbl) * fac
