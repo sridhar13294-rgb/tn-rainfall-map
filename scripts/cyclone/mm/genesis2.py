@@ -12,7 +12,7 @@ LIB, CFG, CH, NCH, OUT = sys.argv[1], sys.argv[2], int(sys.argv[3]), int(sys.arg
 C = json.load(open(CFG)); NCH = C.get('nchunk', NCH); LEAD = C.get('lead', 48); HRS = C.get('hours', 120)
 VAR = C.get('variants') or {'ctl': {}}
 if CH >= NCH: json.dump([], open(OUT, 'w')); sys.exit(0)
-Z = np.load(LIB); TT = [str(t) for t in Z['times']]; V3 = [str(v) for v in Z['v3']]; V2 = [str(v) for v in Z['v2']]
+Z = dict(np.load(LIB)); TT = [str(t) for t in Z['times']]; V3 = [str(v) for v in Z['v3']]; V2 = [str(v) for v in Z['v2']]
 def km(a, b, c, d): return math.hypot(a - c, ((b - d + 180) % 360 - 180) * math.cos(math.radians(a))) * 111.2
 def at(P0, t):
     for a, b in zip(P0, P0[1:]):

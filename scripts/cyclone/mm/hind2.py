@@ -6,7 +6,7 @@ import mm2, ourens as O
 LIB, CFG, CH, NCH, OUT = sys.argv[1], sys.argv[2], int(sys.argv[3]), int(sys.argv[4]), sys.argv[5]
 C = json.load(open(CFG)); NCH = C.get('nchunk', NCH)
 if CH >= NCH: json.dump([], open(OUT, 'w')); sys.exit(0)
-Z = np.load(LIB); TT = [str(t) for t in Z['times']]; V3 = [str(v) for v in Z['v3']]; V2 = [str(v) for v in Z['v2']]
+Z = dict(np.load(LIB)); TT = [str(t) for t in Z['times']]; V3 = [str(v) for v in Z['v3']]; V2 = [str(v) for v in Z['v2']]
 def at(P0, t, k=None):
     for a, b in zip(P0, P0[1:]):
         if a[0] <= t <= b[0]:

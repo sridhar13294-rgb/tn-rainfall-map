@@ -12,7 +12,7 @@ dev = jax.devices(); info = dict(backend=jax.default_backend(), devices=[str(d) 
 def mem():
     try: s = dev[0].memory_stats(); return dict(peak_gb=round(s.get('peak_bytes_in_use', 0) / 1e9, 2), limit_gb=round(s.get('bytes_limit', 0) / 1e9, 2))
     except Exception: return None
-Z = np.load(LIB); TT = [str(t) for t in Z['times']]; V3 = [str(v) for v in Z['v3']]; V2 = [str(v) for v in Z['v2']]
+Z = dict(np.load(LIB)); TT = [str(t) for t in Z['times']]; V3 = [str(v) for v in Z['v3']]; V2 = [str(v) for v in Z['v2']]
 s = next(x for x in O.LIBL if x['name'] == NAME); g = O.gen_time(s); k = TT.index(g.strftime('%Y-%m-%dT%H')); P0 = O.path_of(s)
 f3 = {v: Z['f3'][k, V3.index(v)] for v in V3}; res = dict(info=info, storm=NAME, t0=str(g), hours=HRS, real=[((p[0] - g).total_seconds() / 3600, p[1], p[2], p[3]) for p in P0], grids={})
 for grid in GRIDS:

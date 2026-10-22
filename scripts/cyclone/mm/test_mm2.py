@@ -7,7 +7,7 @@ HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE); sys
 import jax, jax.numpy as jnp, mm2, ourens as O
 from dinosaur import primitive_equations
 LIB, OUT = sys.argv[1], sys.argv[2]; GRID = sys.argv[3] if len(sys.argv) > 3 else 'T85'
-Z = np.load(LIB); TT = [str(t) for t in Z['times']]; V3 = [str(v) for v in Z['v3']]; V2 = [str(v) for v in Z['v2']]
+Z = dict(np.load(LIB)); TT = [str(t) for t in Z['times']]; V3 = [str(v) for v in Z['v3']]; V2 = [str(v) for v in Z['v2']]
 s = next(x for x in O.LIBL if x['name'] == 'Hamoon'); g = O.gen_time(s); k = TT.index(g.strftime('%Y-%m-%dT%H'))
 f3 = {v: Z['f3'][k, V3.index(v)] for v in V3}; res = {}
 def setup(conv):
