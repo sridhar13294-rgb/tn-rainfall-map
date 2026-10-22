@@ -33,23 +33,29 @@ print('saved', fn, 'coverage 3d', float(np.isfinite(f3).mean()), '2d', [float(np
 # ---- the ECMWF analysis (step 0) at the same time, from ECMWF open data: its difference from GFS is a real measure of how
 # uncertain today's starting state is, used to spread the ensemble's starting states. 00/12Z: 'oper'; 06/18Z: 'scda'.
 import json as _json
-kind = 'oper' if run.hour in (0, 12) else 'scda'
-def ecu(base): return f"{base}/{run:%Y%m%d}/{run:%H}z/ifs/0p25/{kind}/{run:%Y%m%d%H}0000-0h-{kind}-fc"
+# ECMWF open data appears ~7 h after the run, so use the newest ECMWF run that is out: its analysis (step 0) if it is for
+# this time, else its short forecast valid at this time (6 or 12 h ahead).
+def ecu(base, r, step):
+    kind = 'oper' if r.hour in (0, 12) else 'scda'
+    return f"{base}/{r:%Y%m%d}/{r:%H}z/ifs/0p25/{kind}/{r:%Y%m%d%H}0000-{step}h-{kind}-fc"
 EP = {'t': 'temperature', 'q': 'specific_humidity', 'u': 'u_component_of_wind', 'v': 'v_component_of_wind', 'gh': 'geopotential'}
-e3 = np.full((len(V3), len(LEVS), len(C.LATS), len(C.LONS)), np.nan, np.float32); esp = np.full((len(C.LATS), len(C.LONS)), np.nan, np.float32); got = 0
-for base in C.EC:
-    txt = C.http(ecu(base) + '.index')
-    if not txt: continue
-    for l in txt.decode().splitlines():
-        if not l.strip(): continue
-        r = _json.loads(l); p = r.get('param'); lt = r.get('levtype')
-        if lt == 'pl' and p in EP and int(r.get('levelist', 0)) in LEVS:
-            buf = C.http(ecu(base) + '.grib2', (r['_offset'], r['_offset'] + r['_length'] - 1))
-            if buf: e3[[V3[k] for k in k3].index(EP[p]), LEVS.index(int(r['levelist']))] = C.subset(buf) * (9.80665 if p == 'gh' else 1.0); got += 1
-        elif lt == 'sfc' and p == 'sp':
-            buf = C.http(ecu(base) + '.grib2', (r['_offset'], r['_offset'] + r['_length'] - 1))
-            if buf: esp = C.subset(buf); got += 1
+e3 = np.full((len(V3), len(LEVS), len(C.LATS), len(C.LONS)), np.nan, np.float32); esp = np.full((len(C.LATS), len(C.LONS)), np.nan, np.float32); got = 0; used = None
+for lag in (0, 6, 12, 18):
+    r0 = run - dt.timedelta(hours=lag)
+    for base in C.EC:
+        txt = C.http(ecu(base, r0, lag) + '.index')
+        if not txt: continue
+        for l in txt.decode().splitlines():
+            if not l.strip(): continue
+            r = _json.loads(l); p = r.get('param'); lt = r.get('levtype')
+            if lt == 'pl' and p in EP and int(r.get('levelist', 0)) in LEVS:
+                buf = C.http(ecu(base, r0, lag) + '.grib2', (r['_offset'], r['_offset'] + r['_length'] - 1))
+                if buf: e3[[V3[k] for k in k3].index(EP[p]), LEVS.index(int(r['levelist']))] = C.subset(buf) * (9.80665 if p == 'gh' else 1.0); got += 1
+            elif lt == 'sfc' and p == 'sp':
+                buf = C.http(ecu(base, r0, lag) + '.grib2', (r['_offset'], r['_offset'] + r['_length'] - 1))
+                if buf: esp = C.subset(buf); got += 1
+        if got: used = f'{r0:%Y%m%d%H}+{lag}h'; break
     if got: break
 if got:
-    np.savez_compressed(f'/tmp/cyc_out/live_ECM_{run:%Y%m%d%H}.npz', f3=e3[None], sp=esp[None], lats=C.LATS, lons=C.LONS, v3=np.array([V3[k] for k in k3]), levs=np.array(LEVS))
-print('ECMWF analysis', kind, 'fields', got, 'coverage', float(np.isfinite(e3).mean()), flush=True)
+    np.savez_compressed(f'/tmp/cyc_out/live_ECM_{run:%Y%m%d%H}.npz', f3=e3[None], sp=esp[None], source=str(used), lats=C.LATS, lons=C.LONS, v3=np.array([V3[k] for k in k3]), levs=np.array(LEVS))
+print('ECMWF', used, 'fields', got, 'coverage', float(np.isfinite(e3).mean()), flush=True)
