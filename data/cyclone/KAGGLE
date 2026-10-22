@@ -1,6 +1,6 @@
-tn-mm2-storm
+tn-mm2-phys-sweep
 libm_fields.npz
-bash ../kaggle/par.sh hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/storm.json /kaggle/working/stm
+bash ../kaggle/par.sh hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/phys_sweep.json /kaggle/working/ps
 NvidiaTeslaT4
-3
-#storm start: relocation vs nothing (vs inserted storm in base-new) 2026-10-22T14:21Z
+2
+#physics sweep (ck, rh_deep, tau) on 84 storms 2026-10-22T14:23Z
