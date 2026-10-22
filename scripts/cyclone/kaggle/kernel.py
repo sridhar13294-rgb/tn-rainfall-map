@@ -8,8 +8,10 @@ def sh(c):
     print('+', c, flush=True); r = subprocess.run(c, shell=True); print('exit', r.returncode, flush=True); return r.returncode
 t = time.time()
 sh('nvidia-smi || true')
-acc = 'tpu' if os.environ.get('TPU_NAME') or os.path.exists('/dev/accel0') else 'cuda12'
-sh('pip install -q -U "jax[%s]"' % acc)
+acc = 'tpu' if os.environ.get('TPU_NAME') or os.path.exists('/dev/accel0') or os.environ.get('TPU_ACCELERATOR_TYPE') else 'cuda12'
+if acc == 'tpu': sh('pip install -q -U "jax[tpu]" -f https://storage.googleapis.com/jax-releases/libtpu_releases.html')
+else: sh('pip install -q -U "jax[cuda12]"')
+sh('free -g; nproc; python -c "import jax; print(jax.devices())" || true')
 sh('pip install -q xarray "git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0"')
 sh('rm -rf repo && git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo')
 for f in "__FILES__".split(','):
