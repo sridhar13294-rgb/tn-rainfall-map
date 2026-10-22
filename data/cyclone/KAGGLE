@@ -1,6 +1,6 @@
-tn-mm2-ens-stab
-libm_fields.npz
-bash ../kaggle/par.sh hindens2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/ens_stab.json /kaggle/working/ens
+tn-mm2-test-rad-ocn
+libm_fields.npz,ocean_clim.npz
+python -W ignore test_mm2.py /kaggle/working/libm_fields.npz /kaggle/working/test.json T85 "base:conv=mf,rad:conv=mf;rad=radcloud,rad2:conv=mf;rad=radcloud;rad_every=2,ocn:conv=mf;ocean=1,all:conv=mf;rad=radcloud;rad_every=2;ocean=1" /kaggle/working/ocean_clim.npz
 NvidiaTeslaT4
 2
-#stability test: 10 members x 84 storms with tapered SPPT 2026-10-22T12:00Z
+#GPU check of radiation and ocean switches 2026-10-22T12:55Z
