@@ -1,0 +1,53 @@
+[{"stream_name":"stdout","time":0.694155477,"data":"+ nvidia-smi || true\n"}
+,{"stream_name":"stderr","time":0.699646576,"data":"/bin/sh: 1: nvidia-smi: not found\n"}
+,{"stream_name":"stdout","time":0.699892309,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":0.699904961,"data":"+ pip install -q -U \"jax[cuda12]\"\n"}
+,{"stream_name":"stderr","time":35.8000778,"data":"WARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('\u003cpip._vendor.urllib3.connection.HTTPSConnection object at 0x7e01c7a72270\u003e: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution')': /simple/jax/\n"}
+,{"stream_name":"stderr","time":68.31110281,"data":"WARNING: Retrying (Retry(total=3, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('\u003cpip._vendor.urllib3.connection.HTTPSConnection object at 0x7e01c7a2a990\u003e: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution')': /simple/jax/\n"}
+,{"stream_name":"stderr","time":101.323969983,"data":"WARNING: Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('\u003cpip._vendor.urllib3.connection.HTTPSConnection object at 0x7e01c7a2ac10\u003e: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution')': /simple/jax/\n"}
+,{"stream_name":"stderr","time":135.335702723,"data":"WARNING: Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('\u003cpip._vendor.urllib3.connection.HTTPSConnection object at 0x7e01c7a2ae90\u003e: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution')': /simple/jax/\n"}
+,{"stream_name":"stderr","time":171.347202899,"data":"WARNING: Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('\u003cpip._vendor.urllib3.connection.HTTPSConnection object at 0x7e01c7a2b110\u003e: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution')': /simple/jax/\n"}
+,{"stream_name":"stderr","time":235.408161634,"data":"WARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('\u003cpip._vendor.urllib3.connection.HTTPSConnection object at 0x7e01c79cc2d0\u003e: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution')': /simple/jax-cuda12-plugin/\n"}
+,{"stream_name":"stderr","time":267.918188148,"data":"WARNING: Retrying (Retry(total=3, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('\u003cpip._vendor.urllib3.connection.HTTPSConnection object at 0x7e01c79cc550\u003e: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution')': /simple/jax-cuda12-plugin/\n"}
+,{"stream_name":"stderr","time":300.929929585,"data":"WARNING: Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('\u003cpip._vendor.urllib3.connection.HTTPSConnection object at 0x7e01c79cc7d0\u003e: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution')': /simple/jax-cuda12-plugin/\n"}
+,{"stream_name":"stderr","time":334.94400572,"data":"WARNING: Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('\u003cpip._vendor.urllib3.connection.HTTPSConnection object at 0x7e01c79cca50\u003e: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution')': /simple/jax-cuda12-plugin/\n"}
+,{"stream_name":"stderr","time":370.954408111,"data":"WARNING: Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('\u003cpip._vendor.urllib3.connection.HTTPSConnection object at 0x7e01c79cccd0\u003e: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution')': /simple/jax-cuda12-plugin/\n"}
+,{"stream_name":"stderr","time":402.970990609,"data":"ERROR: Could not find a version that satisfies the requirement jax-cuda12-plugin\u003c=0.11.1,\u003e=0.11.1; extra == \"cuda12\" (from jax[cuda12]) (from versions: none)\n"}
+,{"stream_name":"stderr","time":402.971310146,"data":"ERROR: No matching distribution found for jax-cuda12-plugin\u003c=0.11.1,\u003e=0.11.1; extra == \"cuda12\"\n"}
+,{"stream_name":"stdout","time":403.069480407,"data":"exit 1\n"}
+,{"stream_name":"stdout","time":403.069517629,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
+,{"stream_name":"stderr","time":436.440369989,"data":"  error: subprocess-exited-with-error\n"}
+,{"stream_name":"stderr","time":436.440410619,"data":"  \n"}
+,{"stream_name":"stderr","time":436.440417484,"data":"  × git clone --filter=blob:none --quiet https://github.com/google-research/dinosaur /tmp/pip-req-build-ucq41nnf did not run successfully.\n"}
+,{"stream_name":"stderr","time":436.440422836,"data":"  │ exit code: 128\n"}
+,{"stream_name":"stderr","time":436.440426561,"data":"  ╰─\u003e See above for output.\n"}
+,{"stream_name":"stderr","time":436.440430641,"data":"  \n"}
+,{"stream_name":"stderr","time":436.440441385,"data":"  note: This error originates from a subprocess, and is likely not a problem with pip.\n"}
+,{"stream_name":"stderr","time":436.4427525,"data":"error: subprocess-exited-with-error\n"}
+,{"stream_name":"stderr","time":436.44277948,"data":"\n"}
+,{"stream_name":"stderr","time":436.4427878,"data":"× git clone --filter=blob:none --quiet https://github.com/google-research/dinosaur /tmp/pip-req-build-ucq41nnf did not run successfully.\n"}
+,{"stream_name":"stderr","time":436.442794682,"data":"│ exit code: 128\n"}
+,{"stream_name":"stderr","time":436.442800498,"data":"╰─\u003e See above for output.\n"}
+,{"stream_name":"stderr","time":436.442806505,"data":"\n"}
+,{"stream_name":"stderr","time":436.442812115,"data":"note: This error originates from a subprocess, and is likely not a problem with pip.\n"}
+,{"stream_name":"stdout","time":436.548139051,"data":"exit 1\n"}
+,{"stream_name":"stdout","time":436.548175296,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
+,{"stream_name":"stderr","time":468.576052129,"data":"fatal: unable to access 'https://github.com/sridhar13294-rgb/tn-rainfall-map.git/': Could not resolve host: github.com\n"}
+,{"stream_name":"stdout","time":468.578598661,"data":"exit 128\n"}
+,{"stream_name":"stdout","time":468.578622819,"data":"+ curl -sSL -o libm48_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm48_fields.npz\n"}
+,{"stream_name":"stderr","time":500.658232676,"data":"curl: (6) Could not resolve host: github.com\n"}
+,{"stream_name":"stdout","time":500.661114814,"data":"exit 6\n"}
+,{"stream_name":"stdout","time":500.661149239,"data":"setup s 500\n"}
+,{"stream_name":"stdout","time":500.661156337,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 bash ../kaggle/par.sh genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_mf.json /kaggle/working/gen 2\u003e\u00261 | tee job.log\n"}
+,{"stream_name":"stderr","time":500.662402973,"data":"/bin/sh: 1: cd: can't cd to repo/scripts/cyclone/mm\n"}
+,{"stream_name":"stdout","time":500.662548199,"data":"exit 2\n"}
+,{"stream_name":"stdout","time":500.662558769,"data":"+ rm -rf repo libm48_fields.npz\n"}
+,{"stream_name":"stdout","time":500.665187235,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":500.665220954,"data":"total s 500\n"}
+,{"stream_name":"stderr","time":503.44675106,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":503.446790299,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":503.805249249,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":503.805278909,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":504.85414952,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":506.054865065,"data":"[NbConvertApp] Writing 278661 bytes to __results__.html\n"}
+]
