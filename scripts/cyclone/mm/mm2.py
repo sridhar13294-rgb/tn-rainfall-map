@@ -457,7 +457,7 @@ class Model:
             u, v = spherical_harmonic.vor_div_to_uv_nodal(hor, state.vorticity, state.divergence); u, v = u / self.MPS, v / self.MPS
             T = (hor.to_nodal(state.temperature_variation) + self.ref_t[:, None, None]) / self.K
             ps = jnp.exp(hor.to_nodal(state.log_surface_pressure))[0] / self.PA
-            phi = primitive_equations.get_geopotential_on_sigma(T * self.K, nodal_orography=zs_n[None] * self.M, sigma=self.coords.vertical,
+            phi = primitive_equations.get_geopotential_on_sigma(T * (1 + 0.608 * state.tracers['specific_humidity']) * self.K, nodal_orography=zs_n[None] * self.M, sigma=self.coords.vertical,   # virtual temperature: moist air is lighter (~50 m at 500 hPa in the tropics)
                                                                 gravity_acceleration=self.ps.gravity_acceleration, ideal_gas_constant=self.ps.ideal_gas_constant) / (self.M ** 2 / self.SEC ** 2)
             mslp = ps * jnp.exp(G * zs_n / (RD * (T[-1] + 0.0065 * zs_n / 2)))
             vo = hor.to_nodal(state.vorticity) * self.SEC
@@ -487,7 +487,7 @@ class Model:
             u, v = spherical_harmonic.vor_div_to_uv_nodal(hor, state.vorticity, state.divergence); u, v = u / self.MPS, v / self.MPS
             T = (hor.to_nodal(state.temperature_variation) + self.ref_t[:, None, None]) / self.K
             ps = jnp.exp(hor.to_nodal(state.log_surface_pressure))[0] / self.PA
-            phi = primitive_equations.get_geopotential_on_sigma(T * self.K, nodal_orography=zs_n[None] * self.M, sigma=self.coords.vertical,
+            phi = primitive_equations.get_geopotential_on_sigma(T * (1 + 0.608 * state.tracers['specific_humidity']) * self.K, nodal_orography=zs_n[None] * self.M, sigma=self.coords.vertical,   # virtual temperature: moist air is lighter (~50 m at 500 hPa in the tropics)
                                                                 gravity_acceleration=self.ps.gravity_acceleration, ideal_gas_constant=self.ps.ideal_gas_constant) / (self.M ** 2 / self.SEC ** 2)
             lp = jnp.log(jnp.asarray(self.sig)[:, None, None] * ps[None])
             mslp = ps * jnp.exp(G * zs_n / (RD * (T[-1] + 0.0065 * zs_n / 2)))
