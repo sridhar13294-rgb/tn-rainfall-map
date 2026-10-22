@@ -1,6 +1,6 @@
-tn-mm2-test-rad-ocn
+tn-mm2-ocean
 libm_fields.npz,ocean_clim.npz
-python -W ignore test_mm2.py /kaggle/working/libm_fields.npz /kaggle/working/test.json T85 "base:conv=mf,rad:conv=mf;rad=radcloud,rad2:conv=mf;rad=radcloud;rad_every=2,ocn:conv=mf;ocean=1,all:conv=mf;rad=radcloud;rad_every=2;ocean=1" /kaggle/working/ocean_clim.npz
+bash ../kaggle/par.sh hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/ocean.json /kaggle/working/ocn
 NvidiaTeslaT4
-2
-#GPU check of radiation and ocean switches 2026-10-22T12:55Z
+3
+#past storms with the ocean column (vs v2 bogus baseline) 2026-10-22T13:09Z
