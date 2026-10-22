@@ -1,0 +1,90 @@
+[{"stream_name":"stdout","time":0.955480579,"data":"+ nvidia-smi || true\n"}
+,{"stream_name":"stderr","time":0.976386575,"data":"/bin/sh: 1: nvidia-smi: not found\n"}
+,{"stream_name":"stdout","time":0.976711256,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":0.976735763,"data":"+ pip install -q -U \"jax[cuda12]\"\n"}
+,{"stream_name":"stdout","time":9.920226889,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.9/8.9 MB 5.7 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":30.569070746,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 191.8/191.8 MB 5.7 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":36.738739381,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 86.8/86.8 MB 7.4 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":38.34964554,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 10.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":38.700891061,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.5/3.5 MB 10.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":80.899697984,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 581.2/581.2 MB 2.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":81.428260132,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.8/10.8 MB 21.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":84.992303416,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 40.5/40.5 MB 10.4 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":93.698247514,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 89.6/89.6 MB 8.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":94.067824286,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.5/3.5 MB 10.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":133.03650291,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 766.2/766.2 MB 1.4 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":142.526055949,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 200.9/200.9 MB 6.7 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":168.261863643,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 338.1/338.1 MB 4.3 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":197.255207559,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 366.5/366.5 MB 4.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":219.174297206,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 351.5/351.5 MB 4.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":221.620270397,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 39.7/39.7 MB 11.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":240.933880062,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 280.8/280.8 MB 4.4 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":241.175261612,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.2/3.2 MB 14.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stderr","time":322.570598491,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":322.570634642,"data":"bigframes 2.48.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":322.570641188,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stderr","time":322.570646521,"data":"google-colab 1.0.0 requires jupyter-server==2.20.0, but you have jupyter-server 2.12.5 which is incompatible.\n"}
+,{"stream_name":"stderr","time":322.570651427,"data":"google-colab 1.0.0 requires pandas==2.2.3, but you have pandas 2.3.3 which is incompatible.\n"}
+,{"stream_name":"stderr","time":322.570656733,"data":"google-colab 1.0.0 requires requests==2.32.4, but you have requests 2.34.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":322.570661617,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":322.570666654,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":322.570672179,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stdout","time":323.471007908,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":323.471059991,"data":"+ free -g; nproc; python -c \"import jax; print(jax.devices())\" || true\n"}
+,{"stream_name":"stdout","time":323.510210702,"data":"               total        used        free      shared  buff/cache   available\n"}
+,{"stream_name":"stdout","time":323.510265102,"data":"Mem:              31           1           5           0          24          29\n"}
+,{"stream_name":"stdout","time":323.51027479,"data":"Swap:              0           0           0\n"}
+,{"stream_name":"stdout","time":323.51559611,"data":"4\n"}
+,{"stream_name":"stderr","time":325.573602448,"data":"Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda12.initialize()\n"}
+,{"stream_name":"stderr","time":325.573640124,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stderr","time":325.57364693,"data":"  File \"/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py\", line 520, in discover_pjrt_plugins\n"}
+,{"stream_name":"stderr","time":325.573657797,"data":"    plugin_module.initialize()\n"}
+,{"stream_name":"stderr","time":325.573661682,"data":"    ~~~~~~~~~~~~~~~~~~~~~~~~^^\n"}
+,{"stream_name":"stderr","time":325.573665215,"data":"  File \"/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda12/__init__.py\", line 369, in initialize\n"}
+,{"stream_name":"stderr","time":325.573668962,"data":"    _check_cuda_versions(raise_on_first_error = True)\n"}
+,{"stream_name":"stderr","time":325.573672427,"data":"    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":325.573675805,"data":"  File \"/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda12/__init__.py\", line 273, in _check_cuda_versions\n"}
+,{"stream_name":"stderr","time":325.573679344,"data":"    for d in range(cuda_versions.cuda_device_count())\n"}
+,{"stream_name":"stderr","time":325.573723353,"data":"                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^\n"}
+,{"stream_name":"stderr","time":325.573729113,"data":"RuntimeError: jaxlib/cuda/versions_helpers.cc:135: operation cuInit(0) failed: Unknown CUDA error 303; cuGetErrorName failed. This probably means that JAX was unable to load the CUDA libraries.\n"}
+,{"stream_name":"stdout","time":325.582485937,"data":"[CpuDevice(id=0)]\n"}
+,{"stream_name":"stdout","time":325.843293892,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":325.843430831,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
+,{"stream_name":"stdout","time":337.515409508,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 351.9/351.9 kB 5.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":337.766984875,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 405.3/405.3 kB 7.7 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":337.86617111,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 230.5/230.5 kB 6.4 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":337.935917169,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.4/1.4 MB 30.8 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":342.838098214,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":342.838139512,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
+,{"stream_name":"stdout","time":346.007139434,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":346.007176392,"data":"+ curl -sSL -o libm_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_fields.npz\n"}
+,{"stream_name":"stdout","time":353.854118976,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":353.854167588,"data":"setup s 353\n"}
+,{"stream_name":"stdout","time":353.85417361,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore gpu_bench.py /kaggle/working/libm_fields.npz /kaggle/working/bench.json T85,T170,T213,T255 120 Hamoon 2\u003e\u00261 | tee job.log\n"}
+,{"stream_name":"stdout","time":363.942407478,"data":"Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda12.initialize()\n"}
+,{"stream_name":"stdout","time":363.942646987,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stdout","time":363.94265549,"data":"  File \"/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py\", line 520, in discover_pjrt_plugins\n"}
+,{"stream_name":"stdout","time":363.942661877,"data":"    plugin_module.initialize()\n"}
+,{"stream_name":"stdout","time":363.942667303,"data":"    ~~~~~~~~~~~~~~~~~~~~~~~~^^\n"}
+,{"stream_name":"stdout","time":363.94267284,"data":"  File \"/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda12/__init__.py\", line 369, in initialize\n"}
+,{"stream_name":"stdout","time":363.942678965,"data":"    _check_cuda_versions(raise_on_first_error = True)\n"}
+,{"stream_name":"stdout","time":363.942684472,"data":"    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":363.942690128,"data":"  File \"/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda12/__init__.py\", line 273, in _check_cuda_versions\n"}
+,{"stream_name":"stdout","time":363.942696321,"data":"    for d in range(cuda_versions.cuda_device_count())\n"}
+,{"stream_name":"stdout","time":363.942702446,"data":"                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^\n"}
+,{"stream_name":"stdout","time":363.942732496,"data":"RuntimeError: jaxlib/cuda/versions_helpers.cc:135: operation cuInit(0) failed: Unknown CUDA error 303; cuGetErrorName failed. This probably means that JAX was unable to load the CUDA libraries.\n"}
+,{"stream_name":"stdout","time":363.959715963,"data":"{'backend': 'cpu', 'devices': ['cpu:0'], 'jax': '0.12.0.1'}\n"}
+,{"stream_name":"stdout","time":2250.530953569,"data":"T85 {'setup_s': 49.0, 'first_run_s': 905.4, 'finite': True, 'member_run_s': 925.9, 'finite2': True, 'mem': None, 'dt_min': 30.0, 'sec_per_day': 185.2}\n"}
+,{"stream_name":"stdout","time":15092.149285578,"data":"T170 {'setup_s': 260.2, 'first_run_s': 6286.7, 'finite': True, 'member_run_s': 6294.6, 'finite2': True, 'mem': None, 'dt_min': 20.0, 'sec_per_day': 1258.9}\n"}
+,{"stream_name":"stderr","time":15157.914890823,"data":"Killed\n"}
+,{"stream_name":"stdout","time":15157.938731858,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":15157.939914279,"data":"+ rm -rf repo libm_fields.npz\n"}
+,{"stream_name":"stdout","time":15158.227483144,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":15158.233874477,"data":"total s 15157\n"}
+,{"stream_name":"stderr","time":15163.322099147,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":15163.322176556,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":15163.810102915,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":15163.810146137,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":15166.447332581,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":15167.932594743,"data":"[NbConvertApp] Writing 279399 bytes to __results__.html\n"}
+]
