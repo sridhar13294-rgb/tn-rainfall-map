@@ -1,6 +1,6 @@
-tn-wx-base
+tn-wx-diag
 libm_wx2020_fields.npz,wx_truth_2020.npz
-bash ../kaggle/par.sh wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/wx_base.json /kaggle/working/wx
+python -W ignore wx_diag.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz /kaggle/working/diag.json 3
 NvidiaTeslaT4
-1
-#general weather exam: 73 starts in 2020, 10-day runs, base / stronger sea exchange / new radiation 2026-10-22T16:03Z
+3
+#general exam pipeline check 2026-10-22T18:23Z
