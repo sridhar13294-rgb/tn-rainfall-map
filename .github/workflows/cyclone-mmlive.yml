@@ -23,8 +23,10 @@ jobs:
       - run: pip install -q "jax[cpu]" numpy scipy xarray matplotlib scikit-learn "git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0"
       - run: |
           R=$(head -n 1 data/cyclone/MMLIVE); echo "R=$R" >> $GITHUB_ENV; mkdir -p /tmp/w
+          S=$(sed -n 2p data/cyclone/MMLIVE | grep -o 'live[0-9]*\.py' || echo live.py); echo "S=$S" >> $GITHUB_ENV
           gh release download era5-cases -p live_GFSM_$R.npz -p live_GFS_$R.npz -D /tmp/w
-      - run: cd /tmp/w && (python -W ignore $GITHUB_WORKSPACE/scripts/cyclone/mm/live.py run live_GFSM_$R.npz live_GFS_$R.npz ${{ matrix.part }} 17 part_${{ matrix.part }}.json > part_${{ matrix.part }}.log 2>&1 || true); tail -30 part_${{ matrix.part }}.log
+          gh release download era5-cases -p live_ECM_$R.npz -D /tmp/w || true
+      - run: cd /tmp/w && (python -W ignore $GITHUB_WORKSPACE/scripts/cyclone/mm/$S run live_GFSM_$R.npz live_GFS_$R.npz ${{ matrix.part }} 17 part_${{ matrix.part }}.json $GITHUB_WORKSPACE/data/cyclone/mm/live_config.json > part_${{ matrix.part }}.log 2>&1 || true); tail -30 part_${{ matrix.part }}.log
       - run: |
           D=data/cyclone/mm/live/$R; mkdir -p $D; cp /tmp/w/part_${{ matrix.part }}.json $D/ || true; tail -c 8000 /tmp/w/part_${{ matrix.part }}.log > $D/part_${{ matrix.part }}.log || true
           git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
