@@ -59,3 +59,9 @@ for lag in (0, 6, 12, 18):
 if got:
     np.savez_compressed(f'/tmp/cyc_out/live_ECM_{run:%Y%m%d%H}.npz', f3=e3[None], sp=esp[None], source=str(used), lats=C.LATS, lons=C.LONS, v3=np.array([V3[k] for k in k3]), levs=np.array(LEVS))
 print('ECMWF', used, 'fields', got, 'coverage', float(np.isfinite(e3).mean()), flush=True)
+# ---- the latest North Indian Ocean storm vitals (vitals.py -> data/cyclone/vitals_<run>.json) and two more starting analyses
+# on this grid and these levels (centres_m.py: DWD ICON -> live_ICON_<run>.npz, Canadian GDPS -> live_CMC_<run>.npz; the GFS
+# surface fields fill any gaps). Logged to data/cyclone/fetch_status.json; a failure here leaves the files above untouched.
+for _what, _go in (('vitals', lambda: __import__('vitals').save(run)), ('centres', lambda: __import__('centres_m').fetch_all(run, f2, LEVS, C.LATS, C.LONS))):
+    try: _go()
+    except (Exception, SystemExit) as e: print(_what, 'FAILED', repr(e)[:300], flush=True)
