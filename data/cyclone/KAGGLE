@@ -1,6 +1,6 @@
-tn-mm2-base-fix
+tn-mm2-t170c
 libm_fields.npz
-bash ../kaggle/par.sh hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/base_fix.json /kaggle/working/bf
+XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/t170.json 0 2 /kaggle/working/t170_0.json > /kaggle/working/t170_0.log 2>&1; tail -3 /kaggle/working/t170_0.log
 NvidiaTeslaT4
-4
-#baseline with single-vortex start; new convection with moisture-convergence closure (+radiation) 2026-10-22T15:11Z
+1
+#T170 second half, one process (two do not fit in 31 GB) 2026-10-22T15:28Z
