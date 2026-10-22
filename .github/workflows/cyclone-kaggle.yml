@@ -1,0 +1,51 @@
+name: Cyclone study - model on Kaggle GPU
+# Runs when data/cyclone/KAGGLE changes on cases. Line 1: job name (slug). Line 2: input files from the era5-cases release
+# (comma-separated). Line 3: command run inside repo/scripts/cyclone/mm on Kaggle. Line 4: accelerator (NvidiaTeslaT4,
+# NvidiaTeslaP100, TpuV38; default NvidiaTeslaT4). Results go to data/cyclone/kaggle/<slug>/.
+on:
+  push:
+    branches: [cases]
+    paths: ['data/cyclone/KAGGLE']
+permissions:
+  contents: write
+jobs:
+  kaggle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 600
+    env:
+      KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      KAGGLE_KEY: ${{ secrets.KAGGLE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install -q -U kaggle && kaggle --version
+      - run: |
+          SLUG=$(sed -n 1p data/cyclone/KAGGLE | tr -d ' '); FILES=$(sed -n 2p data/cyclone/KAGGLE | tr -d ' '); JOB=$(sed -n 3p data/cyclone/KAGGLE)
+          ACC=$(sed -n 4p data/cyclone/KAGGLE | tr -d ' '); [ -z "$ACC" ] && ACC=NvidiaTeslaT4
+          echo "SLUG=$SLUG" >> $GITHUB_ENV; mkdir -p /tmp/k data/cyclone/kaggle/$SLUG
+          python3 - "$SLUG" "$FILES" "$JOB" "$ACC" <<'PY'
+          import sys, json, os
+          slug, files, job, acc = sys.argv[1:5]
+          src = open('scripts/cyclone/kaggle/kernel.py').read().replace('__JOB__', 'cd repo/scripts/cyclone/mm && ' + job.replace('"', '\\"')).replace('__FILES__', files)
+          open('/tmp/k/kernel.py', 'w').write(src)
+          tpu = acc.lower().startswith('tpu')
+          json.dump(dict(id=os.environ['KAGGLE_USERNAME'] + '/' + slug, title=slug, code_file='kernel.py', language='python', kernel_type='script',
+                         is_private=True, enable_gpu=not tpu, enable_tpu=tpu, enable_internet=True, machine_shape=acc,
+                         dataset_sources=[], competition_sources=[], kernel_sources=[]), open('/tmp/k/kernel-metadata.json', 'w'), indent=1)
+          PY
+          cat /tmp/k/kernel-metadata.json | grep -v '"id"'
+          (kaggle kernels push -p /tmp/k --accelerator $ACC || kaggle kernels push -p /tmp/k) 2>&1 | tee data/cyclone/kaggle/$SLUG/push.txt
+      - run: |
+          ID=$KAGGLE_USERNAME/$SLUG; D=data/cyclone/kaggle/$SLUG; sleep 60
+          for i in $(seq 1 110); do S=$(kaggle kernels status $ID 2>&1 | tail -1); echo "$(date -u +%H:%M) $S"; echo "$(date -u +%H:%M) $S" | sed "s#$KAGGLE_USERNAME#USER#g" >> $D/status.txt
+            case "$S" in *COMPLETE*|*ERROR*|*CANCEL*|*complete*|*error*|*cancel*) break;; esac; sleep 300; done
+          kaggle kernels output $ID -p /tmp/kout 2>&1 | tail -3 || true; ls -la /tmp/kout || true
+          cp /tmp/kout/*.json $D/ 2>/dev/null || true; cp /tmp/kout/job.log $D/ 2>/dev/null || true; for f in /tmp/kout/*.log; do tail -c 30000 "$f" > $D/kernel_$(basename $f); done 2>/dev/null || true
+          sed -i "s#$KAGGLE_USERNAME#USER#g" $D/* 2>/dev/null || true
+      - if: always()
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add data/cyclone/kaggle; git commit -qm "Cyclone study: Kaggle job $SLUG" || exit 0
+          for i in 1 2 3 4 5 6; do git pull -q --rebase origin cases && git push -q origin HEAD:cases && break; sleep 15; done
