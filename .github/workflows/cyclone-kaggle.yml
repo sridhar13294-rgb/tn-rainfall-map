@@ -1,7 +1,8 @@
 name: Cyclone study - model on Kaggle GPU
 # Runs when data/cyclone/KAGGLE changes on cases. Line 1: job name (slug). Line 2: input files from the era5-cases release
 # (comma-separated). Line 3: command run inside repo/scripts/cyclone/mm on Kaggle. Line 4: accelerator (NvidiaTeslaT4,
-# NvidiaTeslaP100, TpuV38; default NvidiaTeslaT4). Results go to data/cyclone/kaggle/<slug>/.
+# NvidiaTeslaP100, TpuV38; default NvidiaTeslaT4). Line 5: account (1 = Sridhar's, 2 = second account; default 1).
+# Results go to data/cyclone/kaggle/<slug>/.
 on:
   push:
     branches: [cases]
@@ -12,12 +13,16 @@ jobs:
   kaggle:
     runs-on: ubuntu-latest
     timeout-minutes: 600
-    env:
-      KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
-      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
-      KAGGLE_KEY: ${{ secrets.KAGGLE_API_TOKEN }}
     steps:
       - uses: actions/checkout@v4
+      - env:
+          U1: ${{ secrets.KAGGLE_USERNAME }}
+          T1: ${{ secrets.KAGGLE_API_TOKEN }}
+          U2: ${{ secrets.KAGGLE2_USERNAME }}
+          T2: ${{ secrets.KAGGLE2_API_TOKEN }}
+        run: |
+          A=$(sed -n 5p data/cyclone/KAGGLE | tr -d ' '); [ "$A" = 2 ] && [ -n "$U2" ] && { U=$U2; T=$T2; } || { U=$U1; T=$T1; }
+          echo "::add-mask::$T"; { echo "KAGGLE_USERNAME=$U"; echo "KAGGLE_API_TOKEN=$T"; echo "KAGGLE_KEY=$T"; } >> $GITHUB_ENV
       - uses: actions/setup-python@v5
         with: {python-version: '3.12'}
       - run: pip install -q -U kaggle && kaggle --version
