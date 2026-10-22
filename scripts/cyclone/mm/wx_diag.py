@@ -27,6 +27,16 @@ for key in TT[:NS]:
     z0 = WS.to_grid(out['z500'][0], M.lon, M.lat); t0g = WS.to_grid(out['t850'][0], M.lon, M.lat)
     r['h0_vs_era5_start'] = dict(z500=WS.scores(z0, e_z500)['globe'], t850=WS.scores(t0g, e_t850)['globe'], t850_tropics=WS.scores(t0g, e_t850)['tropics'])
     r['h0_flipped_lat'] = WS.scores(z0[::-1], e_z500)['globe']
+    r['h0_z500_regions'] = {k: round(v['rmse'], 1) for k, v in WS.scores(z0, e_z500).items()}
+    dz = z0 - e_z500; bands = {}
+    for a0 in range(-90, 90, 10):
+        m = (WS.LA >= a0) & (WS.LA < a0 + 10); bands[a0] = [round(float(np.sqrt(np.mean(dz[m] ** 2))), 1), round(float(np.mean(dz[m])), 1)]
+    r['h0_z500_bands_rmse_bias'] = bands
+    j_ = np.unravel_index(np.argmax(np.abs(dz)), dz.shape); r['h0_z500_worst'] = [float(WS.LA[j_]), float(WS.LO[j_]), float(dz[j_])]
+    oro = lib_grid(Z['f2'][k, V2.index('geopotential_at_surface')]) / 9.80665
+    for lim in (500, 1500):
+        m = oro < lim; r[f'h0_z500_rmse_oro_lt_{lim}'] = round(float(np.sqrt(np.mean(dz[m] ** 2))), 1)
+    m2 = np.abs(WS.LA) < 60; r['h0_z500_rmse_60S_60N'] = round(float(np.sqrt(np.mean(dz[m2] ** 2))), 1)
     j = DI.get((t0 + dt.timedelta(days=1)).strftime('%Y-%m-%dT%H'))
     if j is not None:
         o1 = TR['o_z500'][j]; r['persistence_d1_z500'] = WS.scores(e_z500, o1)['globe']
