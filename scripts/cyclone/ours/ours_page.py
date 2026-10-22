@@ -53,7 +53,7 @@ if METHOD == 'physics':
     body = body.replace('<h1>Our own ensemble: where the coming Bay storm could cross the coast</h1>', '<h1>Our own physics ensemble: the storm inside the physics</h1>')
     body = body.replace('<h3>The 13 inputs and their three settings</h3>', '<h3>What each member changes at the start</h3>').replace('Each line starts at the observed seedling (moved by that member’s start setting).', 'Each line starts at the circulation that member develops.')
 if METHOD in ('moist', 'moist2'):
-    i = body.index('<section>\n  <h2>How the runs are made</h2>'); body = body[:i] + open(os.path.join(HERE, 'method_moist.html.part')).read()
+    i = body.index('<section>\n  <h2>How the runs are made</h2>'); body = body[:i] + open(os.path.join(HERE, 'method_moist2.html.part' if METHOD == 'moist2' else 'method_moist.html.part')).read()
     body = body.replace('<h1>Our own ensemble: where the coming Bay storm could cross the coast</h1>', '<h1>Our own weather model: moist, multi-level, global</h1>')
     body = body.replace('<h3>The 13 inputs and their three settings</h3>', '<h3>What each member changes</h3>').replace('Each line starts at the observed seedling (moved by that member’s start setting).', 'Each line follows the model’s own storm from where it is found at the start.')
 if METHOD == 'hemi':

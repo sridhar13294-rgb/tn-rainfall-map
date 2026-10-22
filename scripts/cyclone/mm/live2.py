@@ -13,7 +13,7 @@ HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE); sys
 from ours_live_s import halton
 HOURS = 168
 def lvl(x): return min(2, int(x * 3))
-FACTORS = [('Starting state: share of ECMWF analysis', ['GFS side', 'between', 'ECMWF side']),
+FACTORS = [('Starting state: share of ECMWF analysis (when available)', ['GFS side', 'between', 'ECMWF side']),
            ('Starting state: growing differences (bred vectors)', ['pattern set A', 'set B', 'set C']),
            ('Humidity convection leaves', ['70-77%', '77-83%', '83-90%']),
            ('Convection time scale', ['fast', 'medium', 'slow']),
@@ -46,7 +46,7 @@ def run(LIVEM, LIVE, PART, NPART, OUT, CFG=None):
             mb = member(k); grid = C.get('control_grid', 'T85') if k == 0 else C.get('grid', 'T85')
             M = mm2.Model(grid, 32, 30.0, mb['set'])
             fk = {v: f3[v] + (mb['alpha'] * D[v] if D is not None and v in D else 0.0) for v in V3}
-            storm = dict(lat=b['lat'], lon=b['lon'], vmax_kt=25.0) if formed else None
+            storm = dict(lat=b['lat'], lon=b['lon'], vmax_kt=25.0) if (formed and k % 2 == 1) else None     # balanced storm inserted in half the members
             st, cr = M.init(fk, Z['levs'], Z['lats'], Z['lons'], Z['f2'][0, V2.index('surface_pressure')], Z['f2'][0, V2.index('geopotential_at_surface')] / 9.80616,
                             Z['f2'][0, V2.index('sea_surface_temperature')], Z['f2'][0, V2.index('land_sea_mask')], storm=storm)
             M.build(t0); st = M.dfi(st)

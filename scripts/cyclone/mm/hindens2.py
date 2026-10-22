@@ -26,7 +26,8 @@ for i, s in enumerate(storms):
     for m in range(0, C.get('members', 10) + 1):
         try:
             mb = member(m); M = mm2.Model(C.get('grid', 'T85'), 32, 30.0, mb['set'])
-            storm = dict(lat=st0[0], lon=st0[1], vmax_kt=st0[2] or 25.0) if C.get('bogus', False) else None
+            ins = C.get('bogus', False) or (C.get('bogus_mix', False) and m % 2 == 1)          # storm insertion in half the members: the start vortex is uncertain too
+            storm = dict(lat=st0[0], lon=st0[1], vmax_kt=st0[2] or 25.0) if ins else None
             st, cr = M.init(f3, Z['levs'], Z['lats'], Z['lons'], Z['f2'][k, V2.index('surface_pressure')], Z['f2'][k, V2.index('geopotential_at_surface')] / 9.80616,
                             Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')], storm=storm)
             M.build(g, split=C.get('split', False)); st = M.dfi(st)

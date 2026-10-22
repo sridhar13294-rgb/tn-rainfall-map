@@ -1,0 +1,35 @@
+<section>
+  <h2>How the runs are made (our moist multi-level model, version 2)</h2>
+  <ul>
+    <li><b>Start:</b> today’s GFS analysis over the whole globe (observed state only, no forecast steps): temperature, humidity and winds on 13 levels, surface pressure, terrain and the real sea temperature. ECMWF’s analysis for the same time (free open data) is used for the ensemble’s starting differences.</li>
+    <li><b>Dynamics:</b> the hydrostatic primitive equations on 32 levels over the whole globe (spectral T85, about 1.4°), solved with Dinosaur (Google Research’s open-source core) using semi-Lagrangian transport with 30-minute steps; moisture is carried on the grid and kept positive.</li>
+    <li><b>Our physics:</b> sea-surface fluxes with wind-dependent sea roughness, a high-wind drag cap and stability; a boundary layer with a diagnosed depth and K-profile mixing; Betts–Miller–Janjić-type deep and shallow convection with convective momentum mixing; condensation with rain that partly re-evaporates in dry air; long- and short-wave radiation with water vapour, clouds and the real sun position (day–night cycle); an ocean mixed layer that cools under strong winds; land with its own temperature and soil moisture.</li>
+    <li><b>51 members:</b> member 0 is today’s analysis with standard physics. Members 1–50: the starting state moved part-way toward (or past) ECMWF’s analysis plus a mix of bred vectors (the model’s own fastest-growing differences over 12 h); the physics varied (convection humidity and time scale, sea-surface exchange, ocean mixing, rain re-evaporation) and SPPT-style random multipliers on the physics during the run; once a depression has formed, a balanced storm is inserted in half the members (the start vortex is uncertain too).</li>
+    <li><b>Storm tracking:</b> GFDL-style: the centre is the average of up to five fixes (lowest pressure, highest 850 and 700 hPa vorticity, lowest 850 and 700 hPa height) that agree within 225 km.</li>
+    <li><b>Strength:</b> the model’s own winds. At 1.4° the core is not resolved, so strengths are far too low; read them as relative only.</li>
+  </ul>
+</section>
+<section>
+  <h2>How far to trust it</h2>
+  <div class="tblwrap"><table>
+    <thead><tr><th>Track error, past Bay storms (Oct–Dec), start at the real position</th><th>24 h</th><th>48 h</th><th>72 h</th><th>96 h</th></tr></thead>
+    <tbody>
+      <tr><td><b>This model (version 2), control run</b>, 84 storms</td><td class="n">143 km</td><td class="n">226 km</td><td class="n">331 km</td><td class="n">503 km</td></tr>
+      <tr><td>Version 1 (20 levels, simpler physics)</td><td class="n">129 km</td><td class="n">229 km</td><td class="n">418 km</td><td class="n">690 km</td></tr>
+      <tr><td>“Average motion” (simple baseline)</td><td class="n">185 km</td><td class="n">279 km</td><td class="n">397 km</td><td class="n">416 km</td></tr>
+    </tbody>
+  </table></div>
+  <div class="tblwrap"><table>
+    <thead><tr><th>Same storms, same start, vs ECMWF and NCEP (TIGGE archive)</th><th>24 h</th><th>48 h</th><th>72 h</th><th>96 h</th></tr></thead>
+    <tbody>
+      <tr><td>Ours (control) / ECMWF ensemble mean, 13–23 storms</td><td class="n">158 / 73</td><td class="n">224 / 85</td><td class="n">345 / 142</td><td class="n">517 / 208</td></tr>
+      <tr><td>Ours (control) / ECMWF HRES, 8–18 storms</td><td class="n">117 / 92</td><td class="n">222 / 113</td><td class="n">298 / 155</td><td class="n">510 / 175</td></tr>
+      <tr><td>Ours (control) / GEFS mean, 18–31 storms</td><td class="n">146 / 87</td><td class="n">220 / 120</td><td class="n">319 / 142</td><td class="n">514 / 136</td></tr>
+      <tr><td>Ours (control) / GFS, 15–28 storms</td><td class="n">145 / 95</td><td class="n">208 / 126</td><td class="n">295 / 167</td><td class="n">517 / 141</td></tr>
+    </tbody>
+  </table></div>
+  <ul class="note">
+    <li>Roughly twice the track error of ECMWF and GFS at 1–3 days and about three times at 4 days; better than the simple baseline up to 3 days. Experimental; follow IMD for warnings.</li>
+  </ul>
+</section>
+</div>
