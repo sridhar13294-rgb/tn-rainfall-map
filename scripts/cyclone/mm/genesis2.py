@@ -36,7 +36,7 @@ for i, s in enumerate(storms):
             if key_s not in models:                                                                # one compiled model per scheme choice, shared by its variants
                 M = mm2.Model(C.get('grid', 'T85'), 32, None, dict(sppt_on=False, **stat))
                 st, cr = M.init(f3, Z['levs'], Z['lats'], Z['lons'], Z['f2'][k, V2.index('surface_pressure')], Z['f2'][k, V2.index('geopotential_at_surface')] / 9.80616,
-                                Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')])
+                                Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')], ocean=C.get('ocean'), when=t0)
                 M.build(t0); st = M.dfi(st); models = {key_s: (M, st, cr)}                           # keep only the current one (memory)
             M, st, cr = models[key_s]; out = M.run(st, M.with_params(cr, dyn), HRS)
             if not np.isfinite(out['mslp']).all(): raise RuntimeError('blew up')

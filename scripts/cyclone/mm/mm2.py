@@ -16,6 +16,7 @@ No forecast model and no past-storm statistics: the starting analysis, the sea t
 import math, functools, numpy as np, jax, jax.numpy as jnp
 from scipy.interpolate import RegularGridInterpolator as RGI
 from scipy import ndimage as ndi
+from ocean import step as ocean_step, profile_from_clim
 from dinosaur import coordinate_systems, spherical_harmonic, sigma_coordinates, primitive_equations, scales, time_integration, filtering, vertical_interpolation
 units = scales.units
 G, RD, RV, CP, LV, SB, KARM = 9.80616, 287.04, 461.5, 1004.6, 2.5e6, 5.67e-8, 0.4; KAP = RD / CP
@@ -51,6 +52,7 @@ class Model:
         self.dt_s = dt_min * 60.0; self.dt = nd(dt_min * units.minute)
         lon, sinlat = self.coords.horizontal.nodal_axes; self.lon = np.degrees(lon); self.lat = np.degrees(np.arcsin(sinlat))
         self.LO, self.LA = np.meshgrid(self.lon, self.lat, indexing='ij')
+        self.fcor = jnp.asarray(2 * 7.292e-5 * np.sin(np.radians(self.LA)), jnp.float32)
         self.sig = self.coords.vertical.centers.astype(np.float32); self.dsig = self.coords.vertical.layer_thickness.astype(np.float32)
         self.sigb = self.coords.vertical.boundaries.astype(np.float32)
         self.ref_t = np.full(len(self.sig), 250.0, np.float32) * self.K
@@ -73,7 +75,7 @@ class Model:
         ext = np.concatenate([a, a[..., :1]], -1); lo2 = np.concatenate([lons, [lons[0] + 360]]); pts = np.stack([self.LA.ravel(), self.LO.ravel()], -1)
         f = lambda x: RGI((la2, lo2), x, bounds_error=False, fill_value=None)(pts).reshape(self.LO.shape)
         return np.stack([f(x) for x in ext]) if ext.ndim == 3 else f(ext)
-    def init(self, f3, levs, lats, lons, ps_pa, zs_m, sst_k, lsm, storm=None):
+    def init(self, f3, levs, lats, lons, ps_pa, zs_m, sst_k, lsm, storm=None, ocean=None, when=None):
         """f3: temperature, specific_humidity, u/v_component_of_wind, geopotential -> [lev, lat, lon]. storm: dict(lat, lon,
         vmax_kt, rmw_km) to replace the analysis vortex with a balanced one."""
         levs = np.asarray(levs, float); N = lambda x: self.to_nodes(x, lats, lons)
@@ -93,6 +95,8 @@ class Model:
         carry = dict(sst=jnp.asarray(sst, jnp.float32), tl=jnp.asarray(sg['t'][-1], jnp.float32), w=jnp.full(zs.shape, 0.6 * self.S['bucket'] * 1000, jnp.float32),
                      rain=jnp.zeros(zs.shape, jnp.float32), t=jnp.float32(0.0), sst0=jnp.asarray(sst, jnp.float32), T0=jnp.asarray(sg['t'], jnp.float32),
                      prm=self.params())
+        if ocean is not None:                                                                       # 1-D ocean column under every sea point (ocean.py)
+            carry['ocean'] = {k: jnp.asarray(v, jnp.float32) for k, v in profile_from_clim(ocean, when, self.LA, self.LO, sst, sst > 0).items()}
         return st, carry
     def bogus(self, T3, Q3, U3, V3, ps, levs, lat, lon, vmax_kt, rmw_km=None, R_out=600.0, B=1.4, t_hours=None):
         """Replace the analysis vortex by a balanced Holland vortex: lowest-level max wind vmax_kt/0.85 at radius rmw_km,
@@ -363,13 +367,22 @@ class Model:
         u = aux.cos_lat_u[0] / cl / self.MPS; v = aux.cos_lat_u[1] / cl / self.MPS; ps = jnp.exp(hor.to_nodal(state.log_surface_pressure))[0] / self.PA
         _, d = self.column(T, q, u, v, ps, cr); dt = self.dt_s; sea = (~self.land) & (cr['sst'] > 0)
         # mixed layer: strong winds stir up cooler water (about ent K/day at 25 m/s), recovering slowly toward the start
-        cool = -S['ent'] / 86400.0 * jnp.maximum(d['V1'] - 10.0, 0) ** 2 / 225.0 * (40.0 / S['h_ml'])
-        warm = (cr['sst0'] - cr['sst']) / (5 * 86400.0)
-        sst = jnp.where(sea, jnp.maximum(cr['sst'] + dt * (cool + warm), cr['sst0'] - 5.0), cr['sst'])
+        if 'ocean' in cr:                                                                           # ocean column: heat, wind stirring, cold wake
+            p1 = self.sig[-1] * ps; rho1 = p1 / (RD * T[-1] * (1 + 0.61 * q[-1]))
+            kt = rho1 * d['ust'] ** 2 / d['V1']                                                     # stress on the sea = rho cd V1 (u1, v1)
+            Qns = d['lw_dn'] - SB * cr['sst'] ** 4 - d['H'] - LV * d['E']
+            ocn, sst_o = ocean_step(cr['ocean'], Qns, d['sw_sfc'], kt * u[-1], kt * v[-1], self.fcor, dt, mask=sea, fw=d['E'] - d['rain'], xp=jnp)
+            sst = jnp.where(sea, sst_o, cr['sst'])
+        else:                                                                                       # old slab
+            cool = -S['ent'] / 86400.0 * jnp.maximum(d['V1'] - 10.0, 0) ** 2 / 225.0 * (40.0 / S['h_ml'])
+            warm = (cr['sst0'] - cr['sst']) / (5 * 86400.0)
+            sst = jnp.where(sea, jnp.maximum(cr['sst'] + dt * (cool + warm), cr['sst0'] - 5.0), cr['sst'])
         net = d['sw_sfc'] + d['lw_dn'] - SB * cr['tl'] ** 4 - d['H'] - LV * d['E']
         tl = jnp.where(self.land, jnp.clip(cr['tl'] + dt * net / S['cap_land'], 230.0, 330.0), cr['tl'])
         w = jnp.where(self.land, jnp.clip(cr['w'] + dt * (d['rain'] - d['E']), 0.0, S['bucket'] * 1000), cr['w'])
-        return dict(cr, sst=sst, tl=tl, w=w, rain=cr['rain'] + dt * d['rain'], t=cr['t'] + dt)
+        out = dict(cr, sst=sst, tl=tl, w=w, rain=cr['rain'] + dt * d['rain'], t=cr['t'] + dt)
+        if 'ocean' in cr: out['ocean'] = ocn
+        return out
     def run(self, state, carry, hours, every_h=6, box=(40.0, 120.0, -10.0, 45.0)):
         """returns per-output dict of cropped fields (lon/lat box): mslp, vo850, vo700, z850, z700, u/v lowest level, rain total."""
         hor = self.coords.horizontal; k850 = int(np.argmin(abs(self.sig - 0.85))); k700 = int(np.argmin(abs(self.sig - 0.70)))
