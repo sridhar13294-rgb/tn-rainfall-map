@@ -28,7 +28,7 @@ jobs:
           gh release download era5-cases -p live_ECM_$R.npz -D /tmp/w || true
       - run: cd /tmp/w && (python -W ignore $GITHUB_WORKSPACE/scripts/cyclone/mm/$S run live_GFSM_$R.npz live_GFS_$R.npz ${{ matrix.part }} 17 part_${{ matrix.part }}.json $GITHUB_WORKSPACE/data/cyclone/mm/live_config.json > part_${{ matrix.part }}.log 2>&1 || true); tail -30 part_${{ matrix.part }}.log
       - run: |
-          D=data/cyclone/mm/live/$R; mkdir -p $D; cp /tmp/w/part_${{ matrix.part }}.json $D/ || true; tail -c 8000 /tmp/w/part_${{ matrix.part }}.log > $D/part_${{ matrix.part }}.log || true
+          D=data/cyclone/mm/live/$R; [ "$S" = live2.py ] && D=$D-v2; mkdir -p $D; cp /tmp/w/part_${{ matrix.part }}.json $D/ || true; tail -c 8000 /tmp/w/part_${{ matrix.part }}.log > $D/part_${{ matrix.part }}.log || true
           git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
           git add data/cyclone/mm; git commit -qm "Cyclone study: moist model live $R part ${{ matrix.part }}"
           for i in 1 2 3 4 5 6 7 8 9 10; do git pull -q --rebase origin cases && git push -q origin HEAD:cases && break; sleep $((RANDOM % 25 + 5)); done
