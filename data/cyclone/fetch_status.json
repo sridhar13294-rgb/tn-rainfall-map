@@ -20,5 +20,39 @@
   "fields to fetch 17050",
   "fields ok 17050 in 1642 s; coverage {'msl': 0.98, 'u10': 0.0, 'v10': 0.0, 'u850': 0.98, 'v850': 0.98, 'u700': 0.98, 'v700': 0.98, 'u500': 0.98, 'v500': 0.98, 'u300': 0.0, 'v300': 0.0, 'u250': 0.0, 'v250': 0.0, 'u200': 0.98, 'v200': 0.98, 'z500': 0.98, 'z200': 0.98}",
   "saved /tmp/cyc_out/fc_ENS_2026102200.npz 85186 kB"
+ ],
+ "VITALS": [
+  "tcvitals https://noaa-gfs-bdp-pds.s3.amazonaws.com/gfs.20261022/06/atmos/gfs.t06z.syndata.tcvitals.tm00 records 4 North Indian Ocean 0",
+  "b-deck https://hurricanes.ral.ucar.edu/repository/data/bdecks_open/2026/ files 4 recent storms 1",
+  "saved /home/runner/work/tn-rainfall-map/tn-rainfall-map/data/cyclone/vitals_2026102206.json 1 records: JTWC b-deck 96A INVEST 2026-10-19T06:00:00 6.9N 59.9E 20.0kt 1009.0hPa",
+  "IMD RSMC New Delhi: not machine-readable (PDF bulletins), not used"
+ ],
+ "CMC": [
+  "run 2026102200 step 6 https://dd.weather.gc.ca/20261022/WXO-DD/model_gdps/15km/00/006/ files 406",
+  "isobaric variables ['AbsoluteVorticity', 'AirTemp', 'DewPointDepression', 'GeopotentialHeight', 'LiftedIndex-MU-VT', 'RelativeHumidity', 'RelativeVorticity', 'ShowalterIndex', 'SpecificHumidity', 'VerticalVelocity', 'WindDir', 'WindSpeed', 'WindU', 'WindV']",
+  "surface variables ['Albedo', 'CAPE', 'CIN', 'ConvectivePrecip-Accum', 'DownwardLongwaveRadiationFlux-Accum', 'DownwardShortwaveRadiationFlux-Accum', 'FreezingRain-Accum', 'FreezingRain-Accum1h', 'FreezingRain-Accum3h', 'FreezingRain-Accum6h', 'Humidex', 'IcePellets-Accum', 'IcePellets-Accum1h', 'IcePellets-Accum3h', 'IcePellets-Accum6h', 'KIndex', 'LatentHeatNetFlux', 'NetLongwaveRadiationFlux-Accum', 'NetShortwaveRadiationFlux-Accum', 'O3MixingRatio', 'PlanetaryBoundaryLayerHeight', 'Precip-Acc",
+  "names used: isobaric {'temperature': 'AirTemp', 'specific_humidity': 'SpecificHumidity', 'u_component_of_wind': 'WindU', 'v_component_of_wind': 'WindV', 'geopotential': 'GeopotentialHeight', 'rh': 'RelativeHumidity', 'depr': 'DewPointDepression'} surface {'ps': 'Pressure'}",
+  "zs from hour 000: 20261022T00Z_MSC_GDPS_GeopotentialHeight_Sfc_LatLon0.15_PT000H.grib2",
+  "fields 67 of 67 in 66 s",
+  "geopotential factor at 500 hPa 9.8066",
+  "sea_surface_temperature out-of-range points set missing 1621",
+  "coverage 3d {'temperature': 1.0, 'specific_humidity': 1.0, 'u_component_of_wind': 1.0, 'v_component_of_wind': 1.0, 'geopotential': 1.0} 2d {'surface_pressure': 1.0, 'sea_surface_temperature': 0.605, 'land_sea_mask': 1.0, 'geopotential_at_surface': 1.0}",
+  "saved /tmp/cyc_out/live_CMC_2026102206.npz 3485 kB; run 2026102200+6h notes ['land_sea_mask from GFS', 'sea_surface_temperature from GFS']"
+ ],
+ "ICON": [
+  "v1 pressure-level folders 18 [30.0, 50.0, 70.0, 100.0, 150.0, 200.0, 250.0, 300.0, 400.0, 500.0, 600.0, 700.0, 800.0, 850.0, 900.0, 925.0, 950.0, 1000.0]",
+  "run 2026102206 step 0 found at https://opendata.dwd.de/weather/nwp/v1/m/icon/p/T/lvt1/100/lv1/50000/r/2026-10-22T06:00/s/PT000H00M.grib2",
+  "v1 folder for CLAT '' top entries ['r']",
+  "v1 folder for CLON '' top entries ['r']",
+  "grid from v1 2026102206 / v1 2026102206 cells 2949120 max distance to a cell 0.105 deg",
+  "v1 folder for PS '' top entries ['r']",
+  "v1 folder for T_G '' top entries ['r']",
+  "v1 folder for HSURF '' top entries ['r']",
+  "v1 folder for FR_LAND '' top entries ['r']",
+  "fields 69 of 69 in 45 s; routes {'v1': 68}",
+  "geopotential factor at 500 hPa 1.0",
+  "sea_surface_temperature out-of-range points set missing 1440",
+  "coverage 3d {'temperature': 1.0, 'specific_humidity': 1.0, 'u_component_of_wind': 1.0, 'v_component_of_wind': 1.0, 'geopotential': 1.0} 2d {'surface_pressure': 1.0, 'sea_surface_temperature': 0.61, 'land_sea_mask': 1.0, 'geopotential_at_surface': 1.0}",
+  "saved /tmp/cyc_out/live_ICON_2026102206.npz 5131 kB; run 2026102206+0h notes ['q from RH (over water)']"
  ]
 }
