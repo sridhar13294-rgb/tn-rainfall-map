@@ -35,10 +35,11 @@ def tridiag(a, b, c, d):
     _, X = jax.lax.scan(bwd, z, (C[::-1], D[::-1])); return X[::-1]
 DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 3600.0, k_evap=2e-5, ck=1.2e-3, charnock=0.018, cd_cap=2.4e-3,
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
-                h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None)
+                h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
+                conv='bmj', entr=1.5e-4, mf_cap=0.3)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
-DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt')
+DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt', 'entr')
 NWAVE = 8
 class Model:
     def __init__(self, grid='T170', layers=32, dt_min=None, set_=None):
@@ -129,6 +130,51 @@ class Model:
         ps = ps + rho * np.interp(r, rr, ph1)                                                   # pressure deficit at the surface
         return T3, Q3, U3, V3, ps
     # ------------------------------------------------------------------------------------------------ column physics
+    def conv_mf(self, Tn, qn, p, mass, zc, sig, dsig, ps, ksrc, S, dt):
+        """Bulk mass-flux deep convection (Tiedtke/Bechtold type). One entraining updraft per column rises from the most
+        unstable low level; entrainment grows in dry air (eps = entr x (1.3 - RH)), so convection needs a moist column -
+        the moistening feedback that lets a weak low organise. Condensate rains out (re-evaporating below in the rain
+        step). Environment changes from the updraft-environment flux differences (energy and water conserved, with the
+        rain as the only sink); compensating subsidence warms and dries. Closure: the plume's CAPE is removed over
+        tau_deep. Returns dT, dq (per s), rain production per layer (kg m-2 s-1), cloud mask, deep flag."""
+        L = Tn.shape[0]; ii = jnp.arange(L)[:, None, None]; h_e = CP * Tn + G * zc + LV * qn
+        rh_e = jnp.clip(qn / qsat(Tn, p), 0, 1); sig_src = jnp.take_along_axis(sig * jnp.ones_like(Tn), ksrc[None], 0)[0]
+        def plume(c, x):
+            hu, qu, alive, lfc, started, zp = c; Te, qe, he, pk, zk, sk, rk, k = x
+            src = (k == ksrc); eps = S['entr'] * (1.3 - rk); dz = jnp.maximum(zk - zp, 0.0)
+            hu1 = jnp.where(src, he, hu + eps * dz * (he - hu)); qu1 = jnp.where(src, qe, qu + eps * dz * (qe - qu))
+            Td = (hu1 - G * zk - LV * qu1) / CP; sat = qu1 > qsat(Td, pk); Tu = Te
+            for _ in range(4):
+                qs_ = qsat(Tu, pk); f_ = CP * Tu + G * zk + LV * qs_ - hu1; df = CP + LV * qs_ * 17.67 * 243.5 / (Tu - 29.65) ** 2
+                Tu = jnp.clip(Tu - f_ / df, 150.0, 350.0)
+            Tu = jnp.where(sat, Tu, Td); qv = jnp.where(sat, qsat(Tu, pk), qu1); cond = jnp.maximum(qu1 - qv, 0.0)
+            b = Tu * (1 + 0.61 * qv) - Te * (1 + 0.61 * qe)
+            st2 = started | src; run = started & alive & ~src                                         # above the source, still rising
+            lfc2 = jnp.where(run, lfc | (b > 0), lfc)
+            alv2 = jnp.where(src, True, jnp.where(run, alive & ((b > 0) | (~lfc & (sig_src - sk < 0.2))) & (sk > 0.08), alive & ~started))
+            act = st2 & alv2 & (run | src)
+            nh = jnp.where(act, jnp.where(src, he, hu1), hu); nq = jnp.where(act, jnp.where(src, qe, qv), qu)
+            return (nh, nq, alv2, lfc2, st2, jnp.where(act | ~st2, zk, zp)), (act, jnp.where(run & act, b, 0.0), jnp.where(run & act, cond, 0.0), nh, nq)
+        z0 = jnp.zeros_like(ps); f0 = jnp.zeros(ps.shape, bool)
+        xs = tuple(a[::-1] for a in (Tn, qn, h_e, p * jnp.ones_like(Tn), zc, sig * jnp.ones_like(Tn), rh_e, ii * jnp.ones(Tn.shape, jnp.int32)))
+        (_, _, _, lfc, _, _), (inc, b, cond, hu, qu) = jax.lax.scan(plume, (z0, z0, f0, f0, f0, z0 - 1.0), xs)
+        inc, b, cond, hu, qu = [a[::-1] for a in (inc, b, cond, hu, qu)]
+        sig_top = jnp.min(jnp.where(inc, sig, 1.0), axis=0); cape = (RD * jnp.maximum(b, 0) * dsig / sig * inc).sum(0)
+        deep = lfc & ((sig_src - sig_top) * ps > 25000.0) & (cape > 50.0)
+        frac = (sig_src - sig) / jnp.maximum(sig_src - sig_top, 1e-3)
+        eta = jnp.where(inc & (ii != ksrc), jnp.clip(jnp.where(frac < 0.6, 1.0, (1 - frac) / 0.4), 0, 1), 0.0) * deep    # mass flux entering each cloud layer from below
+        sh = lambda a: jnp.concatenate([a[1:], a[-1:]], 0)                                          # value of the layer below
+        Fh = eta * (sh(hu) - h_e); Fq = eta * (sh(qu) - qn)                                         # across each layer's bottom interface, per unit Mb
+        top = lambda F: jnp.concatenate([jnp.zeros_like(F[:1]), F[:-1]], 0)                        # = bottom flux of the layer above
+        dh1 = (Fh - top(Fh)) / mass; P1 = eta * cond; dq1 = (Fq - top(Fq)) / mass - P1 / mass
+        # the source layer: air leaves upward through its top (handled: its top flux = the bottom flux of the layer above)
+        dT1 = (dh1 - LV * dq1) / CP
+        gam = LV / CP * qsat(Tn, p) * 17.67 * 243.5 / (Tn - 29.65) ** 2
+        dhs = jnp.take_along_axis(dh1, ksrc[None], 0)[0]
+        dcape = (RD * (dhs[None] / (CP * (1 + gam)) - dT1) * dsig / sig * (inc & (ii != ksrc))).sum(0)    # CAPE change per unit mass flux
+        mmin = jnp.min(jnp.where(eta > 0, mass, 1e9), axis=0)
+        Mb = jnp.clip(cape / (S['tau_deep'] * jnp.maximum(-dcape, 1e-6)), 0.0, jnp.minimum(S['mf_cap'] * mmin / dt, 1.0)) * deep
+        return dT1 * Mb, dq1 * Mb, P1 * Mb, inc & deep[None], deep
     def column(self, T, q, u, v, ps, cr, want_diag=False):
         """All arrays nodal: T, q, u, v [L, X, Y] (SI); ps [X, Y] Pa; cr = surface carry. Returns tendencies (per second)
         and diagnostics (surface rain, surface fluxes)."""
@@ -212,6 +258,10 @@ class Model:
         mth = ((th * mass) * sreg).sum(0) / jnp.maximum((mass * sreg).sum(0), 1.0); mq = ((qn * mass) * sreg).sum(0) / jnp.maximum((mass * sreg).sum(0), 1.0)
         dTs = jnp.where(sreg, relax(th, mth, S['tau_shallow'], dt) * (p / ps) ** KAP, 0.0); dqs = jnp.where(sreg, relax(qn, mq, S['tau_shallow'], dt), 0.0)
         # convective momentum mixing
+        if S['conv'] == 'mf':                                                                       # mass-flux scheme replaces the adjustment
+            dTc, dqc, Pmf, regmf, okmf = self.conv_mf(Tn, qn, p, mass, zc, sig, dsig, ps, ksrc, S, dt)
+            reg, ok = regmf, okmf
+            dTs = jnp.where(okmf[None], 0.0, dTs); dqs = jnp.where(okmf[None], 0.0, dqs)
         cm = reg & ok[None]
         mu = ((u * mass) * cm).sum(0) / jnp.maximum((mass * cm).sum(0), 1.0); mv = ((v * mass) * cm).sum(0) / jnp.maximum((mass * cm).sum(0), 1.0)
         dT = dT + dTc + dTs; dq = dq + dqc + dqs
@@ -224,6 +274,7 @@ class Model:
         def fall(P, x):
             s_, rh_, m_ = x; P = P + s_; e_ = jnp.minimum(S['k_evap'] * (1 - rh_) * jnp.sqrt(jnp.maximum(P, 0)) * m_, P); return P - e_, e_
         Pconv_src = jnp.where(reg & ok, -dqc * mass, 0.0) / jnp.maximum(Pq, 1e-12) * Pc                # where convective rain forms
+        if S['conv'] == 'mf': Pconv_src = Pmf
         Psurf, ev = jax.lax.scan(fall, jnp.zeros_like(ps), (src + Pconv_src, rh, mass))
         evap = ev / mass
         dq = dq - cond + evap; dT = dT + LV / CP * (cond - evap)

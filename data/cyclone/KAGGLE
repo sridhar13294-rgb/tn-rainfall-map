@@ -1,5 +1,6 @@
-tn-mm2-t170
+tn-mm2-test-mf
 libm_fields.npz
-bash ../kaggle/par.sh hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/t170.json /kaggle/working/t170
+python -W ignore test_mm2.py /kaggle/working/libm_fields.npz /kaggle/working/test.json T85
 NvidiaTeslaT4
-#T170 past-storm test on 2 GPUs 2026-10-22T11:08Z
+2
+#mass-flux convection checks 2026-10-22T11:34Z
