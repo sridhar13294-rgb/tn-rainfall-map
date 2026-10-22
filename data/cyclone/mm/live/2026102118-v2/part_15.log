@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "/home/runner/work/tn-rainfall-map/tn-rainfall-map/scripts/cyclone/mm/live2.py", line 64, in run
+    res.append(dict(member=k, h=mb['h'], alpha=mb['alpha'], grid=grid, tracks=T, rain=rain)); print(k, grid, {pk: max(t[3] for t in v) for pk, v in T.items()}, flush=True)
+                                                                                                                  ^^^^^^^^^^^^^^^^^^^^
+ValueError: max() iterable argument is empty
+15 FAILED ValueError('max() iterable argument is empty')
+Traceback (most recent call last):
+  File "/home/runner/work/tn-rainfall-map/tn-rainfall-map/scripts/cyclone/mm/live2.py", line 64, in run
+    res.append(dict(member=k, h=mb['h'], alpha=mb['alpha'], grid=grid, tracks=T, rain=rain)); print(k, grid, {pk: max(t[3] for t in v) for pk, v in T.items()}, flush=True)
+                                                                                                                  ^^^^^^^^^^^^^^^^^^^^
+ValueError: max() iterable argument is empty
+32 FAILED ValueError('max() iterable argument is empty')
+Traceback (most recent call last):
+  File "/home/runner/work/tn-rainfall-map/tn-rainfall-map/scripts/cyclone/mm/live2.py", line 64, in run
+    res.append(dict(member=k, h=mb['h'], alpha=mb['alpha'], grid=grid, tracks=T, rain=rain)); print(k, grid, {pk: max(t[3] for t in v) for pk, v in T.items()}, flush=True)
+                                                                                                                  ^^^^^^^^^^^^^^^^^^^^
+ValueError: max() iterable argument is empty
+49 FAILED ValueError('max() iterable argument is empty')
