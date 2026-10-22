@@ -1,53 +1,66 @@
-[{"stream_name":"stdout","time":0.694155477,"data":"+ nvidia-smi || true\n"}
-,{"stream_name":"stderr","time":0.699646576,"data":"/bin/sh: 1: nvidia-smi: not found\n"}
-,{"stream_name":"stdout","time":0.699892309,"data":"exit 0\n"}
-,{"stream_name":"stdout","time":0.699904961,"data":"+ pip install -q -U \"jax[cuda12]\"\n"}
-,{"stream_name":"stderr","time":35.8000778,"data":"WARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('\u003cpip._vendor.urllib3.connection.HTTPSConnection object at 0x7e01c7a72270\u003e: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution')': /simple/jax/\n"}
-,{"stream_name":"stderr","time":68.31110281,"data":"WARNING: Retrying (Retry(total=3, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('\u003cpip._vendor.urllib3.connection.HTTPSConnection object at 0x7e01c7a2a990\u003e: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution')': /simple/jax/\n"}
-,{"stream_name":"stderr","time":101.323969983,"data":"WARNING: Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('\u003cpip._vendor.urllib3.connection.HTTPSConnection object at 0x7e01c7a2ac10\u003e: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution')': /simple/jax/\n"}
-,{"stream_name":"stderr","time":135.335702723,"data":"WARNING: Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('\u003cpip._vendor.urllib3.connection.HTTPSConnection object at 0x7e01c7a2ae90\u003e: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution')': /simple/jax/\n"}
-,{"stream_name":"stderr","time":171.347202899,"data":"WARNING: Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('\u003cpip._vendor.urllib3.connection.HTTPSConnection object at 0x7e01c7a2b110\u003e: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution')': /simple/jax/\n"}
-,{"stream_name":"stderr","time":235.408161634,"data":"WARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('\u003cpip._vendor.urllib3.connection.HTTPSConnection object at 0x7e01c79cc2d0\u003e: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution')': /simple/jax-cuda12-plugin/\n"}
-,{"stream_name":"stderr","time":267.918188148,"data":"WARNING: Retrying (Retry(total=3, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('\u003cpip._vendor.urllib3.connection.HTTPSConnection object at 0x7e01c79cc550\u003e: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution')': /simple/jax-cuda12-plugin/\n"}
-,{"stream_name":"stderr","time":300.929929585,"data":"WARNING: Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('\u003cpip._vendor.urllib3.connection.HTTPSConnection object at 0x7e01c79cc7d0\u003e: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution')': /simple/jax-cuda12-plugin/\n"}
-,{"stream_name":"stderr","time":334.94400572,"data":"WARNING: Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('\u003cpip._vendor.urllib3.connection.HTTPSConnection object at 0x7e01c79cca50\u003e: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution')': /simple/jax-cuda12-plugin/\n"}
-,{"stream_name":"stderr","time":370.954408111,"data":"WARNING: Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('\u003cpip._vendor.urllib3.connection.HTTPSConnection object at 0x7e01c79cccd0\u003e: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution')': /simple/jax-cuda12-plugin/\n"}
-,{"stream_name":"stderr","time":402.970990609,"data":"ERROR: Could not find a version that satisfies the requirement jax-cuda12-plugin\u003c=0.11.1,\u003e=0.11.1; extra == \"cuda12\" (from jax[cuda12]) (from versions: none)\n"}
-,{"stream_name":"stderr","time":402.971310146,"data":"ERROR: No matching distribution found for jax-cuda12-plugin\u003c=0.11.1,\u003e=0.11.1; extra == \"cuda12\"\n"}
-,{"stream_name":"stdout","time":403.069480407,"data":"exit 1\n"}
-,{"stream_name":"stdout","time":403.069517629,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
-,{"stream_name":"stderr","time":436.440369989,"data":"  error: subprocess-exited-with-error\n"}
-,{"stream_name":"stderr","time":436.440410619,"data":"  \n"}
-,{"stream_name":"stderr","time":436.440417484,"data":"  × git clone --filter=blob:none --quiet https://github.com/google-research/dinosaur /tmp/pip-req-build-ucq41nnf did not run successfully.\n"}
-,{"stream_name":"stderr","time":436.440422836,"data":"  │ exit code: 128\n"}
-,{"stream_name":"stderr","time":436.440426561,"data":"  ╰─\u003e See above for output.\n"}
-,{"stream_name":"stderr","time":436.440430641,"data":"  \n"}
-,{"stream_name":"stderr","time":436.440441385,"data":"  note: This error originates from a subprocess, and is likely not a problem with pip.\n"}
-,{"stream_name":"stderr","time":436.4427525,"data":"error: subprocess-exited-with-error\n"}
-,{"stream_name":"stderr","time":436.44277948,"data":"\n"}
-,{"stream_name":"stderr","time":436.4427878,"data":"× git clone --filter=blob:none --quiet https://github.com/google-research/dinosaur /tmp/pip-req-build-ucq41nnf did not run successfully.\n"}
-,{"stream_name":"stderr","time":436.442794682,"data":"│ exit code: 128\n"}
-,{"stream_name":"stderr","time":436.442800498,"data":"╰─\u003e See above for output.\n"}
-,{"stream_name":"stderr","time":436.442806505,"data":"\n"}
-,{"stream_name":"stderr","time":436.442812115,"data":"note: This error originates from a subprocess, and is likely not a problem with pip.\n"}
-,{"stream_name":"stdout","time":436.548139051,"data":"exit 1\n"}
-,{"stream_name":"stdout","time":436.548175296,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
-,{"stream_name":"stderr","time":468.576052129,"data":"fatal: unable to access 'https://github.com/sridhar13294-rgb/tn-rainfall-map.git/': Could not resolve host: github.com\n"}
-,{"stream_name":"stdout","time":468.578598661,"data":"exit 128\n"}
-,{"stream_name":"stdout","time":468.578622819,"data":"+ curl -sSL -o libm48_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm48_fields.npz\n"}
-,{"stream_name":"stderr","time":500.658232676,"data":"curl: (6) Could not resolve host: github.com\n"}
-,{"stream_name":"stdout","time":500.661114814,"data":"exit 6\n"}
-,{"stream_name":"stdout","time":500.661149239,"data":"setup s 500\n"}
-,{"stream_name":"stdout","time":500.661156337,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 bash ../kaggle/par.sh genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_mf.json /kaggle/working/gen 2\u003e\u00261 | tee job.log\n"}
-,{"stream_name":"stderr","time":500.662402973,"data":"/bin/sh: 1: cd: can't cd to repo/scripts/cyclone/mm\n"}
-,{"stream_name":"stdout","time":500.662548199,"data":"exit 2\n"}
-,{"stream_name":"stdout","time":500.662558769,"data":"+ rm -rf repo libm48_fields.npz\n"}
-,{"stream_name":"stdout","time":500.665187235,"data":"exit 0\n"}
-,{"stream_name":"stdout","time":500.665220954,"data":"total s 500\n"}
-,{"stream_name":"stderr","time":503.44675106,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
-,{"stream_name":"stderr","time":503.446790299,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
-,{"stream_name":"stderr","time":503.805249249,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
-,{"stream_name":"stderr","time":503.805278909,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
-,{"stream_name":"stderr","time":504.85414952,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
-,{"stream_name":"stderr","time":506.054865065,"data":"[NbConvertApp] Writing 278661 bytes to __results__.html\n"}
+[{"stream_name":"stdout","time":0.750646553,"data":"+ nvidia-smi || true\n"}
+,{"stream_name":"stdout","time":0.78747803,"data":"Thu Oct 22 11:58:36 2026       \n"}
+,{"stream_name":"stdout","time":0.787502834,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":0.787508195,"data":"| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":0.787512396,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.787517079,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":0.787521546,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":0.787526012,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":0.787530383,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":0.846821679,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":0.846845605,"data":"| N/A   53C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":0.846851981,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":0.846865419,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.84687001,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":0.846875175,"data":"| N/A   53C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":0.84688031,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":0.84688501,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.84689027,"data":"\n"}
+,{"stream_name":"stdout","time":0.84689506,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":0.846899786,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":0.846904868,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":0.846909692,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":0.846914417,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":0.84773563,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":0.847747885,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.174006743,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1.174422322,"data":"+ pip install -q -U \"jax[cuda12]\"\n"}
+,{"stream_name":"stdout","time":5.787788008,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.9/8.9 MB 73.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":7.630457337,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 191.8/191.8 MB 10.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":8.604314505,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 86.8/86.8 MB 22.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":8.783727264,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 80.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":8.84200337,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.5/3.5 MB 80.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stderr","time":29.66580259,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":29.665852789,"data":"bigframes 2.48.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":29.665858026,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stderr","time":29.665861003,"data":"google-colab 1.0.0 requires jupyter-server==2.20.0, but you have jupyter-server 2.12.5 which is incompatible.\n"}
+,{"stream_name":"stderr","time":29.665863718,"data":"google-colab 1.0.0 requires pandas==2.2.3, but you have pandas 2.3.3 which is incompatible.\n"}
+,{"stream_name":"stderr","time":29.665866219,"data":"google-colab 1.0.0 requires requests==2.32.4, but you have requests 2.34.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":29.665868676,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":29.665871233,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":29.665873815,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stdout","time":29.84350567,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":29.843542093,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
+,{"stream_name":"stdout","time":39.186001769,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 351.9/351.9 kB 9.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":39.321483976,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 405.3/405.3 kB 17.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":39.377622999,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 230.5/230.5 kB 13.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":39.42256734,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.4/1.4 MB 51.3 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":43.196905542,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":43.196945423,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
+,{"stream_name":"stdout","time":45.546748223,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":45.546774734,"data":"+ curl -sSL -o libm48_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm48_fields.npz\n"}
+,{"stream_name":"stdout","time":47.858613236,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":47.858638964,"data":"setup s 47\n"}
+,{"stream_name":"stdout","time":47.858644353,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 bash ../kaggle/par.sh genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_mf.json /kaggle/working/gen 2\u003e\u00261 | tee job.log\n"}
+,{"stream_name":"stdout","time":7069.929984969,"data":"tail: option used in invalid context -- 5\n"}
+,{"stream_name":"stdout","time":7069.937311776,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":7069.937334701,"data":"+ rm -rf repo libm48_fields.npz\n"}
+,{"stream_name":"stdout","time":7070.048779991,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":7070.048816536,"data":"total s 7069\n"}
+,{"stream_name":"stderr","time":7072.263549791,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":7072.263579547,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":7072.564794289,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":7072.564837223,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":7073.413030026,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":7074.505721649,"data":"[NbConvertApp] Writing 278661 bytes to __results__.html\n"}
 ]
