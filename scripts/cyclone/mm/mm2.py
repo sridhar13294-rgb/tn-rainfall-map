@@ -128,6 +128,9 @@ class Model:
             T3, Q3, U3, V3 = move(T3), np.maximum(move(Q3), 0.0), move(U3), move(V3); ps = move(ps[None])[0]
             return T3, Q3, U3, V3, ps
         U3, V3 = fill(U3), fill(V3)
+        # remove the analysis' own low too (pressure and warm core, within 3 deg): otherwise its centre, often 50-100 km from
+        # the observed one, stays as a second low and the start position is a blend of the two (72 km median at 0 h in tests)
+        T3 = fill(T3, R=3.0); ps = fill(ps[None], R=3.0)[0]
         f0 = 2 * 7.292e-5 * math.sin(math.radians(lat)); Vm = vmax_kt * 0.5144 / 0.85; rho = 1.15
         # wind profile (modified Rankine, decay exponent x, tapered to calm beyond R_out), then the balancing geopotential from
         # gradient balance. The outer winds (300-1000 km) set the beta drift: the old profile (x 0.5, taper from 600 km over
