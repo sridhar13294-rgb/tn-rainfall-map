@@ -16,6 +16,7 @@ def at(P0, t):
             return tuple(a[i] + f * (b[i] - a[i]) if a[i] is not None and b[i] is not None else (a[i] or b[i]) for i in (1, 2, 3))
     return None
 storms = [s for s in (json.load(open(C['list'])) if C.get('list') else O.LIBL) if (not C.get('basins') or s.get('basin', 'BB') in C['basins']) and (not C.get('storms') or s['name'] in C['storms']) and O.gen_time(s).year >= C.get('from_year', 0)]; res = []
+storms = storms[::int(C.get('every', 1))]                                                       # quick tests: every n-th storm
 for i, s in enumerate(storms):
     if i % NCH != CH: continue
     g = O.gen_time(s); key = g.strftime('%Y-%m-%dT%H')
