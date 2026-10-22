@@ -1,6 +1,6 @@
-tn-mm2-gen-mf
-libm48_fields.npz
-bash ../kaggle/par.sh genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_mf.json /kaggle/working/gen
+tn-mm2-ens-stab
+libm_fields.npz
+bash ../kaggle/par.sh hindens2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/ens_stab.json /kaggle/working/ens
 NvidiaTeslaT4
-1
-#genesis test old vs new convection, on account 1 (account 2 has no internet yet) 2026-10-22T11:54Z
+2
+#stability test: 10 members x 84 storms with tapered SPPT 2026-10-22T12:00Z
