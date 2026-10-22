@@ -1,6 +1,6 @@
-tn-mm2-bench-tpu
-libm_fields.npz
-XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore gpu_bench.py /kaggle/working/libm_fields.npz /kaggle/working/bench.json T85,T170,T213,T255 120 Hamoon
-TpuV38
-5
-#TPU benchmark: speed and memory at 140/80/55/45 km 2026-10-22T15:38Z
+tn-io-as
+libm_as_fields.npz
+bash ../kaggle/par.sh hind2.py /kaggle/working/libm_as_fields.npz ../../../data/cyclone/kaggle_cfg/io_as.json /kaggle/working/as
+NvidiaTeslaT4
+3
+#Arabian Sea baseline (105 storms, 1980-2025) 2026-10-22T15:59Z
