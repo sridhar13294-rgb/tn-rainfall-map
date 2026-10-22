@@ -61,7 +61,7 @@ def run(LIVEM, LIVE, PART, NPART, OUT, CFG=None):
                 from scipy.interpolate import RegularGridInterpolator as RGI
                 pts = np.array([[s_[2], s_[1]] for s_ in st_names])                                  # (lon, lat)
                 rain = [np.round(RGI((M.blon, M.blat), np.asarray(out['rain'][i]), bounds_error=False, fill_value=0.0)(pts), 1).tolist() for i in range(out['rain'].shape[0])]
-            res.append(dict(member=k, h=mb['h'], alpha=mb['alpha'], grid=grid, tracks=T, rain=rain)); print(k, grid, {pk: max(t[3] for t in v) for pk, v in T.items()}, flush=True)
+            res.append(dict(member=k, h=mb['h'], alpha=mb['alpha'], grid=grid, tracks=T, rain=rain)); print(k, grid, {pk: max([t[3] for t in v] or [0]) for pk, v in T.items()}, flush=True)
         except Exception as e:
             import traceback; traceback.print_exc(); res.append(dict(member=k, err=repr(e)[:300])); print(k, 'FAILED', repr(e)[:300], flush=True)
     json.dump(dict(obs=obs, precursors=PR, ecm=D is not None, members=res), open(OUT, 'w'), default=float)
@@ -80,7 +80,9 @@ def merge(LIVE, SSTJ, LIJ, SITES, OUT, parts):
     mem = sorted([m for p in P for m in p['members'] if 'tracks' in m], key=lambda m: m['member']); failed = [m['member'] for p in P for m in p['members'] if 'err' in m]
     RES = []
     for m in mem:
-        best = max(m['tracks'].items(), key=lambda kv: max([t[3] for t in kv[1] if 5 <= t[1] <= 22 and 78 <= t[2] <= 99] or [0]))
+        cand = [kv for kv in m['tracks'].items() if kv[1]]
+        if not cand: failed.append(m['member']); continue
+        best = max(cand, key=lambda kv: max([t[3] for t in kv[1] if 5 <= t[1] <= 22 and 78 <= t[2] <= 99] or [0]))
         pk, tr = best; pts = []
         for t in tr:
             pts.append((t0 + dt.timedelta(hours=t[0]), t[1], t[2], t[3], t[4]))

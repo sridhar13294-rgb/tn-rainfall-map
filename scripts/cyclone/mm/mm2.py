@@ -336,6 +336,7 @@ class Model:
                 m = np.where(d <= (330 if i else 250), F, -np.inf); j = np.unravel_index(np.argmax(m), m.shape)
                 dj = dist(LA[j], LO[j]); w = np.clip(F - np.percentile(F[dj <= 400], 75), 0, None) * (dj <= 160) * np.exp(-(dj / 120.0) ** 2)
                 if w.sum() > 0: fixes.append(((w * LA).sum() / w.sum(), LO[j] + (w * ((LO - LO[j] + 180) % 360 - 180)).sum() / w.sum()))
+                elif np.isfinite(m[j]): fixes.append((float(LA[j]), float(LO[j])))
             if not fixes: break
             fa = np.array(fixes); mla, mlo = np.median(fa, 0)                                    # median first: one stray fix cannot drag the mean
             keep = [f for f in fixes if math.hypot(f[0] - mla, (f[1] - mlo) * math.cos(math.radians(mla))) * 111.2 <= 225]
