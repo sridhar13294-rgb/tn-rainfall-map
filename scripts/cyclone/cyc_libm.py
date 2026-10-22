@@ -1,7 +1,8 @@
 """Global multi-level ERA5 at each past storm's start time, for the moist multi-level model (scripts/cyclone/mm/).
 13 pressure levels (50-1000 hPa): temperature, specific humidity, u, v, geopotential; plus surface pressure, sea-surface
 temperature, land-sea mask and terrain height. 1.5 deg global. WeatherBench2 ERA5 up to Jan 2023, ARCO-ERA5 after.
-Output: /tmp/cyc_out/libm_fields.npz"""
+Output: /tmp/cyc_out/libm_fields.npz; with LIBM_LEAD=48 the times are 48 h before each start (genesis test set),
+output libm48_fields.npz."""
 import json, os, datetime as dt, numpy as np, xarray as xr
 WB2 = 'gs://weatherbench2/datasets/era5/1959-2023_01_10-6h-240x121_equiangular_with_poles_conservative.zarr'
 ARCO = 'gs://gcp-public-data-arco-era5/ar/full_37-1h-0p25deg-chunk-1.zarr-v3'
@@ -9,11 +10,12 @@ V3 = ['temperature', 'specific_humidity', 'u_component_of_wind', 'v_component_of
 V2 = ['surface_pressure', 'sea_surface_temperature', 'land_sea_mask', 'geopotential_at_surface']
 LEVS = [50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000]
 LATS = np.arange(-90, 90.1, 1.5); LONS = np.arange(0, 360, 1.5)
-os.makedirs('data/cyclone', exist_ok=True); LOGF = open('data/cyclone/libm_log.txt', 'w')
+os.makedirs('data/cyclone', exist_ok=True); LEAD = int(os.environ.get('LIBM_LEAD', '0')); NAME = 'libm%s_fields.npz' % (LEAD or '')
+LOGF = open('data/cyclone/libm%s_log.txt' % (LEAD or ''), 'w')
 def log(*a): print(*a, flush=True); print(*a, file=LOGF, flush=True)
 L = json.load(open('data/cyclone/lib_list.json')); times = set()
 for s in L:
-    t0 = dt.datetime.strptime(s['t0'], '%Y-%m-%dT%H'); t0 = t0.replace(hour=t0.hour // 6 * 6); times.add(t0.strftime('%Y-%m-%dT%H'))
+    t0 = dt.datetime.strptime(s['t0'], '%Y-%m-%dT%H'); t0 = t0.replace(hour=t0.hour // 6 * 6) - dt.timedelta(hours=LEAD); times.add(t0.strftime('%Y-%m-%dT%H'))
 times = sorted(times); log(len(times), 'times')
 def grab(ds, var, T, lev):
     x = ds[var]
@@ -42,5 +44,5 @@ for i, t in enumerate(times):
         except Exception as e: log(i, t, src[0], 'failed', repr(e)[:300])
     log(i, t, 'ok' if np.isfinite(F3[i, 0, 5]).all() else 'MISSING')
 os.makedirs('/tmp/cyc_out', exist_ok=True)
-np.savez_compressed('/tmp/cyc_out/libm_fields.npz', f3=F3, f2=F2, times=np.array(times), lats=LATS, lons=LONS, v3=np.array(V3), v2=np.array(V2), levs=np.array(LEVS))
-log('saved', os.path.getsize('/tmp/cyc_out/libm_fields.npz'))
+np.savez_compressed('/tmp/cyc_out/' + NAME, f3=F3, f2=F2, times=np.array(times), lats=LATS, lons=LONS, v3=np.array(V3), v2=np.array(V2), levs=np.array(LEVS))
+log('saved', NAME, os.path.getsize('/tmp/cyc_out/' + NAME))
