@@ -1,6 +1,6 @@
-tn-ens-spread2
-libm_fields.npz
-bash ../kaggle/par.sh hindens2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/ens_spread2.json /kaggle/working/ens
+tn-wx-tend2
+libm_wx2020_fields.npz,wx_truth_2020.npz
+python -W ignore wx_tend.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz /kaggle/working/tend.json 6
 NvidiaTeslaT4
-5
-#ensemble spread round 2: start differences x2.2, SPPT x1.6 2026-10-22T21:37Z
+3
+#energy-conserving shallow cloud mixing vs old (24 h) 2026-10-22T22:40Z

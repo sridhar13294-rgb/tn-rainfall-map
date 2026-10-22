@@ -9,8 +9,8 @@ Z = dict(np.load(LIB)); TT = [str(t) for t in Z['times']]; V3 = [str(v) for v in
 TR = dict(np.load(TRU)); DI = {str(d): i for i, d in enumerate(TR['days'])}
 BIG = 1e12
 VARS = {'ctl': {}, 'no_deep': dict(tau_deep=BIG), 'no_shallow': dict(tau_shallow=BIG), 'no_conv': dict(tau_deep=BIG, tau_shallow=BIG),
-        'ck_low': dict(ck=0.6e-3), 'no_evap': dict(k_evap=0.0), 'rh_deep9': dict(rh_deep=0.9)}
-STATIC = {'gray': dict(rad='gray'), 'cap_land10': dict(cap_land=2e6), 'mf_kick': dict(conv='mf', mf_kick_t=0.5, mf_kick_q=0.0005)}
+        'ck_low': dict(ck=0.6e-3), 'tau_sh2': dict(tau_shallow=7200.0)}
+STATIC = {'shallow_theta': dict(shallow='theta'), 'mf_kick': dict(conv='mf', mf_kick_t=0.5, mf_kick_q=0.0005), 'mf_kick_wup': dict(conv='mf', mf_kick_t=1.0, mf_kick_q=0.001, mf_wup=10.0)}
 base = dict(rad='radcloud', rad_every=2); res = {}; models = {}
 def score(out, M, t0):
     j = DI.get((t0 + dt.timedelta(days=1)).strftime('%Y-%m-%dT%H')); r = {}
