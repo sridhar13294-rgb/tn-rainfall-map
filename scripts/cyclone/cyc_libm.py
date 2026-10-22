@@ -11,9 +11,15 @@ V2 = ['surface_pressure', 'sea_surface_temperature', 'land_sea_mask', 'geopotent
 LEVS = [50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000]
 LATS = np.arange(-90, 90.1, 1.5); LONS = np.arange(0, 360, 1.5)
 os.makedirs('data/cyclone', exist_ok=True); LEAD = int(os.environ.get('LIBM_LEAD', '0')); NAME = 'libm%s_fields.npz' % (LEAD or '')
-LOGF = open('data/cyclone/libm%s_log.txt' % (LEAD or ''), 'w')
+if os.environ.get('LIBM_NAME'): NAME = 'libm_%s_fields.npz' % os.environ['LIBM_NAME']
+LOGF = open('data/cyclone/' + NAME.replace('_fields.npz', '_log.txt'), 'w')
 def log(*a): print(*a, flush=True); print(*a, file=LOGF, flush=True)
-L = json.load(open('data/cyclone/lib_list.json')); times = set()
+# LIBM_LIST / LIBM_SEL / LIBM_NAME: another storm list and a subset of it, e.g. LIBM_LIST=data/cyclone/lib_all.json
+# LIBM_SEL=BB,AS:1980-1999 LIBM_NAME=nio_1980_1999 -> libm_nio_1980_1999.npz
+L = json.load(open(os.environ.get('LIBM_LIST', 'data/cyclone/lib_list.json'))); times = set()
+if os.environ.get('LIBM_SEL'):
+    bs, _, yr = os.environ['LIBM_SEL'].partition(':'); y0, _, y1 = yr.partition('-')
+    L = [s for s in L if (not bs or s.get('basin') in bs.split(',')) and (not yr or int(y0) <= int(s['t0'][:4]) <= int(y1 or y0))]
 for s in L:
     t0 = dt.datetime.strptime(s['t0'], '%Y-%m-%dT%H'); t0 = t0.replace(hour=t0.hour // 6 * 6) - dt.timedelta(hours=LEAD); times.add(t0.strftime('%Y-%m-%dT%H'))
 times = sorted(times); log(len(times), 'times')

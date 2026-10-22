@@ -33,7 +33,7 @@ jobs:
           for i in 1 2 3 4 5 6; do git pull -q --rebase origin cases && git push -q origin HEAD:cases && break; sleep $((RANDOM % 20 + 5)); done
   history:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 350
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -51,8 +51,16 @@ jobs:
           if [ "$w" = "libh" ]; then python scripts/cyclone/cyc_libh.py || true; fi
           if [ "$w" = "libm" ]; then python scripts/cyclone/cyc_libm.py || true; fi
           if [ "$w" = "libm48" ]; then LIBM_LEAD=48 python scripts/cyclone/cyc_libm.py || true; fi
+          if [ "$w" = "liball" ]; then
+            # whole-Indian-Ocean storm list (IBTrACS 1980-2025) + start fields in chunks, fetched in parallel.
+            # RUN line 2: specs name=BASINS:YEARS, e.g. "bb1=BB:1980-1999 as1=AS:1980-2025 si1=SI:1980-1999"
+            python scripts/cyclone/cyc_lib_all.py || true
+            for spec in $(sed -n 2p data/cyclone/RUN); do n=${spec%%=*}; sel=${spec#*=}
+              LIBM_LIST=data/cyclone/lib_all.json LIBM_SEL=$sel LIBM_NAME=$n python scripts/cyclone/cyc_libm.py > /tmp/libm_$n.out 2>&1 &
+            done; wait; tail -n 3 /tmp/libm_*.out || true
+          fi
           if [ "$w" = "ocean" ]; then pip install -q netCDF4 && python scripts/cyclone/cyc_ocean.py || true; fi
-          for f in /tmp/cyc_out/bg_fields.npz /tmp/cyc_out/lib_fields.npz /tmp/cyc_out/libh_fields.npz /tmp/cyc_out/libm_fields.npz /tmp/cyc_out/libm48_fields.npz /tmp/cyc_out/ocean_clim.npz /tmp/cyc_out/ocean_live.npz; do [ -f $f ] && gh release upload era5-cases $f --clobber || true; done
+          for f in /tmp/cyc_out/bg_fields.npz /tmp/cyc_out/lib_fields.npz /tmp/cyc_out/libh_fields.npz /tmp/cyc_out/libm_fields.npz /tmp/cyc_out/libm48_fields.npz /tmp/cyc_out/ocean_clim.npz /tmp/cyc_out/ocean_live.npz /tmp/cyc_out/libm_*_fields.npz; do [ -f $f ] && gh release upload era5-cases $f --clobber || true; done
       - if: always()
         run: |
           git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
