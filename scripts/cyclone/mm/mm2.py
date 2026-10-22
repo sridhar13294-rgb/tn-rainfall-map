@@ -17,6 +17,7 @@ import math, functools, numpy as np, jax, jax.numpy as jnp
 from scipy.interpolate import RegularGridInterpolator as RGI
 from scipy import ndimage as ndi
 from ocean import step as ocean_step, profile_from_clim
+import radcloud
 from dinosaur import coordinate_systems, spherical_harmonic, sigma_coordinates, primitive_equations, scales, time_integration, filtering, vertical_interpolation
 units = scales.units
 G, RD, RV, CP, LV, SB, KARM = 9.80616, 287.04, 461.5, 1004.6, 2.5e6, 5.67e-8, 0.4; KAP = RD / CP
@@ -37,7 +38,8 @@ def tridiag(a, b, c, d):
 DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 3600.0, k_evap=2e-5, ck=1.2e-3, charnock=0.018, cd_cap=2.4e-3,
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
-                conv='bmj', entr=1.5e-4, mf_cap=0.3)
+                conv='bmj', entr=1.5e-4, mf_cap=0.3, rad='gray', rad_every=1)
+RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
 DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt', 'entr')
@@ -97,6 +99,9 @@ class Model:
                      prm=self.params())
         if ocean is not None:                                                                       # 1-D ocean column under every sea point (ocean.py)
             carry['ocean'] = {k: jnp.asarray(v, jnp.float32) for k, v in profile_from_clim(ocean, when, self.LA, self.LO, sst, sst > 0).items()}
+        if self.S['rad'] == 'radcloud' and self.S['rad_every'] > 1:                               # radiation cache, refreshed in surface()
+            z2 = jnp.zeros(zs.shape, jnp.float32)
+            carry['rad'] = dict(heating=jnp.zeros((len(self.sig),) + zs.shape, jnp.float32), sw_net_sfc=z2, lw_dn_sfc=z2, olr=z2, cover=z2)
         return st, carry
     def bogus(self, T3, Q3, U3, V3, ps, levs, lat, lon, vmax_kt, rmw_km=None, R_out=600.0, B=1.4, t_hours=None):
         """Replace the analysis vortex by a balanced Holland vortex: lowest-level max wind vmax_kt/0.85 at radius rmw_km,
@@ -179,7 +184,7 @@ class Model:
         mmin = jnp.min(jnp.where(eta > 0, mass, 1e9), axis=0)
         Mb = jnp.clip(cape / (S['tau_deep'] * jnp.maximum(-dcape, 1e-6)), 0.0, jnp.minimum(S['mf_cap'] * mmin / dt, 1.0)) * deep
         return dT1 * Mb, dq1 * Mb, P1 * Mb, inc & deep[None], deep
-    def column(self, T, q, u, v, ps, cr, want_diag=False):
+    def column(self, T, q, u, v, ps, cr, want_diag=False, rad_fresh=False):
         """All arrays nodal: T, q, u, v [L, X, Y] (SI); ps [X, Y] Pa; cr = surface carry. Returns tendencies (per second)
         and diagnostics (surface rain, surface fluxes)."""
         S = dict(self.S); S.update(cr['prm']); dt = self.dt_s; sig = jnp.asarray(self.sig)[:, None, None]; dsig = jnp.asarray(self.dsig)[:, None, None]
@@ -283,29 +288,47 @@ class Model:
         evap = ev / mass
         dq = dq - cond + evap; dT = dT + LV / CP * (cond - evap)
         # ---------------- radiation
-        Tn = T + dt * dT; qn = jnp.maximum(q + dt * dq, 0); rhn = jnp.clip(qn / qsat(Tn, p), 0, 1)
-        cld = jnp.clip((rhn - 0.85) / 0.15, 0, 1) * (sig > 0.1)
-        dtau = (S['k_wv'] * qn + S['k_dry']) * mass + S['k_cld'] * cld * mass / 10.0
-        tr = jnp.exp(-1.66 * dtau); Bk = SB * Tn ** 4
-        def dn(D, x):
-            t_, b_ = x; D = D * t_ + b_ * (1 - t_); return D, D
-        _, Dbot = jax.lax.scan(dn, jnp.zeros_like(ps), (tr, Bk))                                      # downward flux at each layer's bottom
-        def up(U, x):
-            t_, b_ = x; U = U * t_ + b_ * (1 - t_); return U, U
-        Usfc = SB * Ts ** 4
-        _, Utop_r = jax.lax.scan(up, Usfc, (tr[::-1], Bk[::-1])); Utop = Utop_r[::-1]                # upward flux at each layer's top
-        Ubot = jnp.concatenate([Utop[1:], Usfc[None]], 0); Dtop = jnp.concatenate([jnp.zeros_like(ps)[None], Dbot[:-1]], 0)
-        lw = ((Ubot - Dbot) - (Utop - Dtop)) * G / (CP * dp)                                          # K/s
+        Tn = T + dt * dT; qn = jnp.maximum(q + dt * dq, 0)
         t_h = cr['t'] / 3600.0; doy = self.doy0 + t_h / 24.0; decl = math.radians(23.44) * jnp.sin(2 * jnp.pi * (doy - 81) / 365.0)
         hour = (self.utc0 + t_h) % 24.0; ha = jnp.radians(15.0 * (hour - 12.0) + jnp.asarray(self.LO))
         latr = jnp.radians(jnp.asarray(self.LA)); mu0 = jnp.maximum(jnp.sin(latr) * jnp.sin(decl) + jnp.cos(latr) * jnp.cos(decl) * jnp.cos(ha), 0.0)
-        S0 = 1361.0 * mu0; ccol = 1 - jnp.prod(1 - 0.6 * cld, axis=0); alb = 0.45 * ccol
-        absw = 1 - jnp.exp(-S['k_sw'] * qn * mass / jnp.maximum(mu0, 0.05))
-        def sw(Fd, x):
-            a_ = x; ab = Fd * a_; return Fd - ab, ab
-        Fsfc, swab = jax.lax.scan(sw, S0 * (1 - alb), absw)
-        swh = swab * G / (CP * dp)
-        rad = jnp.where(sig > 0.12, lw + swh, -(Tn - cr['T0']) / S['tau_strat'])
+        if S['rad'] == 'radcloud':
+            # radcloud.py: diagnostic clouds (Sundqvist large-scale, Slingo convective + anvil, max-random overlap),
+            # 17-term long-wave, 7-term delta-Eddington short-wave
+            ecc = 1.0 + 0.0334 * jnp.cos(2 * jnp.pi * (doy - 3.0) / 365.0)                          # Earth-Sun distance factor
+            def fresh():
+                Rr = radcloud.radiation(Tn, qn, p, dp, ps, Ts, sea, mu0, conv_mask=cm, conv_rain=Pconv_src.sum(0), conv_src=Pconv_src,
+                                        ls_cond=cond, xp=jnp, s0=1361.0 * ecc, prm=dict(alb_land=S['alb_land']))
+                return {k: Rr[k] for k in RADKEYS}
+            if S['rad_every'] <= 1: Rr = fresh()                                                     # every call
+            elif rad_fresh:                                                                          # surface(): once per step, every rad_every steps
+                nstep = jnp.round(cr['t'] / dt).astype(jnp.int32)
+                Rr = jax.lax.cond(nstep % int(S['rad_every']) == 0, fresh, lambda: cr['rad'])
+            else: Rr = cr['rad']                                                                     # inside the dynamics step: the cache
+            rad = jnp.where(sig > 0.12, Rr['heating'], -(Tn - cr['T0']) / S['tau_strat'])
+            sw_sfc, lw_dn = Rr['sw_net_sfc'], Rr['lw_dn_sfc']
+        else:                                                                                        # old gray scheme, unchanged
+            rhn = jnp.clip(qn / qsat(Tn, p), 0, 1); Rr = None
+            cld = jnp.clip((rhn - 0.85) / 0.15, 0, 1) * (sig > 0.1)
+            dtau = (S['k_wv'] * qn + S['k_dry']) * mass + S['k_cld'] * cld * mass / 10.0
+            tr = jnp.exp(-1.66 * dtau); Bk = SB * Tn ** 4
+            def dn(D, x):
+                t_, b_ = x; D = D * t_ + b_ * (1 - t_); return D, D
+            _, Dbot = jax.lax.scan(dn, jnp.zeros_like(ps), (tr, Bk))                                      # downward flux at each layer's bottom
+            def up(U, x):
+                t_, b_ = x; U = U * t_ + b_ * (1 - t_); return U, U
+            Usfc = SB * Ts ** 4
+            _, Utop_r = jax.lax.scan(up, Usfc, (tr[::-1], Bk[::-1])); Utop = Utop_r[::-1]                # upward flux at each layer's top
+            Ubot = jnp.concatenate([Utop[1:], Usfc[None]], 0); Dtop = jnp.concatenate([jnp.zeros_like(ps)[None], Dbot[:-1]], 0)
+            lw = ((Ubot - Dbot) - (Utop - Dtop)) * G / (CP * dp)                                          # K/s
+            S0 = 1361.0 * mu0; ccol = 1 - jnp.prod(1 - 0.6 * cld, axis=0); alb = 0.45 * ccol
+            absw = 1 - jnp.exp(-S['k_sw'] * qn * mass / jnp.maximum(mu0, 0.05))
+            def sw(Fd, x):
+                a_ = x; ab = Fd * a_; return Fd - ab, ab
+            Fsfc, swab = jax.lax.scan(sw, S0 * (1 - alb), absw)
+            swh = swab * G / (CP * dp)
+            rad = jnp.where(sig > 0.12, lw + swh, -(Tn - cr['T0']) / S['tau_strat'])
+            sw_sfc = Fsfc * (1 - jnp.where(sea, S['alb_sea'], S['alb_land'])); lw_dn = Dbot[-1]
         dT = dT + rad
         dq = dq + jnp.maximum(-q, 0) / dt                                                            # keep humidity non-negative
         # ---------------- top sponge
@@ -319,7 +342,8 @@ class Model:
             # noise on convection, condensation and rain only: scaling the implicit boundary-layer mixing past 1 overshoots
             # and blows the run up (seen in 1 of 3 test runs)
             dT = dTbl + (dT - rad - dTbl) * fac + rad; dq = dqbl + (dq - dqbl) * fac
-        diag = dict(rain=Psurf + Pc * 0.0, H=H, E=E, ust=ust, V1=V1, sw_sfc=Fsfc * (1 - jnp.where(sea, S['alb_sea'], S['alb_land'])), lw_dn=Dbot[-1], Ts=Ts)
+        diag = dict(rain=Psurf + Pc * 0.0, H=H, E=E, ust=ust, V1=V1, sw_sfc=sw_sfc, lw_dn=lw_dn, Ts=Ts)
+        if Rr is not None: diag['rad'] = Rr
         return dict(T=dT, q=dq, u=du, v=dv), diag
     # ------------------------------------------------------------------------------------------------ dynamics + time loop
     def build(self, when_utc, split=False):
@@ -365,7 +389,7 @@ class Model:
         aux = primitive_equations.compute_diagnostic_state_sigma(state.replace(tracers={}), self.coords)
         T = (aux.temperature_variation + self.ref_t[:, None, None]) / self.K; q = state.tracers['specific_humidity']
         u = aux.cos_lat_u[0] / cl / self.MPS; v = aux.cos_lat_u[1] / cl / self.MPS; ps = jnp.exp(hor.to_nodal(state.log_surface_pressure))[0] / self.PA
-        _, d = self.column(T, q, u, v, ps, cr); dt = self.dt_s; sea = (~self.land) & (cr['sst'] > 0)
+        _, d = self.column(T, q, u, v, ps, cr, rad_fresh=True); dt = self.dt_s; sea = (~self.land) & (cr['sst'] > 0)
         # mixed layer: strong winds stir up cooler water (about ent K/day at 25 m/s), recovering slowly toward the start
         if 'ocean' in cr:                                                                           # ocean column: heat, wind stirring, cold wake
             p1 = self.sig[-1] * ps; rho1 = p1 / (RD * T[-1] * (1 + 0.61 * q[-1]))
@@ -382,6 +406,7 @@ class Model:
         w = jnp.where(self.land, jnp.clip(cr['w'] + dt * (d['rain'] - d['E']), 0.0, S['bucket'] * 1000), cr['w'])
         out = dict(cr, sst=sst, tl=tl, w=w, rain=cr['rain'] + dt * d['rain'], t=cr['t'] + dt)
         if 'ocean' in cr: out['ocean'] = ocn
+        if 'rad' in cr: out['rad'] = d['rad']
         return out
     def run(self, state, carry, hours, every_h=6, box=(40.0, 120.0, -10.0, 45.0)):
         """returns per-output dict of cropped fields (lon/lat box): mslp, vo850, vo700, z850, z700, u/v lowest level, rain total."""
