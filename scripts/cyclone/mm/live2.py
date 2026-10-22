@@ -39,6 +39,20 @@ def run(LIVEM, LIVE, PART, NPART, OUT, CFG=None):
     if os.path.exists(ecm):
         E = np.load(ecm); EV = [str(v) for v in E['v3']]
         D = {v: np.nan_to_num(E['f3'][0, EV.index(v)].astype(float) - f3[v]) for v in V3 if v in EV}
+    # multi-centre start: outlier-checked consensus of GFS/ECMWF/ICON/CMC = control; members = mean + mix of centre differences
+    import consensus as CS
+    sys.path.insert(0, os.path.join(HERE, '..')); import vitals as VT
+    CN = None
+    if C.get('consensus', True):
+        try:
+            CN = CS.consensus(CS.load_centres(os.path.dirname(os.path.abspath(LIVEM)), t0.strftime('%Y%m%d%H')), weights=C.get('centre_weights'))
+            print(CS.report_text(CN['report']), flush=True)
+            if len(CN['used']) < 2: CN = None
+        except Exception as e: print('consensus not used:', repr(e)[:200], flush=True); CN = None
+    VS = None
+    try: VS = VT.pick(os.path.join(HERE, '..', '..', '..', 'data', 'cyclone', f'vitals_{t0:%Y%m%d%H}.json'), t0)     # observed Bay storm (>= 15 kt) or None
+    except Exception as e: print('vitals not used:', repr(e)[:200], flush=True)
+    print('vitals storm:', VS, flush=True)
     st_names = json.load(open(os.path.join(HERE, '..', '..', '..', 'data', 'cyclone', 'mm', 'tn_sites.json'))) if os.path.exists(os.path.join(HERE, '..', '..', '..', 'data', 'cyclone', 'mm', 'tn_sites.json')) else None
     res = []; bv_cache = {}; models = {}; import time
     for k in range(int(PART), 51, int(NPART)):
@@ -47,9 +61,10 @@ def run(LIVEM, LIVE, PART, NPART, OUT, CFG=None):
             mb = member(k); grid = C.get('control_grid', 'T85') if k == 0 else C.get('grid', 'T85')
             if grid not in models: models[grid] = mm2.Model(grid, 32, 30.0, dict(sppt_on=True))           # one compiled model per grid, reused by every member
             M = models[grid]
-            fk = {v: f3[v] + (mb['alpha'] * D[v] if D is not None and v in D else 0.0) for v in V3}
-            storm = dict(lat=b['lat'], lon=b['lon'], vmax_kt=25.0) if (formed and k % 2 == 1) else None     # balanced storm inserted in half the members
-            st, cr = M.init(fk, Z['levs'], Z['lats'], Z['lons'], Z['f2'][0, V2.index('surface_pressure')], Z['f2'][0, V2.index('geopotential_at_surface')] / 9.80616,
+            if CN is not None: fk, psk = CS.member_start(CN, k, scale=0.5 + mb['h'][0])                    # k=0: the consensus mean
+            else: fk = {v: f3[v] + (mb['alpha'] * D[v] if D is not None and v in D else 0.0) for v in V3}; psk = Z['f2'][0, V2.index('surface_pressure')]
+            storm = VS if (VS and k % 2 == 1) else (dict(lat=b['lat'], lon=b['lon'], vmax_kt=25.0) if (formed and k % 2 == 1) else None)   # storm insertion in half the members
+            st, cr = M.init(fk, Z['levs'], Z['lats'], Z['lons'], psk, Z['f2'][0, V2.index('geopotential_at_surface')] / 9.80616,
                             Z['f2'][0, V2.index('sea_surface_temperature')], Z['f2'][0, V2.index('land_sea_mask')], storm=storm)
             cr = M.with_params(cr, mb['set'])
             if getattr(M, 'built_for', None) != t0: M.build(t0)
@@ -71,7 +86,7 @@ def run(LIVEM, LIVE, PART, NPART, OUT, CFG=None):
             res.append(dict(member=k, h=mb['h'], alpha=mb['alpha'], grid=grid, tracks=T, rain=rain, systems=systems)); print(k, grid, {pk: max([t[3] for t in v] or [0]) for pk, v in T.items()}, '%.0fs' % (time.time() - t_a), flush=True)
         except Exception as e:
             import traceback; traceback.print_exc(); res.append(dict(member=k, err=repr(e)[:300])); print(k, 'FAILED', repr(e)[:300], flush=True)
-    json.dump(dict(obs=obs, precursors=PR, ecm=D is not None, members=res), open(OUT, 'w'), default=float)
+    json.dump(dict(obs=obs, precursors=PR, ecm=D is not None, centres=(CN['used'] if CN else None), vitals=VS, members=res), open(OUT, 'w'), default=float)
 def merge(LIVE, SSTJ, LIJ, SITES, OUT, parts):
     import ourens as O
     from cyc import on_land

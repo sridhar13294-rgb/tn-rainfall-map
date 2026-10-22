@@ -27,6 +27,8 @@ jobs:
           S=$(sed -n 2p data/cyclone/MMLIVE | grep -o 'live[0-9]*\.py' || echo live.py); echo "S=$S" >> $GITHUB_ENV
           gh release download era5-cases -p live_GFSM_$R.npz -p live_GFS_$R.npz -D /tmp/w
           gh release download era5-cases -p live_ECM_$R.npz -D /tmp/w || true
+          gh release download era5-cases -p live_ICON_$R.npz -D /tmp/w || true
+          gh release download era5-cases -p live_CMC_$R.npz -D /tmp/w || true
       - run: cd /tmp/w && (python -W ignore $GITHUB_WORKSPACE/scripts/cyclone/mm/$S run live_GFSM_$R.npz live_GFS_$R.npz ${{ matrix.part }} 17 part_${{ matrix.part }}.json $GITHUB_WORKSPACE/data/cyclone/mm/live_config.json > part_${{ matrix.part }}.log 2>&1 || true); tail -30 part_${{ matrix.part }}.log
       - run: |
           D=data/cyclone/mm/live/$R; [ "$S" = live2.py ] && D=$D-v2; mkdir -p $D; cp /tmp/w/part_${{ matrix.part }}.json $D/ || true; tail -c 8000 /tmp/w/part_${{ matrix.part }}.log > $D/part_${{ matrix.part }}.log || true
