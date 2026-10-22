@@ -1,15 +1,6 @@
 truth ready 648066718
 opened gs://weatherbench2/datasets/hres/2016-2022-0012-240x121_equiangular_with_poles_conservative.zarr ['10m_u_component_of_wind', '10m_v_component_of_wind', '10m_wind_speed', '2m_temperature', 'geopotential', 'mean_sea_level_pressure', 'specific_humidity', 'surface_pressure', 'temperature', 'total_precipitation', 'total_precipitation_24hr', 'total_precipitation_6hr', 'u_component_of_wind', 'v_component_of_wind', 'vertical_velocity', 'wind_speed']
 hres prediction_timedelta [ 0  6 12 18 24 30] int64 time ['2016-01-01T00:00:00.000000000' '2016-01-01T12:00:00.000000000'] datetime64[ns]
-hres z500 TypeError('Cannot compare dtypes int64 and timedelta64[ns]')
-hres t850 TypeError('Cannot compare dtypes int64 and timedelta64[ns]')
-hres mslp TypeError('Cannot compare dtypes int64 and timedelta64[ns]')
-hres t2 TypeError('Cannot compare dtypes int64 and timedelta64[ns]')
-hres rain24 TypeError('Cannot compare dtypes int64 and timedelta64[ns]')
-hres u850 TypeError('Cannot compare dtypes int64 and timedelta64[ns]')
-hres v850 TypeError('Cannot compare dtypes int64 and timedelta64[ns]')
-hres u200 TypeError('Cannot compare dtypes int64 and timedelta64[ns]')
-hres v200 TypeError('Cannot compare dtypes int64 and timedelta64[ns]')
 hres 2020-01-01
 hres 2020-01-06
 hres 2020-01-11
