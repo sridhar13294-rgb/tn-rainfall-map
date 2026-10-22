@@ -239,6 +239,9 @@ def finish(src, run, r0, lag, f3, f2, gfs_f2, notes, raw, fill_below=False):
         elif 'depr' in raw and np.isfinite(raw['depr'][k]).any() and np.isfinite(f3[iT, k]).any():
             f3[iQ, k] = q_from_e(es_water(f3[iT, k] - raw['depr'][k]), p)
             if 'q from dew-point depression' not in notes: notes.append('q from dew-point depression')
+    for k, lev in enumerate(LEVS):                                                           # heights implausible on a level (UK Met Office upper levels): treat as missing, then rebuild
+        a_ = f3[iZ, k]; lo, hi = G * (std_z(lev) - 5000), G * (std_z(lev) + 5000)
+        if np.isfinite(a_).any() and (np.isfinite(a_) & (a_ > lo) & (a_ < hi)).mean() < 0.9: f3[iZ, k] = np.nan; notes.append(f'geopotential {lev} implausible, rebuilt')
     fill_z_hypsometric(f3, notes)                                                             # heights missing on some levels (UK Met Office)
     if fill_below: extrapolate_below(f3, notes)
     # surface fields
