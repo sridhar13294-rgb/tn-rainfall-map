@@ -13,11 +13,12 @@ def at(tr, h):
 H = (0, 24, 48, 72, 96, 120); sets = {}
 SPLIT = [a for a in sys.argv[1:] if a.startswith('--')]; ARGS = [a for a in sys.argv[1:] if not a.startswith('--')]
 keep = (lambda y: y <= 2017) if '--tune' in SPLIT else (lambda y: y >= 2018) if '--final' in SPLIT else (lambda y: True)
+BAS = next((a.split('=')[1].split(',') for a in SPLIT if a.startswith('--basin=')), None)     # e.g. --basin=AS,SI
 for arg in ARGS:
     g, _, var = arg.partition(':')
     for f in sorted(glob.glob(g)):
         for r in json.load(open(f)):
-            if 'trk' not in r or (var and r.get('var') != var) or not keep(int(r['season'])): continue
+            if 'trk' not in r or (var and r.get('var') != var) or not keep(int(r['season'])) or (BAS and r.get('basin', 'BB') not in BAS): continue
             sets.setdefault(r.get('var', g), {})[(r['name'], r['season'], r['t0'])] = r
 names = list(sets); print('sets:', {n: len(v) for n, v in sets.items()})
 for h in H:

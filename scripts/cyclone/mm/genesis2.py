@@ -21,7 +21,7 @@ def at(P0, t):
             f = (t - a[0]).total_seconds() / max(1, (b[0] - a[0]).total_seconds())
             return tuple(a[i] + f * (b[i] - a[i]) if a[i] is not None and b[i] is not None else (a[i] or b[i]) for i in (1, 2, 3))
     return None
-storms = [s for s in O.LIBL if (not C.get('storms') or s['name'] in C['storms'])]; res = []; MODELS = {}
+storms = [s for s in (json.load(open(C['list'])) if C.get('list') else O.LIBL) if (not C.get('basins') or s.get('basin', 'BB') in C['basins']) and (not C.get('storms') or s['name'] in C['storms'])]; res = []; MODELS = {}
 for i, s in enumerate(storms):
     if i % NCH != CH: continue
     g = O.gen_time(s); g = g.replace(hour=g.hour // 6 * 6); t0 = g - dt.timedelta(hours=LEAD); key = t0.strftime('%Y-%m-%dT%H')
@@ -39,7 +39,7 @@ for i, s in enumerate(storms):
                 st, cr = M.init(f3, Z['levs'], Z['lats'], Z['lons'], Z['f2'][k, V2.index('surface_pressure')], Z['f2'][k, V2.index('geopotential_at_surface')] / 9.80616,
                                 Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')], ocean=C.get('ocean'), when=t0)
                 M.build(t0); st = M.dfi(st); MODELS[key_s][1:] = [st, cr]
-            M, st, cr = MODELS[key_s]; out = M.run(st, M.with_params(cr, dyn), HRS)
+            M, st, cr = MODELS[key_s]; out = M.run(st, M.with_params(cr, dyn), HRS, box=tuple(C.get('box', (30.0, 120.0, -42.0, 35.0))))
             if not np.isfinite(out['mslp']).all(): raise RuntimeError('blew up')
             LO, LA = np.meshgrid(M.blon, M.blat, indexing='ij'); sgn = 1 if gp[0] >= 0 else -1
             d = np.hypot(LA - gp[0], ((LO - gp[1] + 180) % 360 - 180) * math.cos(math.radians(gp[0]))) * 111.2
@@ -56,7 +56,7 @@ for i, s in enumerate(storms):
             runs[vn] = dict(t_form=j * 6 - LEAD, dist=round(km(la, lo, gp[0], gp[1])), vo=round(vo, 1), depth=dep, trk=trk, sec=round(time.time() - tm))
         except Exception as e:
             runs[vn] = dict(err=repr(e)[:300]); print(s['name'], vn, 'FAILED', repr(e)[:300], flush=True)
-    res.append(dict(name=s['name'], season=s['season'], t0=key, gen=O.gen_time(s).strftime('%Y-%m-%dT%H'), gp=gp,
+    res.append(dict(name=s['name'], season=s['season'], basin=s.get('basin', 'BB'), t0=key, gen=O.gen_time(s).strftime('%Y-%m-%dT%H'), gp=gp,
                     real=[((p[0] - O.gen_time(s)).total_seconds() / 3600, p[1], p[2], p[3]) for p in P0], runs=runs, sec=round(time.time() - t)))
     print(s['name'], s['season'], {vn: (r.get('dist'), r.get('vo'), r.get('depth')) for vn, r in runs.items()}, 'sec', round(time.time() - t), flush=True)
     json.dump(res, open(OUT, 'w'), default=float)

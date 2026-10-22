@@ -15,7 +15,7 @@ def at(P0, t):
             f = (t - a[0]).total_seconds() / max(1, (b[0] - a[0]).total_seconds())
             return tuple(a[i] + f * (b[i] - a[i]) if a[i] is not None and b[i] is not None else (a[i] or b[i]) for i in (1, 2, 3))
     return None
-storms = [s for s in O.LIBL if (not C.get('storms') or s['name'] in C['storms']) and O.gen_time(s).year >= C.get('from_year', 0)]; res = []
+storms = [s for s in (json.load(open(C['list'])) if C.get('list') else O.LIBL) if (not C.get('basins') or s.get('basin', 'BB') in C['basins']) and (not C.get('storms') or s['name'] in C['storms']) and O.gen_time(s).year >= C.get('from_year', 0)]; res = []
 for i, s in enumerate(storms):
     if i % NCH != CH: continue
     g = O.gen_time(s); key = g.strftime('%Y-%m-%dT%H')
@@ -37,12 +37,12 @@ for i, s in enumerate(storms):
             if m:
                 if bv is None: bv = mm2.bred_vectors(M, st, M.with_params(cr, {}), n=6, hours=12.0, seed=77, amp=1.0)
                 rs = np.random.default_rng(3000 + m); st = mm2.add_perturbation(st, bv, rs.standard_normal(6) / math.sqrt(6))
-            out = M.run(st, cr, C.get('hours', 120))
+            out = M.run(st, cr, C.get('hours', 120), box=tuple(C.get('box', (30.0, 120.0, -42.0, 35.0))))
             if not np.isfinite(out['mslp']).all(): raise RuntimeError('blew up')
             mems.append(dict(member=m, trk=M.track(out, st0[0], st0[1]), sec=round(time.time() - tm)))
         except Exception as e:
             mems.append(dict(member=m, err=repr(e)[:300])); print(s['name'], m, 'FAILED', repr(e)[:300], flush=True)
-    res.append(dict(name=s['name'], season=s['season'], t0=key, real=[((p[0] - g).total_seconds() / 3600, p[1], p[2], p[3]) for p in P0],
+    res.append(dict(name=s['name'], season=s['season'], basin=s.get('basin', 'BB'), t0=key, real=[((p[0] - g).total_seconds() / 3600, p[1], p[2], p[3]) for p in P0],
                     truth=O.segment(*s['lf']) if s['lf'] else 'no landfall', truth_lf=s['lf'], members=mems, sec=round(time.time() - t)))
     print(s['name'], s['season'], 'members ok', sum(1 for x in mems if 'trk' in x), 'sec', round(time.time() - t), flush=True)
     json.dump(res, open(OUT, 'w'), default=float)
