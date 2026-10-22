@@ -38,7 +38,7 @@ def tridiag(a, b, c, d):
 DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 3600.0, k_evap=2e-5, ck=1.2e-3, charnock=0.018, cd_cap=2.4e-3,
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
-                conv='bmj', entr=1.5e-4, mf_cap=0.3, rad='gray', rad_every=1)
+                conv='bmj', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='gray', rad_every=1)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
@@ -142,7 +142,7 @@ class Model:
         ps = ps + rho * np.interp(r, rr, ph1)                                                   # pressure deficit at the surface
         return T3, Q3, U3, V3, ps
     # ------------------------------------------------------------------------------------------------ column physics
-    def conv_mf(self, Tn, qn, p, mass, zc, sig, dsig, ps, ksrc, S, dt):
+    def conv_mf(self, Tn, qn, p, mass, zc, sig, dsig, ps, ksrc, S, dt, div=None, E=None):
         """Bulk mass-flux deep convection (Tiedtke/Bechtold type). One entraining updraft per column rises from the most
         unstable low level; entrainment grows in dry air (eps = entr x (1.3 - RH)), so convection needs a moist column -
         the moistening feedback that lets a weak low organise. Condensate rains out (re-evaporating below in the rain
@@ -185,9 +185,19 @@ class Model:
         dhs = jnp.take_along_axis(dh1, ksrc[None], 0)[0]
         dcape = (RD * (dhs[None] / (CP * (1 + gam)) - dT1) * dsig / sig * (inc & (ii != ksrc))).sum(0)    # CAPE change per unit mass flux
         mmin = jnp.min(jnp.where(eta > 0, mass, 1e9), axis=0)
-        Mb = jnp.clip(cape / (S['tau_deep'] * jnp.maximum(-dcape, 1e-6)), 0.0, jnp.minimum(S['mf_cap'] * mmin / dt, 1.0)) * deep
+        Mb = cape / (S['tau_deep'] * jnp.maximum(-dcape, 1e-6))                                    # CAPE closure (Bechtold / ECMWF today)
+        if S['mf_closure'] == 'hybrid' and div is not None:
+            # moisture-convergence closure (Tiedtke 1989, ECMWF's original scheme): the updraft carries away at least the moisture
+            # that the boundary layer gathers by low-level inflow plus surface evaporation. This ties convection to the low's
+            # convergence - the feedback by which a weak low organises.
+            pbl = sig >= 0.85
+            conv_q = jnp.maximum(-(qn * div * mass * pbl).sum(0) + (E if E is not None else 0.0), 0.0)        # kg m-2 s-1
+            kb = jnp.maximum(ksrc - 1, 0); Tb = jnp.take_along_axis(Tn, kb[None], 0)[0]; qb = jnp.take_along_axis(qn, kb[None], 0)[0]
+            pb = jnp.take_along_axis(p * jnp.ones_like(Tn), kb[None], 0)[0]
+            Mb = jnp.maximum(Mb, conv_q / jnp.maximum(qsat(Tb, pb) - qb, 5e-4))
+        Mb = jnp.clip(Mb, 0.0, jnp.minimum(S['mf_cap'] * mmin / dt, 1.0)) * deep
         return dT1 * Mb, dq1 * Mb, P1 * Mb, inc & deep[None], deep
-    def column(self, T, q, u, v, ps, cr, want_diag=False, rad_fresh=False):
+    def column(self, T, q, u, v, ps, cr, want_diag=False, rad_fresh=False, div=None):
         """All arrays nodal: T, q, u, v [L, X, Y] (SI); ps [X, Y] Pa; cr = surface carry. Returns tendencies (per second)
         and diagnostics (surface rain, surface fluxes)."""
         S = dict(self.S); S.update(cr['prm']); dt = self.dt_s; sig = jnp.asarray(self.sig)[:, None, None]; dsig = jnp.asarray(self.dsig)[:, None, None]
@@ -271,7 +281,7 @@ class Model:
         dTs = jnp.where(sreg, relax(th, mth, S['tau_shallow'], dt) * (p / ps) ** KAP, 0.0); dqs = jnp.where(sreg, relax(qn, mq, S['tau_shallow'], dt), 0.0)
         # convective momentum mixing
         if S['conv'] == 'mf':                                                                       # mass-flux scheme replaces the adjustment
-            dTc, dqc, Pmf, regmf, okmf = self.conv_mf(Tn, qn, p, mass, zc, sig, dsig, ps, ksrc, S, dt)
+            dTc, dqc, Pmf, regmf, okmf = self.conv_mf(Tn, qn, p, mass, zc, sig, dsig, ps, ksrc, S, dt, div=div, E=E)
             reg, ok = regmf, okmf
             dTs = jnp.where(okmf[None], 0.0, dTs); dqs = jnp.where(okmf[None], 0.0, dqs)
         cm = reg & ok[None]
@@ -367,7 +377,7 @@ class Model:
                 T = (aux.temperature_variation + M.ref_t[:, None, None]) / M.K; q = state.tracers['specific_humidity']
                 u = aux.cos_lat_u[0] / cl / M.MPS; v = aux.cos_lat_u[1] / cl / M.MPS
                 ps = jnp.exp(hor.to_nodal(state.log_surface_pressure))[0] / M.PA
-                tend, _ = M.column(T, q, u, v, ps, M._carry)
+                tend, _ = M.column(T, q, u, v, ps, M._carry, div=hor.to_nodal(state.divergence) * M.SEC)
                 vt = hor.to_modal(jax.tree_util.tree_map(lambda x: x * M.MPS / M.SEC / cl, (tend['u'], tend['v'])))
                 return primitive_equations.State(vorticity=hor.curl_cos_lat(vt), divergence=hor.div_cos_lat(vt),
                                                  temperature_variation=hor.to_modal(tend['T'] * M.K / M.SEC), log_surface_pressure=jnp.zeros_like(state.log_surface_pressure),
@@ -397,7 +407,7 @@ class Model:
         aux = primitive_equations.compute_diagnostic_state_sigma(state.replace(tracers={}), self.coords)
         T = (aux.temperature_variation + self.ref_t[:, None, None]) / self.K; q = state.tracers['specific_humidity']
         u = aux.cos_lat_u[0] / cl / self.MPS; v = aux.cos_lat_u[1] / cl / self.MPS; ps = jnp.exp(hor.to_nodal(state.log_surface_pressure))[0] / self.PA
-        _, d = self.column(T, q, u, v, ps, cr, rad_fresh=True); dt = self.dt_s; sea = (~self.land) & (cr['sst'] > 0)
+        _, d = self.column(T, q, u, v, ps, cr, rad_fresh=True, div=hor.to_nodal(state.divergence) * self.SEC); dt = self.dt_s; sea = (~self.land) & (cr['sst'] > 0)
         # mixed layer: strong winds stir up cooler water (about ent K/day at 25 m/s), recovering slowly toward the start
         if 'ocean' in cr:                                                                           # ocean column: heat, wind stirring, cold wake
             p1 = self.sig[-1] * ps; rho1 = p1 / (RD * T[-1] * (1 + 0.61 * q[-1]))
