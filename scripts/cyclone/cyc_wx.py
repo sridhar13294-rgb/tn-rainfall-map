@@ -36,9 +36,11 @@ def grab(ds, key, **sel):
         lat = np.linspace(-90, 90, x.shape[0]) if x.shape[0] % 2 else (np.arange(x.shape[0]) + 0.5) * 180 / x.shape[0] - 90
         x = WS.to_grid(x.T, np.arange(x.shape[1]) * 360 / x.shape[1], lat)
     return x
-E = opn([ERA]); C = opn(CLIM)
-T = {k: np.full((len(DAYS), 121, 240), np.nan, np.float32) for k in VARS}; CL = {k: np.full((len(DAYS), 121, 240), np.nan, np.float32) for k in VARS}
-for i, d in enumerate(DAYS):
+if os.environ.get('WX_HRES_ONLY') and os.path.exists('/tmp/cyc_out/wx_truth_2020.npz'):          # truth already built: only score ECMWF
+    Zt = np.load('/tmp/cyc_out/wx_truth_2020.npz'); T = {k: Zt['o_' + k] for k in VARS}; CL = {k: Zt['c_' + k] for k in VARS}; DAYS_DONE = True
+else: DAYS_DONE = False
+if not DAYS_DONE: E = opn([ERA]); C = opn(CLIM); T = {k: np.full((len(DAYS), 121, 240), np.nan, np.float32) for k in VARS}; CL = {k: np.full((len(DAYS), 121, 240), np.nan, np.float32) for k in VARS}
+for i, d in enumerate(DAYS if not DAYS_DONE else []):
     for k in VARS:
         try: T[k][i] = grab(E, k, time=np.datetime64(d))
         except Exception as e: log('era5', d, k, repr(e)[:150])
@@ -48,9 +50,9 @@ for i, d in enumerate(DAYS):
                 if i == 0: log('clim', k, repr(e)[:150])
     if i % 50 == 0: log('truth', i, d)
 os.makedirs('/tmp/cyc_out', exist_ok=True)
-np.savez_compressed('/tmp/cyc_out/wx_truth_2020.npz', days=np.array([d.strftime('%Y-%m-%dT%H') for d in DAYS]),
+if not DAYS_DONE: np.savez_compressed('/tmp/cyc_out/wx_truth_2020.npz', days=np.array([d.strftime('%Y-%m-%dT%H') for d in DAYS]),
                     **{'o_' + k: v for k, v in T.items()}, **{'c_' + k: v for k, v in CL.items()})
-log('saved truth', os.path.getsize('/tmp/cyc_out/wx_truth_2020.npz'))
+log('truth ready', os.path.getsize('/tmp/cyc_out/wx_truth_2020.npz'))
 H = opn(HRES); res = []
 if H is not None:
     di = {d: i for i, d in enumerate(DAYS)}
@@ -60,7 +62,7 @@ if H is not None:
             v = s + dt.timedelta(days=ld); j = di[v]; sc = {}
             for k in VARS:
                 try:
-                    f = grab(H, k, time=np.datetime64(s), prediction_timedelta=np.timedelta64(ld * 24, 'h'))
+                    f = grab(H, k, time=np.datetime64(s, 'ns'), prediction_timedelta=np.timedelta64(ld * 24, 'h').astype('timedelta64[ns]'))
                     if f is not None: sc[k] = WS.scores(f, T[k][j], CL[k][j] if np.isfinite(CL[k][j]).any() else None)
                 except Exception as e:
                     if ld == 1 and s == STARTS[0]: log('hres', k, repr(e)[:150])

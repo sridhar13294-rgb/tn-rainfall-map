@@ -18,7 +18,12 @@ jobs:
       - uses: actions/setup-python@v5
         with: {python-version: '3.12'}
       - run: pip install -q numpy scipy xarray zarr gcsfs
-      - run: |
+      - if: contains(github.event.head_commit.message, 'ECMWF scores only')
+        run: |
+          mkdir -p /tmp/cyc_out; gh release download era5-cases -p wx_truth_2020.npz -D /tmp/cyc_out
+          WX_HRES_ONLY=1 python scripts/cyclone/cyc_wx.py || true
+      - if: ${{ !contains(github.event.head_commit.message, 'ECMWF scores only') }}
+        run: |
           mkdir -p /tmp/cyc_out
           LIBM_TIMES=2020-01-01T00/2020-12-26T00/120 LIBM_NAME=wx2020 python scripts/cyclone/cyc_libm.py > /tmp/libm_wx.out 2>&1 &
           python scripts/cyclone/cyc_wx.py || true
