@@ -528,6 +528,8 @@ class Model:
             lt = jnp.log(P); idx = jnp.sum(lp < lt, axis=0); k1 = jnp.clip(idx, 1, F.shape[0] - 1); k0 = k1 - 1
             g = lambda X, k: jnp.take_along_axis(X, k[None], 0)[0]
             w = jnp.clip((lt - g(lp, k0)) / (g(lp, k1) - g(lp, k0)), 0.0, 1.0); return g(F, k0) + w * (g(F, k1) - g(F, k0))
+        def t_below(T, lp, P, v):                                                                  # below ground: ECMWF/ERA5 style, 6.5 K/km from the lowest level
+            return jnp.where(jnp.log(P) > lp[-1], T[-1] * (P / jnp.exp(lp[-1])) ** (RD * 0.0065 / G), v)
         def post(state, cr):
             u, v = spherical_harmonic.vor_div_to_uv_nodal(hor, state.vorticity, state.divergence); u, v = u / self.MPS, v / self.MPS
             T = (hor.to_nodal(state.temperature_variation) + self.ref_t[:, None, None]) / self.K
@@ -535,9 +537,20 @@ class Model:
             phi = primitive_equations.get_geopotential_on_sigma(T * (1 + 0.608 * state.tracers['specific_humidity']) * self.K, nodal_orography=zs_n[None] * self.M, sigma=self.coords.vertical,   # virtual temperature: moist air is lighter (~50 m at 500 hPa in the tropics)
                                                                 gravity_acceleration=self.ps.gravity_acceleration, ideal_gas_constant=self.ps.ideal_gas_constant) / (self.M ** 2 / self.SEC ** 2)
             lp = jnp.log(jnp.asarray(self.sig)[:, None, None] * ps[None])
-            mslp = ps * jnp.exp(G * zs_n / (RD * (T[-1] + 0.0065 * zs_n / 2)))
+            # mean sea-level pressure the ECMWF way (IFS documentation): T* at the surface from the lowest level, warm and
+            # cold limits so high warm plateaus (Tibet) do not give absurd values.
+            a0 = 0.0065 * RD / G; Tst = T[-1] * (1 + a0 * (1.0 / float(self.sig[-1]) - 1)); T0 = Tst + 0.0065 * zs_n
+            alpha = jnp.where((T0 > 290.5) & (Tst <= 290.5), RD * (290.5 - Tst) / jnp.maximum(G * zs_n, 1.0), 0.0065 * RD / G)
+            alpha = jnp.where((T0 > 290.5) & (Tst > 290.5), 0.0, alpha); Tst = jnp.where((T0 > 290.5) & (Tst > 290.5), 0.5 * (290.5 + Tst), Tst)
+            Tst = jnp.where(Tst < 255.0, 0.5 * (255.0 + Tst), Tst); x = G * zs_n / (RD * Tst)
+            mslp = jnp.where(zs_n > 1.0, ps * jnp.exp(x * (1 - alpha * x / 2 + (alpha * x) ** 2 / 3)), ps)
             z1 = RD * T[-1] / G * jnp.log(1.0 / float(self.sig[-1]))                                # height of the lowest level above ground
-            return dict(z500=to_p(phi, lp, 50000.0) / G, t850=to_p(T, lp, 85000.0), mslp=mslp, rain=cr['rain'], t2=T[-1] + 0.0065 * (z1 - 2.0),
+            # 2-m temperature from the surface-layer (log) profile between the skin and the lowest level, as forecast centres do
+            land = self.land; Tsk = jnp.where((~land) & (cr['sst'] > 0), cr['sst'], cr['tl']); z0 = jnp.where(land, 0.1, 2e-4)
+            th1 = T[-1] + G / CP * z1; f = jnp.log(2.0 / z0) / jnp.log(jnp.maximum(z1, 3.0) / z0)
+            t2 = Tsk + f * (th1 - Tsk) - G / CP * 2.0
+            t850 = t_below(T, lp, 85000.0, to_p(T, lp, 85000.0))
+            return dict(z500=to_p(phi, lp, 50000.0) / G, t850=t850, mslp=mslp, rain=cr['rain'], t2=t2, t2_old=T[-1] + 0.0065 * (z1 - 2.0),
                         u850=to_p(u, lp, 85000.0), v850=to_p(v, lp, 85000.0), u200=to_p(u, lp, 20000.0), v200=to_p(v, lp, 20000.0))
         inner = int(round(every_h * 3600 / self.dt_s)); outer = int(hours // every_h)
         def one(c, _):
