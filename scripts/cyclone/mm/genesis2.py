@@ -11,6 +11,7 @@ import mm2, ourens as O
 LIB, CFG, CH, NCH, OUT = sys.argv[1], sys.argv[2], int(sys.argv[3]), int(sys.argv[4]), sys.argv[5]
 C = json.load(open(CFG)); NCH = C.get('nchunk', NCH); LEAD = C.get('lead', 48); HRS = C.get('hours', 120)
 VAR = C.get('variants') or {'ctl': {}}
+STATIC = ("conv", "mf_cap")                                                                    # settings fixed at compile time
 if CH >= NCH: json.dump([], open(OUT, 'w')); sys.exit(0)
 Z = dict(np.load(LIB)); TT = [str(t) for t in Z['times']]; V3 = [str(v) for v in Z['v3']]; V2 = [str(v) for v in Z['v2']]
 def km(a, b, c, d): return math.hypot(a - c, ((b - d + 180) % 360 - 180) * math.cos(math.radians(a))) * 111.2
@@ -27,13 +28,17 @@ for i, s in enumerate(storms):
     if key not in TT: continue
     k = TT.index(key); P0 = O.path_of(s); gp = tuple(s['gen'])
     f3 = {v: Z['f3'][k, V3.index(v)] for v in V3}; t = time.time(); runs = {}
-    M = mm2.Model(C.get('grid', 'T85'), 32, 30.0, dict(sppt_on=False))
-    st, cr = M.init(f3, Z['levs'], Z['lats'], Z['lons'], Z['f2'][k, V2.index('surface_pressure')], Z['f2'][k, V2.index('geopotential_at_surface')] / 9.80616,
-                    Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')])
-    M.build(t0); st = M.dfi(st)
+    models = {}
     for vn, vs in VAR.items():
         try:
-            tm = time.time(); out = M.run(st, M.with_params(cr, vs), HRS)
+            tm = time.time(); stat = {kk: vs[kk] for kk in STATIC if kk in vs}; dyn = {kk: v for kk, v in vs.items() if kk not in STATIC}
+            key_s = json.dumps(stat, sort_keys=True)
+            if key_s not in models:                                                                # one compiled model per scheme choice, shared by its variants
+                M = mm2.Model(C.get('grid', 'T85'), 32, None, dict(sppt_on=False, **stat))
+                st, cr = M.init(f3, Z['levs'], Z['lats'], Z['lons'], Z['f2'][k, V2.index('surface_pressure')], Z['f2'][k, V2.index('geopotential_at_surface')] / 9.80616,
+                                Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')])
+                M.build(t0); st = M.dfi(st); models = {key_s: (M, st, cr)}                           # keep only the current one (memory)
+            M, st, cr = models[key_s]; out = M.run(st, M.with_params(cr, dyn), HRS)
             if not np.isfinite(out['mslp']).all(): raise RuntimeError('blew up')
             LO, LA = np.meshgrid(M.blon, M.blat, indexing='ij'); sgn = 1 if gp[0] >= 0 else -1
             d = np.hypot(LA - gp[0], ((LO - gp[1] + 180) % 360 - 180) * math.cos(math.radians(gp[0]))) * 111.2
