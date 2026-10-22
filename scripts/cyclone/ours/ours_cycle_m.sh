@@ -21,6 +21,10 @@ Claude-Session: https://claude.ai/code/session_01AXxjaemsi36VrJDzeKZ8zA"
   until [ "$(gh api $R/actions/runs/$RID -q .status)" = completed ]; do sleep 30; done
   git pull -q --rebase origin cases
 fi
+# a run already started (e.g. resumed after a restart): wait for the latest moist-model workflow run to finish
+RL=$(gh api "$R/actions/workflows/cyclone-mmlive.yml/runs?per_page=1" -q '.workflow_runs[0].id' 2>/dev/null)
+[ -n "$RL" ] && until [ "$(gh api $R/actions/runs/$RL -q .status 2>/dev/null)" = completed ]; do sleep 30; done
+git pull -q --rebase origin cases
 for f in live_GFS_$RUNID.npz; do [ -s "$W/$f" ] || { ID=$(gh api $R/releases/tags/era5-cases -q ".assets[]|select(.name==\"$f\")|.id"); gh api -H 'Accept: application/octet-stream' $R/releases/assets/$ID > "$W/$f"; }; done
 git fetch -q origin main; git show origin/main:data/sst_indices.json > "$W/sst.json"
 N=$(ls $LD/part_*.json | wc -l)
