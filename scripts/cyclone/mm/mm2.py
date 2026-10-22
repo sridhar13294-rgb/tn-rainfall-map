@@ -103,7 +103,7 @@ class Model:
             z2 = jnp.zeros(zs.shape, jnp.float32)
             carry['rad'] = dict(heating=jnp.zeros((len(self.sig),) + zs.shape, jnp.float32), sw_net_sfc=z2, lw_dn_sfc=z2, olr=z2, cover=z2)
         return st, carry
-    def bogus(self, T3, Q3, U3, V3, ps, levs, lat, lon, vmax_kt, rmw_km=None, R_out=600.0, B=1.4, t_hours=None):
+    def bogus(self, T3, Q3, U3, V3, ps, levs, lat, lon, vmax_kt, rmw_km=None, R_out=None, B=1.4, t_hours=None):
         """Replace the analysis vortex by a balanced Holland vortex: lowest-level max wind vmax_kt/0.85 at radius rmw_km,
         decaying upward (weak above 400 hPa), in gradient balance; warm core from hydrostatic balance; moist core."""
         cosl = math.cos(math.radians(lat)); d = np.hypot(self.LA - lat, ((self.LO - lon + 180) % 360 - 180) * cosl) * 111.2      # km
@@ -116,9 +116,12 @@ class Model:
             return X
         U3, V3 = fill(U3), fill(V3)
         f0 = 2 * 7.292e-5 * math.sin(math.radians(lat)); Vm = vmax_kt * 0.5144 / 0.85; rho = 1.15
-        # wind profile (modified Rankine, gently tapered beyond R_out), then the balancing geopotential from gradient balance
+        # wind profile (modified Rankine, decay exponent x, tapered to calm beyond R_out), then the balancing geopotential from
+        # gradient balance. The outer winds (300-1000 km) set the beta drift: the old profile (x 0.5, taper from 600 km over
+        # 400 km) was far broader than real depressions and drifted the storm ~0.4 deg/day too far north in past-storm tests.
+        R_out = R_out or float(self.S.get('bogus_rout', 350.0)); xd = float(self.S.get('bogus_x', 0.6))
         rr = np.linspace(0, R_out + 900, 600) * 1e3; rk = rr / 1e3
-        Vr = np.where(rk < rm, Vm * rk / rm, Vm * (rm / np.maximum(rk, 1e-3)) ** 0.5) * np.exp(-(np.maximum(rk - R_out, 0) / 400.0) ** 2)
+        Vr = np.where(rk < rm, Vm * rk / rm, Vm * (rm / np.maximum(rk, 1e-3)) ** xd) * np.exp(-(np.maximum(rk - R_out, 0) / 150.0) ** 2)
         dph1 = Vr ** 2 / np.maximum(rr, 1.0) + abs(f0) * Vr
         ph1 = -np.cumsum((dph1 * np.gradient(rr))[::-1])[::-1]                                  # phi(r) - phi(far), negative
         r = np.maximum(d, 1.0) * 1e3
@@ -436,6 +439,7 @@ class Model:
         return {k: np.concatenate([np.asarray(first[k])[None], np.asarray(v)], 0) for k, v in traj.items()}
     # ------------------------------------------------------------------------------------------------ storm tracker (GFDL style)
     def track(self, out, la0, lo0, every_h=6, keep_h=0):
+        subgrid = subgrid_peak
         """centre from up to five fixes near the expected position (last position + 0.75 x last motion): minimum MSLP, maximum
         850 and 700 hPa vorticity, minimum 850 and 700 hPa height; each a weighted centroid within 150 km of its extremum.
         Fixes further than 225 km from their mean are dropped; the rest are averaged. Stops when fewer than 2 fixes agree or
@@ -448,9 +452,7 @@ class Model:
             for key, s_ in (('mslp', -1), ('vo850', sgn), ('vo700', sgn), ('z850', -1), ('z700', -1)):
                 F = ndi.uniform_filter(np.asarray(out[key][i], float), 3) * s_
                 m = np.where(d <= (330 if i else 250), F, -np.inf); j = np.unravel_index(np.argmax(m), m.shape)
-                dj = dist(LA[j], LO[j]); w = np.clip(F - np.percentile(F[dj <= 400], 75), 0, None) * (dj <= 160) * np.exp(-(dj / 120.0) ** 2)
-                if w.sum() > 0: fixes.append(((w * LA).sum() / w.sum(), LO[j] + (w * ((LO - LO[j] + 180) % 360 - 180)).sum() / w.sum()))
-                elif np.isfinite(m[j]): fixes.append((float(LA[j]), float(LO[j])))
+                if np.isfinite(m[j]): fixes.append(subgrid(F, j, LA, LO))
             if not fixes: break
             fa = np.array(fixes); mla, mlo = np.median(fa, 0)                                    # median first: one stray fix cannot drag the mean
             keep = [f for f in fixes if math.hypot(f[0] - mla, (f[1] - mlo) * math.cos(math.radians(mla))) * 111.2 <= 225]
@@ -468,6 +470,23 @@ class Model:
             if weak >= 4 and i * every_h >= keep_h: break                                         # vortex gone for 24 h (after keep_h: a seedling may be weak at first)
         return res
 
+# ---------------------------------------------------------------------------------------------------- tracker helper
+def subgrid_peak(F, j, LA, LO):
+    """position of a field maximum to a fraction of a grid cell: least-squares quadratic surface over the 3x3 cells around
+    the highest grid point; its vertex if it is a true maximum within one cell, else the grid point. (A centroid pulls the
+    centre toward the grid point; on a 140-km grid that alone gave ~60 km error at the start.)"""
+    i0, k0 = j; ni, nk = F.shape
+    if not (0 < i0 < ni - 1 and 0 < k0 < nk - 1): return float(LA[j]), float(LO[j])
+    cl = math.cos(math.radians(LA[j])); sub = F[i0 - 1:i0 + 2, k0 - 1:k0 + 2]
+    x = (((LO[i0 - 1:i0 + 2, k0 - 1:k0 + 2] - LO[j] + 180) % 360) - 180) * cl; y = LA[i0 - 1:i0 + 2, k0 - 1:k0 + 2] - LA[j]   # degrees
+    A = np.stack([np.ones(9), x.ravel(), y.ravel(), x.ravel() ** 2, x.ravel() * y.ravel(), y.ravel() ** 2], 1)
+    try: c = np.linalg.lstsq(A, sub.ravel(), rcond=None)[0]
+    except Exception: return float(LA[j]), float(LO[j])
+    H = np.array([[2 * c[3], c[4]], [c[4], 2 * c[5]]])
+    if np.linalg.det(H) <= 0 or H[0, 0] >= 0: return float(LA[j]), float(LO[j])
+    vx, vy = np.linalg.solve(H, -c[1:3]); dx = abs(LO[i0 + 1, k0] - LO[j]) * cl or 1.0; dy = abs(LA[i0, k0 + 1] - LA[j]) or 1.0
+    if abs(vx) > dx or abs(vy) > dy: return float(LA[j]), float(LO[j])
+    return float(LA[j] + vy), float(LO[j] + vx / cl)
 # ---------------------------------------------------------------------------------------------------- ensemble helpers
 def integrate(M, state, carry, hours):
     """run without saving output; returns the final (state, carry)."""
