@@ -22,6 +22,9 @@ if os.environ.get('LIBM_SEL'):
     L = [s for s in L if (not bs or s.get('basin') in bs.split(',')) and (not yr or int(y0) <= int(s['t0'][:4]) <= int(y1 or y0))]
 for s in L:
     t0 = dt.datetime.strptime(s['t0'], '%Y-%m-%dT%H'); t0 = t0.replace(hour=t0.hour // 6 * 6) - dt.timedelta(hours=LEAD); times.add(t0.strftime('%Y-%m-%dT%H'))
+if os.environ.get('LIBM_TIMES'):                                                                   # e.g. 2020-01-01T00/2020-12-26T00/120 (start/end/step h)
+    a_, b_, st_ = os.environ['LIBM_TIMES'].split('/'); t_ = dt.datetime.strptime(a_, '%Y-%m-%dT%H'); te = dt.datetime.strptime(b_, '%Y-%m-%dT%H'); times = set()
+    while t_ <= te: times.add(t_.strftime('%Y-%m-%dT%H')); t_ += dt.timedelta(hours=int(st_))
 times = sorted(times); log(len(times), 'times')
 def grab(ds, var, T, lev):
     x = ds[var]

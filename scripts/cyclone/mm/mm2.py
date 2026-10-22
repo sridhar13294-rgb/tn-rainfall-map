@@ -469,6 +469,37 @@ class Model:
         carry = dict(carry, doy0=jnp.float32(self.doy0), utc0=jnp.float32(self.utc0))
         (sN, cN), traj = f(state, carry); first = fpost(state, carry)
         return {k: np.concatenate([np.asarray(first[k])[None], np.asarray(v)], 0) for k, v in traj.items()}
+    def run_wx(self, state, carry, hours, every_h=24):
+        """General-weather output for verification against ERA5 (whole globe, on the model grid [lon, lat]):
+        z500 (m), t850 (K), mslp (Pa), rain total since start (mm), t2 (K, lowest level brought down to 2 m with 6.5 K/km),
+        u850/v850 and u200/v200 (m/s), every every_h hours from 0."""
+        hor = self.coords.horizontal; zs_n = jnp.asarray(self.zs)
+        def to_p(F, lp, P):                                                                        # linear in log pressure; below ground -> lowest level
+            lt = jnp.log(P); idx = jnp.sum(lp < lt, axis=0); k1 = jnp.clip(idx, 1, F.shape[0] - 1); k0 = k1 - 1
+            g = lambda X, k: jnp.take_along_axis(X, k[None], 0)[0]
+            w = jnp.clip((lt - g(lp, k0)) / (g(lp, k1) - g(lp, k0)), 0.0, 1.0); return g(F, k0) + w * (g(F, k1) - g(F, k0))
+        def post(state, cr):
+            u, v = spherical_harmonic.vor_div_to_uv_nodal(hor, state.vorticity, state.divergence); u, v = u / self.MPS, v / self.MPS
+            T = (hor.to_nodal(state.temperature_variation) + self.ref_t[:, None, None]) / self.K
+            ps = jnp.exp(hor.to_nodal(state.log_surface_pressure))[0] / self.PA
+            phi = primitive_equations.get_geopotential_on_sigma(T * self.K, nodal_orography=zs_n[None] * self.M, sigma=self.coords.vertical,
+                                                                gravity_acceleration=self.ps.gravity_acceleration, ideal_gas_constant=self.ps.ideal_gas_constant) / (self.M ** 2 / self.SEC ** 2)
+            lp = jnp.log(jnp.asarray(self.sig)[:, None, None] * ps[None])
+            mslp = ps * jnp.exp(G * zs_n / (RD * (T[-1] + 0.0065 * zs_n / 2)))
+            z1 = RD * T[-1] / G * jnp.log(1.0 / float(self.sig[-1]))                                # height of the lowest level above ground
+            return dict(z500=to_p(phi, lp, 50000.0) / G, t850=to_p(T, lp, 85000.0), mslp=mslp, rain=cr['rain'], t2=T[-1] + 0.0065 * (z1 - 2.0),
+                        u850=to_p(u, lp, 85000.0), v850=to_p(v, lp, 85000.0), u200=to_p(u, lp, 20000.0), v200=to_p(v, lp, 20000.0))
+        inner = int(round(every_h * 3600 / self.dt_s)); outer = int(hours // every_h)
+        def one(c, _):
+            st, cr = c; self._carry = cr; st2 = self.step(st); cr2 = self.surface(st2, cr); return (st2, cr2), None
+        def block(c, _):
+            c, _ = jax.lax.scan(one, c, None, length=inner); return c, post(*c)
+        key = ('wx', hours, every_h)
+        if key not in self._jit: self._jit[key] = (jax.jit(lambda s, c: jax.lax.scan(block, (s, c), None, length=outer)), jax.jit(post))
+        f, fpost = self._jit[key]
+        carry = dict(carry, doy0=jnp.float32(self.doy0), utc0=jnp.float32(self.utc0))
+        (sN, cN), traj = f(state, carry); first = fpost(state, carry)
+        return {k: np.concatenate([np.asarray(first[k])[None], np.asarray(v)], 0) for k, v in traj.items()}
     # ------------------------------------------------------------------------------------------------ storm tracker (GFDL style)
     def track(self, out, la0, lo0, every_h=6, keep_h=0):
         subgrid = subgrid_peak
