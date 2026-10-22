@@ -25,7 +25,7 @@ def member(k):
     if k == 0: return dict(h=[0.5] * 8, alpha=0.0, set={})
     h = [halton(k, b) for b in (2, 3, 5, 7, 11, 13, 17, 19)]
     return dict(h=h, alpha=-0.5 + 2.0 * h[0], set=dict(rh_deep=0.7 + 0.2 * h[2], tau_deep=1800 + 3600 * h[3], ck=1.2e-3 * (0.8 + 0.4 * h[4]), ent=0.3 + 0.6 * h[5],
-                                                        k_evap=2e-5 * (0.5 + h[6]), sppt=0.2 + 0.4 * h[7], sppt_seed=1000 + k))
+                                                        k_evap=2e-5 * (0.5 + h[6]), sppt=0.1 + 0.2 * h[7], sppt_seed=1000 + k))
 def run(LIVEM, LIVE, PART, NPART, OUT, CFG=None):
     import mm2, jax.numpy as jnp
     from ours_live import detect
@@ -55,6 +55,7 @@ def run(LIVEM, LIVE, PART, NPART, OUT, CFG=None):
                 rs = np.random.default_rng(3000 + k); c = rs.standard_normal(6) / math.sqrt(6) * (1 if lvl(mb['h'][1]) != 1 else 1.2)
                 st = mm2.add_perturbation(st, bv_cache[grid], c)
             out = M.run(st, cr, HOURS)
+            if not np.isfinite(out['mslp']).all(): raise RuntimeError('model blew up')
             T = {pk: M.track(out, p['lat'], p['lon'], keep_h=0 if formed else 96) for pk, p in PR.items()}
             T['peak'] = mm2.track_from_peak(M, out)                                                   # the Bay system at its strongest, followed both ways
             rain = None
@@ -78,7 +79,9 @@ def merge(LIVE, SSTJ, LIJ, SITES, OUT, parts):
     rows = json.load(open(LIJ)).get('mjo', {}).get('rows', [])
     if rows: r = rows[-1]; mu, mk, lab = MJO_STATE(r['phase'], r['amp']); obs.update(mjo_u=mu, mjo_kt=mk, mjo_label=lab, mjo_date=r['date'], mjo_phase=r['phase'], mjo_amp=r['amp'])
     obs['ridge'] = ridge_now(LIVE)
-    mem = sorted([m for p in P for m in p['members'] if 'tracks' in m], key=lambda m: m['member']); failed = [m['member'] for p in P for m in p['members'] if 'err' in m]
+    def bad(m): return bool(m.get('rain')) and not np.isfinite(np.array(m['rain'], float)).all()          # the run went numerically unstable
+    mem = sorted([m for p in P for m in p['members'] if 'tracks' in m and not bad(m)], key=lambda m: m['member'])
+    failed = sorted([m['member'] for p in P for m in p['members'] if 'err' in m or bad(m)])
     RES = []
     for m in mem:
         cand = [kv for kv in m['tracks'].items() if kv[1]]
@@ -105,7 +108,7 @@ def merge(LIVE, SSTJ, LIJ, SITES, OUT, parts):
     strike = dict(lat=gl.round(2).tolist(), lon=go.round(2).tolist(), p=np.round(hit / max(1, len(RES)), 3).tolist())
     # rain at TN sites -> district daily totals (ensemble median and chance of >= 64.5 mm "heavy" and >= 115.6 mm "very heavy")
     sites = json.load(open(SITES)); dists = sorted({s[3] for s in sites}); dr = None
-    R = [np.array(m['rain']) for m in mem if m.get('rain')]
+    R = [np.array(m['rain'], float) for m in mem if m.get('rain')]; R = [x for x in R if np.isfinite(x).all()]      # drop members whose rain went bad
     if R:
         n = min(x.shape[0] for x in R); R = np.stack([x[:n] for x in R])                          # members x times x sites (cumulative mm)
         days = list(range(4, n, 4))                                                              # every 24 h

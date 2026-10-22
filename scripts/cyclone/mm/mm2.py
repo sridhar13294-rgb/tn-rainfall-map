@@ -160,6 +160,7 @@ class Model:
             rhs = X.at[-1].add(dt * sfc / mass[-1]); return (tridiag(a, b, c, rhs) - X) / dt
         du = diffuse(u, taux); dv = diffuse(v, tauy); dq = diffuse(q, E)
         dth = diffuse(th, H / CP * (ps / p1) ** KAP); dT = dth * (p / ps) ** KAP
+        dTbl, dqbl = dT, dq                                                                         # boundary-layer part (kept out of SPPT)
         # ---------------- convection (Betts-Miller-Janjic type)
         Tn = T + dt * dT; qn = jnp.maximum(q + dt * dq, 0)
         the_l = Tn * (100000.0 / p) ** KAP * jnp.exp(LV * qn / (CP * Tn))
@@ -241,8 +242,10 @@ class Model:
             kx = rs.integers(2, 12, K); ky = rs.uniform(-1, 1, K) * 10; ph = rs.uniform(0, 2 * np.pi, K); om = rs.uniform(0.5, 1.5, K) * 2 * np.pi / (2 * 86400.0)
             lonr = jnp.radians(jnp.asarray(self.LO)); latr2 = jnp.radians(jnp.asarray(self.LA))
             pat = sum(jnp.sin(kx[i] * lonr + ky[i] * latr2 + ph[i] + om[i] * cr['t']) for i in range(K)) / math.sqrt(K / 2)
-            fac = 1 + jnp.clip(S['sppt'] * pat, -0.9, 0.9)
-            dT = (dT - rad) * fac + rad; dq = dq * fac; du = du * fac; dv = dv * fac
+            fac = 1 + jnp.clip(S['sppt'] * pat, -0.5, 0.5)
+            # noise on convection, condensation and rain only: scaling the implicit boundary-layer mixing past 1 overshoots
+            # and blows the run up (seen in 1 of 3 test runs)
+            dT = dTbl + (dT - rad - dTbl) * fac + rad; dq = dqbl + (dq - dqbl) * fac
         diag = dict(rain=Psurf + Pc * 0.0, H=H, E=E, ust=ust, V1=V1, sw_sfc=Fsfc * (1 - jnp.where(sea, S['alb_sea'], S['alb_land'])), lw_dn=Dbot[-1], Ts=Ts)
         return dict(T=dT, q=dq, u=du, v=dv), diag
     # ------------------------------------------------------------------------------------------------ dynamics + time loop
