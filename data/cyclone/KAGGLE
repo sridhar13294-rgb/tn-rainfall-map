@@ -1,6 +1,6 @@
-tn-oc-jaxspin
-ocean_clim.npz
-pip install -q gcsfs zarr xarray 2>&1 | tail -2; cp /kaggle/working/ocean_clim.npz . ; python -W ignore ../../ocean3d/test_jax_gpu.py /kaggle/working/ocean_jax.json 2>&1 | tail -20; pip install -q veros h5netcdf loguru 2>&1 | tail -3; VEROS_BACKEND=jax VEROS_DEVICE=gpu VEROS_FLOAT_TYPE=float32 VEROS_DISKLESS_MODE=1 VEROS_FORCE_OVERWRITE=1 VEROS_LOGLEVEL=warning python -W ignore ../../ocean3d/veros_spin.py /kaggle/working/veros_spin.json 2017-01-01
+tn-io-as3
+libm_as_fields.npz
+bash ../kaggle/par.sh hind2.py /kaggle/working/libm_as_fields.npz ../../../data/cyclone/kaggle_cfg/io_as2.json /kaggle/working/as 2
 NvidiaTeslaT4
-7
-#Stage 2: ocean code under JAX on GPU (numpy vs jit, speed) + Veros 2.4-year ERA5 spin-up scored on monsoon 2019
+4
+#Arabian Sea storms: current defaults vs repaired mass-flux (rerun: download had failed)

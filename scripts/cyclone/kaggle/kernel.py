@@ -19,7 +19,7 @@ sh('free -g; nproc; python -c "import jax; print(jax.devices())" || true')
 sh('pip install -q xarray "git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0"')
 sh('rm -rf repo && git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo')
 for f in "__FILES__".split(','):
-    if f: sh('curl -sSL -o %s https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/%s' % (f, f))
+    if f: sh('curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o %s https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/%s && python -c "import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith(\'.npz\') or zipfile.is_zipfile(f) else 1)" %s || { echo BAD_DOWNLOAD %s; rm -f %s; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o %s https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/%s; }' % (f, f, f, f, f, f, f))
 print('setup s', round(time.time() - t), flush=True)
 sh(JOB + ' 2>&1 | tee job.log')
 sh('rm -rf repo ' + ' '.join("__FILES__".split(',')))
