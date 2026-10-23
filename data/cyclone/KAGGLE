@@ -1,6 +1,6 @@
-tn-wx-prof
-libm_wx2020_fields.npz
-python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 6
+tn-ens-spread3
+libm_fields.npz
+bash ../kaggle/par.sh hindens2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/ens_spread3.json /kaggle/working/ens
 NvidiaTeslaT4
-3
-#where in the column the model drifts (T, q profiles vs ERA5 at day 5; radiation and physics heating) 2026-10-23T00:11Z
+5
+#ensemble spread round 3: SPPT x2.4 (48 h spread short) 2026-10-23T00:11Z
