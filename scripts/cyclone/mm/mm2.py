@@ -40,7 +40,7 @@ DEFAULTS = dict(rh_deep=0.9, tau_deep=2400.0, tau_shallow=10800.0, tau_cmt=6 * 3
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='bmj', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='gray', rad_every=1,
-                mf_kick_t=0.0, mf_kick_q=0.0, mf_org=0.0, mf_wup=0.0, mf_dd=0.0, shallow='mse', sh_top=0.7, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.0)
+                mf_kick_t=0.0, mf_kick_q=0.0, mf_org=0.0, mf_wup=0.0, mf_dd=0.0, shallow='mse', sh_top=0.7, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.0, phys_off=False, mono=True)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
@@ -451,7 +451,7 @@ class Model:
         if same: return                                                                             # same grid, terrain and coast: reuse the compiled model
         self._jit = {}; self._built = (split, np.asarray(self.oro), np.asarray(self.zs), np.asarray(self.land))
         self.eq = primitive_equations.SemiLagrangianPrimitiveEquations(self.ref_t, self.oro, self.coords, self.ps, humidity_key='specific_humidity',
-                                                                       monotone_tracers=True, nodal_tracers=('specific_humidity',), departure_iterations=1, monotone_dynamics=True)
+                                                                       monotone_tracers=True, nodal_tracers=('specific_humidity',), departure_iterations=1, monotone_dynamics=bool(self.S.get('mono', True)))
         cl = hor.cos_lat
         class Phys(time_integration.ExplicitODE):
             def explicit_terms(self_, state):
@@ -460,6 +460,7 @@ class Model:
                 u = aux.cos_lat_u[0] / cl / M.MPS; v = aux.cos_lat_u[1] / cl / M.MPS
                 ps = jnp.exp(hor.to_nodal(state.log_surface_pressure))[0] / M.PA
                 tend, _ = M.column(T, q, u, v, ps, M._carry, div=hor.to_nodal(state.divergence) * M.SEC)
+                if M.S.get('phys_off'): tend = jax.tree_util.tree_map(jnp.zeros_like, tend)        # dynamics only (energy checks)
                 vt = hor.to_modal(jax.tree_util.tree_map(lambda x: x * M.MPS / M.SEC / cl, (tend['u'], tend['v'])))
                 return primitive_equations.State(vorticity=hor.curl_cos_lat(vt), divergence=hor.div_cos_lat(vt),
                                                  temperature_variation=hor.to_modal(tend['T'] * M.K / M.SEC), log_surface_pressure=jnp.zeros_like(state.log_surface_pressure),

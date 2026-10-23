@@ -1,6 +1,6 @@
-tn-gen-ckz
-libm48_fields.npz
-bash ../kaggle/par.sh genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_ckz.json /kaggle/working/gen
+tn-wx-energy
+libm_wx2020_fields.npz
+python -W ignore wx_energy.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/energy.json 2
 NvidiaTeslaT4
-4
-#storm forming with height-corrected evaporation (old and mass-flux schemes) 2026-10-23T08:28Z
+3
+#does the dynamical core lose heat? physics off vs on, monotone vs not, 48 h 2026-10-23T09:30Z
