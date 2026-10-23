@@ -1,6 +1,6 @@
-tn-io-si5
-libm_si4_fields.npz
-bash ../kaggle/par.sh hind2.py /kaggle/working/libm_si4_fields.npz ../../../data/cyclone/kaggle_cfg/io_si5.json /kaggle/working/si 2
+tn-da-osse2
+libm_wx2020_fields.npz
+L=/kaggle/working/libm_wx2020_fields.npz; python -W ignore ../../da/osse.py $L /kaggle/working/osse_r05.json '{"K": 20, "days": 6, "ana": {"rtps": 0.5}}'; python -W ignore ../../da/osse.py $L /kaggle/working/osse_adapt.json '{"K": 20, "days": 6, "ana": {"rtps": 0.0, "adaptive": true}}'; python -W ignore ../../da/osse.py $L /kaggle/working/osse_k40.json '{"K": 40, "days": 10, "ana": {"rtps": 0.5}}'
 NvidiaTeslaT4
-6
-#South Indian Ocean storms: current defaults vs repaired mass-flux (shallow off)
+7
+#LETKF OSSE inflation tuning (RTPS 0.5, adaptive) and 40 members 2026-10-23
