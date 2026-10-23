@@ -1,0 +1,67 @@
+[{"stream_name":"stdout","time":0.84435439,"data":"+ nvidia-smi || true\n"}
+,{"stream_name":"stderr","time":0.850917825,"data":"/bin/sh: 1: nvidia-smi: not found\n"}
+,{"stream_name":"stdout","time":0.851249314,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":0.851264656,"data":"accelerator asked TpuV5E8 -\u003e jax for tpu\n"}
+,{"stream_name":"stdout","time":0.851270046,"data":"+ pip uninstall -y -q jax-cuda12-plugin jax-cuda12-pjrt 2\u003e/dev/null; pip install -q -U \"jax[tpu]\" -f https://storage.googleapis.com/jax-releases/libtpu_releases.html\n"}
+,{"stream_name":"stderr","time":32.317160141,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":32.317198049,"data":"bigframes 2.48.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":32.317202857,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stderr","time":32.317206343,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":32.317210825,"data":"gradio 6.26.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":32.317272435,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":32.317286254,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stdout","time":32.749839133,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":32.749873114,"data":"+ free -g; nproc; python -c \"import jax; print(jax.devices())\" || true\n"}
+,{"stream_name":"stdout","time":32.773629406,"data":"               total        used        free      shared  buff/cache   available\n"}
+,{"stream_name":"stdout","time":32.773658137,"data":"Mem:              31           0          24           0           6          30\n"}
+,{"stream_name":"stdout","time":32.773662094,"data":"Swap:              0           0           0\n"}
+,{"stream_name":"stdout","time":32.777817322,"data":"4\n"}
+,{"stream_name":"stderr","time":34.627277643,"data":"Failed to find host bounds for accelerator type: WARNING: could not determine TPU accelerator type, please set env var `TPU_ACCELERATOR_TYPE` manually, otherwise libtpu.so may not properly initialize.\n"}
+,{"stream_name":"stderr","time":34.627312743,"data":"WARNING: Logging before InitGoogle() is written to STDERR\n"}
+,{"stream_name":"stderr","time":34.627317472,"data":"E0000 00:00:1792752814.751743      48 common_lib.cc:848] INVALID_ARGUMENT: Error: unexpected worker hostname 'WARNING: could not determine TPU worker hostnames or IP addresses' from env var TPU_WORKER_HOSTNAMES. Expecting a valid hostname or IP address without port number, or hostname:port:address triple. (Full TPU workers' addr string: WARNING: could not determine TPU worker hostnames or IP addresses, please set env var `TPU_WORKER_HOSTNAMES` manually, otherwise libtpu.so may not properly initialize.)\n"}
+,{"stream_name":"stderr","time":34.627323083,"data":"=== Source Location Trace: === \n"}
+,{"stream_name":"stderr","time":34.627325668,"data":"learning/45eac/tfrc/runtime/libtpu_init_utils.cc:370\n"}
+,{"stream_name":"stdout","time":34.664409461,"data":"[CpuDevice(id=0)]\n"}
+,{"stream_name":"stdout","time":34.903775595,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":34.903818921,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
+,{"stream_name":"stdout","time":46.055770948,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":46.0558091,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
+,{"stream_name":"stdout","time":52.748558493,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":52.74859691,"data":"+ curl -sSL -o libm_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_fields.npz\n"}
+,{"stream_name":"stdout","time":56.265250573,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":56.265281825,"data":"setup s 55\n"}
+,{"stream_name":"stdout","time":56.265286902,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 python -W ignore gpu_bench.py /kaggle/working/libm_fields.npz /kaggle/working/bench.json T85,T170 120 Hamoon 2\u003e\u00261 | tee job.log\n"}
+,{"stream_name":"stdout","time":67.330446825,"data":"Failed to find host bounds for accelerator type: WARNING: could not determine TPU accelerator type, please set env var `TPU_ACCELERATOR_TYPE` manually, otherwise libtpu.so may not properly initialize.\n"}
+,{"stream_name":"stdout","time":67.330479969,"data":"WARNING: Logging before InitGoogle() is written to STDERR\n"}
+,{"stream_name":"stdout","time":67.330484544,"data":"E0000 00:00:1792752847.454892     205 common_lib.cc:848] INVALID_ARGUMENT: Error: unexpected worker hostname 'WARNING: could not determine TPU worker hostnames or IP addresses' from env var TPU_WORKER_HOSTNAMES. Expecting a valid hostname or IP address without port number, or hostname:port:address triple. (Full TPU workers' addr string: WARNING: could not determine TPU worker hostnames or IP addresses, please set env var `TPU_WORKER_HOSTNAMES` manually, otherwise libtpu.so may not properly initialize.)\n"}
+,{"stream_name":"stdout","time":67.330490249,"data":"=== Source Location Trace: ===\n"}
+,{"stream_name":"stdout","time":67.33049346,"data":"learning/45eac/tfrc/runtime/libtpu_init_utils.cc:370\n"}
+,{"stream_name":"stdout","time":67.365256154,"data":"{'backend': 'cpu', 'devices': ['cpu:0'], 'jax': '0.12.0.1'}\n"}
+,{"stream_name":"stdout","time":1744.48548634,"data":"T85 {'setup_s': 52.8, 'first_run_s': 815.0, 'finite': True, 'member_run_s': 804.4, 'finite2': True, 'mem': None, 'dt_min': 30.0, 'sec_per_day': 160.9}\n"}
+,{"stream_name":"stdout","time":2114.671039096,"data":"E1023 11:28:14.794459     289 slow_operation_alarm.cc:74] Constant folding an instruction is taking \u003e 1s:\n"}
+,{"stream_name":"stdout","time":2114.67115973,"data":"\n"}
+,{"stream_name":"stdout","time":2114.671165915,"data":"  %transpose.13 = f32[341,172,256]{2,1,0} transpose(%constant.66), dimensions={0,2,1}\n"}
+,{"stream_name":"stdout","time":2114.6711712,"data":"\n"}
+,{"stream_name":"stdout","time":2114.671199315,"data":"This isn't necessarily a bug; constant-folding is inherently a trade-off between compilation time and speed at runtime. XLA has some guards that attempt to keep constant folding from taking too long, but fundamentally you'll always be able to come up with an input program that takes a long time.\n"}
+,{"stream_name":"stdout","time":2114.671206883,"data":"\n"}
+,{"stream_name":"stdout","time":2114.671211847,"data":"If you'd like to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.\n"}
+,{"stream_name":"stdout","time":2114.716605829,"data":"E1023 11:28:14.840981     205 slow_operation_alarm.cc:141] The operation took 1.046661585s\n"}
+,{"stream_name":"stdout","time":2114.716648968,"data":"Constant folding an instruction is taking \u003e 1s:\n"}
+,{"stream_name":"stdout","time":2114.716656354,"data":"\n"}
+,{"stream_name":"stdout","time":2114.716661635,"data":"  %transpose.13 = f32[341,172,256]{2,1,0} transpose(%constant.66), dimensions={0,2,1}\n"}
+,{"stream_name":"stdout","time":2114.716747706,"data":"\n"}
+,{"stream_name":"stdout","time":2114.716759596,"data":"This isn't necessarily a bug; constant-folding is inherently a trade-off between compilation time and speed at runtime. XLA has some guards that attempt to keep constant folding from taking too long, but fundamentally you'll always be able to come up with an input program that takes a long time.\n"}
+,{"stream_name":"stdout","time":2114.716763992,"data":"\n"}
+,{"stream_name":"stdout","time":2114.716767623,"data":"If you'd like to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.\n"}
+,{"stream_name":"stdout","time":13259.74995377,"data":"T170 {'setup_s': 296.0, 'first_run_s': 5651.2, 'finite': True, 'member_run_s': 5567.9, 'finite2': True, 'mem': None, 'dt_min': 20.0, 'sec_per_day': 1113.6}\n"}
+,{"stream_name":"stdout","time":13264.432727132,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":13264.433105801,"data":"+ rm -rf repo libm_fields.npz\n"}
+,{"stream_name":"stdout","time":13264.648586174,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":13264.648765221,"data":"total s 13264\n"}
+,{"stream_name":"stderr","time":13270.221224442,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":13270.221274961,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":13270.68676024,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":13270.686863782,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":13272.113053684,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":13273.572787077,"data":"[NbConvertApp] Writing 280549 bytes to __results__.html\n"}
+]
