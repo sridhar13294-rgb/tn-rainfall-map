@@ -1,6 +1,6 @@
-tn-gen-t170a
+tn-gen-t170b
 libm48_fields.npz
-XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_t170_a.json 0 1 /kaggle/working/gen_0.json > /kaggle/working/gen_0.log 2>&1; tail -3 /kaggle/working/gen_0.log
+XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_t170_b.json 0 1 /kaggle/working/gen_0.json > /kaggle/working/gen_0.log 2>&1; tail -3 /kaggle/working/gen_0.log
 NvidiaTeslaT4
-3
-#storm forming at 80 km (T170): old scheme, half freezing heat vs none (42 storms) 2026-10-23T15:36Z
+8
+#storm forming at 80 km (T170): repaired mass-flux, shallow off vs slow shallow (42 storms) 2026-10-23T15:36Z
