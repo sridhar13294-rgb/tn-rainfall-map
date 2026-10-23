@@ -1,0 +1,63 @@
+[{"stream_name":"stdout","time":0.730043022,"data":"+ nvidia-smi || true\n"}
+,{"stream_name":"stdout","time":0.765652142,"data":"Fri Oct 23 16:46:22 2026       \n"}
+,{"stream_name":"stdout","time":0.765673822,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":0.765678529,"data":"| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":0.765683162,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.765705534,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":0.76570934,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":0.765713204,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":0.765716984,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":0.813523798,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":0.813543601,"data":"| N/A   35C    P8              9W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":0.813549465,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":0.813554697,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.813559942,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":0.813565249,"data":"| N/A   43C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":0.813570542,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":0.813575843,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.814308403,"data":"\n"}
+,{"stream_name":"stdout","time":0.81432163,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":0.814325872,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":0.814331031,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":0.814336318,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":0.814341667,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":0.815998407,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":0.816012537,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.140830773,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1.142650183,"data":"accelerator asked NvidiaTeslaT4 -\u003e jax for cuda12\n"}
+,{"stream_name":"stdout","time":1.142777896,"data":"+ pip install -q -U \"jax[cuda12]\"\n"}
+,{"stream_name":"stderr","time":26.117394559,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":26.117426725,"data":"bigframes 2.48.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":26.117430431,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stderr","time":26.117433202,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":26.117435848,"data":"gradio 6.26.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":26.117438192,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":26.117440912,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stdout","time":26.371440342,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":26.371475686,"data":"+ free -g; nproc; python -c \"import jax; print(jax.devices())\" || true\n"}
+,{"stream_name":"stdout","time":26.386860091,"data":"               total        used        free      shared  buff/cache   available\n"}
+,{"stream_name":"stdout","time":26.386881799,"data":"Mem:              31           1          23           0           6          30\n"}
+,{"stream_name":"stdout","time":26.386891471,"data":"Swap:              0           0           0\n"}
+,{"stream_name":"stdout","time":26.389696146,"data":"4\n"}
+,{"stream_name":"stdout","time":34.569282498,"data":"[CudaDevice(id=0), CudaDevice(id=1)]\n"}
+,{"stream_name":"stdout","time":37.640495377,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":37.640538574,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
+,{"stream_name":"stdout","time":47.109915776,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":47.109953073,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
+,{"stream_name":"stdout","time":59.6334024,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":59.633433223,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o libm_as_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_as_fields.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" libm_as_fields.npz || { echo BAD_DOWNLOAD libm_as_fields.npz; rm -f libm_as_fields.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o libm_as_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_as_fields.npz; }\n"}
+,{"stream_name":"stdout","time":79.612176367,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":79.612212376,"data":"setup s 79\n"}
+,{"stream_name":"stdout","time":79.612217576,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 bash ../kaggle/par.sh hind2.py /kaggle/working/libm_as_fields.npz ../../../data/cyclone/kaggle_cfg/io_as2.json /kaggle/working/as 2 2\u003e\u00261 | tee job.log\n"}
+,{"stream_name":"stdout","time":2862.318810525,"data":"tail: option used in invalid context -- 5\n"}
+,{"stream_name":"stdout","time":2862.323896734,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":2862.323919775,"data":"+ rm -rf repo libm_as_fields.npz\n"}
+,{"stream_name":"stdout","time":2862.47784836,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":2862.477871023,"data":"total s 2862\n"}
+,{"stream_name":"stderr","time":2864.452183326,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":2864.452222579,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":2864.690054324,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":2864.690083588,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":2865.458996131,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":2866.410124287,"data":"[NbConvertApp] Writing 281530 bytes to __results__.html\n"}
+]
