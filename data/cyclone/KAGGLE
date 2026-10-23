@@ -1,6 +1,6 @@
-tn-base-ice05
-libm_fields.npz
-bash ../kaggle/par.sh hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/base_ice05.json /kaggle/working/bt
+tn-wx-mfdd
+libm_wx2020_fields.npz
+python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"mf_dd3": {\"conv\": \"mf\", \"mf_kick_t\": 0.5, \"mf_kick_q\": 0.0005, \"sh_top\": 0.0, \"tau_shallow\": 3600.0, "mf_dd": 0.3}, "mf_dd5": {\"conv\": \"mf\", \"mf_kick_t\": 0.5, \"mf_kick_q\": 0.0005, \"sh_top\": 0.0, \"tau_shallow\": 3600.0, "mf_dd": 0.5}, "mf_dd5_ice": {\"conv\": \"mf\", \"mf_kick_t\": 0.5, \"mf_kick_q\": 0.0005, \"sh_top\": 0.0, \"tau_shallow\": 3600.0, "mf_dd": 0.5, "mf_ice": 1.0}}'
 NvidiaTeslaT4
-2
-#84 Bay storms: half freezing heat vs none (same run, same defaults otherwise) 2026-10-23T12:31Z
+4
+#mass-flux repair: rain-cooled downdrafts against the warm dry boundary layer (+3.5 K, -2.8 g/kg) 2026-10-23T12:33Z
