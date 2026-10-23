@@ -93,7 +93,7 @@ def main(LIB, OUT, cfgp=None):
         jax.block_until_ready(mem[-1].vorticity); t_an = time.time() - tc2
         tv = MS.verif(M, nat); am, asp = ens_verif(mem)
         row = dict(h=h, ana=scores(am, tv), bg=scores(bgm, tv), free=scores(MS.verif(M, free), tv), spread_ana=asp, spread_bg=bsp,
-                   n_obs=info['n_obs'], n_used=info['n_used'], rho=info['rho'], local_obs=info['mean_local_obs'],
+                   n_obs=info['n_obs'], n_used=info['n_used'], rho=info['rho'], local_obs=info['mean_local_obs'], timing=info.get('timing_s'),
                    obs={k: {kk: (round(vv, 4) if isinstance(vv, float) else vv) for kk, vv in r.items()} for k, r in info['obs'].items()},
                    t_forecast_s=round(t_fc, 1), t_analysis_s=round(time.time() - tc2, 1))
         res['cycles'].append(row); json.dump(res, open(OUT, 'w'), default=str)

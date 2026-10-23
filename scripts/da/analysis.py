@@ -8,7 +8,7 @@ Steps: H(x_k) for every member -> QC against the ensemble mean -> for each of G 
 weights are computed), the local observations of every grid column (Gaspari-Cohn in great-circle distance and in
 ln sigma) -> K x K weights per column and group -> each model level gets the weights blended linearly in ln sigma
 between its two groups -> analysis ensemble -> RTPS -> q kept >= 0."""
-import math, numpy as np
+import math, time, numpy as np
 import letkf as LK, obsop as OP
 
 DEFAULTS = dict(
@@ -50,11 +50,15 @@ class Analysis:
         self.solver = LK.Solver(xp, self.c['chunk']); self.rho = float(self.c['rho'])
 
     def __call__(self, Fb, obs):
-        xp, c = self.xp, self.c; info = {}
+        xp, c = self.xp, self.c; info = {}; tm = {}; t0 = time.time()
+        def lap(k, obj=None):
+            nonlocal t0
+            if obj is not None and hasattr(obj, 'block_until_ready'): obj.block_until_ready()
+            tm[k] = round(time.time() - t0, 2); t0 = time.time()
         op = OP.Operator(self.st, obs)
         HX, vert = op(Fb, xp)                                                              # [K, n]
         HX = np.asarray(HX, np.float64); vert = np.asarray(vert).mean(0)
-        K = HX.shape[0]; hm = HX.mean(0); sprd = HX.std(0, ddof=1)
+        lap('hx'); K = HX.shape[0]; hm = HX.mean(0); sprd = HX.std(0, ddof=1)
         y = np.asarray(obs['value'], float); so = np.asarray(obs['err'], float); d = y - hm
         ok, why = OP.quality_control(op, obs, d, so, np.nan_to_num(sprd), c['qc'])
         typ, var = op.type, op.var
@@ -62,14 +66,15 @@ class Analysis:
         olat = np.asarray(obs['lat'], float)[ok]; olon = np.asarray(obs['lon'], float)[ok]; ov = vert[ok]
         if c['adaptive']: self.rho = LK.adaptive_inflation(dd, Yp, rinv, prev=self.rho)
         info['rho'] = self.rho; info['n_used'] = int(ok.sum()); info['n_obs'] = int(len(ok))
+        lap('qc')
         # weights per vertical group
         lg = np.log(np.asarray(c['groups'], float)); top, bot = lg.min(), lg.max(); Tg = []; nloc = []
         for g, l in enumerate(lg):
             a = (bot - l) / max(bot - top, 1e-9); ch = c['c_h'] + a * (c['c_h_top'] - c['c_h'])
-            idx, loc = LK.local_obs_sphere(self.glat, self.glon, olat, olon, ch, c['pmax'], overt=ov, gvert=l, c_v=c['c_v'])
+            tl = time.time(); idx, loc = LK.local_obs_sphere(self.glat, self.glon, olat, olon, ch, c['pmax'], overt=ov, gvert=l, c_v=c['c_v']); tsearch = tm.get('search', 0) + time.time() - tl; tm['search'] = tsearch
             nloc.append(float((loc > 0.01).sum(1).mean()))
             Tg.append(self.solver.weights(xp.asarray(Yp), xp.asarray(dd), xp.asarray(rinv), idx, loc, self.rho))
-        Tg = xp.stack(Tg); info['mean_local_obs'] = [round(x, 1) for x in nloc]
+        Tg = xp.stack(Tg); lap('search+solve', Tg); info['mean_local_obs'] = [round(x, 1) for x in nloc]
         # apply, level by level
         B = self.B; V = ('t', 'q', 'u', 'v'); Xbf = {k: flat(Fb[k]) for k in V}; lev = {k: [] for k in V}; L = len(self.sig)
         for l in range(L):
@@ -79,7 +84,7 @@ class Analysis:
             if l == L - 1:                                                                  # surface pressure: lowest level's weights
                 Xb = flat(Fb['ps']); psa = LK.rtps(Xb, LK.apply_weights(Xb, Tl, xp), c['rtps'], xp).reshape(Fb['ps'].shape)
         Fa = {k: xp.stack(lev[k], 1).reshape(Fb[k].shape) for k in V}; Fa['ps'] = psa
-        Fa['q'] = xp.clip(Fa['q'], 0.0, c['q_max'])
+        Fa['q'] = xp.clip(Fa['q'], 0.0, c['q_max']); lap('apply', Fa['q'])
         HA, _ = op(Fa, xp); ham = np.asarray(HA, np.float64).mean(0)
-        info['obs'] = obs_stats(why, hm, y, typ, var, sprd, ham)
+        info['obs'] = obs_stats(why, hm, y, typ, var, sprd, ham); lap('oma'); tm['search'] = round(tm['search'], 2); info['timing_s'] = tm
         return Fa, info
