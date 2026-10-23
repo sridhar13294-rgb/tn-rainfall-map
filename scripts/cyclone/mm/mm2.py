@@ -40,7 +40,7 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=10800.0, tau_cmt=6 * 3
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='bmj', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='gray', rad_every=1,
-                mf_kick_t=0.0, mf_kick_q=0.0, mf_org=0.0, mf_wup=0.0, mf_dd=0.0, shallow='mse', sh_top=0.7, bmj_dt=0.5)
+                mf_kick_t=0.0, mf_kick_q=0.0, mf_org=0.0, mf_wup=0.0, mf_dd=0.0, shallow='mse', sh_top=0.7, bmj_dt=0.5, rad_prm=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
@@ -385,7 +385,7 @@ class Model:
             ecc = 1.0 + 0.0334 * jnp.cos(2 * jnp.pi * (doy - 3.0) / 365.0)                          # Earth-Sun distance factor
             def fresh():
                 Rr = radcloud.radiation(Tn, qn, p, dp, ps, Ts, sea, mu0, conv_mask=cm, conv_rain=Pconv_src.sum(0), conv_src=Pconv_src,
-                                        ls_cond=cond, xp=jnp, s0=1361.0 * ecc, prm=dict(alb_land=S['alb_land']))
+                                        ls_cond=cond, xp=jnp, s0=1361.0 * ecc, prm=dict(dict(alb_land=S['alb_land']), **(self.S.get('rad_prm') or {})))
                 return {k: Rr[k] for k in RADKEYS}
             if S['rad_every'] <= 1: Rr = fresh()                                                     # every call
             elif rad_fresh:                                                                          # surface(): once per step, every rad_every steps
