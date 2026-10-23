@@ -47,7 +47,7 @@ def run_case(path, clim, use_cur, prm=None, dt_s=1800.0):
             st, _ = oc.step(st, Qns, sw, tx, ty, f, dt_s, mask=sea)
             if use_cur == 'rgo':
                 rg = rgo.step(rg, tx, ty, rgg, dt_s, prm=prm)
-                st = cu.step(st, tx, ty, f, g, dt_s, q=rgo.column_transports(rg, rgg, g, tx, ty, f, prm=prm))
+                st = cu.step(st, tx, ty, f, g, dt_s, prm=prm, q=rgo.column_transports(rg, rgg, g, tx, ty, f, prm=prm))
             elif use_cur: st = cu.step(st, tx, ty, f, g, dt_s, prm=prm)
     dm = np.where(sea, st['T'][0] - sst0, np.nan); do = np.where(sea, sst[-1] - sst[0], np.nan)
     box = (LA >= BAY[0]) & (LA <= BAY[1]) & (LO >= BAY[2]) & (LO <= BAY[3])

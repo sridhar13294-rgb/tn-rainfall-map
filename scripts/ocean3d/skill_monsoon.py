@@ -47,7 +47,7 @@ def run(E, clim, d0, days, lam, use_cur, prm=None, dt_s=3600.0, gust=1.1):
             st, _ = oc.step(st, Qns, sw, tx, ty, f, dt_s, mask=sea)
             if use_cur == 'rgo':
                 rg = rgo.step(rg, tx, ty, rgg, dt_s, prm=prm)
-                st = cu.step(st, tx, ty, f, g, dt_s, q=rgo.column_transports(rg, rgg, g, tx, ty, f, prm=prm))
+                st = cu.step(st, tx, ty, f, g, dt_s, prm=prm, q=rgo.column_transports(rg, rgg, g, tx, ty, f, prm=prm))
             elif use_cur: st = cu.step(st, tx, ty, f, g, dt_s, prm=prm)
     return st['T'][0] - st['T'][0] * 0 - sst0, sea, LA, LO, g
 
