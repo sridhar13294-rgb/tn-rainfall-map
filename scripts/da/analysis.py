@@ -71,15 +71,14 @@ class Analysis:
             Tg.append(self.solver.weights(xp.asarray(Yp), xp.asarray(dd), xp.asarray(rinv), idx, loc, self.rho))
         Tg = xp.stack(Tg); info['mean_local_obs'] = [round(x, 1) for x in nloc]
         # apply, level by level
-        Fa = {}; B = self.B
-        for k in ('t', 'q', 'u', 'v'):
-            Xb = flat(Fb[k]); L = Xb.shape[1]; lev = []
-            for l in range(L):
-                Tl = sum(float(B[l, g]) * Tg[g] for g in range(len(lg)) if B[l, g] > 0)
-                xa = LK.apply_weights(Xb[:, l], Tl, xp); lev.append(LK.rtps(Xb[:, l], xa, c['rtps'], xp))
-            Fa[k] = xp.stack(lev, 1).reshape(Fb[k].shape)
-        Tl = sum(float(B[-1, g]) * Tg[g] for g in range(len(lg)) if B[-1, g] > 0)
-        Xb = flat(Fb['ps']); Fa['ps'] = LK.rtps(Xb, LK.apply_weights(Xb, Tl, xp), c['rtps'], xp).reshape(Fb['ps'].shape)
+        B = self.B; V = ('t', 'q', 'u', 'v'); Xbf = {k: flat(Fb[k]) for k in V}; lev = {k: [] for k in V}; L = len(self.sig)
+        for l in range(L):
+            Tl = sum(float(B[l, g]) * Tg[g] for g in range(len(lg)) if B[l, g] > 0)
+            for k in V:
+                xa = LK.apply_weights(Xbf[k][:, l], Tl, xp); lev[k].append(LK.rtps(Xbf[k][:, l], xa, c['rtps'], xp))
+            if l == L - 1:                                                                  # surface pressure: lowest level's weights
+                Xb = flat(Fb['ps']); psa = LK.rtps(Xb, LK.apply_weights(Xb, Tl, xp), c['rtps'], xp).reshape(Fb['ps'].shape)
+        Fa = {k: xp.stack(lev[k], 1).reshape(Fb[k].shape) for k in V}; Fa['ps'] = psa
         Fa['q'] = xp.clip(Fa['q'], 0.0, c['q_max'])
         HA, _ = op(Fa, xp); ham = np.asarray(HA, np.float64).mean(0)
         info['obs'] = obs_stats(why, hm, y, typ, var, sprd, ham)

@@ -49,7 +49,7 @@ def local_obs_sphere(glat, glon, olat, olon, c_km, pmax, vdist=None, c_v=None, o
     tree = cKDTree(unit_xyz(olat[keep], olon[keep]))
     rmax = 2.0 * np.sin(min(2.0 * c_km / REARTH_KM, math.pi) / 2.0) * 1.000001          # chord of 2c
     k = min(pmax, len(keep))
-    dist, j = tree.query(unit_xyz(glat, glon), k=k, distance_upper_bound=rmax)
+    dist, j = tree.query(unit_xyz(glat, glon), k=k, distance_upper_bound=rmax, workers=-1)
     dist = np.asarray(dist).reshape(n, k); j = np.asarray(j).reshape(n, k)
     ok = np.isfinite(dist) & (j < len(keep)); jj = np.where(ok, j, 0)
     w = gaspari_cohn(great_circle_km(np.where(ok, dist, 0.0)) / c_km) * ok
