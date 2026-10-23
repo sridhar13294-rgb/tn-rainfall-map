@@ -25,7 +25,7 @@ def member(k):
     if k == 0: return dict(h=[0.5] * 8, alpha=0.0, set={})
     h = [halton(k, b) for b in (2, 3, 5, 7, 11, 13, 17, 19)]
     return dict(h=h, alpha=-0.5 + 2.0 * h[0], set=dict(rh_deep=0.7 + 0.2 * h[2], tau_deep=1800 + 3600 * h[3], ck=1.2e-3 * (0.8 + 0.4 * h[4]), ent=0.3 + 0.6 * h[5],
-                                                        k_evap=2e-5 * (0.5 + h[6]), sppt=0.1 + 0.2 * h[7], sppt_seed=1000 + k))
+                                                        k_evap=2e-5 * (0.5 + h[6]), sppt=2.4 * (0.1 + 0.2 * h[7]), sppt_seed=1000 + k))
 def run(LIVEM, LIVE, PART, NPART, OUT, CFG=None):
     import mm2, landinit, jax.numpy as jnp
     from ours_live import detect
@@ -71,7 +71,7 @@ def run(LIVEM, LIVE, PART, NPART, OUT, CFG=None):
             if getattr(M, 'built_for', None) != t0: M.build(t0)
             st = M.dfi(st)
             if k:
-                if grid not in bv_cache: bv_cache[grid] = mm2.bred_vectors(M, st, M.with_params(cr, {}), n=6, hours=12.0, seed=77, amp=1.0)
+                if grid not in bv_cache: bv_cache[grid] = mm2.bred_vectors(M, st, M.with_params(cr, {}), n=6, hours=12.0, seed=77, amp=2.2)
                 rs = np.random.default_rng(3000 + k); c = rs.standard_normal(6) / math.sqrt(6) * (1 if lvl(mb['h'][1]) != 1 else 1.2)
                 st = mm2.add_perturbation(st, bv_cache[grid], c)
             out = M.run(st, cr, HOURS)
