@@ -1,6 +1,6 @@
-tn-wx-prof8
-libm_wx2020_fields.npz
-python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"tdeep80": {"tau_deep": 4800}, "ck15_tdeep80": {"ck": 0.0015, "tau_deep": 4800}, "mfk_ck15": {"conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005, "ck": 0.0015}}'
+tn-wx-ck
+libm_wx2020_fields.npz,wx_truth_2020.npz
+bash ../kaggle/par.sh wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/wx_rad.json /kaggle/working/wx
 NvidiaTeslaT4
-4
-#upper-air cold bias: slower deep convection, more evaporation, mass-flux with more evaporation 2026-10-23T04:19Z
+1
+#general exam with sea evaporation and wetter deep-cloud defaults 2026-10-23T05:17Z

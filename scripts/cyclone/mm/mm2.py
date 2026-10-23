@@ -36,7 +36,7 @@ def tridiag(a, b, c, d):
     def bwd(xn, x):
         ci, di = x; xi = di - ci * xn; return xi, xi
     _, X = jax.lax.scan(bwd, z, (C[::-1], D[::-1])); return X[::-1]
-DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=10800.0, tau_cmt=6 * 3600.0, k_evap=2e-5, ck=1.2e-3, charnock=0.018, cd_cap=2.4e-3,
+DEFAULTS = dict(rh_deep=0.9, tau_deep=2400.0, tau_shallow=10800.0, tau_cmt=6 * 3600.0, k_evap=2e-5, ck=1.5e-3, charnock=0.018, cd_cap=2.4e-3,
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='bmj', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='gray', rad_every=1,
