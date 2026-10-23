@@ -75,7 +75,7 @@ A wrapper with the coupling interface is in `veros_coupled.py`. It does the foll
 - The ocean passes back SST (K) and the surface current (m/s).
 - Fields are regridded both ways. Where Veros has no sea, the model's own columns are kept.
 
-The wrapper's first real run is the Kaggle job described in the ERA5 section below.
+The wrapper's first real runs are the Kaggle jobs in test 3 below.
 
 ### Option 2: our own layered ocean in JAX (`rgo.py`), the recommended next step for the forecast model
 
@@ -94,7 +94,7 @@ Tests (`test_rgo.py`, CPU, about 2 min; all pass):
 | volume conservation, 500 steps | exact |
 | equatorial Kelvin wave speed | 1.93 m/s vs theory 1.87 m/s |
 | thermocline response to wind curl, first 3 days | 0.98 x the Ekman pumping, correlation 0.99 |
-| coastal upwelling with the columns, 10 days | thermocline 21 m shallower at the coast, SST -2.9 K at the coast vs -0.3 K offshore |
+| coastal upwelling with the columns, 10 days | thermocline 21 m shallower at the coast; SST at the coast -0.5 K without the Ekman shear (default), -2.9 K with it; offshore -0.3 K |
 
 ## Ocean-only skill tests (against ERA5 SST)
 
@@ -112,8 +112,8 @@ Grid: 1.5 degrees, 0-39N 51-110E. Scored over 3-25N. Values are the SST change i
 | columns only | 0.82 | 0.70 | -0.02 | -3.80 | -2.70 | -2.22 | -1.88 | -2.24 |
 | + A (Ekman drift + return flow) | 0.59 | 1.60 | -1.20 | -8.02 | -5.83 | -3.05 | -3.93 | -3.06 |
 | + A with geostrophic current | 0.81 | 1.02 | -0.93 | -7.09 | -5.74 | -2.75 | -3.68 | -2.49 |
-| + reduced-gravity layer (B) | 0.82 | 0.69 | -0.82 | **-3.91** | **-4.88** | -3.21 | -2.58 | -2.69 |
-| + reduced-gravity layer, no Ekman shear | **0.85** | **0.64** | -0.32 | -3.33 | -3.44 | -2.60 | -2.01 | -2.31 |
+| + reduced-gravity layer (B) with Ekman shear | 0.82 | 0.69 | -0.82 | **-3.91** | **-4.88** | -3.21 | -2.58 | -2.69 |
+| + reduced-gravity layer, no Ekman shear (now the default) | **0.85** | **0.64** | -0.32 | -3.33 | -3.44 | -2.60 | -2.01 | -2.31 |
 
 What this shows:
 - **Step A on its own overdoes upwelling over three months.** Somalia and the Sri Lanka dome come out about twice too
@@ -136,7 +136,8 @@ Storms: Nivar 2020, Fengal 2024, Michaung 2023, Vardah 2016, Burevi 2020, Ockhi 
 | + A (Ekman) | 0.32 | 0.43 | -0.63 | -0.52 |
 | + A with geostrophic current | 0.34 | 0.41 | -0.62 | -0.49 |
 | + A, columns' own slab current | 0.32 | 0.43 | -0.63 | -0.53 |
-| + reduced-gravity layer (B) | 0.33 | 0.46 | -0.67 | -0.56 |
+| + reduced-gravity layer (B) with Ekman shear | 0.33 | 0.46 | -0.67 | -0.56 |
+| + reduced-gravity layer, no Ekman shear (default) | 0.32 | 0.41 | -0.51 | -0.45 |
 
 What this shows:
 - **Currents push the right way where ERA5 cools.** The cooling there grows from -0.44 K to -0.6/-0.7 K. But the wake
@@ -149,18 +150,46 @@ What this shows:
   concentrated. Extra sideways mixing (kh = 2000-3000 m2/s) helps only a little: the minimum goes from -4.1 to -3.6 K.
 - The best single case is Fengal with A + geostrophic current: correlation 0.71 vs 0.58 for the columns alone.
 
-### 3. Real ERA5 forcing with Veros in the comparison (Kaggle `tn-oc-era5mon`, account 7)
+### 3. Real ERA5 fluxes, summer monsoon 2019 (Kaggle, account 7: `tn-oc-era5mon`, `tn-oc-era5mon2`, `tn-oc-era5mon3`)
 
-`era5_ocean_test.py` uses the summer monsoon of 2019 with 6-hourly ERA5 fluxes and winds from the WeatherBench2
-archive. That archive has latent, sensible, net long-wave and net short-wave fluxes. It compares three oceans: the
-columns alone, the columns with the reduced-gravity layer, and Veros at 2 degrees spun up by ERA5 from 15 March.
-Results land in data/cyclone/kaggle/tn-oc-era5mon/era5_ocean.json (see the end of this file).
+`era5_ocean_test.py`: 6-hourly ERA5 from the WeatherBench2 archive (10 m wind -> stress, plus ERA5's own latent,
+sensible, net long-wave and net short-wave fluxes, rain and evaporation). Same grid and scores as test 1, 15 May to
+15 August 2019, start from WOA23 shifted to the ERA5 SST. Heat flux into the model sea:
+Q = Q_ERA5 + lam (SST_ERA5 - SST_model), with lam = 30 W/m2/K (the usual correction for ERA5's fluxes having been
+computed over the observed SST). With lam = 30 the SST is pulled back toward the observed value with an e-folding time
+of about 1.5 months in a 30 m mixed layer, so the lam = 0 lines are the stricter test.
+
+| run | pattern corr. | RMS (bias removed) | bias | Somalia | Oman | SW India | Sri Lanka dome | central Bay |
+|---|---|---|---|---|---|---|---|---|
+| ERA5 2019 | 1 | 0 | 0 | -4.82 | -5.40 | -1.92 | -0.54 | -1.21 |
+| columns only, lam 30 | **0.947** | 0.60 | +0.41 | -4.14 | -3.56 | -1.10 | -1.07 | -1.15 |
+| layer with Ekman shear, lam 30 | 0.871 | 0.85 | -0.98 | -5.81 | -6.42 | -2.05 | -2.16 | -2.33 |
+| layer, no shear, lam 30 | 0.930 | 0.59 | -0.21 | **-4.75** | **-4.87** | -1.44 | -1.14 | -1.31 |
+| layer, no shear, kh 2000, lam 30 | 0.932 | **0.58** | -0.22 | -4.71 | -4.77 | -1.47 | -1.13 | -1.31 |
+| columns only, lam 0 | 0.760 | 1.04 | +0.49 | -3.47 | -3.50 | -0.67 | -1.29 | -1.22 |
+| layer, no shear, lam 0 | 0.716 | 1.19 | -0.45 | -3.99 | -4.86 | -1.26 | -1.18 | -1.51 |
+
+What this shows:
+- **With real fluxes, the columns alone already reproduce the large-scale pattern** (correlation 0.95). They miss the
+  Oman upwelling by 1.8 K and leave the region 0.4 K too warm on average.
+- **The layer without Ekman shear gets the coasts right.** Somalia is -4.75 vs -4.82, and Oman -4.9 vs -5.4, where the
+  columns alone give -3.6. The overall RMS is the same or slightly better (0.58-0.59 vs 0.60), and the bias drops from
+  +0.41 to -0.21 K. The pattern correlation is a little lower (0.93 vs 0.95). Small upwelling cells in the wrong place
+  cost more in correlation than they gain.
+- **The Ekman shear overdoes everything by about 1 K**, as in the climatology test. It is therefore now off by default
+  (`rgo.PRM['shear'] = False`). The cost: in the 10-day coastal test the surface responds much more slowly without the
+  shear (-0.5 K instead of -2.9 K at the coast), even though the thermocline rises just as much (21 m).
+- **Without the flux correction (lam = 0)** both runs lose skill. The layer still improves Oman and Somalia but cools
+  the Bay too much.
+- Veros 2 degrees forced the same way: see the next section.
 
 ## Recommendation
 
-1. **Couple step B (`ocean3d='rgo'`, see `scripts/ocean3d/MM2_HOOK.md`) into mm2.py first**, with currents.py doing
-   the transport. It is cheap and runs inside jit. It gets the monsoon coastal upwelling right, and it adds the
-   Kelvin/Rossby thermocline dynamics that matter for the Bay of Bengal in the weeks before and after a storm.
+1. **Couple step B (`ocean3d='rgo'`, Ekman shear off, see `scripts/ocean3d/MM2_HOOK.md`) into mm2.py first**, with
+   currents.py doing the transport. It is cheap and runs inside jit. With real ERA5 fluxes it fixes the
+   Somali/Oman coastal cooling at no loss in RMS. It also adds the Kelvin/Rossby thermocline dynamics that matter for
+   the Bay of Bengal in the weeks before and after a storm. For cyclone cold wakes over 11 days it is neutral: it
+   neither helps nor hurts.
 2. **Treat step A on its own (`ocean3d='ekman'`) as a short-range option only** (a few days). Over weeks it overdoes
    upwelling.
 3. **Keep Veros as the full 3-D path, for later.** Do a one-off 2-degree spin-up (2-5 model years, about 1 h each on a

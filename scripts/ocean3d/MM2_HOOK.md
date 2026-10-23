@@ -7,7 +7,8 @@ existing 1-D ocean columns. Off by default; switched on with the setting `ocean3
 * `ocean3d='ekman'`: Ekman drift + return flow + baroclinic geostrophic current (diagnostic, from the stress and the
   columns' density), 3-D upwind advection of the columns' T and S.
 * `ocean3d='rgo'`: prognostic 1.5-layer reduced-gravity layer (thermocline depth h, currents u, v; Kelvin/Rossby waves)
-  carrying the columns, plus the Ekman shear. Recommended (see docs/stage2_ocean.md, monsoon test).
+  carrying the columns (Ekman shear off by default: `rgo.PRM['shear']`). Recommended (docs/stage2_ocean.md, ERA5 2019
+  monsoon test).
 
 Line numbers refer to mm2.py at commit 35e24ce9 / ca2942a3 (cases).
 
