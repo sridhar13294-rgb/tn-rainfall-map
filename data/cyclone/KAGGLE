@@ -1,6 +1,6 @@
-tn-wx-mfhyb2
-libm_wx2020_fields.npz
-python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"mf_hybrid": {"conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005, "sh_top": 0.0, "tau_shallow": 3600.0, "mf_closure": "hybrid"}, "mf_hybrid_dd": {"conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005, "sh_top": 0.0, "tau_shallow": 3600.0, "mf_closure": "hybrid", "mf_dd": 0.3}, "mf_entr1": {"conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005, "sh_top": 0.0, "tau_shallow": 3600.0, "entr": 1.0e-4}}'
-NvidiaTeslaT4
-5
-#mass-flux repair: closure and entrainment (rerun) 2026-10-23T12:37Z
+tn-tpu-v6
+libm_fields.npz
+env | grep -iE 'tpu|accel|kaggle_kernel|colab' ; ls /dev | head -50; python -c 'import jax; print(jax.devices())'
+TpuV6E8
+8
+#which TPU type does Kaggle actually attach? v6e-8 device check 2026-10-23T12:38Z
