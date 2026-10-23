@@ -185,16 +185,19 @@ def _limit(q, dzF, dist, dt, cfl, xp):
     return [qk * s for qk in q]
 
 
-def step(st, taux, tauy, f, geom, dt, prm=None, xp=np, u_ext=None, v_ext=None, diag=False):
+def step(st, taux, tauy, f, geom, dt, prm=None, xp=np, u_ext=None, v_ext=None, diag=False, q=None):
     """advect the columns' T and S by dt seconds. st: ocean.py state (T, S, u, v, dz [N, X, Y]); taux, tauy (N m-2) and
     f (s-1) [X, Y]; geom from make_geom() (numpy arrays are fine inside jit: they become constants).
+    q: optional precomputed face transports (qE, qN) lists per level (e.g. from rgo.column_transports); then the wind,
+    density and u_ext are not used and the bottom of the column is open (deep water enters / leaves with the
+    temperature of the deepest real level).
     Returns the new state (and with diag=True also dict(w = vertical velocity at the level bottoms [N, X, Y] m s-1,
     wE = w at the Ekman-layer base [X, Y], qE, qN))."""
     P = dict(PRM); P.update(prm or {}); g = geom
     N = st['T'].shape[0]; A = g['area']
     f = xp.zeros_like(st['T'][0]) + f
     sea = g['sea']; taux = xp.where(sea & xp.isfinite(taux), taux, 0.0); tauy = xp.where(sea & xp.isfinite(tauy), tauy, 0.0)
-    qE, qN = face_transports(st, taux, tauy, f, g, P, xp, u_ext, v_ext)
+    qE, qN = face_transports(st, taux, tauy, f, g, P, xp, u_ext, v_ext) if q is None else q
     qE = _limit(qE, g['dzE'], g['dxE'], dt, P['cfl'], xp); qN = _limit(qN, g['dzN'], g['dyN'], dt, P['cfl'], xp)
     VE = [q * g['LE'] for q in qE]; VN = [q * g['LN'] for q in qN]                     # m3 s-1
     pvx = lambda a: xp.roll(a, 1, axis=-2); pvy = lambda a: xp.roll(a, 1, axis=-1)
