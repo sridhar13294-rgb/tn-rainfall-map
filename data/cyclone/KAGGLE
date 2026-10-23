@@ -1,6 +1,6 @@
-tn-wx-mfhyb
-libm_wx2020_fields.npz
-python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"mf_hybrid": {\"conv\": \"mf\", \"mf_kick_t\": 0.5, \"mf_kick_q\": 0.0005, \"sh_top\": 0.0, \"tau_shallow\": 3600.0, "mf_closure": "hybrid"}, "mf_hybrid_dd": {\"conv\": \"mf\", \"mf_kick_t\": 0.5, \"mf_kick_q\": 0.0005, \"sh_top\": 0.0, \"tau_shallow\": 3600.0, "mf_closure": "hybrid", "mf_dd": 0.3}, "mf_entr1": {\"conv\": \"mf\", \"mf_kick_t\": 0.5, \"mf_kick_q\": 0.0005, \"sh_top\": 0.0, \"tau_shallow\": 3600.0, "entr": 1.0e-4}}'
+tn-t170-mf0
+libm_fields.npz
+XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/t170_mf.json 0 2 /kaggle/working/t170_0.json > /kaggle/working/t170_0.log 2>&1; tail -3 /kaggle/working/t170_0.log
 NvidiaTeslaT4
-5
-#mass-flux repair: moisture-convergence closure, weaker entrainment 2026-10-23T12:34Z
+3
+#T170 Bay first half with the mass-flux scheme 2026-10-23T12:35Z
