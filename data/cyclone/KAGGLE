@@ -1,6 +1,6 @@
-tn-oc-era5mon3
-ocean_clim.npz
-pip install -q veros h5netcdf loguru gcsfs zarr xarray 2>&1 | tail -3; cp /kaggle/working/ocean_clim.npz . ; VEROS_BACKEND=jax VEROS_DEVICE=gpu VEROS_FLOAT_TYPE=float32 VEROS_DISKLESS_MODE=1 VEROS_FORCE_OVERWRITE=1 VEROS_LOGLEVEL=warning python -W ignore ../../ocean3d/era5_ocean_test.py /kaggle/working/era5_ocean.json veros skipcol 2019
+tn-base-ice05
+libm_fields.npz
+bash ../kaggle/par.sh hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/base_ice05.json /kaggle/working/bt
 NvidiaTeslaT4
-7
-#Stage 2 ocean: ERA5 monsoon 2019, Veros 2deg only (method-name fix), account 7
+2
+#84 Bay storms: half freezing heat vs none (same run, same defaults otherwise) 2026-10-23T12:31Z
