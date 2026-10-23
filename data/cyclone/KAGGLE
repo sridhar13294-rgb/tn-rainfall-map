@@ -1,6 +1,6 @@
-tn-wx-split-mf
+tn-wx-mfice
 libm_wx2020_fields.npz
-python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"mf_coupled": {"conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005, "sh_top": 0.0, "tau_shallow": 3600.0}, "mf_split": {"_split": true, "conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005, "sh_top": 0.0, "tau_shallow": 3600.0}}'
+python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"mf_ice05": {"conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005, "sh_top": 0.0, "tau_shallow": 3600.0, "mf_ice": 0.5}, "mf_ice1": {"conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005, "sh_top": 0.0, "tau_shallow": 3600.0, "mf_ice": 1.0}, "bmj_ice1": {"bmj_ice": 1.0}}'
 NvidiaTeslaT4
-4
-#process splitting for the mass-flux scheme 2026-10-23T11:13Z
+3
+#freezing heat in the mass-flux plume (mf_ice 0.5 / 1) and in the old scheme at full strength: 5-day tropical profile 2026-10-23T11:20Z
