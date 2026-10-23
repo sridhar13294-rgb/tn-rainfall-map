@@ -1,4 +1,22 @@
-# Handoff (read this first in a new chat) - 23 Oct 2026, 21:15 IST
+# Handoff (read this first in a new chat)
+
+## WHY this project exists (Sridhar's intent - read before anything else)
+- Sridhar and his brother Adhitya run a Tamil Nadu rainfall website (TNSDMA TN SMART gauges + IMD; forecasts from GFS/ECMWF/ICON/GEM/ECMWF-AI, an ensemble outlook, a cyclone tab - now hidden). Adhitya is the main part of the idea.
+- They want THEIR OWN professional weather model, built from scratch on free hardware, "as close to ECMWF as possible", so the site no longer depends only on other centres. Sridhar: "I believe in you. We together can build the professional model and its product as close as possible to ECMWF and GFS."
+- It must be a GENERAL daily model used 365 days ("Don't call it a cyclone model... it should behave like how GFS/ECMWF works daily"): runs 00Z/12Z, 10-day main run + 51-member 15-day ensemble, and must perform in the Bay of Bengal, Arabian Sea and South Indian Ocean - not only the Bay. Products (rain maps, cyclone tracks/scenarios incl. several systems at once, outlooks) come after the model is good.
+- Order he set: Stage 1 = 11 fixes (grid, speed, convection, stability, clouds/radiation, ocean, start data, ensemble spread, multi-system tracker, rain, track skill vs ECMWF) -> Stage 2 = 3-D ocean (currents/upwelling, then Veros) -> Stage 3 = India in detail (9 km all India + 3 km windows). He also approved starting Stage 2 and LETKF data assimilation in parallel ("both one after other").
+- Start data: "add as much as possible" (more centres, observations, land states) so the model depends less on other centres' analyses.
+- Convection: "if the new scheme is not working, correct the equation until it works, don't go back to the old scheme."
+- He wants honest, plain-language reports, fact-checking and pushback, no hype; he works from a phone. He was unhappy when earlier "website method" forecasts were unrealistic - realism matters more than pretty output.
+- He stopped the old 6-hourly ensembles and the ECMWF/GFS watch; keep only the daily 10:30 IST rain skill check and the site's TN SMART update. Nothing goes live on the website without his explicit "go live".
+- He is funding this with free tools: up to 8 Kaggle accounts (each a different real person with own phone), GitHub Actions, his Claude weekly usage (wants it used fully before Mon 26 Oct 22:29 IST, but without hitting the 5-hour limit: lean cycles).
+- Target dates given to him: Stage 1 complete (built, tested, scored - not "equal to ECMWF") ~28 Oct, fallback 30 Oct; to be confirmed to him on 24 Oct evening. Stage 2 ~20 Nov, Stage 3 early Dec, LETKF Dec-Jan (Stage 2 and LETKF already started early).
+- Model name: he proposed MEGAM (Tamil "megam" = cloud); suggested expansion "Multi-scale Ensemble Global Atmospheric Model"; he has not confirmed the wording - ask before renaming.
+
+## How we got here (short history)
+- 22 Oct: moved from a "past-storm analog" method (gave unrealistic jumps) to our own multi-level spectral model (Dinosaur/JAX), tested on 84 past Bay storms, then 1000 Indian Ocean storms 1980-2025, a storm-forming test and a 2020 general-weather exam scored the same way as ECMWF.
+- 23 Oct: found and fixed real bugs (terrain-pressure start, shallow-cloud heat creation, rain spin-up), ruled out others by tests (radiation, coupling, dynamics core), repaired the mass-flux convection (best general forecast so far) and hit the key trade-off: realistic physics forms few storms on the 140 km grid. Stage 2 ocean built; LETKF started; TPU needs Kaggle identity verification (only account 1 verified).
+
 
 ## Who / rules
 - Sridhar (phone only, plain words, honest pushback). Brother Adhitya co-runs the site. Model name: Sridhar proposed MEGAM; suggested "Multi-scale Ensemble Global Atmospheric Model" - waiting for his final wording, do not rename yet.
