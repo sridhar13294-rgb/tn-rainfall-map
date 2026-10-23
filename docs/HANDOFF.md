@@ -76,6 +76,7 @@ state average obs vs forecast; odd gauges (Aliyar misplaced, fix awaiting approv
 (data/forecast_status.json). Corrections only on a new branch with Sridhar's approval.
 
 ## More context to read
+- docs/PROJECT_HISTORY.md: the whole story from day one (website + model + every request Sridhar made).
 - docs/cycle_notes_2026-10-23.json: every test result and decision from 22-23 Oct, in time order (the detailed log).
 - docs/cyclone_model_status.md, docs/night_plan.md, docs/stage2_ocean.md, docs/letkf.md (when present), docs/obs_assimilation.md.
 - Live doc (all parts, equations, change log): https://claude.ai/artifact/GttzHBxsJbyAh9HSW1NcFi
