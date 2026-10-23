@@ -1,6 +1,6 @@
-tn-wx-budget2
+tn-wx-budget3
 libm_wx2020_fields.npz
-python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 3 '{"mf_sh0_ck12": {"conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005, "sh_top": 0.0, "tau_shallow": 3600.0, "ck": 0.0012}, "mf_sh0_ck15z": {"conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005, "sh_top": 0.0, "tau_shallow": 3600.0, "ck_z": 1.0}}'
+python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"ice05_ck15z_rh8": {"bmj_ice": 0.5, "ck_z": 1.0, "rh_deep": 0.8}, "gray": {"rad": "gray"}}'
 NvidiaTeslaT4
-5
-#global heat budget for the mass-flux scheme 2026-10-23T10:34Z
+4
+#global heat budget: freezing heat + height-corrected evaporation, and old gray radiation for comparison 2026-10-23T10:34Z
