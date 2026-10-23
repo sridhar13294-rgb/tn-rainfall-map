@@ -1,6 +1,6 @@
-tn-wx-budget
-libm_wx2020_fields.npz
-python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 3 '{"ctl": {}, "mf_sh0_ck12": {"conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005, "sh_top": 0.0, "tau_shallow": 3600.0, "ck": 0.0012}}'
+tn-gen-full-mf
+libm48_fields.npz
+bash ../kaggle/par.sh genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_full_mf.json /kaggle/working/gen
 NvidiaTeslaT4
-3
-#global heat budget: which process leaves the model 37 W/m2 short (dynamics checked: fine) 2026-10-23T09:57Z
+1
+#storm forming, all 84 storms: old scheme vs mass-flux (no shallow cap, height-corrected evaporation) 2026-10-23T09:57Z
