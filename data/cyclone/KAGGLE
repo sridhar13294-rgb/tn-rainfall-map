@@ -1,6 +1,6 @@
-tn-wx-prof12
+tn-wx-prof13
 libm_wx2020_fields.npz
-python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"ice03": {"bmj_ice": 0.3}, "ice05": {"bmj_ice": 0.5}, "ice05_ck12": {"bmj_ice": 0.5, "ck": 0.0012}}'
+python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"ice07_ck12": {"bmj_ice": 0.7, "ck": 0.0012}, "ice05_ck12_rh8": {"bmj_ice": 0.5, "ck": 0.0012, "rh_deep": 0.8}, "ice1_ck12_rh8": {"bmj_ice": 1.0, "ck": 0.0012, "rh_deep": 0.8}}'
 NvidiaTeslaT4
-3
-#freezing heat in the convection parcel (bmj_ice 0.3/0.5), with old evaporation 2026-10-23T07:26Z
+5
+#freezing heat with the old evaporation and humidity settings 2026-10-23T07:26Z
