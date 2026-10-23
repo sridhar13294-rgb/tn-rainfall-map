@@ -1,0 +1,76 @@
+[{"stream_name":"stdout","time":1.020716885,"data":"+ nvidia-smi || true\n"}
+,{"stream_name":"stderr","time":1.035414748,"data":"/bin/sh: 1: nvidia-smi: not found\n"}
+,{"stream_name":"stdout","time":1.037760075,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1.037788412,"data":"accelerator asked TpuV6E8 -\u003e jax for tpu\n"}
+,{"stream_name":"stdout","time":1.037794587,"data":"+ pip uninstall -y -q jax-cuda12-plugin jax-cuda12-pjrt 2\u003e/dev/null; pip install -q -U \"jax[tpu]\" -f https://storage.googleapis.com/jax-releases/libtpu_releases.html\n"}
+,{"stream_name":"stderr","time":33.549300083,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":33.5493507,"data":"bigframes 2.48.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":33.549359683,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stderr","time":33.549365204,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":33.54937036,"data":"gradio 6.26.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":33.549375677,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":33.549380843,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stdout","time":34.006254968,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":34.006290265,"data":"+ free -g; nproc; python -c \"import jax; print(jax.devices())\" || true\n"}
+,{"stream_name":"stdout","time":34.034054132,"data":"               total        used        free      shared  buff/cache   available\n"}
+,{"stream_name":"stdout","time":34.034090388,"data":"Mem:              31           0          24           0           6          30\n"}
+,{"stream_name":"stdout","time":34.034094499,"data":"Swap:              0           0           0\n"}
+,{"stream_name":"stdout","time":34.039496518,"data":"4\n"}
+,{"stream_name":"stderr","time":36.067736127,"data":"Failed to find host bounds for accelerator type: WARNING: could not determine TPU accelerator type, please set env var `TPU_ACCELERATOR_TYPE` manually, otherwise libtpu.so may not properly initialize.\n"}
+,{"stream_name":"stderr","time":36.067776922,"data":"WARNING: Logging before InitGoogle() is written to STDERR\n"}
+,{"stream_name":"stderr","time":36.067785673,"data":"E0000 00:00:1792759154.056699      48 common_lib.cc:848] INVALID_ARGUMENT: Error: unexpected worker hostname 'WARNING: could not determine TPU worker hostnames or IP addresses' from env var TPU_WORKER_HOSTNAMES. Expecting a valid hostname or IP address without port number, or hostname:port:address triple. (Full TPU workers' addr string: WARNING: could not determine TPU worker hostnames or IP addresses, please set env var `TPU_WORKER_HOSTNAMES` manually, otherwise libtpu.so may not properly initialize.)\n"}
+,{"stream_name":"stderr","time":36.067822484,"data":"=== Source Location Trace: === \n"}
+,{"stream_name":"stderr","time":36.067826184,"data":"learning/45eac/tfrc/runtime/libtpu_init_utils.cc:370\n"}
+,{"stream_name":"stdout","time":36.108912996,"data":"[CpuDevice(id=0)]\n"}
+,{"stream_name":"stdout","time":36.353563311,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":36.353609236,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
+,{"stream_name":"stdout","time":48.368769733,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":48.368813842,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
+,{"stream_name":"stdout","time":62.137918355,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":62.137991355,"data":"+ curl -sSL -o libm_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_fields.npz\n"}
+,{"stream_name":"stdout","time":67.704903039,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":67.704947892,"data":"setup s 67\n"}
+,{"stream_name":"stdout","time":67.704954346,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 env | grep -iE 'tpu|accel|kaggle_kernel|colab' ; ls /dev | head -50; python -c 'import jax; print(jax.devices())' 2\u003e\u00261 | tee job.log\n"}
+,{"stream_name":"stdout","time":67.713548997,"data":"COLAB_WARMUP_DEFAULTS=1\n"}
+,{"stream_name":"stdout","time":67.713593366,"data":"KAGGLE_KERNEL_RUN_TYPE=Batch\n"}
+,{"stream_name":"stdout","time":67.713598616,"data":"COLAB_JUPYTER_ALLOW_ORIGIN_PAT=^https://colab\\.(sandbox|research)\\.google\\.com$\n"}
+,{"stream_name":"stdout","time":67.713602662,"data":"COLAB_RELEASE_TAG=release-colab-external-images_20260917-060051_RC00\n"}
+,{"stream_name":"stdout","time":67.71360646,"data":"COLAB_LANGUAGE_SERVER_PROXY=/usr/colab/bin/language_service\n"}
+,{"stream_name":"stdout","time":67.713609975,"data":"COLAB_FILE_HANDLER_ADDR=localhost:3453\n"}
+,{"stream_name":"stdout","time":67.713629959,"data":"KAGGLE_KERNEL_INTEGRATIONS=\n"}
+,{"stream_name":"stdout","time":67.713636556,"data":"COLAB_JUPYTER_IP=127.0.0.1\n"}
+,{"stream_name":"stdout","time":67.713642335,"data":"COLAB_HUMAN_READABLE_NODE_LOGS=1\n"}
+,{"stream_name":"stdout","time":67.713647881,"data":"COLAB_IMAGE_TYPE=cpu\n"}
+,{"stream_name":"stdout","time":67.713653975,"data":"COLAB_KERNEL_MANAGER_PROXY_PORT=6000\n"}
+,{"stream_name":"stdout","time":67.722885876,"data":"core\n"}
+,{"stream_name":"stdout","time":67.722921697,"data":"fd\n"}
+,{"stream_name":"stdout","time":67.722932524,"data":"full\n"}
+,{"stream_name":"stdout","time":67.722936082,"data":"mqueue\n"}
+,{"stream_name":"stdout","time":67.722939741,"data":"null\n"}
+,{"stream_name":"stdout","time":67.722942977,"data":"ptmx\n"}
+,{"stream_name":"stdout","time":67.722946217,"data":"pts\n"}
+,{"stream_name":"stdout","time":67.722949522,"data":"random\n"}
+,{"stream_name":"stdout","time":67.722952859,"data":"shm\n"}
+,{"stream_name":"stdout","time":67.722956722,"data":"stderr\n"}
+,{"stream_name":"stdout","time":67.722982287,"data":"stdin\n"}
+,{"stream_name":"stdout","time":67.722987892,"data":"stdout\n"}
+,{"stream_name":"stdout","time":67.722993901,"data":"tty\n"}
+,{"stream_name":"stdout","time":67.72299957,"data":"urandom\n"}
+,{"stream_name":"stdout","time":67.723004535,"data":"zero\n"}
+,{"stream_name":"stdout","time":69.003847327,"data":"Failed to find host bounds for accelerator type: WARNING: could not determine TPU accelerator type, please set env var `TPU_ACCELERATOR_TYPE` manually, otherwise libtpu.so may not properly initialize.\n"}
+,{"stream_name":"stdout","time":69.003877203,"data":"WARNING: Logging before InitGoogle() is written to STDERR\n"}
+,{"stream_name":"stdout","time":69.003884925,"data":"E0000 00:00:1792759186.992829     209 common_lib.cc:848] INVALID_ARGUMENT: Error: unexpected worker hostname 'WARNING: could not determine TPU worker hostnames or IP addresses' from env var TPU_WORKER_HOSTNAMES. Expecting a valid hostname or IP address without port number, or hostname:port:address triple. (Full TPU workers' addr string: WARNING: could not determine TPU worker hostnames or IP addresses, please set env var `TPU_WORKER_HOSTNAMES` manually, otherwise libtpu.so may not properly initialize.)\n"}
+,{"stream_name":"stdout","time":69.003912408,"data":"=== Source Location Trace: === \n"}
+,{"stream_name":"stdout","time":69.003916002,"data":"learning/45eac/tfrc/runtime/libtpu_init_utils.cc:370\n"}
+,{"stream_name":"stdout","time":69.04640728,"data":"[CpuDevice(id=0)]\n"}
+,{"stream_name":"stdout","time":69.319837563,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":69.319872904,"data":"+ rm -rf repo libm_fields.npz\n"}
+,{"stream_name":"stdout","time":69.492615793,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":69.492667459,"data":"total s 68\n"}
+,{"stream_name":"stderr","time":72.324690762,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":72.324728889,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":72.704929847,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":72.704967438,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":73.721348577,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":75.084477518,"data":"[NbConvertApp] Writing 280554 bytes to __results__.html\n"}
+]
