@@ -1,6 +1,6 @@
-tn-tpu-prof
+tn-wx-step
 libm_wx2020_fields.npz
-python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 2
-TpuV5E8
-6
-#TPU: a real 5-day profile job on TPU v5e-8 (first TPU job on account 6) 2026-10-23T10:58Z
+python -W ignore wx_step.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/step.json
+NvidiaTeslaT4
+3
+#one-step coupling check: physics heat computed vs received by the model state (hour 0 and 24 h, by level) 2026-10-23T11:05Z
