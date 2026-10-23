@@ -30,7 +30,8 @@
 ## Schedules (set 23 Oct 21:15 IST)
 - Scheduled tasks: 'MEGAM work cycle' (every 2 h) and 'Daily rain skill check' (10:30 IST). Each run starts a fresh session and clones `cases`.
 - Last status sent: 23 Oct 21:08 IST (old chat); next status due 07:00 IST (quiet 00:30-07:00).
-- 23 Oct 21:40 IST: no results back yet from tn-gen-t170a/b, tn-gen-full-mf8, tn-wx-ice05, tn-tpu-wx (acct1 since 18:33 IST), tn-da-osse1 (acct7). Added tn-io-as2 (acct4, Arabian Sea: defaults vs mf shoff) and tn-io-si5 (acct6, South Indian Ocean, same). Next cycle: collect all, then decide default convection.
+- 23 Oct 22:30 IST: Stage 1 jobs still running (tn-gen-t170a/b, tn-gen-full-mf8, tn-wx-ice05, tn-tpu-wx, tn-io-si5 acct6). tn-io-as2 failed (release download reset) -> kernel.py now retries downloads + checks npz; rerun as tn-io-as3 (acct4). Next cycle: collect all, then decide default convection.
+- Stage 2 in parallel (Sridhar 22:10: start it, Stage 1 stays priority): tn-oc-jaxspin on acct7 (2nd job beside LETKF tn-da-osse2) = scripts/ocean3d/test_jax_gpu.py (numpy vs jax.jit, speed, global 30 d) then veros_spin.py (Veros 2 deg ERA5 spin-up 2017-01 -> 2019-05, monthly drift, state saved as Kaggle output veros_state_20190515.npz, monsoon-2019 score vs old 0.87/0.84). Other Stage 2 items still open: coastal upwelling band, RTOFS currents, momentum advection/throughflow/rivers, weak cold wake, Veros nudging/ensembles/TPU, then coupling (needs Stage 1 settled).
 
 ## Goal
 General daily global model like ECMWF/GFS (00/12Z, 10-day + 51-member 15-day), good in Bay of Bengal, Arabian Sea, South Indian Ocean. Stage 1 = 11 fixes (target ~28 Oct, fallback 30 Oct). Stage 2 = 3-D ocean (built). LETKF data assimilation (in progress). Stage 3 = India detail (9 km + 3 km windows).
