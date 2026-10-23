@@ -44,7 +44,7 @@ jobs:
           python3 - "$SLUG" "$FILES" "$JOB" "$ACC" <<'PY'
           import sys, json, os
           slug, files, job, acc = sys.argv[1:5]
-          src = open('scripts/cyclone/kaggle/kernel.py').read().replace('__JOB__', 'cd repo/scripts/cyclone/mm && ' + job.replace('"', '\\"')).replace('__FILES__', files)
+          src = open('scripts/cyclone/kaggle/kernel.py').read().replace('__JOB__', 'cd repo/scripts/cyclone/mm && ' + job.replace('"', '\\"')).replace('__FILES__', files).replace('__ACC__', acc)
           open('/tmp/k/kernel.py', 'w').write(src)
           tpu = acc.lower().startswith('tpu')
           json.dump(dict(id=os.environ['KAGGLE_USERNAME'] + '/' + slug, title=slug, code_file='kernel.py', language='python', kernel_type='script',

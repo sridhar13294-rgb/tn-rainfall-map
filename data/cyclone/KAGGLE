@@ -1,6 +1,6 @@
-tn-wx-spin
-libm_wx2020_fields.npz
-python -W ignore wx_energy.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/energy.json 2 '{"rh9": {}, "rh8": {"rh_deep": 0.8}, "rh7": {"rh_deep": 0.7}, "rh7_ck12": {"rh_deep": 0.7, "ck": 0.0012}, "mf_sh0": {"conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005, "sh_top": 0.0, "tau_shallow": 3600.0, "ck": 0.0012}}'
-NvidiaTeslaT4
-3
-#rain spin-up: deep-convection target humidity 0.9/0.8/0.7 and mass-flux (rain at hour 0 is ~2 W/m2, real ~85) 2026-10-23T10:46Z
+tn-tpu-bench
+libm_fields.npz
+python -W ignore gpu_bench.py /kaggle/working/libm_fields.npz /kaggle/working/bench.json T85,T170 120 Hamoon
+TpuV5E8
+1
+#TPU benchmark retry: v5e-8, JAX for TPU (earlier attempt fell back to CPU) 2026-10-23T10:52Z
