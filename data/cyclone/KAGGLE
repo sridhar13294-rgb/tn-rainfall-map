@@ -1,6 +1,6 @@
-tn-gen-full-mfsh
-libm48_fields.npz
-bash ../kaggle/par.sh genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_full_mfsh.json /kaggle/working/gen
-NvidiaTeslaT4
-8
-#storm forming, all 84 storms, repaired mass-flux (shallow 800 hPa / off) 2026-10-23T13:02Z
+tn-tpu-wx
+libm_wx2020_fields.npz,wx_truth_2020.npz
+python -c 'import jax; print(jax.devices())'; python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/wx_mfsh.json 0 1 /kaggle/working/wx_tpu.json
+TpuV5E8
+1
+#TPU (identity-verified account): repaired mass-flux general exam on one TPU chip - also a TPU speed check 2026-10-23T13:03Z
