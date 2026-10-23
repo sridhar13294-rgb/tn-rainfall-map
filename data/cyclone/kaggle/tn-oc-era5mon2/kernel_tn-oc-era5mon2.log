@@ -1,0 +1,81 @@
+[{"stream_name":"stdout","time":0.934764,"data":"+ nvidia-smi || true\n"}
+,{"stream_name":"stdout","time":0.972087928,"data":"Fri Oct 23 12:18:03 2026       \n"}
+,{"stream_name":"stdout","time":0.972112792,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":0.972117422,"data":"| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":0.972121179,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.972124806,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":0.972130011,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":0.97215931,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":0.972164063,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":1.031232354,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":1.031252408,"data":"| N/A   52C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":1.031258015,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":1.031263444,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.031268878,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":1.031274381,"data":"| N/A   55C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":1.031279831,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":1.03128519,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.032011687,"data":"\n"}
+,{"stream_name":"stdout","time":1.032021794,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.032026323,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":1.032031747,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":1.032037212,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":1.032042694,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":1.03357321,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":1.033589115,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.3510251119999999,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1.352551623,"data":"accelerator asked NvidiaTeslaT4 -\u003e jax for cuda12\n"}
+,{"stream_name":"stdout","time":1.35257019,"data":"+ pip install -q -U \"jax[cuda12]\"\n"}
+,{"stream_name":"stderr","time":38.625277075,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":38.625311644,"data":"bigframes 2.48.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":38.625316917,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stderr","time":38.62532049,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":38.625323607,"data":"gradio 6.26.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":38.62532674,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":38.62532962,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stdout","time":38.867555304,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":38.867600291,"data":"+ free -g; nproc; python -c \"import jax; print(jax.devices())\" || true\n"}
+,{"stream_name":"stdout","time":38.893315596,"data":"               total        used        free      shared  buff/cache   available\n"}
+,{"stream_name":"stdout","time":38.893342588,"data":"Mem:              31           1          23           0           7          30\n"}
+,{"stream_name":"stdout","time":38.893349245,"data":"Swap:              0           0           0\n"}
+,{"stream_name":"stdout","time":38.897620079,"data":"4\n"}
+,{"stream_name":"stdout","time":47.686736279,"data":"[CudaDevice(id=0), CudaDevice(id=1)]\n"}
+,{"stream_name":"stdout","time":51.564484447,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":51.5645279,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
+,{"stream_name":"stdout","time":65.380960875,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":65.380999291,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
+,{"stream_name":"stdout","time":86.099740346,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":86.099778087,"data":"+ curl -sSL -o ocean_clim.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/ocean_clim.npz\n"}
+,{"stream_name":"stdout","time":87.23081399,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":87.230925004,"data":"setup s 86\n"}
+,{"stream_name":"stdout","time":87.230936336,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 pip install -q veros h5netcdf loguru gcsfs zarr xarray 2\u003e\u00261 | tail -3; cp /kaggle/working/ocean_clim.npz . ; VEROS_BACKEND=jax VEROS_DEVICE=gpu VEROS_FLOAT_TYPE=float32 VEROS_DISKLESS_MODE=1 VEROS_FORCE_OVERWRITE=1 VEROS_LOGLEVEL=warning python -W ignore ../../ocean3d/era5_ocean_test.py /kaggle/working/era5_ocean.json veros 2019 2\u003e\u00261 | tee job.log\n"}
+,{"stream_name":"stdout","time":107.874170519,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stdout","time":107.874211131,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stdout","time":107.874216407,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.3 which is incompatible.\n"}
+,{"stream_name":"stdout","time":128.616601369,"data":"era5 u10 (613, 240, 121)\n"}
+,{"stream_name":"stdout","time":139.944520754,"data":"era5 v10 (613, 240, 121)\n"}
+,{"stream_name":"stdout","time":151.277103628,"data":"era5 slhf (613, 240, 121)\n"}
+,{"stream_name":"stdout","time":162.746541873,"data":"era5 sshf (613, 240, 121)\n"}
+,{"stream_name":"stdout","time":167.11781129,"data":"era5 lw (613, 240, 121)\n"}
+,{"stream_name":"stdout","time":171.324832939,"data":"era5 sw (613, 240, 121)\n"}
+,{"stream_name":"stdout","time":183.272862613,"data":"era5 tp (613, 240, 121)\n"}
+,{"stream_name":"stdout","time":190.198653254,"data":"era5 sst (613, 240, 121)\n"}
+,{"stream_name":"stdout","time":232.042167285,"data":"column lam=30 {'corr': 0.947, 'rms': 0.725, 'bias': 0.411, 'rms_anom': 0.597, 'somalia': -4.14, 'oman': -3.56, 'sw_india': -1.1, 'sl_dome': -1.07, 'central_bay': -1.15, 'cpu_s': 41.7}\n"}
+,{"stream_name":"stdout","time":296.370105026,"data":"rgo lam=30 {'corr': 0.871, 'rms': 1.299, 'bias': -0.982, 'rms_anom': 0.85, 'somalia': -5.81, 'oman': -6.42, 'sw_india': -2.05, 'sl_dome': -2.16, 'central_bay': -2.33, 'cpu_s': 64.3}\n"}
+,{"stream_name":"stdout","time":362.45600404,"data":"rgo no ekman shear lam=30 {'corr': 0.93, 'rms': 0.627, 'bias': -0.211, 'rms_anom': 0.59, 'somalia': -4.75, 'oman': -4.87, 'sw_india': -1.44, 'sl_dome': -1.14, 'central_bay': -1.31, 'cpu_s': 66.1}\n"}
+,{"stream_name":"stdout","time":436.054589658,"data":"rgo no shear kh2000 lam=30 {'corr': 0.932, 'rms': 0.618, 'bias': -0.218, 'rms_anom': 0.579, 'somalia': -4.71, 'oman': -4.77, 'sw_india': -1.47, 'sl_dome': -1.13, 'central_bay': -1.31, 'cpu_s': 73.6}\n"}
+,{"stream_name":"stdout","time":482.171003736,"data":"column lam=0 {'corr': 0.76, 'rms': 1.153, 'bias': 0.49, 'rms_anom': 1.043, 'somalia': -3.47, 'oman': -3.5, 'sw_india': -0.67, 'sl_dome': -1.29, 'central_bay': -1.22, 'cpu_s': 46.1}\n"}
+,{"stream_name":"stdout","time":552.206987118,"data":"rgo no ekman shear lam=0 {'corr': 0.716, 'rms': 1.271, 'bias': -0.447, 'rms_anom': 1.19, 'somalia': -3.99, 'oman': -4.86, 'sw_india': -1.26, 'sl_dome': -1.18, 'central_bay': -1.51, 'cpu_s': 70.0}\n"}
+,{"stream_name":"stdout","time":585.572234203,"data":"veros {'error': 'Traceback (most recent call last):\\n  File \"/kaggle/working/repo/scripts/cyclone/mm/../../ocean3d/era5_ocean_test.py\", line 101, in \u003cmodule\u003e\\n    d, info = run_veros(F, i_spin, i0, i1, 30.0)\\n              ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \"/kaggle/working/repo/scripts/cyclone/mm/../../ocean3d/era5_ocean_test.py\", line 74, in run_veros\\n    t0 = time.time(); oc_ = VerosOcean(LA, LO, sea, nx=180, ny=80, nz=40, dt=1800.0); info = dict(setup_s=round(time.time() - t0, 1))\\n                            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \"/kaggle/working/repo/scripts/ocean3d/veros_coupled.py\", line 65, in __init__\\n    self.sim.setup(); st = self.sim.state; vs = st.variables\\n    ~~~~~~~~~~~~~~^^\\n  File \"/usr/local/lib/python3.13/dist-packages/veros/veros.py\", line 233, in setup\\n    self.set_forcing(self.state)\\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^\\n  File \"/usr/local/lib/python3.13/dist-packages/veros/routines.py\", line 186, in __call__\\n    raise TypeError(f\"Argument {self.state_argnum} to this Veros routine must be a VerosState object\")\\nTypeError: Argument 0 to this Veros routine must be a VerosState object\\n'}\n"}
+,{"stream_name":"stdout","time":585.572857004,"data":"era5 {'corr': 1.0, 'rms': 0.0, 'bias': 0.0, 'rms_anom': 0.0, 'somalia': -4.82, 'oman': -5.4, 'sw_india': -1.92, 'sl_dome': -0.54, 'central_bay': -1.21}\n"}
+,{"stream_name":"stdout","time":586.742032861,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":586.742074265,"data":"+ rm -rf repo ocean_clim.npz\n"}
+,{"stream_name":"stdout","time":586.817924572,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":586.817956639,"data":"total s 586\n"}
+,{"stream_name":"stderr","time":589.068853024,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":589.068890952,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":589.367113237,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":589.367154489,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":590.253963509,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":591.352536808,"data":"[NbConvertApp] Writing 280782 bytes to __results__.html\n"}
+]
