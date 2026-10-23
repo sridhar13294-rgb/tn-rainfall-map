@@ -1,6 +1,6 @@
-tn-ens-final
-libm_fields.npz
-bash ../kaggle/par.sh hindens2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/ens_final.json /kaggle/working/ens
+tn-base-ocean
+libm_fields.npz,ocean_clim.npz
+bash ../kaggle/par.sh hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/base_ocean3d.json /kaggle/working/bt
 NvidiaTeslaT4
-3
-#ensemble spread recheck with the final physics (fix 8) 2026-10-23T20:52Z
+2
+#ocean (fix 6): Bay storms with ocean column vs column + 3-D layer ocean (rgo) - first run of the stage 2 hook under jit 2026-10-23T20:52Z
