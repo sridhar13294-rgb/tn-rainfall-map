@@ -1,6 +1,6 @@
-tn-t170-mfc0
+tn-base-final
 libm_fields.npz
-XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/t170_mfc.json 0 2 /kaggle/working/t170_0.json > /kaggle/working/t170_0.log 2>&1; tail -3 /kaggle/working/t170_0.log
+bash ../kaggle/par.sh hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/base_final.json /kaggle/working/bt
 NvidiaTeslaT4
-5
-#T170 Bay first half: mass-flux candidate (shallow 3 h, downdrafts) 2026-10-23T18:48Z
+8
+#final exam: 84 Bay storms with the new defaults vs old-scheme yardstick (score --final for 2018-2025) 2026-10-23T20:51Z

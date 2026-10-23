@@ -17,6 +17,12 @@ import math, functools, numpy as np, jax, jax.numpy as jnp
 from scipy.interpolate import RegularGridInterpolator as RGI
 from scipy import ndimage as ndi
 from ocean import step as ocean_step, profile_from_clim
+import os as _os, sys as _sys                                                     # stage 2 ocean (scripts/ocean3d)
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), '..', '..', 'ocean3d'))
+try:
+    import currents as ocur, rgo as orgo
+except Exception:                                                                 # ocean3d optional
+    ocur = orgo = None
 import radcloud
 import landinit                                   # starting land state from analysed soil fields (numpy; test_land_init.py)
 from dinosaur import coordinate_systems, spherical_harmonic, sigma_coordinates, primitive_equations, scales, time_integration, filtering, vertical_interpolation
@@ -36,11 +42,11 @@ def tridiag(a, b, c, d):
     def bwd(xn, x):
         ci, di = x; xi = di - ci * xn; return xi, xi
     _, X = jax.lax.scan(bwd, z, (C[::-1], D[::-1])); return X[::-1]
-DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=10800.0, tau_cmt=6 * 3600.0, k_evap=2e-5, ck=1.2e-3, charnock=0.018, cd_cap=2.4e-3,
+DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 3600.0, k_evap=2e-5, ck=1.2e-3, charnock=0.018, cd_cap=2.4e-3,
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
-                conv='bmj', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='gray', rad_every=1,
-                mf_kick_t=0.0, mf_kick_q=0.0, mf_org=0.0, mf_wup=0.0, mf_dd=0.0, shallow='mse', sh_top=0.7, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.0, phys_off=False, mono=True, mf_ice=0.0)
+                conv='mf', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='radcloud', rad_every=2,
+                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
@@ -117,7 +123,14 @@ class Model:
                      rain=jnp.zeros(zs.shape, jnp.float32), t=jnp.float32(0.0), sst0=jnp.asarray(sst, jnp.float32), T0=jnp.asarray(sg['t'], jnp.float32),
                      prm=self.params())
         if ocean is not None:                                                                       # 1-D ocean column under every sea point (ocean.py)
-            carry['ocean'] = {k: jnp.asarray(v, jnp.float32) for k, v in profile_from_clim(ocean, when, self.LA, self.LO, sst, sst > 0).items()}
+            oc0 = profile_from_clim(ocean, when, self.LA, self.LO, sst, sst > 0)
+            carry['ocean'] = {k: jnp.asarray(v, jnp.float32) for k, v in oc0.items()}
+            if self.S.get('ocean3d'):                                                               # stage 2: currents / reduced-gravity layer
+                self.ocg = ocur.make_geom(self.LA, self.LO, oc0['dz'], sst > 0)
+                if self.S['ocean3d'] == 'rgo':
+                    self.rgg = orgo.make_geom(self.LA, self.LO, sst > 0)
+                    rg0 = orgo.init_state(self.rgg, orgo.d20(np.asarray(oc0['T'], float), np.asarray(oc0['dz'], float)))
+                    carry['rgo'] = {k: jnp.asarray(v, jnp.float32) for k, v in rg0.items()}
         if self.S['rad'] == 'radcloud' and self.S['rad_every'] > 1:                               # radiation cache, refreshed in surface()
             z2 = jnp.zeros(zs.shape, jnp.float32)
             carry['rad'] = dict(heating=jnp.zeros((len(self.sig),) + zs.shape, jnp.float32), sw_net_sfc=z2, lw_dn_sfc=z2, olr=z2, cover=z2)
@@ -501,6 +514,13 @@ class Model:
             Qns = d['lw_dn'] - SB * cr['sst'] ** 4 - d['H'] - LV * d['E']
             ocn, sst_o = ocean_step(cr['ocean'], Qns, d['sw_sfc'], kt * u[-1], kt * v[-1], self.fcor, dt, mask=sea, fw=d['E'] - d['rain'], xp=jnp)
             sst = jnp.where(sea, sst_o, cr['sst'])
+            if self.S.get('ocean3d'):                                                               # stage 2: currents, upwelling, thermocline waves
+                tx, ty = kt * u[-1], kt * v[-1]; q_ = None
+                if self.S['ocean3d'] == 'rgo':
+                    rg = orgo.step(cr['rgo'], tx, ty, self.rgg, dt, xp=jnp)
+                    q_ = orgo.column_transports(rg, self.rgg, self.ocg, tx, ty, self.fcor, xp=jnp)
+                ocn = ocur.step(ocn, tx, ty, self.fcor, self.ocg, dt, xp=jnp, q=q_)
+                sst = jnp.where(sea, ocn['T'][0], cr['sst'])
         else:                                                                                       # old slab
             cool = -S['ent'] / 86400.0 * jnp.maximum(d['V1'] - 10.0, 0) ** 2 / 225.0 * (40.0 / S['h_ml'])
             warm = (cr['sst0'] - cr['sst']) / (5 * 86400.0)
@@ -510,6 +530,7 @@ class Model:
         w = jnp.where(self.land, jnp.clip(cr['w'] + dt * (d['rain'] - d['E']), 0.0, S['bucket'] * 1000), cr['w'])
         out = dict(cr, sst=sst, tl=tl, w=w, rain=cr['rain'] + dt * d['rain'], t=cr['t'] + dt)
         if 'ocean' in cr: out['ocean'] = ocn
+        if 'rgo' in cr: out['rgo'] = rg
         if 'rad' in cr: out['rad'] = d['rad']
         return out
     def run(self, state, carry, hours, every_h=6, box=(40.0, 120.0, -10.0, 45.0)):
