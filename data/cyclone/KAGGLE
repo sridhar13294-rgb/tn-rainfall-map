@@ -1,6 +1,6 @@
-tn-gen-full-mf
-libm48_fields.npz
-bash ../kaggle/par.sh genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_full_mf.json /kaggle/working/gen
+tn-wx-energy2
+libm_wx2020_fields.npz
+python -W ignore wx_energy.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/energy.json 2
 NvidiaTeslaT4
-1
-#storm forming, all 84 storms: old scheme vs mass-flux (no shallow cap, height-corrected evaporation) 2026-10-23T09:57Z
+3
+#does the heat the physics computes reach the model? computed vs realised heating, coupled vs split physics 2026-10-23T10:34Z
