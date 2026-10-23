@@ -1,6 +1,6 @@
-tn-wx-split
+tn-wx-split-mf
 libm_wx2020_fields.npz
-python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"coupled": {}, "split": {"_split": true}}'
+python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"mf_coupled": {"conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005, "sh_top": 0.0, "tau_shallow": 3600.0}, "mf_split": {"_split": true, "conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005, "sh_top": 0.0, "tau_shallow": 3600.0}}'
 NvidiaTeslaT4
-3
-#physics once per step after dynamics (process splitting) vs inside the two-stage step: 5-day tropical temperature profile 2026-10-23T11:13Z
+4
+#process splitting for the mass-flux scheme 2026-10-23T11:13Z
