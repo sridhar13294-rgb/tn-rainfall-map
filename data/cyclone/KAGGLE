@@ -1,6 +1,6 @@
-tn-wx-prof5
+tn-wx-prof6
 libm_wx2020_fields.npz
-python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"ctl": {}, "rhc85": {"rad_prm": {"rhc_up": 0.85}}, "anv1": {"rad_prm": {"anv_a": 1.0}}, "rhc85_anv1": {"rad_prm": {"rhc_up": 0.85, "anv_a": 1.0}}}'
+python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"rhc90": {"rad_prm": {"rhc_up": 0.9}}, "rhc85_anv05": {"rad_prm": {"rhc_up": 0.85, "anv_a": 0.5}}, "lw09": {"rad_prm": {"lw_line": 0.9}}}'
 NvidiaTeslaT4
-3
-#too much high cloud? (model tropical OLR 220 vs ~250 observed) 2026-10-23T03:17Z
+4
+#high cloud threshold 0.9, weaker anvils, long-wave line strength 2026-10-23T03:17Z
