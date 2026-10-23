@@ -1,6 +1,6 @@
-tn-wx-prof10
+tn-wx-prof11
 libm_wx2020_fields.npz
-python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"ctl": {}, "cnt07": {"rad_prm": {"lw_cnt": 0.7}}, "cnt05": {"rad_prm": {"lw_cnt": 0.5}}, "line07": {"rad_prm": {"lw_line": 0.7}}}'
+python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"cnt05_line08": {"rad_prm": {"lw_cnt": 0.5, "lw_line": 0.8}}, "mfk_cnt05": {"conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005, "rad_prm": {"lw_cnt": 0.5}}, "ck12": {"ck": 0.0012}}'
 NvidiaTeslaT4
-3
-#is the air losing too much heat by long-wave radiation? (tropical rain now 2x too high while still cold aloft): water-vapour continuum and line strength 2026-10-23T06:23Z
+5
+#long-wave strength combined, mass-flux with weaker continuum, back to old evaporation for comparison 2026-10-23T06:23Z
