@@ -1,0 +1,39 @@
+{
+ "devices": "[CudaDevice(id=0), CudaDevice(id=1)]",
+ "x64": false,
+ "regional": {
+  "grid": [
+   44,
+   21
+  ],
+  "days": 10,
+  "numpy_s_per_day": 0.67,
+  "jax_compile_s": 69.1,
+  "jax_s_per_day": 0.052,
+  "speedup": 12.9,
+  "finite": true,
+  "dsst_numpy_mean": -0.163,
+  "dsst_jax_mean": -0.162,
+  "dsst_diff_max": 0.0229,
+  "dsst_diff_rms": 0.0017,
+  "h_diff_max_m": 0.0
+ },
+ "global": {
+  "grid": [
+   240,
+   80
+  ],
+  "days": 30.0,
+  "jax_compile_s": 64.1,
+  "jax_s_per_day": 0.057,
+  "s_per_10day_forecast": 0.6,
+  "finite": true,
+  "dsst_mean": -0.365,
+  "dsst_era5_mean": -0.131,
+  "dsst_corr_vs_era5": 0.774,
+  "h_min_max_m": [
+   25.0,
+   323.9
+  ]
+ }
+}
