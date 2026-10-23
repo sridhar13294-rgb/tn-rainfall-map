@@ -1,0 +1,64 @@
+[{"stream_name":"stdout","time":0.791455185,"data":"+ nvidia-smi || true\n"}
+,{"stream_name":"stdout","time":0.828401458,"data":"Fri Oct 23 05:17:48 2026       \n"}
+,{"stream_name":"stdout","time":0.828429232,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":0.828435074,"data":"| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":0.828439269,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.828443088,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":0.828446734,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":0.828450197,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":0.828453443,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":0.896542827,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":0.896568521,"data":"| N/A   51C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":0.896573725,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":0.896578122,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.896581656,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":0.896585275,"data":"| N/A   51C    P8              9W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":0.896589117,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":0.896592744,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.897573958,"data":"\n"}
+,{"stream_name":"stdout","time":0.897590543,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":0.897595657,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":0.897599923,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":0.897604131,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":0.897608299,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":0.910137674,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":0.91015986,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.247400167,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1.247423025,"data":"+ pip install -q -U \"jax[cuda12]\"\n"}
+,{"stream_name":"stderr","time":27.105763369,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":27.105799782,"data":"bigframes 2.48.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":27.105805732,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stderr","time":27.105810224,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":27.105814381,"data":"gradio 6.26.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":27.105818914,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":27.105822993,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stdout","time":27.364899855,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":27.364937287,"data":"+ free -g; nproc; python -c \"import jax; print(jax.devices())\" || true\n"}
+,{"stream_name":"stdout","time":27.384948333,"data":"               total        used        free      shared  buff/cache   available\n"}
+,{"stream_name":"stdout","time":27.384984088,"data":"Mem:              31           1          23           0           7          30\n"}
+,{"stream_name":"stdout","time":27.384987476,"data":"Swap:              0           0           0\n"}
+,{"stream_name":"stdout","time":27.388658746,"data":"4\n"}
+,{"stream_name":"stdout","time":34.830192701,"data":"[CudaDevice(id=0), CudaDevice(id=1)]\n"}
+,{"stream_name":"stdout","time":37.869919468,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":37.869956339,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
+,{"stream_name":"stdout","time":46.77746363,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":46.77751622,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
+,{"stream_name":"stdout","time":51.558896546,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":51.57247841,"data":"+ curl -sSL -o libm_wx2020_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020_fields.npz\n"}
+,{"stream_name":"stdout","time":53.457423936,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":53.457452257,"data":"+ curl -sSL -o wx_truth_2020.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/wx_truth_2020.npz\n"}
+,{"stream_name":"stdout","time":55.791356835,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":55.791410696,"data":"setup s 55\n"}
+,{"stream_name":"stdout","time":55.791418305,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 bash ../kaggle/par.sh wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/wx_rad.json /kaggle/working/wx 2\u003e\u00261 | tee job.log\n"}
+,{"stream_name":"stdout","time":3453.679583198,"data":"tail: option used in invalid context -- 5\n"}
+,{"stream_name":"stdout","time":3453.68641294,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":3453.686433841,"data":"+ rm -rf repo libm_wx2020_fields.npz wx_truth_2020.npz\n"}
+,{"stream_name":"stdout","time":3453.882286698,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":3453.882309262,"data":"total s 3453\n"}
+,{"stream_name":"stderr","time":3455.998070408,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":3455.998107145,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":3456.274138203,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":3456.274165557,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":3457.12391068,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":3458.165690218,"data":"[NbConvertApp] Writing 279410 bytes to __results__.html\n"}
+]
