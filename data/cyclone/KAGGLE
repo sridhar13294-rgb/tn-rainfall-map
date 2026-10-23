@@ -1,6 +1,6 @@
-tn-gen-t170b
-libm48_fields.npz
-XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_t170_b.json 0 1 /kaggle/working/gen_0.json > /kaggle/working/gen_0.log 2>&1; tail -3 /kaggle/working/gen_0.log
+tn-da-osse1
+libm_wx2020_fields.npz
+python -W ignore ../../da/osse.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/osse_smoke.json '{"K": 6, "cycles": 2}' && python -W ignore ../../da/osse.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/osse.json '{"K": 20, "days": 10}'
 NvidiaTeslaT4
-8
-#storm forming at 80 km (T170): repaired mass-flux, shallow off vs slow shallow (42 storms) 2026-10-23T15:36Z
+7
+#LETKF OSSE at T85: smoke (6 members, 2 cycles) then 20 members, 10 days of 6-h cycling vs free run 2026-10-23
