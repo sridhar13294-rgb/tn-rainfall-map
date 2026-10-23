@@ -1,0 +1,82 @@
+[{"stream_name":"stdout","time":0.642357892,"data":"+ nvidia-smi || true\n"}
+,{"stream_name":"stdout","time":0.678080271,"data":"Fri Oct 23 10:34:45 2026       \n"}
+,{"stream_name":"stdout","time":0.678105027,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":0.678114371,"data":"| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":0.678133975,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.678137942,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":0.678141607,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":0.678145473,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":0.678149475,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":0.722430376,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":0.722457432,"data":"| N/A   55C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":0.722461242,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":0.722463656,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.722466083,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":0.722468476,"data":"| N/A   57C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":0.722470721,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":0.722472991,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.723036939,"data":"\n"}
+,{"stream_name":"stdout","time":0.72304906,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":0.72305285,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":0.723056288,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":0.723059718,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":0.723063104,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":0.724609778,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":0.72462059,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.052053211,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1.052081264,"data":"+ pip install -q -U \"jax[cuda12]\"\n"}
+,{"stream_name":"stderr","time":28.252687016,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":28.252730041,"data":"bigframes 2.48.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":28.252734146,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stderr","time":28.252736708,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":28.252739103,"data":"gradio 6.26.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":28.25274157,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":28.252743931,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stdout","time":28.495364721,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":28.495398084,"data":"+ free -g; nproc; python -c \"import jax; print(jax.devices())\" || true\n"}
+,{"stream_name":"stdout","time":28.511923616,"data":"               total        used        free      shared  buff/cache   available\n"}
+,{"stream_name":"stdout","time":28.511944936,"data":"Mem:              31           1          23           0           7          30\n"}
+,{"stream_name":"stdout","time":28.51194915,"data":"Swap:              0           0           0\n"}
+,{"stream_name":"stdout","time":28.515140284,"data":"4\n"}
+,{"stream_name":"stdout","time":35.048095298,"data":"[CudaDevice(id=0), CudaDevice(id=1)]\n"}
+,{"stream_name":"stdout","time":37.58315493,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":37.583186651,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
+,{"stream_name":"stdout","time":50.134858815,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":50.134898527,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
+,{"stream_name":"stdout","time":60.800482037,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":60.800527067,"data":"+ curl -sSL -o libm_wx2020_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020_fields.npz\n"}
+,{"stream_name":"stdout","time":72.784629519,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":72.7846659,"data":"setup s 72\n"}
+,{"stream_name":"stdout","time":72.784675827,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 python -W ignore wx_energy.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/energy.json 2 2\u003e\u00261 | tee job.log\n"}
+,{"stream_name":"stdout","time":123.453625258,"data":"E1023 10:36:48.312618     212 slow_operation_alarm.cc:74] Constant folding an instruction is taking \u003e 1s:\n"}
+,{"stream_name":"stdout","time":123.453661314,"data":"\n"}
+,{"stream_name":"stdout","time":123.453667479,"data":"  %dot.80 = f32[171,32,87]{2,1,0} dot(%constant.5623, %constant.1448), lhs_batch_dims={0}, lhs_contracting_dims={2}, rhs_batch_dims={0}, rhs_contracting_dims={1}, operand_precision={highest,highest}, metadata={op_name=\"jit(\u003clambda\u003e)/while/body/eval_jaxpr/to_modal/fwd_legendre/mjl,...mj-\u003e...ml/dot_general\" stack_frame_id=1628}\n"}
+,{"stream_name":"stdout","time":123.453675119,"data":"\n"}
+,{"stream_name":"stdout","time":123.4536795,"data":"This isn't necessarily a bug; constant-folding is inherently a trade-off between compilation time and speed at runtime. XLA has some guards that attempt to keep constant folding from taking too long, but fundamentally you'll always be able to come up with an input program that takes a long time.\n"}
+,{"stream_name":"stdout","time":123.453694387,"data":"\n"}
+,{"stream_name":"stdout","time":123.45369782,"data":"If you'd like to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.\n"}
+,{"stream_name":"stdout","time":123.52604189,"data":"E1023 10:36:48.385856     162 slow_operation_alarm.cc:141] The operation took 1.073979772s\n"}
+,{"stream_name":"stdout","time":123.526069103,"data":"Constant folding an instruction is taking \u003e 1s:\n"}
+,{"stream_name":"stdout","time":123.526076404,"data":"\n"}
+,{"stream_name":"stdout","time":123.526081765,"data":"  %dot.80 = f32[171,32,87]{2,1,0} dot(%constant.5623, %constant.1448), lhs_batch_dims={0}, lhs_contracting_dims={2}, rhs_batch_dims={0}, rhs_contracting_dims={1}, operand_precision={highest,highest}, metadata={op_name=\"jit(\u003clambda\u003e)/while/body/eval_jaxpr/to_modal/fwd_legendre/mjl,...mj-\u003e...ml/dot_general\" stack_frame_id=1628}\n"}
+,{"stream_name":"stdout","time":123.52608876,"data":"\n"}
+,{"stream_name":"stdout","time":123.526093945,"data":"This isn't necessarily a bug; constant-folding is inherently a trade-off between compilation time and speed at runtime. XLA has some guards that attempt to keep constant folding from taking too long, but fundamentally you'll always be able to come up with an input program that takes a long time.\n"}
+,{"stream_name":"stdout","time":123.526100565,"data":"\n"}
+,{"stream_name":"stdout","time":123.52610541,"data":"If you'd like to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.\n"}
+,{"stream_name":"stdout","time":165.682613746,"data":"dyn_only 2020-01-01T00 realised heating W/m2 -6.1 physics computed W/m2 (mean of 6-hourly) 403.6 rain W/m2 448.6 dT globe/trop over 48 h -0.105 -0.304 KE 162.96 -\u003e 167.9 mean ps 98545.6 -\u003e 98547.2\n"}
+,{"stream_name":"stdout","time":202.61097251,"data":"dyn_only 2020-01-06T00 realised heating W/m2 -6.1 physics computed W/m2 (mean of 6-hourly) 299.4 rain W/m2 357.1 dT globe/trop over 48 h -0.105 -0.332 KE 162.87 -\u003e 166.43 mean ps 98546.2 -\u003e 98550.5\n"}
+,{"stream_name":"stdout","time":280.40499792,"data":"full 2020-01-01T00 realised heating W/m2 -41.3 physics computed W/m2 (mean of 6-hourly) -35.0 rain W/m2 101.1 dT globe/trop over 48 h -0.708 -0.749 KE 162.96 -\u003e 159.43 mean ps 98545.6 -\u003e 98547.1\n"}
+,{"stream_name":"stdout","time":319.516382219,"data":"full 2020-01-06T00 realised heating W/m2 -45.5 physics computed W/m2 (mean of 6-hourly) -39.2 rain W/m2 99.5 dT globe/trop over 48 h -0.779 -0.657 KE 162.87 -\u003e 153.34 mean ps 98546.2 -\u003e 98551.8\n"}
+,{"stream_name":"stdout","time":394.22423458,"data":"full_split 2020-01-01T00 realised heating W/m2 -39.6 physics computed W/m2 (mean of 6-hourly) -101.7 rain W/m2 39.9 dT globe/trop over 48 h -0.678 -0.679 KE 162.96 -\u003e 159.1 mean ps 98545.6 -\u003e 98548.4\n"}
+,{"stream_name":"stdout","time":432.016434491,"data":"full_split 2020-01-06T00 realised heating W/m2 -44.1 physics computed W/m2 (mean of 6-hourly) -102.9 rain W/m2 41.0 dT globe/trop over 48 h -0.755 -0.6 KE 162.87 -\u003e 153.19 mean ps 98546.2 -\u003e 98552.2\n"}
+,{"stream_name":"stdout","time":435.079475494,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":435.079526722,"data":"+ rm -rf repo libm_wx2020_fields.npz\n"}
+,{"stream_name":"stdout","time":435.206718459,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":435.206745254,"data":"total s 435\n"}
+,{"stream_name":"stderr","time":437.172098845,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":437.172137579,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":437.39190084,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":437.391924947,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":438.185218094,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":439.079264649,"data":"[NbConvertApp] Writing 279341 bytes to __results__.html\n"}
+]
