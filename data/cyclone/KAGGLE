@@ -1,6 +1,6 @@
-tn-gen-ck
-libm48_fields.npz
-bash ../kaggle/par.sh genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_mf5.json /kaggle/working/gen
+tn-wx-prof9
+libm_wx2020_fields.npz
+python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"ctl": {}, "ck18": {"ck": 0.0018}, "sh75": {"sh_top": 0.75}, "mfk": {"conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005}}'
 NvidiaTeslaT4
-3
-#storm forming with new evaporation/humidity defaults (old vs mass-flux) 2026-10-23T05:18Z
+5
+#remaining cold bias (200-300 and 850 hPa): more evaporation, shallow cap 750 hPa, mass-flux with new defaults 2026-10-23T05:33Z
