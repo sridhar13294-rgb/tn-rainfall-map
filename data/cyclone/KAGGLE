@@ -1,6 +1,6 @@
-tn-oc-veros1
-ocean_clim.npz
-pip install -q veros h5netcdf loguru gcsfs zarr 2>&1 | tail -3; python -W ignore ../../ocean3d/veros_bench.py all /kaggle/working/veros_bench.json
+tn-gen-full-ice
+libm48_fields.npz
+bash ../kaggle/par.sh genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_full_ice.json /kaggle/working/gen
 NvidiaTeslaT4
-7
-#Stage 2 ocean: Veros speed on T4 (account 7)
+4
+#storm forming, all 84 storms, old scheme with freezing heat (0.5 / 1) 2026-10-23T11:32Z
