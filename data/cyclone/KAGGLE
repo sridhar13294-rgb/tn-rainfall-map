@@ -1,6 +1,6 @@
-tn-base-mf
-libm_fields.npz
-bash ../kaggle/par.sh hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/base_mf.json /kaggle/working/bt
+tn-wx-mf
+libm_wx2020_fields.npz,wx_truth_2020.npz
+bash ../kaggle/par.sh wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/wx_mf.json /kaggle/working/wx
 NvidiaTeslaT4
-4
-#84 Bay storms with the mass-flux scheme (no shallow cap) 2026-10-23T09:31Z
+5
+#general exam: mass-flux with height-corrected evaporation, and with downdrafts 2026-10-23T09:31Z
