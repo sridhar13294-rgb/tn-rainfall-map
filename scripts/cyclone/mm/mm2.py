@@ -40,11 +40,11 @@ DEFAULTS = dict(rh_deep=0.9, tau_deep=2400.0, tau_shallow=10800.0, tau_cmt=6 * 3
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='bmj', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='gray', rad_every=1,
-                mf_kick_t=0.0, mf_kick_q=0.0, mf_org=0.0, mf_wup=0.0, mf_dd=0.0, shallow='mse', sh_top=0.7, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0)
+                mf_kick_t=0.0, mf_kick_q=0.0, mf_org=0.0, mf_wup=0.0, mf_dd=0.0, shallow='mse', sh_top=0.7, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.0)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
-DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt', 'entr', 'mf_kick_t', 'mf_kick_q', 'mf_org', 'mf_wup', 'mf_dd', 'sh_top', 'bmj_dt', 'bmj_ice')
+DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt', 'entr', 'mf_kick_t', 'mf_kick_q', 'mf_org', 'mf_wup', 'mf_dd', 'sh_top', 'bmj_dt', 'bmj_ice', 'ck_z')
 NWAVE = 8
 class Model:
     def __init__(self, grid='T170', layers=32, dt_min=None, set_=None):
@@ -286,7 +286,11 @@ class Model:
         cdn = jnp.where(sea, jnp.minimum(cdn, S['cd_cap']), cdn)
         rib = G * z1 * (thv1 - thvs) / (thv1 * V1 ** 2)
         fst = jnp.where(rib > 0, 1.0 / (1 + 10 * rib) ** 2, 1 - 10 * rib / (1 + 75 * cdn * jnp.sqrt(z1 / z0 * jnp.abs(rib))))
-        cd = cdn * fst; ckn = jnp.where(sea, S['ck'], 0.8 * cdn); ck = ckn * fst
+        cd = cdn * fst
+        # ck is a 10-m-height value (bulk formulas, COARE): brought to the lowest model level (~80 m) with the log law;
+        # using it directly with the faster wind up there overstated sea evaporation by ~30% (ck_z=1 on, 0 off; off until tested)
+        zfac = jnp.where(sea, (jnp.log(10.0 / z0) / jnp.log(z1 / z0)) ** 2, 1.0) ** S['ck_z']
+        ckn = jnp.where(sea, S['ck'] * zfac, 0.8 * cdn); ck = ckn * fst
         rho = p1 / (RD * T1 * (1 + 0.61 * q1)); ust = jnp.sqrt(cd) * V1
         beta = jnp.where(sea, 1.0, jnp.clip(cr['w'] / (0.75 * S['bucket'] * 1000), 0, 1))
         E = rho * ck * V1 * beta * jnp.maximum(qsat(Ts, ps) - q1, -1e-3)                           # kg m-2 s-1

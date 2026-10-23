@@ -1,6 +1,6 @@
-tn-base-ice
-libm_fields.npz
-bash ../kaggle/par.sh hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/base_ice.json /kaggle/working/bt
+tn-wx-prof14
+libm_wx2020_fields.npz
+python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"ckz15_ice_rh8": {"ck_z": 1.0, "bmj_ice": 0.5, "rh_deep": 0.8}, "ckz12_ice_rh8": {"ck_z": 1.0, "ck": 0.0012, "bmj_ice": 0.5, "rh_deep": 0.8}, "ckz15_ice1_rh8": {"ck_z": 1.0, "bmj_ice": 1.0, "rh_deep": 0.8}}'
 NvidiaTeslaT4
-2
-#84 Bay storms with freezing heat and old evaporation 2026-10-23T07:28Z
+3
+#evaporation coefficient brought to model height (ck_z) with freezing heat: temperature and rain budget 2026-10-23T08:26Z
