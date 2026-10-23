@@ -1,6 +1,6 @@
-tn-wx-energy2
+tn-wx-budget2
 libm_wx2020_fields.npz
-python -W ignore wx_energy.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/energy.json 2
+python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 3 '{"mf_sh0_ck12": {"conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005, "sh_top": 0.0, "tau_shallow": 3600.0, "ck": 0.0012}, "mf_sh0_ck15z": {"conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005, "sh_top": 0.0, "tau_shallow": 3600.0, "ck_z": 1.0}}'
 NvidiaTeslaT4
-3
-#does the heat the physics computes reach the model? computed vs realised heating, coupled vs split physics 2026-10-23T10:34Z
+5
+#global heat budget for the mass-flux scheme 2026-10-23T10:34Z
