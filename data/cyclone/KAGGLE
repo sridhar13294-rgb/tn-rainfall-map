@@ -1,6 +1,6 @@
-tn-t170-final0
+tn-base-tsh2
 libm_fields.npz
-XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/t170_final.json 0 2 /kaggle/working/t170_0.json > /kaggle/working/t170_0.log 2>&1; tail -3 /kaggle/working/t170_0.log
+bash ../kaggle/par.sh hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/base_tsh2.json /kaggle/working/bt
 NvidiaTeslaT4
-5
-#T170 Bay first half with the final defaults 2026-10-23T22:57Z
+2
+#Bay storms: final defaults with shallow mixing 2 h / 3 h (tracks at 48-96 h) 2026-10-23T22:57Z
