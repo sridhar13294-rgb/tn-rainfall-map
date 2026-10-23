@@ -1,6 +1,6 @@
-tn-wx-prof9
+tn-wx-prof10
 libm_wx2020_fields.npz
-python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"ctl": {}, "ck18": {"ck": 0.0018}, "sh75": {"sh_top": 0.75}, "mfk": {"conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005}}'
+python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"ctl": {}, "cnt07": {"rad_prm": {"lw_cnt": 0.7}}, "cnt05": {"rad_prm": {"lw_cnt": 0.5}}, "line07": {"rad_prm": {"lw_line": 0.7}}}'
 NvidiaTeslaT4
-5
-#remaining cold bias (200-300 and 850 hPa): more evaporation, shallow cap 750 hPa, mass-flux with new defaults 2026-10-23T05:33Z
+3
+#is the air losing too much heat by long-wave radiation? (tropical rain now 2x too high while still cold aloft): water-vapour continuum and line strength 2026-10-23T06:23Z

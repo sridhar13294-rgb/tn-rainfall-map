@@ -52,9 +52,12 @@ for VN, VS in VARS.items():
       r['sig'] = np.asarray(M.sig).round(4).tolist(); r['phys_dT_Kday'] = mean(tend['T'])
       if 'rad' in d: r['rad_Kday'] = mean(d['rad']['heating'])
       r['rain_trop_mmday'] = round(float((np.asarray(d['rain']) * W).sum() / W.sum() * 86400), 2)
+      r['lw_dn_sfc_trop'] = round(float((np.asarray(d['lw_dn']) * W).sum() / W.sum()), 1); r['sw_sfc_trop'] = round(float((np.asarray(d['sw_sfc']) * W).sum() / W.sum()), 1)
+      r['lh_trop'] = round(float((np.asarray(d['E']) * W).sum() / W.sum() * 2.5e6), 1); r['sh_trop'] = round(float((np.asarray(d['H']) * W).sum() / W.sum()), 1)
+      if 'rad' in d: r['rad_col_Wm2'] = round(float((np.asarray((d['rad']['heating'] * jnp.asarray(M.dsig)[:, None, None] * jnp.asarray(ps)[None] / 9.81 * 1004.6).sum(0)) * W).sum() / W.sum()), 1)
       r['olr_trop'] = round(float((np.asarray(d['rad']['olr']) * W).sum() / W.sum()), 1) if 'rad' in d else None
       res.append(r); ALL[VN] = res; json.dump(ALL, open(OUT, 'w'))
-      print(VN, key, 'd5 T bias tropics', dict(zip(LEV.astype(int).tolist(), np.round(r['d5']['tropics']['T'], 2).tolist())), 'rad', r.get('rad_Kday'), 'rain', r['rain_trop_mmday'], 'olr', r['olr_trop'], flush=True)
+      print(VN, key, 'd5 T bias tropics', dict(zip(LEV.astype(int).tolist(), np.round(r['d5']['tropics']['T'], 2).tolist())), 'rad', r.get('rad_Kday'), 'rain', r['rain_trop_mmday'], 'olr', r['olr_trop'], 'lwdn', r['lw_dn_sfc_trop'], 'swsfc', r['sw_sfc_trop'], 'LH', r['lh_trop'], 'SH', r['sh_trop'], 'radcol', r.get('rad_col_Wm2'), flush=True)
   ALL[VN] = res; json.dump(ALL, open(OUT, 'w'))
   if res:
       for reg in REG:
