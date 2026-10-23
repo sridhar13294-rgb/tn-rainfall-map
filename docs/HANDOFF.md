@@ -9,6 +9,11 @@
 - Live doc: https://claude.ai/artifact/GttzHBxsJbyAh9HSW1NcFi (change-log table, newest rows on top). Update on decisions.
 - Usage: Sridhar's weekly limit resets Mon 26 Oct 22:29 IST; 5-hour session limit applies. Keep each cycle lean (see "How to run cheaply").
 
+## Schedules (set 23 Oct 21:15 IST)
+- Scheduled tasks: 'MEGAM work cycle' (every 2 h) and 'Daily rain skill check' (10:30 IST). Each run starts a fresh session and clones `cases`.
+- Last status sent: 23 Oct 21:15 IST
+- 23 Oct 21:20 IST: no Kaggle results back yet (jobs launched ~21:07 IST); next cycle collects them.
+
 ## Goal
 General daily global model like ECMWF/GFS (00/12Z, 10-day + 51-member 15-day), good in Bay of Bengal, Arabian Sea, South Indian Ocean. Stage 1 = 11 fixes (target ~28 Oct, fallback 30 Oct). Stage 2 = 3-D ocean (built). LETKF data assimilation (in progress). Stage 3 = India detail (9 km + 3 km windows).
 
