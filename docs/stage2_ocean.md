@@ -166,6 +166,7 @@ of about 1.5 months in a 30 m mixed layer, so the lam = 0 lines are the stricter
 | layer with Ekman shear, lam 30 | 0.871 | 0.85 | -0.98 | -5.81 | -6.42 | -2.05 | -2.16 | -2.33 |
 | layer, no shear, lam 30 | 0.930 | 0.59 | -0.21 | **-4.75** | **-4.87** | -1.44 | -1.14 | -1.31 |
 | layer, no shear, kh 2000, lam 30 | 0.932 | **0.58** | -0.22 | -4.71 | -4.77 | -1.47 | -1.13 | -1.31 |
+| Veros 2 deg (spun up by ERA5 from 15 Mar only), lam 30 | 0.871 | 0.84 | +0.43 | -4.28 | -4.48 | -0.94 | **-0.63** | -0.98 |
 | columns only, lam 0 | 0.760 | 1.04 | +0.49 | -3.47 | -3.50 | -0.67 | -1.29 | -1.22 |
 | layer, no shear, lam 0 | 0.716 | 1.19 | -0.45 | -3.99 | -4.86 | -1.26 | -1.18 | -1.51 |
 
@@ -181,7 +182,12 @@ What this shows:
   shear (-0.5 K instead of -2.9 K at the coast), even though the thermocline rises just as much (21 m).
 - **Without the flux correction (lam = 0)** both runs lose skill. The layer still improves Oman and Somalia but cools
   the Bay too much.
-- Veros 2 degrees forced the same way: see the next section.
+- **Veros at 2 degrees, forced the same way**, ran the 153 days (2 months spin-up plus 3 months scored) in 1387 s on
+  a T4. That is 9 s per model day including the 6-hourly coupling hand-over. It gets the Sri Lanka dome right
+  (-0.63 vs -0.54; every column-based run is about twice too cold there) and Oman better than the columns alone
+  (-4.5). But its overall pattern is weaker (correlation 0.87, RMS 0.84). It started from a yearly-mean climatology at
+  rest with only two months of spin-up, and its 10 m top level and 2-degree grid smooth the coastal upwelling. A
+  properly spun-up Veros will do better. That is the next Veros experiment.
 
 ## Recommendation
 
@@ -208,4 +214,5 @@ What this shows:
   ocean.py already uses under jit, plus roll and stack.
 - **Analysis currents (RTOFS u, v) are not fetched yet.** currents.py can take them (u_ext, v_ext). cyc_ocean.py would
   need the RTOFS 3zuio/3zvio files added, which is not done because that file belongs to the atmosphere side.
-- **Veros:** spin-up, nudging to RTOFS, ensembles, and float32 over long runs are all untested.
+- **Veros:** the coupling wrapper works (Kaggle tn-oc-era5mon3, float32, 153 days stable). Still untested: a
+  multi-year spin-up, nudging to RTOFS, ensembles, and TPU.
