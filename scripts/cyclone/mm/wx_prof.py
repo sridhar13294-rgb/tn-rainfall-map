@@ -17,6 +17,7 @@ def era_mean(k, v, reg):
     m = REG[reg](LAg, LOg); a = Z['f3'][k, V3.index(v)]; return [float((a[i] * Wg * m).sum() / (Wg * m).sum()) for i in range(len(LEV))]
 ALL = {}
 for VN, VS in VARS.items():
+  VS = dict(VS); SPLIT = bool(VS.pop('_split', False))
   M = mm2.Model('T85', 32, None, dict(BASE, **VS)); res = []
   def model_profiles(st, cr):
       hor = M.coords.horizontal
@@ -41,7 +42,7 @@ for VN, VS in VARS.items():
       if k5 is None: continue
       st, cr = M.init(f3, Z['levs'], Z['lats'], Z['lons'], Z['f2'][k, V2.index('surface_pressure')], Z['f2'][k, V2.index('geopotential_at_surface')] / 9.80616,
                       Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')], when=t0, **landinit.land_kwargs(Z['f2'][k], V2))
-      M.build(t0); st = M.dfi(st); r = dict(start=key, levs=LEV.tolist())
+      M.build(t0, split=SPLIT); st = M.dfi(st); r = dict(start=key, levs=LEV.tolist())
       p0, *_ = model_profiles(st, cr); r['h0'] = {reg: {kk: (np.array(p0[reg][kk]) - np.array(era_mean(k, 'temperature' if kk == 'T' else 'specific_humidity', reg))).round(4).tolist() for kk in ('T', 'q')} for reg in REG}
       st5, cr5 = mm2.integrate(M, st, cr, 120); p5, T, q, ps = model_profiles(st5, cr5)
       r['d5'] = {reg: {kk: (np.array(p5[reg][kk]) - np.array(era_mean(k5, 'temperature' if kk == 'T' else 'specific_humidity', reg))).round(4).tolist() for kk in ('T', 'q')} for reg in REG}

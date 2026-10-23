@@ -1,6 +1,6 @@
-tn-wx-rev
-libm_wx2020_fields.npz,wx_truth_2020.npz
-bash ../kaggle/par.sh wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/wx_rad.json /kaggle/working/wx
+tn-wx-split
+libm_wx2020_fields.npz
+python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"coupled": {}, "split": {"_split": true}}'
 NvidiaTeslaT4
-5
-#general exam with the reverted defaults (clean reference) 2026-10-23T11:06Z
+3
+#physics once per step after dynamics (process splitting) vs inside the two-stage step: 5-day tropical temperature profile 2026-10-23T11:13Z
