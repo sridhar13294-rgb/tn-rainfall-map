@@ -76,6 +76,13 @@ The message lists per-model MAE, bias ratio, POD, FAR, ETS, heavy hit/miss/false
 state average obs vs forecast; odd gauges (Aliyar misplaced, fix awaiting approval); outlook vs fallen; downloads status
 (data/forecast_status.json). Corrections only on a new branch with Sridhar's approval.
 
+
+## DECISION 24 Oct 02:40 IST - new defaults (mm2 DEFAULTS)
+conv='mf', mf_kick_t 0.5, mf_kick_q 0.0005, mf_dd 0.5, sh_top 0.0, tau_shallow 3600 s, rad='radcloud', rad_every 2 (radcloud was NOT the true default before - only in test configs). Old scheme yardstick: conv='bmj', sh_top 0.7, tau_shallow 10800, bmj_ice 0.5.
+Evidence: exam 23.7/74.6/119.5 m (old 25.4/77.3/120.3); Bay 107/212/343/543 (old 100/211/388/531); storm forming T85 21%, T170 24% (old 40%/31%).
+Ocean hook applied in mm2 (ocean3d None/'ekman'/'rgo'; needs config 'ocean' path + ocean_clim.npz). LETKF groundwork done (scripts/da, docs/letkf.md).
+Running (final settings): tn-base-final acct8 (Bay, score_hind --final for 2018-2025), tn-ens-final acct3 (#8), tn-base-ocean acct2 (#6), tn-io-as-final acct4, tn-t170-final1 acct5, tn-io-si6 acct6. Still to do: #9 tracker test, #10 rain vs TN SMART, #7 observations into start, final ECMWF exam rerun with defaults (equals mf_sh0_t1h run: 23.7/74.6/119.5).
+
 ## More context to read
 - docs/PROJECT_HISTORY.md: the whole story from day one (website + model + every request Sridhar made).
 - docs/cycle_notes_2026-10-23.json: every test result and decision from 22-23 Oct, in time order (the detailed log).
