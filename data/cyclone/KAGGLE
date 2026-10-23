@@ -1,6 +1,6 @@
-tn-wx-prof15
-libm_wx2020_fields.npz
-python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"mf_sh0_ck12": {"conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005, "sh_top": 0.0, "tau_shallow": 3600.0, "ck": 0.0012}, "mf_sh0_ck15z": {"conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005, "sh_top": 0.0, "tau_shallow": 3600.0, "ck_z": 1.0}}'
+tn-wx-ice
+libm_wx2020_fields.npz,wx_truth_2020.npz
+bash ../kaggle/par.sh wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/wx_ice.json /kaggle/working/wx
 NvidiaTeslaT4
-5
-#mass-flux without the shallow cap: column temperature and rain budget 2026-10-23T08:27Z
+1
+#general exam: old scheme with freezing heat vs mass-flux without shallow cap 2026-10-23T08:27Z
