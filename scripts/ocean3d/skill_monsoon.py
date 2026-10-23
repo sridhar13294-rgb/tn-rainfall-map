@@ -56,7 +56,7 @@ def scores(dm, do, sea, LA, LO):
     m = sea & (LA >= 3) & (LA <= 25)
     a, b = dm[m], do[m]
     r = float(np.corrcoef(a, b)[0, 1]); rms = float(np.sqrt(np.mean((a - b) ** 2)))
-    out = dict(corr=round(r, 3), rms=round(rms, 3), bias=round(float(np.mean(a - b)), 3))
+    out = dict(corr=round(r, 3), rms=round(rms, 3), bias=round(float(np.mean(a - b)), 3), rms_anom=round(float(np.std(a - b)), 3))
     for k, (y0, y1, x0, x1) in BOX.items():
         mm = sea & (LA >= y0) & (LA <= y1) & (LO >= x0) & (LO <= x1)
         out[k] = round(float(dm[mm].mean()), 2) if mm.any() else None
@@ -72,7 +72,7 @@ if __name__ == '__main__':
     sea = np.isfinite(sstE[d0]) & (sstE[d0] > 270)
     R['era5'] = scores(np.where(sea, dobs, 0), np.where(sea, dobs, 0), sea, LA, LO)
     for lam in (None,):
-        for name, uc, prm in (('column', False, None), ('column+ekman', True, dict(geo=0)), ('column+ekman+geo', True, None), ('column+rgo', 'rgo', None)):
+        for name, uc, prm in (('column', False, None), ('column+ekman', True, dict(geo=0)), ('column+ekman+geo', True, None), ('column+rgo', 'rgo', None), ('column+rgo no ekman shear', 'rgo', dict(r_ek=1.0))):
             t0 = time.time(); dm, sea, LA, LO, g = run(E, clim, d0, days, lam, uc, prm)
             key = '%s %s' % (name, 'bulk flux' if lam is None else 'no flux'); R['runs'][key] = scores(dm, np.where(sea, dobs, 0), sea, LA, LO)
             R['runs'][key]['cpu_s'] = round(time.time() - t0, 1); print(key, R['runs'][key], flush=True)

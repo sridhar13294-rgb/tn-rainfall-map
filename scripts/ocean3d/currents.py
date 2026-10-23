@@ -38,6 +38,9 @@ VELOCITY (at the cell faces, one value per level and face, as a volume transport
  Speed limiter: on each face the whole profile is scaled down if any level would move more than 0.3 of a cell per step
  (keeps the explicit scheme stable near the poles; does not change the zero-net closure).
 
+LATERAL MIXING (optional, kh m2 s-1, default 0): down-gradient flux -kh grad(T) through the same open faces (eddies;
+ spreads a one-cell coastal upwelling over the coastal band).
+
 ADVECTION (finite volume, first-order upwind, explicit): vertical velocity at every level interface from continuity
  (rigid lid, w = 0 at the surface), then for each level
     d(T dz)/dt = -(sum of upwind face fluxes out) / area + w_below T_from_below - w_above T_from_above.
@@ -51,7 +54,7 @@ from ocean import density, RHO0, GRAV                                       # sa
 
 OMEGA, REARTH = 7.292e-5, 6.371e6
 PRM = dict(r_ek=1.0 / (2 * 86400.0), h_ek=40.0, geo=1.0, f_eq=2 * OMEGA * math.sin(math.radians(2.5)), cfl=0.3,
-           dz_real=0.5, ugeo_max=1.5, mode='ekman', closure='zero_net')
+           dz_real=0.5, ugeo_max=1.5, mode='ekman', closure='zero_net', kh=0.0)
 
 
 # ------------------------------------------------------------------------------------------------------------- geometry
@@ -215,6 +218,9 @@ def step(st, taux, tauy, f, geom, dt, prm=None, xp=np, u_ext=None, v_ext=None, d
         for k in range(N):
             c, cE, cN = C[k], xp.roll(C[k], -1, axis=-2), xp.roll(C[k], -1, axis=-1)
             FE = VE[k] * xp.where(VE[k] > 0, c, cE); FN = VN[k] * xp.where(VN[k] > 0, c, cN)
+            if P['kh']:                                                                 # lateral (eddy) diffusion, conservative
+                FE = FE - P['kh'] * (cE - c) / g['dxE'] * g['dzE'][k] * g['LE']
+                FN = FN - P['kh'] * (cN - c) / g['dyN'] * g['dzN'][k] * g['LN']
             hdiv = (FE - pvx(FE) + FN - pvy(FN)) / A
             wt = W[k - 1] if k else xp.zeros_like(A)                                    # upward velocity at the top face
             above = C[k - 1] if k else c

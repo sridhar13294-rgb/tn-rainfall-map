@@ -51,14 +51,14 @@ def run_case(path, clim, use_cur, prm=None, dt_s=1800.0):
             elif use_cur: st = cu.step(st, tx, ty, f, g, dt_s, prm=prm)
     dm = np.where(sea, st['T'][0] - sst0, np.nan); do = np.where(sea, sst[-1] - sst[0], np.nan)
     box = (LA >= BAY[0]) & (LA <= BAY[1]) & (LO >= BAY[2]) & (LO <= BAY[3])
-    if os.environ.get('WAKE_SAVE'): np.savez_compressed(os.environ['WAKE_SAVE'], dm=dm, do=do, lat=lat, lon=lon)
-    return dm, do, sea & box
+    return dm, do, sea & box, lat, lon
 
 
 def scores(dm, do, sea):
     m = sea & np.isfinite(dm) & np.isfinite(do); a, b = dm[m], do[m]
     wk = b < -1.0; c2 = b <= np.percentile(b, 2)
     return dict(corr=round(float(np.corrcoef(a, b)[0, 1]), 3), rms=round(float(np.sqrt(np.mean((a - b) ** 2))), 3),
+                rms_anom=round(float(np.std(a - b)), 3),
                 mean_model=round(float(a.mean()), 2), mean_era5=round(float(b.mean()), 2),
                 wake_model=round(float(a[wk].mean()), 2) if wk.any() else None, wake_era5=round(float(b[wk].mean()), 2) if wk.any() else None,
                 coolest2_model=round(float(a[c2].mean()), 2), coolest2_era5=round(float(b[c2].mean()), 2), min_model=round(float(a.min()), 2), min_era5=round(float(b.min()), 2))
@@ -69,9 +69,10 @@ if __name__ == '__main__':
     for path in sys.argv[3:]:
         name = os.path.basename(path).replace('.npz', ''); R[name] = {}
         for key, uc, prm in (('column', False, None), ('column+ekman', True, dict(geo=0)), ('column+ekman+geo', True, None), ('column+slab', True, dict(mode='slab', geo=0)), ('column+rgo', 'rgo', None)):
-            t0 = time.time(); dm, do, sea = run_case(path, clim, uc, prm); R[name][key] = scores(dm, do, sea)
+            t0 = time.time(); dm, do, sea, lat, lon = run_case(path, clim, uc, prm); R[name][key] = scores(dm, do, sea)
+            np.savez_compressed(os.path.join(os.path.dirname(os.path.abspath(out)), 'wake_%s_%s.npz' % (name, key.replace('+', '_'))), dm=dm, do=do, lat=lat, lon=lon, box=sea)
             R[name][key]['cpu_s'] = round(time.time() - t0, 1); print(name, key, R[name][key], flush=True)
         json.dump(R, open(out, 'w'), indent=1)
     keys = list(next(iter(R.values())).keys())
-    R['mean'] = {k: {s: round(float(np.mean([R[c][k][s] for c in R if c != 'mean'])), 3) for s in ('corr', 'rms', 'wake_model', 'coolest2_model', 'coolest2_era5', 'wake_era5')} for k in keys}
+    R['mean'] = {k: {s: round(float(np.mean([R[c][k][s] for c in R if c != 'mean'])), 3) for s in ('corr', 'rms', 'rms_anom', 'mean_model', 'mean_era5', 'wake_model', 'coolest2_model', 'coolest2_era5', 'wake_era5')} for k in keys}
     print('mean', json.dumps(R['mean'], indent=1)); json.dump(R, open(out, 'w'), indent=1)
