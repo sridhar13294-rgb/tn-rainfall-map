@@ -29,8 +29,8 @@
 
 ## Schedules (set 23 Oct 21:15 IST)
 - Scheduled tasks: 'MEGAM work cycle' (every 2 h) and 'Daily rain skill check' (10:30 IST). Each run starts a fresh session and clones `cases`.
-- Last status sent: 23 Oct 21:15 IST
-- 23 Oct 21:20 IST: no Kaggle results back yet (jobs launched ~21:07 IST); next cycle collects them.
+- Last status sent: 23 Oct 21:08 IST (old chat); next status due 07:00 IST (quiet 00:30-07:00).
+- 23 Oct 21:40 IST: no results back yet from tn-gen-t170a/b, tn-gen-full-mf8, tn-wx-ice05, tn-tpu-wx (acct1 since 18:33 IST), tn-da-osse1 (acct7). Added tn-io-as2 (acct4, Arabian Sea: defaults vs mf shoff) and tn-io-si5 (acct6, South Indian Ocean, same). Next cycle: collect all, then decide default convection.
 
 ## Goal
 General daily global model like ECMWF/GFS (00/12Z, 10-day + 51-member 15-day), good in Bay of Bengal, Arabian Sea, South Indian Ocean. Stage 1 = 11 fixes (target ~28 Oct, fallback 30 Oct). Stage 2 = 3-D ocean (built). LETKF data assimilation (in progress). Stage 3 = India detail (9 km + 3 km windows).
