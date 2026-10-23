@@ -1,6 +1,6 @@
-tn-base-ice1
+tn-tpu-bench8
 libm_fields.npz
-bash ../kaggle/par.sh hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/base_sh.json /kaggle/working/bt
-NvidiaTeslaT4
-2
-#84 Bay storms with full freezing heat as default 2026-10-23T11:48Z
+python -W ignore gpu_bench.py /kaggle/working/libm_fields.npz /kaggle/working/bench.json T85 120 Hamoon
+TpuV5E8
+8
+#account 8 first job: TPU v5e-8 speed test at 140 km 2026-10-23T11:59Z
