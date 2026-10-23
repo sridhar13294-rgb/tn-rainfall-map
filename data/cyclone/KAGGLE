@@ -1,6 +1,6 @@
-tn-gen-t170c
-libm48_fields.npz
-XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_t170_c.json 0 1 /kaggle/working/gen_0.json > /kaggle/working/gen_0.log 2>&1; tail -3 /kaggle/working/gen_0.log
+tn-t170-mfc0
+libm_fields.npz
+XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/t170_mfc.json 0 2 /kaggle/working/t170_0.json > /kaggle/working/t170_0.log 2>&1; tail -3 /kaggle/working/t170_0.log
 NvidiaTeslaT4
-4
-#storm forming at 80 km: mass-flux with fast uncapped shallow (21% at 140 km) 2026-10-23T18:47Z
+5
+#T170 Bay first half: mass-flux candidate (shallow 3 h, downdrafts) 2026-10-23T18:48Z
