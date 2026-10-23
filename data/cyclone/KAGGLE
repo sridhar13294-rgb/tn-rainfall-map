@@ -1,6 +1,6 @@
-tn-wx-prof7
+tn-wx-prof8
 libm_wx2020_fields.npz
-python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"ck15": {"ck": 0.0015}, "rhdeep9": {"rh_deep": 0.9}, "ck15_rhdeep9": {"ck": 0.0015, "rh_deep": 0.9}}'
+python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"tdeep80": {"tau_deep": 4800}, "ck15_tdeep80": {"ck": 0.0015, "tau_deep": 4800}, "mfk_ck15": {"conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005, "ck": 0.0015}}'
 NvidiaTeslaT4
-3
-#upper-air cold bias via too-dry surface air: more sea evaporation, wetter deep-convection reference 2026-10-23T04:19Z
+4
+#upper-air cold bias: slower deep convection, more evaporation, mass-flux with more evaporation 2026-10-23T04:19Z
