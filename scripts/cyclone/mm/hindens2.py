@@ -33,7 +33,7 @@ for i, s in enumerate(storms):
             st, cr = M.init(f3, Z['levs'], Z['lats'], Z['lons'], Z['f2'][k, V2.index('surface_pressure')], Z['f2'][k, V2.index('geopotential_at_surface')] / 9.80616,
                             Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')], storm=storm, ocean=C.get('ocean'), when=g,
                             **(landinit.land_kwargs(Z['f2'][k], V2) if C.get('land_init', True) else {}))
-            cr = M.with_params(cr, dict(mb['set'], sppt=mb['set'].get('sppt', 0.0) * float(C.get('sppt_scale', 2.4))) if m else mb['set'])
+            cr = M.with_params(cr, dict(mb['set'], sppt=mb['set'].get('sppt', 0.0) * float(C.get('sppt_scale', 1.0))) if m else mb['set'])   # member SPPT already x2.4 in live2.member (tuned); sppt_scale multiplies on top
             if m == 0: M.build(g, split=C.get('split', False))                                     # new start date (no recompile)
             st = M.dfi(st)
             if m:
