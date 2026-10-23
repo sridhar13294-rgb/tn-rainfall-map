@@ -1,6 +1,6 @@
-tn-wx-mfsh
-libm_wx2020_fields.npz
-python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"mf_sh80_t3h": {"conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005, "mf_dd": 0.5, "sh_top": 0.8, "tau_shallow": 10800.0}, "mf_sh70_t3h": {"conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005, "mf_dd": 0.5, "sh_top": 0.7, "tau_shallow": 10800.0}, "mf_shoff": {"conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005, "mf_dd": 0.5, "tau_shallow": 1.0e12}}'
+tn-wx-mfsh10
+libm_wx2020_fields.npz,wx_truth_2020.npz
+bash ../kaggle/par.sh wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/wx_mfsh.json /kaggle/working/wx
 NvidiaTeslaT4
 4
-#mass-flux repair: shallow-cloud mixing for the mass-flux scheme (cap 800/700 hPa, 3 h, off) with downdrafts 2026-10-23T12:48Z
+#general exam: repaired mass-flux (downdrafts, shallow cap 800 hPa or shallow off) 2026-10-23T13:01Z
