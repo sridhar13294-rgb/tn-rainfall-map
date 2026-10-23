@@ -1,6 +1,6 @@
-tn-tpu-bench
-libm_fields.npz
-python -W ignore gpu_bench.py /kaggle/working/libm_fields.npz /kaggle/working/bench.json T85,T170 120 Hamoon
-TpuV5E8
-1
-#TPU benchmark retry: v5e-8, JAX for TPU (earlier attempt fell back to CPU) 2026-10-23T10:52Z
+tn-wx-spin-mf
+libm_wx2020_fields.npz
+python -W ignore wx_energy.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/energy.json 2 '{"mf_sh0_k2wup": {"conv": "mf", "mf_kick_t": 1.0, "mf_kick_q": 0.001, "mf_wup": 10.0, "sh_top": 0.0, "tau_shallow": 3600.0, "ck": 0.0012}, "mf_sh0_dd": {"conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005, "sh_top": 0.0, "tau_shallow": 3600.0, "ck": 0.0012, "mf_dd": 0.3}, "rh75": {"rh_deep": 0.75, "ck": 0.0012}}'
+NvidiaTeslaT4
+6
+#GPU: rain spin-up for mass-flux variants and target humidity 0.75 (first job on account 6) 2026-10-23T10:57Z
