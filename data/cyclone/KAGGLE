@@ -1,6 +1,6 @@
-tn-wx-tend3
-libm_wx2020_fields.npz,wx_truth_2020.npz
-python -W ignore wx_tend.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz /kaggle/working/tend.json 6
+tn-wx-prof12
+libm_wx2020_fields.npz
+python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"ice03": {"bmj_ice": 0.3}, "ice05": {"bmj_ice": 0.5}, "ice05_ck12": {"bmj_ice": 0.5, "ck": 0.0012}}'
 NvidiaTeslaT4
-1
-#day-1 surface and 850 hPa errors with the new defaults (process switches) 2026-10-23T06:24Z
+3
+#freezing heat in the convection parcel (bmj_ice 0.3/0.5), with old evaporation 2026-10-23T07:26Z

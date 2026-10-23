@@ -40,11 +40,11 @@ DEFAULTS = dict(rh_deep=0.9, tau_deep=2400.0, tau_shallow=10800.0, tau_cmt=6 * 3
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='bmj', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='gray', rad_every=1,
-                mf_kick_t=0.0, mf_kick_q=0.0, mf_org=0.0, mf_wup=0.0, mf_dd=0.0, shallow='mse', sh_top=0.7, bmj_dt=0.5, rad_prm=None)
+                mf_kick_t=0.0, mf_kick_q=0.0, mf_org=0.0, mf_wup=0.0, mf_dd=0.0, shallow='mse', sh_top=0.7, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
-DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt', 'entr', 'mf_kick_t', 'mf_kick_q', 'mf_org', 'mf_wup', 'mf_dd', 'sh_top', 'bmj_dt')
+DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt', 'entr', 'mf_kick_t', 'mf_kick_q', 'mf_org', 'mf_wup', 'mf_dd', 'sh_top', 'bmj_dt', 'bmj_ice')
 NWAVE = 8
 class Model:
     def __init__(self, grid='T170', layers=32, dt_min=None, set_=None):
@@ -324,6 +324,11 @@ class Model:
         for _ in range(6):
             qs_ = qsat(Tm, p); ex = (100000.0 / p) ** KAP * jnp.exp(LV * qs_ / (CP * Tm))
             f_ = Tm * ex - the; df = ex * (1 + LV ** 2 * qs_ / (CP * RV * Tm ** 2) - LV * qs_ / (CP * Tm)); Tm = jnp.clip(Tm - f_ / df, 150.0, 350.0)
+        # freezing: above the 0 C level part of the cloud water freezes and gives up its latent heat of fusion (3.34e5 J/kg),
+        # warming the rising air (ignored by a liquid-only moist adiabat: tropical upper troposphere ~2-3 K too cold).
+        # bmj_ice = share of the condensed water that freezes in the updraft (the rest has rained out first).
+        fice = jnp.clip((273.15 - Tm) / 20.0, 0.0, 1.0); qs_m = qsat(Tm, p); gam_m = 1 + LV ** 2 * qs_m / (CP * RV * Tm ** 2)
+        Tm = Tm + S['bmj_ice'] * 3.34e5 * fice * jnp.maximum(qsrc[None] - qs_m, 0.0) / (CP * gam_m)
         Tp = jnp.where(qsrc < qsat(Td, p), Td, Tm)
         abovesrc = sig < jnp.take_along_axis(sig * jnp.ones_like(Tn), ksrc[None], axis=0)[0]
         buoy = (Tp > Tn) & abovesrc & (sig > 0.08)
