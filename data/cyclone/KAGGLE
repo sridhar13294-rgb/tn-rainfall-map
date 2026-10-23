@@ -1,6 +1,6 @@
-tn-wx-energy
-libm_wx2020_fields.npz
-python -W ignore wx_energy.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/energy.json 2
+tn-base-mf
+libm_fields.npz
+bash ../kaggle/par.sh hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/base_mf.json /kaggle/working/bt
 NvidiaTeslaT4
-3
-#does the dynamical core lose heat? physics off vs on, monotone vs not, 48 h 2026-10-23T09:30Z
+4
+#84 Bay storms with the mass-flux scheme (no shallow cap) 2026-10-23T09:31Z
