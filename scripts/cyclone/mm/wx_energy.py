@@ -9,6 +9,7 @@ import mm2, landinit
 LIB, OUT = sys.argv[1], sys.argv[2]; NS = int(sys.argv[3]) if len(sys.argv) > 3 else 2
 Z = dict(np.load(LIB)); TT = [str(t) for t in Z['times']]; V3 = [str(v) for v in Z['v3']]; V2 = [str(v) for v in Z['v2']]
 VARS = {'dyn_only': dict(phys_off=True), 'full': {}, 'full_split': dict(_split=True)}
+if len(sys.argv) > 4: VARS = json.loads(sys.argv[4])                      # named settings to compare
 BASE = dict(rad='radcloud', rad_every=2); res = {}
 for vn, vs in VARS.items():
     SPLIT = bool(vs.pop('_split', False)); M = mm2.Model('T85', 32, None, dict(BASE, **vs)); hor = M.coords.horizontal; res[vn] = []
