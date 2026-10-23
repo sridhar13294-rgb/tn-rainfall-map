@@ -1,0 +1,126 @@
+[{"stream_name":"stdout","time":0.87084388,"data":"+ nvidia-smi || true\n"}
+,{"stream_name":"stdout","time":0.925194298,"data":"Fri Oct 23 06:25:00 2026       \n"}
+,{"stream_name":"stdout","time":0.925253442,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":0.925259215,"data":"| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":0.925263476,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.925268037,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":0.925272292,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":0.925276927,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":0.925281598,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":0.99412717,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":0.994187353,"data":"| N/A   48C    P8             11W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":0.994194695,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":0.994200435,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.994205649,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":0.994210994,"data":"| N/A   38C    P8             11W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":0.994216468,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":0.994221249,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.994226004,"data":"\n"}
+,{"stream_name":"stdout","time":0.994231147,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":0.994235749,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":0.994240493,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":0.994245378,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":0.994250232,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":0.99510294,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":0.995122855,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.315308262,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1.31534767,"data":"+ pip install -q -U \"jax[cuda12]\"\n"}
+,{"stream_name":"stderr","time":29.748918177,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":29.748967263,"data":"bigframes 2.48.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":29.74897877,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stderr","time":29.748981713,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":29.748984317,"data":"gradio 6.26.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":29.74898683,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":29.748989373,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stdout","time":30.042269975,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":30.042304719,"data":"+ free -g; nproc; python -c \"import jax; print(jax.devices())\" || true\n"}
+,{"stream_name":"stdout","time":30.063026204,"data":"               total        used        free      shared  buff/cache   available\n"}
+,{"stream_name":"stdout","time":30.063056194,"data":"Mem:              31           1          23           0           7          30\n"}
+,{"stream_name":"stdout","time":30.063061656,"data":"Swap:              0           0           0\n"}
+,{"stream_name":"stdout","time":30.067243899,"data":"4\n"}
+,{"stream_name":"stdout","time":37.375389177,"data":"[CudaDevice(id=0), CudaDevice(id=1)]\n"}
+,{"stream_name":"stdout","time":40.546590247,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":40.546625338,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
+,{"stream_name":"stdout","time":50.806683558,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":50.806720359,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
+,{"stream_name":"stdout","time":60.936998164,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":60.937026776,"data":"+ curl -sSL -o libm_wx2020_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020_fields.npz\n"}
+,{"stream_name":"stdout","time":62.902855143,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":62.902889847,"data":"+ curl -sSL -o wx_truth_2020.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/wx_truth_2020.npz\n"}
+,{"stream_name":"stdout","time":81.053452641,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":81.053510212,"data":"setup s 80\n"}
+,{"stream_name":"stdout","time":81.053517953,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 python -W ignore wx_tend.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz /kaggle/working/tend.json 6 2\u003e\u00261 | tee job.log\n"}
+,{"stream_name":"stdout","time":148.978310957,"data":"2020-01-01T00 ctl {'t850': [1.84, -1.28], 't2': [2.17, 0.76]}\n"}
+,{"stream_name":"stdout","time":152.694327784,"data":"2020-01-01T00 no_deep {'t850': [1.84, -1.25], 't2': [2.18, 0.77]}\n"}
+,{"stream_name":"stdout","time":156.409332943,"data":"2020-01-01T00 no_shallow {'t850': [2.3, -1.71], 't2': [1.97, 0.0]}\n"}
+,{"stream_name":"stdout","time":160.134984307,"data":"2020-01-01T00 no_conv {'t850': [2.25, -1.63], 't2': [1.96, 0.06]}\n"}
+,{"stream_name":"stdout","time":163.868892622,"data":"2020-01-01T00 ck_low {'t850': [1.86, -1.42], 't2': [2.04, 0.48]}\n"}
+,{"stream_name":"stdout","time":167.611130866,"data":"2020-01-01T00 tau_sh2 {'t850': [1.81, -1.16], 't2': [2.25, 0.9]}\n"}
+,{"stream_name":"stdout","time":215.244061247,"data":"2020-01-01T00 shallow_theta {'t850': [3.36, 1.75], 't2': [2.94, 1.44]}\n"}
+,{"stream_name":"stdout","time":267.312942242,"data":"2020-01-01T00 mf_kick {'t850': [1.82, -1.26], 't2': [2.1, 0.36]}\n"}
+,{"stream_name":"stdout","time":320.694895679,"data":"2020-01-01T00 mf_kick_wup {'t850': [1.75, -1.15], 't2': [2.06, 0.2]}\n"}
+,{"stream_name":"stdout","time":325.426129838,"data":"2020-01-06T00 ctl {'t850': [1.86, -1.2], 't2': [2.22, 0.74]}\n"}
+,{"stream_name":"stdout","time":329.226885132,"data":"2020-01-06T00 no_deep {'t850': [1.84, -1.17], 't2': [2.22, 0.75]}\n"}
+,{"stream_name":"stdout","time":333.042121772,"data":"2020-01-06T00 no_shallow {'t850': [2.32, -1.58], 't2': [2.02, 0.06]}\n"}
+,{"stream_name":"stdout","time":336.867532975,"data":"2020-01-06T00 no_conv {'t850': [2.29, -1.53], 't2': [2.01, 0.1]}\n"}
+,{"stream_name":"stdout","time":340.703527173,"data":"2020-01-06T00 ck_low {'t850': [1.97, -1.37], 't2': [2.1, 0.49]}\n"}
+,{"stream_name":"stdout","time":344.545432423,"data":"2020-01-06T00 tau_sh2 {'t850': [1.83, -1.09], 't2': [2.31, 0.89]}\n"}
+,{"stream_name":"stdout","time":349.296361285,"data":"2020-01-06T00 shallow_theta {'t850': [3.16, 1.58], 't2': [2.95, 1.45]}\n"}
+,{"stream_name":"stdout","time":354.515106422,"data":"2020-01-06T00 mf_kick {'t850': [1.78, -1.21], 't2': [2.05, 0.29]}\n"}
+,{"stream_name":"stdout","time":359.753616976,"data":"2020-01-06T00 mf_kick_wup {'t850': [1.7, -1.09], 't2': [2.0, 0.17]}\n"}
+,{"stream_name":"stdout","time":364.539980415,"data":"2020-01-11T00 ctl {'t850': [2.03, -1.43], 't2': [2.31, 0.61]}\n"}
+,{"stream_name":"stdout","time":368.460696325,"data":"2020-01-11T00 no_deep {'t850': [2.02, -1.41], 't2': [2.31, 0.63]}\n"}
+,{"stream_name":"stdout","time":372.39303863,"data":"2020-01-11T00 no_shallow {'t850': [2.42, -1.84], 't2': [2.14, 0.01]}\n"}
+,{"stream_name":"stdout","time":376.335237826,"data":"2020-01-11T00 no_conv {'t850': [2.39, -1.79], 't2': [2.13, 0.07]}\n"}
+,{"stream_name":"stdout","time":380.274849963,"data":"2020-01-11T00 ck_low {'t850': [2.04, -1.62], 't2': [2.23, 0.41]}\n"}
+,{"stream_name":"stdout","time":384.206647929,"data":"2020-01-11T00 tau_sh2 {'t850': [1.97, -1.31], 't2': [2.4, 0.77]}\n"}
+,{"stream_name":"stdout","time":389.032453066,"data":"2020-01-11T00 shallow_theta {'t850': [3.1, 1.1], 't2': [3.02, 1.28]}\n"}
+,{"stream_name":"stdout","time":394.282298552,"data":"2020-01-11T00 mf_kick {'t850': [1.87, -1.35], 't2': [2.22, 0.23]}\n"}
+,{"stream_name":"stdout","time":399.528411389,"data":"2020-01-11T00 mf_kick_wup {'t850': [1.78, -1.24], 't2': [2.15, 0.06]}\n"}
+,{"stream_name":"stdout","time":404.276554263,"data":"2020-01-16T00 ctl {'t850': [2.2, -1.49], 't2': [2.32, 0.62]}\n"}
+,{"stream_name":"stdout","time":408.157907643,"data":"2020-01-16T00 no_deep {'t850': [2.19, -1.46], 't2': [2.32, 0.64]}\n"}
+,{"stream_name":"stdout","time":412.034217296,"data":"2020-01-16T00 no_shallow {'t850': [2.54, -1.94], 't2': [2.07, -0.04]}\n"}
+,{"stream_name":"stdout","time":415.907978509,"data":"2020-01-16T00 no_conv {'t850': [2.52, -1.86], 't2': [2.08, 0.03]}\n"}
+,{"stream_name":"stdout","time":419.77982192,"data":"2020-01-16T00 ck_low {'t850': [2.25, -1.72], 't2': [2.24, 0.44]}\n"}
+,{"stream_name":"stdout","time":423.648666065,"data":"2020-01-16T00 tau_sh2 {'t850': [2.13, -1.36], 't2': [2.43, 0.78]}\n"}
+,{"stream_name":"stdout","time":428.382681227,"data":"2020-01-16T00 shallow_theta {'t850': [3.39, 1.43], 't2': [3.21, 1.37]}\n"}
+,{"stream_name":"stdout","time":433.571286275,"data":"2020-01-16T00 mf_kick {'t850': [2.06, -1.36], 't2': [2.28, 0.26]}\n"}
+,{"stream_name":"stdout","time":438.794866805,"data":"2020-01-16T00 mf_kick_wup {'t850': [1.98, -1.25], 't2': [2.23, 0.05]}\n"}
+,{"stream_name":"stdout","time":443.559154598,"data":"2020-01-21T00 ctl {'t850': [2.2, -1.47], 't2': [2.23, 0.57]}\n"}
+,{"stream_name":"stdout","time":447.443980785,"data":"2020-01-21T00 no_deep {'t850': [2.19, -1.43], 't2': [2.23, 0.6]}\n"}
+,{"stream_name":"stdout","time":451.334348611,"data":"2020-01-21T00 no_shallow {'t850': [2.52, -1.86], 't2': [2.02, -0.06]}\n"}
+,{"stream_name":"stdout","time":455.22336564,"data":"2020-01-21T00 no_conv {'t850': [2.51, -1.81], 't2': [2.0, -0.01]}\n"}
+,{"stream_name":"stdout","time":459.11874331,"data":"2020-01-21T00 ck_low {'t850': [2.2, -1.59], 't2': [2.2, 0.39]}\n"}
+,{"stream_name":"stdout","time":463.015888772,"data":"2020-01-21T00 tau_sh2 {'t850': [2.15, -1.36], 't2': [2.32, 0.73]}\n"}
+,{"stream_name":"stdout","time":467.782918896,"data":"2020-01-21T00 shallow_theta {'t850': [3.22, 1.36], 't2': [3.04, 1.29]}\n"}
+,{"stream_name":"stdout","time":473.037391889,"data":"2020-01-21T00 mf_kick {'t850': [2.03, -1.37], 't2': [2.21, 0.25]}\n"}
+,{"stream_name":"stdout","time":478.283672152,"data":"2020-01-21T00 mf_kick_wup {'t850': [2.01, -1.31], 't2': [2.19, 0.18]}\n"}
+,{"stream_name":"stdout","time":483.050288047,"data":"2020-01-26T00 ctl {'t850': [2.16, -1.55], 't2': [2.31, 0.59]}\n"}
+,{"stream_name":"stdout","time":486.945185435,"data":"2020-01-26T00 no_deep {'t850': [2.16, -1.53], 't2': [2.32, 0.6]}\n"}
+,{"stream_name":"stdout","time":490.838183069,"data":"2020-01-26T00 no_shallow {'t850': [2.53, -1.95], 't2': [2.14, -0.12]}\n"}
+,{"stream_name":"stdout","time":494.729044775,"data":"2020-01-26T00 no_conv {'t850': [2.52, -1.91], 't2': [2.14, -0.06]}\n"}
+,{"stream_name":"stdout","time":498.620730131,"data":"2020-01-26T00 ck_low {'t850': [2.18, -1.68], 't2': [2.21, 0.32]}\n"}
+,{"stream_name":"stdout","time":502.509998063,"data":"2020-01-26T00 tau_sh2 {'t850': [2.15, -1.49], 't2': [2.41, 0.74]}\n"}
+,{"stream_name":"stdout","time":507.276150999,"data":"2020-01-26T00 shallow_theta {'t850': [3.02, 1.42], 't2': [3.11, 1.34]}\n"}
+,{"stream_name":"stdout","time":512.489407341,"data":"2020-01-26T00 mf_kick {'t850': [2.06, -1.53], 't2': [2.33, 0.28]}\n"}
+,{"stream_name":"stdout","time":517.705482202,"data":"2020-01-26T00 mf_kick_wup {'t850': [2.02, -1.47], 't2': [2.28, 0.25]}\n"}
+,{"stream_name":"stdout","time":517.725231222,"data":"ctl t850 trop/india/TN [2.05, -1.4] [2.03, -0.7] [1.38, -1.14] t2 globe [4.19, 1.49]\n"}
+,{"stream_name":"stdout","time":517.725261976,"data":"no_deep t850 trop/india/TN [2.04, -1.38] [2.05, -0.7] [1.4, -1.15] t2 globe [4.2, 1.51]\n"}
+,{"stream_name":"stdout","time":517.725267355,"data":"no_shallow t850 trop/india/TN [2.44, -1.81] [2.36, -1.29] [2.31, -2.01] t2 globe [4.14, 1.01]\n"}
+,{"stream_name":"stdout","time":517.725270736,"data":"no_conv t850 trop/india/TN [2.41, -1.76] [2.38, -1.29] [2.33, -2.02] t2 globe [4.16, 1.05]\n"}
+,{"stream_name":"stdout","time":517.725273974,"data":"ck_low t850 trop/india/TN [2.08, -1.57] [2.01, -0.7] [1.59, -1.36] t2 globe [4.0, 1.18]\n"}
+,{"stream_name":"stdout","time":517.725277403,"data":"tau_sh2 t850 trop/india/TN [2.01, -1.3] [2.08, -0.68] [1.31, -1.08] t2 globe [4.22, 1.6]\n"}
+,{"stream_name":"stdout","time":517.72528061,"data":"shallow_theta t850 trop/india/TN [3.21, 1.44] [3.74, 2.7] [4.68, 4.56] t2 globe [4.61, 2.17]\n"}
+,{"stream_name":"stdout","time":517.725283726,"data":"mf_kick t850 trop/india/TN [1.94, -1.35] [1.91, -0.59] [1.37, -1.06] t2 globe [4.13, 1.24]\n"}
+,{"stream_name":"stdout","time":517.725286864,"data":"mf_kick_wup t850 trop/india/TN [1.87, -1.25] [1.78, -0.49] [1.09, -0.57] t2 globe [4.05, 1.08]\n"}
+,{"stream_name":"stdout","time":520.181254615,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":520.18131296,"data":"+ rm -rf repo libm_wx2020_fields.npz wx_truth_2020.npz\n"}
+,{"stream_name":"stdout","time":520.395928883,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":520.395956316,"data":"total s 520\n"}
+,{"stream_name":"stderr","time":522.687299846,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":522.687334056,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":522.984091337,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":522.984119438,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":523.850614672,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":524.822098176,"data":"[NbConvertApp] Writing 279407 bytes to __results__.html\n"}
+]
