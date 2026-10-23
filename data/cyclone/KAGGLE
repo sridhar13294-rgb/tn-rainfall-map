@@ -1,6 +1,6 @@
-tn-ens-spread3
-libm_fields.npz
-bash ../kaggle/par.sh hindens2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/ens_spread3.json /kaggle/working/ens
+tn-wx-prof2
+libm_wx2020_fields.npz
+python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"ctl": {}, "sh70": {"sh_top": 0.7}, "tsh3h": {"tau_shallow": 10800}, "sh70_tsh3h": {"sh_top": 0.7, "tau_shallow": 10800}}'
 NvidiaTeslaT4
-5
-#ensemble spread round 3: SPPT x2.4 (48 h spread short) 2026-10-23T00:11Z
+3
+#shallow cloud depth cap and slower shallow mixing: column profiles (cap at 700 hPa) 2026-10-23T01:14Z

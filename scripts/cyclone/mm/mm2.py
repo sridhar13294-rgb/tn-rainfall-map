@@ -40,11 +40,11 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='bmj', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='gray', rad_every=1,
-                mf_kick_t=0.0, mf_kick_q=0.0, mf_org=0.0, mf_wup=0.0, mf_dd=0.0, shallow='mse')
+                mf_kick_t=0.0, mf_kick_q=0.0, mf_org=0.0, mf_wup=0.0, mf_dd=0.0, shallow='mse', sh_top=0.0)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
-DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt', 'entr', 'mf_kick_t', 'mf_kick_q', 'mf_org', 'mf_wup', 'mf_dd')
+DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt', 'entr', 'mf_kick_t', 'mf_kick_q', 'mf_org', 'mf_wup', 'mf_dd', 'sh_top')
 NWAVE = 8
 class Model:
     def __init__(self, grid='T170', layers=32, dt_min=None, set_=None):
@@ -347,7 +347,7 @@ class Model:
             mth = ((th * mass) * sreg).sum(0) / jnp.maximum((mass * sreg).sum(0), 1.0); mq = ((qn * mass) * sreg).sum(0) / jnp.maximum((mass * sreg).sum(0), 1.0)
             dTs = jnp.where(sreg, relax(th, mth, S['tau_shallow'], dt) * (p / ps) ** KAP, 0.0); dqs = jnp.where(sreg, relax(qn, mq, S['tau_shallow'], dt), 0.0)
         else:                                                                                        # mixes moist static energy h = cp T + g z + L q and water: column
-            sreg = shallow[None] & (sig >= sig_top)                                                  # energy and water conserved exactly (no rain from shallow cloud)
+            sreg = shallow[None] & (sig >= jnp.maximum(sig_top, S['sh_top']))                       # energy and water conserved exactly (no rain from shallow cloud); sh_top caps its depth
             hs_ = CP * Tn + G * zc + LV * qn; msum = jnp.maximum((mass * sreg).sum(0), 1.0)
             mh = ((hs_ * mass) * sreg).sum(0) / msum; mq = ((qn * mass) * sreg).sum(0) / msum
             dhs = jnp.where(sreg, relax(hs_, mh, S['tau_shallow'], dt), 0.0); dqs = jnp.where(sreg, relax(qn, mq, S['tau_shallow'], dt), 0.0)
