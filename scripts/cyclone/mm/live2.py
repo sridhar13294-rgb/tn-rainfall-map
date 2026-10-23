@@ -15,7 +15,7 @@ HOURS = 168
 def lvl(x): return min(2, int(x * 3))
 FACTORS = [('Starting state: share of ECMWF analysis (when available)', ['GFS side', 'between', 'ECMWF side']),
            ('Starting state: growing differences (bred vectors)', ['pattern set A', 'set B', 'set C']),
-           ('Humidity convection leaves', ['70-77%', '77-83%', '83-90%']),
+           ('Convection: plume mixing and trigger kick', ['strong mixing, small kick', 'standard', 'weak mixing, big kick']),
            ('Convection time scale', ['fast', 'medium', 'slow']),
            ('Sea-surface heat and moisture exchange', ['20% less', 'standard', '20% more']),
            ('Ocean stirring under the storm', ['weak', 'medium', 'strong']),
@@ -24,7 +24,7 @@ FACTORS = [('Starting state: share of ECMWF analysis (when available)', ['GFS si
 def member(k):
     if k == 0: return dict(h=[0.5] * 8, alpha=0.0, set={})
     h = [halton(k, b) for b in (2, 3, 5, 7, 11, 13, 17, 19)]
-    return dict(h=h, alpha=-0.5 + 2.0 * h[0], set=dict(rh_deep=0.7 + 0.2 * h[2], tau_deep=1800 + 3600 * h[3], ck=1.2e-3 * (0.8 + 0.4 * h[4]), ent=0.3 + 0.6 * h[5],
+    return dict(h=h, alpha=-0.5 + 2.0 * h[0], set=dict(entr=1.5e-4 * (0.5 + 1.0 * h[2]), mf_kick_t=0.5 * (0.5 + 1.0 * h[2]), tau_deep=1800 + 3600 * h[3], ck=1.2e-3 * (0.8 + 0.4 * h[4]), ent=0.3 + 0.6 * h[5],
                                                         k_evap=2e-5 * (0.5 + h[6]), sppt=2.4 * (0.1 + 0.2 * h[7]), sppt_seed=1000 + k))
 def run(LIVEM, LIVE, PART, NPART, OUT, CFG=None):
     import mm2, landinit, jax.numpy as jnp
