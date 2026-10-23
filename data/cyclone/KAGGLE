@@ -1,6 +1,6 @@
-tn-wx-mfdd
+tn-wx-mfhyb
 libm_wx2020_fields.npz
-python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"mf_dd3": {\"conv\": \"mf\", \"mf_kick_t\": 0.5, \"mf_kick_q\": 0.0005, \"sh_top\": 0.0, \"tau_shallow\": 3600.0, "mf_dd": 0.3}, "mf_dd5": {\"conv\": \"mf\", \"mf_kick_t\": 0.5, \"mf_kick_q\": 0.0005, \"sh_top\": 0.0, \"tau_shallow\": 3600.0, "mf_dd": 0.5}, "mf_dd5_ice": {\"conv\": \"mf\", \"mf_kick_t\": 0.5, \"mf_kick_q\": 0.0005, \"sh_top\": 0.0, \"tau_shallow\": 3600.0, "mf_dd": 0.5, "mf_ice": 1.0}}'
+python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"mf_hybrid": {\"conv\": \"mf\", \"mf_kick_t\": 0.5, \"mf_kick_q\": 0.0005, \"sh_top\": 0.0, \"tau_shallow\": 3600.0, "mf_closure": "hybrid"}, "mf_hybrid_dd": {\"conv\": \"mf\", \"mf_kick_t\": 0.5, \"mf_kick_q\": 0.0005, \"sh_top\": 0.0, \"tau_shallow\": 3600.0, "mf_closure": "hybrid", "mf_dd": 0.3}, "mf_entr1": {\"conv\": \"mf\", \"mf_kick_t\": 0.5, \"mf_kick_q\": 0.0005, \"sh_top\": 0.0, \"tau_shallow\": 3600.0, "entr": 1.0e-4}}'
 NvidiaTeslaT4
-4
-#mass-flux repair: rain-cooled downdrafts against the warm dry boundary layer (+3.5 K, -2.8 g/kg) 2026-10-23T12:33Z
+5
+#mass-flux repair: moisture-convergence closure, weaker entrainment 2026-10-23T12:34Z
