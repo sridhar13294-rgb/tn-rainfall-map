@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-23T03:13:03.329953+00:00",
+ "updated": "2026-10-23T04:10:54.609971+00:00",
  "method": "quantile",
  "cut_mm_h": 20.64,
  "scale": 0.065,
@@ -47,14 +47,14 @@
  "radar_p90": 6.6,
  "radars": {
   "Chennai": {
-   "working": true,
-   "scan_utc": "2026-10-23T02:34:00+00:00",
-   "note": ""
+   "working": false,
+   "scan_utc": null,
+   "note": "download failed: <urlopen error timed out>"
   },
   "Karaikal": {
    "working": false,
    "scan_utc": "2026-10-22T11:24:26+00:00",
-   "note": "picture is 949 min old (radar probably not working)"
+   "note": "picture is 1006 min old (radar probably not working)"
   }
  },
  "gauge_fit": {
@@ -63,6 +63,6 @@
   "ets": 0.42,
   "bias": 1.03,
   "mae": 7.0,
-  "updated": "2026-10-23T03:13:03.329953+00:00"
+  "updated": "2026-10-23T04:10:54.609971+00:00"
  }
 }
