@@ -47,7 +47,7 @@ def forcing_at(F, n, Ts, lam):
     return tx, ty, qns, sw, emp
 
 
-def run_columns(G, clim, i0, i1, lam, mode, dt_s=3600.0):
+def run_columns(G, clim, i0, i1, lam, mode, dt_s=3600.0, prm=None):
     LO, LA = np.meshgrid(G['lon'], G['lat'], indexing='ij'); sst = G['sst']
     sea = np.isfinite(sst[i0:i1 + 1]).all(0); sst0 = np.where(sea, sst[i0], 0.0)
     st = {k: v.astype(float) for k, v in oc.profile_from_clim(clim, G['times'][i0], LA, LO, sst0, sea).items()}
@@ -64,7 +64,7 @@ def run_columns(G, clim, i0, i1, lam, mode, dt_s=3600.0):
             sw = np.where(mean6 > 1e-3, sw * shp / np.maximum(mean6, 1e-3), sw)
             st, _ = oc.step(st, np.where(sea, qns, 0), np.where(sea, sw, 0), tx, ty, f, dt_s, mask=sea, fw=np.where(sea, emp, 0))
             if mode == 'rgo':
-                rg = rgo.step(rg, tx, ty, rgg, dt_s); st = cu.step(st, tx, ty, f, g, dt_s, q=rgo.column_transports(rg, rgg, g, tx, ty, f))
+                rg = rgo.step(rg, tx, ty, rgg, dt_s, prm=prm); st = cu.step(st, tx, ty, f, g, dt_s, prm=prm, q=rgo.column_transports(rg, rgg, g, tx, ty, f, prm=prm))
     return np.where(sea, st['T'][0] - sst0, 0.0), sea, LA, LO
 
 
@@ -89,10 +89,12 @@ if __name__ == '__main__':
     G = box(F, 0.0, 30.0, 40.0, 105.0); LO, LA = np.meshgrid(G['lon'], G['lat'], indexing='ij')
     dobs = np.nan_to_num(G['sst'][i1] - G['sst'][i0]); R = dict(year=year, runs={})
     sea0 = np.isfinite(G['sst'][i0:i1 + 1]).all(0); R['era5'] = scores(np.where(sea0, dobs, 0), np.where(sea0, dobs, 0), sea0, LA, LO)
-    for mode in ('column', 'rgo'):
-        for lam in (30.0, 0.0):
-            t = time.time(); dm, sea, LA, LO = run_columns(G, clim, i0, i1, lam, mode)
-            k = '%s lam=%g' % (mode, lam); R['runs'][k] = scores(dm, np.where(sea, dobs, 0), sea, LA, LO); R['runs'][k]['cpu_s'] = round(time.time() - t, 1)
+    runs = [('column', 30.0, None, 'column'), ('rgo', 30.0, None, 'rgo'), ('rgo', 30.0, dict(r_ek=1.0), 'rgo no ekman shear'),
+            ('rgo', 30.0, dict(r_ek=1.0, kh=2000.0), 'rgo no shear kh2000'), ('column', 0.0, None, 'column'), ('rgo', 0.0, dict(r_ek=1.0), 'rgo no ekman shear')]
+    if 'skipcol' in sys.argv[2:]: runs = []
+    for mode, lam, prm, name in runs:
+            t = time.time(); dm, sea, LA, LO = run_columns(G, clim, i0, i1, lam, mode, prm=prm)
+            k = '%s lam=%g' % (name, lam); R['runs'][k] = scores(dm, np.where(sea, dobs, 0), sea, LA, LO); R['runs'][k]['cpu_s'] = round(time.time() - t, 1)
             print(k, R['runs'][k], flush=True); json.dump(R, open(out, 'w'), indent=1)
     if 'veros' in sys.argv[2:]:
         try:

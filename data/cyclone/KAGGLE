@@ -1,6 +1,6 @@
-tn-oc-era5mon
+tn-oc-era5mon2
 ocean_clim.npz
 pip install -q veros h5netcdf loguru gcsfs zarr xarray 2>&1 | tail -3; cp /kaggle/working/ocean_clim.npz . ; VEROS_BACKEND=jax VEROS_DEVICE=gpu VEROS_FLOAT_TYPE=float32 VEROS_DISKLESS_MODE=1 VEROS_FORCE_OVERWRITE=1 VEROS_LOGLEVEL=warning python -W ignore ../../ocean3d/era5_ocean_test.py /kaggle/working/era5_ocean.json veros 2019
 NvidiaTeslaT4
 7
-#Stage 2 ocean: ERA5-forced monsoon 2019, columns vs reduced-gravity vs Veros 2deg (account 7)
+#Stage 2 ocean: ERA5 monsoon 2019 rerun (Veros fix, no-shear layer variants), account 7

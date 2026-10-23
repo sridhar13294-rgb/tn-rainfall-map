@@ -39,14 +39,16 @@ class VerosOcean:
         from veros import veros_routine, veros_kernel, KernelOutput
         from veros.core.operators import numpy as npx, update, at
         from veros.setups.global_flexible import GlobalFlexibleResolutionSetup as Base
+        from veros.setups.global_flexible.global_flexible import set_forcing_kernel
         outer = self; self.LA, self.LO = np.asarray(lat2d, float), np.asarray(lon2d, float); self.sea = np.asarray(sea, bool)
         self.ext = None                                                              # None: climatological forcing
 
         class Coupled(Base):
             @veros_routine
             def set_forcing(self_, state):
-                if outer.ext is None: return Base.set_forcing(self_, state)
-                vs = state.variables; s = state.settings; cp0 = 3991.86795711963; F = outer.ext
+                vs = state.variables
+                if outer.ext is None: vs.update(set_forcing_kernel(state)); return
+                s = state.settings; cp0 = 3991.86795711963; F = outer.ext
                 vs.surface_taux = update(vs.surface_taux, at[2:-2, 2:-2], F['taux'])
                 vs.surface_tauy = update(vs.surface_tauy, at[2:-2, 2:-2], F['tauy'])
                 if s.enable_tke:
