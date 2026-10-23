@@ -1,0 +1,84 @@
+[{"stream_name":"stdout","time":0.858876785,"data":"+ nvidia-smi || true\n"}
+,{"stream_name":"stdout","time":0.917209939,"data":"Fri Oct 23 10:35:20 2026       \n"}
+,{"stream_name":"stdout","time":0.917236691,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":0.917242978,"data":"| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":0.917248139,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.91725265,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":0.917257455,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":0.917261691,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":0.917266834,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":0.984010865,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":0.984041029,"data":"| N/A   32C    P8              9W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":0.984044883,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":0.984047441,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.984050239,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":0.984052713,"data":"| N/A   33C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":0.984055057,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":0.984057636,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.985745721,"data":"\n"}
+,{"stream_name":"stdout","time":0.985758728,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":0.985762815,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":0.985766317,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":0.985769843,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":0.985773822,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":0.987242426,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":0.98725544,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.315312816,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1.315478374,"data":"+ pip install -q -U \"jax[cuda12]\"\n"}
+,{"stream_name":"stderr","time":38.341920705,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":38.341958461,"data":"bigframes 2.48.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":38.341964777,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stderr","time":38.341969425,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":38.341973598,"data":"gradio 6.26.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":38.34197776,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":38.341981767,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stdout","time":38.583009892,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":38.5830441,"data":"+ free -g; nproc; python -c \"import jax; print(jax.devices())\" || true\n"}
+,{"stream_name":"stdout","time":38.606929951,"data":"               total        used        free      shared  buff/cache   available\n"}
+,{"stream_name":"stdout","time":38.606957253,"data":"Mem:              31           1          23           0           7          30\n"}
+,{"stream_name":"stdout","time":38.606962583,"data":"Swap:              0           0           0\n"}
+,{"stream_name":"stdout","time":38.610852214,"data":"4\n"}
+,{"stream_name":"stdout","time":45.832859361,"data":"[CudaDevice(id=0), CudaDevice(id=1)]\n"}
+,{"stream_name":"stdout","time":49.207464372,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":49.207502116,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
+,{"stream_name":"stdout","time":58.521258512,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":58.521295315,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
+,{"stream_name":"stdout","time":67.73926174,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":67.739292217,"data":"+ curl -sSL -o libm_wx2020_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020_fields.npz\n"}
+,{"stream_name":"stdout","time":72.774531523,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":72.77456485,"data":"setup s 72\n"}
+,{"stream_name":"stdout","time":72.774570362,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{\"ice05_ck15z_rh8\": {\"bmj_ice\": 0.5, \"ck_z\": 1.0, \"rh_deep\": 0.8}, \"gray\": {\"rad\": \"gray\"}}' 2\u003e\u00261 | tee job.log\n"}
+,{"stream_name":"stdout","time":155.157833279,"data":"ice05_ck15z_rh8 2020-01-01T00 d5 T bias tropics {50: 0.09, 100: 7.24, 150: -0.6, 200: -2.93, 250: -2.99, 300: -2.73, 400: -1.8, 500: -1.36, 600: -1.76, 700: -3.27, 850: -3.0, 925: -0.86, 1000: 0.66} rad [3.571, 0.275, 0.031, -0.449, -1.779, -1.454, -0.781, -0.732, -0.83, -0.963, -1.15, -1.173, -1.211, -1.263, -1.398, -1.55, -1.824, -2.105, -2.321, -5.862, -2.88, -1.733, -0.743, -0.217, -0.282, -0.133, -0.003, 0.057, -0.102, -0.441, -0.877, -2.765] rain 7.21 olr 220.1 lwdn 425.4 swsfc 99.9 LH 161.4 SH -2.5 radcol -112.2 GLOBE {'rain_Wm2': 128.0, 'LH': 113.6, 'SH': -1.2, 'radcol': -113.3, 'physcol': -1.0, 'olr': 210.5}\n"}
+,{"stream_name":"stdout","time":178.237002251,"data":"ice05_ck15z_rh8 2020-01-06T00 d5 T bias tropics {50: -0.09, 100: 6.85, 150: -0.66, 200: -3.23, 250: -3.14, 300: -2.69, 400: -1.95, 500: -1.51, 600: -1.4, 700: -3.23, 850: -2.83, 925: -0.83, 1000: 0.67} rad [3.611, 0.292, 0.047, -0.444, -1.764, -1.543, -0.683, -0.59, -0.723, -0.911, -1.116, -1.142, -1.183, -1.252, -1.324, -1.53, -1.754, -2.102, -2.634, -6.489, -2.689, -1.431, -0.7, -0.183, 0.024, -0.083, -0.424, -0.089, -0.139, -0.48, -0.929, -2.925] rain 6.8 olr 219.7 lwdn 426.3 swsfc 89.7 LH 154.6 SH -4.4 radcol -111.7 GLOBE {'rain_Wm2': 125.5, 'LH': 110.1, 'SH': -1.7, 'radcol': -113.0, 'physcol': -3.8, 'olr': 208.7}\n"}
+,{"stream_name":"stdout","time":201.394973198,"data":"ice05_ck15z_rh8 2020-01-11T00 d5 T bias tropics {50: -0.0, 100: 6.83, 150: -0.75, 200: -3.07, 250: -3.14, 300: -2.79, 400: -2.18, 500: -1.76, 600: -1.89, 700: -3.55, 850: -2.74, 925: -0.82, 1000: 0.47} rad [3.668, 0.305, 0.032, -0.467, -1.721, -1.514, -0.701, -0.601, -0.765, -0.935, -1.128, -1.157, -1.175, -1.227, -1.342, -1.495, -1.843, -2.449, -2.756, -7.052, -1.926, -1.169, -0.274, 0.044, -0.025, -0.38, -0.278, 0.022, -0.232, -0.565, -0.999, -3.176] rain 6.81 olr 220.7 lwdn 426.9 swsfc 83.3 LH 153.8 SH -3.5 radcol -111.5 GLOBE {'rain_Wm2': 127.7, 'LH': 111.6, 'SH': -0.5, 'radcol': -112.7, 'physcol': -0.3, 'olr': 209.4}\n"}
+,{"stream_name":"stdout","time":224.587191236,"data":"ice05_ck15z_rh8 2020-01-16T00 d5 T bias tropics {50: 0.07, 100: 6.98, 150: -0.78, 200: -2.83, 250: -2.89, 300: -2.5, 400: -1.82, 500: -1.44, 600: -1.65, 700: -3.44, 850: -3.01, 925: -1.0, 1000: 0.57} rad [3.654, 0.303, 0.036, -0.531, -1.684, -1.507, -0.757, -0.609, -0.739, -0.939, -1.089, -1.109, -1.172, -1.246, -1.373, -1.669, -1.865, -2.244, -2.748, -6.565, -2.068, -1.086, -0.185, -0.05, -0.338, -0.618, -0.757, -0.366, -0.248, -0.54, -0.967, -3.088] rain 5.93 olr 223.1 lwdn 426.9 swsfc 94.5 LH 138.8 SH -3.4 radcol -113.9 GLOBE {'rain_Wm2': 117.0, 'LH': 102.7, 'SH': -1.1, 'radcol': -114.7, 'physcol': -13.6, 'olr': 211.4}\n"}
+,{"stream_name":"stdout","time":279.486848355,"data":"ice05_ck15z_rh8 tropics mean d5 T bias {50: 0.01, 100: 6.98, 150: -0.7, 200: -3.02, 250: -3.04, 300: -2.68, 400: -1.94, 500: -1.52, 600: -1.68, 700: -3.37, 850: -2.9, 925: -0.88, 1000: 0.59}\n"}
+,{"stream_name":"stdout","time":279.486896483,"data":"ice05_ck15z_rh8 tropics mean d5 q bias g/kg {50: 0.0, 100: 0.0, 150: 0.0, 200: 0.0, 250: 0.1, 300: 0.1, 400: 0.1, 500: -0.08, 600: -0.05, 700: 0.85, 850: 0.5, 925: -0.92, 1000: -0.95}\n"}
+,{"stream_name":"stdout","time":279.486908227,"data":"ice05_ck15z_rh8 india mean d5 T bias {50: -1.15, 100: 4.88, 150: 0.16, 200: -1.41, 250: -0.95, 300: -0.32, 400: -1.23, 500: -1.48, 600: -0.29, 700: -0.79, 850: -0.5, 925: 1.47, 1000: 4.67}\n"}
+,{"stream_name":"stdout","time":279.486912055,"data":"ice05_ck15z_rh8 india mean d5 q bias g/kg {50: 0.0, 100: 0.0, 150: 0.0, 200: 0.0, 250: 0.08, 300: 0.08, 400: 0.05, 500: 0.05, 600: 0.33, 700: 1.27, 850: 2.23, 925: 1.35, 1000: 1.88}\n"}
+,{"stream_name":"stdout","time":279.486915706,"data":"ice05_ck15z_rh8 rad K/day by sigma {0.021700000390410423: 3.63, 0.06459999829530716: 0.29, 0.10679999738931656: 0.04, 0.14820000529289246: -0.47, 0.18889999389648438: -1.74, 0.22869999706745148: -1.5, 0.2678000032901764: -0.73, 0.3061000108718872: -0.63, 0.34360000491142273: -0.76, 0.38029998540878296: -0.94, 0.41620001196861267: -1.12, 0.4514000117778778: -1.15, 0.48570001125335693: -1.19, 0.5192999839782715: -1.25, 0.5521000027656555: -1.36, 0.5842000246047974: -1.56, 0.6154000163078308: -1.82, 0.6459000110626221: -2.22, 0.675599992275238: -2.61, 0.7045000195503235: -6.49, 0.7325999736785889: -2.39, 0.7599999904632568: -1.35, 0.7864999771118164: -0.48, 0.8123000264167786: -0.1, 0.8373000025749207: -0.16, 0.8615000247955322: -0.3, 0.8849999904632568: -0.37, 0.9075999855995178: -0.09, 0.9294999837875366: -0.18, 0.9506000280380249: -0.51, 0.9708999991416931: -0.94, 0.9904000163078308: -2.99}\n"}
+,{"stream_name":"stdout","time":279.486922156,"data":"ice05_ck15z_rh8 phys K/day by sigma {0.021700000390410423: 0.02, 0.06459999829530716: -0.1, 0.10679999738931656: -0.33, 0.14820000529289246: -0.31, 0.18889999389648438: -0.71, 0.22869999706745148: -0.16, 0.2678000032901764: 1.0, 0.3061000108718872: 1.61, 0.34360000491142273: 1.8, 0.38029998540878296: 1.83, 0.41620001196861267: 1.54, 0.4514000117778778: 1.35, 0.48570001125335693: 1.19, 0.5192999839782715: 1.02, 0.5521000027656555: 0.84, 0.5842000246047974: 0.68, 0.6154000163078308: 0.57, 0.6459000110626221: 0.46, 0.675599992275238: 0.49, 0.7045000195503235: -2.75, 0.7325999736785889: -0.54, 0.7599999904632568: 0.12, 0.7864999771118164: 0.4, 0.8123000264167786: 0.33, 0.8373000025749207: 0.21, 0.8615000247955322: 0.07, 0.8849999904632568: -0.07, 0.9075999855995178: 0.12, 0.9294999837875366: 0.46, 0.9506000280380249: 0.9, 0.9708999991416931: 1.12, 0.9904000163078308: 1.32}\n"}
+,{"stream_name":"stdout","time":279.486935463,"data":"gray 2020-01-01T00 d5 T bias tropics {50: -1.15, 100: 7.73, 150: 5.05, 200: 4.05, 250: 3.3, 300: 2.53, 400: 1.86, 500: 1.69, 600: 1.39, 700: 0.64, 850: 2.7, 925: 4.07, 1000: 4.08} rad None rain 4.15 olr None lwdn 459.2 swsfc 102.6 LH 118.5 SH -25.3 radcol None GLOBE {'rain_Wm2': 87.2, 'LH': 88.8, 'SH': -18.4, 'radcol': None, 'physcol': 58.0, 'olr': None}\n"}
+,{"stream_name":"stdout","time":299.16591201,"data":"gray 2020-01-06T00 d5 T bias tropics {50: -1.12, 100: 7.54, 150: 4.78, 200: 3.29, 250: 2.48, 300: 1.9, 400: 1.12, 500: 1.02, 600: 1.22, 700: 0.57, 850: 2.98, 925: 4.2, 1000: 3.95} rad None rain 4.8 olr None lwdn 460.0 swsfc 100.9 LH 107.6 SH -23.4 radcol None GLOBE {'rain_Wm2': 93.8, 'LH': 84.4, 'SH': -17.5, 'radcol': None, 'physcol': 65.8, 'olr': None}\n"}
+,{"stream_name":"stdout","time":318.849842097,"data":"gray 2020-01-11T00 d5 T bias tropics {50: -0.86, 100: 7.28, 150: 4.3, 200: 3.49, 250: 2.68, 300: 1.98, 400: 1.16, 500: 0.97, 600: 1.11, 700: 0.46, 850: 2.87, 925: 4.14, 1000: 3.86} rad None rain 3.22 olr None lwdn 461.7 swsfc 104.3 LH 115.8 SH -24.0 radcol None GLOBE {'rain_Wm2': 86.6, 'LH': 87.6, 'SH': -17.0, 'radcol': None, 'physcol': 60.1, 'olr': None}\n"}
+,{"stream_name":"stdout","time":338.551829273,"data":"gray 2020-01-16T00 d5 T bias tropics {50: -0.97, 100: 7.74, 150: 4.35, 200: 3.58, 250: 2.8, 300: 2.16, 400: 1.22, 500: 0.86, 600: 1.07, 700: 0.52, 850: 3.09, 925: 4.51, 1000: 4.02} rad None rain 3.28 olr None lwdn 462.6 swsfc 109.8 LH 92.8 SH -21.1 radcol None GLOBE {'rain_Wm2': 77.0, 'LH': 76.3, 'SH': -15.3, 'radcol': None, 'physcol': 53.0, 'olr': None}\n"}
+,{"stream_name":"stdout","time":338.554521885,"data":"gray tropics mean d5 T bias {50: -1.03, 100: 7.57, 150: 4.62, 200: 3.61, 250: 2.82, 300: 2.14, 400: 1.34, 500: 1.13, 600: 1.2, 700: 0.55, 850: 2.91, 925: 4.23, 1000: 3.98}\n"}
+,{"stream_name":"stdout","time":338.554535911,"data":"gray tropics mean d5 q bias g/kg {50: 0.0, 100: 0.0, 150: 0.0, 200: 0.1, 250: 0.2, 300: 0.3, 400: 0.42, 500: 0.25, 600: 0.15, 700: 1.42, 850: 1.3, 925: 0.73, 1000: 1.13}\n"}
+,{"stream_name":"stdout","time":338.55454118,"data":"gray india mean d5 T bias {50: -1.85, 100: 4.61, 150: 4.86, 200: 4.89, 250: 4.47, 300: 4.02, 400: 2.27, 500: 1.74, 600: 2.42, 700: 2.32, 850: 5.28, 925: 6.7, 1000: 8.59}\n"}
+,{"stream_name":"stdout","time":338.55454624,"data":"gray india mean d5 q bias g/kg {50: 0.0, 100: 0.0, 150: 0.0, 200: 0.1, 250: 0.12, 300: 0.15, 400: 0.25, 500: 0.43, 600: 0.85, 700: 2.25, 850: 2.68, 925: 2.5, 1000: 3.47}\n"}
+,{"stream_name":"stdout","time":338.555364129,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stdout","time":338.555891081,"data":"  File \"/kaggle/working/repo/scripts/cyclone/mm/wx_prof.py\", line 71, in \u003cmodule\u003e\n"}
+,{"stream_name":"stdout","time":338.55590397,"data":"    print(VN, 'rad K/day by sigma', dict(zip(res[0]['sig'], np.round(np.mean([x['rad_Kday'] for x in res if 'rad_Kday' in x], 0), 2).tolist())))\n"}
+,{"stream_name":"stdout","time":338.555909538,"data":"                                         ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":338.555927519,"data":"TypeError: 'float' object is not iterable\n"}
+,{"stream_name":"stdout","time":340.099778397,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":340.099813347,"data":"+ rm -rf repo libm_wx2020_fields.npz\n"}
+,{"stream_name":"stdout","time":340.226744474,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":340.226772327,"data":"total s 339\n"}
+,{"stream_name":"stderr","time":342.281705135,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":342.281730421,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":342.543601631,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":342.543625852,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":343.347106296,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":344.351506594,"data":"[NbConvertApp] Writing 280117 bytes to __results__.html\n"}
+]
