@@ -1,6 +1,6 @@
-tn-da-osse2
-libm_wx2020_fields.npz
-L=/kaggle/working/libm_wx2020_fields.npz; python -W ignore ../../da/osse.py $L /kaggle/working/osse_r05.json '{"K": 20, "days": 6, "ana": {"rtps": 0.5}}'; python -W ignore ../../da/osse.py $L /kaggle/working/osse_adapt.json '{"K": 20, "days": 6, "ana": {"rtps": 0.0, "adaptive": true}}'; python -W ignore ../../da/osse.py $L /kaggle/working/osse_k40.json '{"K": 40, "days": 10, "ana": {"rtps": 0.5}}'
+tn-oc-jaxspin
+ocean_clim.npz
+pip install -q gcsfs zarr xarray 2>&1 | tail -2; cp /kaggle/working/ocean_clim.npz . ; python -W ignore ../../ocean3d/test_jax_gpu.py /kaggle/working/ocean_jax.json 2>&1 | tail -20; pip install -q veros h5netcdf loguru 2>&1 | tail -3; VEROS_BACKEND=jax VEROS_DEVICE=gpu VEROS_FLOAT_TYPE=float32 VEROS_DISKLESS_MODE=1 VEROS_FORCE_OVERWRITE=1 VEROS_LOGLEVEL=warning python -W ignore ../../ocean3d/veros_spin.py /kaggle/working/veros_spin.json 2017-01-01
 NvidiaTeslaT4
 7
-#LETKF OSSE inflation tuning (RTPS 0.5, adaptive) and 40 members 2026-10-23
+#Stage 2: ocean code under JAX on GPU (numpy vs jit, speed) + Veros 2.4-year ERA5 spin-up scored on monsoon 2019
