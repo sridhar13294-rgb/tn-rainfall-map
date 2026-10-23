@@ -1,6 +1,6 @@
-tn-wx-step-mf
-libm_wx2020_fields.npz
-python -W ignore wx_step.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/step.json '{"conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005, "sh_top": 0.0, "tau_shallow": 3600.0}'
+tn-base-rev
+libm_fields.npz
+bash ../kaggle/par.sh hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/base_sh.json /kaggle/working/bt
 NvidiaTeslaT4
-4
-#one-step coupling check for the mass-flux scheme 2026-10-23T11:05Z
+2
+#84 Bay storms with the reverted defaults (clean reference) 2026-10-23T11:06Z
