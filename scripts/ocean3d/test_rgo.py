@@ -2,7 +2,8 @@
 1. volume conservation (no relaxation, closed basin with islands, random wind)
 2. equatorial Kelvin wave: a thermocline bump on the equator moves east at c = sqrt(g' H)
 3. Ekman pumping: under a uniform wind curl the interior thermocline moves at -curl(tau/f)/rho0 in the first days
-4. coastal upwelling with the columns: alongshore wind lifts the thermocline at the coast and cools the SST there"""
+4. coastal upwelling with the columns: alongshore wind lifts the thermocline at the coast and cools the SST there
+   (slowly without the Ekman shear, the default; fast with it)"""
 import math, os, sys
 import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE); sys.path.insert(0, os.path.join(HERE, '..', 'cyclone', 'mm'))
@@ -52,7 +53,7 @@ def test_pumping():
     assert 0.7 < ratio < 1.3 and np.corrcoef(dh, w)[0, 1] > 0.9
 
 
-def test_coast_columns():
+def test_coast_columns(shear):
     LA, LO = grid(5, 25, 50, 70, 0.5); X, Y = LA.shape; sea = LO > 52.0
     col = tropical_profile((X, Y), h=25.0); cg = cu.make_geom(LA, LO, col['dz'], sea, periodic=False)
     g = rgo.make_geom(LA, LO, sea, periodic=False)
@@ -61,13 +62,15 @@ def test_coast_columns():
     for i in range(int(10 * 86400 / dt)):
         col, _ = oc.step(col, z, z, z, ty, f, dt, mask=sea)
         st = rgo.step(st, z, ty, g, dt)
-        q = rgo.column_transports(st, g, cg, z, ty, f)
+        q = rgo.column_transports(st, g, cg, z, ty, f, prm=dict(shear=shear))
         col = cu.step(col, z, ty, f, cg, dt, q=q)
     j = np.argmin(abs(LA[0] - 12)); ic = np.where(sea[:, j])[0][0]
-    print('4. coastal upwelling, 10 days, layer + columns: thermocline at the coast %+.0f m, 6 deg offshore %+.0f m; '
-          'SST coast %+.2f K, offshore %+.2f K' % ((st['h'] - h0)[ic, j], (st['h'] - h0)[ic + 12, j], (col['T'][0] - T0)[ic, j], (col['T'][0] - T0)[ic + 12, j]))
-    assert (st['h'] - h0)[ic, j] < -20 and (col['T'][0] - T0)[ic, j] < (col['T'][0] - T0)[ic + 12, j] - 1.0
+    print('4. coastal upwelling, 10 days, layer + columns (Ekman shear %s): thermocline at the coast %+.0f m, 6 deg offshore %+.0f m; '
+          'SST coast %+.2f K, offshore %+.2f K' % ('on' if shear else 'off', (st['h'] - h0)[ic, j], (st['h'] - h0)[ic + 12, j], (col['T'][0] - T0)[ic, j], (col['T'][0] - T0)[ic + 12, j]))
+    assert (st['h'] - h0)[ic, j] < -20 and abs((st['h'] - h0)[ic + 12, j]) < 3
+    if shear: assert (col['T'][0] - T0)[ic, j] < (col['T'][0] - T0)[ic + 12, j] - 1.0
+    else: assert (col['T'][0] - T0)[ic, j] < (col['T'][0] - T0)[ic + 12, j]
 
 
 if __name__ == '__main__':
-    test_volume(); test_kelvin(); test_pumping(); test_coast_columns(); print('all ok')
+    test_volume(); test_kelvin(); test_pumping(); test_coast_columns(False); test_coast_columns(True); print('all ok')

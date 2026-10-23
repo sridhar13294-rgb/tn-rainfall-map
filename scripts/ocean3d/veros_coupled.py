@@ -45,7 +45,7 @@ class VerosOcean:
 
         class Coupled(Base):
             @veros_routine
-            def set_forcing(self_, state):
+            def set_forcing(self, state):          # Veros needs the first argument to be called "self"
                 vs = state.variables
                 if outer.ext is None: vs.update(set_forcing_kernel(state)); return
                 s = state.settings; cp0 = 3991.86795711963; F = outer.ext

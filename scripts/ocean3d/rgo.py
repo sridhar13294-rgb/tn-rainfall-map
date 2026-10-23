@@ -24,8 +24,9 @@ EQUATIONS (dt up to 1-2 h; forward-backward):
   The whole wind stress acts on the layer: its transport h u contains the Ekman transport plus the geostrophic flow.
 
 COUPLING TO THE COLUMNS (column_transports): at every face, the layer velocity u fills the column levels down to the
-  face's h; on top of it the Ekman shear (Ekman transport M in the top h_ek = 40 m, -M spread over the rest of the layer)
-  puts the drift where it belongs. These transports are handed to currents.step(..., q=...), which works out the
+  face's h. Optionally (shear=True) the Ekman shear is added on top (Ekman transport M in the top h_ek = 40 m, -M spread
+  over the rest of the layer); off by default because it over-cooled the Bay and the Arabian Sea coasts by ~1 K in
+  three-month monsoon tests with real ERA5 fluxes (docs/stage2_ocean.md). These transports are handed to currents.step(..., q=...), which works out the
   vertical velocity from continuity (so the levels at the thermocline move up and down with h) and advects T and S;
   below the layer water enters/leaves the 300 m column through its bottom (the deep lower layer of the model).
 
@@ -39,7 +40,7 @@ import currents as cu
 
 OMEGA, R = 7.292e-5, 6.371e6
 PRM = dict(gp=0.035, r=1.0 / (60 * 86400.0), A=2e4, h_min=25.0, h_tau=50.0, tau_h=365 * 86400.0, lat_max=60.0,
-           h_ek=40.0, r_ek=1.0 / (2 * 86400.0), f_eq=2 * OMEGA * math.sin(math.radians(2.5)), rho0=1025.0)
+           h_ek=40.0, r_ek=1.0 / (2 * 86400.0), shear=False, f_eq=2 * OMEGA * math.sin(math.radians(2.5)), rho0=1025.0)
 
 
 def make_geom(lat2d, lon2d, sea, periodic=None, lat_max=60.0):
@@ -138,6 +139,7 @@ def column_transports(rg, g, cg, taux, tauy, f, prm=None, xp=np):
     uE, vN = face_velocities(rg, g, xp)
     h = rg['h']; hE = 0.5 * (h + xp.roll(h, -1, axis=0)); hN = 0.5 * (h + xp.roll(h, -1, axis=1))
     Mx, My = cu.ekman_transport(taux, tauy, f, dict(r_ek=P['r_ek']), xp)
+    if not P['shear']: Mx, My = 0.0 * Mx, 0.0 * My                                    # default: layer velocity only (see docs)
     Mx = xp.where(g['sea'], Mx, 0.0); My = xp.where(g['sea'], My, 0.0)
     ME = xp.where(g['openE'], 0.5 * (Mx + xp.roll(Mx, -1, axis=0)), 0.0); MN = xp.where(g['openN'], g['sy'] * 0.5 * (My + xp.roll(My, -1, axis=1)), 0.0)
     out = []
