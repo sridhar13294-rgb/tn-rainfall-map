@@ -42,3 +42,12 @@ Work in scripts/da/ (worktree /home/claude/wt-da), docs/letkf.md. If the agent i
 - One helper agent at a time.
 - Medium effort.
 - Start a fresh chat every day or two (long chats make every message cost more).
+
+## Daily rain skill check (10:30 IST, Sridhar wants it every day)
+Copies of the scripts are in scripts/daily_check/ (skill23.py, hg23.py, verify_hg.py). They expect a checkout of origin/main
+(run from inside it) and the sat-radar branch for satellite rain; edit dates and the paths at the top (they point to the old
+chat's scratchpad). 23 Oct result: state obs 19.2 mm vs our v4 18.2 (closest); lead-1 MAE ICON 13.5, v4 14.3; heavy rain still
+weak (v4 caught 19 of 67 squares >= 20 mm); the ensemble week outlook looked too dry (6.4 mm vs normal 51.7, five models 49.7).
+The message lists per-model MAE, bias ratio, POD, FAR, ETS, heavy hit/miss/false for lead 1 and 2, for the day and all days;
+state average obs vs forecast; odd gauges (Aliyar misplaced, fix awaiting approval); outlook vs fallen; downloads status
+(data/forecast_status.json). Corrections only on a new branch with Sridhar's approval.
