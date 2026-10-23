@@ -1,6 +1,6 @@
-tn-wx-prof3
+tn-wx-prof4
 libm_wx2020_fields.npz
-python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"sh80": {"sh_top": 0.8}, "mfkick_sh70": {"sh_top": 0.7, "conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005}, "sh70_tdeep1h": {"sh_top": 0.7, "tau_deep": 3600}}'
+python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 4 '{"bmj_dt0": {"bmj_dt": 0.0}, "bmj_dtm5": {"bmj_dt": -0.5}, "mfk_entr1": {"conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005, "entr": 1.0e-4}, "mfk": {"conv": "mf", "mf_kick_t": 0.5, "mf_kick_q": 0.0005}}'
 NvidiaTeslaT4
-4
-#column profiles: shallow cap at 800 hPa, mass-flux with cap, slower deep adjustment 2026-10-23T01:15Z
+3
+#upper-troposphere cold bias: warmer deep-convection reference, less plume entrainment 2026-10-23T02:12Z

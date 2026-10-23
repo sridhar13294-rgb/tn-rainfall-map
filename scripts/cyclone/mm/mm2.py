@@ -36,15 +36,15 @@ def tridiag(a, b, c, d):
     def bwd(xn, x):
         ci, di = x; xi = di - ci * xn; return xi, xi
     _, X = jax.lax.scan(bwd, z, (C[::-1], D[::-1])); return X[::-1]
-DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 3600.0, k_evap=2e-5, ck=1.2e-3, charnock=0.018, cd_cap=2.4e-3,
+DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=10800.0, tau_cmt=6 * 3600.0, k_evap=2e-5, ck=1.2e-3, charnock=0.018, cd_cap=2.4e-3,
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='bmj', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='gray', rad_every=1,
-                mf_kick_t=0.0, mf_kick_q=0.0, mf_org=0.0, mf_wup=0.0, mf_dd=0.0, shallow='mse', sh_top=0.0)
+                mf_kick_t=0.0, mf_kick_q=0.0, mf_org=0.0, mf_wup=0.0, mf_dd=0.0, shallow='mse', sh_top=0.7, bmj_dt=0.5)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
-DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt', 'entr', 'mf_kick_t', 'mf_kick_q', 'mf_org', 'mf_wup', 'mf_dd', 'sh_top')
+DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt', 'entr', 'mf_kick_t', 'mf_kick_q', 'mf_org', 'mf_wup', 'mf_dd', 'sh_top', 'bmj_dt')
 NWAVE = 8
 class Model:
     def __init__(self, grid='T170', layers=32, dt_min=None, set_=None):
@@ -334,7 +334,7 @@ class Model:
         deep = (cape > 100.0) & (depth > 20000.0)
         shallow = (cape > 0.0) & (~deep) & (sig_base > 0.75)
         reg = (sig >= sig_top) & (cape > 0)
-        Tref = Tp - 0.5; qref = S['rh_deep'] * qsat(Tref, p)
+        Tref = Tp - S['bmj_dt']; qref = S['rh_deep'] * qsat(Tref, p)
         dTc = jnp.where(reg & deep, relax(Tn, Tref, S['tau_deep'], dt), 0.0); dqc = jnp.where(reg & deep, relax(qn, qref, S['tau_deep'], dt), 0.0)
         Pq = -(dqc * mass).sum(0); PT = (CP / LV * dTc * mass).sum(0)
         ok = deep & (Pq > 0) & (PT > 0)
