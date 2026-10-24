@@ -1,6 +1,8 @@
 """Probe the two new data accounts from GitHub Actions (no secrets printed): EUMETSAT Data Store (sea winds, satellite
 cloud-motion winds) and NASA Earthdata (GPM IMERG rain). python obs_probe2.py -> data/cyclone/obs_probe2.txt"""
-import os, json, base64, datetime as dt, urllib.request, urllib.parse, http.cookiejar, netrc
+import os, json, base64, socket, datetime as dt, urllib.request, urllib.parse, http.cookiejar, netrc
+_gai = socket.getaddrinfo
+socket.getaddrinfo = lambda h, *a, **k: [x for x in _gai(h, *a, **k) if x[0] == socket.AF_INET] or _gai(h, *a, **k)   # GitHub runners have no IPv6
 OUT = []; log = lambda *a: (OUT.append(' '.join(str(x) for x in a)), print(*a, flush=True))
 def get(url, headers=None, data=None, opener=None, timeout=60):
     req = urllib.request.Request(url, data=data, headers=dict({'User-Agent': 'megam-obs/1.0'}, **(headers or {})))
@@ -16,9 +18,18 @@ if k and s:
         st, b, _ = get('https://api.eumetsat.int/data/browse/collections?format=json', H)
         cols = json.loads(b); items = cols.get('links') or cols.get('collections') or []
         log('collections listed:', len(items))
+        allc = []
         for c in items:
-            t = (c.get('title') or '') + ' ' + (c.get('href') or c.get('id') or '')
-            if any(w in t.lower() for w in ('wind', 'ascat', 'amv', 'scatter', 'iodc', 'atmospheric motion')): log('  ', t[:200])
+            cid = urllib.parse.unquote((c.get('href') or c.get('id') or '').split('/collections/')[-1].split('?')[0]); allc.append(cid)
+            t = (c.get('title') or '') + ' ' + cid
+            if any(w in t.lower() for w in ('wind', 'ascat', 'amv', 'scatter', 'iodc', 'motion', 'mpef', 'bufr')): log('  ', t[:200])
+        open('data/cyclone/eumetsat_collections.txt', 'w').write('\n'.join(allc) + '\n')
+        for cid in allc:                                                                       # titles: look for motion winds
+            try:
+                st, b, _ = get('https://api.eumetsat.int/data/browse/1.0.0/collections/' + urllib.parse.quote(cid) + '?format=json', H, timeout=20)
+                j = json.loads(b); t = (j.get('title') or j.get('properties', {}).get('title') or '')
+                if any(w in t.lower() for w in ('wind', 'motion', 'amv')): log('  title:', cid, '|', t[:150])
+            except Exception: pass
         now = dt.datetime.utcnow(); t0 = (now - dt.timedelta(hours=9)).strftime('%Y-%m-%dT%H:%M:%SZ'); t1 = now.strftime('%Y-%m-%dT%H:%M:%SZ')
         for cid in ('EO:EUM:DAT:METOP:OSI-104', 'EO:EUM:DAT:METOP:ASCSZR1B', 'EO:EUM:DAT:MSG:AMV-IODC', 'EO:EUM:DAT:MSG:AMV', 'EO:EUM:DAT:0398'):
             try:
