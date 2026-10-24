@@ -1,6 +1,6 @@
-tn-wind-entr
+tn-wind-tau
 libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 '{"entr3":{"entr":3e-4}}' > /kaggle/working/wind.log 2>&1; tail -30 /kaggle/working/wind.log
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 '{"tau48":{"tau_deep":4800.0}}' > /kaggle/working/wind.log 2>&1; tail -30 /kaggle/working/wind.log
 NvidiaTeslaT4
-2
-#steering winds: new scheme with twice the plume mixing (weaker deep convection) 2026-10-24T11:09Z
+6
+#steering winds: new scheme with slower convective adjustment (2x tau_deep) 2026-10-24T11:10Z
