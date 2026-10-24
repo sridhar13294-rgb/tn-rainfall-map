@@ -1,6 +1,6 @@
-tn-maps-nivar
-libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore maps_run.py /kaggle/working/libm_wx2020_fields.npz near:2020-11-21 /kaggle/working/maps_nivar.npz 240 > /kaggle/working/maps.log 2>&1; tail -20 /kaggle/working/maps.log
+tn-maps-borders
+live_GFS_2026102106.npz
+cd . && python -W ignore maps_borders.py /kaggle/working > /kaggle/working/borders.log 2>&1; tail -20 /kaggle/working/borders.log
 NvidiaTeslaT4
-9
-#map viewer: one 10-day forecast saved every 6 h (start before Cyclone Nivar, Nov 2020) 2026-10-24T11:38Z
+10
+#map viewer: coastlines and borders from Natural Earth 2026-10-24T11:40Z
