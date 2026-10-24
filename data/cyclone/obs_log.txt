@@ -78,3 +78,17 @@
   lightning: 3 maps (1.5 h), 4122 strike cells; activity records 12
   saved /tmp/cyc_out/obs_2026102418.npz: 48142 records, 0.5 MB
   counts {"gts": {}, "ogimet_india": 515, "metar": 3905, "scat": {"metopc": 5641, "metopb": 5909}, "synop_records": 2742, "synop_india": 2742, "synop_sites_india": 281, "ship_records": 0, "ship_india": 0, "ship_sites_india": 0, "temp_records": 0, "temp_india": 0, "temp_sites_india": 0, "metar_records": 22300, "metar_india": 4844, "metar_sites_india": 96, "scat_records": 23100, "scat_india": 1618, "scat_sites_india": 2, "rain": {"src": "PERSIANN-CCS 6-hourly", "hours": 6.0, "mean_mm_india": 0.7322430210620403}, "lightning": {"maps": 3, "hours": 1.5, "cells": 4122.0, "hist_records": 12}}
+== obs 2026102418 (window 24 12:00-24 19:23 UTC, fetched 2026-10-24 19:23 UTC)
+  stations: 11548
+  DC.sflnd/DS.synop: 101 files, 3.7 MB
+  DC.sfmar/DS.ships: 100 files, 2.9 MB
+  DC.vsndn/DS.raobf: 75 files, 1.8 MB
+  GTS: {'synop': 6534, 'no_station': 2746, 'ship': 19892, 'temp': 188, 'temp_no_station': 27}; India synop stations 269, India radiosondes 0
+  METAR: 3963 reports in 72 requests
+  scat EUMETSAT EO:EUM:DAT:METOP:OSI-104: 10 files in window, superobs {'metopc': 5641, 'metopb': 5909}
+  CMORPH ctl not read AttributeError("'NoneType' object has no attribute 'decode'")
+  CMORPH: 0 of 6 h (no files)
+  PERSIANN-CCS: 6 of 6 h (6-hourly)
+  lightning: 2 maps (0.9 h), 2959 strike cells; activity records 12
+  saved /tmp/cyc_out/obs_2026102418.npz: 114682 records, 0.9 MB
+  counts {"gts": {"synop": 6534, "no_station": 2746, "ship": 19892, "temp": 188, "temp_no_station": 27}, "metar": 3963, "scat": {"metopc": 5641, "metopb": 5909}, "synop_records": 34014, "synop_india": 2482, "synop_sites_india": 269, "ship_records": 28581, "ship_india": 63, "ship_sites_india": 7, "temp_records": 6352, "temp_india": 0, "temp_sites_india": 0, "metar_records": 22635, "metar_india": 4856, "metar_sites_india": 96, "scat_records": 23100, "scat_india": 1618, "scat_sites_india": 2, "rain": {"src": "PERSIANN-CCS 6-hourly", "hours": 6.0, "mean_mm_india": 0.7322430210620403}, "lightning": {"maps": 2, "hours": 0.9166666666666666, "cells": 2959.5, "hist_records": 12}}
