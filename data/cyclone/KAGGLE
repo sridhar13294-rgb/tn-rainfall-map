@@ -1,6 +1,6 @@
-tn-prof-shtop
+tn-prof-shtop2
 libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 20 '{"top85":{"ck_z":1.0,"mf_org":1.0,"sh_top":0.85},"top75":{"ck_z":1.0,"mf_org":1.0,"sh_top":0.75}}' > /kaggle/working/prof.log 2>&1; tail -40 /kaggle/working/prof.log
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 20 '{"top80":{"ck_z":1.0,"mf_org":1.0,"sh_top":0.80},"top80noz":{"mf_org":1.0,"sh_top":0.80}}' > /kaggle/working/prof.log 2>&1; tail -40 /kaggle/working/prof.log
 NvidiaTeslaT4
-3
-#tropical heating: shallow mixing kept in the boundary-layer cloud only (top at sigma 0.85 / 0.75), column profile 2026-10-24T23:39Z
+4
+#tropical heating: shallow top at sigma 0.80, with and without the evaporation fix 2026-10-24T23:40Z
