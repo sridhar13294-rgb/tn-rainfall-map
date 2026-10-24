@@ -77,6 +77,10 @@ state average obs vs forecast; odd gauges (Aliyar misplaced, fix awaiting approv
 (data/forecast_status.json). Corrections only on a new branch with Sridhar's approval.
 
 
+## 24 Oct 22:40 IST - tropical heating cause (tn-prof-ckz, 20 starts, day 5)
+Tropics T bias: 200-300 hPa -4.2..-4.7 K (ck_z -5.2..-5.7), 400-700 -2..-3, 925-1000 +1.7..+2.3; q: 500-700 hPa +0.6..+1.8 g/kg too moist, 925-1000 -2 g/kg too dry. Physics heating peaks at sigma 0.34 (+2 K/day), NEGATIVE above sigma 0.25. => plumes die too low (entrainment constant with height, mf_org=0). Equation fix under test: ECMWF organised entrainment eps x (qsat/qsat_src)^(3 mf_org) (Bechtold 2008), + freezing heat mf_ice. Running (all with ck_z=1): tn-prof-org (acct3: org1, org1+ice), tn-prof-org2 (acct4: org1+entr3e-4, org2), tn-wind-org (acct5), tn-wind-org1ice (acct6). If upper cold bias and shear both shrink -> same-run exams (wx2, Bay/AS/SI tracks, genesis) as for ck_z.
+#7 trial: tn-obs-2026102212 done (trial npz in release model-maps). Fetching centres 2412 and obs 2400, 2312 for more trial starts (centres exist for 2300, 2312, 2400, 2406).
+
 ## 24 Oct 22:15 IST - new data accounts (Sridhar added GitHub secrets EUMETSAT_KEY/SECRET, EARTHDATA_USER/PASSWORD; MOSDAC_USER/PASSWORD pending ISRO approval)
 cyclone.yml fetch job now gets these secrets as env. obs_probe2.py (RUN word probe2) tests them. EUMETSAT: token OK; ASCAT 12.5 km coastal winds EO:EUM:DAT:METOP:OSI-104 now in obs_fetch.scat_eumetsat (first; KNMI shared key fallback): obs_2026102412 got 5,397 scat superobs (was 0). Meteosat IODC AMVs not found in the Data Store (collections list data/cyclone/eumetsat_collections.txt) - maybe EUMETCast only. NASA Earthdata: IMERG Early listing works (24 files), download timed out (IPv4 forced; retry with longer timeout) -> then replace PERSIANN with IMERG in obs_fetch rain and use for #10. Known bug: NOAA tgftp GTS files download as 0 MB (no global synop/ship/temp) - fix next.
 
