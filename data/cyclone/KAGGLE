@@ -1,6 +1,6 @@
-tn-prof-ckz
-libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 20 '{"default":{},"ckz1":{"ck_z":1.0}}' > /kaggle/working/prof.log 2>&1; tail -40 /kaggle/working/prof.log
+tn-obs-2026102212
+live_GFSM_2026102212.npz,live_ECM_2026102212.npz,live_ICON_2026102212.npz,live_CMC_2026102212.npz,live_ARPEGE_2026102212.npz,live_UKMO_2026102212.npz,live_GEOS_2026102212.npz,obs_2026102212.npz
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore obs_trial.py run /kaggle/working 2026102212 /kaggle/working/trial_2026102212.npz 120 > /kaggle/working/trial.log 2>&1; tail -30 /kaggle/working/trial.log
 NvidiaTeslaT4
-1
-#where the column cools with the evaporation fix: day-5 tropical temperature profile, default vs ck_z 2026-10-24T14:47Z
+2
+#fix 7 live trial: forecast from 2026102212 with and without our observations in the start 2026-10-24T15:20Z
