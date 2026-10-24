@@ -593,7 +593,8 @@ class Model:
             t2 = Tsk + f * (th1 - Tsk) - G / CP * 2.0
             t850 = t_below(T, lp, 85000.0, to_p(T, lp, 85000.0))
             return dict(z500=to_p(phi, lp, 50000.0) / G, t850=t850, mslp=mslp, rain=cr['rain'], t2=t2, t2_old=T[-1] + 0.0065 * (z1 - 2.0),
-                        u850=to_p(u, lp, 85000.0), v850=to_p(v, lp, 85000.0), u200=to_p(u, lp, 20000.0), v200=to_p(v, lp, 20000.0))
+                        u850=to_p(u, lp, 85000.0), v850=to_p(v, lp, 85000.0), u200=to_p(u, lp, 20000.0), v200=to_p(v, lp, 20000.0),
+                        **(self._map_extras(state, T, u, v, ps, lp, phi, to_p) if self.S.get('map_out') else {}))
         inner = int(round(every_h * 3600 / self.dt_s)); outer = int(hours // every_h)
         def one(c, _):
             st, cr = c; self._carry = cr; st2 = self.step(st); cr2 = self.surface(st2, cr); return (st2, cr2), None
@@ -605,6 +606,13 @@ class Model:
         carry = dict(carry, doy0=jnp.float32(self.doy0), utc0=jnp.float32(self.utc0))
         (sN, cN), traj = f(state, carry); first = fpost(state, carry)
         return {k: np.concatenate([np.asarray(first[k])[None], np.asarray(v)], 0) for k, v in traj.items()}
+    def _map_extras(self, state, T, u, v, ps, lp, phi, to_p):
+        """extra fields for the forecast maps (setting map_out=True): humidity, column water, 10 m wind, 850/700 heights."""
+        q = state.tracers['specific_humidity']; rh = q / qsat(T, jnp.exp(lp))
+        tcw = (q * jnp.asarray(self.dsig)[:, None, None]).sum(0) * ps / G
+        return dict(rh850=to_p(rh, lp, 85000.0), rh700=to_p(rh, lp, 70000.0), rh500=to_p(rh, lp, 50000.0), tcw=tcw,
+                    u10=u[-1] * 0.85, v10=v[-1] * 0.85, z850=to_p(phi, lp, 85000.0) / G, t500=to_p(T, lp, 50000.0),
+                    u500=to_p(u, lp, 50000.0), v500=to_p(v, lp, 50000.0))
     # ------------------------------------------------------------------------------------------------ storm tracker (GFDL style)
     def track(self, out, la0, lo0, every_h=6, keep_h=0):
         subgrid = subgrid_peak

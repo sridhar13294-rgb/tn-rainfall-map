@@ -60,13 +60,16 @@ jobs:
           PY
           cat /tmp/k/kernel-metadata.json | grep -v '"id"'
           (kaggle kernels push -p /tmp/k --accelerator $ACC || kaggle kernels push -p /tmp/k) 2>&1 | tee data/cyclone/kaggle/$SLUG/push.txt
-      - run: |
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
           ID=$KAGGLE_USERNAME/$SLUG; D=data/cyclone/kaggle/$SLUG; sleep 60
           for i in $(seq 1 110); do S=$(kaggle kernels status $ID 2>&1 | tail -1); echo "$(date -u +%H:%M) $S"; echo "$(date -u +%H:%M) $S" | sed "s#$KAGGLE_USERNAME#USER#g" >> $D/status.txt
             case "$S" in *COMPLETE*|*ERROR*|*CANCEL*|*complete*|*error*|*cancel*) break;; esac; sleep 300; done
           kaggle kernels output $ID -p /tmp/kout 2>&1 | tail -3 || true; ls -la /tmp/kout || true
           cp /tmp/kout/*.json $D/ 2>/dev/null || true; cp /tmp/kout/job.log $D/ 2>/dev/null || true; for f in /tmp/kout/*.log; do tail -c 30000 "$f" > $D/kernel_$(basename $f); done 2>/dev/null || true
           sed -i "s#$KAGGLE_USERNAME#USER#g" $D/* 2>/dev/null || true
+          for f in /tmp/kout/*.npz; do [ -f "$f" ] || continue; gh release view model-maps >/dev/null 2>&1 || gh release create model-maps --title "Model map data" --notes "Forecast fields for the map viewer (from Kaggle jobs)" --target cases; gh release upload model-maps "$f" --clobber && echo "uploaded $(basename $f) to release model-maps" >> $D/status.txt; done
       - if: always()
         run: |
           git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"

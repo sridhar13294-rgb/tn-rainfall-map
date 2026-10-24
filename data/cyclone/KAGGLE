@@ -1,6 +1,6 @@
-tn-wind-ck
+tn-maps-nivar
 libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 '{"ck10":{"ck":1.0e-3}}' > /kaggle/working/wind.log 2>&1; tail -30 /kaggle/working/wind.log
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore maps_run.py /kaggle/working/libm_wx2020_fields.npz near:2020-11-21 /kaggle/working/maps_nivar.npz 240 > /kaggle/working/maps.log 2>&1; tail -20 /kaggle/working/maps.log
 NvidiaTeslaT4
-4
-#steering winds: less sea evaporation (ck 1.0e-3) 2026-10-24T11:12Z
+9
+#map viewer: one 10-day forecast saved every 6 h (start before Cyclone Nivar, Nov 2020) 2026-10-24T11:38Z
