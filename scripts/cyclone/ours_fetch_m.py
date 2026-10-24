@@ -15,7 +15,8 @@ V2 = {('PRES', 'surface'): 'surface_pressure', ('TMP', 'surface'): 'sea_surface_
       ('SOILW', '0-0.1 m below ground'): 'volumetric_soil_water_layer_1', ('TSOIL', '0-0.1 m below ground'): 'soil_temperature_level_1',
       ('TMP', 'skin'): 'skin_temperature', ('WEASD', 'surface'): 'snow_depth', ('SNOD', 'surface'): 'snow_depth_physical'}   # ('TMP', 'skin'): copy of TMP:surface
 SC2 = {('HGT', 'surface'): 9.80665, ('WEASD', 'surface'): 0.001}                                   # height -> geopotential; kg m-2 -> m of water
-run = C.latest_run(lambda r: C.http(C.gfs_url(r, 0) + '.idx', method='HEAD') is not None); print('GFS analysis', run, flush=True)
+run = dt.datetime.strptime(sys.argv[1], '%Y%m%d%H') if len(sys.argv) > 1 and sys.argv[1].strip() else C.latest_run(lambda r: C.http(C.gfs_url(r, 0) + '.idx', method='HEAD') is not None)   # optional past run (NOMADS keeps ~10 days)
+print('GFS analysis', run, flush=True)
 idx = C.parse_idx(C.http(C.gfs_url(run, 0) + '.idx').decode())
 f3 = np.full((len(V3), len(LEVS), len(C.LATS), len(C.LONS)), np.nan, np.float32); f2 = np.full((len(V2), len(C.LATS), len(C.LONS)), np.nan, np.float32)
 k3 = list(V3); k2 = list(V2)
