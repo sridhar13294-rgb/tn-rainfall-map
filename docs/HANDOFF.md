@@ -77,6 +77,10 @@ state average obs vs forecast; odd gauges (Aliyar misplaced, fix awaiting approv
 (data/forecast_status.json). Corrections only on a new branch with Sridhar's approval.
 
 
+## 24 Oct 18:15 IST - steering fix candidate: ck_z=1 (sea evaporation coefficient taken from 10 m down to the model's lowest level)
+wx_wind day-5 shear error (u200-u850, m/s) Bay/AS/SI: default 6.0/4.2/5.4; OLD scheme 7.1/3.9/4.4 (same problem -> not the convection scheme); entr/tau/cap/dd ~no change; ck 1.0e-3 4.0/3.2/4.2; ck 0.9e-3 2.8/2.6/4.0; ck_z=1 2.5/2.5/3.7 (AS v200 +6.2 -> +3.0). ck_z is an equation correction, not a tune. Same-run exams running: tn-wx-ckz (acct4), tn-base-ckz (5), tn-io-as-ckz (6), tn-io-si-ckz (8), tn-gen-ckz (9). Adopt if exam/tracks/genesis not worse.
+Map viewer started (Sridhar 17:07): scripts/viewer (index.html + pack.py), maps_run.py (run_wx map_out extras), maps_borders.py; Kaggle npz outputs go to release model-maps. Private artifact https://claude.ai/artifact/S1b5DcTXhWoWv7j4fZaPwa (v2: drag round globe, zoom). Sridhar wants UI corrected in parallel with Stage 1.
+
 ## 24 Oct 16:45 IST - new official track numbers (default inserted storm 180 km / 0.4), and the steering cause
 Bay (tn-base-final2, 84 storms) median km 0/24/48/72/96/120: new 58/120/216/345/423/522 vs old yardstick 58/102/217/373/471/722 (same run). AS (tn-io-as-final2) 64/148/236/419/528/708. SI (tn-io-si-final2) new 61/113/206/322/429/603 vs old 61/94/177/285/407/599. Old scheme still better at 24 h (by ~20 km) and SI to 72 h. NOTE run-to-run noise: identical AS settings gave 96 h 473 (combo2) vs 528 (final2) -> treat <~50 km at 96 h as noise.
 Steering (wx_wind.py, 40 starts, day 5 vs ERA5): low levels too EASTERLY (850 hPa du -3.0 Bay, -2.6 AS, -1.8 SI m/s), upper levels too WESTERLY (200 hPa +3.0/+1.7/+3.6), AS 200 hPa dv +6 (outflow too strong). Hour 0 fine (<0.6). Deep-layer mean cancels, so the error is too much vertical shear = tropical overturning (Hadley/Walker) too strong = too much convective heating/rain. Fits Bay storms too far west. Variant tests running (tn-wind-old acct8, -entr acct2, -tau acct6, -cap acct1, -dd acct3, -ck acct4).
