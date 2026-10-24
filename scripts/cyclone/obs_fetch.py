@@ -174,20 +174,20 @@ def tg_files(sub, t_from, now):
     """recent sn.* files of a TGFTP directory (by modification time; the server's clock offset is taken from the newest
     file). Falls back to all 301 names."""
     try:
-        L = [(n, t) for n, t in listing(TG + sub + '/') if re.fullmatch(r'sn\.\d{4}', n) and t is not None]
+        L = [(n, t) for n, t in listing(TG + sub + '/') if re.fullmatch(r'sn\.\d{4}(\.txt)?', n) and t is not None]
         if L:
             newest = max(t for _, t in L); off = dt.timedelta(hours=round((now - newest).total_seconds() / 3600.0))
             return sorted(n for n, t in L if t + off >= t_from - dt.timedelta(hours=1))
     except Exception as e:
         log('  listing failed', sub, repr(e)[:100])
-    return [f'sn.{k:04d}' for k in range(301)]
+    return [f'sn.{k:04d}.txt' for k in range(301)]                      # NOAA added .txt to the names (Oct 2026)
 
 def tg_fetch(sub, t_from, now):
     names = tg_files(sub, t_from, now); out = []
     def one(n):
         try: return http(TG + sub + '/' + n, timeout=60, tries=2, quiet=True) or b''
         except Exception as e:
-            if n.endswith('0000') or n == names[0]: log('  tg', sub, n, 'failed', repr(e)[:150])
+            if n == names[0]: log('  tg', sub, n, 'failed', repr(e)[:150])
             return b''
     with ThreadPoolExecutor(8) as ex:
         for b in ex.map(one, names): out.append(b)
