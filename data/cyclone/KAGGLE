@@ -1,6 +1,6 @@
-tn-wind-shtop2
-libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 '{"top80noz":{"mf_org":1.0,"sh_top":0.80}}' > /kaggle/working/wind.log 2>&1; tail -30 /kaggle/working/wind.log
+tn-obs-2026102412b
+live_GFSM_2026102412.npz,live_ECM_2026102412.npz,live_ICON_2026102412.npz,live_CMC_2026102412.npz,live_ARPEGE_2026102412.npz,live_UKMO_2026102412.npz,live_GEOS_2026102412.npz,obs_2026102412.npz
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore obs_trial.py run /kaggle/working 2026102412 /kaggle/working/trial_2026102412b.npz 120 > /kaggle/working/trial.log 2>&1; tail -30 /kaggle/working/trial.log
 NvidiaTeslaT4
-10
-#steering winds: shallow top at sigma 0.80 without the evaporation fix 2026-10-24T23:41Z
+5
+#fix 7 trial from 2026102412 (3 versions: no obs / obs / bias-corrected obs) 2026-10-24T23:42Z
