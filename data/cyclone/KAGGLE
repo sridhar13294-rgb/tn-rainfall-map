@@ -1,6 +1,6 @@
-tn-wind-cap
+tn-wind-dd
 libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 '{"cap02":{"mf_cap":0.2}}' > /kaggle/working/wind.log 2>&1; tail -30 /kaggle/working/wind.log
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 '{"dd10":{"mf_dd":1.0}}' > /kaggle/working/wind.log 2>&1; tail -30 /kaggle/working/wind.log
 NvidiaTeslaT4
-1
-#steering winds: new scheme with a lower mass-flux cap 2026-10-24T11:11Z
+3
+#steering winds: new scheme with stronger rain-cooled downdrafts 2026-10-24T11:12Z
