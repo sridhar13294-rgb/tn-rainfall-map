@@ -1,6 +1,6 @@
-tn-base-combo
-libm_fields.npz
-bash ../kaggle/par.sh hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/base_combo.json /kaggle/working/bt
+tn-sys9-as
+libm_as_fields.npz
+bash ../kaggle/par.sh hind2.py /kaggle/working/libm_as_fields.npz ../../../data/cyclone/kaggle_cfg/sys9_as.json /kaggle/working/as 2
 NvidiaTeslaT4
-9
-#account 9 first job: Bay storms, default vs smaller+weaker inserted storm 2026-10-24T06:56Z
+4
+#fix #9 multi-system tracker test: Arabian Sea runs, does the model also hold the other storms alive at the time 2026-10-24T07:03Z
