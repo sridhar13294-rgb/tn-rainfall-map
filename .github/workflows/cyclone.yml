@@ -12,6 +12,12 @@ jobs:
     timeout-minutes: 120
     env:
       GH_TOKEN: ${{ github.token }}
+      EUMETSAT_KEY: ${{ secrets.EUMETSAT_KEY }}
+      EUMETSAT_SECRET: ${{ secrets.EUMETSAT_SECRET }}
+      EARTHDATA_USER: ${{ secrets.EARTHDATA_USER }}
+      EARTHDATA_PASSWORD: ${{ secrets.EARTHDATA_PASSWORD }}
+      MOSDAC_USER: ${{ secrets.MOSDAC_USER }}
+      MOSDAC_PASSWORD: ${{ secrets.MOSDAC_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -26,6 +32,7 @@ jobs:
           if [ "$(head -n 1 data/cyclone/RUN | tr -d " ")" = "oursm" ]; then python scripts/cyclone/ours_fetch_m.py $(sed -n 2p data/cyclone/RUN | tr -d " ") || true; fi
           if [ "$(head -n 1 data/cyclone/RUN | tr -d " ")" = "tigge" ]; then python scripts/cyclone/$(sed -n 2p data/cyclone/RUN) > data/cyclone/tigge_log.txt 2>&1 || true; fi
           # "obs": open observations for a run time (RUN line 2 = YYYYMMDDHH, empty = latest) -> obs_<run>.npz; log data/cyclone/obs_log.txt
+          if [ "$(head -n 1 data/cyclone/RUN | tr -d " ")" = "probe2" ]; then python scripts/cyclone/obs_probe2.py || true; fi
           if [ "$(head -n 1 data/cyclone/RUN | tr -d " ")" = "obs" ]; then pip install -q netCDF4 || true; python scripts/cyclone/obs_fetch.py $(sed -n 2p data/cyclone/RUN | tr -d " ") || true; fi
           for f in /tmp/cyc_out/*.npz; do [ -f "$f" ] && gh release upload era5-cases "$f" --clobber || true; done
       - if: always()
