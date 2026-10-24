@@ -15,10 +15,11 @@ def run(folder, run_t, out, hours=120, sett=None):
     V2 = [str(v) for v in Z['v2']]
     CN = CS.consensus(CS.load_centres(folder, run_t)); print('centres used', CN['used'], flush=True)
     obs = os.path.join(folder, f'obs_{run_t}.npz'); CNo, rep = N.analyse_consensus(CN, obs, t0)
+    CNb, _ = N.analyse_consensus(CN, obs, t0, cfg=dict(debias_p=True), verbose=False)              # with pressure bias correction
     if rep is None: raise SystemExit('no observations for ' + run_t)
     print('OI report', json.dumps(rep, default=str)[:1500], flush=True)
     M = mm2.Model('T85', 32, 30.0, dict(sett or {})); save = dict(lon=np.asarray(M.lon, np.float32), lat=np.asarray(M.lat, np.float32), run=run_t, hours=np.arange(0, hours + 1, 24))
-    for name, C in (('noobs', CN), ('obs', CNo)):
+    for name, C in (('noobs', CN), ('obs', CNo), ('obsdb', CNb)):
         fk, psk = CS.member_start(C, 0)
         st, cr = M.init(fk, Z['levs'], Z['lats'], Z['lons'], psk, Z['f2'][0, V2.index('geopotential_at_surface')] / 9.80616,
                         Z['f2'][0, V2.index('sea_surface_temperature')], Z['f2'][0, V2.index('land_sea_mask')], when=t0, **landinit.land_kwargs(Z['f2'][0], V2))
@@ -58,13 +59,14 @@ def score(pattern, folder):
             for reg, (a, b, c, d) in REG.items():
                 m = (LA >= a) & (LA <= b) & (LO >= c) & (LO <= d)
                 for v, tr in A.items():
-                    for name in ('noobs', 'obs'):
+                    for name in [n for n in ('noobs', 'obs', 'obsdb') if f'{n}_{v}' in S]:
                         e = S[f'{name}_{v}'][i] - tr; r = float(np.sqrt((W * m * e ** 2).sum() / (W * m).sum()))
                         rows.setdefault((reg, v, int(h) // 24, name), []).append(r)
     for (reg, v, d, name) in sorted(rows):
         if name != 'noobs': continue
-        a, b = np.mean(rows[(reg, v, d, 'noobs')]), np.mean(rows[(reg, v, d, 'obs')])
-        print(f'{reg:8s} {v:5s} day {d}  n={len(rows[(reg, v, d, name)]):2d}  without obs {a:8.2f}  with obs {b:8.2f}  change {100 * (b - a) / a:+5.1f}%')
+        a, b = np.mean(rows[(reg, v, d, 'noobs')]), np.mean(rows[(reg, v, d, 'obs')]); c = rows.get((reg, v, d, 'obsdb'))
+        extra = f'  bias-corrected {np.mean(c):8.2f} (n={len(c)}, {100 * (np.mean(c) - np.mean(rows[(reg, v, d, "noobs")][-len(c):])) / a:+5.1f}%)' if c else ''
+        print(f'{reg:8s} {v:5s} day {d}  n={len(rows[(reg, v, d, name)]):2d}  without obs {a:8.2f}  with obs {b:8.2f}  change {100 * (b - a) / a:+5.1f}%' + extra)
 
 if __name__ == '__main__':
     if sys.argv[1] == 'run': run(sys.argv[2], sys.argv[3], sys.argv[4], int(sys.argv[5]) if len(sys.argv) > 5 else 120, json.loads(sys.argv[6]) if len(sys.argv) > 6 else None)

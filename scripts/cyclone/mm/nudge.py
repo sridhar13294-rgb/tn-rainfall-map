@@ -235,6 +235,7 @@ OI_DEFAULTS = dict(
     box_deg=10.0, halo_L=2.6, max_obs_box=1500,
     region=None,                 # (lat0, lat1, lon0, lon1) to limit the analysed grid (None: wherever there are obs)
     q_cap=1.0,                   # analysed q <= q_cap x qsat
+    debias_p=False,              # remove each report type's median pressure O-B before the analysis
 )
 VMAP3 = dict(t='temperature', q='specific_humidity', u='u_component_of_wind', v='v_component_of_wind')
 
@@ -411,6 +412,11 @@ def oi_analysis(f3, levs, lats, lons, ps, zs, obs, t0_unix=None, cfg=None, sigb_
     cfg = dict(OI_DEFAULTS, **(cfg or {}))
     levs = np.asarray(levs, float); lats = np.asarray(lats, float); lons = np.asarray(lons, float)
     I = innovations(f3, levs, lats, lons, ps, zs, obs, t0_unix, cfg, sigb_spread)
+    if cfg.get('debias_p', False):                                    # bias correction (as VarBC does for pressure): remove each report type's mean O-B
+        I = dict(I); I['d'] = np.array(I['d'], float)
+        for ty in np.unique(I['type']):
+            m = (I['type'] == ty) & np.isin(I['ana'], ('ps', 'mslp')) & (I['why'] == '') & np.isfinite(I['d'])
+            if m.sum() >= 20: b = float(np.median(I['d'][m])); I['d'][m] -= b; print(f'  OI pressure bias removed for {ty}: {b / 100:+.2f} hPa', flush=True)
     S = superob(I, cfg)
     ny, nx = len(lats), len(lons); LA, LO = np.meshgrid(lats, lons, indexing='ij')
     if cfg['region'] is not None:
