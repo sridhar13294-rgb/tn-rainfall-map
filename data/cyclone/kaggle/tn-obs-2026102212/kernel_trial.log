@@ -1,0 +1,12 @@
+centres used ['GFSM', 'ECM', 'ICON', 'CMC', 'ARPEGE', 'UKMO', 'GEOS']
+obs: 38036 in file, 11136 in time window, 4633 checked, 1285 superobs used; rejected {'gross': 1, 'height': 268, 'monitor': 723, 'off': 2035}; solved {'ps': 507, 't': 152, 'q': 626, 'u': 0, 'v': 0}
+  metar  mslp n=   403  O-B mean -2.07 rms 3.04  O-A rms 0.99 hPa
+  metar  q    n=   418  O-B mean +1.50 rms 2.50  O-A rms 1.75 g/kg
+  synop  mslp n=   259  O-B mean -1.07 rms 2.20  O-A rms 1.44 hPa
+  synop  q    n=   279  O-B mean +3.05 rms 3.94  O-A rms 2.41 g/kg
+  temp   q    n=    95  O-B mean +0.22 rms 1.22  O-A rms 1.29 g/kg
+  temp   t    n=   152  O-B mean -0.04 rms 0.65  O-A rms 0.50 K
+OI report {"n_in": 38036, "n_window": 11136, "n_checked": 4633, "n_superobs": 1285, "solved": {"ps": 507, "t": 152, "q": 626, "u": 0, "v": 0}, "rows": [{"type": "metar", "var": "mslp", "n": 403, "omb_mean": -2.073143225377113, "omb_rms": 3.044732578809077, "oma_rms": 0.9920186376096487, "units": "hPa"}, {"type": "metar", "var": "q", "n": 418, "omb_mean": 1.4957198127774145, "omb_rms": 2.503576583274379, "oma_rms": 1.7488460147241787, "units": "g/kg"}, {"type": "synop", "var": "mslp", "n": 259, "omb_mean": -1.0702151592284095, "omb_rms": 2.204281317631373, "oma_rms": 1.437868152874196, "units": "hPa"}, {"type": "synop", "var": "q", "n": 279, "omb_mean": 3.046181757636665, "omb_rms": 3.9372613399481167, "oma_rms": 2.4131662097773714, "units": "g/kg"}, {"type": "temp", "var": "q", "n": 95, "omb_mean": 0.22243280795749962, "omb_rms": 1.2153116644104112, "oma_rms": 1.2940211223882485, "units": "g/kg"}, {"type": "temp", "var": "t", "n": 152, "omb_mean": -0.04184318779652498, "omb_rms": 0.6456984700775404, "oma_rms": 0.4981027801149807, "units": "K"}], "rejected": {"gross": 1, "height": 268, "monitor": 723, "off": 2035}}
+noobs done
+obs done
+saved /kaggle/working/trial_2026102212.npz 11646 KB
