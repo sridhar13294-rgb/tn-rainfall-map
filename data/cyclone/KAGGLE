@@ -1,6 +1,6 @@
-tn-wind-org
+tn-wind-org1ice
 libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 '{"org1":{"ck_z":1.0,"mf_org":1.0}}' > /kaggle/working/wind.log 2>&1; tail -30 /kaggle/working/wind.log
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 '{"org1ice":{"ck_z":1.0,"mf_org":1.0,"mf_ice":1.0}}' > /kaggle/working/wind.log 2>&1; tail -30 /kaggle/working/wind.log
 NvidiaTeslaT4
-5
-#steering winds: evaporation fix + organised entrainment 2026-10-24T16:51Z
+6
+#steering winds: evaporation fix + organised entrainment + freezing heat 2026-10-24T16:52Z
