@@ -77,6 +77,11 @@ state average obs vs forecast; odd gauges (Aliyar misplaced, fix awaiting approv
 (data/forecast_status.json). Corrections only on a new branch with Sridhar's approval.
 
 
+## 25 Oct 01:00 IST - night cycle
+Heating: organised entrainment (mf_org 1/2, +mf_ice, +entr3e-4) helps only ~0.5 K at 200-300 hPa; physics heating still NEGATIVE ~-1 K/day at sigma 0.15-0.23 = the size of the cold drift. Shear with org1: 2.6/2.3/4.2 (ckz1 alone 2.5/2.5/3.7) - no gain. Finding the cooling process: tn-prof-sw1 (acct3: k_evap 0 / shallow off), tn-prof-sw2 (acct4: deep off / downdraft off), all with ck_z+org1. Suspect: rain evaporation e = k_evap (1-RH) sqrt(P) m with no precipitation-area fraction -> rain made high in the plume evaporates in the dry upper air (ECMWF scales by precip fraction). 
+#7: trials launched tn-obs-2026102412 (acct5), -2026102400 (acct6), -2026102312 (acct8).
+FIXED obs bug: NOAA GTS files renamed sn.NNNN.txt -> global synop/ship/temp were silently 0. obs_2026102418: 114,682 records (ships 19,892, temp 188, synop 6,534) vs 48k before. obs_fetch forces IPv4. NASA IMERG download still times out at TLS handshake (listing works) - next.
+
 ## 24 Oct 22:40 IST - tropical heating cause (tn-prof-ckz, 20 starts, day 5)
 Tropics T bias: 200-300 hPa -4.2..-4.7 K (ck_z -5.2..-5.7), 400-700 -2..-3, 925-1000 +1.7..+2.3; q: 500-700 hPa +0.6..+1.8 g/kg too moist, 925-1000 -2 g/kg too dry. Physics heating peaks at sigma 0.34 (+2 K/day), NEGATIVE above sigma 0.25. => plumes die too low (entrainment constant with height, mf_org=0). Equation fix under test: ECMWF organised entrainment eps x (qsat/qsat_src)^(3 mf_org) (Bechtold 2008), + freezing heat mf_ice. Running (all with ck_z=1): tn-prof-org (acct3: org1, org1+ice), tn-prof-org2 (acct4: org1+entr3e-4, org2), tn-wind-org (acct5), tn-wind-org1ice (acct6). If upper cold bias and shear both shrink -> same-run exams (wx2, Bay/AS/SI tracks, genesis) as for ck_z.
 #7 trial: tn-obs-2026102212 done (trial npz in release model-maps). Fetching centres 2412 and obs 2400, 2312 for more trial starts (centres exist for 2300, 2312, 2400, 2406).
