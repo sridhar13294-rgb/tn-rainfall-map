@@ -53,7 +53,11 @@ nav.rail { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
 .stage { display: grid; grid-template-columns: minmax(0, 1fr) 64px; gap: 8px; align-items: stretch; }
 @media (max-width: 640px) { .stage { grid-template-columns: minmax(0, 1fr); } }
 .mapbox { position: relative; min-width: 0; }
-canvas#map { width: 100%; height: auto; display: block; border: 1px solid var(--coast); background: var(--sea); touch-action: pan-y; }
+canvas#map { width: 100%; height: auto; display: block; border: 1px solid var(--coast); background: var(--sea); touch-action: none; cursor: grab; }
+canvas#map.drag { cursor: grabbing; }
+.zoom { position: absolute; top: calc(8px + env(safe-area-inset-top, 0px) * 0); left: 8px; display: flex; flex-direction: column; gap: 4px; }
+.zoom button { width: 34px; height: 34px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); font: 600 18px var(--f-body); cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
+.zoom button.small { font-size: 11px; }
 .probe { position: absolute; pointer-events: none; background: rgba(16,35,63,0.92); color: #fff; font: 12px var(--f-mono); padding: 4px 7px; border-radius: 4px; white-space: nowrap; transform: translate(10px, -120%); }
 .key { min-width: 0; }
 canvas#keyv { width: 64px; height: 100%; min-height: 240px; display: block; }
@@ -83,7 +87,7 @@ input#hour { flex: 1 1 200px; min-width: 0; accent-color: var(--accent); height:
     <div class="card">
       <div class="cap"><span><b id="ttl">—</b><br><span class="sub" id="valid">—</span></span><span class="sub" id="lead2"></span></div>
       <div class="stage">
-        <div class="mapbox" id="mapbox"><canvas id="map" aria-label="Forecast map"></canvas><div class="probe" id="probe" hidden></div><div class="loading" id="loading">Loading forecast…</div></div>
+        <div class="mapbox" id="mapbox"><canvas id="map" aria-label="Forecast map"></canvas><div class="probe" id="probe" hidden></div><div class="zoom"><button id="zin" aria-label="Zoom in" title="Zoom in">+</button><button id="zout" aria-label="Zoom out" title="Zoom out">−</button><button id="zreset" class="small" aria-label="Reset view" title="Back to the region">⟲</button></div><div class="loading" id="loading">Loading forecast…</div></div>
         <div class="key"><canvas id="keyv"></canvas></div>
       </div>
       <canvas id="keyh"></canvas>
@@ -95,7 +99,7 @@ input#hour { flex: 1 1 200px; min-width: 0; accent-color: var(--accent); height:
         <span class="lead" id="lead">+0 h</span>
       </div>
     </div>
-    <p class="foot">Grid T85, about 140 km. Maps every 6 hours to 10 days. Tap or hover on the map to read the value at a point. Wind barbs: half feather 5 kt, full feather 10 kt, flag 50 kt.</p>
+    <p class="foot">Grid T85, about 140 km. Maps every 6 hours to 10 days. Drag the map to move around the globe; pinch, scroll or use + and − to zoom. Tap or hover to read the value at a point. Wind barbs: half feather 5 kt, full feather 10 kt, flag 50 kt.</p>
   </section>
 </div>
 
@@ -128,7 +132,7 @@ const P = [
 const R = [
  {id:'nio', name:'North Indian Ocean', b:[50,105,0,35]}, {id:'india', name:'India', b:[66,98,6,36]}, {id:'south', name:'South India', b:[72,88,6,20]},
  {id:'tn', name:'Tamil Nadu', b:[75.5,81.5,7.5,14.5]}, {id:'bay', name:'Bay of Bengal', b:[78,100,4,24]}, {id:'as', name:'Arabian Sea', b:[50,78,4,26]},
- {id:'sio', name:'South Indian Ocean', b:[40,115,-40,0]}, {id:'asia', name:'Asia', b:[40,150,-15,55]}, {id:'globe', name:'Globe', b:[-180,180,-75,80]},
+ {id:'sio', name:'South Indian Ocean', b:[40,115,-40,0]}, {id:'asia', name:'Asia', b:[40,150,-15,55]}, {id:'globe', name:'Globe', b:[25,135,-20,45]},
 ];
 // ---------- state ----------
 let meta = null, borders = null; const cache = {}; let prod = P[0], reg = R[0], ti = 0, playing = null;
@@ -138,7 +142,7 @@ const save = () => { try { localStorage.setItem('megam-view', JSON.stringify({p:
 const rail = $('rail'); const groups = {};
 P.forEach(p => { if (!groups[p.g]) { const d = document.createElement('div'); d.className = 'group'; d.innerHTML = `<h3>${p.g}</h3><div class="items"></div>`; rail.appendChild(d); groups[p.g] = d.querySelector('.items'); }
   const b = document.createElement('button'); b.className = 'prod'; b.textContent = p.name; b.dataset.id = p.id; b.onclick = () => { prod = p; save(); syncUI(); draw(); }; groups[p.g].appendChild(b); });
-R.forEach(r => { const b = document.createElement('button'); b.className = 'reg'; b.textContent = r.name; b.dataset.id = r.id; b.onclick = () => { reg = r; save(); syncUI(); draw(); }; $('regions').appendChild(b); });
+R.forEach(r => { const b = document.createElement('button'); b.className = 'reg'; b.textContent = r.name; b.dataset.id = r.id; b.onclick = () => { reg = r; setView(); save(); syncUI(); draw(); }; $('regions').appendChild(b); });
 function syncUI() { document.querySelectorAll('.prod').forEach(b => b.setAttribute('aria-pressed', b.dataset.id === prod.id)); document.querySelectorAll('.reg').forEach(b => b.setAttribute('aria-pressed', b.dataset.id === reg.id)); }
 syncUI();
 // ---------- data ----------
@@ -166,20 +170,26 @@ function sample(F, t, fy, fx) { const y0 = Math.min(NLAT - 2, Math.floor(fy)), w
   const a = F[o + y0 * NLON + x0], b = F[o + y0 * NLON + x1], c = F[o + (y0 + 1) * NLON + x0], d = F[o + (y0 + 1) * NLON + x1]; return (a * (1 - wx) + b * wx) * (1 - wy) + (c * (1 - wx) + d * wx) * wy; }
 // ---------- drawing ----------
 const cv = $('map'), ctx = cv.getContext('2d');
-function geom() { const [x0, x1, y0, y1] = reg.b; const cosm = Math.cos((y0 + y1) / 2 * Math.PI / 180); const w = $('mapbox').clientWidth; const aspect = (y1 - y0) / ((x1 - x0) * Math.max(cosm, 0.55));
-  const dpr = Math.min(window.devicePixelRatio || 1, 2); const W = Math.round(w * dpr), H = Math.round(Math.min(w * aspect, window.innerHeight * 0.72) * dpr);
-  return {W, H, dpr, x0, x1, y0, y1, px: lon => (lon - x0) / (x1 - x0) * W, py: lat => (y1 - lat) / (y1 - y0) * H}; }
+let view = null; // centre lon/lat and width in degrees of longitude; lon is not wrapped, so the map can be dragged round the globe
+function setView() { const [x0, x1, y0, y1] = reg.b; view = {cx: (x0 + x1) / 2, cy: (y0 + y1) / 2, span: x1 - x0, fit: [x0, x1, y0, y1]}; view.fitPending = true; }
+function geom(fast) { const w = $('mapbox').clientWidth; const dpr = fast ? 1 : Math.min(window.devicePixelRatio || 1, 2);
+  const Hc = Math.min(w * (w < 640 ? 0.95 : 0.64), window.innerHeight * 0.72); const W = Math.round(w * dpr), H = Math.round(Hc * dpr);
+  if (view.fitPending) { const [x0, x1, y0, y1] = view.fit; const c = Math.max(Math.cos(view.cy * Math.PI / 180), 0.3); view.span = Math.max(x1 - x0, (y1 - y0) / c * (W / H)); view.fitPending = false; }
+  view.span = Math.min(360, Math.max(4, view.span)); const c = Math.max(Math.cos(view.cy * Math.PI / 180), 0.3); let latSpan = view.span * (H / W) * c;
+  if (latSpan > 170) { latSpan = 170; } view.cy = Math.max(-85 + latSpan / 2, Math.min(85 - latSpan / 2, view.cy));
+  const x0 = view.cx - view.span / 2, x1 = view.cx + view.span / 2, y0 = view.cy - latSpan / 2, y1 = view.cy + latSpan / 2;
+  return {W, H, dpr, fast, x0, x1, y0, y1, px: lon => (lon - x0) / (x1 - x0) * W, py: lat => (y1 - lat) / (y1 - y0) * H}; }
 function colorOf(scale, v) { if (!(v >= scale[0][0])) return null; let i = scale.length - 1; while (i > 0 && v < scale[i][0]) i--; return scale[i][1]; }
 const rgbCache = {}; function rgb(h) { if (rgbCache[h]) return rgbCache[h]; const n = parseInt(h.slice(1), 16); return (rgbCache[h] = [n >> 16 & 255, n >> 8 & 255, n & 255]); }
 function css(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
 let G = null;
-async function draw() {
-  if (!meta) return; const myT = ti; G = geom(); const {W, H, x0, x1, y0, y1} = G; cv.width = W; cv.height = H;
-  $('loading').hidden = false;
+async function draw(fast) {
+  if (!meta) return; const myT = ti; const g0 = geom(fast); const {W, H, x0, x1, y0, y1} = g0;
+  if (!cache[prod.fill]) $('loading').hidden = false;
   const F = await field(prod.fill); const C = prod.cont ? await field(prod.cont[0]) : null; const U = prod.barbs ? await field(prod.barbs[0]) : null, V = prod.barbs ? await field(prod.barbs[1]) : null;
-  $('loading').hidden = true; if (myT !== ti) return;
+  $('loading').hidden = true; if (myT !== ti) return; G = g0; if (cv.width !== W) cv.width = W; if (cv.height !== H) cv.height = H;
   // background + shading (step 2 device px, bilinear field)
-  const img = ctx.createImageData(W, H), d = img.data; const sea = rgb(cssHex('--sea')); const step = 2;
+  const img = ctx.createImageData(W, H), d = img.data; const sea = rgb(cssHex('--sea')); const step = fast ? 3 : 2;
   const fyRow = new Float32Array(H), fxCol = new Float32Array(W);
   for (let j = 0; j < H; j++) fyRow[j] = latIdx(y1 - (j + 0.5) / H * (y1 - y0));
   for (let i = 0; i < W; i++) fxCol[i] = lonIdx(x0 + (i + 0.5) / W * (x1 - x0));
@@ -188,13 +198,13 @@ async function draw() {
     let col = c ? rgb(c) : sea;
     for (let dj = 0; dj < step && j + dj < H; dj++) for (let di = 0; di < step && i + di < W; di++) { const k = ((j + dj) * W + i + di) * 4; d[k] = col[0]; d[k + 1] = col[1]; d[k + 2] = col[2]; d[k + 3] = 255; } }
   ctx.putImageData(img, 0, 0);
-  drawLines(); if (C) drawContours(C); if (U) drawBarbs(U, V); if (prod.hl && C) drawHL(C);
-  drawFrame(); drawKey(); caption();
+  drawLines(); if (C) drawContours(C); if (U && !fast) drawBarbs(U, V); if (prod.hl && C && !fast) drawHL(C);
+  drawFrame(); if (!fast) drawKey(); caption();
 }
 function cssHex(v) { const s = css(v); return s.startsWith('#') ? s : '#ffffff'; }
-function drawLines() { if (!borders) return; const {px, py, dpr, x0, x1} = G; const sets = [['states', css('--state'), 0.7], ['countries', css('--border'), 0.9], ['coast', css('--coast'), 1.1]];
+function drawLines() { if (!borders) return; const {px, py, dpr, x0, x1} = G; const shifts = []; for (let sh = -1080; sh <= 1080; sh += 360) if (sh + 180 >= x0 && sh - 180 <= x1) shifts.push(sh); const sets = [['states', css('--state'), 0.7], ['countries', css('--border'), 0.9], ['coast', css('--coast'), 1.1]];
   for (const [k, col, w] of sets) { const L = borders[k]; if (!L) continue; ctx.strokeStyle = col; ctx.lineWidth = w * dpr; ctx.beginPath();
-    for (const line of L) { let pen = false, prevX = null; for (const [lo0, la] of line) { let lo = lo0; if (x1 > 180 && lo < 0) lo += 360; const X = px(lo), Y = py(la); if (pen && Math.abs(X - prevX) < G.W * 0.5) ctx.lineTo(X, Y); else ctx.moveTo(X, Y); pen = true; prevX = X; } }
+    for (const sh of shifts) for (const line of L) { let pen = false, prevLo = null; for (const [lo0, la] of line) { const lo = lo0 + sh; const X = px(lo), Y = py(la); if (pen && Math.abs(lo - prevLo) < 90) ctx.lineTo(X, Y); else ctx.moveTo(X, Y); pen = true; prevLo = lo; } }
     ctx.stroke(); } }
 function regionGrid(Fl, up) { // sub-grid covering the region (+margin), upsampled for smooth contours
   const {x0, x1, y0, y1} = G; const ya = Math.max(0, Math.floor(latIdx(y1 + 3))), yb = Math.min(NLAT - 1, Math.ceil(latIdx(y0 - 3)));
@@ -203,7 +213,7 @@ function regionGrid(Fl, up) { // sub-grid covering the region (+margin), upsampl
   const toLon = i => lonA + i * DLON / up, toLat = j => { const f = ya + j / up, k = Math.min(NLAT - 2, Math.floor(f)); return LAT[k] + (f - k) * (LAT[k + 1] - LAT[k]); };
   return {vals, nx, ny, toLon, toLat}; }
 function drawContours(Cf) { // marching squares on an upsampled sub-grid; segments drawn directly, labels spaced apart
-  const [name, every, unit] = prod.cont; const g = regionGrid(Cf, 3); const {vals, nx, ny} = g; let mn = Infinity, mx = -Infinity; for (const v of vals) { if (v < mn) mn = v; if (v > mx) mx = v; }
+  const [name, every, unit] = prod.cont; const g = regionGrid(Cf, G.fast ? 1 : (G.x1 - G.x0 > 150 ? 1 : G.x1 - G.x0 > 60 ? 2 : 3)); const {vals, nx, ny} = g; let mn = Infinity, mx = -Infinity; for (const v of vals) { if (v < mn) mn = v; if (v > mx) mx = v; }
   const {px, py, dpr} = G; ctx.strokeStyle = css('--contour'); ctx.lineWidth = 1.1 * dpr; ctx.font = `${10.5 * dpr}px IBM Plex Mono, monospace`;
   const labels = []; const P = (x, y) => [px(g.toLon(x)), py(g.toLat(y))];
   for (let lv = Math.ceil(mn / every) * every; lv <= mx; lv += every) {
@@ -220,10 +230,10 @@ function drawContours(Cf) { // marching squares on an upsampled sub-grid; segmen
   const placed = []; const minGap = 70 * dpr;
   for (const [X, Y, lv] of labels) { if (X < 20 || X > G.W - 30 || Y < 14 || Y > G.H - 8) continue; if (placed.some(([x, y]) => Math.hypot(x - X, y - Y) < minGap)) continue; placed.push([X, Y]);
     const t = String(Math.round(lv)); const w = ctx.measureText(t).width; ctx.fillStyle = 'rgba(255,255,255,0.88)'; ctx.fillRect(X - w / 2 - 2, Y - 7 * dpr, w + 4, 13 * dpr); ctx.fillStyle = css('--contour'); ctx.fillText(t, X - w / 2, Y + 4 * dpr); } }
-function drawHL(Cf) { const g = regionGrid(Cf, 1); const {px, py, dpr} = G; const r = 4; ctx.font = `700 ${18 * dpr}px Archivo, sans-serif`;
+function drawHL(Cf) { const g = regionGrid(Cf, 1); const {px, py, dpr} = G; const r = 4; const placedHL = []; ctx.font = `700 ${18 * dpr}px Archivo, sans-serif`;
   for (let j = r; j < g.ny - r; j++) for (let i = r; i < g.nx - r; i++) { const v = g.vals[j * g.nx + i]; let isMin = true, isMax = true, sum = 0, n = 0;
     for (let b = -r; b <= r && (isMin || isMax); b++) for (let a = -r; a <= r; a++) { if (!a && !b) continue; const w = g.vals[(j + b) * g.nx + i + a]; if (w <= v) isMin = false; if (w >= v) isMax = false; sum += w; n++; }
-    if (!(isMin || isMax)) continue; if (Math.abs(sum / n - v) < 1.0) continue; const X = px(g.toLon(i)), Y = py(g.toLat(j)); if (X < 12 || X > G.W - 12 || Y < 16 || Y > G.H - 10) continue;
+    if (!(isMin || isMax)) continue; if (Math.abs(sum / n - v) < 1.0) continue; const X = px(g.toLon(i)), Y = py(g.toLat(j)); if (X < 12 || X > G.W - 12 || Y < 16 || Y > G.H - 10) continue; if (placedHL.some(([x, y]) => Math.hypot(x - X, y - Y) < 80 * dpr)) continue; placedHL.push([X, Y]);
     ctx.fillStyle = isMin ? '#c41e2a' : '#1d4fb8'; ctx.fillText(isMin ? 'L' : 'H', X - 6 * dpr, Y + 6 * dpr); ctx.font = `600 ${11 * dpr}px IBM Plex Mono, monospace`; ctx.fillText(String(Math.round(v)), X - 12 * dpr, Y - 12 * dpr); ctx.font = `700 ${18 * dpr}px Archivo, sans-serif`; } }
 function drawBarbs(U, V) { const {x0, x1, y0, y1, W, H, px, py, dpr} = G; const spacingPx = 30 * dpr; const nX = Math.max(4, Math.floor(W / spacingPx)), nY = Math.max(3, Math.floor(H / spacingPx));
   ctx.strokeStyle = css('--barb'); ctx.fillStyle = css('--barb'); ctx.lineWidth = 1 * dpr;
@@ -235,7 +245,7 @@ function barb(X, Y, u, v, south) { const dpr = G.dpr, spd = Math.hypot(u, v), L 
   while (s >= 10) { const bx = ex - dx * pos, by = ey - dy * pos; ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(bx + nx * fl + dx * 2 * dpr, by + ny * fl + dy * 2 * dpr); ctx.stroke(); pos += gap; s -= 10; }
   if (s >= 5) { if (pos === 0) pos = gap; const bx = ex - dx * pos, by = ey - dy * pos; ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(bx + nx * fl * 0.5 + dx * dpr, by + ny * fl * 0.5 + dy * dpr); ctx.stroke(); } }
 function drawFrame() { const {W, H, dpr, x0, x1, y0, y1, px, py} = G; ctx.font = `${10 * dpr}px IBM Plex Mono, monospace`; ctx.fillStyle = css('--coast'); ctx.strokeStyle = 'rgba(40,50,64,0.18)'; ctx.lineWidth = 1;
-  const st = (x1 - x0) > 120 ? 30 : (x1 - x0) > 30 ? 10 : 2; for (let lo = Math.ceil(x0 / st) * st; lo <= x1; lo += st) { const X = px(lo); ctx.beginPath(); ctx.moveTo(X, 0); ctx.lineTo(X, H); ctx.stroke(); ctx.fillText(((lo % 360) + 360) % 360 > 180 ? `${360 - (((lo % 360) + 360) % 360)}W` : `${((lo % 360) + 360) % 360}E`, X + 3, H - 4); }
+  const st = (x1 - x0) > 150 ? 30 : (x1 - x0) > 50 ? 10 : (x1 - x0) > 14 ? 5 : 2; for (let lo = Math.ceil(x0 / st) * st; lo <= x1; lo += st) { const X = px(lo); ctx.beginPath(); ctx.moveTo(X, 0); ctx.lineTo(X, H); ctx.stroke(); ctx.fillText(((lo % 360) + 360) % 360 > 180 ? `${360 - (((lo % 360) + 360) % 360)}W` : `${((lo % 360) + 360) % 360}E`, X + 3, H - 4); }
   for (let la = Math.ceil(y0 / st) * st; la <= y1; la += st) { const Y = py(la); ctx.beginPath(); ctx.moveTo(0, Y); ctx.lineTo(W, Y); ctx.stroke(); ctx.fillText(la === 0 ? 'EQ' : la > 0 ? `${la}N` : `${-la}S`, 3, Y - 3); }
   ctx.font = `600 ${11 * dpr}px IBM Plex Sans, sans-serif`; ctx.fillStyle = 'rgba(16,35,63,0.75)'; const t = 'MEGAM'; ctx.fillText(t, W - ctx.measureText(t).width - 6 * dpr, 14 * dpr); }
 function drawKey() { const sc = prod.scale; const vert = getComputedStyle($('keyv')).display !== 'none'; const k = vert ? $('keyv') : $('keyh'); const kx = k.getContext('2d'); const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -252,8 +262,21 @@ function caption() { const h = meta.hours[ti]; const init = new Date(meta.init.r
 function probe(ev) { if (!G || !meta) return; const r = cv.getBoundingClientRect(); const x = (ev.clientX - r.left) / r.width, y = (ev.clientY - r.top) / r.height; if (x < 0 || x > 1 || y < 0 || y > 1) { $('probe').hidden = true; return; }
   const lon = G.x0 + x * (G.x1 - G.x0), lat = G.y1 - y * (G.y1 - G.y0); const F = cache[prod.fill]; if (!F) return; const v = sample(F, ti, latIdx(lat), lonIdx(lon));
   let extra = ''; if (prod.cont && cache[prod.cont[0]]) extra = ` · ${Math.round(sample(cache[prod.cont[0]], ti, latIdx(lat), lonIdx(lon)))} ${prod.cont[2]}`;
-  $('probe').textContent = `${Math.abs(lat).toFixed(1)}${lat >= 0 ? 'N' : 'S'} ${lon.toFixed(1)}E  ${v.toFixed(prod.unit === 'mm' && v < 10 ? 1 : 0)} ${prod.unit}${extra}`; $('probe').style.left = (ev.clientX - r.left) + 'px'; $('probe').style.top = (ev.clientY - r.top) + 'px'; $('probe').hidden = false; }
-cv.addEventListener('pointermove', probe); cv.addEventListener('pointerdown', probe); cv.addEventListener('pointerleave', () => $('probe').hidden = true);
+  $('probe').textContent = `${Math.abs(lat).toFixed(1)}${lat >= 0 ? 'N' : 'S'} ${(((lon % 360) + 540) % 360 - 180) >= 0 ? (((lon % 360) + 540) % 360 - 180).toFixed(1) + 'E' : (-(((lon % 360) + 540) % 360 - 180)).toFixed(1) + 'W'}  ${v.toFixed(prod.unit === 'mm' && v < 10 ? 1 : 0)} ${prod.unit}${extra}`; $('probe').style.left = (ev.clientX - r.left) + 'px'; $('probe').style.top = (ev.clientY - r.top) + 'px'; $('probe').hidden = false; }
+// ---------- pan and zoom ----------
+const pts = new Map(); let dragMoved = false, pinch0 = null, raf = 0, settle = 0;
+function redrawSoon() { if (raf) return; raf = requestAnimationFrame(() => { raf = 0; draw(true); clearTimeout(settle); settle = setTimeout(() => draw(false), 220); }); }
+function zoomAt(f, fx, fy) { if (!G) return; const lon = G.x0 + fx * (G.x1 - G.x0), lat = G.y1 - fy * (G.y1 - G.y0); const ns = Math.min(360, Math.max(4, view.span * f)); const k = ns / view.span;
+  view.cx = lon + (view.cx - lon) * k; view.cy = lat + (view.cy - lat) * k; view.span = ns; redrawSoon(); }
+cv.addEventListener('pointerdown', e => { cv.setPointerCapture(e.pointerId); pts.set(e.pointerId, {x: e.clientX, y: e.clientY}); dragMoved = false; if (pts.size === 2) { const [a, b] = [...pts.values()]; pinch0 = {d: Math.hypot(a.x - b.x, a.y - b.y), span: view.span}; } });
+cv.addEventListener('pointermove', e => { const p = pts.get(e.pointerId); if (!p) { if (e.pointerType === 'mouse') probe(e); return; }
+  const r = cv.getBoundingClientRect(); if (pts.size === 2 && pinch0) { p.x = e.clientX; p.y = e.clientY; const [a, b] = [...pts.values()]; const d = Math.hypot(a.x - b.x, a.y - b.y); if (d > 10) { const target = pinch0.span * pinch0.d / d; zoomAt(target / view.span, ((a.x + b.x) / 2 - r.left) / r.width, ((a.y + b.y) / 2 - r.top) / r.height); } dragMoved = true; return; }
+  const dx = e.clientX - p.x, dy = e.clientY - p.y; if (!dragMoved && Math.hypot(dx, dy) < 5) return; dragMoved = true; cv.classList.add('drag'); $('probe').hidden = true;
+  view.cx -= dx / r.width * (G.x1 - G.x0); view.cy += dy / r.height * (G.y1 - G.y0); p.x = e.clientX; p.y = e.clientY; redrawSoon(); });
+function endPtr(e) { const was = pts.get(e.pointerId); pts.delete(e.pointerId); if (pts.size < 2) pinch0 = null; cv.classList.remove('drag'); if (was && !dragMoved) probe(e); }
+cv.addEventListener('pointerup', endPtr); cv.addEventListener('pointercancel', endPtr); cv.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse' && !pts.size) $('probe').hidden = true; });
+cv.addEventListener('wheel', e => { e.preventDefault(); const r = cv.getBoundingClientRect(); zoomAt(Math.pow(1.0015, e.deltaY), (e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height); }, {passive: false});
+$('zin').onclick = () => zoomAt(0.7, 0.5, 0.5); $('zout').onclick = () => zoomAt(1 / 0.7, 0.5, 0.5); $('zreset').onclick = () => { setView(); draw(); };
 // ---------- time controls ----------
 const setT = t => { ti = Math.max(0, Math.min(meta.hours.length - 1, t)); draw(); };
 $('prev').onclick = () => setT(ti - 1); $('next').onclick = () => setT(ti + 1); $('hour').oninput = e => setT(+e.target.value);
@@ -269,7 +292,7 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', d
     try { borders = await (await fetch('data/borders.json')).json(); } catch (e) { borders = null; }
     $('hour').max = meta.hours.length - 1; const init = new Date(meta.init.replace(/T(\d\d)$/, 'T$1:00:00Z'));
     $('runline').textContent = `Run ${String(init.getUTCHours()).padStart(2, '0')}z ${fmt(init)} · ${meta.grid} · ${meta.hours[meta.hours.length - 1] / 24} days`;
-    ti = 0; draw();
+    ti = 0; setView(); draw();
   } catch (e) { $('loading').textContent = 'Could not load the forecast files. Reload the page to try again.'; }
 })();
 })();
