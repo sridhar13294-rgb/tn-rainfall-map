@@ -1,0 +1,24 @@
+centres used ['GFSM', 'ECM', 'ICON', 'CMC', 'ARPEGE', 'UKMO', 'GEOS']
+obs: 177080 in file, 56942 in time window, 28653 checked, 10836 superobs used; rejected {'below_ground': 64, 'gross': 91, 'height': 671, 'monitor': 3743, 'off': 7276}; solved {'ps': 2121, 't': 1358, 'q': 2965, 'u': 2196, 'v': 2196}
+  metar  mslp n=   391  O-B mean -2.11 rms 3.04  O-A rms 1.12 hPa
+  metar  q    n=   403  O-B mean +1.41 rms 2.36  O-A rms 1.64 g/kg
+  scat   u    n=  2909  O-B mean +0.19 rms 1.21  O-A rms 0.93 m/s
+  scat   v    n=  2909  O-B mean +0.44 rms 1.36  O-A rms 1.06 m/s
+  ship   mslp n=   696  O-B mean -0.99 rms 2.78  O-A rms 2.17 hPa
+  ship   q    n=   572  O-B mean +1.30 rms 2.15  O-A rms 1.49 g/kg
+  ship   u    n=   445  O-B mean -0.09 rms 3.00  O-A rms 2.57 m/s
+  ship   v    n=   445  O-B mean -0.18 rms 3.23  O-A rms 2.77 m/s
+  synop  mslp n=  1692  O-B mean -1.23 rms 2.78  O-A rms 1.58 hPa
+  synop  q    n=  1795  O-B mean +1.17 rms 2.17  O-A rms 1.31 g/kg
+  temp   q    n=   853  O-B mean +0.11 rms 0.84  O-A rms 0.64 g/kg
+  temp   t    n=  1358  O-B mean +0.04 rms 0.89  O-A rms 0.69 K
+  temp   u    n=  1170  O-B mean +0.09 rms 2.38  O-A rms 1.87 m/s
+  temp   v    n=  1170  O-B mean +0.13 rms 2.33  O-A rms 1.71 m/s
+  OI pressure bias removed for metar: -1.46 hPa
+  OI pressure bias removed for ship: -0.43 hPa
+  OI pressure bias removed for synop: -0.75 hPa
+OI report {"n_in": 177080, "n_window": 56942, "n_checked": 28653, "n_superobs": 10836, "solved": {"ps": 2121, "t": 1358, "q": 2965, "u": 2196, "v": 2196}, "rows": [{"type": "metar", "var": "mslp", "n": 391, "omb_mean": -2.1064545998544015, "omb_rms": 3.0376947745897263, "oma_rms": 1.1235988905073395, "units": "hPa"}, {"type": "metar", "var": "q", "n": 403, "omb_mean": 1.4061606304099445, "omb_rms": 2.359806625784332, "oma_rms": 1.6403790386643922, "units": "g/kg"}, {"type": "scat", "var": "u", "n": 2909, "omb_mean": 0.1888973567198707, "omb_rms": 1.2060569924174211, "oma_rms": 0.9265987133200937, "units": "m/s"}, {"type": "scat", "var": "v", "n": 2909, "omb_mean": 0.4420492413374049, "omb_rms": 1.35628586874521, "oma_rms": 1.0618157056928228, "units": "m/s"}, {"type": "ship", "var": "mslp", "n": 696, "omb_mean": -0.9852571576320915, "omb_rms": 2.784378073578145, "oma_rms": 2.1724433695277177, "units": "hPa"}, {"type": "ship", "var": "q", "n": 572, "omb_mean": 1.296166963574044, "omb_rms": 2.1482597636112617, "oma_rms": 1.4907615136488799, "units": "g/kg"}, {"type": "ship", "var": "u", "n": 445, "omb_mean": -0.09150653093695871, "omb_rms": 3.0000181387303355, "oma_rms": 2.573297063967525, "units": "m/s"}, {"type": "ship", "var": "v", "n": 445, "omb_mean": -0.18472414660249328, "omb_rms": 3.225015999438986, "oma_rms": 2.7664534841446704, "units": "m/s"}, {"type": "synop", "var": "mslp", "n": 1692, "omb_mean": -1.2274627801799067, "omb_rms": 2.7813551634894162, "oma_rms": 1.58220408972623
+noobs done
+obs done
+obsdb done
+saved /kaggle/working/trial_2026102412b.npz 17477 KB
