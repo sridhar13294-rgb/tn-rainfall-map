@@ -467,6 +467,35 @@ def scat(t_from, t_to, R):
         tot[sat] = n; log(f'  scat {ds}: {len(files)} files in window, {n} superobs')
     return tot
 
+def scat_eumetsat(t_from, t_to, R, cid='EO:EUM:DAT:METOP:OSI-104'):
+    """ASCAT 12.5-km coastal winds (OSI SAF) from the EUMETSAT Data Store with our own key (EUMETSAT_KEY/SECRET secrets)."""
+    import base64, zipfile
+    k, sec = os.environ.get('EUMETSAT_KEY', ''), os.environ.get('EUMETSAT_SECRET', ''); tot = {}
+    if not (k and sec): return tot
+    try: import netCDF4
+    except ImportError: log('  scat (EUMETSAT): netCDF4 not installed'); return tot
+    try:
+        req = urllib.request.Request('https://api.eumetsat.int/token', data=b'grant_type=client_credentials',
+                                     headers={'Authorization': 'Basic ' + base64.b64encode(f'{k}:{sec}'.encode()).decode()})
+        tok = json.loads(urllib.request.urlopen(req, timeout=60).read())['access_token']; H = {'Authorization': 'Bearer ' + tok}
+        q = urllib.parse.urlencode({'format': 'json', 'pi': cid, 'dtstart': (t_from - dt.timedelta(hours=2)).strftime('%Y-%m-%dT%H:%M:%SZ'),
+                                    'dtend': t_to.strftime('%Y-%m-%dT%H:%M:%SZ'), 'c': 100})
+        feats = json.loads(http('https://api.eumetsat.int/data/search-products/1.0.0/os?' + q, headers=H)).get('features', [])
+    except Exception as e:
+        log('  scat (EUMETSAT) search failed', repr(e)[:150]); return tot
+    for f in feats:
+        pid = f.get('id', ''); sat = 'metopb' if 'metopb' in pid else 'metopc' if 'metopc' in pid else 'metop'
+        try:
+            buf = http('https://api.eumetsat.int/data/download/1.0.0/collections/' + urllib.parse.quote(cid) + '/products/' + urllib.parse.quote(pid), headers=H, timeout=300)
+            if buf[:2] == b'PK':
+                z = zipfile.ZipFile(io.BytesIO(buf)); nm = [n for n in z.namelist() if '.nc' in n or n.endswith('.l2')] or z.namelist(); buf = z.read(nm[0])
+            buf = unpack(buf)
+            tot[sat] = tot.get(sat, 0) + read_scat(netCDF4.Dataset('mem.nc', memory=buf), sat, t_from, t_to, R)
+        except Exception as e:
+            log('  scat (EUMETSAT)', pid[:60], 'failed', repr(e)[:150])
+    log(f'  scat EUMETSAT {cid}: {len(feats)} files in window, superobs {tot}')
+    return tot
+
 def t0_of(t_from): return t_from + dt.timedelta(hours=6)                 # the window starts 6 h before t0
 
 def read_scat(D, sat, t_from, t_to, R, box=0.5):
@@ -698,7 +727,7 @@ def main(argv):
     try:
         nm, nq = metars(t_from, t_to, R); counts['metar'] = nm; log(f'  METAR: {nm} reports in {nq} requests')
     except Exception as e: log('  METAR failed', repr(e)[:150])
-    try: counts['scat'] = scat(t_from, t_to, R)
+    try: counts['scat'] = scat_eumetsat(t_from, t_to, R) or scat(t_from, t_to, R)              # own EUMETSAT key first, KNMI shared key as fallback
     except Exception as e: log('  scat failed', repr(e)[:150])
     rain, rh, rsrc = None, 0.0, ''
     try:
