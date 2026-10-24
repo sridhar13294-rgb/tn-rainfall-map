@@ -1,6 +1,6 @@
-tn-wx-var
-libm_wx2020_fields.npz,wx_truth_2020.npz
-bash ../kaggle/par.sh wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/wx_var.json /kaggle/working/wx
+tn-ens-final3
+libm_fields.npz
+bash ../kaggle/par.sh hindens2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/ens_final3.json /kaggle/working/ens
 NvidiaTeslaT4
-2
-#general exam for the same two variants 2026-10-24T01:01Z
+3
+#ensemble spread: bigger start differences (x3) and SPPT x1.5 on top (spread/error still 0.6-0.7) 2026-10-24T01:02Z
