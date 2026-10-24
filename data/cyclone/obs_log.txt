@@ -92,3 +92,18 @@
   lightning: 2 maps (0.9 h), 2959 strike cells; activity records 12
   saved /tmp/cyc_out/obs_2026102418.npz: 114682 records, 0.9 MB
   counts {"gts": {"synop": 6534, "no_station": 2746, "ship": 19892, "temp": 188, "temp_no_station": 27}, "metar": 3963, "scat": {"metopc": 5641, "metopb": 5909}, "synop_records": 34014, "synop_india": 2482, "synop_sites_india": 269, "ship_records": 28581, "ship_india": 63, "ship_sites_india": 7, "temp_records": 6352, "temp_india": 0, "temp_sites_india": 0, "metar_records": 22635, "metar_india": 4856, "metar_sites_india": 96, "scat_records": 23100, "scat_india": 1618, "scat_sites_india": 2, "rain": {"src": "PERSIANN-CCS 6-hourly", "hours": 6.0, "mean_mm_india": 0.7322430210620403}, "lightning": {"maps": 2, "hours": 0.9166666666666666, "cells": 2959.5, "hist_records": 12}}
+== obs 2026102412 (window 24 06:00-24 15:00 UTC, fetched 2026-10-24 21:37 UTC)
+  stations: 11548
+  DC.sflnd/DS.synop: 199 files, 7.1 MB
+  DC.sfmar/DS.ships: 198 files, 5.6 MB
+  DC.vsndn/DS.raobf: 112 files, 2.0 MB
+  GTS: {'synop': 13607, 'no_station': 5933, 'ship': 39063, 'temp': 196, 'temp_no_station': 32}; India synop stations 314, India radiosondes 0
+  Wyoming India soundings: 20 of 90 asked
+  METAR: 5886 reports in 80 requests
+  scat EUMETSAT EO:EUM:DAT:METOP:OSI-104: 14 files in window, superobs {'metopc': 3042, 'metopb': 2355}
+  CMORPH ctl not read AttributeError("'NoneType' object has no attribute 'decode'")
+  CMORPH: 0 of 6 h (no files)
+  PERSIANN-CCS: 6 of 6 h (6-hourly)
+  lightning: 0 maps (0.0 h), 0 strike cells; activity records 11
+  saved /tmp/cyc_out/obs_2026102412.npz: 177080 records, 1.2 MB
+  counts {"gts": {"synop": 13607, "no_station": 5933, "ship": 39063, "temp": 196, "temp_no_station": 32}, "wyoming_india": 20, "metar": 5886, "scat": {"metopc": 3042, "metopb": 2355}, "synop_records": 70776, "synop_india": 5535, "synop_sites_india": 314, "ship_records": 54550, "ship_india": 124, "ship_sites_india": 13, "temp_records": 7239, "temp_india": 494, "temp_sites_india": 20, "metar_records": 33721, "metar_india": 9230, "metar_sites_india": 114, "scat_records": 10794, "scat_india": 0, "scat_sites_india": 0, "rain": {"src": "PERSIANN-CCS 6-hourly", "hours": 6.0, "mean_mm_india": 0.8315937387521146}, "lightning": {"maps": 0, "hours": 0.0, "cells": 0.0, "hist_records": 11}}
