@@ -28,6 +28,9 @@ Gridded: rain6 [lat, lon] mm (NaN = no data), rain_lat, rain_lon, rain_src, rain
 import os, sys, re, io, gzip, bz2, json, math, time, calendar, subprocess, urllib.request, urllib.parse, datetime as dt
 from concurrent.futures import ThreadPoolExecutor
 import numpy as np
+import socket
+_gai = socket.getaddrinfo
+socket.getaddrinfo = lambda h, *a, **k: [x for x in _gai(h, *a, **k) if x[0] == socket.AF_INET] or _gai(h, *a, **k)   # GitHub runners: no IPv6 route
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.join(HERE, 'mm'))
 import nudge as NG
 
@@ -183,7 +186,9 @@ def tg_fetch(sub, t_from, now):
     names = tg_files(sub, t_from, now); out = []
     def one(n):
         try: return http(TG + sub + '/' + n, timeout=60, tries=2, quiet=True) or b''
-        except Exception: return b''
+        except Exception as e:
+            if n.endswith('0000') or n == names[0]: log('  tg', sub, n, 'failed', repr(e)[:150])
+            return b''
     with ThreadPoolExecutor(8) as ex:
         for b in ex.map(one, names): out.append(b)
     log(f'  {sub}: {len(names)} files, {sum(len(b) for b in out) / 1e6:.1f} MB')
