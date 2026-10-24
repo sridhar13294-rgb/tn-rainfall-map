@@ -1,6 +1,6 @@
-tn-wind-dd
+tn-wind-ck
 libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 '{"dd10":{"mf_dd":1.0}}' > /kaggle/working/wind.log 2>&1; tail -30 /kaggle/working/wind.log
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 '{"ck10":{"ck":1.0e-3}}' > /kaggle/working/wind.log 2>&1; tail -30 /kaggle/working/wind.log
 NvidiaTeslaT4
-3
-#steering winds: new scheme with stronger rain-cooled downdrafts 2026-10-24T11:12Z
+4
+#steering winds: less sea evaporation (ck 1.0e-3) 2026-10-24T11:12Z
