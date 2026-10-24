@@ -62,6 +62,10 @@ open('data/cyclone/obs_probe2.txt', 'w').write('\n'.join(OUT) + '\n')
 for url in ('https://tgftp.nws.noaa.gov/SL.us008001/DF.an/DC.sflnd/DS.synop/', 'https://tgftp.nws.noaa.gov/SL.us008001/DF.an/DC.sflnd/DS.synop/sn.0000',
             'https://tgftp.nws.noaa.gov/SL.us008001/DF.an/', 'https://tgftp.nws.noaa.gov/data/nsd_bbsss.txt'):
     try:
-        st, b, u = get(url, timeout=60); log('GTS', url[-40:], 'status', st, 'bytes', len(b), 'final', u[-50:], '|', b[:160].decode('latin-1', 'replace').replace('\n', ' '))
+        st, b, u = get(url, timeout=60)
+        if url.endswith('DS.synop/'):
+            import re as _re; t = b.decode('latin-1', 'replace'); hs = _re.findall(r'href="([^"]+)"', t); log('GTS hrefs', len(hs), hs[:8], hs[-5:])
+            i = t.find(hs[6]) if len(hs) > 6 else 0; log('GTS row sample:', t[max(0, i - 80):i + 220].replace('\n', ' | '))
+        log('GTS', url[-40:], 'status', st, 'bytes', len(b), 'final', u[-50:], '|', b[:160].decode('latin-1', 'replace').replace('\n', ' '))
     except Exception as e: log('GTS', url[-40:], 'failed', repr(e)[:200])
 open('data/cyclone/obs_probe2.txt', 'w').write('\n'.join(OUT) + '\n')
