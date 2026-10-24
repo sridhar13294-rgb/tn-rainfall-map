@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>MEGAM Forecast Maps</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,6 +23,7 @@
   --chip: #1d2a3c; --chip-on: #e6edf6; --chip-on-ink: #0c1420; --warn-bg: #2d2412; --warn-ink: #f1d08a;
   --sea: #f7f8fa; --landfill: #ecebe6; --coast: #2b3442; --border: #6d7684; --state: #9aa3ae; --contour: #111111; --barb: #1b1b1b; color-scheme: dark }
 html, body { height: auto; }
+[hidden] { display: none !important; }
 body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 14px; }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--mast); }
 .mast { background: var(--mast); color: var(--mast-ink); padding-block: 12px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
@@ -97,7 +99,6 @@ input#hour { flex: 1 1 200px; min-width: 0; accent-color: var(--accent); height:
   </section>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <script>
 (() => {
 const $ = id => document.getElementById(id);
@@ -130,7 +131,7 @@ const R = [
  {id:'sio', name:'South Indian Ocean', b:[40,115,-40,0]}, {id:'asia', name:'Asia', b:[40,150,-15,55]}, {id:'globe', name:'Globe', b:[-180,180,-75,80]},
 ];
 // ---------- state ----------
-let meta = null, borders = null, land = null; const cache = {}; let prod = P[0], reg = R[0], ti = 0, playing = null;
+let meta = null, borders = null; const cache = {}; let prod = P[0], reg = R[0], ti = 0, playing = null;
 try { const s = JSON.parse(localStorage.getItem('megam-view') || '{}'); prod = P.find(p => p.id === s.p) || prod; reg = R.find(r => r.id === s.r) || reg; } catch (e) {}
 const save = () => { try { localStorage.setItem('megam-view', JSON.stringify({p: prod.id, r: reg.id})); } catch (e) {} };
 // ---------- UI ----------
@@ -144,9 +145,11 @@ syncUI();
 async function getField(name) {
   if (cache[name]) return cache[name];
   const m = meta.fields[name]; if (!m) return null;
-  const buf = await (await fetch(`data/field_${name}.bin`)).arrayBuffer();
-  const code = m.bits === 16 ? new Uint16Array(buf) : new Uint8Array(buf); const out = new Float32Array(code.length);
-  for (let i = 0; i < code.length; i++) out[i] = m.offset + m.scale * code[i];
+  const blob = await (await fetch(`data/field_${name}.png`)).blob(); const bmp = await createImageBitmap(blob, {colorSpaceConversion: 'none', premultiplyAlpha: 'none'});
+  const oc = document.createElement('canvas'); oc.width = bmp.width; oc.height = bmp.height; const ox = oc.getContext('2d', {willReadFrequently: true}); ox.drawImage(bmp, 0, 0);
+  const px = ox.getImageData(0, 0, bmp.width, bmp.height).data; const n = bmp.width * bmp.height; const out = new Float32Array(n);
+  if (m.bits === 16) for (let i = 0; i < n; i++) out[i] = m.offset + m.scale * (px[i * 4] * 256 + px[i * 4 + 1]);
+  else for (let i = 0; i < n; i++) out[i] = m.offset + m.scale * px[i * 4];
   return (cache[name] = out);
 }
 async function getDerived(name) {
@@ -176,13 +179,13 @@ async function draw() {
   const F = await field(prod.fill); const C = prod.cont ? await field(prod.cont[0]) : null; const U = prod.barbs ? await field(prod.barbs[0]) : null, V = prod.barbs ? await field(prod.barbs[1]) : null;
   $('loading').hidden = true; if (myT !== ti) return;
   // background + shading (step 2 device px, bilinear field)
-  const img = ctx.createImageData(W, H), d = img.data; const sea = rgb(cssHex('--sea')), lnd = rgb(cssHex('--landfill')); const step = 2;
+  const img = ctx.createImageData(W, H), d = img.data; const sea = rgb(cssHex('--sea')); const step = 2;
   const fyRow = new Float32Array(H), fxCol = new Float32Array(W);
   for (let j = 0; j < H; j++) fyRow[j] = latIdx(y1 - (j + 0.5) / H * (y1 - y0));
   for (let i = 0; i < W; i++) fxCol[i] = lonIdx(x0 + (i + 0.5) / W * (x1 - x0));
   for (let j = 0; j < H; j += step) for (let i = 0; i < W; i += step) {
     const v = sample(F, ti, fyRow[j], fxCol[i]); const c = colorOf(prod.scale, v);
-    let col = c ? rgb(c) : (land[Math.round(fyRow[j]) * NLON + (Math.round(fxCol[i]) % NLON)] ? lnd : sea);
+    let col = c ? rgb(c) : sea;
     for (let dj = 0; dj < step && j + dj < H; dj++) for (let di = 0; di < step && i + di < W; di++) { const k = ((j + dj) * W + i + di) * 4; d[k] = col[0]; d[k + 1] = col[1]; d[k + 2] = col[2]; d[k + 3] = 255; } }
   ctx.putImageData(img, 0, 0);
   drawLines(); if (C) drawContours(C); if (U) drawBarbs(U, V); if (prod.hl && C) drawHL(C);
@@ -199,12 +202,24 @@ function regionGrid(Fl, up) { // sub-grid covering the region (+margin), upsampl
   for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) vals[j * nx + i] = sample(Fl, ti, ya + j / up, lonIdx(lonA + i * DLON / up));
   const toLon = i => lonA + i * DLON / up, toLat = j => { const f = ya + j / up, k = Math.min(NLAT - 2, Math.floor(f)); return LAT[k] + (f - k) * (LAT[k + 1] - LAT[k]); };
   return {vals, nx, ny, toLon, toLat}; }
-function drawContours(Cf) { const [name, every, unit] = prod.cont; const g = regionGrid(Cf, 3); let mn = Infinity, mx = -Infinity; for (const v of g.vals) { if (v < mn) mn = v; if (v > mx) mx = v; }
-  const th = []; for (let v = Math.ceil(mn / every) * every; v <= mx; v += every) th.push(v); if (!th.length) return;
-  const cs = d3.contours().size([g.nx, g.ny]).thresholds(th)(g.vals); const {px, py, dpr} = G; ctx.strokeStyle = css('--contour'); ctx.lineWidth = 1.1 * dpr; ctx.font = `${10.5 * dpr}px IBM Plex Mono, monospace`; ctx.fillStyle = css('--contour');
-  for (const c of cs) { for (const poly of c.coordinates) for (const ring of poly) { ctx.beginPath(); ring.forEach(([x, y], k) => { const X = px(g.toLon(x)), Y = py(g.toLat(y)); k ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y); }); ctx.stroke();
-      // one label per long ring, on a point inside the map
-      if (ring.length > 30) { const [x, y] = ring[Math.floor(ring.length / 3)]; const X = px(g.toLon(x)), Y = py(g.toLat(y)); if (X > 20 && X < G.W - 30 && Y > 14 && Y < G.H - 8) { const t = String(Math.round(c.value)); const w = ctx.measureText(t).width; ctx.save(); ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.fillRect(X - w / 2 - 2, Y - 7 * dpr, w + 4, 13 * dpr); ctx.restore(); ctx.fillText(t, X - w / 2, Y + 4 * dpr); } } } } }
+function drawContours(Cf) { // marching squares on an upsampled sub-grid; segments drawn directly, labels spaced apart
+  const [name, every, unit] = prod.cont; const g = regionGrid(Cf, 3); const {vals, nx, ny} = g; let mn = Infinity, mx = -Infinity; for (const v of vals) { if (v < mn) mn = v; if (v > mx) mx = v; }
+  const {px, py, dpr} = G; ctx.strokeStyle = css('--contour'); ctx.lineWidth = 1.1 * dpr; ctx.font = `${10.5 * dpr}px IBM Plex Mono, monospace`;
+  const labels = []; const P = (x, y) => [px(g.toLon(x)), py(g.toLat(y))];
+  for (let lv = Math.ceil(mn / every) * every; lv <= mx; lv += every) {
+    ctx.beginPath(); let count = 0;
+    for (let j = 0; j < ny - 1; j++) for (let i = 0; i < nx - 1; i++) {
+      const a = vals[j * nx + i], b = vals[j * nx + i + 1], c = vals[(j + 1) * nx + i + 1], d = vals[(j + 1) * nx + i];
+      const k = (a > lv ? 8 : 0) | (b > lv ? 4 : 0) | (c > lv ? 2 : 0) | (d > lv ? 1 : 0); if (k === 0 || k === 15) continue;
+      const t = (p, q) => (lv - p) / (q - p); const top = [i + t(a, b), j], right = [i + 1, j + t(b, c)], bot = [i + t(d, c), j + 1], left = [i, j + t(a, d)];
+      const segs = {1: [[left, bot]], 2: [[bot, right]], 3: [[left, right]], 4: [[top, right]], 5: [[left, top], [bot, right]], 6: [[top, bot]], 7: [[left, top]], 8: [[left, top]], 9: [[top, bot]], 10: [[top, right], [left, bot]], 11: [[top, right]], 12: [[left, right]], 13: [[bot, right]], 14: [[left, bot]]}[k];
+      for (const [u, v] of segs) { const [X1, Y1] = P(u[0], u[1]), [X2, Y2] = P(v[0], v[1]); ctx.moveTo(X1, Y1); ctx.lineTo(X2, Y2); if (++count % 40 === 0) labels.push([X1, Y1, lv]); }
+    }
+    ctx.stroke();
+  }
+  const placed = []; const minGap = 70 * dpr;
+  for (const [X, Y, lv] of labels) { if (X < 20 || X > G.W - 30 || Y < 14 || Y > G.H - 8) continue; if (placed.some(([x, y]) => Math.hypot(x - X, y - Y) < minGap)) continue; placed.push([X, Y]);
+    const t = String(Math.round(lv)); const w = ctx.measureText(t).width; ctx.fillStyle = 'rgba(255,255,255,0.88)'; ctx.fillRect(X - w / 2 - 2, Y - 7 * dpr, w + 4, 13 * dpr); ctx.fillStyle = css('--contour'); ctx.fillText(t, X - w / 2, Y + 4 * dpr); } }
 function drawHL(Cf) { const g = regionGrid(Cf, 1); const {px, py, dpr} = G; const r = 4; ctx.font = `700 ${18 * dpr}px Archivo, sans-serif`;
   for (let j = r; j < g.ny - r; j++) for (let i = r; i < g.nx - r; i++) { const v = g.vals[j * g.nx + i]; let isMin = true, isMax = true, sum = 0, n = 0;
     for (let b = -r; b <= r && (isMin || isMax); b++) for (let a = -r; a <= r; a++) { if (!a && !b) continue; const w = g.vals[(j + b) * g.nx + i + a]; if (w <= v) isMin = false; if (w >= v) isMax = false; sum += w; n++; }
@@ -232,7 +247,7 @@ function caption() { const h = meta.hours[ti]; const init = new Date(meta.init.r
   const ist = new Date(val.getTime() + 5.5 * 3600e3);
   $('ttl').textContent = `MEGAM ${prod.name}` + (prod.cont ? ` · lines: ${prod.cont[2] === 'hPa' ? 'pressure' : 'height'} (${prod.cont[2]})` : '');
   $('valid').textContent = `Init ${String(init.getUTCHours()).padStart(2, '0')}z ${fmt(init)}  ·  valid ${String(val.getUTCHours()).padStart(2, '0')}z ${fmt(val)} (${String(ist.getUTCHours()).padStart(2, '0')}:${String(ist.getUTCMinutes()).padStart(2, '0')} IST)`;
-  $('lead').textContent = `+${h} h`; $('lead2').textContent = `day ${(h / 24).toFixed(h % 24 ? 2 : 0).replace(/\.?0+$/, '')}`; $('hour').value = ti; }
+  $('lead').textContent = `+${h} h`; $('lead2').textContent = h % 24 ? `day ${Math.floor(h / 24)} + ${h % 24} h` : `day ${h / 24}`; $('hour').value = ti; }
 // ---------- probe ----------
 function probe(ev) { if (!G || !meta) return; const r = cv.getBoundingClientRect(); const x = (ev.clientX - r.left) / r.width, y = (ev.clientY - r.top) / r.height; if (x < 0 || x > 1 || y < 0 || y > 1) { $('probe').hidden = true; return; }
   const lon = G.x0 + x * (G.x1 - G.x0), lat = G.y1 - y * (G.y1 - G.y0); const F = cache[prod.fill]; if (!F) return; const v = sample(F, ti, latIdx(lat), lonIdx(lon));
@@ -251,7 +266,6 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', d
 (async () => {
   try {
     meta = await (await fetch('data/meta.json')).json(); LAT = meta.lat; NLAT = meta.nlat; NLON = meta.nlon; LON0 = meta.lon0; DLON = meta.dlon; PLANE = NLAT * NLON;
-    land = new Uint8Array(await (await fetch('data/land.bin')).arrayBuffer());
     try { borders = await (await fetch('data/borders.json')).json(); } catch (e) { borders = null; }
     $('hour').max = meta.hours.length - 1; const init = new Date(meta.init.replace(/T(\d\d)$/, 'T$1:00:00Z'));
     $('runline').textContent = `Run ${String(init.getUTCHours()).padStart(2, '0')}z ${fmt(init)} · ${meta.grid} · ${meta.hours[meta.hours.length - 1] / 24} days`;
