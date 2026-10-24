@@ -1,0 +1,14 @@
+centres used ['GFSM', 'ECM', 'CMC', 'ARPEGE', 'UKMO', 'GEOS']
+obs: 49552 in file, 17882 in time window, 11612 checked, 2902 superobs used; rejected {'below_ground': 2, 'gross': 6, 'height': 263, 'monitor': 694, 'off': 2013}; solved {'ps': 501, 't': 131, 'q': 604, 'u': 833, 'v': 833}
+  metar  mslp n=   397  O-B mean -2.26 rms 3.33  O-A rms 1.09 hPa
+  metar  q    n=   408  O-B mean +1.69 rms 2.64  O-A rms 1.80 g/kg
+  scat   u    n=  3544  O-B mean -0.06 rms 1.23  O-A rms 0.82 m/s
+  scat   v    n=  3544  O-B mean +0.64 rms 1.41  O-A rms 0.96 m/s
+  synop  mslp n=   254  O-B mean -1.32 rms 2.43  O-A rms 1.43 hPa
+  synop  q    n=   278  O-B mean +3.31 rms 4.16  O-A rms 2.43 g/kg
+  temp   q    n=    78  O-B mean -0.03 rms 1.00  O-A rms 1.16 g/kg
+  temp   t    n=   131  O-B mean +0.07 rms 0.69  O-A rms 0.54 K
+OI report {"n_in": 49552, "n_window": 17882, "n_checked": 11612, "n_superobs": 2902, "solved": {"ps": 501, "t": 131, "q": 604, "u": 833, "v": 833}, "rows": [{"type": "metar", "var": "mslp", "n": 397, "omb_mean": -2.257819381076961, "omb_rms": 3.3282625899074656, "oma_rms": 1.0878202538027244, "units": "hPa"}, {"type": "metar", "var": "q", "n": 408, "omb_mean": 1.6949385694414403, "omb_rms": 2.643839398456015, "oma_rms": 1.797201118265123, "units": "g/kg"}, {"type": "scat", "var": "u", "n": 3544, "omb_mean": -0.06435641199744618, "omb_rms": 1.2269476650604372, "oma_rms": 0.8164903351628272, "units": "m/s"}, {"type": "scat", "var": "v", "n": 3544, "omb_mean": 0.6442022454616635, "omb_rms": 1.4076081519053463, "oma_rms": 0.9642694113494211, "units": "m/s"}, {"type": "synop", "var": "mslp", "n": 254, "omb_mean": -1.322801114207022, "omb_rms": 2.430179174961491, "oma_rms": 1.4346151319180331, "units": "hPa"}, {"type": "synop", "var": "q", "n": 278, "omb_mean": 3.3124758384284743, "omb_rms": 4.158566877390527, "oma_rms": 2.4337894389871146, "units": "g/kg"}, {"type": "temp", "var": "q", "n": 78, "omb_mean": -0.03412275190361429, "omb_rms": 0.9978574164460027, "oma_rms": 1.1612252464211097, "units": "g/kg"}, {"type": "temp", "var": "t", "n": 131, "omb_mean": 0.06977504231368968, "omb_rms": 0.6925301437014273, "oma_rms": 0.5354487714675602, "units": "K"}], "rejected": {"below_ground": 2, "gross": 6, "height": 263, "monitor": 694, "off": 2013}}
+noobs done
+obs done
+saved /kaggle/working/trial_2026102312.npz 11645 KB
