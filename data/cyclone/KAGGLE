@@ -1,6 +1,6 @@
-tn-wind-ckz
+tn-wind-ck09
 libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 '{"ckz1":{"ck_z":1.0}}' > /kaggle/working/wind.log 2>&1; tail -30 /kaggle/working/wind.log
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 '{"ck09":{"ck":0.9e-3}}' > /kaggle/working/wind.log 2>&1; tail -30 /kaggle/working/wind.log
 NvidiaTeslaT4
-1
-#steering winds: sea evaporation coefficient corrected to the model's lowest level (ck_z) 2026-10-24T11:43Z
+2
+#steering winds: sea evaporation ck 0.9e-3 2026-10-24T11:44Z
