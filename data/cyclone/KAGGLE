@@ -1,6 +1,6 @@
-tn-prof-shmf
+tn-prof-shmf2
 libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 20 '{"shmf":{"ck_z":1.0,"mf_org":1.0,"shallow":"mf"},"shmf_noz":{"mf_org":1.0,"shallow":"mf"}}' > /kaggle/working/prof.log 2>&1; tail -40 /kaggle/working/prof.log
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 20 '{"shmf_t2":{"ck_z":1.0,"mf_org":1.0,"shallow":"mf","tau_shallow":7200.0}}' > /kaggle/working/prof.log 2>&1; tail -40 /kaggle/working/prof.log
 NvidiaTeslaT4
-3
-#tropical heating: shallow cumulus as a mass-flux plume (equation fix), column profile 2026-10-24T21:31Z
+4
+#tropical heating: shallow mass-flux with slower closure, column profile 2026-10-24T21:31Z
