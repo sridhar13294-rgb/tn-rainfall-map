@@ -77,6 +77,12 @@ state average obs vs forecast; odd gauges (Aliyar misplaced, fix awaiting approv
 (data/forecast_status.json). Corrections only on a new branch with Sridhar's approval.
 
 
+## 24 Oct 16:45 IST - new official track numbers (default inserted storm 180 km / 0.4), and the steering cause
+Bay (tn-base-final2, 84 storms) median km 0/24/48/72/96/120: new 58/120/216/345/423/522 vs old yardstick 58/102/217/373/471/722 (same run). AS (tn-io-as-final2) 64/148/236/419/528/708. SI (tn-io-si-final2) new 61/113/206/322/429/603 vs old 61/94/177/285/407/599. Old scheme still better at 24 h (by ~20 km) and SI to 72 h. NOTE run-to-run noise: identical AS settings gave 96 h 473 (combo2) vs 528 (final2) -> treat <~50 km at 96 h as noise.
+Steering (wx_wind.py, 40 starts, day 5 vs ERA5): low levels too EASTERLY (850 hPa du -3.0 Bay, -2.6 AS, -1.8 SI m/s), upper levels too WESTERLY (200 hPa +3.0/+1.7/+3.6), AS 200 hPa dv +6 (outflow too strong). Hour 0 fine (<0.6). Deep-layer mean cancels, so the error is too much vertical shear = tropical overturning (Hadley/Walker) too strong = too much convective heating/rain. Fits Bay storms too far west. Variant tests running (tn-wind-old acct8, -entr acct2, -tau acct6, -cap acct1, -dd acct3, -ck acct4).
+#9 tracker: works (finds 59% AS / 75% Bay of other real storms); vo_min 2.5 found 61% but doubled tracks -> keep 3.5. Misses = weak systems the model does not hold (physics, not tracker). #9 counted DONE.
+Ensemble start-vortex variation (tn-ens-bvary2 Bay, tn-ens-bvary-as): spread/error 0.5-0.7, no clear gain -> not adopted. Likely the error is mostly systematic (steering bias) which spread cannot cover; fix steering first.
+
 ## DECISION 24 Oct 14:50 IST - inserted starting storm smaller and weaker
 mm2 bogus defaults bogus_rout 350 -> 180 km, bogus_x 0.6 -> 0.4 (mm2 line ~171, self.S.get). Same-run tests (tn-io-as-combo2, tn-io-si-combo2, tn-base-combo): 72 h lat bias AS +0.46->+0.01, SI -0.66->-0.12, Bay +1.08->+0.35; 96 h median AS 557->473, SI 442->409, Bay 505->493 km; 24 h within 10 km; winds ~3 kt weaker at 24 h. hindens2 bogus_vary ranges recentred (120-280 km, 0.3-0.6).
 Fix #9 test (hind2 config systems:true, sys_kw for track_all): other real storms alive found 59% (AS runs, tn-sys9-as) / 75% (Bay runs, tn-sys9-bb); misses mostly weak depressions -> rerun with vo_min 2.5 (tn-sys9b-as, acct1).
