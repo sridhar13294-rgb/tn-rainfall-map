@@ -1,3 +1,4 @@
+"""MEGAM - Multi-scale Engine for Global Atmospheric Modelling (Sridhar & Adhitya). Core atmosphere model."""
 """Our moist multi-level global model, version 2.
 Dynamics: Dinosaur (Google Research's open-source spectral core): hydrostatic primitive equations on 32 terrain-following
 levels over the whole globe, semi-Lagrangian transport (moisture carried on the grid, kept positive), 30-min steps.

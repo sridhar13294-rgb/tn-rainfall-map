@@ -11,7 +11,7 @@
 - He stopped the old 6-hourly ensembles and the ECMWF/GFS watch; keep only the daily 10:30 IST rain skill check and the site's TN SMART update. Nothing goes live on the website without his explicit "go live".
 - He is funding this with free tools: up to 8 Kaggle accounts (each a different real person with own phone), GitHub Actions, his Claude weekly usage (wants it used fully before Mon 26 Oct 22:29 IST, but without hitting the 5-hour limit: lean cycles).
 - Target dates given to him: Stage 1 complete (built, tested, scored - not "equal to ECMWF") ~28 Oct, fallback 30 Oct; to be confirmed to him on 24 Oct evening. Stage 2 ~20 Nov, Stage 3 early Dec, LETKF Dec-Jan (Stage 2 and LETKF already started early).
-- Model name: he proposed MEGAM (Tamil "megam" = cloud); suggested expansion "Multi-scale Ensemble Global Atmospheric Model"; he has not confirmed the wording - ask before renaming.
+- MODEL NAME (decided 24 Oct 2026): MEGAM - Multi-scale Engine for Global Atmospheric Modelling (Tamil 'megam' = cloud).
 
 ## How we got here (short history)
 - 22 Oct: moved from a "past-storm analog" method (gave unrealistic jumps) to our own multi-level spectral model (Dinosaur/JAX), tested on 84 past Bay storms, then 1000 Indian Ocean storms 1980-2025, a storm-forming test and a 2020 general-weather exam scored the same way as ECMWF.
@@ -19,7 +19,7 @@
 
 
 ## Who / rules
-- Sridhar (phone only, plain words, honest pushback). Brother Adhitya co-runs the site. Model name: Sridhar proposed MEGAM; suggested "Multi-scale Ensemble Global Atmospheric Model" - waiting for his final wording, do not rename yet.
+- Sridhar (phone only, plain words, honest pushback). Brother Adhitya co-runs the site. Model name: MEGAM - Multi-scale Engine for Global Atmospheric Modelling (decided 24 Oct).
 - Repo sridhar13294-rgb/tn-rainfall-map, work branch `cases`. `main` (the website) only with Sridhar's explicit "go live".
 - Secrets only in GitHub secrets (ECMWF_DS_KEY/CDS_KEY, KAGGLE_*, KAGGLE2_..KAGGLE8_*). Never print/commit them. One Kaggle account per real person.
 - Messages: NONE between 00:30 and 07:00 IST. Daytime: one short status every 3 h. Daily rain skill check at 10:30 IST (scratchpad/dailyNN scripts; see the skill-check routine text in the old chat / docs/cyclone_model_status.md).
