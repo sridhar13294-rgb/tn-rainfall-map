@@ -1,6 +1,6 @@
-tn-prof-org2
+tn-wind-org
 libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 20 '{"org1e3":{"ck_z":1.0,"mf_org":1.0,"entr":3e-4},"org2":{"ck_z":1.0,"mf_org":2.0}}' > /kaggle/working/prof.log 2>&1; tail -40 /kaggle/working/prof.log
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 '{"org1":{"ck_z":1.0,"mf_org":1.0}}' > /kaggle/working/wind.log 2>&1; tail -30 /kaggle/working/wind.log
 NvidiaTeslaT4
-4
-#tropical heating: organised entrainment with stronger base mixing / steeper fall-off, column profile 2026-10-24T16:50Z
+5
+#steering winds: evaporation fix + organised entrainment 2026-10-24T16:51Z
