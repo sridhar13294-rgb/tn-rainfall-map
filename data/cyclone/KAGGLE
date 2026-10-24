@@ -1,6 +1,6 @@
-tn-prof-sw1
+tn-prof-sw2
 libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 20 '{"noevap":{"ck_z":1.0,"mf_org":1.0,"k_evap":0.0},"noshal":{"ck_z":1.0,"mf_org":1.0,"tau_shallow":1e12}}' > /kaggle/working/prof.log 2>&1; tail -40 /kaggle/working/prof.log
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 20 '{"nodeep":{"ck_z":1.0,"mf_org":1.0,"tau_deep":1e12},"nodd":{"ck_z":1.0,"mf_org":1.0,"mf_dd":0.0}}' > /kaggle/working/prof.log 2>&1; tail -40 /kaggle/working/prof.log
 NvidiaTeslaT4
-3
-#which process cools the tropical upper air: rain evaporation off / shallow convection off 2026-10-24T18:58Z
+4
+#which process cools the tropical upper air: deep convection off / downdrafts off 2026-10-24T18:58Z
