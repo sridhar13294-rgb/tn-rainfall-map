@@ -1,6 +1,6 @@
-tn-wind-old
+tn-wind-entr
 libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 '{"old":{"conv":"bmj","sh_top":0.7,"tau_shallow":10800.0,"bmj_ice":0.5}}' > /kaggle/working/wind.log 2>&1; tail -30 /kaggle/working/wind.log
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 '{"entr3":{"entr":3e-4}}' > /kaggle/working/wind.log 2>&1; tail -30 /kaggle/working/wind.log
 NvidiaTeslaT4
-8
-#steering winds: old convection scheme (is the too-strong overturning from the new scheme?) 2026-10-24T11:08Z
+2
+#steering winds: new scheme with twice the plume mixing (weaker deep convection) 2026-10-24T11:09Z
