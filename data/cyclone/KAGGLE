@@ -1,6 +1,6 @@
-tn-io-as-var
-libm_as_fields.npz
-bash ../kaggle/par.sh hind2.py /kaggle/working/libm_as_fields.npz ../../../data/cyclone/kaggle_cfg/io_as_var.json /kaggle/working/as 2
+tn-wx-var
+libm_wx2020_fields.npz,wx_truth_2020.npz
+bash ../kaggle/par.sh wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/wx_var.json /kaggle/working/wx
 NvidiaTeslaT4
-4
-#Arabian Sea: new scheme drifts storms east/north (72 h bias +1.2 lon, +0.4 lat vs old +0.7/0.0) - weaker kick / stronger plume mixing variants 2026-10-24T01:01Z
+2
+#general exam for the same two variants 2026-10-24T01:01Z
