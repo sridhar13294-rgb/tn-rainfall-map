@@ -1,6 +1,6 @@
-tn-wx-wind
-libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 > /kaggle/working/wind.log 2>&1; tail -30 /kaggle/working/wind.log
+tn-sys9b-as
+libm_as_fields.npz
+bash ../kaggle/par.sh hind2.py /kaggle/working/libm_as_fields.npz ../../../data/cyclone/kaggle_cfg/sys9b_as.json /kaggle/working/as 2
 NvidiaTeslaT4
-8
-#storm steering check: model wind vs ERA5 over Bay, Arabian Sea, South Indian Ocean after 5 days (new: wx_wind.py); new default inserted storm 180 km / 0.4 2026-10-24T09:10Z
+1
+#fix #9: tracker with a lower threshold so weak depressions are kept (Arabian Sea runs, new default storm) 2026-10-24T09:11Z
