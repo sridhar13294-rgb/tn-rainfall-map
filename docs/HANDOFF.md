@@ -38,7 +38,7 @@ General daily global model like ECMWF/GFS (00/12Z, 10-day + 51-member 15-day), g
 
 ## Kaggle (job launcher)
 - Write data/cyclone/KAGGLE (line1 slug, line2 release files, line3 command run in repo/scripts/cyclone/mm, line4 accelerator NvidiaTeslaT4 or TpuV5E8, line5 account 1-8, line6 #comment) and push to `cases`; results return to data/cyclone/kaggle/<slug>/ (status.txt, *.json, kernel_*.log). Workflow refuses unconfigured slots.
-- Accounts: slot 6 was a second account of Sridhar himself (retired 24 Oct morning); on 24 Oct 11:50 IST Sridhar replaced it with a NEW PERSON's own phone-verified account - slot 6 is usable again (first job ran fine). Stage 1 uses 1-6, 8 and 9 (slot 9 added 24 Oct 12:26 IST, KAGGLE9_* secrets); account 7 = helper agents (LETKF now). GPU ~30 h/week each.
+- Accounts: slot 6 was a second account of Sridhar himself (retired 24 Oct morning); on 24 Oct 11:50 IST Sridhar replaced it with a NEW PERSON's own phone-verified account - slot 6 is usable again (first job ran fine). Stage 1 uses 1-6, 8, 9 and 10 (slot 9 added 24 Oct 12:26 IST, slot 10 at 12:59 IST; KAGGLE9_*/KAGGLE10_* secrets); account 7 = helper agents (LETKF now). GPU ~30 h/week each.
 - TPU: DROPPED by Sridhar (23 Oct 22:43) - do not use TPU; GPU T4 only.
 - Result watcher: scratchpad/watch.sh (background) - optional; it costs a turn per wake.
 
