@@ -1,6 +1,6 @@
-tn-base-tsh2
-libm_fields.npz
-bash ../kaggle/par.sh hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/base_tsh2.json /kaggle/working/bt
+tn-io-as-var
+libm_as_fields.npz
+bash ../kaggle/par.sh hind2.py /kaggle/working/libm_as_fields.npz ../../../data/cyclone/kaggle_cfg/io_as_var.json /kaggle/working/as 2
 NvidiaTeslaT4
-2
-#Bay storms: final defaults with shallow mixing 2 h / 3 h (tracks at 48-96 h) 2026-10-23T22:57Z
+4
+#Arabian Sea: new scheme drifts storms east/north (72 h bias +1.2 lon, +0.4 lat vs old +0.7/0.0) - weaker kick / stronger plume mixing variants 2026-10-24T01:01Z
