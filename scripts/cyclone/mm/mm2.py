@@ -168,7 +168,7 @@ class Model:
         # wind profile (modified Rankine, decay exponent x, tapered to calm beyond R_out), then the balancing geopotential from
         # gradient balance. The outer winds (300-1000 km) set the beta drift: the old profile (x 0.5, taper from 600 km over
         # 400 km) was far broader than real depressions and drifted the storm ~0.4 deg/day too far north in past-storm tests.
-        R_out = R_out or float(self.S.get('bogus_rout', 350.0)); xd = float(self.S.get('bogus_x', 0.6))
+        R_out = R_out or float(self.S.get('bogus_rout', 180.0)); xd = float(self.S.get('bogus_x', 0.4))
         rr = np.linspace(0, R_out + 900, 600) * 1e3; rk = rr / 1e3
         Vr = np.where(rk < rm, Vm * rk / rm, Vm * (rm / np.maximum(rk, 1e-3)) ** xd) * np.exp(-(np.maximum(rk - R_out, 0) / 150.0) ** 2)
         dph1 = Vr ** 2 / np.maximum(rr, 1.0) + abs(f0) * Vr

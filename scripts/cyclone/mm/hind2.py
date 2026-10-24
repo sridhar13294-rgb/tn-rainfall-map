@@ -42,7 +42,7 @@ for i, s in enumerate(storms):
             res.append(dict(name=s['name'], season=s['season'], basin=s.get('basin', 'BB'), var=var['name'], t0=key, real=[((p[0] - g).total_seconds() / 3600, p[1], p[2], p[3]) for p in P0],
                             truth=O.segment(*s['lf']) if s['lf'] else 'no landfall', truth_lf=s['lf'], trk=trk, sec=round(time.time() - t)))
             if C.get('systems'):                                                                  # test #9: every system the model holds, vs every real storm alive then
-                res[-1]['systems'] = mm2.track_all(M, out)
+                res[-1]['systems'] = mm2.track_all(M, out, **C.get('sys_kw', {}))
                 g1 = g + dt.timedelta(hours=C.get('hours', 120))
                 res[-1]['others'] = [dict(name=o['name'], pts=[((p[0] - g).total_seconds() / 3600, p[1], p[2], p[3]) for p in O.path_of(o) if g <= p[0] <= g1])
                                      for o in ALL if o is not s and o.get('basin', 'BB') in ('BB', 'AS') and any(g <= p[0] <= g1 for p in O.path_of(o))]

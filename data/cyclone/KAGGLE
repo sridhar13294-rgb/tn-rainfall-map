@@ -1,6 +1,6 @@
-tn-ens-bvary-as
-libm_as_fields.npz
-bash ../kaggle/par.sh hindens2.py /kaggle/working/libm_as_fields.npz ../../../data/cyclone/kaggle_cfg/ens_bvary_as.json /kaggle/working/ens
+tn-wx-wind
+libm_wx2020_fields.npz
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 > /kaggle/working/wind.log 2>&1; tail -30 /kaggle/working/wind.log
 NvidiaTeslaT4
-10
-#account 10 first job: Arabian Sea ensemble, members vary the inserted storm size and strength 2026-10-24T07:29Z
+8
+#storm steering check: model wind vs ERA5 over Bay, Arabian Sea, South Indian Ocean after 5 days (new: wx_wind.py); new default inserted storm 180 km / 0.4 2026-10-24T09:10Z
