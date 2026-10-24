@@ -30,6 +30,9 @@ for i, s in enumerate(storms):
             mb = member(m); tm = time.time()
             ins = C.get('bogus', False) or (C.get('bogus_mix', False) and m % 2 == 1)          # storm insertion in half the members: the start vortex is uncertain too
             storm = dict(lat=st0[0], lon=st0[1], vmax_kt=st0[2] or 25.0) if ins else None
+            if C.get('bogus_vary') and m:                                                          # start vortex size/strength uncertain too: vary per member (spread test)
+                rng = np.random.default_rng(5000 + m); M.S['bogus_rout'] = float(rng.uniform(*C.get('rout_range', (150.0, 350.0)))); M.S['bogus_x'] = float(rng.uniform(*C.get('x_range', (0.4, 0.8))))
+            elif C.get('bogus_vary'): M.S['bogus_rout'] = float(C.get('rout0', 350.0)); M.S['bogus_x'] = float(C.get('x0', 0.6))
             st, cr = M.init(f3, Z['levs'], Z['lats'], Z['lons'], Z['f2'][k, V2.index('surface_pressure')], Z['f2'][k, V2.index('geopotential_at_surface')] / 9.80616,
                             Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')], storm=storm, ocean=C.get('ocean'), when=g,
                             **(landinit.land_kwargs(Z['f2'][k], V2) if C.get('land_init', True) else {}))
