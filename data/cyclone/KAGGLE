@@ -1,6 +1,6 @@
-tn-prof-shtop2
+tn-wind-shtop
 libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 20 '{"top80":{"ck_z":1.0,"mf_org":1.0,"sh_top":0.80},"top80noz":{"mf_org":1.0,"sh_top":0.80}}' > /kaggle/working/prof.log 2>&1; tail -40 /kaggle/working/prof.log
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 '{"top80":{"ck_z":1.0,"mf_org":1.0,"sh_top":0.80}}' > /kaggle/working/wind.log 2>&1; tail -30 /kaggle/working/wind.log
 NvidiaTeslaT4
-4
-#tropical heating: shallow top at sigma 0.80, with and without the evaporation fix 2026-10-24T23:40Z
+9
+#steering winds: shallow top at sigma 0.80 + evaporation fix + organised entrainment 2026-10-24T23:41Z
