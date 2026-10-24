@@ -77,6 +77,10 @@ state average obs vs forecast; odd gauges (Aliyar misplaced, fix awaiting approv
 (data/forecast_status.json). Corrections only on a new branch with Sridhar's approval.
 
 
+## 25 Oct 05:30 IST - night cycle 3
+shallow='mf' plume ~= shallow OFF (identical profile): upper cold much smaller (250/300/500 hPa -3.3/-2.7/-0.3 K vs -5.2/-4.7/-2.3) but low levels now too COLD (850/925/1000 -2.9/-2.9/-2.5) and 850 hPa too moist (+0.7 g/kg); shear: shmf 4.7/3.7/3.8 (worse than ckz1 2.5/2.5/3.7), shmf_noz 6.4/4.1/3.0. => old shallow mixing did needed boundary-layer work but harmful work aloft. Now testing shallow 'mse' mixing capped at the top of the boundary-layer cloud: tn-prof-shtop (sh_top 0.85 / 0.75), tn-prof-shtop2 (0.80 with/without ck_z), tn-wind-shtop (0.80+ck_z+org1), tn-wind-shtop2 (0.80, no ck_z). History note: sh_top 0.7 was in the old yardstick; uncapped was chosen 24 Oct for the mf boundary layer - recheck with all fixes together.
+#7: tn-obs-2026102412b (acct5, obs refetched with GTS) and tn-obs-2026102418 (acct6) running, 3 versions each.
+
 ## 25 Oct 03:45 IST - #7 details
 OI now uses winds: with obs_2026102412 (ASCAT) solved u,v 669 superobs (scat O-B 1.2 -> O-A 0.9 m/s). Land 10-m winds off by design (as ECMWF). Surface pressure obs have a steady -2 hPa (METAR) / -1 hPa (SYNOP) O-B offset vs the centre consensus (same for MSLP or station pressure) -> new nudge cfg debias_p=True (removes each type's median pressure O-B; tested: METAR mean O-B -2.1 -> -0.65 hPa). obs_trial.py now runs 3 versions: noobs, obs, obsdb (bias-corrected). Refetched obs 2026102412 (GTS fixed) and centres 2026102418: launch tn-obs-2026102412b (new obs) and tn-obs-2026102418 next cycle.
 
