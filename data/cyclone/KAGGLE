@@ -1,6 +1,6 @@
-tn-maps-borders
-live_GFS_2026102106.npz
-cd . && python -W ignore maps_borders.py /kaggle/working > /kaggle/working/borders.log 2>&1; tail -20 /kaggle/working/borders.log
+tn-wind-ckz
+libm_wx2020_fields.npz
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 '{"ckz1":{"ck_z":1.0}}' > /kaggle/working/wind.log 2>&1; tail -30 /kaggle/working/wind.log
 NvidiaTeslaT4
-10
-#map viewer: coastlines and borders from Natural Earth 2026-10-24T11:40Z
+1
+#steering winds: sea evaporation coefficient corrected to the model's lowest level (ck_z) 2026-10-24T11:43Z
