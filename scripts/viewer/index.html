@@ -1,0 +1,262 @@
+<title>MEGAM Forecast Maps</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: forecast-office console. Navy masthead, product rail, the map as the hero, colour key beside it, time strip under it. */
+:root {
+  --bg: #eef1f5; --panel: #ffffff; --ink: #142033; --muted: #5a6779; --line: #d3dae3;
+  --mast: #10233f; --mast-ink: #f2f6fb; --mast-sub: #9fb3cc; --accent: #1f6fd1; --accent-ink: #ffffff;
+  --chip: #e3e9f1; --chip-on: #10233f; --chip-on-ink: #ffffff; --warn-bg: #fff4dc; --warn-ink: #6b4a00;
+  --sea: #ffffff; --landfill: #f3f1ec; --coast: #2b3442; --border: #6d7684; --state: #9aa3ae; --contour: #111111; --barb: #1b1b1b;
+  --f-display: "Archivo", "Helvetica Neue", Arial, sans-serif; --f-body: "IBM Plex Sans", "Segoe UI", Arial, sans-serif; --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0c1420; --panel: #131d2b; --ink: #e6edf6; --muted: #9aa8bb; --line: #263447;
+  --mast: #071224; --mast-ink: #f2f6fb; --mast-sub: #8aa0bd; --accent: #4f95ec; --accent-ink: #06121f;
+  --chip: #1d2a3c; --chip-on: #e6edf6; --chip-on-ink: #0c1420; --warn-bg: #2d2412; --warn-ink: #f1d08a;
+  --sea: #f7f8fa; --landfill: #ecebe6; --coast: #2b3442; --border: #6d7684; --state: #9aa3ae; --contour: #111111; --barb: #1b1b1b; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0c1420; --panel: #131d2b; --ink: #e6edf6; --muted: #9aa8bb; --line: #263447;
+  --mast: #071224; --mast-ink: #f2f6fb; --mast-sub: #8aa0bd; --accent: #4f95ec; --accent-ink: #06121f;
+  --chip: #1d2a3c; --chip-on: #e6edf6; --chip-on-ink: #0c1420; --warn-bg: #2d2412; --warn-ink: #f1d08a;
+  --sea: #f7f8fa; --landfill: #ecebe6; --coast: #2b3442; --border: #6d7684; --state: #9aa3ae; --contour: #111111; --barb: #1b1b1b; color-scheme: dark }
+html, body { height: auto; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 14px; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--mast); }
+.mast { background: var(--mast); color: var(--mast-ink); padding-block: 12px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.mast-in { max-width: 1240px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; }
+.brand { font-family: var(--f-display); font-weight: 800; font-size: 26px; letter-spacing: 0.04em; }
+.brand small { font-weight: 500; font-size: 13px; letter-spacing: 0.02em; color: var(--mast-sub); margin-left: 8px; }
+.run { font-family: var(--f-mono); font-size: 12px; color: var(--mast-sub); margin-left: auto; }
+.wrap { max-width: 1240px; margin: 0 auto; padding-block: 14px 28px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 16px; }
+@media (max-width: 820px) { .wrap { grid-template-columns: minmax(0, 1fr); } }
+.note { grid-column: 1 / -1; background: var(--warn-bg); color: var(--warn-ink); border-radius: 6px; padding: 8px 12px; font-size: 13px; line-height: 1.45; }
+nav.rail { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.group h3 { font-family: var(--f-display); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; }
+.group .items { display: flex; flex-direction: column; gap: 2px; }
+@media (max-width: 820px) { nav.rail { flex-direction: row; overflow-x: auto; gap: 16px; padding-bottom: 4px; } .group { flex: 0 0 auto; } .group .items { flex-direction: row; gap: 6px; } }
+.prod { text-align: left; background: transparent; color: var(--ink); border: 0; border-radius: 5px; padding: 7px 10px; font: 500 13.5px/1.25 var(--f-body); cursor: pointer; white-space: nowrap; }
+.prod:hover { background: var(--chip); }
+.prod[aria-pressed="true"] { background: var(--chip-on); color: var(--chip-on-ink); }
+@media (max-width: 820px) { .prod { background: var(--chip); } }
+.main { min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.regions { display: flex; flex-wrap: wrap; gap: 6px; }
+.reg { border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 999px; padding: 5px 12px; font: 500 12.5px var(--f-body); cursor: pointer; }
+.reg[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+.cap { font-family: var(--f-mono); font-size: 12px; line-height: 1.5; color: var(--ink); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 12px; }
+.cap b { font-family: var(--f-body); font-weight: 600; font-size: 13.5px; }
+.cap .sub { color: var(--muted); }
+.stage { display: grid; grid-template-columns: minmax(0, 1fr) 64px; gap: 8px; align-items: stretch; }
+@media (max-width: 640px) { .stage { grid-template-columns: minmax(0, 1fr); } }
+.mapbox { position: relative; min-width: 0; }
+canvas#map { width: 100%; height: auto; display: block; border: 1px solid var(--coast); background: var(--sea); touch-action: pan-y; }
+.probe { position: absolute; pointer-events: none; background: rgba(16,35,63,0.92); color: #fff; font: 12px var(--f-mono); padding: 4px 7px; border-radius: 4px; white-space: nowrap; transform: translate(10px, -120%); }
+.key { min-width: 0; }
+canvas#keyv { width: 64px; height: 100%; min-height: 240px; display: block; }
+canvas#keyh { width: 100%; height: 46px; display: none; }
+@media (max-width: 640px) { canvas#keyv { display: none; } canvas#keyh { display: block; } }
+.time { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.btn { min-width: 42px; height: 38px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 6px; font: 600 16px var(--f-body); cursor: pointer; display: inline-grid; place-items: center; }
+.btn:hover { border-color: var(--accent); }
+.btn:focus-visible, .prod:focus-visible, .reg:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+input#hour { flex: 1 1 200px; min-width: 0; accent-color: var(--accent); height: 32px; }
+.lead { font-family: var(--f-mono); font-size: 13px; min-width: 64px; text-align: right; font-variant-numeric: tabular-nums; }
+.foot { color: var(--muted); font-size: 12.5px; line-height: 1.5; max-width: 72ch; }
+.loading { position: absolute; inset: 0; display: grid; place-items: center; font: 500 13px var(--f-body); color: var(--muted); background: color-mix(in srgb, var(--panel) 70%, transparent); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<header class="mast"><div class="mast-in">
+  <div class="brand">MEGAM<small>Multi-scale Engine for Global Atmospheric Modelling</small></div>
+  <div class="run" id="runline">loading run…</div>
+</div></header>
+
+<div class="wrap">
+  <div class="note" id="note">Test forecast from past data, made by the MEGAM research model. This is not an official forecast or warning; for warnings, follow IMD.</div>
+  <nav class="rail" id="rail" aria-label="Products"></nav>
+  <section class="main">
+    <div class="regions" id="regions" role="group" aria-label="Region"></div>
+    <div class="card">
+      <div class="cap"><span><b id="ttl">—</b><br><span class="sub" id="valid">—</span></span><span class="sub" id="lead2"></span></div>
+      <div class="stage">
+        <div class="mapbox" id="mapbox"><canvas id="map" aria-label="Forecast map"></canvas><div class="probe" id="probe" hidden></div><div class="loading" id="loading">Loading forecast…</div></div>
+        <div class="key"><canvas id="keyv"></canvas></div>
+      </div>
+      <canvas id="keyh"></canvas>
+      <div class="time">
+        <button class="btn" id="prev" title="Previous time (←)" aria-label="Previous time">←</button>
+        <button class="btn" id="play" title="Play / pause (space)" aria-label="Play">▶</button>
+        <button class="btn" id="next" title="Next time (→)" aria-label="Next time">→</button>
+        <input type="range" id="hour" min="0" max="40" step="1" value="0" aria-label="Forecast hour">
+        <span class="lead" id="lead">+0 h</span>
+      </div>
+    </div>
+    <p class="foot">Grid T85, about 140 km. Maps every 6 hours to 10 days. Tap or hover on the map to read the value at a point. Wind barbs: half feather 5 kt, full feather 10 kt, flag 50 kt.</p>
+  </section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+// ---------- colour scales (stepped, like forecast-office charts) ----------
+const WIND = [[7,'#c8f3f7'],[16,'#8fe3ee'],[25,'#4fcbe0'],[34,'#2fa7c3'],[40,'#1f9a48'],[46,'#7ec832'],[52,'#f2d22e'],[58,'#f09a1f'],[64,'#e2321f'],[80,'#b5179e'],[96,'#7b2fd1'],[110,'#e79be8'],[125,'#f27ea9'],[140,'#d9324f'],[155,'#8a0f28']];
+const RAIN = [[0.5,'#d6f0d3'],[2,'#a6dba0'],[5,'#5aae61'],[10,'#1b7837'],[15,'#2b83ba'],[20,'#1f58b5'],[30,'#7b3fbf'],[40,'#b93ab3'],[50,'#e0218a'],[65,'#e8452c'],[80,'#f08a24'],[100,'#f6c22a'],[125,'#a85a2a'],[150,'#6b3a1e'],[200,'#3a1c0f'],[250,'#111111']];
+const RAINTOT = [[1,'#d6f0d3'],[5,'#a6dba0'],[10,'#5aae61'],[25,'#1b7837'],[50,'#2b83ba'],[75,'#1f58b5'],[100,'#7b3fbf'],[150,'#b93ab3'],[200,'#e0218a'],[300,'#e8452c'],[400,'#f08a24'],[500,'#f6c22a'],[700,'#a85a2a'],[1000,'#3a1c0f']];
+const tempScale = (lo, hi, step) => { const c = ['#2a0a4a','#3b1f8e','#2c4fc4','#2f86e0','#5cb8f0','#a3dcf5','#d8f1e8','#f5f2b8','#f8d673','#f5a743','#ea6b2d','#d23a26','#a51c2d','#6e0f2c','#3d0718']; const out = []; const n = Math.round((hi - lo) / step); for (let i = 0; i <= n; i++) out.push([lo + i * step, c[Math.min(c.length - 1, Math.floor(i * c.length / (n + 1)))]]); return out; };
+const T2 = tempScale(-20, 45, 5), T850 = tempScale(-20, 32, 4), T500 = tempScale(-30, 0, 2);
+const RH = [[10,'#7a4a1c'],[20,'#a8723a'],[30,'#cfa36b'],[40,'#e8d3a8'],[50,'#f3ecd6'],[60,'#dcefd0'],[70,'#a9d99a'],[80,'#5fb86a'],[90,'#24894a'],[95,'#0f5e35']];
+const PW = [[20,'#f3ecd6'],[30,'#dcefd0'],[40,'#a9d99a'],[45,'#5fb86a'],[50,'#2fa7c3'],[55,'#1f6fd1'],[60,'#4b3fbf'],[65,'#8e2fc1'],[70,'#c62aa0'],[75,'#e0218a']];
+// ---------- products ----------
+const P = [
+ {g:'Pressure and wind', id:'mslp', name:'Sea-level pressure, 10 m wind', fill:'wspd10', scale:WIND, unit:'kt', cont:['mslp',4,'hPa'], barbs:['u10','v10'], hl:true},
+ {g:'Pressure and wind', id:'h850', name:'850 hPa height, wind', fill:'wspd850', scale:WIND, unit:'kt', cont:['z850',3,'dam'], barbs:['u850','v850']},
+ {g:'Pressure and wind', id:'h500', name:'500 hPa height, temperature', fill:'t500', scale:T500, unit:'°C', cont:['z500',6,'dam'], barbs:['u500','v500']},
+ {g:'Pressure and wind', id:'jet', name:'200 hPa jet stream', fill:'wspd200', scale:WIND, unit:'kt', barbs:['u200','v200']},
+ {g:'Rain', id:'rain6', name:'6-hour rain, pressure', fill:'rain6', scale:RAIN, unit:'mm', cont:['mslp',4,'hPa'], hl:true},
+ {g:'Rain', id:'rain24', name:'24-hour rain', fill:'rain24', scale:RAIN, unit:'mm'},
+ {g:'Rain', id:'raintot', name:'Total rain since start', fill:'raintot', scale:RAINTOT, unit:'mm'},
+ {g:'Temperature', id:'t2', name:'2 m temperature', fill:'t2', scale:T2, unit:'°C', cont:['mslp',4,'hPa']},
+ {g:'Temperature', id:'t850', name:'850 hPa temperature, height', fill:'t850', scale:T850, unit:'°C', cont:['z850',3,'dam'], barbs:['u850','v850']},
+ {g:'Moisture', id:'rh700', name:'700 hPa humidity', fill:'rh700', scale:RH, unit:'%', cont:['mslp',4,'hPa']},
+ {g:'Moisture', id:'rh850', name:'850 hPa humidity, wind', fill:'rh850', scale:RH, unit:'%', barbs:['u850','v850']},
+ {g:'Moisture', id:'pw', name:'Precipitable water, 850 hPa wind', fill:'tcw', scale:PW, unit:'mm', barbs:['u850','v850']},
+];
+const R = [
+ {id:'nio', name:'North Indian Ocean', b:[50,105,0,35]}, {id:'india', name:'India', b:[66,98,6,36]}, {id:'south', name:'South India', b:[72,88,6,20]},
+ {id:'tn', name:'Tamil Nadu', b:[75.5,81.5,7.5,14.5]}, {id:'bay', name:'Bay of Bengal', b:[78,100,4,24]}, {id:'as', name:'Arabian Sea', b:[50,78,4,26]},
+ {id:'sio', name:'South Indian Ocean', b:[40,115,-40,0]}, {id:'asia', name:'Asia', b:[40,150,-15,55]}, {id:'globe', name:'Globe', b:[-180,180,-75,80]},
+];
+// ---------- state ----------
+let meta = null, borders = null, land = null; const cache = {}; let prod = P[0], reg = R[0], ti = 0, playing = null;
+try { const s = JSON.parse(localStorage.getItem('megam-view') || '{}'); prod = P.find(p => p.id === s.p) || prod; reg = R.find(r => r.id === s.r) || reg; } catch (e) {}
+const save = () => { try { localStorage.setItem('megam-view', JSON.stringify({p: prod.id, r: reg.id})); } catch (e) {} };
+// ---------- UI ----------
+const rail = $('rail'); const groups = {};
+P.forEach(p => { if (!groups[p.g]) { const d = document.createElement('div'); d.className = 'group'; d.innerHTML = `<h3>${p.g}</h3><div class="items"></div>`; rail.appendChild(d); groups[p.g] = d.querySelector('.items'); }
+  const b = document.createElement('button'); b.className = 'prod'; b.textContent = p.name; b.dataset.id = p.id; b.onclick = () => { prod = p; save(); syncUI(); draw(); }; groups[p.g].appendChild(b); });
+R.forEach(r => { const b = document.createElement('button'); b.className = 'reg'; b.textContent = r.name; b.dataset.id = r.id; b.onclick = () => { reg = r; save(); syncUI(); draw(); }; $('regions').appendChild(b); });
+function syncUI() { document.querySelectorAll('.prod').forEach(b => b.setAttribute('aria-pressed', b.dataset.id === prod.id)); document.querySelectorAll('.reg').forEach(b => b.setAttribute('aria-pressed', b.dataset.id === reg.id)); }
+syncUI();
+// ---------- data ----------
+async function getField(name) {
+  if (cache[name]) return cache[name];
+  const m = meta.fields[name]; if (!m) return null;
+  const buf = await (await fetch(`data/field_${name}.bin`)).arrayBuffer();
+  const code = m.bits === 16 ? new Uint16Array(buf) : new Uint8Array(buf); const out = new Float32Array(code.length);
+  for (let i = 0; i < code.length; i++) out[i] = m.offset + m.scale * code[i];
+  return (cache[name] = out);
+}
+async function getDerived(name) {
+  if (cache[name]) return cache[name];
+  const lev = name.replace('wspd', ''); const u = await getField('u' + lev), v = await getField('v' + lev); if (!u || !v) return null;
+  const o = new Float32Array(u.length); for (let i = 0; i < o.length; i++) o[i] = Math.hypot(u[i], v[i]); return (cache[name] = o);
+}
+const field = n => n.startsWith('wspd') ? getDerived(n) : getField(n);
+// grid helpers: lat north->south (irregular Gaussian), lon 0..360 regular
+let LAT, NLAT, NLON, LON0, DLON, PLANE;
+function latIdx(lat) { if (lat >= LAT[0]) return 0; if (lat <= LAT[NLAT - 1]) return NLAT - 1; let lo = 0, hi = NLAT - 1; while (hi - lo > 1) { const m = (lo + hi) >> 1; if (LAT[m] >= lat) lo = m; else hi = m; } return lo + (LAT[lo] - lat) / (LAT[lo] - LAT[hi]); }
+function lonIdx(lon) { let x = ((lon - LON0) % 360 + 360) % 360; return x / DLON; }
+function sample(F, t, fy, fx) { const y0 = Math.min(NLAT - 2, Math.floor(fy)), wy = fy - y0; let x0 = Math.floor(fx), wx = fx - x0; x0 = ((x0 % NLON) + NLON) % NLON; const x1 = (x0 + 1) % NLON, o = t * PLANE;
+  const a = F[o + y0 * NLON + x0], b = F[o + y0 * NLON + x1], c = F[o + (y0 + 1) * NLON + x0], d = F[o + (y0 + 1) * NLON + x1]; return (a * (1 - wx) + b * wx) * (1 - wy) + (c * (1 - wx) + d * wx) * wy; }
+// ---------- drawing ----------
+const cv = $('map'), ctx = cv.getContext('2d');
+function geom() { const [x0, x1, y0, y1] = reg.b; const cosm = Math.cos((y0 + y1) / 2 * Math.PI / 180); const w = $('mapbox').clientWidth; const aspect = (y1 - y0) / ((x1 - x0) * Math.max(cosm, 0.55));
+  const dpr = Math.min(window.devicePixelRatio || 1, 2); const W = Math.round(w * dpr), H = Math.round(Math.min(w * aspect, window.innerHeight * 0.72) * dpr);
+  return {W, H, dpr, x0, x1, y0, y1, px: lon => (lon - x0) / (x1 - x0) * W, py: lat => (y1 - lat) / (y1 - y0) * H}; }
+function colorOf(scale, v) { if (!(v >= scale[0][0])) return null; let i = scale.length - 1; while (i > 0 && v < scale[i][0]) i--; return scale[i][1]; }
+const rgbCache = {}; function rgb(h) { if (rgbCache[h]) return rgbCache[h]; const n = parseInt(h.slice(1), 16); return (rgbCache[h] = [n >> 16 & 255, n >> 8 & 255, n & 255]); }
+function css(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+let G = null;
+async function draw() {
+  if (!meta) return; const myT = ti; G = geom(); const {W, H, x0, x1, y0, y1} = G; cv.width = W; cv.height = H;
+  $('loading').hidden = false;
+  const F = await field(prod.fill); const C = prod.cont ? await field(prod.cont[0]) : null; const U = prod.barbs ? await field(prod.barbs[0]) : null, V = prod.barbs ? await field(prod.barbs[1]) : null;
+  $('loading').hidden = true; if (myT !== ti) return;
+  // background + shading (step 2 device px, bilinear field)
+  const img = ctx.createImageData(W, H), d = img.data; const sea = rgb(cssHex('--sea')), lnd = rgb(cssHex('--landfill')); const step = 2;
+  const fyRow = new Float32Array(H), fxCol = new Float32Array(W);
+  for (let j = 0; j < H; j++) fyRow[j] = latIdx(y1 - (j + 0.5) / H * (y1 - y0));
+  for (let i = 0; i < W; i++) fxCol[i] = lonIdx(x0 + (i + 0.5) / W * (x1 - x0));
+  for (let j = 0; j < H; j += step) for (let i = 0; i < W; i += step) {
+    const v = sample(F, ti, fyRow[j], fxCol[i]); const c = colorOf(prod.scale, v);
+    let col = c ? rgb(c) : (land[Math.round(fyRow[j]) * NLON + (Math.round(fxCol[i]) % NLON)] ? lnd : sea);
+    for (let dj = 0; dj < step && j + dj < H; dj++) for (let di = 0; di < step && i + di < W; di++) { const k = ((j + dj) * W + i + di) * 4; d[k] = col[0]; d[k + 1] = col[1]; d[k + 2] = col[2]; d[k + 3] = 255; } }
+  ctx.putImageData(img, 0, 0);
+  drawLines(); if (C) drawContours(C); if (U) drawBarbs(U, V); if (prod.hl && C) drawHL(C);
+  drawFrame(); drawKey(); caption();
+}
+function cssHex(v) { const s = css(v); return s.startsWith('#') ? s : '#ffffff'; }
+function drawLines() { if (!borders) return; const {px, py, dpr, x0, x1} = G; const sets = [['states', css('--state'), 0.7], ['countries', css('--border'), 0.9], ['coast', css('--coast'), 1.1]];
+  for (const [k, col, w] of sets) { const L = borders[k]; if (!L) continue; ctx.strokeStyle = col; ctx.lineWidth = w * dpr; ctx.beginPath();
+    for (const line of L) { let pen = false, prevX = null; for (const [lo0, la] of line) { let lo = lo0; if (x1 > 180 && lo < 0) lo += 360; const X = px(lo), Y = py(la); if (pen && Math.abs(X - prevX) < G.W * 0.5) ctx.lineTo(X, Y); else ctx.moveTo(X, Y); pen = true; prevX = X; } }
+    ctx.stroke(); } }
+function regionGrid(Fl, up) { // sub-grid covering the region (+margin), upsampled for smooth contours
+  const {x0, x1, y0, y1} = G; const ya = Math.max(0, Math.floor(latIdx(y1 + 3))), yb = Math.min(NLAT - 1, Math.ceil(latIdx(y0 - 3)));
+  const lonA = x0 - 3, nx0 = Math.ceil((x1 - x0 + 6) / DLON) + 1; const nx = nx0 * up, ny = (yb - ya) * up + 1; const vals = new Float64Array(nx * ny);
+  for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) vals[j * nx + i] = sample(Fl, ti, ya + j / up, lonIdx(lonA + i * DLON / up));
+  const toLon = i => lonA + i * DLON / up, toLat = j => { const f = ya + j / up, k = Math.min(NLAT - 2, Math.floor(f)); return LAT[k] + (f - k) * (LAT[k + 1] - LAT[k]); };
+  return {vals, nx, ny, toLon, toLat}; }
+function drawContours(Cf) { const [name, every, unit] = prod.cont; const g = regionGrid(Cf, 3); let mn = Infinity, mx = -Infinity; for (const v of g.vals) { if (v < mn) mn = v; if (v > mx) mx = v; }
+  const th = []; for (let v = Math.ceil(mn / every) * every; v <= mx; v += every) th.push(v); if (!th.length) return;
+  const cs = d3.contours().size([g.nx, g.ny]).thresholds(th)(g.vals); const {px, py, dpr} = G; ctx.strokeStyle = css('--contour'); ctx.lineWidth = 1.1 * dpr; ctx.font = `${10.5 * dpr}px IBM Plex Mono, monospace`; ctx.fillStyle = css('--contour');
+  for (const c of cs) { for (const poly of c.coordinates) for (const ring of poly) { ctx.beginPath(); ring.forEach(([x, y], k) => { const X = px(g.toLon(x)), Y = py(g.toLat(y)); k ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y); }); ctx.stroke();
+      // one label per long ring, on a point inside the map
+      if (ring.length > 30) { const [x, y] = ring[Math.floor(ring.length / 3)]; const X = px(g.toLon(x)), Y = py(g.toLat(y)); if (X > 20 && X < G.W - 30 && Y > 14 && Y < G.H - 8) { const t = String(Math.round(c.value)); const w = ctx.measureText(t).width; ctx.save(); ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.fillRect(X - w / 2 - 2, Y - 7 * dpr, w + 4, 13 * dpr); ctx.restore(); ctx.fillText(t, X - w / 2, Y + 4 * dpr); } } } } }
+function drawHL(Cf) { const g = regionGrid(Cf, 1); const {px, py, dpr} = G; const r = 4; ctx.font = `700 ${18 * dpr}px Archivo, sans-serif`;
+  for (let j = r; j < g.ny - r; j++) for (let i = r; i < g.nx - r; i++) { const v = g.vals[j * g.nx + i]; let isMin = true, isMax = true, sum = 0, n = 0;
+    for (let b = -r; b <= r && (isMin || isMax); b++) for (let a = -r; a <= r; a++) { if (!a && !b) continue; const w = g.vals[(j + b) * g.nx + i + a]; if (w <= v) isMin = false; if (w >= v) isMax = false; sum += w; n++; }
+    if (!(isMin || isMax)) continue; if (Math.abs(sum / n - v) < 1.0) continue; const X = px(g.toLon(i)), Y = py(g.toLat(j)); if (X < 12 || X > G.W - 12 || Y < 16 || Y > G.H - 10) continue;
+    ctx.fillStyle = isMin ? '#c41e2a' : '#1d4fb8'; ctx.fillText(isMin ? 'L' : 'H', X - 6 * dpr, Y + 6 * dpr); ctx.font = `600 ${11 * dpr}px IBM Plex Mono, monospace`; ctx.fillText(String(Math.round(v)), X - 12 * dpr, Y - 12 * dpr); ctx.font = `700 ${18 * dpr}px Archivo, sans-serif`; } }
+function drawBarbs(U, V) { const {x0, x1, y0, y1, W, H, px, py, dpr} = G; const spacingPx = 30 * dpr; const nX = Math.max(4, Math.floor(W / spacingPx)), nY = Math.max(3, Math.floor(H / spacingPx));
+  ctx.strokeStyle = css('--barb'); ctx.fillStyle = css('--barb'); ctx.lineWidth = 1 * dpr;
+  for (let j = 0; j < nY; j++) for (let i = 0; i < nX; i++) { const lon = x0 + (i + 0.5) / nX * (x1 - x0), lat = y1 - (j + 0.5) / nY * (y1 - y0); const fy = latIdx(lat), fx = lonIdx(lon); barb(px(lon), py(lat), sample(U, ti, fy, fx), sample(V, ti, fy, fx), lat < 0); } }
+function barb(X, Y, u, v, south) { const dpr = G.dpr, spd = Math.hypot(u, v), L = 15 * dpr; if (spd < 2.5) { ctx.beginPath(); ctx.arc(X, Y, 2.2 * dpr, 0, 7); ctx.stroke(); return; }
+  const ang = Math.atan2(-v, -u); const dx = Math.cos(ang), dy = -Math.sin(ang); const ex = X + dx * L, ey = Y + dy * L; ctx.beginPath(); ctx.moveTo(X, Y); ctx.lineTo(ex, ey); ctx.stroke();
+  const side = south ? -1 : 1; const nx = -dy * side, ny = dx * side; let s = Math.round(spd / 5) * 5, pos = 0; const fl = 7 * dpr, gap = 3 * dpr;
+  while (s >= 50) { const bx = ex - dx * pos, by = ey - dy * pos; ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(bx + nx * fl - dx * gap * 0.5, by + ny * fl - dy * gap * 0.5); ctx.lineTo(bx - dx * gap * 1.4, by - dy * gap * 1.4); ctx.closePath(); ctx.fill(); pos += gap * 1.8; s -= 50; }
+  while (s >= 10) { const bx = ex - dx * pos, by = ey - dy * pos; ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(bx + nx * fl + dx * 2 * dpr, by + ny * fl + dy * 2 * dpr); ctx.stroke(); pos += gap; s -= 10; }
+  if (s >= 5) { if (pos === 0) pos = gap; const bx = ex - dx * pos, by = ey - dy * pos; ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(bx + nx * fl * 0.5 + dx * dpr, by + ny * fl * 0.5 + dy * dpr); ctx.stroke(); } }
+function drawFrame() { const {W, H, dpr, x0, x1, y0, y1, px, py} = G; ctx.font = `${10 * dpr}px IBM Plex Mono, monospace`; ctx.fillStyle = css('--coast'); ctx.strokeStyle = 'rgba(40,50,64,0.18)'; ctx.lineWidth = 1;
+  const st = (x1 - x0) > 120 ? 30 : (x1 - x0) > 30 ? 10 : 2; for (let lo = Math.ceil(x0 / st) * st; lo <= x1; lo += st) { const X = px(lo); ctx.beginPath(); ctx.moveTo(X, 0); ctx.lineTo(X, H); ctx.stroke(); ctx.fillText(((lo % 360) + 360) % 360 > 180 ? `${360 - (((lo % 360) + 360) % 360)}W` : `${((lo % 360) + 360) % 360}E`, X + 3, H - 4); }
+  for (let la = Math.ceil(y0 / st) * st; la <= y1; la += st) { const Y = py(la); ctx.beginPath(); ctx.moveTo(0, Y); ctx.lineTo(W, Y); ctx.stroke(); ctx.fillText(la === 0 ? 'EQ' : la > 0 ? `${la}N` : `${-la}S`, 3, Y - 3); }
+  ctx.font = `600 ${11 * dpr}px IBM Plex Sans, sans-serif`; ctx.fillStyle = 'rgba(16,35,63,0.75)'; const t = 'MEGAM'; ctx.fillText(t, W - ctx.measureText(t).width - 6 * dpr, 14 * dpr); }
+function drawKey() { const sc = prod.scale; const vert = getComputedStyle($('keyv')).display !== 'none'; const k = vert ? $('keyv') : $('keyh'); const kx = k.getContext('2d'); const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const w = k.clientWidth * dpr, h = (vert ? (G.H / dpr) : 46) * dpr; k.width = w; k.height = h; if (vert) k.style.height = (G.H / dpr) + 'px'; kx.clearRect(0, 0, w, h); kx.font = `${10.5 * dpr}px IBM Plex Mono, monospace`; kx.fillStyle = css('--ink');
+  const n = sc.length; if (vert) { const bw = 16 * dpr, top = 16 * dpr, bh = (h - top - 6 * dpr) / n; kx.fillText(prod.unit, 0, 11 * dpr); for (let i = 0; i < n; i++) { const y = top + (n - 1 - i) * bh; kx.fillStyle = sc[i][1]; kx.fillRect(0, y, bw, bh); kx.fillStyle = css('--ink'); kx.fillText(String(sc[i][0]), bw + 4 * dpr, y + bh); } }
+  else { const top = 4 * dpr, bh = 16 * dpr, bw = w / n; for (let i = 0; i < n; i++) { kx.fillStyle = sc[i][1]; kx.fillRect(i * bw, top, bw, bh); kx.fillStyle = css('--ink'); if (n < 14 || i % 2 === 0) kx.fillText(String(sc[i][0]), i * bw, top + bh + 13 * dpr); } kx.fillText(prod.unit, w - kx.measureText(prod.unit).width, top + bh + 26 * dpr); } }
+const fmt = d => d.toLocaleString('en-GB', {timeZone: 'UTC', weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'}) ;
+function caption() { const h = meta.hours[ti]; const init = new Date(meta.init.replace(/T(\d\d)$/, 'T$1:00:00Z')); const val = new Date(init.getTime() + h * 3600e3);
+  const ist = new Date(val.getTime() + 5.5 * 3600e3);
+  $('ttl').textContent = `MEGAM ${prod.name}` + (prod.cont ? ` · lines: ${prod.cont[2] === 'hPa' ? 'pressure' : 'height'} (${prod.cont[2]})` : '');
+  $('valid').textContent = `Init ${String(init.getUTCHours()).padStart(2, '0')}z ${fmt(init)}  ·  valid ${String(val.getUTCHours()).padStart(2, '0')}z ${fmt(val)} (${String(ist.getUTCHours()).padStart(2, '0')}:${String(ist.getUTCMinutes()).padStart(2, '0')} IST)`;
+  $('lead').textContent = `+${h} h`; $('lead2').textContent = `day ${(h / 24).toFixed(h % 24 ? 2 : 0).replace(/\.?0+$/, '')}`; $('hour').value = ti; }
+// ---------- probe ----------
+function probe(ev) { if (!G || !meta) return; const r = cv.getBoundingClientRect(); const x = (ev.clientX - r.left) / r.width, y = (ev.clientY - r.top) / r.height; if (x < 0 || x > 1 || y < 0 || y > 1) { $('probe').hidden = true; return; }
+  const lon = G.x0 + x * (G.x1 - G.x0), lat = G.y1 - y * (G.y1 - G.y0); const F = cache[prod.fill]; if (!F) return; const v = sample(F, ti, latIdx(lat), lonIdx(lon));
+  let extra = ''; if (prod.cont && cache[prod.cont[0]]) extra = ` · ${Math.round(sample(cache[prod.cont[0]], ti, latIdx(lat), lonIdx(lon)))} ${prod.cont[2]}`;
+  $('probe').textContent = `${Math.abs(lat).toFixed(1)}${lat >= 0 ? 'N' : 'S'} ${lon.toFixed(1)}E  ${v.toFixed(prod.unit === 'mm' && v < 10 ? 1 : 0)} ${prod.unit}${extra}`; $('probe').style.left = (ev.clientX - r.left) + 'px'; $('probe').style.top = (ev.clientY - r.top) + 'px'; $('probe').hidden = false; }
+cv.addEventListener('pointermove', probe); cv.addEventListener('pointerdown', probe); cv.addEventListener('pointerleave', () => $('probe').hidden = true);
+// ---------- time controls ----------
+const setT = t => { ti = Math.max(0, Math.min(meta.hours.length - 1, t)); draw(); };
+$('prev').onclick = () => setT(ti - 1); $('next').onclick = () => setT(ti + 1); $('hour').oninput = e => setT(+e.target.value);
+$('play').onclick = () => { if (playing) { clearInterval(playing); playing = null; $('play').textContent = '▶'; $('play').setAttribute('aria-label', 'Play'); return; }
+  $('play').textContent = '❚❚'; $('play').setAttribute('aria-label', 'Pause'); playing = setInterval(() => setT(ti >= meta.hours.length - 1 ? 0 : ti + 1), 650); };
+document.addEventListener('keydown', e => { if (e.target.tagName === 'INPUT' && e.target.type !== 'range') return; if (e.key === 'ArrowLeft') { setT(ti - 1); e.preventDefault(); } else if (e.key === 'ArrowRight') { setT(ti + 1); e.preventDefault(); } else if (e.key === ' ') { $('play').click(); e.preventDefault(); } });
+let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(draw, 150); });
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', draw);
+// ---------- boot ----------
+(async () => {
+  try {
+    meta = await (await fetch('data/meta.json')).json(); LAT = meta.lat; NLAT = meta.nlat; NLON = meta.nlon; LON0 = meta.lon0; DLON = meta.dlon; PLANE = NLAT * NLON;
+    land = new Uint8Array(await (await fetch('data/land.bin')).arrayBuffer());
+    try { borders = await (await fetch('data/borders.json')).json(); } catch (e) { borders = null; }
+    $('hour').max = meta.hours.length - 1; const init = new Date(meta.init.replace(/T(\d\d)$/, 'T$1:00:00Z'));
+    $('runline').textContent = `Run ${String(init.getUTCHours()).padStart(2, '0')}z ${fmt(init)} · ${meta.grid} · ${meta.hours[meta.hours.length - 1] / 24} days`;
+    ti = 0; draw();
+  } catch (e) { $('loading').textContent = 'Could not load the forecast files. Reload the page to try again.'; }
+})();
+})();
+</script>
