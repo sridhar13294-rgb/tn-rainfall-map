@@ -1,6 +1,6 @@
-tn-wind-ck09
+tn-wind-ck10e
 libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 '{"ck09":{"ck":0.9e-3}}' > /kaggle/working/wind.log 2>&1; tail -30 /kaggle/working/wind.log
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 '{"ck10e3":{"ck":1.0e-3,"entr":3e-4}}' > /kaggle/working/wind.log 2>&1; tail -30 /kaggle/working/wind.log
 NvidiaTeslaT4
-2
-#steering winds: sea evaporation ck 0.9e-3 2026-10-24T11:44Z
+3
+#steering winds: ck 1.0e-3 plus more plume mixing 2026-10-24T11:45Z
