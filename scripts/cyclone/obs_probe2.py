@@ -24,7 +24,7 @@ if k and s:
             t = (c.get('title') or '') + ' ' + cid
             if any(w in t.lower() for w in ('wind', 'ascat', 'amv', 'scatter', 'iodc', 'motion', 'mpef', 'bufr')): log('  ', t[:200])
         open('data/cyclone/eumetsat_collections.txt', 'w').write('\n'.join(allc) + '\n')
-        for cid in allc:                                                                       # titles: look for motion winds
+        for cid in ([] if os.environ.get('PROBE_FAST', '1') == '1' else allc):                    # titles: look for motion winds
             try:
                 st, b, _ = get('https://api.eumetsat.int/data/browse/1.0.0/collections/' + urllib.parse.quote(cid) + '?format=json', H, timeout=20)
                 j = json.loads(b); t = (j.get('title') or j.get('properties', {}).get('title') or '')
@@ -57,4 +57,11 @@ if u and p:
         st, b, _ = get('https://cmr.earthdata.nasa.gov/search/collections.json?keyword=ASCAT%20wind&page_size=5')
         log('PO.DAAC ASCAT collections (search):', [e.get('short_name') for e in json.loads(b)['feed']['entry']])
     except Exception as e: log('Earthdata failed:', repr(e)[:300])
+open('data/cyclone/obs_probe2.txt', 'w').write('\n'.join(OUT) + '\n')
+# ---------------------------------------------------------------- NOAA GTS gateway (synop/ship/temp): why empty?
+for url in ('https://tgftp.nws.noaa.gov/SL.us008001/DF.an/DC.sflnd/DS.synop/', 'https://tgftp.nws.noaa.gov/SL.us008001/DF.an/DC.sflnd/DS.synop/sn.0000',
+            'https://tgftp.nws.noaa.gov/SL.us008001/DF.an/', 'https://tgftp.nws.noaa.gov/data/nsd_bbsss.txt'):
+    try:
+        st, b, u = get(url, timeout=60); log('GTS', url[-40:], 'status', st, 'bytes', len(b), 'final', u[-50:], '|', b[:160].decode('latin-1', 'replace').replace('\n', ' '))
+    except Exception as e: log('GTS', url[-40:], 'failed', repr(e)[:200])
 open('data/cyclone/obs_probe2.txt', 'w').write('\n'.join(OUT) + '\n')
