@@ -77,6 +77,10 @@ state average obs vs forecast; odd gauges (Aliyar misplaced, fix awaiting approv
 (data/forecast_status.json). Corrections only on a new branch with Sridhar's approval.
 
 
+## 24 Oct 20:20 IST - ck_z=1 same-run results: MIXED, not adopted yet
+Exam z500 globe d1/5/10: default 23.7/74.6/119 vs ckz1 24.7/77.5/122.9 (+2.9 m d5); tropics z500 d5 34.3 -> 40.6 (column drifts); mslp, u850 India, rain24 India slightly better. Storm forming (dist<=300, vo>=5, depth>=2): 26% -> 32%. Tracks median 24/48/72/96: Bay 102/213/377/509 -> 116/243/366/521; AS 139/231/417/473 -> 139/229/432/575 (lon bias +1.1 -> +1.7); SI 113/206/320/429 -> 107/182/308/417. Reading: less sea evaporation fixes the wind shear but removes heating that was hiding the old cold-upper-troposphere error, so tropical heights fall. Next: tn-prof-ckz (acct1, wx_prof day-5 T/q profile) to find where the column cools; the real fix is the tropical heat balance (convective heating profile / radiation), then ck_z on top.
+Stage 1 verdict given to Sridhar 24 Oct evening: 28 Oct does NOT hold; target 30 Oct with the steering/heat-balance item possibly carried as a documented open weakness.
+
 ## 24 Oct 18:15 IST - steering fix candidate: ck_z=1 (sea evaporation coefficient taken from 10 m down to the model's lowest level)
 wx_wind day-5 shear error (u200-u850, m/s) Bay/AS/SI: default 6.0/4.2/5.4; OLD scheme 7.1/3.9/4.4 (same problem -> not the convection scheme); entr/tau/cap/dd ~no change; ck 1.0e-3 4.0/3.2/4.2; ck 0.9e-3 2.8/2.6/4.0; ck_z=1 2.5/2.5/3.7 (AS v200 +6.2 -> +3.0). ck_z is an equation correction, not a tune. Same-run exams running: tn-wx-ckz (acct4), tn-base-ckz (5), tn-io-as-ckz (6), tn-io-si-ckz (8), tn-gen-ckz (9). Adopt if exam/tracks/genesis not worse.
 Map viewer started (Sridhar 17:07): scripts/viewer (index.html + pack.py), maps_run.py (run_wx map_out extras), maps_borders.py; Kaggle npz outputs go to release model-maps. Private artifact https://claude.ai/artifact/S1b5DcTXhWoWv7j4fZaPwa (v2: drag round globe, zoom). Sridhar wants UI corrected in parallel with Stage 1.

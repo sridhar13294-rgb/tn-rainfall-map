@@ -1,6 +1,6 @@
-tn-gen-ckz
-libm48_fields.npz
-bash ../kaggle/par.sh genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_ckz.json /kaggle/working/gen
+tn-prof-ckz
+libm_wx2020_fields.npz
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 20 '{"default":{},"ckz1":{"ck_z":1.0}}' > /kaggle/working/prof.log 2>&1; tail -40 /kaggle/working/prof.log
 NvidiaTeslaT4
-9
-#storm forming: sea evaporation equation fix (ck_z) vs default 2026-10-24T12:48Z
+1
+#where the column cools with the evaporation fix: day-5 tropical temperature profile, default vs ck_z 2026-10-24T14:47Z
