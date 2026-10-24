@@ -10,7 +10,10 @@ search EO:EUM:DAT:MSG:AMV-IODC failed <HTTPError 404: 'Not Found'>
 search EO:EUM:DAT:MSG:AMV failed <HTTPError 404: 'Not Found'>
 search EO:EUM:DAT:0398 last 9 h products: 5 ['S-LSA_-HDF5_LSASAF_MSG_FRM-F024_Euro_202610241200', 'S-LSA_-HDF5_LSASAF_MSG_FRM-F048_Euro_202610241200']
 Earthdata user present: True password present: True
-Earthdata failed: URLError(TimeoutError('_ssl.c:993: The handshake operation timed out'))
+IMERG Early half-hourly files today: 28 3B-HHR-E.MS.MRG.3IMERG.20261024-S133000-E135959.0810.V07C.HDF5
+Earthdata failed: URLError(ConnectionResetError(104, 'Connection reset by peer'))
+GTS hrefs 307 ['?C=N;O=D', '?C=M;O=A', '?C=S;O=A', '/SL.us008001/DF.an/DC.sflnd/', 'ls-l', 'ls-lt', 'sn.0000.txt', 'sn.0001.txt'] ['sn.0296.txt', 'sn.0297.txt', 'sn.0298.txt', 'sn.0299.txt', 'sn.0300.txt']
+GTS row sample: ight">24-Oct-2026 19:20  </td><td align="right"> 21K</td></tr> | <tr><td><a href="sn.0000.txt">sn.0000.txt</a></td><td align="right">24-Oct-2026 05:25  </td><td align="right">6.6K</td></tr> | <tr><td><a href="sn.0001.txt">sn.0001.txt</a></td><td align="right">24-Oct-2026 05:30  </td><td align="right">1.
 GTS gov/SL.us008001/DF.an/DC.sflnd/DS.synop/ status 200 bytes 38415 final .nws.noaa.gov/SL.us008001/DF.an/DC.sflnd/DS.synop/ | <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN"> <html>  <head>   <title>Index of /SL.us008001/DF.an/DC.sflnd/DS.synop</title>  </head>  <body> <h1>Index
 GTS us008001/DF.an/DC.sflnd/DS.synop/sn.0000 failed <HTTPError 404: 'Not Found'>
 GTS ://tgftp.nws.noaa.gov/SL.us008001/DF.an/ status 200 bytes 999 final https://tgftp.nws.noaa.gov/SL.us008001/DF.an/ | <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN"> <html>  <head>   <title>Index of /SL.us008001/DF.an</title>  </head>  <body> <h1>Index of /SL.us008001/D
