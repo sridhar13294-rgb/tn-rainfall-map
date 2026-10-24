@@ -1,13 +1,14 @@
 EUMETSAT key present: True secret present: True
 EUMETSAT token: OK
 collections listed: 191
-   EO:EUM:DAT:MSG:HRSEVIRI-IODC https://api.eumetsat.int/data/browse/1.0.0/collections/EO%3AEUM%3ADAT%3AMSG%3AHRSEVIRI-IODC?format=json
-   EO:EUM:DAT:MSG:CLM-IODC https://api.eumetsat.int/data/browse/1.0.0/collections/EO%3AEUM%3ADAT%3AMSG%3ACLM-IODC?format=json
-   EO:EUM:DAT:MSG:CTH-IODC https://api.eumetsat.int/data/browse/1.0.0/collections/EO%3AEUM%3ADAT%3AMSG%3ACTH-IODC?format=json
+   EO:EUM:DAT:MSG:HRSEVIRI-IODC EO:EUM:DAT:MSG:HRSEVIRI-IODC
+   EO:EUM:DAT:MSG:CLM-IODC EO:EUM:DAT:MSG:CLM-IODC
+   EO:EUM:DAT:MSG:CTH-IODC EO:EUM:DAT:MSG:CTH-IODC
 search EO:EUM:DAT:METOP:OSI-104 last 9 h products: 9 ['ascat_20261024_133900_metopb_73164_eps_o_coa_3301_ovw.l2', 'ascat_20261024_121800_metopc_41321_eps_o_coa_3301_ovw.l2']
-search EO:EUM:DAT:METOP:ASCSZR1B last 9 h products: 10 ['ASCA_SZR_1B_M03_20261024124800Z_20261024142658Z_N_O_20261024142733Z', 'ASCA_SZR_1B_M01_20261024122700Z_20261024140558Z_N_O_20261024132010Z']
+search EO:EUM:DAT:METOP:ASCSZR1B last 9 h products: 9 ['ASCA_SZR_1B_M03_20261024124800Z_20261024142658Z_N_O_20261024142733Z', 'ASCA_SZR_1B_M01_20261024122700Z_20261024140558Z_N_O_20261024132010Z']
 search EO:EUM:DAT:MSG:AMV-IODC failed <HTTPError 404: 'Not Found'>
 search EO:EUM:DAT:MSG:AMV failed <HTTPError 404: 'Not Found'>
 search EO:EUM:DAT:0398 last 9 h products: 5 ['S-LSA_-HDF5_LSASAF_MSG_FRM-F024_Euro_202610241200', 'S-LSA_-HDF5_LSASAF_MSG_FRM-F048_Euro_202610241200']
 Earthdata user present: True password present: True
-Earthdata failed: URLError(OSError(101, 'Network is unreachable'))
+IMERG Early half-hourly files today: 24 3B-HHR-E.MS.MRG.3IMERG.20261024-S113000-E115959.0690.V07C.HDF5
+Earthdata failed: URLError(TimeoutError('_ssl.c:993: The handshake operation timed out'))
