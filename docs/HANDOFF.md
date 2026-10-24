@@ -77,6 +77,11 @@ state average obs vs forecast; odd gauges (Aliyar misplaced, fix awaiting approv
 (data/forecast_status.json). Corrections only on a new branch with Sridhar's approval.
 
 
+## DECISION 24 Oct 14:50 IST - inserted starting storm smaller and weaker
+mm2 bogus defaults bogus_rout 350 -> 180 km, bogus_x 0.6 -> 0.4 (mm2 line ~171, self.S.get). Same-run tests (tn-io-as-combo2, tn-io-si-combo2, tn-base-combo): 72 h lat bias AS +0.46->+0.01, SI -0.66->-0.12, Bay +1.08->+0.35; 96 h median AS 557->473, SI 442->409, Bay 505->493 km; 24 h within 10 km; winds ~3 kt weaker at 24 h. hindens2 bogus_vary ranges recentred (120-280 km, 0.3-0.6).
+Fix #9 test (hind2 config systems:true, sys_kw for track_all): other real storms alive found 59% (AS runs, tn-sys9-as) / 75% (Bay runs, tn-sys9-bb); misses mostly weak depressions -> rerun with vo_min 2.5 (tn-sys9b-as, acct1).
+Ensemble with member-varied start vortex (tn-ens-bvary): spread/error 0.52/0.42/0.61/0.98/0.82 at 24-120 h (before ~0.6); ens mean beats control at 72-120 h. Steering check wx_wind.py (tn-wx-wind, acct8): u/v bias vs ERA5 over Bay/AS/SI at day 5.
+
 ## DECISION 24 Oct 02:40 IST - new defaults (mm2 DEFAULTS)
 conv='mf', mf_kick_t 0.5, mf_kick_q 0.0005, mf_dd 0.5, sh_top 0.0, tau_shallow 3600 s, rad='radcloud', rad_every 2 (radcloud was NOT the true default before - only in test configs). Old scheme yardstick: conv='bmj', sh_top 0.7, tau_shallow 10800, bmj_ice 0.5.
 Evidence: exam 23.7/74.6/119.5 m (old 25.4/77.3/120.3); Bay 107/212/343/543 (old 100/211/388/531); storm forming T85 21%, T170 24% (old 40%/31%).
