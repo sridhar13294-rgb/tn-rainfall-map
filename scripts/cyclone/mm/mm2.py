@@ -191,13 +191,16 @@ class Model:
         ps = ps + rho * np.interp(r, rr, ph1)                                                   # pressure deficit at the surface
         return T3, Q3, U3, V3, ps
     # ------------------------------------------------------------------------------------------------ column physics
-    def conv_mf(self, Tn, qn, p, mass, zc, sig, dsig, ps, ksrc, S, dt, div=None, E=None):
+    def conv_mf(self, Tn, qn, p, mass, zc, sig, dsig, ps, ksrc, S, dt, div=None, E=None, shallow=False):
         """Bulk mass-flux deep convection (Tiedtke/Bechtold type). One entraining updraft per column rises from the most
         unstable low level; entrainment grows in dry air (eps = entr x (1.3 - RH)), so convection needs a moist column -
         the moistening feedback that lets a weak low organise. Condensate rains out (re-evaporating below in the rain
         step). Environment changes from the updraft-environment flux differences (energy and water conserved, with the
         rain as the only sink); compensating subsidence warms and dries. Closure: the plume's CAPE is removed over
-        tau_deep. Returns dT, dq (per s), rain production per layer (kg m-2 s-1), cloud mask, deep flag."""
+        tau_deep. Returns dT, dq (per s), rain production per layer (kg m-2 s-1), cloud mask, deep flag.
+        shallow=True (setting shallow='mf'): the same plume for shallow cumulus (ECMWF style) - clouds less than 250 hPa deep,
+        closure over tau_shallow, no rain and no downdraft: the plume's condensate evaporates where it forms/detrains, which
+        cools and moistens the cloud layer while the updraft carries heat and moisture up from the boundary layer."""
         L = Tn.shape[0]; ii = jnp.arange(L)[:, None, None]; h_e = CP * Tn + G * zc + LV * qn
         rh_e = jnp.clip(qn / qsat(Tn, p), 0, 1); sig_src = jnp.take_along_axis(sig * jnp.ones_like(Tn), ksrc[None], 0)[0]
         qs_e = qsat(Tn, p); qs_src = jnp.maximum(jnp.take_along_axis(qs_e, ksrc[None], 0)[0], 1e-6)
@@ -231,12 +234,13 @@ class Model:
         inc, b, cond, hu, qu = [a[::-1] for a in (inc, b, cond, hu, qu)]
         sig_top = jnp.min(jnp.where(inc, sig, 1.0), axis=0); cape = (RD * jnp.maximum(b, 0) * dsig / sig * inc).sum(0)
         deep = lfc & ((sig_src - sig_top) * ps > 25000.0) & (cape > 50.0)
+        if shallow: deep = lfc & ((sig_src - sig_top) * ps <= 25000.0) & (cape > 0.0) & (sig_src > 0.8)      # 'deep' = this plume is active
         frac = (sig_src - sig) / jnp.maximum(sig_src - sig_top, 1e-3)
         eta = jnp.where(inc & (ii != ksrc), jnp.clip(jnp.where(frac < 0.6, 1.0, (1 - frac) / 0.4), 0, 1), 0.0) * deep    # mass flux entering each cloud layer from below
         sh = lambda a: jnp.concatenate([a[1:], a[-1:]], 0)                                          # value of the layer below
         Fh = eta * (sh(hu) - h_e); Fq = eta * (sh(qu) - qn)                                         # across each layer's bottom interface, per unit Mb
         top = lambda F: jnp.concatenate([jnp.zeros_like(F[:1]), F[:-1]], 0)                        # = bottom flux of the layer above
-        dh1 = (Fh - top(Fh)) / mass; P1 = eta * cond; dq1 = (Fq - top(Fq)) / mass - P1 / mass
+        dh1 = (Fh - top(Fh)) / mass; P1 = eta * cond; dq1 = (Fq - top(Fq)) / mass - (0.0 if shallow else P1 / mass)   # shallow: condensate re-evaporates in place
         # the source layer: air leaves upward through its top (handled: its top flux = the bottom flux of the layer above)
         dT1 = (dh1 - LV * dq1) / CP
         gam = LV / CP * qsat(Tn, p) * 17.67 * 243.5 / (Tn - 29.65) ** 2
@@ -247,6 +251,7 @@ class Model:
         # convective turnover time), between 10 min and tau_deep
         zsrc = jnp.take_along_axis(zc, ksrc[None], 0)[0]; ztop = jnp.max(jnp.where(inc, zc, 0.0), axis=0)
         tau = jnp.where(S['mf_wup'] > 0, jnp.clip((ztop - zsrc) / jnp.maximum(S['mf_wup'], 1e-3), 600.0, S['tau_deep']), S['tau_deep'])
+        if shallow: tau = S['tau_shallow'] * jnp.ones_like(tau)
         Mb = cape / (tau * jnp.maximum(-dcape, 1e-6))
         if S['mf_closure'] == 'hybrid' and div is not None:
             # moisture-convergence closure (Tiedtke 1989, ECMWF's original scheme): the updraft carries away at least the moisture
@@ -274,11 +279,12 @@ class Model:
         q_prev = jnp.concatenate([qn[:1], q_d[:-1]], 0)
         Ev = jnp.where(ind, jnp.maximum(jnp.where(ii == k_lfs[None], q_d - qn, q_d - q_prev), 0.0), 0.0)             # evaporation into the downdraft, per unit flux
         Ed = (Ev).sum(0); Pu = (P1 * Mb).sum(0)
-        a_dd = S['mf_dd'] * jnp.minimum(1.0, Pu / jnp.maximum(S['mf_dd'] * Mb * Ed, 1e-12))                     # cannot evaporate more rain than the updraft made
+        a_dd = S['mf_dd'] * jnp.minimum(1.0, Pu / jnp.maximum(S['mf_dd'] * Mb * Ed, 1e-12)) * (0.0 if shallow else 1.0)   # cannot evaporate more rain than the updraft made; none for shallow
         Md = a_dd * Mb
         dh_dd = (top(Fhd) - Fhd) / mass * Md; dq_dd = ((top(Fqd) - Fqd) + Ev) / mass * Md
         Pscale = jnp.clip(1.0 - Md * Ed / jnp.maximum(Pu, 1e-12), 0.0, 1.0)
         dT_dd = (dh_dd - LV * dq_dd) / CP
+        if shallow: return dT1 * Mb, dq1 * Mb, jnp.zeros_like(P1), inc & deep[None], deep
         return dT1 * Mb + dT_dd, dq1 * Mb + dq_dd, P1 * Mb * Pscale, inc & deep[None], deep
     def column(self, T, q, u, v, ps, cr, want_diag=False, rad_fresh=False, div=None):
         """All arrays nodal: T, q, u, v [L, X, Y] (SI); ps [X, Y] Pa; cr = surface carry. Returns tendencies (per second)
@@ -382,6 +388,8 @@ class Model:
         if S['conv'] == 'mf':                                                                       # mass-flux scheme replaces the adjustment
             dTc, dqc, Pmf, regmf, okmf = self.conv_mf(Tn, qn, p, mass, zc, sig, dsig, ps, ksrc, S, dt, div=div, E=E)
             reg, ok = regmf, okmf
+            if S['shallow'] == 'mf':                                                                 # shallow cumulus as a non-raining mass-flux plume
+                dTs, dqs, _, _, oks = self.conv_mf(Tn, qn, p, mass, zc, sig, dsig, ps, ksrc, S, dt, shallow=True)
             dTs = jnp.where(okmf[None], 0.0, dTs); dqs = jnp.where(okmf[None], 0.0, dqs)
         cm = reg & ok[None]
         mu = ((u * mass) * cm).sum(0) / jnp.maximum((mass * cm).sum(0), 1.0); mv = ((v * mass) * cm).sum(0) / jnp.maximum((mass * cm).sum(0), 1.0)
