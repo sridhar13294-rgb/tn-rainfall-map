@@ -1,6 +1,6 @@
-tn-gen-top60
-libm48_fields.npz
-bash ../kaggle/par.sh genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_top60.json /kaggle/working/gen
+tn-prof-top60
+libm_wx2020_fields.npz
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 20 '{"top60":{"sh_top":0.60},"top50":{"sh_top":0.50},"top60ck":{"sh_top":0.60,"ck_z":1.0}}' > /kaggle/working/prof.log 2>&1; tail -50 /kaggle/working/prof.log
 NvidiaTeslaT4
-8
-#storm forming: shallow mixing capped high (600 / 500 hPa), +/- evaporation fix 2026-10-25T06:15Z
+9
+#column profile: shallow mixing capped at 600 / 500 hPa 2026-10-25T06:16Z
