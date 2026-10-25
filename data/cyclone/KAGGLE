@@ -1,6 +1,6 @@
-tn-prof-top60
+tn-wind-top60
 libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 20 '{"top60":{"sh_top":0.60},"top50":{"sh_top":0.50},"top60ck":{"sh_top":0.60,"ck_z":1.0}}' > /kaggle/working/prof.log 2>&1; tail -50 /kaggle/working/prof.log
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 '{"top60":{"sh_top":0.60},"top50":{"sh_top":0.50},"top60ck":{"sh_top":0.60,"ck_z":1.0}}' > /kaggle/working/wind.log 2>&1; tail -50 /kaggle/working/wind.log
 NvidiaTeslaT4
-9
-#column profile: shallow mixing capped at 600 / 500 hPa 2026-10-25T06:16Z
+10
+#steering winds: shallow mixing capped at 600 / 500 hPa 2026-10-25T06:16Z
