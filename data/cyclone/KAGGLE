@@ -1,6 +1,6 @@
-tn-wind-tm
-libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 '{"tm":{"pbl_tm":1.0},"tmtap":{"pbl_tm":1.0,"mf_org":1.0,"sh_top":0.80,"sh_taper":0.15}}' > /kaggle/working/wind.log 2>&1; tail -40 /kaggle/working/wind.log
+tn-gen-tm
+libm48_fields.npz
+bash ../kaggle/par.sh genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_tm.json /kaggle/working/gen
 NvidiaTeslaT4
-10
-#boundary layer equation fix: steering winds 2026-10-25T05:05Z
+8
+#boundary layer equation fix: storm forming 2026-10-25T05:06Z
