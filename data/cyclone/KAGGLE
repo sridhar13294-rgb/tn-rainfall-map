@@ -1,6 +1,6 @@
-tn-gen-top80
-libm48_fields.npz
-bash ../kaggle/par.sh genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_top80.json /kaggle/working/gen
+tn-prof-taper
+libm_wx2020_fields.npz
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 20 '{"tap":{"mf_org":1.0,"sh_top":0.80,"sh_taper":0.15},"tapck":{"ck_z":1.0,"mf_org":1.0,"sh_top":0.80,"sh_taper":0.15}}' > /kaggle/working/prof.log 2>&1; tail -40 /kaggle/working/prof.log
 NvidiaTeslaT4
-8
-#storm forming: capped shallow mixing vs default 2026-10-25T02:59Z
+9
+#tropical heating: shallow mixing fading out above sigma 0.80 (no hard top), column profile 2026-10-25T03:01Z
