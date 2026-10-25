@@ -31,6 +31,7 @@ units = scales.units
 G, RD, RV, CP, LV, SB, KARM = 9.80616, 287.04, 461.5, 1004.6, 2.5e6, 5.67e-8, 0.4; KAP = RD / CP
 def sigma_bounds(n=32):
     e = np.linspace(0, 1, n + 1); return (0.6 * e + 0.4 * (1 - (1 - e) ** 2)).astype(np.float32)
+SND_LEVS = (1000, 975, 950, 925, 900, 850, 800, 750, 700, 650, 600, 550, 500, 450, 400, 350, 300, 250, 200, 150, 100)   # sounding levels (hPa) for the map viewer
 def qsat(T, p):
     es = 611.2 * jnp.exp(17.67 * (T - 273.15) / (T - 29.65)); return 0.622 * es / jnp.maximum(p - 0.378 * es, 1.0)
 def relax(x, ref, tau, dt):                       # stable relaxation over one step, returned as a rate
@@ -639,7 +640,9 @@ class Model:
         tcw = (q * jnp.asarray(self.dsig)[:, None, None]).sum(0) * ps / G
         return dict(rh850=to_p(rh, lp, 85000.0), rh700=to_p(rh, lp, 70000.0), rh500=to_p(rh, lp, 50000.0), tcw=tcw,
                     u10=u[-1] * 0.85, v10=v[-1] * 0.85, z850=to_p(phi, lp, 85000.0) / G, t500=to_p(T, lp, 50000.0),
-                    u500=to_p(u, lp, 50000.0), v500=to_p(v, lp, 50000.0))
+                    u500=to_p(u, lp, 50000.0), v500=to_p(v, lp, 50000.0),
+                    **({f'snd_{n}{P}': to_p(X, lp, P * 100.0) for P in SND_LEVS for n, X in (('t', T), ('q', q), ('u', u), ('v', v))} | {'snd_ps': ps}
+                       if self.S.get('map_snd') else {}))
     # ------------------------------------------------------------------------------------------------ storm tracker (GFDL style)
     def track(self, out, la0, lo0, every_h=6, keep_h=0):
         subgrid = subgrid_peak

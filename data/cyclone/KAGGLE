@@ -1,6 +1,6 @@
-tn-base-tm
-libm_fields.npz
-bash ../kaggle/par.sh hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/base_tm.json /kaggle/working/bt
+tn-maps-nivar2
+libm_wx2020_fields.npz
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore maps_run.py /kaggle/working/libm_wx2020_fields.npz near:2020-11-21 /kaggle/working/maps_nivar2.npz 240 > /kaggle/working/maps.log 2>&1; tail -20 /kaggle/working/maps.log
 NvidiaTeslaT4
-2
-#boundary layer equation fix: Bay storm tracks 2026-10-25T05:07Z
+1
+#map viewer: forecast with full vertical profiles for tap-to-sounding 2026-10-25T05:50Z
