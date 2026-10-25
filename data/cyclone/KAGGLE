@@ -1,6 +1,6 @@
-tn-wind-taper
+tn-prof-tm
 libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 '{"tap":{"mf_org":1.0,"sh_top":0.80,"sh_taper":0.15},"tapck":{"ck_z":1.0,"mf_org":1.0,"sh_top":0.80,"sh_taper":0.15}}' > /kaggle/working/wind.log 2>&1; tail -40 /kaggle/working/wind.log
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 20 '{"tm":{"pbl_tm":1.0},"tmtap":{"pbl_tm":1.0,"mf_org":1.0,"sh_top":0.80,"sh_taper":0.15}}' > /kaggle/working/prof.log 2>&1; tail -40 /kaggle/working/prof.log
 NvidiaTeslaT4
-10
-#steering winds: shallow mixing fading out above sigma 0.80 2026-10-25T03:01Z
+9
+#boundary layer equation fix (Troen-Mahrt): column profile 2026-10-25T05:04Z
