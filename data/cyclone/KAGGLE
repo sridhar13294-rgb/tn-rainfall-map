@@ -1,6 +1,6 @@
-tn-maps-nivar2
-libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore maps_run.py /kaggle/working/libm_wx2020_fields.npz near:2020-11-21 /kaggle/working/maps_nivar2.npz 240 > /kaggle/working/maps.log 2>&1; tail -20 /kaggle/working/maps.log
+tn-gen-top60
+libm48_fields.npz
+bash ../kaggle/par.sh genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_top60.json /kaggle/working/gen
 NvidiaTeslaT4
-1
-#map viewer: forecast with full vertical profiles for tap-to-sounding 2026-10-25T05:50Z
+8
+#storm forming: shallow mixing capped high (600 / 500 hPa), +/- evaporation fix 2026-10-25T06:15Z
