@@ -77,6 +77,12 @@ state average obs vs forecast; odd gauges (Aliyar misplaced, fix awaiting approv
 (data/forecast_status.json). Corrections only on a new branch with Sridhar's approval.
 
 
+## 25 Oct 08:40 IST - capped shallow mixing = best column so far
+Tropics day-5 T/q rms over 200-1000 hPa: default 3.09 K / 1.17 g/kg; ckz1 3.66/1.38; top85 2.65/0.47; top75 2.69/0.79; top80 (ck_z+org1+sh_top 0.80) 2.68/0.68; top80noz (org1+sh_top 0.80) 2.11/0.68 (BEST). Remaining: cold/moist 850 hPa (-3.2 K, +1.6 g/kg) right at the hard top. Shear (Bay/AS/SI): top80 4.3/3.2/3.8; top80noz 5.9/3.9/2.9 (default 6.0/4.2/5.4; ckz1 2.5/2.5/3.7).
+Same-run exams launched (variants default / top80 = org1+sh_top0.80 / top80ck = +ck_z): tn-wx-top80 (acct1), tn-base-top80 (2), tn-io-as-top80 (3), tn-io-si-top80 (4), tn-gen-top80 (8).
+New mm2 option sh_taper (DYN): shallow mixing fades linearly over sh_taper sigma above sh_top, tendencies re-centred (conserving); default 0 = unchanged. Tests tn-prof-taper (acct9), tn-wind-taper (acct10): tap = org1+sh_top0.80+sh_taper0.15, tapck = +ck_z.
+Morning status sent 08:30 IST.
+
 ## 25 Oct 05:30 IST - night cycle 3
 shallow='mf' plume ~= shallow OFF (identical profile): upper cold much smaller (250/300/500 hPa -3.3/-2.7/-0.3 K vs -5.2/-4.7/-2.3) but low levels now too COLD (850/925/1000 -2.9/-2.9/-2.5) and 850 hPa too moist (+0.7 g/kg); shear: shmf 4.7/3.7/3.8 (worse than ckz1 2.5/2.5/3.7), shmf_noz 6.4/4.1/3.0. => old shallow mixing did needed boundary-layer work but harmful work aloft. Now testing shallow 'mse' mixing capped at the top of the boundary-layer cloud: tn-prof-shtop (sh_top 0.85 / 0.75), tn-prof-shtop2 (0.80 with/without ck_z), tn-wind-shtop (0.80+ck_z+org1), tn-wind-shtop2 (0.80, no ck_z). History note: sh_top 0.7 was in the old yardstick; uncapped was chosen 24 Oct for the mf boundary layer - recheck with all fixes together.
 #7: tn-obs-2026102412b (acct5, obs refetched with GTS) and tn-obs-2026102418 (acct6) running, 3 versions each.
