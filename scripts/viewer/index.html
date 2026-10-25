@@ -27,17 +27,20 @@ html, body { height: auto; }
 body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 14px; }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--mast); }
 .mast { background: var(--mast); color: var(--mast-ink); padding-block: 12px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
-.mast-in { max-width: 1240px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; }
+.mast-in { max-width: 1400px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; }
 .brand { font-family: var(--f-display); font-weight: 800; font-size: 26px; letter-spacing: 0.04em; }
 .brand small { font-weight: 500; font-size: 13px; letter-spacing: 0.02em; color: var(--mast-sub); margin-left: 8px; }
 .run { font-family: var(--f-mono); font-size: 12px; color: var(--mast-sub); margin-left: auto; }
-.wrap { max-width: 1240px; margin: 0 auto; padding-block: 14px 28px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 16px; }
+.wrap { max-width: 1400px; margin: 0 auto; padding-block: 14px 28px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 16px; }
 @media (max-width: 820px) { .wrap { grid-template-columns: minmax(0, 1fr); } }
-.note { grid-column: 1 / -1; background: var(--warn-bg); color: var(--warn-ink); border-radius: 6px; padding: 8px 12px; font-size: 13px; line-height: 1.45; }
+.note { background: var(--warn-bg); color: var(--warn-ink); border-radius: 6px; padding: 6px 10px; font-size: 12px; line-height: 1.4; }
 nav.rail { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
 .group h3 { font-family: var(--f-display); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; }
 .group .items { display: flex; flex-direction: column; gap: 2px; }
-@media (max-width: 820px) { nav.rail { flex-direction: row; overflow-x: auto; gap: 16px; padding-bottom: 4px; } .group { flex: 0 0 auto; } .group .items { flex-direction: row; gap: 6px; } }
+@media (max-width: 820px) { nav.rail, .regions { display: none !important; } .mast { padding-block: 8px; } .brand { font-size: 21px; } .brand small { display: none; } .wrap { padding-block: 8px 20px; gap: 8px; } .card { padding: 6px; } }
+.pick { display: none; gap: 8px; }
+.pick select { flex: 1 1 0; min-width: 0; height: 38px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--ink); font: 500 14px var(--f-body); padding: 0 8px; }
+@media (max-width: 820px) { .pick { display: flex; } }
 .prod { text-align: left; background: transparent; color: var(--ink); border: 0; border-radius: 5px; padding: 7px 10px; font: 500 13.5px/1.25 var(--f-body); cursor: pointer; white-space: nowrap; }
 .prod:hover { background: var(--chip); }
 .prod[aria-pressed="true"] { background: var(--chip-on); color: var(--chip-on-ink); }
@@ -71,6 +74,25 @@ input#hour { flex: 1 1 200px; min-width: 0; accent-color: var(--accent); height:
 .lead { font-family: var(--f-mono); font-size: 13px; min-width: 64px; text-align: right; font-variant-numeric: tabular-nums; }
 .foot { color: var(--muted); font-size: 12.5px; line-height: 1.5; max-width: 72ch; }
 .loading { position: absolute; inset: 0; display: grid; place-items: center; font: 500 13px var(--f-body); color: var(--muted); background: color-mix(in srgb, var(--panel) 70%, transparent); }
+
+.sndwrap { position: fixed; inset: 0; z-index: 30; background: rgba(8,14,24,0.55); display: grid; place-items: start center; overflow-y: auto; padding: max(12px, env(safe-area-inset-top, 0px)) max(8px, env(safe-area-inset-right, 0px)) 16px max(8px, env(safe-area-inset-left, 0px)); }
+.sndbox { background: var(--panel); color: var(--ink); border-radius: 10px; width: min(980px, 100%); padding: 10px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.35); }
+.sndhead { display: flex; align-items: flex-start; gap: 10px; }
+.sndhead h2 { font: 700 18px var(--f-display); margin: 0; flex: 1; }
+.sndhead .sub { font: 12px var(--f-mono); color: var(--muted); display: block; margin-top: 2px; }
+.sndclose { width: 38px; height: 38px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 6px; font: 600 20px var(--f-body); cursor: pointer; }
+.sndbody { display: grid; grid-template-columns: minmax(0, 1fr) 230px; gap: 10px; }
+@media (max-width: 700px) { .sndbody { grid-template-columns: minmax(0, 1fr); } }
+canvas#skewt { width: 100%; height: auto; display: block; background: #ffffff; border: 1px solid var(--line); border-radius: 4px; }
+canvas#hodo { width: 100%; max-width: 230px; height: auto; display: block; background: #ffffff; border: 1px solid var(--line); border-radius: 4px; }
+.sndside { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+@media (max-width: 700px) { .sndside { display: grid; grid-template-columns: 150px minmax(0, 1fr); align-items: start; } }
+table.idx { border-collapse: collapse; font: 12px var(--f-mono); width: 100%; font-variant-numeric: tabular-nums; }
+table.idx td { padding: 2px 4px; border-bottom: 1px solid var(--line); }
+table.idx td:last-child { text-align: right; white-space: nowrap; }
+table.idx td.cape { color: #c0392b; } table.idx td.cin { color: #2c4fc4; }
+.sndtime { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.sndtime .lead { min-width: 0; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 
@@ -80,9 +102,9 @@ input#hour { flex: 1 1 200px; min-width: 0; accent-color: var(--accent); height:
 </div></header>
 
 <div class="wrap">
-  <div class="note" id="note">Test forecast from past data, made by the MEGAM research model. This is not an official forecast or warning; for warnings, follow IMD.</div>
   <nav class="rail" id="rail" aria-label="Products"></nav>
   <section class="main">
+    <div class="pick"><select id="selProd" aria-label="Product"></select><select id="selReg" aria-label="Region"></select></div>
     <div class="regions" id="regions" role="group" aria-label="Region"></div>
     <div class="card">
       <div class="cap"><span><b id="ttl">—</b><br><span class="sub" id="valid">—</span></span><span class="sub" id="lead2"></span></div>
@@ -99,8 +121,20 @@ input#hour { flex: 1 1 200px; min-width: 0; accent-color: var(--accent); height:
         <span class="lead" id="lead">+0 h</span>
       </div>
     </div>
-    <p class="foot">Grid T85, about 140 km. Maps every 6 hours to 10 days. Drag the map to move around the globe; pinch, scroll or use + and − to zoom. Tap or hover to read the value at a point. Wind barbs: half feather 5 kt, full feather 10 kt, flag 50 kt.</p>
+    <div class="note" id="note">Test forecast from past data, made by the MEGAM research model. Not an official forecast or warning; for warnings, follow IMD.</div>
+    <p class="foot">Grid T85, about 140 km. Maps every 6 hours to 10 days. Drag the map to move around the globe; pinch, scroll or use + and − to zoom. Tap a point to open its sounding (temperature, dew point and wind with height); hover to read the value. Wind barbs: half feather 5 kt, full feather 10 kt, flag 50 kt.</p>
   </section>
+</div>
+
+<div class="sndwrap" id="sndwrap" hidden role="dialog" aria-modal="true" aria-labelledby="sndtitle">
+  <div class="sndbox">
+    <div class="sndhead"><h2 id="sndtitle">Model sounding<span class="sub" id="sndsub"></span></h2><button class="sndclose" id="sndclose" aria-label="Close sounding">×</button></div>
+    <div class="sndbody">
+      <canvas id="skewt" aria-label="Skew-T sounding diagram"></canvas>
+      <div class="sndside"><canvas id="hodo" aria-label="Hodograph"></canvas><table class="idx" id="sndidx"></table></div>
+    </div>
+    <div class="sndtime"><button class="btn" id="sprev" aria-label="Earlier time">←</button><button class="btn" id="snext" aria-label="Later time">→</button><span class="lead" id="slead"></span><span class="sub" style="font:12px var(--f-mono);color:var(--muted)">Red: temperature · green: dew point · purple dashes: surface parcel · wind barbs in knots</span></div>
+  </div>
 </div>
 
 <script>
@@ -143,7 +177,12 @@ const rail = $('rail'); const groups = {};
 P.forEach(p => { if (!groups[p.g]) { const d = document.createElement('div'); d.className = 'group'; d.innerHTML = `<h3>${p.g}</h3><div class="items"></div>`; rail.appendChild(d); groups[p.g] = d.querySelector('.items'); }
   const b = document.createElement('button'); b.className = 'prod'; b.textContent = p.name; b.dataset.id = p.id; b.onclick = () => { prod = p; save(); syncUI(); draw(); }; groups[p.g].appendChild(b); });
 R.forEach(r => { const b = document.createElement('button'); b.className = 'reg'; b.textContent = r.name; b.dataset.id = r.id; b.onclick = () => { reg = r; setView(); save(); syncUI(); draw(); }; $('regions').appendChild(b); });
-function syncUI() { document.querySelectorAll('.prod').forEach(b => b.setAttribute('aria-pressed', b.dataset.id === prod.id)); document.querySelectorAll('.reg').forEach(b => b.setAttribute('aria-pressed', b.dataset.id === reg.id)); }
+const selP = $('selProd'), selR = $('selReg');
+P.forEach(p => { const o = document.createElement('option'); o.value = p.id; o.textContent = p.g + ': ' + p.name; selP.appendChild(o); });
+R.forEach(r => { const o = document.createElement('option'); o.value = r.id; o.textContent = r.name; selR.appendChild(o); });
+selP.onchange = () => { prod = P.find(p => p.id === selP.value); save(); syncUI(); draw(); };
+selR.onchange = () => { reg = R.find(r => r.id === selR.value); setView(); save(); syncUI(); draw(); };
+function syncUI() { selP.value = prod.id; selR.value = reg.id; document.querySelectorAll('.prod').forEach(b => b.setAttribute('aria-pressed', b.dataset.id === prod.id)); document.querySelectorAll('.reg').forEach(b => b.setAttribute('aria-pressed', b.dataset.id === reg.id)); }
 syncUI();
 // ---------- data ----------
 async function getField(name) {
@@ -173,7 +212,7 @@ const cv = $('map'), ctx = cv.getContext('2d');
 let view = null; // centre lon/lat and width in degrees of longitude; lon is not wrapped, so the map can be dragged round the globe
 function setView() { const [x0, x1, y0, y1] = reg.b; view = {cx: (x0 + x1) / 2, cy: (y0 + y1) / 2, span: x1 - x0, fit: [x0, x1, y0, y1]}; view.fitPending = true; }
 function geom(fast) { const w = $('mapbox').clientWidth; const dpr = fast ? 1 : Math.min(window.devicePixelRatio || 1, 2);
-  const Hc = Math.min(w * (w < 640 ? 0.95 : 0.64), window.innerHeight * 0.72); const W = Math.round(w * dpr), H = Math.round(Hc * dpr);
+  const Hc = Math.min(w * 0.70, window.innerHeight * 0.78); const W = Math.round(w * dpr), H = Math.round(Hc * dpr);
   if (view.fitPending) { const [x0, x1, y0, y1] = view.fit; const c = Math.max(Math.cos(view.cy * Math.PI / 180), 0.3); view.span = Math.max(x1 - x0, (y1 - y0) / c * (W / H)); view.fitPending = false; }
   view.span = Math.min(360, Math.max(4, view.span)); const c = Math.max(Math.cos(view.cy * Math.PI / 180), 0.3); let latSpan = view.span * (H / W) * c;
   if (latSpan > 170) { latSpan = 170; } view.cy = Math.max(-85 + latSpan / 2, Math.min(85 - latSpan / 2, view.cy));
@@ -189,7 +228,7 @@ async function draw(fast) {
   const F = await field(prod.fill); const C = prod.cont ? await field(prod.cont[0]) : null; const U = prod.barbs ? await field(prod.barbs[0]) : null, V = prod.barbs ? await field(prod.barbs[1]) : null;
   $('loading').hidden = true; if (myT !== ti) return; G = g0; if (cv.width !== W) cv.width = W; if (cv.height !== H) cv.height = H;
   // background + shading (step 2 device px, bilinear field)
-  const img = ctx.createImageData(W, H), d = img.data; const sea = rgb(cssHex('--sea')); const step = fast ? 3 : 2;
+  const img = ctx.createImageData(W, H), d = img.data; const sea = rgb(cssHex('--sea')); const step = fast ? 3 : 1;
   const fyRow = new Float32Array(H), fxCol = new Float32Array(W);
   for (let j = 0; j < H; j++) fyRow[j] = latIdx(y1 - (j + 0.5) / H * (y1 - y0));
   for (let i = 0; i < W; i++) fxCol[i] = lonIdx(x0 + (i + 0.5) / W * (x1 - x0));
@@ -235,14 +274,14 @@ function drawHL(Cf) { const g = regionGrid(Cf, 1); const {px, py, dpr} = G; cons
     for (let b = -r; b <= r && (isMin || isMax); b++) for (let a = -r; a <= r; a++) { if (!a && !b) continue; const w = g.vals[(j + b) * g.nx + i + a]; if (w <= v) isMin = false; if (w >= v) isMax = false; sum += w; n++; }
     if (!(isMin || isMax)) continue; if (Math.abs(sum / n - v) < 1.0) continue; const X = px(g.toLon(i)), Y = py(g.toLat(j)); if (X < 12 || X > G.W - 12 || Y < 16 || Y > G.H - 10) continue; if (placedHL.some(([x, y]) => Math.hypot(x - X, y - Y) < 80 * dpr)) continue; placedHL.push([X, Y]);
     ctx.fillStyle = isMin ? '#c41e2a' : '#1d4fb8'; ctx.fillText(isMin ? 'L' : 'H', X - 6 * dpr, Y + 6 * dpr); ctx.font = `600 ${11 * dpr}px IBM Plex Mono, monospace`; ctx.fillText(String(Math.round(v)), X - 12 * dpr, Y - 12 * dpr); ctx.font = `700 ${18 * dpr}px Archivo, sans-serif`; } }
-function drawBarbs(U, V) { const {x0, x1, y0, y1, W, H, px, py, dpr} = G; const spacingPx = 30 * dpr; const nX = Math.max(4, Math.floor(W / spacingPx)), nY = Math.max(3, Math.floor(H / spacingPx));
-  ctx.strokeStyle = css('--barb'); ctx.fillStyle = css('--barb'); ctx.lineWidth = 1 * dpr;
+function drawBarbs(U, V) { const {x0, x1, y0, y1, W, H, px, py, dpr} = G; const spacingPx = 21 * dpr; const nX = Math.max(4, Math.floor(W / spacingPx)), nY = Math.max(3, Math.floor(H / spacingPx));
+  ctx.strokeStyle = css('--barb'); ctx.fillStyle = css('--barb'); ctx.lineWidth = 0.85 * dpr;
   for (let j = 0; j < nY; j++) for (let i = 0; i < nX; i++) { const lon = x0 + (i + 0.5) / nX * (x1 - x0), lat = y1 - (j + 0.5) / nY * (y1 - y0); const fy = latIdx(lat), fx = lonIdx(lon); barb(px(lon), py(lat), sample(U, ti, fy, fx), sample(V, ti, fy, fx), lat < 0); } }
-function barb(X, Y, u, v, south) { const dpr = G.dpr, spd = Math.hypot(u, v), L = 15 * dpr; if (spd < 2.5) { ctx.beginPath(); ctx.arc(X, Y, 2.2 * dpr, 0, 7); ctx.stroke(); return; }
+function barb(X, Y, u, v, south) { const dpr = G.dpr, spd = Math.hypot(u, v), L = 9.5 * dpr; if (spd < 2.5) { ctx.beginPath(); ctx.arc(X, Y, 1.4 * dpr, 0, 7); ctx.stroke(); return; }
   const ang = Math.atan2(-v, -u); const dx = Math.cos(ang), dy = -Math.sin(ang); const ex = X + dx * L, ey = Y + dy * L; ctx.beginPath(); ctx.moveTo(X, Y); ctx.lineTo(ex, ey); ctx.stroke();
-  const side = south ? -1 : 1; const nx = -dy * side, ny = dx * side; let s = Math.round(spd / 5) * 5, pos = 0; const fl = 7 * dpr, gap = 3 * dpr;
+  const side = south ? -1 : 1; const nx = -dy * side, ny = dx * side; let s = Math.round(spd / 5) * 5, pos = 0; const fl = 4.2 * dpr, gap = 1.9 * dpr;
   while (s >= 50) { const bx = ex - dx * pos, by = ey - dy * pos; ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(bx + nx * fl - dx * gap * 0.5, by + ny * fl - dy * gap * 0.5); ctx.lineTo(bx - dx * gap * 1.4, by - dy * gap * 1.4); ctx.closePath(); ctx.fill(); pos += gap * 1.8; s -= 50; }
-  while (s >= 10) { const bx = ex - dx * pos, by = ey - dy * pos; ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(bx + nx * fl + dx * 2 * dpr, by + ny * fl + dy * 2 * dpr); ctx.stroke(); pos += gap; s -= 10; }
+  while (s >= 10) { const bx = ex - dx * pos, by = ey - dy * pos; ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(bx + nx * fl + dx * 1.2 * dpr, by + ny * fl + dy * 1.2 * dpr); ctx.stroke(); pos += gap; s -= 10; }
   if (s >= 5) { if (pos === 0) pos = gap; const bx = ex - dx * pos, by = ey - dy * pos; ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(bx + nx * fl * 0.5 + dx * dpr, by + ny * fl * 0.5 + dy * dpr); ctx.stroke(); } }
 function drawFrame() { const {W, H, dpr, x0, x1, y0, y1, px, py} = G; ctx.font = `${10 * dpr}px IBM Plex Mono, monospace`; ctx.fillStyle = css('--coast'); ctx.strokeStyle = 'rgba(40,50,64,0.18)'; ctx.lineWidth = 1;
   const st = (x1 - x0) > 150 ? 30 : (x1 - x0) > 50 ? 10 : (x1 - x0) > 14 ? 5 : 2; for (let lo = Math.ceil(x0 / st) * st; lo <= x1; lo += st) { const X = px(lo); ctx.beginPath(); ctx.moveTo(X, 0); ctx.lineTo(X, H); ctx.stroke(); ctx.fillText(((lo % 360) + 360) % 360 > 180 ? `${360 - (((lo % 360) + 360) % 360)}W` : `${((lo % 360) + 360) % 360}E`, X + 3, H - 4); }
@@ -273,7 +312,8 @@ cv.addEventListener('pointermove', e => { const p = pts.get(e.pointerId); if (!p
   const r = cv.getBoundingClientRect(); if (pts.size === 2 && pinch0) { p.x = e.clientX; p.y = e.clientY; const [a, b] = [...pts.values()]; const d = Math.hypot(a.x - b.x, a.y - b.y); if (d > 10) { const target = pinch0.span * pinch0.d / d; zoomAt(target / view.span, ((a.x + b.x) / 2 - r.left) / r.width, ((a.y + b.y) / 2 - r.top) / r.height); } dragMoved = true; return; }
   const dx = e.clientX - p.x, dy = e.clientY - p.y; if (!dragMoved && Math.hypot(dx, dy) < 5) return; dragMoved = true; cv.classList.add('drag'); $('probe').hidden = true;
   view.cx -= dx / r.width * (G.x1 - G.x0); view.cy += dy / r.height * (G.y1 - G.y0); p.x = e.clientX; p.y = e.clientY; redrawSoon(); });
-function endPtr(e) { const was = pts.get(e.pointerId); pts.delete(e.pointerId); if (pts.size < 2) pinch0 = null; cv.classList.remove('drag'); if (was && !dragMoved) probe(e); }
+function endPtr(e) { const was = pts.get(e.pointerId); pts.delete(e.pointerId); if (pts.size < 2) pinch0 = null; cv.classList.remove('drag');
+  if (was && !dragMoved) { probe(e); if (G && meta.snd) { const r = cv.getBoundingClientRect(); const lon = G.x0 + (e.clientX - r.left) / r.width * (G.x1 - G.x0), lat = G.y1 - (e.clientY - r.top) / r.height * (G.y1 - G.y0); openSounding(lat, lon); } } }
 cv.addEventListener('pointerup', endPtr); cv.addEventListener('pointercancel', endPtr); cv.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse' && !pts.size) $('probe').hidden = true; });
 cv.addEventListener('wheel', e => { e.preventDefault(); const r = cv.getBoundingClientRect(); zoomAt(Math.pow(1.0015, e.deltaY), (e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height); }, {passive: false});
 $('zin').onclick = () => zoomAt(0.7, 0.5, 0.5); $('zout').onclick = () => zoomAt(1 / 0.7, 0.5, 0.5); $('zreset').onclick = () => { setView(); draw(); };
@@ -285,6 +325,117 @@ $('play').onclick = () => { if (playing) { clearInterval(playing); playing = nul
 document.addEventListener('keydown', e => { if (e.target.tagName === 'INPUT' && e.target.type !== 'range') return; if (e.key === 'ArrowLeft') { setT(ti - 1); e.preventDefault(); } else if (e.key === 'ArrowRight') { setT(ti + 1); e.preventDefault(); } else if (e.key === ' ') { $('play').click(); e.preventDefault(); } });
 let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(draw, 150); });
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', draw);
+
+// ---------- sounding (tap a point) ----------
+const SND = {cache: {}, pt: null};
+async function sndField(name) {
+  if (SND.cache[name]) return SND.cache[name]; const m = meta.snd.fields[name];
+  const blob = await (await fetch(`data/snd_${name}.png`)).blob(); const bmp = await createImageBitmap(blob, {colorSpaceConversion: 'none', premultiplyAlpha: 'none'});
+  const oc = document.createElement('canvas'); oc.width = bmp.width; oc.height = bmp.height; const ox = oc.getContext('2d', {willReadFrequently: true}); ox.drawImage(bmp, 0, 0);
+  const px = ox.getImageData(0, 0, bmp.width, bmp.height).data, n = bmp.width * bmp.height, out = new Float32Array(n);
+  for (let i = 0; i < n; i++) out[i] = m.offset + m.scale * (px[i * 4] * 256 + px[i * 4 + 1]);
+  return (SND.cache[name] = out);
+}
+function sndPoint(lat, lon) {
+  const S = meta.snd; lon = ((lon % 360) + 360) % 360; let bi = -1, bj = -1, bd = 1e9;
+  S.lat.forEach((la, j) => S.lon.forEach((lo, i) => { const d = Math.hypot(la - lat, (lo - lon) * Math.cos(lat * Math.PI / 180)); if (d < bd) { bd = d; bi = i; bj = j; } }));
+  return bd < 2.5 ? {i: bi, j: bj, lat: S.lat[bj], lon: S.lon[bi]} : null;
+}
+async function openSounding(lat, lon) {
+  if (!meta.snd) return false; const pt = sndPoint(lat, lon); if (!pt) return false;
+  SND.pt = pt; $('sndwrap').hidden = false; $('sndsub').textContent = 'Loading…';
+  await Promise.all(['t', 'q', 'u', 'v', 'ps'].map(sndField)); drawSounding(); $('sndclose').focus(); return true;
+}
+function profile() {
+  const S = meta.snd, nl = S.levs.length, ny = S.lat.length, nx = S.lon.length, {i, j} = SND.pt, t = ti;
+  const g = (n, k) => SND.cache[n][((t * nl + k) * ny + j) * nx + i];
+  const ps = SND.cache.ps[(t * ny + j) * nx + i]; const L = [];
+  for (let k = 0; k < nl; k++) { const p = S.levs[k]; if (p > ps + 1) continue; L.push({p, T: g('t', k), q: Math.max(g('q', k), 1e-7), u: g('u', k), v: g('v', k)}); }
+  L.forEach(r => { const e = r.q * r.p / (0.622 + 0.378 * r.q), a = Math.log(Math.max(e, 1e-4) / 6.112); r.Td = 243.5 * a / (17.67 - a) + 273.15; r.Td = Math.min(r.Td, r.T); });
+  let z = 0; L.forEach((r, k) => { if (k) { const a = L[k - 1]; const Tv = 0.5 * (a.T * (1 + 0.61 * a.q) + r.T * (1 + 0.61 * r.q)); z += 287.04 * Tv / 9.80665 * Math.log(a.p / r.p); } r.z = z; });
+  return {L, ps};
+}
+const esat = T => 6.112 * Math.exp(17.67 * (T - 273.15) / (T - 29.65));
+const rsat = (T, p) => 0.622 * esat(T) / Math.max(p - esat(T), 1e-3);
+function parcelPath(L) {
+  const s0 = L[0], T0 = s0.T, Td0 = s0.Td, p0 = s0.p; const Tl = 1 / (1 / (Td0 - 56) + Math.log(T0 / Td0) / 800) + 56; const pl = p0 * Math.pow(Tl / T0, 1 / 0.2857);
+  const path = []; let T = Tl, lnp = Math.log(pl); const r0 = rsat(Td0, p0);
+  for (let lp = Math.log(p0); lp >= Math.log(100); lp -= 0.005) {
+    const p = Math.exp(lp); if (p >= pl) { const Tp = T0 * Math.pow(p / p0, 0.2857); path.push({p, T: Tp, Tv: Tp * (1 + 0.61 * r0 / (1 + r0))}); continue; }
+    while (lnp > lp) { const pp = Math.exp(lnp), rs = rsat(T, pp); const d = (287.04 * T + 2.5e6 * rs) / (1004.6 + 2.5e6 * 2.5e6 * rs * 0.622 / (287.04 * T * T)); const dl = Math.max(lp - lnp, -0.005); T += d * dl; lnp += dl; }
+    const rs = rsat(T, p); path.push({p, T, Tv: T * (1 + 0.61 * rs)});
+  }
+  return {path, plcl: pl, Tlcl: Tl};
+}
+function envAt(L, p, key) { for (let k = 1; k < L.length; k++) if (L[k].p <= p) { const a = L[k - 1], b = L[k], w = Math.log(a.p / p) / Math.log(a.p / b.p); return a[key] + w * (b[key] - a[key]); } return NaN; }
+function indices(L, PP) {
+  let cape = 0, cin = 0, above = false;
+  for (let k = 1; k < PP.path.length; k++) { const a = PP.path[k - 1], b = PP.path[k]; const p = Math.sqrt(a.p * b.p); const Te = envAt(L, p, 'T'), qe = envAt(L, p, 'q'); if (!isFinite(Te)) break;
+    const Tve = Te * (1 + 0.61 * qe), Tvp = 0.5 * (a.Tv + b.Tv), dv = 287.04 * (Tvp - Tve) / Tve * Math.log(a.p / b.p) * Tve / 1;
+    const term = 287.04 * (Tvp - Tve) * Math.log(a.p / b.p); if (term > 0) { cape += term; above = true; } else if (!above) cin += term; }
+  const at = (p, key) => envAt(L, p, key) ;
+  const T850 = at(850, 'T') - 273.15, T700 = at(700, 'T') - 273.15, T500 = at(500, 'T') - 273.15, Td850 = at(850, 'Td') - 273.15, Td700 = at(700, 'Td') - 273.15;
+  const Tp500 = (PP.path.find(r => r.p <= 500) || {}).T; const LI = isFinite(Tp500) ? (at(500, 'T') - Tp500) : NaN;
+  let pw = 0; for (let k = 1; k < L.length; k++) pw += 0.5 * (L[k - 1].q + L[k].q) * (L[k - 1].p - L[k].p) * 100 / 9.80665;
+  const shear = (pa, pb) => Math.hypot(envAt(L, pa, 'u') - envAt(L, pb, 'u'), envAt(L, pa, 'v') - envAt(L, pb, 'v'));
+  let fz = NaN; for (let k = 1; k < L.length; k++) if (L[k - 1].T >= 273.15 && L[k].T < 273.15) { fz = L[k - 1].z + (L[k - 1].T - 273.15) / (L[k - 1].T - L[k].T) * (L[k].z - L[k - 1].z); break; }
+  const rhm = (() => { let sw = 0, sr = 0; L.forEach(r => { if (r.p <= 850 && r.p >= 300) { sr += Math.min(1, r.q / rsat(r.T, r.p)); sw++; } }); return sw ? 100 * sr / sw : NaN; })();
+  const zl = (() => { const Tm = 0.5 * (L[0].T + PP.Tlcl); return 287.04 * Tm / 9.80665 * Math.log(L[0].p / PP.plcl); })();
+  return {cape, cin, plcl: PP.plcl, zlcl: zl, LI, K: (T850 - T500) + Td850 - (T700 - Td700), pw, sh06: shear(L[0].p, 500), sh200: shear(850, 200), fz, rhm};
+}
+function drawSounding() {
+  const {L} = profile(); if (L.length < 4) return; const PP = parcelPath(L); const I = indices(L, PP);
+  const cv2 = $('skewt'), dpr = Math.min(window.devicePixelRatio || 1, 2), w = cv2.clientWidth || 600, h = Math.round(w * 0.95);
+  cv2.width = w * dpr; cv2.height = h * dpr; const c = cv2.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, w, h);
+  const ml = 38, mr = 44, mt = 8, mb = 26, W = w - ml - mr, H = h - mt - mb, pb = 1050, pt = 100, skew = 45, Tl = -40, Tr = 50;
+  const Y = p => mt + H * Math.log(pb / p) / Math.log(pb / pt); const X = (Tc, p) => ml + W * ((Tc + skew * Math.log(pb / p) / Math.log(pb / pt)) - Tl) / (Tr - Tl);
+  c.save(); c.beginPath(); c.rect(ml, mt, W, H); c.clip();
+  const line = (pts, col, lw, dash) => { c.beginPath(); c.strokeStyle = col; c.lineWidth = lw; c.setLineDash(dash || []); pts.forEach(([x, y], k) => k ? c.lineTo(x, y) : c.moveTo(x, y)); c.stroke(); c.setLineDash([]); };
+  for (let T = -120; T <= 50; T += 10) line([[X(T, pb), Y(pb)], [X(T, pt), Y(pt)]], T === 0 ? '#5a7bb5' : '#c9d3e3', T === 0 ? 1 : 0.7);
+  for (let th = 250; th <= 470; th += 10) { const pts = []; for (let p = pb; p >= pt; p -= 10) pts.push([X(th * Math.pow(p / 1000, 0.2857) - 273.15, p), Y(p)]); line(pts, '#e9c9a8', 0.6); }
+  for (let T0 = -10; T0 <= 36; T0 += 4) { let T = T0 + 273.15, pts = [], lnp = Math.log(1050); while (lnp > Math.log(150)) { const p = Math.exp(lnp), rs = rsat(T, p); pts.push([X(T - 273.15, p), Y(p)]); const d = (287.04 * T + 2.5e6 * rs) / (1004.6 + 2.5e6 * 2.5e6 * rs * 0.622 / (287.04 * T * T)); T -= d * 0.02; lnp -= 0.02; } line(pts, '#b7d8b7', 0.6, [4, 3]); }
+  [2, 4, 8, 12, 16, 20].forEach(r => { const pts = []; for (let p = pb; p >= 600; p -= 25) { const e = r / 1000 * p / (0.622 + r / 1000); const a = Math.log(e / 6.112); pts.push([X(243.5 * a / (17.67 - a), p), Y(p)]); } line(pts, '#b9c7b9', 0.5, [2, 3]); });
+  c.restore();
+  c.strokeStyle = '#59657a'; c.lineWidth = 1; c.strokeRect(ml, mt, W, H); c.fillStyle = '#334'; c.font = '10.5px IBM Plex Mono, monospace';
+  [1000, 925, 850, 700, 500, 400, 300, 250, 200, 150, 100].forEach(p => { c.fillText(String(p), 4, Y(p) + 3); c.strokeStyle = '#d9dee7'; c.beginPath(); c.moveTo(ml, Y(p)); c.lineTo(ml + W, Y(p)); c.stroke(); });
+  for (let T = -40; T <= 50; T += 10) c.fillText(String(T), X(T, pb) - 8, h - 12); c.fillText('°C', ml + W - 14, h - 1); c.save(); c.translate(11, mt + H / 2 + 20); c.rotate(-Math.PI / 2); c.restore();
+  c.save(); c.beginPath(); c.rect(ml, mt, W, H); c.clip();
+  line(PP.path.map(r => [X(r.T - 273.15, r.p), Y(r.p)]), '#7d2fa6', 1.6, [6, 4]);
+  line(L.map(r => [X(r.Td - 273.15, r.p), Y(r.p)]), '#1a9a3a', 2.2); line(L.map(r => [X(r.T - 273.15, r.p), Y(r.p)]), '#d0281f', 2.2);
+  c.restore();
+  c.fillStyle = '#d0281f'; c.fillText(Math.round((L[0].T - 273.15) * 9 / 5 + 32) + 'F', X(L[0].T - 273.15, L[0].p) + 3, Y(L[0].p) - 4); c.fillStyle = '#1a9a3a'; c.fillText(Math.round((L[0].Td - 273.15) * 9 / 5 + 32) + 'F', X(L[0].Td - 273.15, L[0].p) - 26, Y(L[0].p) - 4);
+  // wind barbs column
+  const bx = ml + W + 22; c.strokeStyle = '#222'; c.fillStyle = '#222'; c.lineWidth = 1;
+  L.forEach((r, k) => { if (k % 1) return; sbarb(c, bx, Y(r.p), r.u, r.v); });
+  // hodograph
+  const hc = $('hodo'), hw = Math.min(hc.clientWidth || 220, 230); hc.width = hw * dpr; hc.height = hw * dpr; const g2 = hc.getContext('2d'); g2.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const cx = hw / 2, cy = hw / 2, maxv = Math.max(30, Math.ceil(Math.max(...L.filter(r => r.p >= 200).map(r => Math.hypot(r.u, r.v))) / 10) * 10), sc = (hw / 2 - 8) / maxv;
+  g2.strokeStyle = '#cfd6e2'; g2.lineWidth = 0.8; for (let rr = 10; rr <= maxv; rr += 10) { g2.beginPath(); g2.arc(cx, cy, rr * sc, 0, 7); g2.stroke(); }
+  g2.beginPath(); g2.moveTo(cx, 4); g2.lineTo(cx, hw - 4); g2.moveTo(4, cy); g2.lineTo(hw - 4, cy); g2.stroke();
+  g2.fillStyle = '#556'; g2.font = '9.5px IBM Plex Mono, monospace'; for (let rr = 10; rr <= maxv; rr += 10) g2.fillText(String(rr), cx + rr * sc - 6, cy + 10);
+  const col = z => z < 1000 ? '#c0392b' : z < 3000 ? '#1a9a3a' : z < 6000 ? '#2c4fc4' : '#8e44ad';
+  for (let k = 1; k < L.length && L[k].p >= 200; k++) { g2.strokeStyle = col(L[k].z); g2.lineWidth = 2; g2.beginPath(); g2.moveTo(cx + L[k - 1].u * sc, cy - L[k - 1].v * sc); g2.lineTo(cx + L[k].u * sc, cy - L[k].v * sc); g2.stroke(); }
+  g2.fillStyle = '#334'; g2.fillText('Hodograph (kt) 0-1 / 1-3 / 3-6 / 6+ km', 4, 11);
+  // indices table
+  const f = (v, d = 0) => isFinite(v) ? v.toFixed(d) : '–';
+  const rows = [['SBCAPE', f(I.cape) + ' J/kg', 'cape'], ['SBCIN', f(I.cin) + ' J/kg', 'cin'], ['LCL', f(I.plcl) + ' hPa / ' + f(I.zlcl) + ' m'], ['Lifted index (500)', f(I.LI, 1) + ' °C'], ['K-index', f(I.K, 0)],
+    ['Precipitable water', f(I.pw, 0) + ' mm'], ['Shear sfc-500 hPa', f(I.sh06) + ' kt'], ['Shear 850-200 hPa', f(I.sh200) + ' kt'], ['Freezing level', f(I.fz) + ' m'], ['RH 850-300 hPa', f(I.rhm) + ' %'], ['Surface pressure', f(L[0].p) + ' hPa']];
+  $('sndidx').innerHTML = rows.map(r => `<tr><td>${r[0]}</td><td class="${r[2] || ''}">${r[1]}</td></tr>`).join('');
+  const h_ = meta.hours[ti], init = new Date(meta.init.replace(/T(\d\d)$/, 'T$1:00:00Z')), val = new Date(init.getTime() + h_ * 3600e3);
+  const la = SND.pt.lat, lo = SND.pt.lon > 180 ? SND.pt.lon - 360 : SND.pt.lon;
+  $('sndsub').textContent = `${Math.abs(la).toFixed(2)}°${la >= 0 ? 'N' : 'S'} ${Math.abs(lo).toFixed(2)}°${lo >= 0 ? 'E' : 'W'} · init ${String(init.getUTCHours()).padStart(2, '0')}z ${fmt(init)} · [F${String(h_).padStart(3, '0')}] valid ${String(val.getUTCHours()).padStart(2, '0')}z ${fmt(val)}`;
+  $('slead').textContent = `+${h_} h`;
+}
+function sbarb(c, X, Y, u, v) { const spd = Math.hypot(u, v), L = 18; if (spd < 2.5) { c.beginPath(); c.arc(X, Y, 2.5, 0, 7); c.stroke(); return; }
+  const ang = Math.atan2(-v, -u), dx = Math.cos(ang), dy = -Math.sin(ang), ex = X + dx * L, ey = Y + dy * L; c.beginPath(); c.moveTo(X, Y); c.lineTo(ex, ey); c.stroke();
+  const nx = -dy, ny = dx; let s = Math.round(spd / 5) * 5, pos = 0; const fl = 8, gap = 3.2;
+  while (s >= 50) { const bx = ex - dx * pos, by = ey - dy * pos; c.beginPath(); c.moveTo(bx, by); c.lineTo(bx + nx * fl, by + ny * fl); c.lineTo(bx - dx * gap * 1.4, by - dy * gap * 1.4); c.closePath(); c.fill(); pos += gap * 1.8; s -= 50; }
+  while (s >= 10) { const bx = ex - dx * pos, by = ey - dy * pos; c.beginPath(); c.moveTo(bx, by); c.lineTo(bx + nx * fl + dx * 2, by + ny * fl + dy * 2); c.stroke(); pos += gap; s -= 10; }
+  if (s >= 5) { if (!pos) pos = gap; const bx = ex - dx * pos, by = ey - dy * pos; c.beginPath(); c.moveTo(bx, by); c.lineTo(bx + nx * fl / 2, by + ny * fl / 2); c.stroke(); } }
+$('sndclose').onclick = () => { $('sndwrap').hidden = true; };
+$('sndwrap').addEventListener('click', e => { if (e.target === $('sndwrap')) $('sndwrap').hidden = true; });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') $('sndwrap').hidden = true; });
+$('sprev').onclick = () => { setT(ti - 1); drawSounding(); }; $('snext').onclick = () => { setT(ti + 1); drawSounding(); };
 // ---------- boot ----------
 (async () => {
   try {

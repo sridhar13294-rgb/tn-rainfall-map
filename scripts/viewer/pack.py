@@ -34,7 +34,20 @@ rain = grid(Z['rain']); r6 = np.concatenate([np.zeros_like(rain[:1]), np.diff(ra
 add('rain6', r6, 0, 255, 16, 'mm', '6-h rain'); add('raintot', rain.clip(0), 0, 2000, 16, 'mm', 'Total rain since start')
 r24 = np.stack([rain[i] - rain[max(0, i - 4)] for i in range(len(hours))]).clip(0); add('rain24', r24, 0, 600, 16, 'mm', '24-h rain')
 
+SND = None
+if 'snd_lat' in Z:                                                                                # sounding profiles (tap a point) in a box
+    slat = Z['snd_lat'].astype(float); slon = Z['snd_lon'].astype(float); so = np.argsort(-slat)
+    levs = sorted({int(k[5:]) for k in Z.files if k.startswith('snd_t') and k[5:].isdigit()}, reverse=True)
+    def pack16(name, arr, lo, hi):
+        arr = np.clip(np.nan_to_num(arr, nan=lo), lo, hi); sc = (hi - lo) / 65535; code = np.round((arr - lo) / sc).astype(np.uint16)
+        flat = code.reshape(-1, code.shape[-1])
+        Image.fromarray(np.stack([(flat >> 8).astype(np.uint8), (flat & 255).astype(np.uint8), np.zeros_like(flat, np.uint8)], -1), 'RGB').save(os.path.join(OUT, f'snd_{name}.png'), optimize=True)
+        return dict(offset=lo, scale=sc)
+    cube = lambda v: np.stack([np.transpose(np.asarray(Z[f'snd_{v}{L}'], np.float32), (0, 2, 1))[:, so, :] for L in levs], 1)   # [t, lev, lat, lon]
+    SF = dict(t=pack16('t', cube('t'), 150, 330), q=pack16('q', cube('q'), 0, 0.03), u=pack16('u', cube('u') / 0.5144, -200, 200), v=pack16('v', cube('v') / 0.5144, -200, 200),
+              ps=pack16('ps', np.transpose(np.asarray(Z['snd_ps'], np.float32) / 100.0, (0, 2, 1))[:, so, :], 400, 1100))
+    SND = dict(levs=levs, lat=[round(x, 4) for x in slat[so]], lon=[round(x, 4) for x in slon], fields=SF)
 meta = dict(model='MEGAM', grid='T85 (~140 km)', init=init, hours=hours, nlat=len(lat), nlon=len(lon), lat=[round(x, 4) for x in lat[order]],
-            lon0=float(lon[0]), dlon=float(lon[1] - lon[0]), fields=F)
+            lon0=float(lon[0]), dlon=float(lon[1] - lon[0]), fields=F, snd=SND)
 json.dump(meta, open(os.path.join(OUT, 'meta.json'), 'w'))
 print('packed', init, len(hours), 'times', sum(os.path.getsize(os.path.join(OUT, f)) for f in os.listdir(OUT)) // 1024, 'KB')
