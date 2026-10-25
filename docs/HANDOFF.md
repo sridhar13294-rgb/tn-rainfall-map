@@ -77,6 +77,11 @@ state average obs vs forecast; odd gauges (Aliyar misplaced, fix awaiting approv
 (data/forecast_status.json). Corrections only on a new branch with Sridhar's approval.
 
 
+## 25 Oct 10:50 IST - capped shallow REJECTED; boundary-layer equation bug found
+Same-run exams (default / top80 = org1+sh_top0.80 / top80ck = +ck_z): z500 globe d5 74.6/74.2/77.5, d10 119/116.8/119.9; tropics z500 d10 45.4/37.9/52.8; t850 India d1 2.5/3.2/3.2 (worse); rain24 India d5 11.0/10.0/9.9 (better); Bay tracks 96 h 501/679/679 km (MUCH worse, lon bias -1.8/-3.2/-2.7); AS mixed; SI ~same; storm forming 20%/8%/11% (collapse). Taper (sh_taper 0.15): column rms 2.16 K but shear 7.0/4.0/4.4 (no gain). => cutting shallow mixing removes needed boundary-layer mixing.
+ROOT CAUSE candidate: K-profile boundary layer had ws = cbrt(u*^3 + 0.6 kappa w*^3 x 0.1) (~12x too small vs Troen-Mahrt 7 eps kappa = 0.28), w* used a fixed 1000 m, no counter-gradient term -> daytime BL mixing ~2.3x too weak, shallow scheme was doing BL work. New option pbl_tm=1 (Troen-Mahrt/Hong-Pan: correct ws, w* from hbl, counter-gradient gamma = 6.5 flux/(ws h) for theta and q). Tests: tn-prof-tm (acct9), tn-wind-tm (10), tn-gen-tm (8), tn-base-tm (2); variants tm (pbl_tm only) and tmtap (pbl_tm + org1 + sh_top 0.80 + sh_taper 0.15).
+#7: fetching centres + obs for 2026102500 -> launch tn-obs-2026102500 next cycle.
+
 ## 25 Oct 08:40 IST - capped shallow mixing = best column so far
 Tropics day-5 T/q rms over 200-1000 hPa: default 3.09 K / 1.17 g/kg; ckz1 3.66/1.38; top85 2.65/0.47; top75 2.69/0.79; top80 (ck_z+org1+sh_top 0.80) 2.68/0.68; top80noz (org1+sh_top 0.80) 2.11/0.68 (BEST). Remaining: cold/moist 850 hPa (-3.2 K, +1.6 g/kg) right at the hard top. Shear (Bay/AS/SI): top80 4.3/3.2/3.8; top80noz 5.9/3.9/2.9 (default 6.0/4.2/5.4; ckz1 2.5/2.5/3.7).
 Same-run exams launched (variants default / top80 = org1+sh_top0.80 / top80ck = +ck_z): tn-wx-top80 (acct1), tn-base-top80 (2), tn-io-as-top80 (3), tn-io-si-top80 (4), tn-gen-top80 (8).
