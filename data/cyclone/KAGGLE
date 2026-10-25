@@ -1,6 +1,6 @@
-tn-wind-top60
-libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 '{"top60":{"sh_top":0.60},"top50":{"sh_top":0.50},"top60ck":{"sh_top":0.60,"ck_z":1.0}}' > /kaggle/working/wind.log 2>&1; tail -50 /kaggle/working/wind.log
+tn-wx-top60ck
+libm_wx2020_fields.npz,wx_truth_2020.npz
+bash ../kaggle/par.sh wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/wx_top60ck.json /kaggle/working/wx
 NvidiaTeslaT4
-10
-#steering winds: shallow mixing capped at 600 / 500 hPa 2026-10-25T06:16Z
+1
+#ECMWF exam: shallow cap 600/500 hPa + evaporation fix 2026-10-25T11:31Z
