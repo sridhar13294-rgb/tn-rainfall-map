@@ -39,8 +39,8 @@ nav.rail { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
 .group .items { display: flex; flex-direction: column; gap: 2px; }
 @media (max-width: 820px) { nav.rail, .regions { display: none !important; } .mast { padding-block: 8px; } .brand { font-size: 21px; } .brand small { display: none; } .wrap { padding-block: 8px 20px; gap: 8px; } .card { padding: 6px; } }
 .pick { display: none; gap: 8px; }
-.pick select { flex: 1 1 0; min-width: 0; height: 38px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--ink); font: 500 14px var(--f-body); padding: 0 8px; }
-@media (max-width: 820px) { .pick { display: flex; } }
+.pick select { flex: 1 1 0; text-overflow: ellipsis; min-width: 0; height: 38px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--ink); font: 500 14px var(--f-body); padding: 0 8px; }
+@media (max-width: 820px) { .pick { display: flex; } .pick #selProd { flex: 1.6 1 0; } }
 .prod { text-align: left; background: transparent; color: var(--ink); border: 0; border-radius: 5px; padding: 7px 10px; font: 500 13.5px/1.25 var(--f-body); cursor: pointer; white-space: nowrap; }
 .prod:hover { background: var(--chip); }
 .prod[aria-pressed="true"] { background: var(--chip-on); color: var(--chip-on-ink); }
@@ -178,7 +178,7 @@ P.forEach(p => { if (!groups[p.g]) { const d = document.createElement('div'); d.
   const b = document.createElement('button'); b.className = 'prod'; b.textContent = p.name; b.dataset.id = p.id; b.onclick = () => { prod = p; save(); syncUI(); draw(); }; groups[p.g].appendChild(b); });
 R.forEach(r => { const b = document.createElement('button'); b.className = 'reg'; b.textContent = r.name; b.dataset.id = r.id; b.onclick = () => { reg = r; setView(); save(); syncUI(); draw(); }; $('regions').appendChild(b); });
 const selP = $('selProd'), selR = $('selReg');
-P.forEach(p => { const o = document.createElement('option'); o.value = p.id; o.textContent = p.g + ': ' + p.name; selP.appendChild(o); });
+const og = {}; P.forEach(p => { if (!og[p.g]) { og[p.g] = document.createElement('optgroup'); og[p.g].label = p.g; selP.appendChild(og[p.g]); } const o = document.createElement('option'); o.value = p.id; o.textContent = p.name; og[p.g].appendChild(o); });
 R.forEach(r => { const o = document.createElement('option'); o.value = r.id; o.textContent = r.name; selR.appendChild(o); });
 selP.onchange = () => { prod = P.find(p => p.id === selP.value); save(); syncUI(); draw(); };
 selR.onchange = () => { reg = R.find(r => r.id === selR.value); setView(); save(); syncUI(); draw(); };
