@@ -381,6 +381,7 @@ function indices(L, PP) {
   let fz = NaN; for (let k = 1; k < L.length; k++) if (L[k - 1].T >= 273.15 && L[k].T < 273.15) { fz = L[k - 1].z + (L[k - 1].T - 273.15) / (L[k - 1].T - L[k].T) * (L[k].z - L[k - 1].z); break; }
   const rhm = (() => { let sw = 0, sr = 0; L.forEach(r => { if (r.p <= 850 && r.p >= 300) { sr += Math.min(1, r.q / rsat(r.T, r.p)); sw++; } }); return sw ? 100 * sr / sw : NaN; })();
   const zl = (() => { const Tm = 0.5 * (L[0].T + PP.Tlcl); return 287.04 * Tm / 9.80665 * Math.log(L[0].p / PP.plcl); })();
+  if (!(cape > 0)) cin = NaN;                                                                   // no free convection: CIN not defined
   return {cape, cin, plcl: PP.plcl, zlcl: zl, LI, K: (T850 - T500) + Td850 - (T700 - Td700), pw, sh06: shear(L[0].p, 500), sh200: shear(850, 200), fz, rhm};
 }
 function drawSounding() {
