@@ -77,6 +77,9 @@ state average obs vs forecast; odd gauges (Aliyar misplaced, fix awaiting approv
 (data/forecast_status.json). Corrections only on a new branch with Sridhar's approval.
 
 
+## 26 Oct 23:00 IST - MOSDAC ready (Sridhar added MOSDAC_USER/MOSDAC_PASSWORD)
+Login from GitHub Actions WORKS (obs_probe2.py: token OK via https://mosdac.gov.in/download_api/gettoken). mdapi endpoints: apios/datasets.json (search), download_api/download, refresh-token, logout; mdapi.py source saved in data/cyclone/mosdac_mdapi_src.txt. Next: find INSAT-3D/3DR/3DS atmospheric motion vector (AMV, cloud-drift winds) and rain product IDs (e.g. 3DIMG_L2B_*/3SIMG_*; catalog https://mosdac.gov.in/catalog-app/satellite.php), add mosdac_amv() to obs_fetch.py (wind obs type 'amv', errors ~3-5 m/s, upper levels), then use in #7 trials. Licence: MOSDAC/ISRO terms - check before any commercial use. Revised stage dates given to Sridhar: Stage 1 2 Nov (latest 4 Nov), Stage 2 13 Nov (16 Nov), Stage 3 10 Dec (20 Dec).
+
 ## 26 Oct 22:45 IST - high shallow cap (600/500 hPa) + ck_z: NOT adopted
 Genesis (tn-gen-top60): default 21%, top60 15%, top50 23%, top60ck 25%. Column rms: top50 2.86, top60ck 3.21 (default 3.09). Shear: top50 6.9/4.4/5.3, top60ck 4.4/3.3/4.7 (default 6.0/4.2/5.4). Same-run exams (default/top60ck/top50ck): z500 globe d5 74.6/78.3/78.2, tropics d5 34.3/43.3/43.0 (ck_z drift); tracks 96 h Bay 558/562/564, AS 476/486/527, SI 412/406/437 (all within noise). => no combination beats the default overall yet; less shear did not improve tracks, so the shear bias is not the main track-error driver. ck_z keeps cooling the tropical column. #7 trial tn-obs-2026102500 done (score next). Credit-limit period (Sridhar) until 26 Oct 23:00 IST; the session was idle ~29 h (cycle of 25 Oct 17:00 stopped after launching jobs; 26 Oct 10:30 rain check missed).
 
