@@ -1,6 +1,6 @@
-tn-budget-shmf
+tn-budget-org
 libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 20 '{"shmf":{"shallow":"mf"}}' > /kaggle/working/prof.log 2>&1; tail -60 /kaggle/working/prof.log
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 20 '{"noshal_org":{"tau_shallow":1e12,"mf_org":1.0}}' > /kaggle/working/prof.log 2>&1; tail -60 /kaggle/working/prof.log
 NvidiaTeslaT4
-9
-#heat budget: shallow as mass-flux plume (is it active?) 2026-10-26T19:20Z
+10
+#heat budget: shallow off + organised entrainment (deep heating profile) 2026-10-26T19:21Z
