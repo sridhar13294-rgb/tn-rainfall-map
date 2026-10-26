@@ -77,6 +77,9 @@ state average obs vs forecast; odd gauges (Aliyar misplaced, fix awaiting approv
 (data/forecast_status.json). Corrections only on a new branch with Sridhar's approval.
 
 
+## 26 Oct 22:45 IST - high shallow cap (600/500 hPa) + ck_z: NOT adopted
+Genesis (tn-gen-top60): default 21%, top60 15%, top50 23%, top60ck 25%. Column rms: top50 2.86, top60ck 3.21 (default 3.09). Shear: top50 6.9/4.4/5.3, top60ck 4.4/3.3/4.7 (default 6.0/4.2/5.4). Same-run exams (default/top60ck/top50ck): z500 globe d5 74.6/78.3/78.2, tropics d5 34.3/43.3/43.0 (ck_z drift); tracks 96 h Bay 558/562/564, AS 476/486/527, SI 412/406/437 (all within noise). => no combination beats the default overall yet; less shear did not improve tracks, so the shear bias is not the main track-error driver. ck_z keeps cooling the tropical column. #7 trial tn-obs-2026102500 done (score next). Credit-limit period (Sridhar) until 26 Oct 23:00 IST; the session was idle ~29 h (cycle of 25 Oct 17:00 stopped after launching jobs; 26 Oct 10:30 rain check missed).
+
 ## 25 Oct 11:55 IST - boundary-layer fix results; Sridhar: viewer paused, focus Stage 1
 pbl_tm=1 alone: column rms 2.92 K (default 3.09), shear 7.2/4.7/6.2 (worse), genesis 20% (default 23%), Bay tracks ~same (96 h 433 vs 561 median, noisy). tmtap (pbl_tm + org1 + sh_top 0.80 + taper 0.15): column 1.93 K (best yet) but genesis 6%, shear 8.4/5.0/5.6. => every cut of shallow mixing above ~800 hPa kills genesis: our storms rely on it for mid-level moistening (congestus role). Testing a high cap: sh_top 0.60 / 0.50 (+ck_z): tn-gen-top60 (acct8, gatekeeper), tn-prof-top60 (9), tn-wind-top60 (10). Map viewer v3 (soundings) published; Sridhar 11:44: focus on Stage 1, viewer later.
 
