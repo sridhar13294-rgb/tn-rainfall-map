@@ -1,6 +1,6 @@
-tn-wind-full
-libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 '{"full":{"shallow":"mf","sh_trig":1.0,"sh_clos":0.6,"mf_org":1.0,"ev_frac":0.3},"ev3org":{"tau_shallow":1e12,"mf_org":1.0,"ev_frac":0.3}}' > /kaggle/working/wind.log 2>&1; tail -50 /kaggle/working/wind.log
+tn-gen-heat
+libm48_fields.npz
+bash ../kaggle/par.sh genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_heat.json /kaggle/working/gen
 NvidiaTeslaT4
-6
-#steering shear: heating fixes 2026-10-26T21:30Z
+5
+#genesis gatekeeper: heating fixes 2026-10-26T21:31Z
