@@ -77,6 +77,11 @@ state average obs vs forecast; odd gauges (Aliyar misplaced, fix awaiting approv
 (data/forecast_status.json). Corrections only on a new branch with Sridhar's approval.
 
 
+## 27 Oct 00:55 IST - HEAT BUDGET by process (tn-budget-def / -noshal, tropics day 5, K/day)
+DEFAULT: shallow (mse mixing) heats the lowest 200 hPa by +8..+12 K/day and cools 400-450 hPa by -2; rain evaporation cools the lowest 200 hPa by -6..-7 (real ~-1..-2); large-scale condensation heats 400-450 hPa by +3.7 (bigger than deep convection +1.5); radiation ~-1.2 mid, -0.6 at 150 hPa. => a spurious loop: shallow mixing lifts moisture -> mid-level grid-scale saturation -> large-scale rain -> evaporates in the boundary layer -> shallow mixing brings heat down again. Deep convection is starved. The -0.5 K/day at sigma 0.15 is mostly radiation (normal), not a bug.
+SHALLOW OFF: deep convection heating rises to +3..+4.6 but peaks LOW (sigma 0.8-0.9; real Q1 peaks ~400-500 hPa) -> deep plumes detrain too low; evaporation -2, lsc smaller; low levels then -2 K cold.
+Equation targets: (1) shallow scheme must be a non-raining mass-flux plume (shallow='mf' looked inactive - checking h_shal in tn-budget-shmf), (2) deep plume heating profile too low (entrainment/detrainment) - tn-budget-org tests organised entrainment with shallow off; (3) rain evaporation formula has no precipitation-area fraction.
+
 ## 26 Oct 23:00 IST - MOSDAC ready (Sridhar added MOSDAC_USER/MOSDAC_PASSWORD)
 Login from GitHub Actions WORKS (obs_probe2.py: token OK via https://mosdac.gov.in/download_api/gettoken). mdapi endpoints: apios/datasets.json (search), download_api/download, refresh-token, logout; mdapi.py source saved in data/cyclone/mosdac_mdapi_src.txt. Next: find INSAT-3D/3DR/3DS atmospheric motion vector (AMV, cloud-drift winds) and rain product IDs (e.g. 3DIMG_L2B_*/3SIMG_*; catalog https://mosdac.gov.in/catalog-app/satellite.php), add mosdac_amv() to obs_fetch.py (wind obs type 'amv', errors ~3-5 m/s, upper levels), then use in #7 trials. Licence: MOSDAC/ISRO terms - check before any commercial use. Revised stage dates given to Sridhar: Stage 1 2 Nov (latest 4 Nov), Stage 2 13 Nov (16 Nov), Stage 3 10 Dec (20 Dec).
 
