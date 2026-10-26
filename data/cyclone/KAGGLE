@@ -1,6 +1,6 @@
-tn-gen-fullck
-libm48_fields.npz
-bash ../kaggle/par.sh genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_fullck.json /kaggle/working/gen
+tn-heat-ck
+libm_wx2020_fields.npz
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 20 '{"full":{"shallow":"mf","sh_trig":1.0,"sh_clos":0.6,"mf_org":1.0,"ev_frac":0.3},"fullck":{"shallow":"mf","sh_trig":1.0,"sh_clos":0.6,"mf_org":1.0,"ev_frac":0.3,"ck_z":1.0}}' > /kaggle/working/prof.log 2>&1; tail -60 /kaggle/working/prof.log
 NvidiaTeslaT4
-8
-#genesis gatekeeper: full+ck_z, sh_clos 1 2026-10-26T23:27Z
+9
+#heat budget: full vs full+ck_z, with convection on-fractions 2026-10-26T23:28Z
