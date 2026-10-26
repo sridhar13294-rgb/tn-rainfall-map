@@ -421,8 +421,10 @@ class Model:
         if S['conv'] == 'mf':                                                                       # mass-flux scheme replaces the adjustment
             dTc, dqc, Pmf, regmf, okmf = self.conv_mf(Tn, qn, p, mass, zc, sig, dsig, ps, ksrc, S, dt, div=div, E=E)
             reg, ok = regmf, okmf
+            on_dp = okmf.astype(jnp.float32); on_sh = jnp.zeros_like(on_dp)
             if S['shallow'] == 'mf':                                                                 # shallow cumulus as a non-raining mass-flux plume
                 dTs, dqs, _, _, oks = self.conv_mf(Tn, qn, p, mass, zc, sig, dsig, ps, ksrc, S, dt, shallow=True, E=E, Hs=H)
+                on_sh = (oks & ~okmf).astype(jnp.float32)
             dTs = jnp.where(okmf[None], 0.0, dTs); dqs = jnp.where(okmf[None], 0.0, dqs)
         cm = reg & ok[None]
         mu = ((u * mass) * cm).sum(0) / jnp.maximum((mass * cm).sum(0), 1.0); mv = ((v * mass) * cm).sum(0) / jnp.maximum((mass * cm).sum(0), 1.0)
@@ -500,6 +502,7 @@ class Model:
             # and blows the run up (seen in 1 of 3 test runs)
             dT = dTbl + (dT - rad - dTbl) * fac + rad; dq = dqbl + (dq - dqbl) * fac
         diag = dict(rain=Psurf + Pc * 0.0, H=H, E=E, ust=ust, V1=V1, sw_sfc=sw_sfc, lw_dn=lw_dn, Ts=Ts)
+        if S['conv'] == 'mf': diag.update(on_dp=on_dp, on_sh=on_sh, on_bmjsh=(shallow & ~okmf).astype(jnp.float32))   # share of columns: deep plume / shallow plume / old shallow test
         diag.update(h_bl=dTbl, h_deep=dTc, h_shal=dTs, h_lsc=LV / CP * cond, h_evap=-LV / CP * evap)        # heating by process (K/s), for budget diagnostics
         if Rr is not None: diag['rad'] = Rr
         return dict(T=dT, q=dq, u=du, v=dv), diag
