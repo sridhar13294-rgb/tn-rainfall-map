@@ -29,7 +29,7 @@ jobs:
           w=$(head -c 4 data/cyclone/RUN)
           if [ "$w" = "all " ] || [ "$w" = "fc" ] || [ "$w" = "fc " ]; then python scripts/cyclone/cyc_fetch.py $(sed -n 2p data/cyclone/RUN) || true; fi
           if [ "$w" = "ours" ]; then python scripts/cyclone/ours_fetch.py || true; fi
-          if [ "$(head -n 1 data/cyclone/RUN | tr -d " ")" = "oursm" ]; then python scripts/cyclone/ours_fetch_m.py $(sed -n 2p data/cyclone/RUN | tr -d " ") || true; fi
+          if [ "$(head -n 1 data/cyclone/RUN | tr -d " ")" = "oursm" ]; then L2=$(sed -n 2p data/cyclone/RUN); if [ -z "$(echo $L2 | tr -d ' ')" ]; then python scripts/cyclone/ours_fetch_m.py || true; else for r in $L2; do python scripts/cyclone/ours_fetch_m.py $r || true; done; fi; fi   # line 2: one or more past runs
           if [ "$(head -n 1 data/cyclone/RUN | tr -d " ")" = "tigge" ]; then python scripts/cyclone/$(sed -n 2p data/cyclone/RUN) > data/cyclone/tigge_log.txt 2>&1 || true; fi
           # "obs": open observations for a run time (RUN line 2 = YYYYMMDDHH, empty = latest) -> obs_<run>.npz; log data/cyclone/obs_log.txt
           if [ "$(head -n 1 data/cyclone/RUN | tr -d " ")" = "probe2" ]; then python scripts/cyclone/obs_probe2.py || true; fi
