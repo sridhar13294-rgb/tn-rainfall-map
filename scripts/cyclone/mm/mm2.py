@@ -48,11 +48,11 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='mf', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='radcloud', rad_every=2,
-                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.0, sh_taper=0.0, pbl_tm=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
+                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.0, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
-DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt', 'entr', 'mf_kick_t', 'mf_kick_q', 'mf_org', 'mf_wup', 'mf_dd', 'sh_top', 'bmj_dt', 'bmj_ice', 'ck_z', 'mf_ice', 'sh_taper', 'pbl_tm')
+DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt', 'entr', 'mf_kick_t', 'mf_kick_q', 'mf_org', 'mf_wup', 'mf_dd', 'sh_top', 'bmj_dt', 'bmj_ice', 'ck_z', 'mf_ice', 'sh_taper', 'pbl_tm', 'sh_trig', 'sh_clos', 'ev_frac')
 NWAVE = 8
 class Model:
     def __init__(self, grid='T170', layers=32, dt_min=None, set_=None):
@@ -192,7 +192,7 @@ class Model:
         ps = ps + rho * np.interp(r, rr, ph1)                                                   # pressure deficit at the surface
         return T3, Q3, U3, V3, ps
     # ------------------------------------------------------------------------------------------------ column physics
-    def conv_mf(self, Tn, qn, p, mass, zc, sig, dsig, ps, ksrc, S, dt, div=None, E=None, shallow=False):
+    def conv_mf(self, Tn, qn, p, mass, zc, sig, dsig, ps, ksrc, S, dt, div=None, E=None, shallow=False, Hs=None):
         """Bulk mass-flux deep convection (Tiedtke/Bechtold type). One entraining updraft per column rises from the most
         unstable low level; entrainment grows in dry air (eps = entr x (1.3 - RH)), so convection needs a moist column -
         the moistening feedback that lets a weak low organise. Condensate rains out (re-evaporating below in the rain
@@ -236,6 +236,12 @@ class Model:
         sig_top = jnp.min(jnp.where(inc, sig, 1.0), axis=0); cape = (RD * jnp.maximum(b, 0) * dsig / sig * inc).sum(0)
         deep = lfc & ((sig_src - sig_top) * ps > 25000.0) & (cape > 50.0)
         if shallow: deep = lfc & ((sig_src - sig_top) * ps <= 25000.0) & (cape > 0.0) & (sig_src > 0.8)      # 'deep' = this plume is active
+        if shallow:
+            # sh_trig > 0 (ECMWF-type trigger): shallow cumulus wherever the boundary-layer parcel reaches its condensation level
+            # (the plume makes cloud) and the cloud stays under 300 hPa deep - it need not become buoyant first. The old test
+            # (positive buoyancy and CAPE > 0) almost never passed: the shallow plume did nothing (h_shal ~0 in the budget).
+            cloud = (cond > 0).any(0)
+            deep = jnp.where(S['sh_trig'] > 0, cloud & ((sig_src - sig_top) * ps <= 30000.0) & (sig_src > 0.8), deep)
         frac = (sig_src - sig) / jnp.maximum(sig_src - sig_top, 1e-3)
         eta = jnp.where(inc & (ii != ksrc), jnp.clip(jnp.where(frac < 0.6, 1.0, (1 - frac) / 0.4), 0, 1), 0.0) * deep    # mass flux entering each cloud layer from below
         sh = lambda a: jnp.concatenate([a[1:], a[-1:]], 0)                                          # value of the layer below
@@ -254,6 +260,13 @@ class Model:
         tau = jnp.where(S['mf_wup'] > 0, jnp.clip((ztop - zsrc) / jnp.maximum(S['mf_wup'], 1e-3), 600.0, S['tau_deep']), S['tau_deep'])
         if shallow: tau = S['tau_shallow'] * jnp.ones_like(tau)
         Mb = cape / (tau * jnp.maximum(-dcape, 1e-6))
+        if shallow and Hs is not None and E is not None:
+            # sh_clos > 0 (ECMWF shallow closure, boundary-layer moist static energy budget): the cloud-base mass flux carries
+            # away sh_clos x the surface moist-static-energy flux (H + L E): Mb = sh_clos (H + L E) / (h_updraft - h_env) at the
+            # level above the source (difference kept >= 1 kJ/kg)
+            kb = jnp.maximum(ksrc - 1, 0)
+            dhb = jnp.maximum(jnp.take_along_axis(hu - h_e, kb[None], 0)[0], 1000.0)
+            Mb = jnp.where(S['sh_clos'] > 0, S['sh_clos'] * jnp.maximum(Hs + LV * E, 0.0) / dhb, Mb)
         if S['mf_closure'] == 'hybrid' and div is not None:
             # moisture-convergence closure (Tiedtke 1989, ECMWF's original scheme): the updraft carries away at least the moisture
             # that the boundary layer gathers by low-level inflow plus surface evaporation. This ties convection to the low's
@@ -409,7 +422,7 @@ class Model:
             dTc, dqc, Pmf, regmf, okmf = self.conv_mf(Tn, qn, p, mass, zc, sig, dsig, ps, ksrc, S, dt, div=div, E=E)
             reg, ok = regmf, okmf
             if S['shallow'] == 'mf':                                                                 # shallow cumulus as a non-raining mass-flux plume
-                dTs, dqs, _, _, oks = self.conv_mf(Tn, qn, p, mass, zc, sig, dsig, ps, ksrc, S, dt, shallow=True)
+                dTs, dqs, _, _, oks = self.conv_mf(Tn, qn, p, mass, zc, sig, dsig, ps, ksrc, S, dt, shallow=True, E=E, Hs=H)
             dTs = jnp.where(okmf[None], 0.0, dTs); dqs = jnp.where(okmf[None], 0.0, dqs)
         cm = reg & ok[None]
         mu = ((u * mass) * cm).sum(0) / jnp.maximum((mass * cm).sum(0), 1.0); mv = ((v * mass) * cm).sum(0) / jnp.maximum((mass * cm).sum(0), 1.0)
@@ -420,8 +433,11 @@ class Model:
         qs = qsat(Tn, p); gam = 1 + LV ** 2 * qs / (CP * RV * Tn ** 2); cond = jnp.maximum(qn - qs, 0) / gam / dt
         src = cond * mass + jnp.where(reg & ok, -dqc * mass, 0.0) * 0.0                              # large-scale rain source per layer
         rh = jnp.clip(qn / qs, 0, 1)
+        af = jnp.where(S['ev_frac'] > 0, S['ev_frac'], 1.0)
         def fall(P, x):
-            s_, rh_, m_ = x; P = P + s_; e_ = jnp.minimum(S['k_evap'] * (1 - rh_) * jnp.sqrt(jnp.maximum(P, 0)) * m_, P); return P - e_, e_
+            # ev_frac > 0: precipitation-area fraction (ECMWF): rain covers only a share a of the box, so the local rain rate is
+            # P / a and the box-mean evaporation is a k (1 - RH) sqrt(P / a) = k (1 - RH) sqrt(a P); off (a = 1) by default
+            s_, rh_, m_ = x; P = P + s_; e_ = jnp.minimum(S['k_evap'] * (1 - rh_) * jnp.sqrt(jnp.maximum(P, 0) * af) * m_, P); return P - e_, e_
         Pconv_src = jnp.where(reg & ok, -dqc * mass, 0.0) / jnp.maximum(Pq, 1e-12) * Pc                # where convective rain forms
         if S['conv'] == 'mf': Pconv_src = Pmf
         Psurf, ev = jax.lax.scan(fall, jnp.zeros_like(ps), (src + Pconv_src, rh, mass))
