@@ -484,6 +484,7 @@ class Model:
             # and blows the run up (seen in 1 of 3 test runs)
             dT = dTbl + (dT - rad - dTbl) * fac + rad; dq = dqbl + (dq - dqbl) * fac
         diag = dict(rain=Psurf + Pc * 0.0, H=H, E=E, ust=ust, V1=V1, sw_sfc=sw_sfc, lw_dn=lw_dn, Ts=Ts)
+        diag.update(h_bl=dTbl, h_deep=dTc, h_shal=dTs, h_lsc=LV / CP * cond, h_evap=-LV / CP * evap)        # heating by process (K/s), for budget diagnostics
         if Rr is not None: diag['rad'] = Rr
         return dict(T=dT, q=dq, u=du, v=dv), diag
     # ------------------------------------------------------------------------------------------------ dynamics + time loop

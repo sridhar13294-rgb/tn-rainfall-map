@@ -52,6 +52,8 @@ for VN, VS in VARS.items():
       mean = lambda X: [round(float((np.asarray(X)[i] * W).sum() / W.sum()) * 86400, 3) for i in range(len(M.sig))]
       r['sig'] = np.asarray(M.sig).round(4).tolist(); r['phys_dT_Kday'] = mean(tend['T'])
       if 'rad' in d: r['rad_Kday'] = mean(d['rad']['heating'])
+      for kk in ('h_bl', 'h_deep', 'h_shal', 'h_lsc', 'h_evap'):
+          if kk in d: r[kk] = mean(d[kk])
       r['rain_trop_mmday'] = round(float((np.asarray(d['rain']) * W).sum() / W.sum() * 86400), 2)
       r['lw_dn_sfc_trop'] = round(float((np.asarray(d['lw_dn']) * W).sum() / W.sum()), 1); r['sw_sfc_trop'] = round(float((np.asarray(d['sw_sfc']) * W).sum() / W.sum()), 1)
       r['lh_trop'] = round(float((np.asarray(d['E']) * W).sum() / W.sum() * 2.5e6), 1); r['sh_trop'] = round(float((np.asarray(d['H']) * W).sum() / W.sum()), 1)
@@ -70,4 +72,6 @@ for VN, VS in VARS.items():
           print(VN, reg, 'mean d5 T bias', dict(zip(LEV.astype(int).tolist(), np.round(np.mean([x['d5'][reg]['T'] for x in res], 0), 2).tolist())))
           print(VN, reg, 'mean d5 q bias g/kg', dict(zip(LEV.astype(int).tolist(), np.round(np.mean([x['d5'][reg]['q'] for x in res], 0) * 1000, 2).tolist())))
       print(VN, 'rad K/day by sigma', dict(zip(res[0]['sig'], np.round(np.mean([x['rad_Kday'] for x in res if 'rad_Kday' in x], 0), 2).tolist())))
+      for kk in ('h_bl', 'h_deep', 'h_shal', 'h_lsc', 'h_evap'):
+          if all(kk in x for x in res): print(VN, kk, 'K/day by sigma', dict(zip(res[0]['sig'], np.round(np.mean([x[kk] for x in res], 0), 2).tolist())))
       print(VN, 'phys K/day by sigma', dict(zip(res[0]['sig'], np.round(np.mean([x['phys_dT_Kday'] for x in res], 0), 2).tolist())))
