@@ -1,6 +1,6 @@
-tn-gen-heat
-libm48_fields.npz
-bash ../kaggle/par.sh genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_heat.json /kaggle/working/gen
+tn-wx-full
+libm_wx2020_fields.npz,wx_truth_2020.npz
+bash ../kaggle/par.sh wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/wx_full.json /kaggle/working/wx
 NvidiaTeslaT4
-5
-#genesis gatekeeper: heating fixes 2026-10-26T21:31Z
+1
+#ECMWF exam: heating fixes (full, full+ck_z) 2026-10-26T23:25Z
