@@ -69,3 +69,18 @@ for url in ('https://tgftp.nws.noaa.gov/SL.us008001/DF.an/DC.sflnd/DS.synop/', '
         log('GTS', url[-40:], 'status', st, 'bytes', len(b), 'final', u[-50:], '|', b[:160].decode('latin-1', 'replace').replace('\n', ' '))
     except Exception as e: log('GTS', url[-40:], 'failed', repr(e)[:200])
 open('data/cyclone/obs_probe2.txt', 'w').write('\n'.join(OUT) + '\n')
+# ---------------------------------------------------------------- MOSDAC (ISRO): login from GitHub + dataset search
+mu, mp = os.environ.get('MOSDAC_USER', ''), os.environ.get('MOSDAC_PASSWORD', '')
+log('MOSDAC user present:', bool(mu), 'password present:', bool(mp))
+try:
+    import zipfile as _zf, io as _io, re as _re
+    st, b, _ = get('https://www.mosdac.gov.in/software/mdapi.zip', timeout=60)
+    z = _zf.ZipFile(_io.BytesIO(b)); src = z.read([n for n in z.namelist() if n.endswith('mdapi.py')][0]).decode('utf-8', 'replace')
+    urls = sorted(set(_re.findall(r'https?://[^\s\'"]+', src))); log('mdapi urls:', urls[:12])
+    open('data/cyclone/mosdac_mdapi_src.txt', 'w').write(src[:20000])
+    tok_url = next((u for u in urls if 'token' in u.lower()), None)
+    if mu and mp and tok_url:
+        st, b, _ = get(tok_url, {'Content-Type': 'application/json'}, json.dumps({'username': mu, 'password': mp}).encode(), timeout=60)
+        j = json.loads(b); log('MOSDAC token: OK' if any(k in j for k in ('access_token', 'token')) else 'MOSDAC token reply keys: ' + str(list(j)[:6]))
+except Exception as e: log('MOSDAC failed:', repr(e)[:300])
+open('data/cyclone/obs_probe2.txt', 'w').write('\n'.join(OUT) + '\n')
