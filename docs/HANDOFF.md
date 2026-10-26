@@ -164,3 +164,11 @@ Budget (tropics, day 5, K/day, 20 starts): shallow='mf' plume is INACTIVE (h_sha
 New options in mm2.py (all off by default): sh_trig (shallow plume active wherever the boundary-layer parcel makes cloud < 300 hPa deep), sh_clos (ECMWF shallow closure Mb = sh_clos (H + L E) / (h_up - h_env) at the level above the source), ev_frac (precipitation-area fraction a: box-mean evaporation k (1-RH) sqrt(a P)).
 Running: tn-heat-sh (acct9: shtc = shallow mf+trig+clos 0.6; shtc_org = + mf_org 1), tn-heat-ev (acct10: shallow off + org1 + ev_frac 0.3 / 0.1), tn-heat-full (acct8: all fixes; + mf_ice 0.5), tn-wind-full (acct6: shear for full / ev3org), tn-gen-heat (acct5: genesis gatekeeper default / full / ev3org).
 #7: fetching GFS analyses 25 Oct 06Z - 27 Oct 00Z (oursm now takes a list) to score trials 2412..2500. Next: fetch centres + obs for a new trial.
+
+## 27 Oct 05:30 IST - HEATING FIX RESULTS (round 1) + EXAMS LAUNCHED
+Budget (tropics d5): new shallow trigger/closure still nearly inactive (h_shal <= 0.7 K/day) -> on-fraction diagnostics added (on_dp/on_sh/on_bmjsh in wx_prof) to see why. ev_frac 0.3 halves rain evaporation (-2.5 -> -1.5 K/day) and cuts the 600-850 hPa moist bias (1.05 -> 0.7 g/kg); T bias still cold 150-300 hPa (-2.5..-3.4) and 850-1000 (-2); default was -4.7 at 250 and +2.3 at 1000.
+Shear error day 5 (du200-850 m/s, Bay/AS/SI): default 7.1/3.9/4.4; full 5.8/4.1/2.9; ck_z runs ~2.5/2.5/3.7.
+Genesis gatekeeper (84 cases, formed = dist<=300, vo>=5, depth>=2): default 23%, full 30%, ev3org (shallow 'mse' with tau 1e12) 0% (!).
+full = {"shallow":"mf","sh_trig":1,"sh_clos":0.6,"mf_org":1,"ev_frac":0.3}. Launched same-run exams default/full/fullck(+ck_z): tn-wx-full (acct1), tn-base-full (2), tn-io-as-full (3), tn-io-si-full (4); tn-gen-fullck (8: fullck, full_c10), tn-heat-ck (9), tn-wind-fullck (10).
+#7 score (7 trials, vs GFS analyses): OI start roughly neutral: tropics u850/t850 within +-1%, z500 day 1 +3% worse (India/Bay +4.5%), bias-corrected variant ~neutral (n=3). Not a win yet; suspect mass increments without balanced winds. Fetched latest centres + obs for a new trial (launch next cycle, acct 5).
+GFS analyses: download with gh api assets (gh release download uses GraphQL = blocked).
