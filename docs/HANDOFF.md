@@ -214,3 +214,14 @@ Decision rule: adopt ckm (or ck05) if genesis >= ~21% and tracks no worse in all
 - 80 km (T170) in Stage 1 - APPROVED rule: if T170 (tn-t170-ev0/1) is no worse than T85 on tracks and genesis holds (~21%), the MAIN daily run becomes T170 in Stage 1; ensemble stays ~T85. Then run the T170 full exam (wx2) + AS/SI tracks + genesis at T170. Adds ~1-2 days (Stage 1 ~4-5 Nov). If T170 is worse -> report plainly, re-tune needed.
 - Nivar in the UI: after the steering add-on decision, run maps_run.py from near:2020-11-21 (libm_wx2020) with the chosen settings, pack for the viewer with our track + real Nivar track, send link in the 20:00 report (honest: our Nivar stays 7-9N going west, 315-400 km from real landfall).
 - Commercial: only after all 3 stages + his personal validation through all of 2027 (SWM + NEM). Stage 3 done before 1 Jan 2027. Nov-Dec 2026 daily runs + archive = dry run (version-labelled), 2027 scores = final model only.
+
+## 27 Oct 17:05 IST - ADOPTED ck_z = 0.5 (new DEFAULT = ev_frac 0.3 + ck_z 0.5); T170 batch
+Genesis: ckm (ck_z1+pbl_tm1) 30%, ck05 29%, ck 19%. Shear d5 Bay/AS/SI: ckm -0.1/1.6/2.7, ck05 2.2/1.7/3.7 (def 4.1/2.5/5.0).
+Tracks 72 h median tune|final: Bay def 390|476, ck 360|347, ckm 420|366, ck05 437|359; AS def 392|452, ck 401|381, ckm 423|464, ck05 447|404; SI def 259|379, ck 327|338, ckm 273|328, ck05 308|372. (tune vs final disagree = mostly noise.)
+Exam d5 ckm/ck05 (def): z500 tropics 31.4/30.7 (28.0); t850 India 3.56/3.28 (3.27); TN rain24 6.77/6.38 (7.5), ACC 0.28/0.31 (0.19); u200 9.55/9.49 (9.72).
+Ensemble with ckm: spread/error 0.72 (72 h) .. 1.12 (120 h); coast Brier skill -6%.
+Chose ck05 (keeps India T, passes genesis, halves Bay shear, TN rain better). mm2 DEFAULTS ck_z=0.5.
+T170 first try (tn-t170-ev0/1) OOM-killed with 2 variants in one job -> one variant per job now.
+Running: tn-t170-new0/1 (6, 9: Bay T170), tn-io-as-t170 (3), tn-io-si-t170 (4), tn-gen-t170new (8), tn-wx-t170new (1), tn-ens-new2 (5, T85 new default), tn-maps-nivar (10: maps_run from near:2020-11-22, T85, 240 h -> model-maps release maps_nivar_2020.npz).
+T85 reference for the new default = ck05 in tn-base-ckm / tn-io-as-ckm / tn-io-si-ckm / tn-wx-ckm / tn-gen-ckm.
+#7: pushed RUN ours + obs (latest) + oursm 2706 2712 -> launch obs_trial on acct2 next cycle.
