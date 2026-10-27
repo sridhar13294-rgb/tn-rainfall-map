@@ -35,7 +35,7 @@ for i, s in enumerate(storms):
         try:
             tm = time.time(); stat = {kk: vs[kk] for kk in STATIC if kk in vs}; dyn = {kk: v for kk, v in vs.items() if kk not in STATIC}
             key_s = json.dumps(stat, sort_keys=True)
-            if key_s not in MODELS: MODELS[key_s] = [mm2.Model(C.get('grid', 'T85'), 32, None, dict(sppt_on=False, **stat)), None, None]   # compiled once per job
+            if key_s not in MODELS: MODELS[key_s] = [mm2.Model(C.get('grid', 'T85'), C.get('layers', 32), None, dict(sppt_on=False, **stat)), None, None]   # compiled once per job
             if key_s not in started:                                                               # this storm's start state for this scheme
                 M = MODELS[key_s][0]; started.add(key_s)
                 st, cr = M.init(f3, Z['levs'], Z['lats'], Z['lons'], Z['f2'][k, V2.index('surface_pressure')], Z['f2'][k, V2.index('geopotential_at_surface')] / 9.80616,

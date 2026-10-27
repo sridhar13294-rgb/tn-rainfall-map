@@ -19,7 +19,8 @@ def era(k, v, reg):
 def deep(x): return float(np.mean(x))                                                            # equal weight 850..200 (5 levels)
 ALL = {}
 for VN, VS in VARS.items():
-    M = mm2.Model('T85', 32, None, dict(VS)); res = []
+    VS = dict(VS); NL = int(VS.pop('layers', 32)); GR = VS.pop('grid', 'T85')
+    M = mm2.Model(GR, NL, None, dict(VS)); res = []
     def model(st):
         hor = M.coords.horizontal; u, v = spherical_harmonic.vor_div_to_uv_nodal(hor, st.vorticity, st.divergence)
         u = np.asarray(u / M.MPS); v = np.asarray(v / M.MPS)

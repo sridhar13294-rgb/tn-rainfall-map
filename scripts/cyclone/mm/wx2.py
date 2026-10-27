@@ -17,7 +17,7 @@ for n, key in enumerate(TT):
     for var in (C.get('variants') or [dict(name='control')]):
         try:
             t = time.time()
-            if var['name'] not in MODELS: MODELS[var['name']] = mm2.Model(var.get('grid', C.get('grid', 'T85')), 32, C.get('dt_min'), var.get('set'))
+            if var['name'] not in MODELS: MODELS[var['name']] = mm2.Model(var.get('grid', C.get('grid', 'T85')), var.get('layers', C.get('layers', 32)), C.get('dt_min'), var.get('set'))
             M = MODELS[var['name']]
             st, cr = M.init(f3, Z['levs'], Z['lats'], Z['lons'], Z['f2'][k, V2.index('surface_pressure')], Z['f2'][k, V2.index('geopotential_at_surface')] / 9.80616,
                             Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')], ocean=C.get('ocean'), when=t0,
