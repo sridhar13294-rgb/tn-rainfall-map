@@ -1,6 +1,6 @@
-tn-wx-ev
-libm_wx2020_fields.npz,wx_truth_2020.npz
-bash ../kaggle/par.sh wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/wx_ev.json /kaggle/working/wx
+tn-wind-ev
+libm_wx2020_fields.npz
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 '{"ev":{"ev_frac":0.3},"evorg5":{"ev_frac":0.3,"mf_org":0.5}}' > /kaggle/working/wind.log 2>&1; tail -50 /kaggle/working/wind.log
 NvidiaTeslaT4
-1
-#ECMWF exam: ev+org0.5, ev 0.5 2026-10-27T03:27Z
+10
+#steering shear: ev, ev+org0.5 2026-10-27T03:28Z
