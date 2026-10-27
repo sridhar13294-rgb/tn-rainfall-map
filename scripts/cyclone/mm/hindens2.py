@@ -24,7 +24,7 @@ for i, s in enumerate(storms):
     k = TT.index(key); P0 = O.path_of(s); st0 = at(P0, g)
     if not st0: continue
     f3 = {v: Z['f3'][k, V3.index(v)] for v in V3}; mems = []; bv = None; t = time.time()
-    if 'M' not in dir(): M = mm2.Model(C.get('grid', 'T85'), 32, 30.0, dict(sppt_on=True))   # compiled once per job, reused by every storm and member
+    if 'M' not in dir(): M = mm2.Model(C.get('grid', 'T85'), 32, 30.0, dict(C.get('set', {}), sppt_on=True))   # 'set': model settings for every member   # compiled once per job, reused by every storm and member
     for m in range(0, C.get('members', 10) + 1):
         try:
             mb = member(m); tm = time.time()
