@@ -1,6 +1,6 @@
-tn-ens-ckm
+tn-t170-ev0
 libm_fields.npz
-bash ../kaggle/par.sh hindens2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/ens_ckm.json /kaggle/working/ens
+XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/t170_ev.json 0 2 /kaggle/working/t170_0.json > /kaggle/working/t170_0.log 2>&1; tail -3 /kaggle/working/t170_0.log
 NvidiaTeslaT4
-5
-#Ensemble spread: ck_z+pbl_tm 2026-10-27T08:26Z
+6
+#T170 (80 km) tracks part 1: new default vs ck_z+pbl_tm 2026-10-27T08:26Z
