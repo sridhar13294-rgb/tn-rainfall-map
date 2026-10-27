@@ -1,6 +1,6 @@
-tn-as-t170b
-libm_as_fields.npz
-XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_as_fields.npz ../../../data/cyclone/kaggle_cfg/io_as_t170.json 1 2 /kaggle/working/as_1.json > /kaggle/working/as_1.log 2>&1; tail -3 /kaggle/working/as_1.log
+tn-prof-diag
+libm_wx2020_fields.npz
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 20 '{"entr0":{"entr":1e-6},"lw08":{"rad_prm":{"lw_line":0.8}},"physoff":{"phys_off":true}}' > /kaggle/working/prof.log 2>&1; tail -60 /kaggle/working/prof.log
 NvidiaTeslaT4
-6
-#T170 Arabian Sea tracks part 2 2026-10-27T14:27Z
+8
+#cold upper air diagnosis: undiluted plumes / weaker long-wave lines / physics off (dynamics alone) 2026-10-27T14:28Z
