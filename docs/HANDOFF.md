@@ -187,3 +187,10 @@ Bay ablation (median 24/48/72/96/120): default 110/240/394/568/700; org 120/256/
 ECMWF exam d5 (default/org/ev/evsh): z500 globe 74.7/74.2/72.6/71.4; z500 tropics 34.4/33.5/28.0/24.6; TN rain24 d3 ACC 0.34/0.28/0.35/0.11 -> the shallow plume (sh) causes the TN rain loss; t850 India 3.14/3.33/3.26/3.54; u200 tropics 10.14/9.79/9.73/10.17.
 Candidate = ev_frac 0.3 (keeps TN rain, better z500 tropics/globe, India rain, u200; Bay ~neutral). Running: tn-gen-ev (acct8: ev, evorg5=ev+mf_org0.5), tn-io-as-ev (3) / tn-io-si-ev (4): ev, evorg5; tn-base-ev (2: evorg5, ev5=ev_frac0.5); tn-wx-ev (1: evorg5, ev5); tn-wind-ev (10: ev, evorg5).
 #7: trial tn-obs-2026102618 done (model-maps); fetching GFS analyses 2700/2706 for scoring.
+
+## 27 Oct 11:05 IST - ADOPTED: ev_frac = 0.3 is the new DEFAULT (mm2.py DEFAULTS)
+Evidence (vs old default): genesis 26% (ev) / 27% (evorg5); Bay tracks median 24/48/72/96/120: old 110/240/391/526/700, ev 129/247/385/421/403 (mean 72 h 436 vs 394 - within noise); AS 72 h 392/402 vs 410/430 (better); SI 72 h 277/338 vs 292/327 (~same); exam d5 z500 tropics 34.4 -> 28.0, globe 74.7 -> 72.6, TN rain ACC d3 0.35 (kept), t850 India 3.14 -> 3.26; Bay/AS/SI day-5 shear error (du200-850) ev 4.1/2.5/5.0 (old 7.1/3.9/4.4). evorg5 (+mf_org 0.5) worse on SI tracks and t850 India; ev5 (ev_frac 0.5) weaker gains.
+NOTE: from now on 'default' in any new job INCLUDES ev_frac 0.3; older results' 'default' = ev_frac 0.
+Other new options stay off: sh_trig, sh_clos, shallow='mf' (hurts TN rain), mf_org.
+Running: tn-prof-ev (acct9: def / +ck_z / +pbl_tm budget), tn-wind-ev2 (acct10: ck, tm), tn-gen-ev2 (acct8: ck, tm). If ck or tm passes genesis and helps shear/low-level cold bias -> tracks + exam for it; otherwise go to final scoring (#11) with the new default.
+#7: still neutral (7 trials scored); trial 2618 waits for GFS analyses 2700/2706 (re-fetch pushed). 11:00 report sent.
