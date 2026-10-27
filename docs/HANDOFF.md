@@ -271,3 +271,4 @@ Stage 1 now includes (in this order, each tested with budget + genesis + tracks 
 4. Vertical levels 32 -> 50 with more levels near the tropopause (sigma_bounds) - after 1-3, test cost and scores at T85 then T170.
 5. Anvil / ice cloud tuning (tn-prof-rad) and storm-vortex size from best-track RMW/R34.
 Then final scoring (#11), rain vs TN SMART (#10). New estimate: Stage 1 ~10-12 Nov; Stage 2 ~20-22 Nov; Stage 3 still before 31 Dec 2026 (tight; report honestly).
+Data source for 2-3: ARCO ERA5 on Google Cloud (gcsfs, as in the 'lib'/'history' jobs of cyclone.yml): static standard_deviation_of_filtered_subgrid_orography, angle/anisotropy/slope_of_sub_gridscale_orography, and ozone_mass_mixing_ratio (pressure levels) -> monthly zonal means; write a fetch script + RUN word.
