@@ -1,6 +1,6 @@
-tn-obs-2026102706
-live_GFSM_2026102706.npz,live_ECM_2026102706.npz,live_ICON_2026102706.npz,live_CMC_2026102706.npz,live_ARPEGE_2026102706.npz,live_UKMO_2026102706.npz,live_GEOS_2026102706.npz,obs_2026102706.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore obs_trial.py run /kaggle/working 2026102706 /kaggle/working/trial_2026102706.npz 120 > /kaggle/working/trial.log 2>&1; tail -20 /kaggle/working/trial.log
+tn-wx-t170c0
+libm_wx2020_fields.npz,wx_truth_2020.npz
+XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/wx_t170new.json 0 2 /kaggle/working/wx_0.json > /kaggle/working/wx_0.log 2>&1; tail -3 /kaggle/working/wx_0.log
 NvidiaTeslaT4
-2
-#fix 7 trial from 2026102706 2026-10-27T14:28Z
+1
+#T170 ECMWF exam part 1 (single process) 2026-10-27T17:23Z
