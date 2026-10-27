@@ -1,6 +1,6 @@
-tn-prof-wke2
+tn-prof-radtop
 libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 20 '{"wke_dd3":{"mf_wke":1.0,"mf_dd":0.3},"wke_ice":{"mf_wke":1.0,"mf_ice":0.5}}' > /kaggle/working/prof.log 2>&1; tail -60 /kaggle/working/prof.log
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 20 '{"radtop0":{"rad_top":0.0},"radtop06":{"rad_top":0.06}}' > /kaggle/working/prof.log 2>&1; tail -60 /kaggle/working/prof.log
 NvidiaTeslaT4
-10
-#upper-air cold bias: kinetic-energy cloud top + ECMWF downdraught 0.3 / freezing 2026-10-27T13:24Z
+3
+#upper-air cold bias: compute radiation in the stratosphere too (tropopause lid) 2026-10-27T13:27Z
