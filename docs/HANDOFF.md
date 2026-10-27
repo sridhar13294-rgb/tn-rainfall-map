@@ -234,3 +234,14 @@ tn-prof-rad (acct2): anv1 (anv_a 1.0, fewer anvils), anv06 (anv_max 0.6), kice (
 ## 27 Oct 18:05 IST - LIVE TEST: Cyclone Arnab (JTWC 02B, Cat 4, Bay, 16.2N 83.8E, WNW 9 kt -> Godavari delta, binary interaction with Invest 90B)
 Sridhar shared JTWC prognostic reasoning (io0226prog). Launched live2 51-member ensemble (GitHub, cyclone-mmlive.yml) for 2026102706 with the new default -> data/cyclone/mm/live/2026102706-v2. Compare our tracks/landfall/intensity with JTWC (landfall Godavari delta ~TAU 12-24, stall, turn N by TAU 36, dissipate TAU 60) and ECMWF/GFS.
 Ideas from the JTWC text to use: (1) a 'prognostic reasoning' product from our own run: steering ridge position, deep-layer shear, SST, outflow, interaction with other systems, ensemble spread -> confidence words (wording must not look like official IMD/JTWC warnings); (2) binary interaction test case for the multi-system tracker (#9); (3) compact pinhole-eye storm = why grid size matters for intensity (supports the T170 main run).
+
+## 27 Oct 18:15 IST - Physics ideas from JTWC Arnab reasoning (Sridhar asked to use them)
+Mechanisms in the bulletin -> our action:
+1. Brown ocean effect (wet river delta keeps evaporation going, slows weakening ~24 h) -> landfall-decay exam (model decay after landfall vs best track, Kaplan-DeMaria style), split delta/wet-soil vs dry/hilly landfalls; check soil-moisture start (landinit SOILW) and land evaporation beta; consider a wetland/delta soil-moisture floor.
+2. Ocean heat content / warm shelf waters (SST 29-30 C, high OHC) -> column ocean starts with a fixed mixed-layer depth; test starting mixed-layer depth / OHC from RTOFS profiles (RUN word 'ocean' already fetches RTOFS) for intensity.
+3. Outflow channel + upper anticyclone -> storm strength depends on outflow temperature; our 5-6 K cold upper troposphere inflates potential intensity and distorts outflow -> another reason the cold-bias fix matters (link it in the intensity scores).
+4. Pinhole eye / compact inner core -> fixed inserted-vortex size (180 km) is too big for compact storms: size the vortex from the real storm's RMW/R34 (IBTrACS usa_rmw/usa_r34, JTWC warnings) and test on tracks + intensity; also supports T170 main run.
+5. Binary interaction with Invest 90B (vorticity advection, deceleration; trackers smooth it) -> test that our multi-system tracker keeps both and slows 02B in the live run.
+6. Weakening steering gradient as the subtropical ridge moves east -> steering fix (ck_z) relevant; check ridge position in the live run vs ECMWF.
+7. Terrain + friction decay after landfall -> part of the landfall-decay exam (z0_land).
+Next free accounts: (a) vortex size from RMW/R34 test (Bay+AS tracks, intensity), (b) landfall-decay exam on all landfalling storms, (c) RTOFS mixed-layer start test.
