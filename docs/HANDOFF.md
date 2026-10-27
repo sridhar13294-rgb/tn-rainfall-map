@@ -209,3 +209,8 @@ Ensemble (tn-ens-ev): spread/error 0.83/0.74/0.82/0.84/0.92 at 24-120 h; ens mea
 #7: unchanged (n=7 scored).
 Next batch: tn-wx-ckm (1), tn-base-ckm (2), tn-io-as-ckm (3), tn-io-si-ckm (4) [ckm = ck_z 1 + pbl_tm 1; ck05 = ck_z 0.5], tn-ens-ckm (5), tn-t170-ev0/1 (6, 9: T170 def vs ckm), tn-gen-ckm (8), tn-prof-ckm (10: budget + shear). hindens2.py now accepts 'set' (model settings for all members).
 Decision rule: adopt ckm (or ck05) if genesis >= ~21% and tracks no worse in all 3 basins; then final scoring.
+
+## 27 Oct 15:45 IST - SRIDHAR DECISIONS
+- 80 km (T170) in Stage 1 - APPROVED rule: if T170 (tn-t170-ev0/1) is no worse than T85 on tracks and genesis holds (~21%), the MAIN daily run becomes T170 in Stage 1; ensemble stays ~T85. Then run the T170 full exam (wx2) + AS/SI tracks + genesis at T170. Adds ~1-2 days (Stage 1 ~4-5 Nov). If T170 is worse -> report plainly, re-tune needed.
+- Nivar in the UI: after the steering add-on decision, run maps_run.py from near:2020-11-21 (libm_wx2020) with the chosen settings, pack for the viewer with our track + real Nivar track, send link in the 20:00 report (honest: our Nivar stays 7-9N going west, 315-400 km from real landfall).
+- Commercial: only after all 3 stages + his personal validation through all of 2027 (SWM + NEM). Stage 3 done before 1 Jan 2027. Nov-Dec 2026 daily runs + archive = dry run (version-labelled), 2027 scores = final model only.
