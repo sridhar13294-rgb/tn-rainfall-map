@@ -1,6 +1,6 @@
-tn-maps-nivar
+tn-prof-rad
 libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore maps_run.py /kaggle/working/libm_wx2020_fields.npz near:2020-11-22 /kaggle/working/maps_nivar_2020.npz 240 > /kaggle/working/maps.log 2>&1; tail -5 /kaggle/working/maps.log
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 20 '{"anv1":{"rad_prm":{"anv_a":1.0}},"anv06":{"rad_prm":{"anv_max":0.6}},"kice":{"rad_prm":{"k_ice0":0.0025}},"ice05":{"mf_ice":0.5}}' > /kaggle/working/prof.log 2>&1; tail -60 /kaggle/working/prof.log
 NvidiaTeslaT4
-10
-#Nivar 2020 for the map viewer (T85, new default) 2026-10-27T11:28Z
+2
+#upper-air cold bias: anvil cloud amount / ice absorption / freezing heat 2026-10-27T11:54Z
