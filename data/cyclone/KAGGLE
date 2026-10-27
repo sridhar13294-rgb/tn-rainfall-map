@@ -1,6 +1,6 @@
-tn-wind-fullck
-libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 '{"fullck":{"shallow":"mf","sh_trig":1.0,"sh_clos":0.6,"mf_org":1.0,"ev_frac":0.3,"ck_z":1.0}}' > /kaggle/working/wind.log 2>&1; tail -50 /kaggle/working/wind.log
+tn-base-abl1
+libm_fields.npz
+bash ../kaggle/par.sh hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/base_abl1.json /kaggle/working/bt
 NvidiaTeslaT4
-10
-#steering shear: full+ck_z 2026-10-26T23:29Z
+2
+#Bay tracks ablation: organised entrainment / rain-evaporation fraction 2026-10-27T01:24Z
