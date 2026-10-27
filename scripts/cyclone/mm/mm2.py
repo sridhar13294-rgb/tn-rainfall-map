@@ -48,11 +48,11 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='mf', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='radcloud', rad_every=2,
-                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
+                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
-DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt', 'entr', 'mf_kick_t', 'mf_kick_q', 'mf_org', 'mf_wup', 'mf_dd', 'sh_top', 'bmj_dt', 'bmj_ice', 'ck_z', 'mf_ice', 'sh_taper', 'pbl_tm', 'sh_trig', 'sh_clos', 'ev_frac')
+DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt', 'entr', 'mf_kick_t', 'mf_kick_q', 'mf_org', 'mf_wup', 'mf_dd', 'sh_top', 'bmj_dt', 'bmj_ice', 'ck_z', 'mf_ice', 'sh_taper', 'pbl_tm', 'sh_trig', 'sh_clos', 'ev_frac', 'mf_wke')
 NWAVE = 8
 class Model:
     def __init__(self, grid='T170', layers=32, dt_min=None, set_=None):
@@ -210,7 +210,7 @@ class Model:
         # source)^(3 mf_org) (Bechtold et al. 2008), so a deep moist plume can reach the upper troposphere
         h_kick = CP * S['mf_kick_t'] + LV * S['mf_kick_q']
         def plume(c, x):
-            hu, qu, alive, lfc, started, zp = c; Te, qe, he, pk, zk, sk, rk, k = x
+            hu, qu, alive, lfc, started, zp, Kw = c; Te, qe, he, pk, zk, sk, rk, k = x
             src = (k == ksrc); dz = jnp.maximum(zk - zp, 0.0)
             eps = S['entr'] * (1.3 - rk) * jnp.power(jnp.clip(qsat(Te, pk) / qs_src, 1e-3, 1.0), 3.0 * S['mf_org'])
             hu1 = jnp.where(src, he + h_kick, hu + eps * dz * (he - hu)); qu1 = jnp.where(src, qe + S['mf_kick_q'], qu + eps * dz * (qe - qu))
@@ -222,16 +222,23 @@ class Model:
             b = Tu * (1 + 0.61 * qv) - Te * (1 + 0.61 * qe)
             st2 = started | src; run = started & alive & ~src                                         # above the source, still rising
             lfc2 = jnp.where(run, lfc | (b > 0), lfc)
-            alv2 = jnp.where(src, True, jnp.where(run, alive & ((b > 0) | (~lfc & (sig_src - sk < 0.2))) & (sk > 0.08), alive & ~started))
+            # mf_wke > 0 (ECMWF IFS Cy50r1 eq. 6.10): updraught kinetic energy K = w^2/2, starting at 0.5 (w = 1 m/s) when the plume
+            # first becomes buoyant: dK/dz = -eps (1 + beta Cd) 2K + g b / (f (1 + gamma) Tv), beta Cd = 0.949, f (1 + gamma) = 3.
+            # The cloud top is where K reaches zero, so plumes can push through thin stable layers (e.g. near the 0 C level)
+            # instead of stopping at the first level of negative buoyancy (old rule: plumes died in mid-levels, heating too low)
+            Kn = jnp.where(lfc, (Kw + dz * G * b / (3.0 * Te)) / (1.0 + dz * eps * 2.0 * 1.949), 0.5)
+            ok_k = jnp.where(S['mf_wke'] > 0, jnp.where(lfc, Kn > 0, b > 0), b > 0)
+            alv2 = jnp.where(src, True, jnp.where(run, alive & (ok_k | (~lfc & (sig_src - sk < 0.2))) & (sk > 0.08), alive & ~started))
+            Kw2 = jnp.where(run & (lfc | (b > 0)), jnp.maximum(Kn, 0.0), Kw)
             act = st2 & alv2 & (run | src)
             # freezing (mf_ice = share of the new condensate that freezes in the updraft): above 0 C its latent heat of fusion
             # warms the plume, as in the old scheme's bmj_ice; without it the tropical upper troposphere runs 3-5 K cold
             hu1 = hu1 + S['mf_ice'] * 3.34e5 * jnp.clip((273.15 - Tu) / 20.0, 0.0, 1.0) * cond
             nh = jnp.where(act, jnp.where(src, he + h_kick, hu1), hu); nq = jnp.where(act, jnp.where(src, qe + S['mf_kick_q'], qv), qu)
-            return (nh, nq, alv2, lfc2, st2, jnp.where(act | ~st2, zk, zp)), (act, jnp.where(run & act, b, 0.0), jnp.where(run & act, cond, 0.0), nh, nq)
+            return (nh, nq, alv2, lfc2, st2, jnp.where(act | ~st2, zk, zp), Kw2), (act, jnp.where(run & act, b, 0.0), jnp.where(run & act, cond, 0.0), nh, nq)
         z0 = jnp.zeros_like(ps); f0 = jnp.zeros(ps.shape, bool)
         xs = tuple(a[::-1] for a in (Tn, qn, h_e, p * jnp.ones_like(Tn), zc, sig * jnp.ones_like(Tn), rh_e, ii * jnp.ones(Tn.shape, jnp.int32)))
-        (_, _, _, lfc, _, _), (inc, b, cond, hu, qu) = jax.lax.scan(plume, (z0, z0, f0, f0, f0, z0 - 1.0), xs)
+        (_, _, _, lfc, _, _, _), (inc, b, cond, hu, qu) = jax.lax.scan(plume, (z0, z0, f0, f0, f0, z0 - 1.0, z0 + 0.5), xs)
         inc, b, cond, hu, qu = [a[::-1] for a in (inc, b, cond, hu, qu)]
         sig_top = jnp.min(jnp.where(inc, sig, 1.0), axis=0); cape = (RD * jnp.maximum(b, 0) * dsig / sig * inc).sum(0)
         deep = lfc & ((sig_src - sig_top) * ps > 25000.0) & (cape > 50.0)
