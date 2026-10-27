@@ -262,3 +262,12 @@ Our checks: (1) FOUND: radiation is NOT computed above sigma 0.12 (stratosphere 
 
 ## 27 Oct 19:30 IST - Ozone (Sridhar's note: ECMWF and GFS use prognostic ozone)
 Ours (radcloud.ozone_mmr): ONE fixed tropical profile for the whole globe, peak 8 ppmv at 10 hPa, 0.34 ppmv at 100 hPa (real tropical ~0.1-0.2), 0.13 at 150 hPa (real ~0.05-0.1); mid/high latitudes far too little ozone near 100-300 hPa (lower tropopause there). Prognostic ozone not needed at our level; plan: zonal-mean monthly ozone climatology from ERA5 (o3 on pressure levels via our CDS key) -> lat/pressure table in radcloud; test after tn-prof-radtop (the lid matters only if radiation is computed up there).
+
+## 27 Oct 19:15 IST - DECISION (Sridhar: "decision is yours ... it should be a professional weather model for India and Tamil Nadu")
+Stage 1 now includes (in this order, each tested with budget + genesis + tracks + exam before adoption; register = docs/simplifications.md):
+1. Convection cloud top / entrainment (mf_wke, ecent, ice, dd 0.3) - tests running.
+2. Stratosphere: radiation above sigma 0.12 (rad_top) + ERA5 zonal-monthly ozone climatology + stratospheric humidity check.
+3. Orographic gravity-wave drag + low-level blocking (Lott & Miller 1997 as in IFS ch.4), needs ERA5 sub-grid orography fields (sdor, isor, anor, slor) via CDS key; z0_land from sub-grid orography / land cover. Then a simple non-orographic GWD.
+4. Vertical levels 32 -> 50 with more levels near the tropopause (sigma_bounds) - after 1-3, test cost and scores at T85 then T170.
+5. Anvil / ice cloud tuning (tn-prof-rad) and storm-vortex size from best-track RMW/R34.
+Then final scoring (#11), rain vs TN SMART (#10). New estimate: Stage 1 ~10-12 Nov; Stage 2 ~20-22 Nov; Stage 3 still before 31 Dec 2026 (tight; report honestly).
