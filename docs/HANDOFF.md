@@ -172,3 +172,11 @@ Genesis gatekeeper (84 cases, formed = dist<=300, vo>=5, depth>=2): default 23%,
 full = {"shallow":"mf","sh_trig":1,"sh_clos":0.6,"mf_org":1,"ev_frac":0.3}. Launched same-run exams default/full/fullck(+ck_z): tn-wx-full (acct1), tn-base-full (2), tn-io-as-full (3), tn-io-si-full (4); tn-gen-fullck (8: fullck, full_c10), tn-heat-ck (9), tn-wind-fullck (10).
 #7 score (7 trials, vs GFS analyses): OI start roughly neutral: tropics u850/t850 within +-1%, z500 day 1 +3% worse (India/Bay +4.5%), bias-corrected variant ~neutral (n=3). Not a win yet; suspect mass increments without balanced winds. Fetched latest centres + obs for a new trial (launch next cycle, acct 5).
 GFS analyses: download with gh api assets (gh release download uses GraphQL = blocked).
+
+## 27 Oct 07:05 IST - EXAMS: full fixes NOT adopted (Bay tracks worse); ablation running
+Shallow plume is ON in ~51% of tropical columns (deep 34-39%, old shallow test 44-48%) - active; it moves mostly moisture, so h_shal (T only) looks small. Not a bug.
+fullck (full + ck_z): shear Bay/AS/SI 4.0/3.4/3.7 (default 7.1/3.9/4.4, full 5.8/4.1/2.9); colder (200 hPa -4.2); genesis 31%; full_c10 (sh_clos 1) 27%.
+ECMWF exam d5 (default / full / fullck): z500 globe 74.7/71.4/74.0; z500 tropics 34.4/23.6/32.6; t850 India 3.14/3.66/3.90 (worse); rain24 India 11.05/10.02/9.95; rain24 TN d3 6.11/7.27/7.62 with ACC 0.34 -> 0.05 (much worse); u850 India 6.77/6.63/6.24; u200 tropics 10.14/10.36/9.59.
+Tracks (--tune, median km 24/48/72/96/120): Bay default 110/243/394/584/713, full 133/315/550/771/980, fullck 125/312/487/691/1001 (MUCH WORSE: 72 h bias full dlat -1.48 dlon -3.57 vs default +0.40/-1.99 = too far west+south). AS default 140/234/410/521/737, full 136/233/389/507/642 (better, east bias removed). SI pending (tn-io-si-full acct4).
+Decision: not adopted. Ablation: tn-base-abl1 (acct2: org, ev), tn-base-abl2 (acct3: sh, evsh), tn-wx-abl (acct1: org, ev, evsh) - compare with default in tn-base-full / tn-wx-full (same storms/starts, deterministic).
+#7: new trial tn-obs-2026102618 (acct5). Morning report sent 07:00 IST.
