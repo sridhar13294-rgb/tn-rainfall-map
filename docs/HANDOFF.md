@@ -194,3 +194,7 @@ NOTE: from now on 'default' in any new job INCLUDES ev_frac 0.3; older results' 
 Other new options stay off: sh_trig, sh_clos, shallow='mf' (hurts TN rain), mf_org.
 Running: tn-prof-ev (acct9: def / +ck_z / +pbl_tm budget), tn-wind-ev2 (acct10: ck, tm), tn-gen-ev2 (acct8: ck, tm). If ck or tm passes genesis and helps shear/low-level cold bias -> tracks + exam for it; otherwise go to final scoring (#11) with the new default.
 #7: still neutral (7 trials scored); trial 2618 waits for GFS analyses 2700/2706 (re-fetch pushed). 11:00 report sent.
+
+## 27 Oct 11:35 IST - LEAN MODE + BIG GPU BATCH
+Sridhar: weekly usage 16% -> cycles every 3 h (work + report together) + one silent ~03:00 IST launch; give GPUs/GitHub ~3 h of work per cycle (multiple, bigger jobs).
+Big batch (all with new default ev_frac 0.3): tn-wx-ev2 (acct1: exam def/ck/tm), tn-base-ev2 (2: Bay all years def/ck/tm -> score_hind --tune AND --final), tn-io-as-ev2 (3), tn-io-si-ev2 (4), tn-ens-ev (5: ensemble spread, ens_final3 settings), tn-ocean-ev (6: #6 column vs 3-D ocean 'rgo'). Still running: tn-gen-ev2 (8). Done: tn-prof-ev (9), tn-wind-ev2 (10).
