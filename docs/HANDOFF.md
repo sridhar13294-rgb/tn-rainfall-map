@@ -230,3 +230,7 @@ T85 reference for the new default = ck05 in tn-base-ckm / tn-io-as-ckm / tn-io-s
 Tropics d5 T bias with new default: 200-300 hPa -5..-6 K, 1000 hPa +3; z500 tropics error 31 (ECMWF 6.9). Tropical OLR ~205 W/m2 (observed ~250) -> suspect too much anvil/high cloud whose tops cool the upper air by LW.
 tn-prof-rad (acct2): anv1 (anv_a 1.0, fewer anvils), anv06 (anv_max 0.6), kice (k_ice0 halved), ice05 (mf_ice 0.5). Read T bias 200-400 hPa + olr_trop + rad_Kday. Then: deep-plume detrainment height, radiation clear-sky check (test_radcloud.py vs RRTM-like reference). Winner -> genesis + tracks + exam.
 #7 obs_trial moved to next free account.
+
+## 27 Oct 18:05 IST - LIVE TEST: Cyclone Arnab (JTWC 02B, Cat 4, Bay, 16.2N 83.8E, WNW 9 kt -> Godavari delta, binary interaction with Invest 90B)
+Sridhar shared JTWC prognostic reasoning (io0226prog). Launched live2 51-member ensemble (GitHub, cyclone-mmlive.yml) for 2026102706 with the new default -> data/cyclone/mm/live/2026102706-v2. Compare our tracks/landfall/intensity with JTWC (landfall Godavari delta ~TAU 12-24, stall, turn N by TAU 36, dissipate TAU 60) and ECMWF/GFS.
+Ideas from the JTWC text to use: (1) a 'prognostic reasoning' product from our own run: steering ridge position, deep-layer shear, SST, outflow, interaction with other systems, ensemble spread -> confidence words (wording must not look like official IMD/JTWC warnings); (2) binary interaction test case for the multi-system tracker (#9); (3) compact pinhole-eye storm = why grid size matters for intensity (supports the T170 main run).
