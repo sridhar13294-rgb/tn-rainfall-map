@@ -297,3 +297,16 @@ Scripts wx_prof / wx_wind / wx2 / genesis2 / maps_run now take 'grid' and 'layer
 
 ## 27 Oct 23:30 IST - GPS radio occultation (Sridhar: take it)
 Use 1 (now): independent check of our upper-air temperature forecasts (RO is unbiased, ~0.5 K, 5-30 km) - confirms the cold UT bias vs ERA5 and tracks it. Use 2 (Stage 2-3): assimilate refractivity/bending angle (or retrieved T) in LETKF. Probe pushed (RUN probe2): EUMETSAT Data Store GRAS/ROM SAF collections + UCAR COSMIC-2 NRT listing -> data/cyclone/obs_probe2.txt. Next: fetch script obs_fetch ro_*(); verification script vs our forecasts.
+
+## 27 Oct 23:45 IST - Sridhar: STAGE 1 DEADLINE = 10 NOV (hard, not 12). Stage 1 scope (complete list):
+Done: rain-evaporation fraction, steering (ck_z 0.5), T170 main run, ensemble spread, ocean decision (column), tracker, inserted storm.
+To do by 10 Nov (in priority order):
+1. Cold upper air: 50 levels (tn-prof-l50 running) + top/sponge/stratosphere treatment (rad_top) + stratospheric humidity check; verify with GPS radio occultation (probe pushed).
+2. Orographic gravity-wave drag + low-level blocking/form drag (Lott-Miller, IFS ch.4) using ERA5 sub-grid orography; simple non-orographic GWD.
+3. Ozone: ERA5 zonal-mean monthly climatology.
+4. Storm start: inserted-vortex size from best-track RMW/R34.
+5. Clear-sky radiation check against a reference profile.
+6. Benchmarks: pre-formation Tamil Nadu storms (Nivar, Vardah, Gaja, Michaung, Fengal) incl. shear (ERA5) + landfall-decay exam (brown ocean).
+7. #10 rain vs TN SMART; #7 observations trial decision.
+8. #11 final scoring: wx2 exam, tracks --final all 3 basins, genesis, ensemble, at T170 (single process).
+Rule: each change passes budget + genesis + tracks + exam before adoption. If an item cannot finish by 10 Nov, record a written decision (move to Stage 2) - do not slip the date.
