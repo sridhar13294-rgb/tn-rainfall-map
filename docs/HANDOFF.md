@@ -294,3 +294,6 @@ T170 vs T85 (ck05), 72 h median tune|final: Bay 343|324 vs 437|359; AS 416|375 v
 Cold UT diagnosis: entr0 (undiluted plumes) 250 hPa -5.3 (def -5.8) -> not convection depth; lw08 ~no change -> not LW line strength; physoff (no physics at all): 100 hPa +8.4, 250-300 -2.3..-2.7 -> the +7 K at 100 hPa and part of the UT cold are dynamics / vertical resolution / top treatment, not physics. Next: tn-prof-l50 (acct8: 50 levels, and 50 levels + wke_org). Then sponge/top settings and tropopause-refined levels.
 Nivar benchmark at T170 (no bogus, 21 Nov 00Z): tn-maps-nivar170 (acct10).
 Scripts wx_prof / wx_wind / wx2 / genesis2 / maps_run now take 'grid' and 'layers' from settings.
+
+## 27 Oct 23:30 IST - GPS radio occultation (Sridhar: take it)
+Use 1 (now): independent check of our upper-air temperature forecasts (RO is unbiased, ~0.5 K, 5-30 km) - confirms the cold UT bias vs ERA5 and tracks it. Use 2 (Stage 2-3): assimilate refractivity/bending angle (or retrieved T) in LETKF. Probe pushed (RUN probe2): EUMETSAT Data Store GRAS/ROM SAF collections + UCAR COSMIC-2 NRT listing -> data/cyclone/obs_probe2.txt. Next: fetch script obs_fetch ro_*(); verification script vs our forecasts.
