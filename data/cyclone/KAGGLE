@@ -1,6 +1,6 @@
-tn-wind-ev2
-libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_wind.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wind.json 40 '{"ck":{"ck_z":1.0},"tm":{"pbl_tm":1.0}}' > /kaggle/working/wind.log 2>&1; tail -50 /kaggle/working/wind.log
+tn-gen-ev2
+libm48_fields.npz
+bash ../kaggle/par.sh genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_ev_ck.json /kaggle/working/gen
 NvidiaTeslaT4
-10
-#steering shear: new default + ck_z / pbl_tm 2026-10-27T05:22Z
+8
+#genesis gatekeeper: new default + ck_z / pbl_tm 2026-10-27T05:23Z
