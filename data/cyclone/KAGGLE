@@ -1,6 +1,6 @@
-tn-prof-diag
-libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 20 '{"entr0":{"entr":1e-6},"lw08":{"rad_prm":{"lw_line":0.8}},"physoff":{"phys_off":true}}' > /kaggle/working/prof.log 2>&1; tail -60 /kaggle/working/prof.log
+tn-obs-2026102706
+live_GFSM_2026102706.npz,live_ECM_2026102706.npz,live_ICON_2026102706.npz,live_CMC_2026102706.npz,live_ARPEGE_2026102706.npz,live_UKMO_2026102706.npz,live_GEOS_2026102706.npz,obs_2026102706.npz
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore obs_trial.py run /kaggle/working 2026102706 /kaggle/working/trial_2026102706.npz 120 > /kaggle/working/trial.log 2>&1; tail -20 /kaggle/working/trial.log
 NvidiaTeslaT4
-8
-#cold upper air diagnosis: undiluted plumes / weaker long-wave lines / physics off (dynamics alone) 2026-10-27T14:28Z
+2
+#fix 7 trial from 2026102706 2026-10-27T14:28Z
