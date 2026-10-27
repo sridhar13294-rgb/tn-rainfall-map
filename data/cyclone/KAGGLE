@@ -1,6 +1,6 @@
-tn-ens-new2
-libm_fields.npz
-bash ../kaggle/par.sh hindens2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/ens_new2.json /kaggle/working/ens
+tn-maps-nivar
+libm_wx2020_fields.npz
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore maps_run.py /kaggle/working/libm_wx2020_fields.npz near:2020-11-22 /kaggle/working/maps_nivar_2020.npz 240 > /kaggle/working/maps.log 2>&1; tail -5 /kaggle/working/maps.log
 NvidiaTeslaT4
-5
-#Ensemble (T85) with new default (ev_frac 0.3 + ck_z 0.5) 2026-10-27T11:27Z
+10
+#Nivar 2020 for the map viewer (T85, new default) 2026-10-27T11:28Z
