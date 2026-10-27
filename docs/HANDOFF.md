@@ -310,3 +310,11 @@ To do by 10 Nov (in priority order):
 7. #10 rain vs TN SMART; #7 observations trial decision.
 8. #11 final scoring: wx2 exam, tracks --final all 3 basins, genesis, ensemble, at T170 (single process).
 Rule: each change passes budget + genesis + tracks + exam before adoption. If an item cannot finish by 10 Nov, record a written decision (move to Stage 2) - do not slip the date.
+
+## 28 Oct 00:05 IST - 50 LEVELS HELPS; Nivar T170 benchmark (first fresh-session cycle)
+50 levels (tn-prof-l50 vs ck05, tropics d5 T bias): 100 hPa +7.1 -> +4.5; 250 -5.8 -> -4.9; 300 -5.4 -> -4.4; 500 -3.0 -> -2.4. L50 + wke_org: 250 -3.7, 300 -3.4, 100 +4.5. -> vertical resolution is about a third of the cold-UT / warm-100 problem; rest is top treatment + convection. Candidate: L50 (plain) first; L50_org later via its own genesis/track/exam.
+Nivar T170 (no bogus, 21 Nov 00Z; maps on 1.4 deg viewer grid): a weak vortex (vo850 ~10e-5, depth 2-4 hPa, pmin ~1004-1006, 10 m wind 9-14 m/s) is in the right area on 23-25 Nov and moves WNW, but ~1.5-3 deg too far south: errors 33 km (23/00), 150 (24/00), 186 (25/00), 400 km at landfall (model ~9N vs real 12.5N 80.0E). Never intensifies (real 65 kt). -> genesis signal yes, intensity and northward motion no. Follow-ups (next free accounts): Nivar at L50, and an earlier start (20 Nov 00Z).
+RO probe2: COSMIC-2 NRT level2 reachable at data.cosmic.ucar.edu (2019-2026) -> use it (tropics-dense). EUMETSAT RO collections not seen in the listed names; MOSDAC/Earthdata timed out. Next: obs_fetch ro_cosmic2() + verification vs our upper-air T.
+Still running from previous cycle: tn-wx-t170c0 (acct1), tn-si-t170c0 (4), tn-gen-t170c0 (9) - single-process T170 reruns, ~55 min in at 23:50 IST.
+Launched (single process each): tn-gen-l50c0/c1 (acct2/3, cfg gen_l50.json, variant T170_L50), tn-bay-l50c0/c1 (5/6, bay_l50.json, Bay tracks, compare with T170_new t170_ck05), tn-wx-l50c0/c1 (8/10, wx_l50.json, exam). Acct 7 LETKF reserved.
+Next cycle: score t170c0 jobs (merge with t170new/si_1/gen_1); when L50 jobs finish compare vs T170_new (genesis %, Bay tune|final, exam z500 d5 + TN rain ACC); Nivar L50 + 20 Nov start; then top/sponge (rad_top) on L50.
