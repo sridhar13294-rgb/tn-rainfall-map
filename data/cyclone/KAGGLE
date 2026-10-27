@@ -1,6 +1,6 @@
-tn-si-t170c0
-libm_si4_fields.npz
-XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_si4_fields.npz ../../../data/cyclone/kaggle_cfg/io_si_t170.json 0 2 /kaggle/working/si_0.json > /kaggle/working/si_0.log 2>&1; tail -3 /kaggle/working/si_0.log
+tn-gen-t170c0
+libm48_fields.npz
+XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_t170new.json 0 2 /kaggle/working/gen_0.json > /kaggle/working/gen_0.log 2>&1; tail -3 /kaggle/working/gen_0.log
 NvidiaTeslaT4
-4
-#T170 South Indian Ocean tracks part 1 (single process) 2026-10-27T17:24Z
+9
+#T170 genesis part 1 (single process) 2026-10-27T17:25Z
