@@ -318,3 +318,4 @@ RO probe2: COSMIC-2 NRT level2 reachable at data.cosmic.ucar.edu (2019-2026) -> 
 Still running from previous cycle: tn-wx-t170c0 (acct1), tn-si-t170c0 (4), tn-gen-t170c0 (9) - single-process T170 reruns, ~55 min in at 23:50 IST.
 Launched (single process each): tn-gen-l50c0/c1 (acct2/3, cfg gen_l50.json, variant T170_L50), tn-bay-l50c0/c1 (5/6, bay_l50.json, Bay tracks, compare with T170_new t170_ck05), tn-wx-l50c0/c1 (8/10, wx_l50.json, exam). Acct 7 LETKF reserved.
 Next cycle: score t170c0 jobs (merge with t170new/si_1/gen_1); when L50 jobs finish compare vs T170_new (genesis %, Bay tune|final, exam z500 d5 + TN rain ACC); Nivar L50 + 20 Nov start; then top/sponge (rad_top) on L50.
+28 Oct 00:10 IST (second firing of the same cycle): work above was already done; t170c0 jobs still running; all accounts busy (1,4,9 t170c0; 2,3,5,6,8,10 L50); this firing only scheduled the next cycle (07:50 IST).
