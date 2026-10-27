@@ -4,21 +4,20 @@ collections listed: 191
    EO:EUM:DAT:MSG:HRSEVIRI-IODC EO:EUM:DAT:MSG:HRSEVIRI-IODC
    EO:EUM:DAT:MSG:CLM-IODC EO:EUM:DAT:MSG:CLM-IODC
    EO:EUM:DAT:MSG:CTH-IODC EO:EUM:DAT:MSG:CTH-IODC
-search EO:EUM:DAT:METOP:OSI-104 last 9 h products: 9 ['ascat_20261026_143600_metopb_73193_eps_o_coa_3301_ovw.l2', 'ascat_20261026_131800_metopc_41350_eps_o_coa_3301_ovw.l2']
-search EO:EUM:DAT:METOP:ASCSZR1B last 9 h products: 10 ['ASCA_SZR_1B_M03_20261026134500Z_20261026152658Z_N_O_20261026152537Z', 'ASCA_SZR_1B_M01_20261026132400Z_20261026150558Z_N_O_20261026141805Z']
+search EO:EUM:DAT:METOP:OSI-104 last 9 h products: 10 ['ascat_20261027_143900_metopc_41365_eps_o_coa_3301_ovw.l2', 'ascat_20261027_141800_metopb_73207_eps_o_coa_3301_ovw.l2']
+search EO:EUM:DAT:METOP:ASCSZR1B last 9 h products: 9 ['ASCA_SZR_1B_M01_20261027144500Z_20261027162358Z_N_O_20261027153827Z', 'ASCA_SZR_1B_M03_20261027132700Z_20261027150558Z_N_O_20261027150610Z']
 search EO:EUM:DAT:MSG:AMV-IODC failed <HTTPError 404: 'Not Found'>
 search EO:EUM:DAT:MSG:AMV failed <HTTPError 404: 'Not Found'>
-search EO:EUM:DAT:0398 last 9 h products: 5 ['S-LSA_-HDF5_LSASAF_MSG_FRM-F024_Euro_202610261200', 'S-LSA_-HDF5_LSASAF_MSG_FRM-F048_Euro_202610261200']
+search EO:EUM:DAT:0398 last 9 h products: 5 ['S-LSA_-HDF5_LSASAF_MSG_FRM-F024_Euro_202610271200', 'S-LSA_-HDF5_LSASAF_MSG_FRM-F048_Euro_202610271200']
 Earthdata user present: True password present: True
-IMERG Early half-hourly files today: 24 3B-HHR-E.MS.MRG.3IMERG.20261026-S113000-E115959.0690.V07C.HDF5
-IMERG download: 200 6915 KB HDF5
-PO.DAAC ASCAT collections (search): ['ASCATC-L2-Coastal', 'ASCATB-L2-Coastal', 'ASCATB-L2-25km', 'ASCATC-L2-25km', 'ASCATA_ESDR_L2_WIND_STRESS_V1.1']
+Earthdata failed: URLError(TimeoutError('timed out'))
 GTS hrefs 307 ['?C=N;O=D', '?C=M;O=A', '?C=S;O=A', '/SL.us008001/DF.an/DC.sflnd/', 'ls-l', 'ls-lt', 'sn.0000.txt', 'sn.0001.txt'] ['sn.0296.txt', 'sn.0297.txt', 'sn.0298.txt', 'sn.0299.txt', 'sn.0300.txt']
-GTS row sample: ight">26-Oct-2026 17:20  </td><td align="right"> 21K</td></tr> | <tr><td><a href="sn.0000.txt">sn.0000.txt</a></td><td align="right">26-Oct-2026 11:25  </td><td align="right">7.4K</td></tr> | <tr><td><a href="sn.0001.txt">sn.0001.txt</a></td><td align="right">26-Oct-2026 11:30  </td><td align="right">2.
+GTS row sample: ight">27-Oct-2026 17:55  </td><td align="right"> 21K</td></tr> | <tr><td><a href="sn.0000.txt">sn.0000.txt</a></td><td align="right">27-Oct-2026 12:50  </td><td align="right"> 47K</td></tr> | <tr><td><a href="sn.0001.txt">sn.0001.txt</a></td><td align="right">27-Oct-2026 12:55  </td><td align="right"> 1
 GTS gov/SL.us008001/DF.an/DC.sflnd/DS.synop/ status 200 bytes 38415 final .nws.noaa.gov/SL.us008001/DF.an/DC.sflnd/DS.synop/ | <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN"> <html>  <head>   <title>Index of /SL.us008001/DF.an/DC.sflnd/DS.synop</title>  </head>  <body> <h1>Index
 GTS us008001/DF.an/DC.sflnd/DS.synop/sn.0000 failed <HTTPError 404: 'Not Found'>
 GTS ://tgftp.nws.noaa.gov/SL.us008001/DF.an/ status 200 bytes 999 final https://tgftp.nws.noaa.gov/SL.us008001/DF.an/ | <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN"> <html>  <head>   <title>Index of /SL.us008001/DF.an</title>  </head>  <body> <h1>Index of /SL.us008001/D
 GTS ://tgftp.nws.noaa.gov/data/nsd_bbsss.txt status 200 bytes 761720 final https://tgftp.nws.noaa.gov/data/nsd_bbsss.txt | 00;000;PABL;Buckland, Buckland Airport;AK;United States;4;65-58-56N;161-09-07W;;;7;; 01;001;ENJA;Jan Mayen;;Norway;6;70-56N;008-40W;70-56N;008-40W;10;9;P 01;0
 MOSDAC user present: True password present: True
-mdapi urls: ['https://mosdac.gov.in/apios/datasets.json', 'https://mosdac.gov.in/download_api/check-internet', 'https://mosdac.gov.in/download_api/download', 'https://mosdac.gov.in/download_api/gettoken', 'https://mosdac.gov.in/download_api/logout', 'https://mosdac.gov.in/download_api/refresh-token']
-MOSDAC token: OK
+MOSDAC failed: URLError(TimeoutError('timed out'))
+COSMIC-2 https://data.cosmic.ucar.edu/gnss-ro/cosmic2/nrt/level2/ status 200 links 9 ['2019/', '2020/', '2021/', '2022/', '2023/', '2024/', '2025/', '2026/']
+COSMIC-2 https://data.cosmic.ucar.edu/gnss-ro/cosmic2/nrt/ status 200 links 10 ['level1a/', 'level1b/', 'level2/', 'level3/', 'F7C2_NA_IOC_Data_Release_Memo.pdf', 'F7C2_SpWx_GLO_Absolute_TEC_Data_Release_Memo.pdf', 'F7C2_SpWx_GPS_Absolute_TEC_Data_Release_Memo.pdf', 'F7C2_SpWx_IVM_Density_Data_Release_Memo.pdf']
