@@ -1,6 +1,6 @@
-tn-obs-2026102618
-live_GFSM_2026102618.npz,live_ECM_2026102618.npz,live_ICON_2026102618.npz,live_CMC_2026102618.npz,live_ARPEGE_2026102618.npz,live_UKMO_2026102618.npz,live_GEOS_2026102618.npz,obs_2026102618.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore obs_trial.py run /kaggle/working 2026102618 /kaggle/working/trial_2026102618.npz 120 > /kaggle/working/trial.log 2>&1; tail -20 /kaggle/working/trial.log
+tn-gen-ev
+libm48_fields.npz
+bash ../kaggle/par.sh genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_ev.json /kaggle/working/gen
 NvidiaTeslaT4
-5
-#fix 7 trial from 2026102618 2026-10-27T01:26Z
+8
+#genesis gatekeeper: rain-evaporation fraction (ev, ev+org0.5) 2026-10-27T03:24Z
