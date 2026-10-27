@@ -272,3 +272,7 @@ Stage 1 now includes (in this order, each tested with budget + genesis + tracks 
 5. Anvil / ice cloud tuning (tn-prof-rad) and storm-vortex size from best-track RMW/R34.
 Then final scoring (#11), rain vs TN SMART (#10). New estimate: Stage 1 ~10-12 Nov; Stage 2 ~20-22 Nov; Stage 3 still before 31 Dec 2026 (tight; report honestly).
 Data source for 2-3: ARCO ERA5 on Google Cloud (gcsfs, as in the 'lib'/'history' jobs of cyclone.yml): static standard_deviation_of_filtered_subgrid_orography, angle/anisotropy/slope_of_sub_gridscale_orography, and ozone_mass_mixing_ratio (pressure levels) -> monthly zonal means; write a fetch script + RUN word.
+
+## 27 Oct 19:20 IST - Sridhar: grid plan + investment rule
+Global 80 km all 10 days; 9 km North Indian Ocean + India window days 1-5 (global takes over after); 3 km Tamil Nadu window. Target: full 80+9+3 set in ~1-1.5 h per run -> parallel windows on separate accounts + likely a paid fast GPU for the fine windows; benchmark 9 km / 3 km in Stage 3 before any spend. He offered 20 more accounts (hold; check Kaggle terms first).
+Investment rule: he will pay for GPUs/storage only after he is convinced by the output. Build it like ECMWF - don't skip anything (docs/simplifications.md is the checklist).
