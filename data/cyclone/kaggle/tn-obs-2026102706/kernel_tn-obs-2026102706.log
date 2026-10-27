@@ -1,0 +1,96 @@
+[{"stream_name":"stdout","time":0.858246384,"data":"+ nvidia-smi || true\n"}
+,{"stream_name":"stdout","time":0.950821223,"data":"Tue Oct 27 14:29:32 2026       \n"}
+,{"stream_name":"stdout","time":0.950879293,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":0.950885306,"data":"| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":0.950890002,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.950894988,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":0.950899825,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":0.95090426,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":0.950908362,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":1.036249106,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":1.036286291,"data":"| N/A   52C    P8             11W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":1.03629228,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":1.036297353,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.036301763,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":1.036306494,"data":"| N/A   49C    P8             11W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":1.036311348,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":1.036315377,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.037076575,"data":"\n"}
+,{"stream_name":"stdout","time":1.037096961,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.037103227,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":1.03710852,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":1.037113278,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":1.037118307,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":1.039153005,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":1.039181913,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.377860229,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1.379343418,"data":"accelerator asked NvidiaTeslaT4 -\u003e jax for cuda12\n"}
+,{"stream_name":"stdout","time":1.379365901,"data":"+ pip install -q -U \"jax[cuda12]\"\n"}
+,{"stream_name":"stderr","time":33.943096396,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":33.943123642,"data":"bigframes 2.48.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":33.943129015,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stderr","time":33.943133872,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":33.94313829,"data":"gradio 6.26.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":33.943142934,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":33.943148281,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stdout","time":34.394055758,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":34.394099692,"data":"+ free -g; nproc; python -c \"import jax; print(jax.devices())\" || true\n"}
+,{"stream_name":"stdout","time":34.414926101,"data":"               total        used        free      shared  buff/cache   available\n"}
+,{"stream_name":"stdout","time":34.414953973,"data":"Mem:              31           1          23           0           7          30\n"}
+,{"stream_name":"stdout","time":34.414958274,"data":"Swap:              0           0           0\n"}
+,{"stream_name":"stdout","time":34.419139973,"data":"4\n"}
+,{"stream_name":"stdout","time":43.416962078,"data":"[CudaDevice(id=0), CudaDevice(id=1)]\n"}
+,{"stream_name":"stdout","time":47.204212192,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":47.204281853,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
+,{"stream_name":"stdout","time":58.702618574,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":58.702663651,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
+,{"stream_name":"stdout","time":82.685498332,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":82.685545496,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o live_GFSM_2026102706.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/live_GFSM_2026102706.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" live_GFSM_2026102706.npz || { echo BAD_DOWNLOAD live_GFSM_2026102706.npz; rm -f live_GFSM_2026102706.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o live_GFSM_2026102706.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/live_GFSM_2026102706.npz; }\n"}
+,{"stream_name":"stdout","time":83.154509923,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":83.154552531,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o live_ECM_2026102706.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/live_ECM_2026102706.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" live_ECM_2026102706.npz || { echo BAD_DOWNLOAD live_ECM_2026102706.npz; rm -f live_ECM_2026102706.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o live_ECM_2026102706.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/live_ECM_2026102706.npz; }\n"}
+,{"stream_name":"stdout","time":83.660969103,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":83.661006278,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o live_ICON_2026102706.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/live_ICON_2026102706.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" live_ICON_2026102706.npz || { echo BAD_DOWNLOAD live_ICON_2026102706.npz; rm -f live_ICON_2026102706.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o live_ICON_2026102706.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/live_ICON_2026102706.npz; }\n"}
+,{"stream_name":"stdout","time":84.152342166,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":84.152385958,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o live_CMC_2026102706.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/live_CMC_2026102706.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" live_CMC_2026102706.npz || { echo BAD_DOWNLOAD live_CMC_2026102706.npz; rm -f live_CMC_2026102706.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o live_CMC_2026102706.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/live_CMC_2026102706.npz; }\n"}
+,{"stream_name":"stdout","time":84.737249941,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":84.737280098,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o live_ARPEGE_2026102706.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/live_ARPEGE_2026102706.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" live_ARPEGE_2026102706.npz || { echo BAD_DOWNLOAD live_ARPEGE_2026102706.npz; rm -f live_ARPEGE_2026102706.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o live_ARPEGE_2026102706.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/live_ARPEGE_2026102706.npz; }\n"}
+,{"stream_name":"stdout","time":85.532150717,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":85.532197291,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o live_UKMO_2026102706.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/live_UKMO_2026102706.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" live_UKMO_2026102706.npz || { echo BAD_DOWNLOAD live_UKMO_2026102706.npz; rm -f live_UKMO_2026102706.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o live_UKMO_2026102706.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/live_UKMO_2026102706.npz; }\n"}
+,{"stream_name":"stdout","time":85.983409252,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":85.983449518,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o live_GEOS_2026102706.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/live_GEOS_2026102706.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" live_GEOS_2026102706.npz || { echo BAD_DOWNLOAD live_GEOS_2026102706.npz; rm -f live_GEOS_2026102706.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o live_GEOS_2026102706.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/live_GEOS_2026102706.npz; }\n"}
+,{"stream_name":"stdout","time":86.475975004,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":86.476024262,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o obs_2026102706.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/obs_2026102706.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" obs_2026102706.npz || { echo BAD_DOWNLOAD obs_2026102706.npz; rm -f obs_2026102706.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o obs_2026102706.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/obs_2026102706.npz; }\n"}
+,{"stream_name":"stdout","time":86.971609465,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":86.971650955,"data":"setup s 86\n"}
+,{"stream_name":"stdout","time":86.971656922,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 cd . \u0026\u0026 XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore obs_trial.py run /kaggle/working 2026102706 /kaggle/working/trial_2026102706.npz 120 \u003e /kaggle/working/trial.log 2\u003e\u00261; tail -20 /kaggle/working/trial.log 2\u003e\u00261 | tee job.log\n"}
+,{"stream_name":"stdout","time":255.375212342,"data":"  scat   u    n= 11460  O-B mean -0.47 rms 1.56  O-A rms 1.16 m/s\n"}
+,{"stream_name":"stdout","time":255.375250713,"data":"  scat   v    n= 11460  O-B mean +0.32 rms 1.94  O-A rms 1.34 m/s\n"}
+,{"stream_name":"stdout","time":255.37525753,"data":"  ship   mslp n=   731  O-B mean -0.89 rms 2.64  O-A rms 2.08 hPa\n"}
+,{"stream_name":"stdout","time":255.375262668,"data":"  ship   q    n=   616  O-B mean +1.31 rms 2.13  O-A rms 1.46 g/kg\n"}
+,{"stream_name":"stdout","time":255.375267745,"data":"  ship   u    n=   482  O-B mean -0.46 rms 3.22  O-A rms 2.63 m/s\n"}
+,{"stream_name":"stdout","time":255.375272728,"data":"  ship   v    n=   482  O-B mean -0.27 rms 3.28  O-A rms 2.53 m/s\n"}
+,{"stream_name":"stdout","time":255.375277722,"data":"  synop  mslp n=  2088  O-B mean -1.08 rms 2.85  O-A rms 1.77 hPa\n"}
+,{"stream_name":"stdout","time":255.375293191,"data":"  synop  q    n=  2180  O-B mean +0.82 rms 1.77  O-A rms 1.15 g/kg\n"}
+,{"stream_name":"stdout","time":255.37529738,"data":"  temp   q    n=    13  O-B mean -0.25 rms 1.16  O-A rms 0.86 g/kg\n"}
+,{"stream_name":"stdout","time":255.375303583,"data":"  temp   t    n=    21  O-B mean -0.05 rms 0.85  O-A rms 0.60 K\n"}
+,{"stream_name":"stdout","time":255.375307066,"data":"  temp   u    n=    21  O-B mean -0.67 rms 2.64  O-A rms 2.03 m/s\n"}
+,{"stream_name":"stdout","time":255.375310337,"data":"  temp   v    n=    21  O-B mean -0.26 rms 2.41  O-A rms 1.55 m/s\n"}
+,{"stream_name":"stdout","time":255.375313706,"data":"  OI pressure bias removed for metar: -1.41 hPa\n"}
+,{"stream_name":"stdout","time":255.375316965,"data":"  OI pressure bias removed for ship: -0.45 hPa\n"}
+,{"stream_name":"stdout","time":255.375320332,"data":"  OI pressure bias removed for synop: -0.50 hPa\n"}
+,{"stream_name":"stdout","time":255.375338337,"data":"OI report {\"n_in\": 158233, \"n_window\": 68991, \"n_checked\": 42667, \"n_superobs\": 10969, \"solved\": {\"ps\": 2508, \"t\": 21, \"q\": 2514, \"u\": 2963, \"v\": 2963}, \"rows\": [{\"type\": \"metar\", \"var\": \"mslp\", \"n\": 403, \"omb_mean\": -1.9411935521108472, \"omb_rms\": 2.8236524160763414, \"oma_rms\": 1.1676508592009283, \"units\": \"hPa\"}, {\"type\": \"metar\", \"var\": \"q\", \"n\": 415, \"omb_mean\": 1.519327582936135, \"omb_rms\": 2.425150977066864, \"oma_rms\": 1.607726510325598, \"units\": \"g/kg\"}, {\"type\": \"scat\", \"var\": \"u\", \"n\": 11460, \"omb_mean\": -0.47013134100837656, \"omb_rms\": 1.562537354324998, \"oma_rms\": 1.1553368316709807, \"units\": \"m/s\"}, {\"type\": \"scat\", \"var\": \"v\", \"n\": 11460, \"omb_mean\": 0.31783974355549677, \"omb_rms\": 1.935004917896347, \"oma_rms\": 1.3392994095013833, \"units\": \"m/s\"}, {\"type\": \"ship\", \"var\": \"mslp\", \"n\": 731, \"omb_mean\": -0.8853422503455789, \"omb_rms\": 2.6363878396642044, \"oma_rms\": 2.0837295610015794, \"units\": \"hPa\"}, {\"type\": \"ship\", \"var\": \"q\", \"n\": 616, \"omb_mean\": 1.3120708354841606, \"omb_rms\": 2.1276449742360755, \"oma_rms\": 1.4629518431689494, \"units\": \"g/kg\"}, {\"type\": \"ship\", \"var\": \"u\", \"n\": 482, \"omb_mean\": -0.4576329682022348, \"omb_rms\": 3.2152128459704907, \"oma_rms\": 2.6255583233203197, \"units\": \"m/s\"}, {\"type\": \"ship\", \"var\": \"v\", \"n\": 482, \"omb_mean\": -0.26830001763522265, \"omb_rms\": 3.2829391873671767, \"oma_rms\": 2.5324558901796985, \"units\": \"m/s\"}, {\"type\": \"synop\", \"var\": \"mslp\", \"n\": 2088, \"omb_mean\": -1.0760028328553417, \"omb_rms\": 2.851819360845688, \"oma_rms\": 1.76897697424\n"}
+,{"stream_name":"stdout","time":255.375363008,"data":"noobs done\n"}
+,{"stream_name":"stdout","time":255.375365817,"data":"obs done\n"}
+,{"stream_name":"stdout","time":255.375368431,"data":"obsdb done\n"}
+,{"stream_name":"stdout","time":255.375371022,"data":"saved /kaggle/working/trial_2026102706.npz 17490 KB\n"}
+,{"stream_name":"stdout","time":255.375720431,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":255.375737197,"data":"+ rm -rf repo live_GFSM_2026102706.npz live_ECM_2026102706.npz live_ICON_2026102706.npz live_CMC_2026102706.npz live_ARPEGE_2026102706.npz live_UKMO_2026102706.npz live_GEOS_2026102706.npz obs_2026102706.npz\n"}
+,{"stream_name":"stdout","time":255.512415479,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":255.512452439,"data":"total s 255\n"}
+,{"stream_name":"stderr","time":257.910738907,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":257.910807469,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":258.203957161,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":258.203987336,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":259.140023896,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":260.284638389,"data":"[NbConvertApp] Writing 281997 bytes to __results__.html\n"}
+]
