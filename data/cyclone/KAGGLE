@@ -1,6 +1,6 @@
-tn-t170-new1
-libm_fields.npz
-XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/t170_new.json 1 2 /kaggle/working/t170_1.json > /kaggle/working/t170_1.log 2>&1; tail -3 /kaggle/working/t170_1.log
+tn-io-as-t170
+libm_as_fields.npz
+bash ../kaggle/par.sh hind2.py /kaggle/working/libm_as_fields.npz ../../../data/cyclone/kaggle_cfg/io_as_t170.json /kaggle/working/as 2
 NvidiaTeslaT4
-9
-#T170 (80 km) Bay tracks part 2, new default 2026-10-27T11:23Z
+3
+#T170 Arabian Sea tracks, new default 2026-10-27T11:24Z
