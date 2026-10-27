@@ -1,6 +1,6 @@
-tn-bay-l50c0
+tn-bay-l50c1
 libm_fields.npz
-XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/bay_l50.json 0 2 /kaggle/working/t170_0.json > /kaggle/working/t170_0.log 2>&1; tail -3 /kaggle/working/t170_0.log
+XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/bay_l50.json 1 2 /kaggle/working/t170_1.json > /kaggle/working/t170_1.log 2>&1; tail -3 /kaggle/working/t170_1.log
 NvidiaTeslaT4
-5
-#50-level T170 Bay tracks part 0 2026-10-27T18:21Z
+6
+#50-level T170 Bay tracks part 1 2026-10-27T18:21Z
