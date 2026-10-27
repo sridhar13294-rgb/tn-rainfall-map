@@ -180,3 +180,10 @@ ECMWF exam d5 (default / full / fullck): z500 globe 74.7/71.4/74.0; z500 tropics
 Tracks (--tune, median km 24/48/72/96/120): Bay default 110/243/394/584/713, full 133/315/550/771/980, fullck 125/312/487/691/1001 (MUCH WORSE: 72 h bias full dlat -1.48 dlon -3.57 vs default +0.40/-1.99 = too far west+south). AS default 140/234/410/521/737, full 136/233/389/507/642 (better, east bias removed). SI pending (tn-io-si-full acct4).
 Decision: not adopted. Ablation: tn-base-abl1 (acct2: org, ev), tn-base-abl2 (acct3: sh, evsh), tn-wx-abl (acct1: org, ev, evsh) - compare with default in tn-base-full / tn-wx-full (same storms/starts, deterministic).
 #7: new trial tn-obs-2026102618 (acct5). Morning report sent 07:00 IST.
+
+## 27 Oct 09:15 IST - ABLATION: shallow plume kills TN rain; rain-evaporation fraction is the keeper
+SI tracks (--tune median 72 h): default 292, full 330, fullck 325 (worse; west bias -0.8 -> -2.3 deg lon).
+Bay ablation (median 24/48/72/96/120): default 110/240/394/568/700; org 120/256/407/553/603; ev 129/247/403/461/483; sh 111/242/428/649/729; evsh 123/293/426/692/816; full 133/312/550/753/1022. Each alone ~neutral within noise; the combination is much worse (nonlinear).
+ECMWF exam d5 (default/org/ev/evsh): z500 globe 74.7/74.2/72.6/71.4; z500 tropics 34.4/33.5/28.0/24.6; TN rain24 d3 ACC 0.34/0.28/0.35/0.11 -> the shallow plume (sh) causes the TN rain loss; t850 India 3.14/3.33/3.26/3.54; u200 tropics 10.14/9.79/9.73/10.17.
+Candidate = ev_frac 0.3 (keeps TN rain, better z500 tropics/globe, India rain, u200; Bay ~neutral). Running: tn-gen-ev (acct8: ev, evorg5=ev+mf_org0.5), tn-io-as-ev (3) / tn-io-si-ev (4): ev, evorg5; tn-base-ev (2: evorg5, ev5=ev_frac0.5); tn-wx-ev (1: evorg5, ev5); tn-wind-ev (10: ev, evorg5).
+#7: trial tn-obs-2026102618 done (model-maps); fetching GFS analyses 2700/2706 for scoring.
