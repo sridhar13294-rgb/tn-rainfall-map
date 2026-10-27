@@ -22,7 +22,7 @@ if k and s:
         for c in items:
             cid = urllib.parse.unquote((c.get('href') or c.get('id') or '').split('/collections/')[-1].split('?')[0]); allc.append(cid)
             t = (c.get('title') or '') + ' ' + cid
-            if any(w in t.lower() for w in ('wind', 'ascat', 'amv', 'scatter', 'iodc', 'motion', 'mpef', 'bufr')): log('  ', t[:200])
+            if any(w in t.lower() for w in ('wind', 'ascat', 'amv', 'scatter', 'iodc', 'motion', 'mpef', 'bufr', 'occultation', 'gras', 'rom saf', 'romsaf', 'bending', 'refractivity')): log('  ', t[:200])
         open('data/cyclone/eumetsat_collections.txt', 'w').write('\n'.join(allc) + '\n')
         for cid in ([] if os.environ.get('PROBE_FAST', '1') == '1' else allc):                    # titles: look for motion winds
             try:
@@ -31,7 +31,7 @@ if k and s:
                 if any(w in t.lower() for w in ('wind', 'motion', 'amv')): log('  title:', cid, '|', t[:150])
             except Exception: pass
         now = dt.datetime.utcnow(); t0 = (now - dt.timedelta(hours=9)).strftime('%Y-%m-%dT%H:%M:%SZ'); t1 = now.strftime('%Y-%m-%dT%H:%M:%SZ')
-        for cid in ('EO:EUM:DAT:METOP:OSI-104', 'EO:EUM:DAT:METOP:ASCSZR1B', 'EO:EUM:DAT:MSG:AMV-IODC', 'EO:EUM:DAT:MSG:AMV', 'EO:EUM:DAT:0398'):
+        for cid in ('EO:EUM:DAT:METOP:OSI-104', 'EO:EUM:DAT:METOP:ASCSZR1B', 'EO:EUM:DAT:MSG:AMV-IODC', 'EO:EUM:DAT:MSG:AMV', 'EO:EUM:DAT:0398') + tuple(c for c in allc if any(w in c.upper() for w in ('GRAS', 'GNSS', 'ROM'))):
             try:
                 q = urllib.parse.urlencode({'format': 'json', 'pi': cid, 'dtstart': t0, 'dtend': t1, 'c': 5})
                 st, b, _ = get('https://api.eumetsat.int/data/search-products/1.0.0/os?' + q, H)
@@ -83,4 +83,12 @@ try:
         st, b, _ = get(tok_url, {'Content-Type': 'application/json'}, json.dumps({'username': mu, 'password': mp}).encode(), timeout=60)
         j = json.loads(b); log('MOSDAC token: OK' if any(k in j for k in ('access_token', 'token')) else 'MOSDAC token reply keys: ' + str(list(j)[:6]))
 except Exception as e: log('MOSDAC failed:', repr(e)[:300])
+open('data/cyclone/obs_probe2.txt', 'w').write('\n'.join(OUT) + '\n')
+
+# ---------------------------------------------------------------- GPS radio occultation: UCAR CDAAC COSMIC-2 near-real-time (public listing)
+for url in ('https://data.cosmic.ucar.edu/gnss-ro/cosmic2/nrt/level2/', 'https://data.cosmic.ucar.edu/gnss-ro/cosmic2/nrt/'):
+    try:
+        st, b, u = get(url, timeout=60); t = b.decode('latin-1', 'replace'); import re as _re2
+        hs = _re2.findall(r'href="([^"]+)"', t); log('COSMIC-2', url, 'status', st, 'links', len(hs), hs[-8:])
+    except Exception as e: log('COSMIC-2', url, 'failed', repr(e)[:200])
 open('data/cyclone/obs_probe2.txt', 'w').write('\n'.join(OUT) + '\n')
