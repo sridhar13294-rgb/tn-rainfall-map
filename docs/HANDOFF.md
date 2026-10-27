@@ -276,3 +276,11 @@ Data source for 2-3: ARCO ERA5 on Google Cloud (gcsfs, as in the 'lib'/'history'
 ## 27 Oct 19:20 IST - Sridhar: grid plan + investment rule
 Global 80 km all 10 days; 9 km North Indian Ocean + India window days 1-5 (global takes over after); 3 km Tamil Nadu window. Target: full 80+9+3 set in ~1-1.5 h per run -> parallel windows on separate accounts + likely a paid fast GPU for the fine windows; benchmark 9 km / 3 km in Stage 3 before any spend. He offered 20 more accounts (hold; check Kaggle terms first).
 Investment rule: he will pay for GPUs/storage only after he is convinced by the output. Build it like ECMWF - don't skip anything (docs/simplifications.md is the checklist).
+
+## 27 Oct 20:10 IST - CYCLE RESULTS
+Cold UT tests (d5 tropics T 200/250/300 hPa; def ck05 -5.3/-5.8/-5.4): anv1/anv06/kice/ice05 ~0..+0.1; wke +0.2-0.3; wke_org +0.9; ecent +0.5-0.7; wke_dd3 ~+0.1; wke_ice +0.3; radtop0/06 ~0 (100 hPa warmer +0.7-0.9). OLR 212-216 for all. Old BMJ scheme also had ~-4.7 at 250 -> probably NOT mainly convection. Diagnosis job tn-prof-diag (acct8): entr0 (undiluted plumes), lw08 (rad_prm lw_line 0.8), physoff (dynamics alone).
+T170 (Bay, T170_new vs T85 ck05): tune 24/48/72/96 h 98/235/343/460 vs 119/218/437/625; final 96/216/324/492 vs 108/256/359/689 -> T170 clearly better. Genesis T170 43% (n=44). AS T170 via par.sh OOM -> rerun one process per job: tn-as-t170a/b (acct3, 6). tn-io-si-t170 (acct4) and tn-wx-t170new (acct1) still running (may OOM too - par.sh runs 2 processes; if so rerun as single-process chunks).
+Ensemble T85 new default (tn-ens-new2): spread/error 1.00 (72 h), 1.20 (120 h); ens mean 306 vs control 405 km at 72 h; coast Brier skill +2%.
+Arnab live (2026102706-v2, 51 members): median 24 h 17.5N 81.8E (landfall Godavari delta area), 36 h 20.6N 81.4E (too fast inland; JTWC stall ~24 h), min p ~1001 hPa (far too weak vs Cat 4).
+Nivar viewer: NEW artifact https://claude.ai/artifact/ERJcNLhKojkgHv3Z4Kxogy (old viewer S1b5... has unread old files; republishing it needs reading 26 binaries). Run from 21 Nov 00Z, T85 new default, no bogus: weak low 1004-1006 hPa, 200-300 km south of real track, coast near 9-10N vs 12.5N. Viewer now draws meta.tracks + meta.note (scratchpad/viewer/index.html). Next: T170 + inserted storm run from 22 Nov 18Z (maps_run needs grid + storm options).
+#7: tn-obs-2026102706 (acct2).
