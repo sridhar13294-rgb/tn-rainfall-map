@@ -198,3 +198,14 @@ Running: tn-prof-ev (acct9: def / +ck_z / +pbl_tm budget), tn-wind-ev2 (acct10: 
 ## 27 Oct 11:35 IST - LEAN MODE + BIG GPU BATCH
 Sridhar: weekly usage 16% -> cycles every 3 h (work + report together) + one silent ~03:00 IST launch; give GPUs/GitHub ~3 h of work per cycle (multiple, bigger jobs).
 Big batch (all with new default ev_frac 0.3): tn-wx-ev2 (acct1: exam def/ck/tm), tn-base-ev2 (2: Bay all years def/ck/tm -> score_hind --tune AND --final), tn-io-as-ev2 (3), tn-io-si-ev2 (4), tn-ens-ev (5: ensemble spread, ens_final3 settings), tn-ocean-ev (6: #6 column vs 3-D ocean 'rgo'). Still running: tn-gen-ev2 (8). Done: tn-prof-ev (9), tn-wind-ev2 (10).
+
+## 27 Oct 14:05 IST - BATCH RESULTS (new default ev_frac 0.3) + NEXT BATCH
+prof def d5 tropics T: 250 hPa -5.3, 1000 hPa +2.8 (cold top / warm bottom remains). ck: colder aloft (-6.2); tm ~same.
+Shear err d5 Bay/AS/SI: def 4.1/2.5/5.0; ck 0.7/1.2/2.9; tm 4.1/3.5/5.1. Genesis: ck 19% (just under gatekeeper), tm 21%.
+Tracks 72 h median (tune / final): Bay def 390/476, ck 360/347, tm 336/398; AS def 392/452, ck 401/381, tm 380/338; SI def 259/390, ck 327/337, tm 281/353.
+Exam d5 def/ck/tm: z500 tropics 27.95/33.3/26.3; z500 globe 72.7/74.8/72.0; TN rain24 6.32,7.5 (d3,d5) / 5.77,6.19 / 5.35,6.47; TN ACC d5 0.19/0.30/0.27; t850 India 3.27/3.28/3.49; u200 trop 9.72/9.38/9.87.
+Ensemble (tn-ens-ev): spread/error 0.83/0.74/0.82/0.84/0.92 at 24-120 h; ens mean beats control 72-120 h by 20-26%; coast-stretch Brier skill -5%.
+#6 ocean: col vs col_rgo no track difference -> Stage 1 keeps column ocean.
+#7: unchanged (n=7 scored).
+Next batch: tn-wx-ckm (1), tn-base-ckm (2), tn-io-as-ckm (3), tn-io-si-ckm (4) [ckm = ck_z 1 + pbl_tm 1; ck05 = ck_z 0.5], tn-ens-ckm (5), tn-t170-ev0/1 (6, 9: T170 def vs ckm), tn-gen-ckm (8), tn-prof-ckm (10: budget + shear). hindens2.py now accepts 'set' (model settings for all members).
+Decision rule: adopt ckm (or ck05) if genesis >= ~21% and tracks no worse in all 3 basins; then final scoring.
