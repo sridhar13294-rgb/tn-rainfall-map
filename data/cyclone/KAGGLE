@@ -1,6 +1,6 @@
-tn-as-t170a
+tn-as-t170b
 libm_as_fields.npz
-XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_as_fields.npz ../../../data/cyclone/kaggle_cfg/io_as_t170.json 0 2 /kaggle/working/as_0.json > /kaggle/working/as_0.log 2>&1; tail -3 /kaggle/working/as_0.log
+XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_as_fields.npz ../../../data/cyclone/kaggle_cfg/io_as_t170.json 1 2 /kaggle/working/as_1.json > /kaggle/working/as_1.log 2>&1; tail -3 /kaggle/working/as_1.log
 NvidiaTeslaT4
-3
-#T170 Arabian Sea tracks part 1 (one process: two T170 runs on one GPU ran out of memory) 2026-10-27T14:26Z
+6
+#T170 Arabian Sea tracks part 2 2026-10-27T14:27Z
