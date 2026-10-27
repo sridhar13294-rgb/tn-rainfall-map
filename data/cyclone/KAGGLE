@@ -1,6 +1,6 @@
-tn-wx-ev2
-libm_wx2020_fields.npz,wx_truth_2020.npz
-bash ../kaggle/par.sh wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/wx_ev2.json /kaggle/working/wx
+tn-base-ev2
+libm_fields.npz
+bash ../kaggle/par.sh hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/base_ev2.json /kaggle/working/bt
 NvidiaTeslaT4
-1
-#ECMWF exam: new default, +ck_z, +pbl_tm 2026-10-27T05:58Z
+2
+#Bay tracks all years: new default, +ck_z, +pbl_tm 2026-10-27T05:58Z
