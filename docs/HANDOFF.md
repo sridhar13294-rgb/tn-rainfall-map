@@ -225,3 +225,8 @@ T170 first try (tn-t170-ev0/1) OOM-killed with 2 variants in one job -> one vari
 Running: tn-t170-new0/1 (6, 9: Bay T170), tn-io-as-t170 (3), tn-io-si-t170 (4), tn-gen-t170new (8), tn-wx-t170new (1), tn-ens-new2 (5, T85 new default), tn-maps-nivar (10: maps_run from near:2020-11-22, T85, 240 h -> model-maps release maps_nivar_2020.npz).
 T85 reference for the new default = ck05 in tn-base-ckm / tn-io-as-ckm / tn-io-si-ckm / tn-wx-ckm / tn-gen-ckm.
 #7: pushed RUN ours + obs (latest) + oursm 2706 2712 -> launch obs_trial on acct2 next cycle.
+
+## 27 Oct 17:30 IST - Sridhar: fix the upper-air cold bias IN STAGE 1 (time box ~2 days)
+Tropics d5 T bias with new default: 200-300 hPa -5..-6 K, 1000 hPa +3; z500 tropics error 31 (ECMWF 6.9). Tropical OLR ~205 W/m2 (observed ~250) -> suspect too much anvil/high cloud whose tops cool the upper air by LW.
+tn-prof-rad (acct2): anv1 (anv_a 1.0, fewer anvils), anv06 (anv_max 0.6), kice (k_ice0 halved), ice05 (mf_ice 0.5). Read T bias 200-400 hPa + olr_trop + rad_Kday. Then: deep-plume detrainment height, radiation clear-sky check (test_radcloud.py vs RRTM-like reference). Winner -> genesis + tracks + exam.
+#7 obs_trial moved to next free account.
