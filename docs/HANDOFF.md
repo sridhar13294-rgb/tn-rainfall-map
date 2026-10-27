@@ -245,3 +245,8 @@ Mechanisms in the bulletin -> our action:
 6. Weakening steering gradient as the subtropical ridge moves east -> steering fix (ck_z) relevant; check ridge position in the live run vs ECMWF.
 7. Terrain + friction decay after landfall -> part of the landfall-decay exam (z0_land).
 Next free accounts: (a) vortex size from RMW/R34 test (Bay+AS tracks, intensity), (b) landfall-decay exam on all landfalling storms, (c) RTOFS mixed-layer start test.
+
+## 27 Oct 18:40 IST - Cold upper air: two new leads (from Sridhar's RCE note)
+(a) Tropopause/ozone 'lid': d5 tropics T bias +7 K at 100 hPa but -5..-6 K at 150-400 hPa -> tropopause too low / ozone heating too strong or misplaced (radcloud k_o3_lw, SW ozone absorption, top-level radiation; 32 levels coarse near tropopause). Test: ozone profile/strength variants in wx_prof (rad_prm k_o3_lw lower/higher) + check ozone climatology used.
+(b) Full heat budget: add dynamics terms (vertical advection / subsidence warming + horizontal advection) to wx_prof so radiation + convection + dynamics balance is measured; if large-scale subsidence is too weak, upper air goes cold even with right physics.
+Sridhar offered to read articles and help: ask him for specific reading when useful.
