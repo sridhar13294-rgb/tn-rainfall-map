@@ -1,6 +1,6 @@
-tn-wx-t170new
-libm_wx2020_fields.npz,wx_truth_2020.npz
-bash ../kaggle/par.sh wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/wx_t170new.json /kaggle/working/wx
+tn-ens-new2
+libm_fields.npz
+bash ../kaggle/par.sh hindens2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/ens_new2.json /kaggle/working/ens
 NvidiaTeslaT4
-1
-#T170 ECMWF exam, new default 2026-10-27T11:26Z
+5
+#Ensemble (T85) with new default (ev_frac 0.3 + ck_z 0.5) 2026-10-27T11:27Z
