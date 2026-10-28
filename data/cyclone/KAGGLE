@@ -1,6 +1,6 @@
-tn-bay-t255b
-libm_fields.npz
-XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/bay_t255.json 1 4 /kaggle/working/t255_1.json > /kaggle/working/t255_1.log 2>&1; tail -3 /kaggle/working/t255_*.log
+tn-as-nodfi
+libm_as_fields.npz
+XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_as_fields.npz ../../../data/cyclone/kaggle_cfg/as_nodfi.json 0 2 /kaggle/working/as_0.json > /kaggle/working/as_0.log 2>&1; XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_as_fields.npz ../../../data/cyclone/kaggle_cfg/as_nodfi.json 1 2 /kaggle/working/as_1.json > /kaggle/working/as_1.log 2>&1; tail -2 /kaggle/working/as_*.log
 NvidiaTeslaT4
-5
-#n6 2026-10-28T20:33Z
+8
+#n7 2026-10-28T20:33Z
