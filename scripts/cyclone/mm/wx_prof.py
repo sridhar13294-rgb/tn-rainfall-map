@@ -17,7 +17,7 @@ def era_mean(k, v, reg):
     m = REG[reg](LAg, LOg); a = Z['f3'][k, V3.index(v)]; return [float((a[i] * Wg * m).sum() / (Wg * m).sum()) for i in range(len(LEV))]
 ALL = {}
 for VN, VS in VARS.items():
-  VS = dict(VS); SPLIT = bool(VS.pop('_split', False)); NL = int(VS.pop('layers', 32)); GR = VS.pop('grid', 'T85')
+  VS = dict(VS); SPLIT = bool(VS.pop('_split', False)); NL = VS.pop('layers', 32); GR = VS.pop('grid', 'T85')
   M = mm2.Model(GR, NL, None, dict(BASE, **VS)); res = []
   def model_profiles(st, cr):
       hor = M.coords.horizontal

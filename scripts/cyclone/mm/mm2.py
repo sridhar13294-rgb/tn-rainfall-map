@@ -30,6 +30,13 @@ from dinosaur import coordinate_systems, spherical_harmonic, sigma_coordinates, 
 units = scales.units
 G, RD, RV, CP, LV, SB, KARM = 9.80616, 287.04, 461.5, 1004.6, 2.5e6, 5.67e-8, 0.4; KAP = RD / CP
 def sigma_bounds(n=32):
+    """n (int): the original spacing. 'tpNN' (str): NN levels packed near the tropopause (~170 hPa), the boundary layer
+    and the model top (ECMWF-style), so the 100-300 hPa band and the lowest km get thin layers."""
+    if isinstance(n, str) and n.startswith('tp'):
+        m = int(n[2:]); s = np.linspace(0, 1, 20001)
+        dens = 1.0 + 1.3 * np.exp(-((s - 0.17) / 0.08) ** 2) + 1.5 * np.exp(-((1 - s) / 0.08) ** 2) + 1.0 * np.exp(-(s / 0.05) ** 2)
+        cum = np.concatenate([[0], np.cumsum(0.5 * (dens[1:] + dens[:-1]) * np.diff(s))]); cum /= cum[-1]
+        return np.interp(np.linspace(0, 1, m + 1), cum, s).astype(np.float32)
     e = np.linspace(0, 1, n + 1); return (0.6 * e + 0.4 * (1 - (1 - e) ** 2)).astype(np.float32)
 SND_LEVS = (1000, 975, 950, 925, 900, 850, 800, 750, 700, 650, 600, 550, 500, 450, 400, 350, 300, 250, 200, 150, 100)   # sounding levels (hPa) for the map viewer
 def qsat(T, p):
