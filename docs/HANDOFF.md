@@ -344,3 +344,9 @@ Running: tn-wx-tp75c0/c1 (accts 4, 9): T170 tp75 + mf_wke + mf_org + mf_capdp 24
 ## 28 Oct 10:50 IST - P2 (TN rain vs levels), Sridhar's note: mixed departure layer
 Checked against our code: (1) our parcel = ONE layer (max theta-e in sigma>=0.87) -> implemented src_dp (Pa): parcel MSE/q = mass-weighted mean over a src_dp-thick layer centred on the source level (ECMWF mixed departure layer); (2) trigger: CAPE>50 J/kg & depth>250 hPa, no single-layer CIN test (plume may rise 0.2 sigma below its LFC) - fine; (3) heating = flux divergence /layer mass (conservative) - fine; the layer-dependent piece is the mass-flux cap (mf_capdp, done).
 14:00 cycle: if tn-wx-tp75c0/1 (tp75 + wke + org + capdp 2400) still loses TN rain skill vs T170_new (ACC d3 0.29), next exam = same + src_dp 5000 (50 hPa); then genesis + Bay tracks for the winner.
+
+## 28 Oct 14:05 IST - L50org rejected; 75-level candidate full test battery running
+T170 L50org (L50 + mf_wke + mf_org): genesis 33%; Bay 72 h tune 327 vs 343, final 341 vs 324; exam z500 tropics d5 36.4 vs 32.6 (worse), TN rain ACC d3 0.28 (=), d5 0.08 vs 0.25 (much worse) -> REJECTED.
+Nivar T170 from 16 Nov (near:2020-11-20 picks 16 Nov): no real storm (depth 1-3 hPa, 175-414 km off) - 6-day lead too far for genesis.
+Candidate 'tp75oc' = layers tp75 + mf_wke 1 + mf_org 1 + mf_capdp 2400 (T170). Exam tn-wx-tp75c0/c1 (accts 4, 9) still running (started 10:04 IST). Launched (each runs both halves in sequence, ~6 h): tn-gen-tp75oc (2), tn-bay-tp75oc (3), tn-as-tp75oc (5), tn-si-tp75oc (6); tn-prof-sponge (8: tp75oc vs + deep sponge sp_quad 1 sp_top 0.15; region trop_pacific); tn-maps-nivar-cand (1: Nivar 21 Nov with tp75oc); tn-maps-nivar-diff (10: Nivar T170 32L with diff_x 4).
+Adopt tp75oc only if: TN rain ACC d3/d5 >= T170_new (0.29/0.25), genesis >= ~21%, tracks no worse in all 3 basins, z500 no worse. If TN rain fails -> add src_dp 5000.
