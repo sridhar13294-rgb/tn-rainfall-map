@@ -1,6 +1,6 @@
-tn-prof-sponge
+tn-maps-nivar-cand
 libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 20 '{"tp75oc":{"layers":"tp75","mf_wke":1.0,"mf_org":1.0,"mf_capdp":2400.0},"tp75oc_sp":{"layers":"tp75","mf_wke":1.0,"mf_org":1.0,"mf_capdp":2400.0,"sp_quad":1.0,"sp_top":0.15}}' > /kaggle/working/prof.log 2>&1; tail -60 /kaggle/working/prof.log
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore maps_run.py /kaggle/working/libm_wx2020_fields.npz near:2020-11-22 /kaggle/working/maps_nivar_cand.npz 240 '{"grid":"T170","layers":"tp75","mf_wke":1.0,"mf_org":1.0,"mf_capdp":2400.0}' > /kaggle/working/maps.log 2>&1; tail -5 /kaggle/working/maps.log
 NvidiaTeslaT4
-8
-#upper boundary: deep quadratic sponge with 75 levels (+ open-Pacific region) 2026-10-28T08:50Z
+1
+#Nivar benchmark with the 75-level candidate (21 Nov 00Z, no inserted storm) 2026-10-28T08:51Z
