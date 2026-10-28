@@ -1,6 +1,6 @@
-tn-gen-l50org0
+tn-gen-l50org1
 libm48_fields.npz
-XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_l50org.json 0 2 /kaggle/working/gen_0.json > /kaggle/working/gen_0.log 2>&1; tail -3 /kaggle/working/gen_0.log
+XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_l50org.json 1 2 /kaggle/working/gen_1.json > /kaggle/working/gen_1.log 2>&1; tail -3 /kaggle/working/gen_1.log
 NvidiaTeslaT4
-2
-#T170 L50 + kinetic-energy cloud top + organised entrainment: genesis part 1 2026-10-28T02:37Z
+3
+#T170 L50org genesis part 2 2026-10-28T02:38Z
