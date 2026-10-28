@@ -59,7 +59,7 @@ jobs:
                          dataset_sources=[], competition_sources=[], kernel_sources=[]), open('/tmp/k/kernel-metadata.json', 'w'), indent=1)
           PY
           cat /tmp/k/kernel-metadata.json | grep -v '"id"'
-          (kaggle kernels push -p /tmp/k --accelerator $ACC || kaggle kernels push -p /tmp/k) 2>&1 | tee data/cyclone/kaggle/$SLUG/push.txt
+          if [ "$(echo $JOB | tr -d ' ')" = "COLLECT" ]; then echo "collect only: no push"; else (kaggle kernels push -p /tmp/k --accelerator $ACC || kaggle kernels push -p /tmp/k) 2>&1 | tee data/cyclone/kaggle/$SLUG/push.txt; fi   # line 3 COLLECT = fetch output of an already-run kernel
       - env:
           GH_TOKEN: ${{ github.token }}
         run: |
