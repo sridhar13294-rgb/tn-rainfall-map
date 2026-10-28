@@ -24,3 +24,11 @@ Gap: genesis test counts hits only - add a FALSE-ALARM measure (model storms wit
 
 28 Oct 20:00: P1 - mountain (sigma pressure-gradient) hypothesis ruled out (open Pacific same bias). 100 hPa: day-0 representation error +2.9 (32L) / +1.2 (tp75); sponge removes most of the remaining 100 hPa drift. Remaining: 250 hPa drift ~-1.6..-2.3 K -> next: full T-tendency budget incl. dynamics residual.
 P3 - weak storms: diff_x 4 deepened Nivar to 1003 hPa (-9) and put it within 70-80 km on 24-25 Nov (single case) -> hyper-diffusion supported as a cause; broad test running.
+
+28 Oct 20:40 - P3 initial-state audit (Sridhar's checklist, item A): Bay storms (54 cases, inserted vortex), mean best-track vmax vs model max wind (kt) / min pressure:
+          0 h          24 h         48 h         72 h
+ real    22.5         27.1         33.9         44.6
+ T170    28.1/1004.7  24.9/1006.0  29.2/1003.2  28.3/1003.8
+ T85     22.7/1006.2  17.1/1008.0  22.1/1005.5  23.2/1004.7
+-> Start strength is RIGHT on average (not the cause). Two signatures: (1) SPIN-DOWN in the first 24 h (T85 -25%, T170 -11%) = start imbalance (inserted vortex vs model physics/DFI) and/or damping; (2) NO intensification afterwards (real +65% from 24 to 72 h, model ~flat) = missing energy supply/organisation (surface enthalpy flux, convective heating profile, diffusion).
+Next discriminating diagnostics (no new physics): storm-following budgets on ~10 Bay cases at T170: surface enthalpy flux under the core, convective heating profile within 200 km, vorticity/KE change by term incl. diffusion, 850-200 shear and mid-level RH around the storm vs ERA5. diff_x 4 runs (tn-bay-diff4) will show whether the spin-down shrinks.
