@@ -1,6 +1,6 @@
-tn-wx-tp75c1
-libm_wx2020_fields.npz,wx_truth_2020.npz
-XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/wx_tp75.json 1 2 /kaggle/working/wx_1.json > /kaggle/working/wx_1.log 2>&1; tail -3 /kaggle/working/wx_1.log
+tn-gen-tp75oc
+libm48_fields.npz
+XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_tp75oc.json 0 2 /kaggle/working/gen_0.json > /kaggle/working/gen_0.log 2>&1; XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_tp75oc.json 1 2 /kaggle/working/gen_1.json > /kaggle/working/gen_1.log 2>&1; tail -2 /kaggle/working/gen_*.log
 NvidiaTeslaT4
-9
-#T170 tp75 + org + capdp: ECMWF exam part 2 2026-10-28T04:34Z
+2
+#75-level candidate: genesis (both halves in sequence) 2026-10-28T08:47Z
