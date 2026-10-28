@@ -1,6 +1,6 @@
-tn-maps-nivar-best
-libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore maps_run.py /kaggle/working/libm_wx2020_fields.npz near:2020-11-22 /kaggle/working/maps_nivar_best.npz 240 '{"grid":"T170","layers":"tp75","mf_wke":1.0,"mf_org":1.0,"mf_capdp":2400.0,"sp_quad":1.0,"sp_top":0.15,"diff_x":4.0}' > /kaggle/working/maps.log 2>&1; tail -5 /kaggle/working/maps.log
+tn-wx-tp75c0
+-
+COLLECT
 NvidiaTeslaT4
-1
-#Nivar benchmark: 75 levels + cloud fix + sponge + weaker diffusion together 2026-10-28T14:46Z
+4
+#collect 2026-10-28T20:21Z
