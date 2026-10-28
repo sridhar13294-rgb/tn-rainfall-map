@@ -323,3 +323,9 @@ Next cycle: score t170c0 jobs (merge with t170new/si_1/gen_1); when L50 jobs fin
 
 ## 28 Oct 01:10 IST - Sridhar's note on GWD as cause of UT cold bias (assessment)
 Our cold UT is in the TROPICS (20S-20N); orographic GWD acts mainly in the extratropics, so it is a contributor at most, not the primary cause there. Useful checks to add: (1) zonal-mean u bias at 200-300 hPa by latitude band (extend wx_wind to global zonal means) - if extratropical jets too strong -> GWD missing confirmed; (2) when raising the model top (75-level test), keep/strengthen the top sponge (currently Rayleigh on winds, sigma<0.05, 1 day) to avoid wave reflection; (3) radiative heating profile 100-200 hPa already in wx_prof (rad_Kday).
+
+## 28 Oct 08:00 IST - T170 final + 50-level verdict
+T170 final (all chunks): genesis 38% (84 cases); SI 72 h median tune 227 vs T85 317, final 355 vs 372 (mean 386 vs 446); exam d5 z500 globe 73.3, tropics 32.6, TN rain ACC d3 0.29 / d5 0.25. T170 = main run confirmed.
+T170 L50 (plain): genesis 37%; Bay 72 h tune 368 vs 363, final 298 vs 324; exam z500 globe 74.5 (73.3), TN rain24 d3 8.26 vs 7.38 mm, ACC d3 0.19 vs 0.29, d5 0.11 vs 0.25 -> TN rain clearly WORSE -> NOT adopted. (Physics tuned on 32 levels; ksrc/PBL/condensation behave differently with thinner layers.)
+New option layers='tpNN' (mm2.sigma_bounds): tp75 = top layer ~4 hPa, ~8 hPa layers at 170 hPa, 21 levels 100-300 hPa, 11 below 900 hPa.
+Running: tn-gen-l50org0/1 (2,3), tn-bay-l50org0/1 (5,6), tn-wx-l50org0/1 (8,10) [T170 L50 + mf_wke + mf_org]; tn-prof-tp75 (4: T85 tp75 / tp75_org / L50_org budget); tn-prof-tp75t170 (9: T170 tp75 memory/time); tn-maps-nivar20 (1: Nivar T170 earlier start).
