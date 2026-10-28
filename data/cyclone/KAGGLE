@@ -1,6 +1,6 @@
-tn-as-tp75oc
-libm_as_fields.npz
-XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_as_fields.npz ../../../data/cyclone/kaggle_cfg/as_tp75oc.json 0 2 /kaggle/working/as_0.json > /kaggle/working/as_0.log 2>&1; XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_as_fields.npz ../../../data/cyclone/kaggle_cfg/as_tp75oc.json 1 2 /kaggle/working/as_1.json > /kaggle/working/as_1.log 2>&1; tail -2 /kaggle/working/as_*.log
+tn-si-tp75oc
+libm_si4_fields.npz
+XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_si4_fields.npz ../../../data/cyclone/kaggle_cfg/si_tp75oc.json 0 2 /kaggle/working/si_0.json > /kaggle/working/si_0.log 2>&1; XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_si4_fields.npz ../../../data/cyclone/kaggle_cfg/si_tp75oc.json 1 2 /kaggle/working/si_1.json > /kaggle/working/si_1.log 2>&1; tail -2 /kaggle/working/si_*.log
 NvidiaTeslaT4
-5
-#75-level candidate: Arabian Sea tracks 2026-10-28T08:49Z
+6
+#75-level candidate: South Indian Ocean tracks 2026-10-28T08:49Z
