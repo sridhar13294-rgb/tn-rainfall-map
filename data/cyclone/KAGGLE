@@ -1,6 +1,6 @@
-tn-maps-nivar20
-libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore maps_run.py /kaggle/working/libm_wx2020_fields.npz near:2020-11-20 /kaggle/working/maps_nivar170_20nov.npz 240 '{"grid":"T170"}' > /kaggle/working/maps.log 2>&1; tail -5 /kaggle/working/maps.log
+tn-wx-tp75c0
+libm_wx2020_fields.npz,wx_truth_2020.npz
+XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/wx_tp75.json 0 2 /kaggle/working/wx_0.json > /kaggle/working/wx_0.log 2>&1; tail -3 /kaggle/working/wx_0.log
 NvidiaTeslaT4
-1
-#Nivar benchmark T170, earlier start (on/before 20 Nov) 2026-10-28T02:43Z
+4
+#T170 tp75 + org + capdp: ECMWF exam part 1 (TN rain gate) 2026-10-28T04:33Z
