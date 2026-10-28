@@ -1,6 +1,6 @@
-tn-prof-tp75t170
+tn-maps-nivar20
 libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 10 '{"T170_tp75":{"grid":"T170","layers":"tp75"}}' > /kaggle/working/prof.log 2>&1; tail -60 /kaggle/working/prof.log
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore maps_run.py /kaggle/working/libm_wx2020_fields.npz near:2020-11-20 /kaggle/working/maps_nivar170_20nov.npz 240 '{"grid":"T170"}' > /kaggle/working/maps.log 2>&1; tail -5 /kaggle/working/maps.log
 NvidiaTeslaT4
-9
-#75 tropopause-packed levels at T170: memory/run-time check + budget 2026-10-28T02:42Z
+1
+#Nivar benchmark T170, earlier start (on/before 20 Nov) 2026-10-28T02:43Z
