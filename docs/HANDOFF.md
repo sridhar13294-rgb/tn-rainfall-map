@@ -390,3 +390,16 @@ Stage 4 = WeekAI (weeks 2-4/6) + MonthAI (monthly tercile outlooks), data-driven
 - Neural nets only if they beat the regression baseline on held-out years.
 - MEGAM days 8-10 as input only after >=1 yr archive (Nov 2026 on); proper training needs reforecasts (decide in 2028).
 - Jan-Mar 2028: verify both seasons, go/no-go. Any outside use only after that.
+
+## 29 Oct 02:00 IST - silent night cycle
+Kaggle workflow: new COLLECT mode (KAGGLE line 3 = COLLECT) fetches output of kernels that outlive the 6 h GitHub runner. Used it for tp75 exam + battery (all complete).
+RESULTS
+- tp75oc REJECTED as a package (vs T170_new, same starts/cases): exam z500 tropics d5 32.6->37.8, TN rain ACC d3 0.27->0.13, d5 0.26->-0.02; genesis 23% vs 38%; Bay 24 h track 98->134 km, 72 h equal. Upper-air T gain is real but convection/genesis/rain degrade with 75 levels -> layer-thickness dependence in convection still there (P2). Keep 32L; revisit levels after the budget.
+- diff_x 4 (weaker hyper-diffusion) NEUTRAL broadly: genesis 32 vs 33 of 86; Bay tracks mixed (72 h 336 vs 331); intensity +0.5-0.8 kt only (72 h: 28.0 vs 27.2 kt, real 42 kt). Nivar improvement was one case. Diffusion is NOT the main weak-storm cause.
+- Exam check for the blogger doc: T170_new d5 TN rain24 8.1 vs HRES 3.7 mm, ACC 0.26 vs 0.60; t850 India d5 3.2 vs 1.0 K (doc corrected).
+WEAK-STORM ROOT CAUSE - next discriminating tests (running):
+- DFI smooths the inserted vortex? Bay hindcasts do bogus THEN 6 h DFI. tn-bay-nodfi (3), tn-as-nodfi (8), tn-si-nodfi (10): same as T170_new without DFI. If day-1 spin-down vanishes -> DFI is the cause (fix: DFI before bogus).
+- Resolution limit? tn-bay-t255a/b (4, 5): T255 (~50 km) on chunks 0-1 of 4. T85->T170 already +5 kt; if T255 adds more and intensifies after day 1, weak storms are mostly grid-limited (answer = Stage 3 9 km window, and stop tuning physics for intensity at 80 km).
+UPPER AIR (P1) running: tn-prof-budget (1: full T budget total/phys/dyn by level, 0-24 h and 96-120 h, T170 32L + tp75oc; wx_prof setting "_budget": true), tn-prof-sp2 (2: confined sin^2 sponge 30->4 hPa sp_quad 2, 6 h / 12 h; rad_top 0), tn-prof-sp3 (9: rad_top 0 + sp6; tp75oc + sp6).
+DATA: RUN geo -> scripts/cyclone/geo_fetch.py: ARCO ERA5 sub-grid orography (0.5 deg) -> release geo_gwd.npz; monthly zonal-mean ozone 2017-19 -> ozone_clim.npz. Log data/cyclone/geo_fetch.txt.
+Account 6: tn-si-tp75oc collect still polling (kernel status unknown); 7 = LETKF.
