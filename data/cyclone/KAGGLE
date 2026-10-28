@@ -1,6 +1,6 @@
-tn-as-nodfi
-libm_as_fields.npz
-XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_as_fields.npz ../../../data/cyclone/kaggle_cfg/as_nodfi.json 0 2 /kaggle/working/as_0.json > /kaggle/working/as_0.log 2>&1; XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_as_fields.npz ../../../data/cyclone/kaggle_cfg/as_nodfi.json 1 2 /kaggle/working/as_1.json > /kaggle/working/as_1.log 2>&1; tail -2 /kaggle/working/as_*.log
+tn-si-nodfi
+libm_si4_fields.npz
+XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_si4_fields.npz ../../../data/cyclone/kaggle_cfg/si_nodfi.json 0 2 /kaggle/working/si_0.json > /kaggle/working/si_0.log 2>&1; XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_si4_fields.npz ../../../data/cyclone/kaggle_cfg/si_nodfi.json 1 2 /kaggle/working/si_1.json > /kaggle/working/si_1.log 2>&1; tail -2 /kaggle/working/si_*.log
 NvidiaTeslaT4
-8
-#n7 2026-10-28T20:33Z
+10
+#n8 2026-10-28T20:34Z
