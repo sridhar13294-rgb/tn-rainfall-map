@@ -1,6 +1,6 @@
-tn-si-tp75oc
-libm_si4_fields.npz
-XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_si4_fields.npz ../../../data/cyclone/kaggle_cfg/si_tp75oc.json 0 2 /kaggle/working/si_0.json > /kaggle/working/si_0.log 2>&1; XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_si4_fields.npz ../../../data/cyclone/kaggle_cfg/si_tp75oc.json 1 2 /kaggle/working/si_1.json > /kaggle/working/si_1.log 2>&1; tail -2 /kaggle/working/si_*.log
+tn-prof-sponge
+libm_wx2020_fields.npz
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 20 '{"tp75oc":{"layers":"tp75","mf_wke":1.0,"mf_org":1.0,"mf_capdp":2400.0},"tp75oc_sp":{"layers":"tp75","mf_wke":1.0,"mf_org":1.0,"mf_capdp":2400.0,"sp_quad":1.0,"sp_top":0.15}}' > /kaggle/working/prof.log 2>&1; tail -60 /kaggle/working/prof.log
 NvidiaTeslaT4
-6
-#75-level candidate: South Indian Ocean tracks 2026-10-28T08:49Z
+8
+#upper boundary: deep quadratic sponge with 75 levels (+ open-Pacific region) 2026-10-28T08:50Z
