@@ -1,6 +1,6 @@
-tn-wx-l50org1
-libm_wx2020_fields.npz,wx_truth_2020.npz
-XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/wx_l50org.json 1 2 /kaggle/working/wx_1.json > /kaggle/working/wx_1.log 2>&1; tail -3 /kaggle/working/wx_1.log
+tn-prof-tp75
+libm_wx2020_fields.npz
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 20 '{"tp75":{"layers":"tp75"},"tp75_org":{"layers":"tp75","mf_wke":1.0,"mf_org":1.0},"L50_org":{"layers":50,"mf_wke":1.0,"mf_org":1.0}}' > /kaggle/working/prof.log 2>&1; tail -60 /kaggle/working/prof.log
 NvidiaTeslaT4
-10
-#T170 L50org ECMWF exam part 2 2026-10-28T02:41Z
+4
+#cold upper air: 75 levels packed at the tropopause (T85 budget) 2026-10-28T02:41Z
