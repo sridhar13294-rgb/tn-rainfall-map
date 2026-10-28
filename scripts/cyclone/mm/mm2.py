@@ -519,8 +519,12 @@ class Model:
         # ---------------- top sponge
         # sp_quad > 0: deeper sponge (as NCEP/ECMWF): damping grows quadratically from sp_top up to the model top, so
         # upward-moving waves are absorbed over several layers instead of reflecting off a thin lid (old: constant above 0.05)
-        spg = jnp.where(S['sp_quad'] > 0, jnp.clip((S['sp_top'] - sig) / S['sp_top'], 0.0, 1.0) ** 2 / S['sponge'],
-                        jnp.where(sig < 0.05, 1.0 / S['sponge'], 0.0)); du = du - spg * u; dv = dv - spg * v
+        # sp_quad >= 2: confined sin^2 sponge (as ECMWF/GFS): zero below sp_top (e.g. 0.03 = 30 hPa), rising smoothly to
+        # 1/sponge at sigma 0.004 (~4 hPa) and above; winds only, no temperature relaxation
+        rmp = jnp.clip((S['sp_top'] - sig) / jnp.maximum(S['sp_top'] - 0.004, 1e-4), 0.0, 1.0)
+        spg = jnp.where(S['sp_quad'] >= 2, jnp.sin(0.5 * jnp.pi * rmp) ** 2 / S['sponge'],
+                        jnp.where(S['sp_quad'] > 0, jnp.clip((S['sp_top'] - sig) / S['sp_top'], 0.0, 1.0) ** 2 / S['sponge'],
+                        jnp.where(sig < 0.05, 1.0 / S['sponge'], 0.0))); du = du - spg * u; dv = dv - spg * v
         # ---------------- SPPT-like noise on the physics (not radiation)
         if self.sppt_on:
             lonr = jnp.radians(jnp.asarray(self.LO, jnp.float32)); latr2 = jnp.radians(jnp.asarray(self.LA, jnp.float32))

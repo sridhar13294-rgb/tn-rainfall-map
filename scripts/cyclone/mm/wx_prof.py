@@ -17,7 +17,7 @@ def era_mean(k, v, reg):
     m = REG[reg](LAg, LOg); a = Z['f3'][k, V3.index(v)]; return [float((a[i] * Wg * m).sum() / (Wg * m).sum()) for i in range(len(LEV))]
 ALL = {}
 for VN, VS in VARS.items():
-  VS = dict(VS); SPLIT = bool(VS.pop('_split', False)); NL = VS.pop('layers', 32); GR = VS.pop('grid', 'T85')
+  VS = dict(VS); SPLIT = bool(VS.pop('_split', False)); BUDGET = bool(VS.pop('_budget', False)); NL = VS.pop('layers', 32); GR = VS.pop('grid', 'T85')
   M = mm2.Model(GR, NL, None, dict(BASE, **VS)); res = []
   def model_profiles(st, cr):
       hor = M.coords.horizontal
@@ -44,7 +44,23 @@ for VN, VS in VARS.items():
                       Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')], when=t0, **landinit.land_kwargs(Z['f2'][k], V2))
       M.build(t0, split=SPLIT); st = M.dfi(st); r = dict(start=key, levs=LEV.tolist())
       p0, *_ = model_profiles(st, cr); r['h0'] = {reg: {kk: (np.array(p0[reg][kk]) - np.array(era_mean(k, 'temperature' if kk == 'T' else 'specific_humidity', reg))).round(4).tolist() for kk in ('T', 'q')} for reg in REG}
-      st5, cr5 = mm2.integrate(M, st, cr, 120); p5, T, q, ps = model_profiles(st5, cr5)
+      if BUDGET:   # full T budget on model levels, tropics: total dT/dt from consecutive states, physics from the column, dynamics = total - physics
+          hor = M.coords.horizontal; trB = np.abs(np.asarray(M.LA)) < 20; WB = np.cos(np.radians(np.asarray(M.LA))) * trB
+          def snap(s_, c_):
+              Ts = np.asarray((hor.to_nodal(s_.temperature_variation) + M.ref_t[:, None, None]) / M.K); qs = np.asarray(s_.tracers['specific_humidity'])
+              pss = np.asarray(jnp.exp(hor.to_nodal(s_.log_surface_pressure))[0] / M.PA); uu, vv = spherical_harmonic.vor_div_to_uv_nodal(hor, s_.vorticity, s_.divergence)
+              tn_, _ = M.column(jnp.asarray(Ts), jnp.asarray(qs), uu / M.MPS, vv / M.MPS, jnp.asarray(pss), dict(c_, doy0=jnp.float32(M.doy0), utc0=jnp.float32(M.utc0)), rad_fresh=True, div=hor.to_nodal(s_.divergence) * M.SEC)
+              mT = np.array([(Ts[i] * WB).sum() / WB.sum() for i in range(len(M.sig))]); mP = np.array([(np.asarray(tn_['T'])[i] * WB).sum() / WB.sum() * 86400 for i in range(len(M.sig))])
+              return mT, mP
+          B = {}; sA, cA = st, cr; TA, PA_ = snap(sA, cA); hA = 0
+          for hB in (24, 96, 120):
+              sB, cB = mm2.integrate(M, sA, cA, hB - hA); TB, PB = snap(sB, cB)
+              if hB != 96: tot = (TB - TA) / ((hB - hA) / 24.0); ph = 0.5 * (PA_ + PB); B[f'{hA}-{hB}h'] = dict(total=tot.round(3).tolist(), phys=ph.round(3).tolist(), dyn=(tot - ph).round(3).tolist())
+              sA, cA, TA, PA_, hA = sB, cB, TB, PB, hB
+          r['budget'] = B; st5, cr5 = sA, cA
+          print(VN, key, 'BUDGET', {k: dict(zip(np.asarray(M.sig).round(3).tolist(), np.round(v['dyn'], 2))) for k, v in B.items()}, flush=True)
+      else: st5, cr5 = mm2.integrate(M, st, cr, 120)
+      p5, T, q, ps = model_profiles(st5, cr5)
       r['d5'] = {reg: {kk: (np.array(p5[reg][kk]) - np.array(era_mean(k5, 'temperature' if kk == 'T' else 'specific_humidity', reg))).round(4).tolist() for kk in ('T', 'q')} for reg in REG}
       hor = M.coords.horizontal; u, v = spherical_harmonic.vor_div_to_uv_nodal(hor, st5.vorticity, st5.divergence)
       tend, d = M.column(jnp.asarray(T), jnp.asarray(q), u / M.MPS, v / M.MPS, jnp.asarray(ps), dict(cr5, doy0=jnp.float32(M.doy0), utc0=jnp.float32(M.utc0)), rad_fresh=True, div=hor.to_nodal(st5.divergence) * M.SEC)
@@ -76,4 +92,7 @@ for VN, VS in VARS.items():
       print(VN, 'rad K/day by sigma', dict(zip(res[0]['sig'], np.round(np.mean([x['rad_Kday'] for x in res if 'rad_Kday' in x], 0), 2).tolist())))
       for kk in ('h_bl', 'h_deep', 'h_shal', 'h_lsc', 'h_evap'):
           if all(kk in x for x in res): print(VN, kk, 'K/day by sigma', dict(zip(res[0]['sig'], np.round(np.mean([x[kk] for x in res], 0), 2).tolist())))
+      if all('budget' in x for x in res):
+          for kb in res[0]['budget']:
+              for part in ('total', 'phys', 'dyn'): print(VN, 'BUDGET', kb, part, 'K/day by sigma', dict(zip(res[0]['sig'], np.round(np.mean([x['budget'][kb][part] for x in res], 0), 2).tolist())))
       print(VN, 'phys K/day by sigma', dict(zip(res[0]['sig'], np.round(np.mean([x['phys_dT_Kday'] for x in res], 0), 2).tolist())))
