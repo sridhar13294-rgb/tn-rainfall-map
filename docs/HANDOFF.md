@@ -380,3 +380,13 @@ tp75oc exam (tn-wx-tp75c0/1, accts 4, 9) STILL RUNNING after ~10 h (75 levels ~2
 Sponge test (tn-prof-sponge, tp75oc): deep quadratic sponge only changes 100 hPa (+1.9 -> +1.2), not below -> keep a sponge (use the confined 30 -> 4 hPa sin^2 version when implemented). tp75oc with capdp: 250 hPa -2.3 (tp75_org without capdp -1.7).
 Mountain pressure-gradient hypothesis RULED OUT: open tropical Pacific (no mountains) has the same cold UT (250 hPa -2.0 vs tropics -2.3).
 Nivar benchmark (21 Nov 00Z, no inserted storm), daily 06Z position error / min pressure (depth): T170 32L earlier: 33/150/186/400 km, ~1004-1006 hPa. tp75oc: 188/126/277/414 km, 1005-1007 (-3..-5) -> no better. T170 + diff_x 4 (weaker hyper-diffusion): 423/368/78/68/437 km, 25 Nov 1003 hPa (-9) -> best core and near-landfall position so far (one case). Running: tn-bay-diff4 (10) + tn-gen-diff4 (8) (tracks, genesis, stability), tn-maps-nivar-best (1: all candidates together).
+
+## 28 Oct 23:35 IST - Stage 4 adopted (user decision)
+Stage 4 = WeekAI (weeks 2-4/6) + MonthAI (monthly tercile outlooks), data-driven, built in 2027. Does NOT touch Stages 1-3 or GPU budget.
+- Jan-Feb 2027: data (ERA5, IMD gridded rain 1981-2025, MJO RMM, Nino3.4, IOD DMI, Bay SST, soil moisture); climatology; scoring vs climatology + IMD ERF + ECMWF extended range (RPSS, reliability).
+- Mar-Apr 2027: WeekAI v0 = simple regression/logistic on 3-5 predictors, leave-years-out hindcasts.
+- May 2027: MonthAI v0; freeze both before SWM onset (~1 Jun).
+- Jun-Sep 2027: silent live trial SWM. Oct-Dec 2027: silent live trial NEM.
+- Neural nets only if they beat the regression baseline on held-out years.
+- MEGAM days 8-10 as input only after >=1 yr archive (Nov 2026 on); proper training needs reforecasts (decide in 2028).
+- Jan-Mar 2028: verify both seasons, go/no-go. Any outside use only after that.
