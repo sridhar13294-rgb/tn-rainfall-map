@@ -58,6 +58,7 @@ jobs:
           w=$(head -n 1 data/cyclone/RUN | tr -d ' ')
           if [ "$w" = "bg" ]; then python scripts/cyclone/cyc_bg.py || true; fi
           if [ "$w" = "lib" ]; then python scripts/cyclone/cyc_lib.py || true; fi
+          if [ "$w" = "geo" ]; then python scripts/cyclone/geo_fetch.py || true; for f in /tmp/cyc_out/geo_gwd.npz /tmp/cyc_out/ozone_clim.npz; do [ -f $f ] && gh release upload era5-cases $f --clobber || true; done; fi   # sub-grid orography (GWD/blocking) + ozone climatology
           if [ "$w" = "libh" ]; then python scripts/cyclone/cyc_libh.py || true; fi
           if [ "$w" = "libm" ]; then python scripts/cyclone/cyc_libm.py || true; fi
           if [ "$w" = "libm48" ]; then LIBM_LEAD=48 python scripts/cyclone/cyc_libm.py || true; fi
