@@ -1,6 +1,6 @@
-tn-bay-diff4
-libm_fields.npz
-XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/bay_diff4.json 0 2 /kaggle/working/t170_0.json > /kaggle/working/t170_0.log 2>&1; XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/bay_diff4.json 1 2 /kaggle/working/t170_1.json > /kaggle/working/t170_1.log 2>&1; tail -2 /kaggle/working/t170_*.log
+tn-gen-diff4
+libm48_fields.npz
+XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_diff4.json 0 2 /kaggle/working/gen_0.json > /kaggle/working/gen_0.log 2>&1; XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_diff4.json 1 2 /kaggle/working/gen_1.json > /kaggle/working/gen_1.log 2>&1; tail -2 /kaggle/working/gen_*.log
 NvidiaTeslaT4
-10
-#weaker hyper-diffusion (diff_x 4): Bay tracks + 5-day stability on all Bay storms 2026-10-28T14:44Z
+8
+#weaker hyper-diffusion (diff_x 4): genesis 2026-10-28T14:45Z
