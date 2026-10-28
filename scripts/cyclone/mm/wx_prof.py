@@ -12,7 +12,7 @@ BASE = {'rad': 'radcloud', 'rad_every': 2}
 Z = dict(np.load(LIB)); TT = [str(t) for t in Z['times']]; V3 = [str(v) for v in Z['v3']]; V2 = [str(v) for v in Z['v2']]
 LEV = np.asarray(Z['levs'], float); la = np.asarray(Z['lats'], float); lo = np.asarray(Z['lons'], float)
 LAg, LOg = np.meshgrid(la, lo, indexing='ij'); Wg = np.cos(np.radians(LAg))
-REG = {'tropics': lambda A, O: np.abs(A) < 20, 'india': lambda A, O: (A >= 5) & (A <= 35) & (O >= 65) & (O <= 100)}
+REG = {'tropics': lambda A, O: np.abs(A) < 20, 'india': lambda A, O: (A >= 5) & (A <= 35) & (O >= 65) & (O <= 100), 'trop_pacific': lambda A, O: (np.abs(A) < 20) & (O % 360 >= 160) & (O % 360 <= 260)}
 def era_mean(k, v, reg):
     m = REG[reg](LAg, LOg); a = Z['f3'][k, V3.index(v)]; return [float((a[i] * Wg * m).sum() / (Wg * m).sum()) for i in range(len(LEV))]
 ALL = {}
