@@ -1,6 +1,6 @@
-tn-maps-nivar-diff
-libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore maps_run.py /kaggle/working/libm_wx2020_fields.npz near:2020-11-22 /kaggle/working/maps_nivar_diff4.npz 240 '{"grid":"T170","diff_x":4.0}' > /kaggle/working/maps.log 2>&1; tail -5 /kaggle/working/maps.log
+tn-bay-diff4
+libm_fields.npz
+XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/bay_diff4.json 0 2 /kaggle/working/t170_0.json > /kaggle/working/t170_0.log 2>&1; XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/bay_diff4.json 1 2 /kaggle/working/t170_1.json > /kaggle/working/t170_1.log 2>&1; tail -2 /kaggle/working/t170_*.log
 NvidiaTeslaT4
 10
-#Nivar benchmark with 4x weaker hyper-diffusion (storm-core damping test) 2026-10-28T08:52Z
+#weaker hyper-diffusion (diff_x 4): Bay tracks + 5-day stability on all Bay storms 2026-10-28T14:44Z
