@@ -1,6 +1,6 @@
-tn-si-tp75oc
--
-COLLECT
+tn-prof-budget
+libm_wx2020_fields.npz
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 10 '{"T170":{"grid":"T170","_budget":true},"tp75oc":{"grid":"T170","layers":"tp75","mf_wke":1.0,"mf_org":1.0,"mf_capdp":2400.0,"_budget":true}}' > /kaggle/working/prof.log 2>&1; tail -60 /kaggle/working/prof.log
 NvidiaTeslaT4
-6
-#collect 2026-10-28T20:25Z
+1
+#n1 2026-10-28T20:29Z
