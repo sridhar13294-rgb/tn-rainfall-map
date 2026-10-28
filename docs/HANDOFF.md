@@ -363,3 +363,11 @@ Agree / act:
 - OLR 202 W/m2 (obs ~240-250) is a real energy-budget problem: deeper plumes -> more diagnosed anvil. Check OLR and clear-sky OLR; Experiment B (ours): keep heating aloft (tp75oc) but reduce diagnosed anvil cover (rad_prm anv_max 0.6 / anv_a 1.0) -> OLR back to ~230-245 without re-cooling 250 hPa.
 - Mountain pressure-gradient error: compare trop_pacific vs tropics in tn-prof-sponge; vertical CFL with thin layers: watch for blow-ups/NaN in T170 tp75 runs (10 starts ran clean so far).
 Disagree: Gemini's Experiment B (move detrainment lower) would undo the cold-bias fix - prefer the anvil-cover route first.
+
+## 28 Oct 15:25 IST - Peer review #1 (ChatGPT) - checked; KEY FINDING from its 'diagnostics' point
+Tropics day-0 vs day-5 bias (wx_prof h0/d5):
+32L: day0 100 hPa +2.9, 250 -0.2 | day5 +7.1 / -5.8 | forecast drift 100 +4.3, 250 -5.6
+L50: day0 +1.8 | drift 100 +2.7, 250 -4.8
+tp75: day0 +1.2 | drift 100 +0.8, 250 -3.6;  tp75_org: drift 100 +0.8, 250 -1.6
+-> part of the '100 hPa warm bias' is a REPRESENTATION error (sharp tropopause interpolated through coarse levels: +2.9 K already at day 0 with 32 levels, +1.2 with tp75). With tp75 the real 100 hPa forecast drift is only +0.8 K. Remaining main problem = 250 hPa drift (-1.6 K with tp75_org).
+Act on (ChatGPT): (1) full temperature-tendency budget by level incl. dynamics/numerics residual (dT/dt total minus physics) for no-physics and full-physics runs, and day-0..1 adjustment (first 6-24 h) - top priority before more physics tuning; (2) sponge: smooth sin^2 ramp in log-p from 30 hPa to the 4 hPa top, 6-12 h at the top, winds only, no T relaxation (= its proposal; better than our sp_top 0.15 test); (3) OLR like-for-like: compare with a matching observed tropical OLR (NOAA interpolated OLR / CERES, same months), plus clear-sky OLR; (4) confounding: level count vs placement vs top - if needed one run with tp75 placement but old 20 hPa top. Agree with Gemini+ChatGPT: no T relaxation, confined sponge.
