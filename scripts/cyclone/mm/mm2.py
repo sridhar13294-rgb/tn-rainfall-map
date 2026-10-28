@@ -560,8 +560,8 @@ class Model:
                                                  temperature_variation=hor.to_modal(tend['T'] * M.K / M.SEC), log_surface_pressure=jnp.zeros_like(state.log_surface_pressure),
                                                  tracers={'specific_humidity': tend['q'] / M.SEC}, sim_time=None if state.sim_time is None else 0.0)
         self.phys = Phys()
-        res = hor.latitude_nodes / 128; tau = self.ps.nondimensionalize(8.6 / (2.4 ** np.log2(res)) * units.hours)
-        self.filt = primitive_equations.step_filter_excluding_nodal_tracers(time_integration.horizontal_diffusion_step_filter(hor, dt=self.dt, tau=tau, order=2), nodal_tracers=('specific_humidity',))
+        res = hor.latitude_nodes / 128; tau = self.ps.nondimensionalize(8.6 / (2.4 ** np.log2(res)) * float(self.S.get('diff_x', 1.0)) * units.hours)   # diff_x: e-folding time multiplier (larger = weaker damping of the smallest scales)
+        self.filt = primitive_equations.step_filter_excluding_nodal_tracers(time_integration.horizontal_diffusion_step_filter(hor, dt=self.dt, tau=tau, order=int(self.S.get('diff_order', 2))), nodal_tracers=('specific_humidity',))
         if split:
             # process splitting: dynamics first, then the physics once per step from the new state (half the physics cost;
             # how most operational models couple their physics)
