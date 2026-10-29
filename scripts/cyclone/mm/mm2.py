@@ -39,6 +39,53 @@ def sigma_bounds(n=32):
         return np.interp(np.linspace(0, 1, m + 1), cum, s).astype(np.float32)
     e = np.linspace(0, 1, n + 1); return (0.6 * e + 0.4 * (1 - (1 - e) ** 2)).astype(np.float32)
 SND_LEVS = (1000, 975, 950, 925, 900, 850, 800, 750, 700, 650, 600, 550, 500, 450, 400, 350, 300, 250, 200, 150, 100)   # sounding levels (hPa) for the map viewer
+def load_gwd(path, LA, LO):
+    """Sub-grid orography (ARCO ERA5, 0.5 deg: geo_gwd.npz from release era5-cases) to the model grid (nearest point):
+    mu = std dev of filtered sub-grid orography (m), gam = anisotropy, the = angle of the principal axis (rad), slo = slope."""
+    cands = [path] if path else []
+    cands += ['/kaggle/working/geo_gwd.npz', _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'data', 'geo_gwd.npz'), 'geo_gwd.npz']
+    fn = next((c for c in cands if c and _os.path.exists(c)), None)
+    if fn is None: print('gwd: geo_gwd.npz not found - drag OFF', flush=True); return None
+    Z = np.load(fn); la, lo = np.asarray(Z['lat']), np.asarray(Z['lon']) % 360
+    i = np.clip(np.searchsorted(-la, -LA), 0, len(la) - 1) if la[0] > la[-1] else np.clip(np.searchsorted(la, LA), 0, len(la) - 1)
+    j = np.clip(np.round((LO % 360 - lo[0]) / (lo[1] - lo[0])).astype(int), 0, len(lo) - 1)
+    g = lambda k: jnp.asarray(np.nan_to_num(np.asarray(Z[k])[i, j]), jnp.float32)
+    out = dict(mu=g('standard_deviation_of_filtered_subgrid_orography'), gam=jnp.clip(g('anisotropy_of_sub_gridscale_orography'), 0.05, 1.0),
+               the=g('angle_of_sub_gridscale_orography'), slo=jnp.clip(g('slope_of_sub_gridscale_orography'), 0.0, 0.2))
+    print('gwd: loaded', fn, 'mu max', float(out['mu'].max()), flush=True); return out
+def gwd_tend(gw, u, v, T, p, zc, ps, dsig, dt, Gw=1.0, Cb=1.0):
+    """Lott & Miller (1997) as in IFS: (1) blocking - below the blocking height Zb the flow goes around the mountains and
+    is decelerated (implicit); (2) gravity waves launched by the unblocked part of the mountains carry a stress upward that
+    is deposited where the waves saturate (stress limited by rho U^3 / N) or reach a critical level (wind turns or stops).
+    u, v, T, p, zc [L, X, Y] (level 0 = top); returns du, dv (m/s per s)."""
+    mu = gw['mu']; gam = gw['gam']; slo = gw['slo']; on = mu > 50.0
+    Hm = 2.0 * mu                                                                               # sub-grid peaks ~2 std dev above the mean
+    th = T * (ps / p) ** KAP; rho = p / (RD * T)
+    lay = (zc <= jnp.maximum(Hm, zc[-2])[None]); wl = lay * dsig                                   # low-level layer (at least 2 levels)
+    sw = jnp.maximum(wl.sum(0), 1e-6); uL = (u * wl).sum(0) / sw; vL = (v * wl).sum(0) / sw; rL = (rho * wl).sum(0) / sw
+    UL = jnp.sqrt(uL ** 2 + vL ** 2) + 1e-3; ex = uL / UL; ey = vL / UL
+    ktop = jnp.argmax(lay, axis=0)                                                              # top level of the low-level layer
+    thT = jnp.take_along_axis(th, ktop[None], 0)[0]; zT = jnp.take_along_axis(zc, ktop[None], 0)[0]
+    NL = jnp.sqrt(jnp.maximum(G / th[-1] * (thT - th[-1]) / jnp.maximum(zT - zc[-1], 10.0), 1e-6))
+    psi = gw['the'] - jnp.arctan2(vL, uL); c2 = jnp.cos(psi) ** 2; s2 = jnp.sin(psi) ** 2
+    B = 1 - 0.18 * gam - 0.04 * gam ** 2; C = 0.48 * gam + 0.3 * gam ** 2; geo = B * c2 + C * s2
+    Zb = jnp.where(on, jnp.maximum(Hm - 0.5 * UL / NL, 0.0), 0.0)                              # blocking height (critical inverse Froude 0.5)
+    r = (c2 + gam * s2) / (gam * c2 + s2)
+    fb = Cb * jnp.maximum(2 - 1 / r, 0.0) * slo / (2 * jnp.maximum(mu, 1.0)) * geo * 0.5
+    a = fb[None] * jnp.sqrt(jnp.maximum(Zb[None] - zc, 0.0) / (zc + jnp.maximum(mu, 1.0)[None])) * jnp.sqrt(u ** 2 + v ** 2)
+    dub = -u * a / (1 + dt * a); dvb = -v * a / (1 + dt * a)                                   # blocked-flow drag (implicit, never reverses the wind)
+    Heff = jnp.where(on, jnp.minimum(Hm, 0.5 * UL / NL), 0.0)                                 # mountain height seen by the waves
+    k = slo / (4 * jnp.maximum(mu, 1.0))
+    tau0 = Gw * rL * NL * UL * Heff ** 2 * k * geo                                              # launched wave stress (N/m2)
+    N = jnp.sqrt(jnp.maximum(G / th * jnp.gradient(th, axis=0) / jnp.minimum(jnp.gradient(zc, axis=0), -1.0), 1e-6))   # both gradients negative (level 0 = top)
+    Up = u * ex[None] + v * ey[None]
+    tsat = jnp.where(Up > 0.5, Gw * rho * Up ** 3 / N * k[None] * 0.25 * geo[None], 0.0)          # saturation stress (inverse Froude 0.5); 0 at a critical level
+    prof = jnp.where(lay, tau0[None], jnp.minimum(tsat, tau0[None]))
+    prof = jax.lax.cummin(prof[::-1], axis=0)[::-1]                                            # stress can only decrease upward
+    dtau = jnp.concatenate([prof[:1], prof[1:] - prof[:-1]], 0) * (~lay)                       # deposited in each level above the layer (top keeps the rest)
+    acc = jnp.clip(G * dtau / (dsig * ps), 0.0, 1e-3)                                            # m/s2, capped at ~86 m/s per day
+    acc = jnp.minimum(acc, jnp.maximum(Up, 0.0) / dt)                                           # never reverse the projected wind in one step
+    return dub - acc * ex[None], dvb - acc * ey[None]
 def qsat(T, p):
     es = 611.2 * jnp.exp(17.67 * (T - 273.15) / (T - 29.65)); return 0.622 * es / jnp.maximum(p - 0.378 * es, 1.0)
 def relax(x, ref, tau, dt):                       # stable relaxation over one step, returned as a rate
@@ -124,6 +171,7 @@ class Model:
         st = primitive_equations.State(vorticity=vor, divergence=div, temperature_variation=hor.to_modal(sg['t'] * self.K - self.ref_t[:, None, None]),
                                        log_surface_pressure=hor.to_modal(np.log(ps[None] * self.PA)), tracers={'specific_humidity': jnp.asarray(sg['q'])})
         self.zs = jnp.asarray(zs, jnp.float32); self.land = jnp.asarray(land); self.T0 = jnp.asarray(sg['t'])
+        if self.S.get('gwd', 0) and getattr(self, 'gw', None) is None: self.gw = load_gwd(self.S.get('gwd_file'), np.asarray(self.LA), np.asarray(self.LO))
         sst = sst + self.S['sst_off'] * (sst > 0); self.sst0 = jnp.asarray(sst, jnp.float32)
         # land temperature and soil-moisture bucket: analysed values on land when given (bucket = soil water / porosity 0.45 x
         # capacity; skin, else soil temperature); otherwise, and at sea, the old start (lowest-level temperature, bucket 60 % full)
@@ -517,6 +565,10 @@ class Model:
             sw_sfc = Fsfc * (1 - jnp.where(sea, S['alb_sea'], S['alb_land'])); lw_dn = Dbot[-1]
         dT = dT + rad
         dq = dq + jnp.maximum(-q, 0) / dt                                                            # keep humidity non-negative
+        # ---------------- sub-grid orography: low-level blocking + gravity-wave drag (Lott & Miller 1997 / IFS style; off unless gwd > 0)
+        if self.S.get('gwd', 0) and getattr(self, 'gw', None) is not None:
+            dug, dvg = gwd_tend(self.gw, u, v, T, p, zc, ps, dsig, dt, float(self.S.get('gwd', 1.0)), float(self.S.get('gwd_blk', 1.0)))
+            du = du + dug; dv = dv + dvg
         # ---------------- top sponge
         # sp_quad > 0: deeper sponge (as NCEP/ECMWF): damping grows quadratically from sp_top up to the model top, so
         # upward-moving waves are absorbed over several layers instead of reflecting off a thin lid (old: constant above 0.05)
