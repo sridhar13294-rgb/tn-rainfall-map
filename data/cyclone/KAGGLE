@@ -1,6 +1,6 @@
-tn-live80-c
-live_GFSM_2026102912.npz,live_GFS_2026102912.npz,live_ECM_2026102912.npz,live_ICON_2026102912.npz,live_CMC_2026102912.npz,live_ARPEGE_2026102912.npz,live_UKMO_2026102912.npz,live_GEOS_2026102912.npz,live_GFSH_2026102912.npz
- XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore live2.py run /kaggle/working/live_GFSM_2026102912.npz /kaggle/working/live_GFS_2026102912.npz 12 17 /kaggle/working/part_12.json ../../../data/cyclone/mm/live_config_t170.json > /kaggle/working/part_12.log 2>&1; XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore live2.py run /kaggle/working/live_GFSM_2026102912.npz /kaggle/working/live_GFS_2026102912.npz 13 17 /kaggle/working/part_13.json ../../../data/cyclone/mm/live_config_t170.json > /kaggle/working/part_13.log 2>&1; XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore live2.py run /kaggle/working/live_GFSM_2026102912.npz /kaggle/working/live_GFS_2026102912.npz 14 17 /kaggle/working/part_14.json ../../../data/cyclone/mm/live_config_t170.json > /kaggle/working/part_14.log 2>&1; XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore live2.py run /kaggle/working/live_GFSM_2026102912.npz /kaggle/working/live_GFS_2026102912.npz 15 17 /kaggle/working/part_15.json ../../../data/cyclone/mm/live_config_t170.json > /kaggle/working/part_15.log 2>&1; XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore live2.py run /kaggle/working/live_GFSM_2026102912.npz /kaggle/working/live_GFS_2026102912.npz 16 17 /kaggle/working/part_16.json ../../../data/cyclone/mm/live_config_t170.json > /kaggle/working/part_16.log 2>&1; tail -3 /kaggle/working/part_*.log
+tn-quick-cap-a
+libm_fields.npz
+XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/quick_cap_a.json 0 1 /kaggle/working/qa.json > /kaggle/working/qa.log 2>&1; tail -5 /kaggle/working/qa.log
 NvidiaTeslaT4
-10
-#l3 2026-10-29T18:34Z
+2
+#q1 2026-10-29T19:10Z
