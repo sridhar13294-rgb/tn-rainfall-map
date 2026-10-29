@@ -52,6 +52,11 @@ def run(LIVEM, LIVE, PART, NPART, OUT, CFG=None):
     VS = None
     try: VS = VT.pick(os.path.join(HERE, '..', '..', '..', 'data', 'cyclone', f'vitals_{t0:%Y%m%d%H}.json'), t0)     # observed Bay storm (>= 15 kt) or None
     except Exception as e: print('vitals not used:', repr(e)[:200], flush=True)
+    if VS and C.get('vitals_land_skip', True):                                                       # a dissipating remnant over land (e.g. Arnab inland on 29 Oct) must not be inserted
+        try:
+            from cyc import on_land
+            if on_land(VS['lon'], VS['lat']): print('vitals storm over land - not inserted:', VS, flush=True); VS = None
+        except Exception as e: print('land check failed:', repr(e)[:120], flush=True)
     print('vitals storm:', VS, flush=True)
     st_names = json.load(open(os.path.join(HERE, '..', '..', '..', 'data', 'cyclone', 'mm', 'tn_sites.json'))) if os.path.exists(os.path.join(HERE, '..', '..', '..', 'data', 'cyclone', 'mm', 'tn_sites.json')) else None
     res = []; bv_cache = {}; models = {}; import time
