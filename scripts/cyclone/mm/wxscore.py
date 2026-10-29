@@ -9,7 +9,11 @@ import numpy as np
 LATS = np.linspace(-90, 90, 121); LONS = np.arange(0, 360, 1.5)
 LA, LO = np.meshgrid(LATS, LONS, indexing='ij')
 REGIONS = {'globe': np.ones_like(LA, bool), 'n_extratropics': LA >= 20, 's_extratropics': LA <= -20, 'tropics': np.abs(LA) < 20,
-           'india': (LA >= 5) & (LA <= 35) & (LO >= 65) & (LO <= 100), 'tamil_nadu': (LA >= 8) & (LA <= 14) & (LO >= 76) & (LO <= 81)}
+           'india': (LA >= 5) & (LA <= 35) & (LO >= 65) & (LO <= 100), 'tamil_nadu': (LA >= 8) & (LA <= 14) & (LO >= 76) & (LO <= 81),
+           # Indian rain regions (boxes close to IMD's homogeneous regions) so a rain fix is judged across all India, not only TN
+           'india_nw': (LA >= 22) & (LA <= 35) & (LO >= 68) & (LO <= 80), 'india_central': (LA >= 18) & (LA < 26) & (LO > 73) & (LO <= 86),
+           'india_ne': (LA >= 22) & (LA <= 29) & (LO >= 88) & (LO <= 97), 'india_south': (LA >= 8) & (LA < 18) & (LO >= 74) & (LO <= 84),
+           'west_coast': (LA >= 8) & (LA <= 20) & (LO >= 72) & (LO < 76)}
 W = np.cos(np.radians(LA)); W[np.abs(LA) > 89.9] = 0.0
 def scores(f, o, c=None):
     """f, o (and climate c): [121, 240] arrays. Returns {region: {rmse, bias, acc}}."""

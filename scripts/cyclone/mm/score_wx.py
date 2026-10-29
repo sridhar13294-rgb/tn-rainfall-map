@@ -19,3 +19,12 @@ for kk, reg in (('z500', 'globe'), ('z500', 'n_extratropics'), ('z500', 'tropics
             line.append(f'd{d}: {np.mean(o):.4g}/{np.mean(h):.4g} ({np.mean(o) / np.mean(h):.2f}x){acc}')
     if line: print(f'{kk:6s} {reg:15s} n={len(o):2d}  ' + ' | '.join(line))
 print('(ours/ECMWF RMSE; acc ours/ECMWF)')
+# Indian rain regions (ours only - the archived ECMWF scores do not have these regions): rmse / bias / acc
+for reg in ('india_nw', 'india_central', 'india_ne', 'india_south', 'west_coast', 'tamil_nadu', 'india'):
+    line = []
+    for d in (1, 3, 5, 7, 10):
+        xs = [r['days'].get(str(d), r['days'].get(d, {})).get('rain24', {}).get(reg) for r in OUR]; xs = [x for x in xs if x]
+        if xs:
+            ac = [x.get('acc') for x in xs if x.get('acc') is not None]
+            line.append(f"d{d}: rmse {np.mean([x['rmse'] for x in xs]):.2f} bias {np.mean([x['bias'] for x in xs]):+.2f}" + (f" acc {np.mean(ac):.2f}" if ac else ''))
+    if line: print(f'rain24 {reg:15s} n={len(xs):2d}  ' + ' | '.join(line))
