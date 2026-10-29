@@ -12,12 +12,35 @@ BASE = {'rad': 'radcloud', 'rad_every': 2}
 Z = dict(np.load(LIB)); TT = [str(t) for t in Z['times']]; V3 = [str(v) for v in Z['v3']]; V2 = [str(v) for v in Z['v2']]
 LEV = np.asarray(Z['levs'], float); la = np.asarray(Z['lats'], float); lo = np.asarray(Z['lons'], float)
 LAg, LOg = np.meshgrid(la, lo, indexing='ij'); Wg = np.cos(np.radians(LAg))
-REG = {'tropics': lambda A, O: np.abs(A) < 20, 'india': lambda A, O: (A >= 5) & (A <= 35) & (O >= 65) & (O <= 100), 'trop_pacific': lambda A, O: (np.abs(A) < 20) & (O % 360 >= 160) & (O % 360 <= 260)}
+REG = {'tropics': lambda A, O: np.abs(A) < 20, 'tn': lambda A, O: (A >= 8) & (A <= 14) & (O >= 76) & (O <= 81), 'india': lambda A, O: (A >= 5) & (A <= 35) & (O >= 65) & (O <= 100), 'trop_pacific': lambda A, O: (np.abs(A) < 20) & (O % 360 >= 160) & (O % 360 <= 260)}
 def era_mean(k, v, reg):
     m = REG[reg](LAg, LOg); a = Z['f3'][k, V3.index(v)]; return [float((a[i] * Wg * m).sum() / (Wg * m).sum()) for i in range(len(LEV))]
+def ua_scores(M, st, kv, levs=(200, 250, 300, 400, 500, 850)):
+    """bias and RMSE of model T vs ERA5 at pressure levels, model regridded (bilinear) to the ERA5 grid; same mask for every run"""
+    from scipy.interpolate import RegularGridInterpolator
+    hor = M.coords.horizontal; T = np.asarray((hor.to_nodal(st.temperature_variation) + M.ref_t[:, None, None]) / M.K)
+    ps = np.asarray(jnp.exp(hor.to_nodal(st.log_surface_pressure))[0] / M.PA); p = np.asarray(M.sig)[:, None, None] * ps[None]; lp = np.log(p)
+    LA, LO = np.asarray(M.LA), np.asarray(M.LO) % 360
+    latax = 0 if np.ptp(LA[:, 0]) > 0 else 1
+    lat1 = LA[:, 0] if latax == 0 else LA[0, :]; lon1 = LO[0, :] if latax == 0 else LO[:, 0]
+    out = {}
+    for P in levs:
+        x = np.log(P * 100.0); k1 = np.clip((lp < x).sum(0), 1, len(M.sig) - 1); k0 = k1 - 1
+        g = lambda A, k: np.take_along_axis(A, k[None], 0)[0]
+        w = np.clip((x - g(lp, k0)) / (g(lp, k1) - g(lp, k0)), 0, 1); v = g(T, k0) + w * (g(T, k1) - g(T, k0)); ok_m = (P * 100.0 < ps).astype(float)
+        if latax == 1: v = v.T; ok_m = ok_m.T
+        o_lat = np.argsort(lat1); vv = v[o_lat]; mm_ = ok_m[o_lat]; la_s = lat1[o_lat]
+        vv = np.concatenate([vv, vv[:, :1]], 1); mm_ = np.concatenate([mm_, mm_[:, :1]], 1); lo_s = np.concatenate([lon1, [lon1[0] + 360]])
+        f = RegularGridInterpolator((la_s, lo_s), vv, bounds_error=False, fill_value=None); fm = RegularGridInterpolator((la_s, lo_s), mm_, bounds_error=False, fill_value=None)
+        pts = np.stack([np.clip(LAg, la_s[0], la_s[-1]).ravel(), (LOg % 360).ravel()], -1); mv = f(pts).reshape(LAg.shape); mk = fm(pts).reshape(LAg.shape) > 0.99
+        i = int(np.argmin(np.abs(LEV - P))); e = mv - Z['f3'][kv, V3.index('temperature')][i]
+        for reg, fr in REG.items():
+            m = fr(LAg, LOg) & mk; W_ = Wg * m
+            out[f'{reg}_{P}'] = dict(bias=round(float((e * W_).sum() / W_.sum()), 3), rmse=round(float(np.sqrt((e ** 2 * W_).sum() / W_.sum())), 3))
+    return out
 ALL = {}
 for VN, VS in VARS.items():
-  VS = dict(VS); SPLIT = bool(VS.pop('_split', False)); BUDGET = bool(VS.pop('_budget', False)); NL = VS.pop('layers', 32); GR = VS.pop('grid', 'T85')
+  VS = dict(VS); SPLIT = bool(VS.pop('_split', False)); BUDGET = bool(VS.pop('_budget', False)); CHK = VS.pop('_chunk', None); UA = bool(VS.pop('_ua', False)); NL = VS.pop('layers', 32); GR = VS.pop('grid', 'T85')
   M = mm2.Model(GR, NL, None, dict(BASE, **VS)); res = []
   def model_profiles(st, cr):
       hor = M.coords.horizontal
@@ -36,7 +59,8 @@ for VN, VS in VARS.items():
               prof[name] = vals
           out[reg] = prof
       return out, T, q, ps
-  for n, key in enumerate(TT[:NS]):
+  STARTS = [t for i, t in enumerate(TT) if i % CHK[1] == CHK[0]] if CHK else TT[:NS]   # _chunk [k, n] = the same starts as wx2 chunk k of n
+  for n, key in enumerate(STARTS):
       t0 = dt.datetime.strptime(key, '%Y-%m-%dT%H'); k = TT.index(key); f3 = {v: Z['f3'][k, V3.index(v)] for v in V3}
       k5 = TT.index((t0 + dt.timedelta(days=5)).strftime('%Y-%m-%dT%H')) if (t0 + dt.timedelta(days=5)).strftime('%Y-%m-%dT%H') in TT else None
       if k5 is None: continue
@@ -85,6 +109,13 @@ for VN, VS in VARS.items():
               B[f'{w0}-{w1}h'] = win
           r['budget'] = B; st5, cr5 = sA, cA
           print(VN, key, 'BUDGET tropics dyn', {k: dict(zip(np.asarray(M.sig).round(3).tolist(), np.round(v['tropics']['dyn'], 2))) for k, v in B.items()}, flush=True)
+      elif UA:   # day 1 / 3 / 5 upper-air T bias + RMSE vs ERA5 (same starts, valid times, grid and mask for every run)
+          r['ua'] = {}; sA, cA, hA = st, cr, 0
+          for hB in (24, 72, 120):
+              sA, cA = mm2.integrate(M, sA, cA, hB - hA); hA = hB; vk = (t0 + dt.timedelta(hours=hB)).strftime('%Y-%m-%dT%H')
+              if vk in TT: r['ua'][f'd{hB // 24}'] = ua_scores(M, sA, TT.index(vk))
+          st5, cr5 = sA, cA
+          print(VN, key, 'UA d5', {k: v for k, v in r['ua'].get('d5', {}).items() if k.startswith('tropics')}, flush=True)
       else: st5, cr5 = mm2.integrate(M, st, cr, 120)
       p5, T, q, ps = model_profiles(st5, cr5)
       r['d5'] = {reg: {kk: (np.array(p5[reg][kk]) - np.array(era_mean(k5, 'temperature' if kk == 'T' else 'specific_humidity', reg))).round(4).tolist() for kk in ('T', 'q')} for reg in REG}
@@ -115,6 +146,10 @@ for VN, VS in VARS.items():
       for reg in REG:
           print(VN, reg, 'mean d5 T bias', dict(zip(LEV.astype(int).tolist(), np.round(np.mean([x['d5'][reg]['T'] for x in res], 0), 2).tolist())))
           print(VN, reg, 'mean d5 q bias g/kg', dict(zip(LEV.astype(int).tolist(), np.round(np.mean([x['d5'][reg]['q'] for x in res], 0) * 1000, 2).tolist())))
+      if all('ua' in x for x in res):
+          for d_ in ('d1', 'd3', 'd5'):
+              ks = [k for k in res[0]['ua'].get(d_, {})]
+              print(VN, 'UA', d_, ' '.join(f"{k}: bias {np.mean([x['ua'][d_][k]['bias'] for x in res if d_ in x['ua']]):.2f} rmse {np.mean([x['ua'][d_][k]['rmse'] ** 2 for x in res if d_ in x['ua']]) ** 0.5:.2f} |" for k in ks))
       print(VN, 'rad K/day by sigma', dict(zip(res[0]['sig'], np.round(np.mean([x['rad_Kday'] for x in res if 'rad_Kday' in x], 0), 2).tolist())))
       for kk in ('h_bl', 'h_deep', 'h_shal', 'h_lsc', 'h_evap'):
           if all(kk in x for x in res): print(VN, kk, 'K/day by sigma', dict(zip(res[0]['sig'], np.round(np.mean([x[kk] for x in res], 0), 2).tolist())))
