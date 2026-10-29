@@ -410,3 +410,10 @@ Account 6: tn-si-tp75oc collect still polling (kernel status unknown); 7 = LETKF
 Results: see docs/rootcause.md 'Findings 29 Oct'. DFI ruled out (vortex refills within 12 h either way); sponge ruled out below 100 hPa; rad_top 0 worse at 100 hPa. tn-bay-t255a/b FAILED (dinosaur has no Grid.T255) -> mm2 now builds T255 as construct(255, 192). tn-prof-budget tp75oc variant OOM-killed (two T170 models in one process) -> one variant per budget job.
 Running: tn-prof-bud2 (1: 32L budget v2), tn-prof-bud2tp (2: tp75 levels-only budget v2), tn-bay-t255c/d (5, 9: T255 chunks 0-1 of 4), tn-wx-tp75lv0/1 (6, 8: levels-only tp75 exam quarters 0-1 of 4), tn-bay-nodfi (3), tn-si-nodfi (10) still running; acct 4 kernel state unclear (old t255a) - collect before reuse.
 Next: genesis levels-only tp75 (gen_tp75lv.json); GWD/blocking scheme implementation (data in); TN storm benchmarks.
+
+## 29 Oct 14:00 IST cycle
+See rootcause.md 'Findings 29 Oct 14:00'. New mm2 options (default off/unchanged): mf_dmin (deep cloud min depth Pa, default 25000), sh_dtop (no shallow mixing where parcel top sigma < sh_dtop).
+Running: tn-prof-trigA (1), tn-prof-trigB (2), tn-prof-shal (5) [each two single-variant processes, outputs prof_<name>.json]; tn-gen-tp75lv0/1 (6, 9); tn-wx-tp75lv1 (8, needs COLLECT); tn-si-nodfi COLLECT (10).
+Accounts 3, 4: weekly GPU quota used up (30 h). Budget GPU hours: prefer short prof jobs; avoid duplicate long runs.
+T255 OOM (host RAM 'Killed' right after model build) -> next: T213 or fewer storms.
+GWD coding not started yet (next cycle): Lott-Miller blocking + wave drag from geo_gwd.npz.
