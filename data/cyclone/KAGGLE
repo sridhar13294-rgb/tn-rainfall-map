@@ -1,6 +1,6 @@
-tn-prof-trigA
+tn-prof-trigB
 libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof_dmin20.json 10 '{"dmin20":{"grid":"T170","_budget":true,"mf_dmin":20000.0}}' > /kaggle/working/prof_dmin20.log 2>&1; XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof_entr05.json 10 '{"entr05":{"grid":"T170","_budget":true,"entr":7.5e-5}}' > /kaggle/working/prof_entr05.log 2>&1; tail -40 /kaggle/working/prof_*.log
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof_org1.json 10 '{"org1":{"grid":"T170","_budget":true,"mf_org":1.0}}' > /kaggle/working/prof_org1.log 2>&1; XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof_kick1.json 10 '{"kick1":{"grid":"T170","_budget":true,"mf_kick_t":1.0}}' > /kaggle/working/prof_kick1.log 2>&1; tail -40 /kaggle/working/prof_*.log
 NvidiaTeslaT4
-1
-#t1 2026-10-29T08:23Z
+2
+#t2 2026-10-29T08:23Z
