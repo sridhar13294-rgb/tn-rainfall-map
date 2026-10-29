@@ -57,3 +57,11 @@ Causal chain found for P1 (cold upper troposphere), to be confirmed by the trigg
 P2 (TN rain with more levels) - levels-only 75L exam (quarter 0, 19 starts): z500 tropics d5 better (32.2 -> 30.3) but TN rain24 d5 error 5.2 -> 11.7 mm and ACC 0.32 -> 0.02. So the extra convection options were NOT the cause; the levels alone are. Budget: over TN at day 5, 75L gives 2.9 mm/day of grid-scale rain vs 0.6 with 32L, with deep convection still ~0-1% -> thinner layers saturate more easily, and with convection not firing the moisture comes out as grid-scale rain. Same root cause as P1 (convection trigger), so fix the trigger on 32L first, then re-test 75L.
 P3: T255 runs killed by out-of-memory (host RAM) on Kaggle T4 - try T213 (~63 km) or a smaller storm subset next. DFI result stands.
 Quota: Kaggle accounts 3 and 4 reached the 30 h weekly GPU limit (pushes refused) - not usable until the weekly reset.
+
+## Trigger tests 29 Oct 17:40 (10 starts, T170 32L, vs control)
+- Deep-trigger thresholds are NOT the cause: cloud depth 200 hPa, entrainment x0.5, organised entrainment, kick 1 K -> activation 4-5% at day 5 (control 5%), 250 hPa bias unchanged (-5.7..-5.9).
+- The 'shallow' MSE mixing in deep-parcel columns IS a cause: sh_dtop 0.6 (no shallow mixing where parcel top is above 600 hPa) -> deep activation day 5 5% -> 15%, deep-convection heating 45 -> 114 W/m2, grid-scale 232 -> 151 W/m2, tropics d5 bias 250/300/400/500 hPa -5.9/-5.6/-4.4/-3.3 -> -4.8/-4.2/-2.8/-1.3 K. sh_top 0.7 cap similar.
+  Mechanism: the mixing moves heat down and removes the instability, so deep convection rarely fires and grid-scale rain takes over.
+- Side effect: 850 hPa +0.8 -> -2.1 K (the mixing was warming low levels). TN rain day 5 0.6 -> 2.1 mm/day (direction unknown until scored vs gauges).
+- Remaining cold at 250 hPa (-4.8) = other causes still open (radiation/cloud, day-1 shock).
+Next: exam quarter 0 with sh_dtop 0.6 (tn-wx-shd06q0, acct 1) for TN rain/z500; then a proper boundary-layer shallow scheme for the low-level part.
