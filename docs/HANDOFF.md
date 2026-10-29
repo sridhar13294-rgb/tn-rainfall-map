@@ -417,3 +417,4 @@ Running: tn-prof-trigA (1), tn-prof-trigB (2), tn-prof-shal (5) [each two single
 Accounts 3, 4: weekly GPU quota used up (30 h). Budget GPU hours: prefer short prof jobs; avoid duplicate long runs.
 T255 OOM (host RAM 'Killed' right after model build) -> next: T213 or fewer storms.
 GWD coding not started yet (next cycle): Lott-Miller blocking + wave drag from geo_gwd.npz.
+16:05 IST Sridhar: trigger = leading hypothesis, not confirmed. Order: confirm chain (short prof tests) -> fix trigger on 32L -> retest 75L. 63 km storm test = preliminary only, not equivalent to 50 km (50 km failed on memory, not evidence). Resource-conscious: short discriminating tests before long scoring runs. Drag developed separately (default-off option, scored alone vs 32L control).
