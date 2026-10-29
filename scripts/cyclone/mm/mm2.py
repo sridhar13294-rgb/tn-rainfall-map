@@ -55,11 +55,11 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='mf', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='radcloud', rad_every=2,
-                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
+                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
-DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt', 'entr', 'mf_kick_t', 'mf_kick_q', 'mf_org', 'mf_wup', 'mf_dd', 'sh_top', 'bmj_dt', 'bmj_ice', 'ck_z', 'mf_ice', 'sh_taper', 'pbl_tm', 'sh_trig', 'sh_clos', 'ev_frac', 'mf_wke', 'rad_top', 'mf_capdp', 'sp_quad', 'sp_top', 'sponge', 'tau_strat', 'src_dp', 'mf_dmin', 'sh_dtop')
+DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt', 'entr', 'mf_kick_t', 'mf_kick_q', 'mf_org', 'mf_wup', 'mf_dd', 'sh_top', 'bmj_dt', 'bmj_ice', 'ck_z', 'mf_ice', 'sh_taper', 'pbl_tm', 'sh_trig', 'sh_clos', 'ev_frac', 'mf_wke', 'rad_top', 'mf_capdp', 'sp_quad', 'sp_top', 'sponge', 'tau_strat', 'src_dp', 'mf_dmin', 'sh_dtop', 'sh_cap')
 NWAVE = 8
 class Model:
     def __init__(self, grid='T170', layers=32, dt_min=None, set_=None):
@@ -417,7 +417,7 @@ class Model:
         sat_base = qsrc >= qsat(Td, p); sig_base = jnp.max(jnp.where(sat_base & (sig <= 1.0), sig, 0.0), axis=0)
         depth = (sig_base - sig_top) * ps
         deep = (cape > 100.0) & (depth > 20000.0)
-        shallow = (cape > 0.0) & (~deep) & (sig_base > 0.75) & (sig_top > S['sh_dtop'])           # sh_dtop > 0: no 'shallow' mixing in columns whose parcel top is above sh_dtop (those are deep clouds, not shallow)
+        shallow = (cape > 0.0) & (~deep) & (sig_base > 0.75) & ((sig_top > S['sh_dtop']) | (S['sh_cap'] > 0))           # sh_cap > 0: deep-parcel columns keep boundary-layer mixing, capped at sh_cap; sh_dtop > 0: no 'shallow' mixing in columns whose parcel top is above sh_dtop (those are deep clouds, not shallow)
         reg = (sig >= sig_top) & (cape > 0)
         Tref = Tp - S['bmj_dt']; qref = S['rh_deep'] * qsat(Tref, p)
         dTc = jnp.where(reg & deep, relax(Tn, Tref, S['tau_deep'], dt), 0.0); dqc = jnp.where(reg & deep, relax(qn, qref, S['tau_deep'], dt), 0.0)
@@ -435,6 +435,7 @@ class Model:
             # sh_taper > 0: the mixing fades out linearly over sh_taper (sigma) above sh_top instead of stopping in one layer
             # (a hard top left a cold, moist 850 hPa layer); tendencies re-centred so energy and water stay conserved
             top_ = jnp.maximum(sig_top, S['sh_top'] - S['sh_taper'])
+            top_ = jnp.where((S['sh_cap'] > 0) & (sig_top <= S['sh_dtop']), jnp.maximum(top_, S['sh_cap']), top_)   # deep parcel: mix only up to sh_cap (e.g. 0.8 = ~800 hPa), leave the instability aloft to the deep scheme
             sreg = shallow[None] & (sig >= top_)                                                     # energy and water conserved exactly (no rain from shallow cloud); sh_top caps its depth
             wgt = jnp.where(S['sh_taper'] > 0, jnp.clip((sig - (S['sh_top'] - S['sh_taper'])) / jnp.maximum(S['sh_taper'], 1e-6), 0.0, 1.0), 1.0) * sreg
             hs_ = CP * Tn + G * zc + LV * qn; msum = jnp.maximum((mass * sreg).sum(0), 1.0)
