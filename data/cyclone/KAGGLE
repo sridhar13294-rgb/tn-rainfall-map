@@ -1,6 +1,6 @@
-tn-ua-shd06
+tn-ua-tp75
 libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof_shd06.json 99 '{"shd06":{"grid":"T170","_ua":true,"_chunk":[0,4],"sh_dtop":0.6}}' > /kaggle/working/prof_shd06.log 2>&1; tail -30 /kaggle/working/prof_shd06.log
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof_tp75.json 99 '{"tp75":{"grid":"T170","_ua":true,"_chunk":[0,4],"layers":"tp75"}}' > /kaggle/working/prof_tp75.log 2>&1; tail -30 /kaggle/working/prof_tp75.log
 NvidiaTeslaT4
-5
-#u2 2026-10-29T12:19Z
+10
+#u3 2026-10-29T12:20Z
