@@ -44,21 +44,47 @@ for VN, VS in VARS.items():
                       Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')], when=t0, **landinit.land_kwargs(Z['f2'][k], V2))
       M.build(t0, split=SPLIT); st = M.dfi(st); r = dict(start=key, levs=LEV.tolist())
       p0, *_ = model_profiles(st, cr); r['h0'] = {reg: {kk: (np.array(p0[reg][kk]) - np.array(era_mean(k, 'temperature' if kk == 'T' else 'specific_humidity', reg))).round(4).tolist() for kk in ('T', 'q')} for reg in REG}
-      if BUDGET:   # full T budget on model levels, tropics: total dT/dt from consecutive states, physics from the column, dynamics = total - physics
-          hor = M.coords.horizontal; trB = np.abs(np.asarray(M.LA)) < 20; WB = np.cos(np.radians(np.asarray(M.LA))) * trB
+      if BUDGET:   # T budget on model levels: total dT/dt from states 3 h apart, physics (by process) from the column every 3 h
+          # (trapezoid mean), dynamics = total - physics; regions tropics / TN (8-14N 76-81E) / Western Ghats (8-21N 73-77.5E, land)
+          hor = M.coords.horizontal; LAm, LOm = np.asarray(M.LA), np.asarray(M.LO) % 360
+          RB = {'tropics': np.abs(LAm) < 20, 'tn': (LAm >= 8) & (LAm <= 14) & (LOm >= 76) & (LOm <= 81), 'ghats': (LAm >= 8) & (LAm <= 21) & (LOm >= 73) & (LOm <= 77.5)}
+          PR = ('h_bl', 'h_deep', 'h_shal', 'h_lsc', 'h_evap')
           def snap(s_, c_):
               Ts = np.asarray((hor.to_nodal(s_.temperature_variation) + M.ref_t[:, None, None]) / M.K); qs = np.asarray(s_.tracers['specific_humidity'])
               pss = np.asarray(jnp.exp(hor.to_nodal(s_.log_surface_pressure))[0] / M.PA); uu, vv = spherical_harmonic.vor_div_to_uv_nodal(hor, s_.vorticity, s_.divergence)
-              tn_, _ = M.column(jnp.asarray(Ts), jnp.asarray(qs), uu / M.MPS, vv / M.MPS, jnp.asarray(pss), dict(c_, doy0=jnp.float32(M.doy0), utc0=jnp.float32(M.utc0)), rad_fresh=True, div=hor.to_nodal(s_.divergence) * M.SEC)
-              mT = np.array([(Ts[i] * WB).sum() / WB.sum() for i in range(len(M.sig))]); mP = np.array([(np.asarray(tn_['T'])[i] * WB).sum() / WB.sum() * 86400 for i in range(len(M.sig))])
-              return mT, mP
-          B = {}; sA, cA = st, cr; TA, PA_ = snap(sA, cA); hA = 0
-          for hB in (24, 96, 120):
-              sB, cB = mm2.integrate(M, sA, cA, hB - hA); TB, PB = snap(sB, cB)
-              if hB != 96: tot = (TB - TA) / ((hB - hA) / 24.0); ph = 0.5 * (PA_ + PB); B[f'{hA}-{hB}h'] = dict(total=tot.round(3).tolist(), phys=ph.round(3).tolist(), dyn=(tot - ph).round(3).tolist())
-              sA, cA, TA, PA_, hA = sB, cB, TB, PB, hB
+              tn_, dd = M.column(jnp.asarray(Ts), jnp.asarray(qs), uu / M.MPS, vv / M.MPS, jnp.asarray(pss), dict(c_, doy0=jnp.float32(M.doy0), utc0=jnp.float32(M.utc0)), rad_fresh=True, div=hor.to_nodal(s_.divergence) * M.SEC)
+              o = {}
+              for rg, mk in RB.items():
+                  W_ = np.cos(np.radians(LAm)) * mk; mn = lambda X: np.array([(np.asarray(X)[i] * W_).sum() / W_.sum() for i in range(len(M.sig))])
+                  e = dict(T=mn(Ts), q=mn(qs), phys=mn(tn_['T']) * 86400, physq=mn(tn_['q']) * 86400 * 1000)
+                  if 'rad' in dd: e['rad'] = mn(dd['rad']['heating']) * 86400
+                  for kk in PR:
+                      if kk in dd: e[kk] = mn(dd[kk]) * 86400
+                  e['rain'] = float((np.asarray(dd['rain']) * W_).sum() / W_.sum() * 86400)
+                  for kk in ('on_dp', 'on_sh'):
+                      if kk in dd: e[kk] = float((np.asarray(dd[kk]) * W_).sum() / W_.sum())
+                  o[rg] = e
+              return o
+          B = {}; sA, cA = st, cr; hA = 0
+          for w0, w1 in ((0, 24), (96, 120)):
+              if hA < w0: sA, cA = mm2.integrate(M, sA, cA, w0 - hA); hA = w0
+              snaps = [snap(sA, cA)]
+              for h in range(w0 + 3, w1 + 1, 3): sA, cA = mm2.integrate(M, sA, cA, 3); snaps.append(snap(sA, cA))
+              hA = w1; win = {}
+              for rg in RB:
+                  tm = lambda k: (0.5 * snaps[0][rg][k] + sum(x[rg][k] for x in snaps[1:-1]) + 0.5 * snaps[-1][rg][k]) / (len(snaps) - 1)
+                  tot = (snaps[-1][rg]['T'] - snaps[0][rg]['T']) / ((w1 - w0) / 24.0); ph = tm('phys'); e = dict(total=tot, phys=ph, dyn=tot - ph)
+                  totq = (snaps[-1][rg]['q'] - snaps[0][rg]['q']) * 1000 / ((w1 - w0) / 24.0); e['totq'] = totq; e['physq'] = tm('physq'); e['dynq'] = totq - e['physq']
+                  for kk in ('rad',) + PR:
+                      if kk in snaps[0][rg]: e[kk] = tm(kk)
+                  e = {k: np.round(v, 3).tolist() for k, v in e.items()}
+                  e['rain'] = round(float(np.mean([x[rg]['rain'] for x in snaps])), 2)
+                  for kk in ('on_dp', 'on_sh'):
+                      if kk in snaps[0][rg]: e[kk] = round(float(np.mean([x[rg][kk] for x in snaps])), 3)
+                  win[rg] = e
+              B[f'{w0}-{w1}h'] = win
           r['budget'] = B; st5, cr5 = sA, cA
-          print(VN, key, 'BUDGET', {k: dict(zip(np.asarray(M.sig).round(3).tolist(), np.round(v['dyn'], 2))) for k, v in B.items()}, flush=True)
+          print(VN, key, 'BUDGET tropics dyn', {k: dict(zip(np.asarray(M.sig).round(3).tolist(), np.round(v['tropics']['dyn'], 2))) for k, v in B.items()}, flush=True)
       else: st5, cr5 = mm2.integrate(M, st, cr, 120)
       p5, T, q, ps = model_profiles(st5, cr5)
       r['d5'] = {reg: {kk: (np.array(p5[reg][kk]) - np.array(era_mean(k5, 'temperature' if kk == 'T' else 'specific_humidity', reg))).round(4).tolist() for kk in ('T', 'q')} for reg in REG}
@@ -94,5 +120,8 @@ for VN, VS in VARS.items():
           if all(kk in x for x in res): print(VN, kk, 'K/day by sigma', dict(zip(res[0]['sig'], np.round(np.mean([x[kk] for x in res], 0), 2).tolist())))
       if all('budget' in x for x in res):
           for kb in res[0]['budget']:
-              for part in ('total', 'phys', 'dyn'): print(VN, 'BUDGET', kb, part, 'K/day by sigma', dict(zip(res[0]['sig'], np.round(np.mean([x['budget'][kb][part] for x in res], 0), 2).tolist())))
+              for rg in res[0]['budget'][kb]:
+                  for part in [k for k in res[0]['budget'][kb][rg] if isinstance(res[0]['budget'][kb][rg][k], list)]:
+                      print(VN, 'BUDGET', kb, rg, part, 'per day by sigma', dict(zip(res[0]['sig'], np.round(np.mean([x['budget'][kb][rg][part] for x in res], 0), 2).tolist())))
+                  print(VN, 'BUDGET', kb, rg, 'rain mm/day', np.mean([x['budget'][kb][rg]['rain'] for x in res]).round(2), 'on_dp', np.mean([x['budget'][kb][rg].get('on_dp', np.nan) for x in res]).round(3), 'on_sh', np.mean([x['budget'][kb][rg].get('on_sh', np.nan) for x in res]).round(3))
       print(VN, 'phys K/day by sigma', dict(zip(res[0]['sig'], np.round(np.mean([x['phys_dT_Kday'] for x in res], 0), 2).tolist())))

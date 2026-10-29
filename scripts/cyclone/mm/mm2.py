@@ -65,7 +65,7 @@ class Model:
     def __init__(self, grid='T170', layers=32, dt_min=None, set_=None):
         self.S = dict(DEFAULTS); self.S.update(set_ or {})
         if dt_min is None or (dt_min > DT_MAX.get(grid, 15.0)): dt_min = DT_MAX.get(grid, 15.0)   # longest stable step per grid (Kaggle benchmark: T119 blew up at 30 min)
-        self.coords = coordinate_systems.CoordinateSystem(getattr(spherical_harmonic.Grid, grid)(), sigma_coordinates.SigmaCoordinates(sigma_bounds(layers)))
+        self.coords = coordinate_systems.CoordinateSystem((spherical_harmonic.Grid.construct(max_wavenumber=255, gaussian_nodes=192) if grid == 'T255' else getattr(spherical_harmonic.Grid, grid)()), sigma_coordinates.SigmaCoordinates(sigma_bounds(layers)))
         self.ps = primitive_equations.PrimitiveEquationsSpecs.from_si(); nd = self.ps.nondimensionalize
         self.K, self.SEC, self.MPS, self.PA, self.M = [float(nd(1 * u)) for u in (units.degK, units.s, units.m / units.s, units.pascal, units.m)]
         self.dt_s = dt_min * 60.0; self.dt = nd(dt_min * units.minute)
