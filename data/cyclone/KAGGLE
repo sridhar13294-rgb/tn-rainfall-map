@@ -1,6 +1,6 @@
-tn-wx-shd06q0
-libm_wx2020_fields.npz,wx_truth_2020.npz
-XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/wx_shd06.json 0 4 /kaggle/working/wx_0.json > /kaggle/working/wx_0.log 2>&1; tail -3 /kaggle/working/wx_0.log
+tn-ua-ctl
+libm_wx2020_fields.npz
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof_ctl.json 99 '{"ctl":{"grid":"T170","_ua":true,"_chunk":[0,4]}}' > /kaggle/working/prof_ctl.log 2>&1; tail -30 /kaggle/working/prof_ctl.log
 NvidiaTeslaT4
-1
-#s1 2026-10-29T12:07Z
+2
+#u1 2026-10-29T12:19Z
