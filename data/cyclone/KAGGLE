@@ -1,6 +1,6 @@
-tn-si-nodfi
-libm_si4_fields.npz
-XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_si4_fields.npz ../../../data/cyclone/kaggle_cfg/si_nodfi.json 0 2 /kaggle/working/si_0.json > /kaggle/working/si_0.log 2>&1; XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_si4_fields.npz ../../../data/cyclone/kaggle_cfg/si_nodfi.json 1 2 /kaggle/working/si_1.json > /kaggle/working/si_1.log 2>&1; tail -2 /kaggle/working/si_*.log
+tn-prof-bud2
+libm_wx2020_fields.npz
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 10 '{"T170":{"grid":"T170","_budget":true}}' > /kaggle/working/prof.log 2>&1; tail -80 /kaggle/working/prof.log
 NvidiaTeslaT4
-10
-#n8 2026-10-28T20:34Z
+1
+#m1 2026-10-29T02:24Z
