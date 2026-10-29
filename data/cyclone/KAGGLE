@@ -1,6 +1,6 @@
-tn-prof-bud2tp
-libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 10 '{"tp75":{"grid":"T170","layers":"tp75","_budget":true}}' > /kaggle/working/prof.log 2>&1; tail -80 /kaggle/working/prof.log
+tn-bay-t255c
+libm_fields.npz
+XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/bay_t255.json 0 4 /kaggle/working/t255_0.json > /kaggle/working/t255_0.log 2>&1; tail -3 /kaggle/working/t255_*.log
 NvidiaTeslaT4
-2
-#m2 2026-10-29T02:25Z
+5
+#m3 2026-10-29T02:25Z
