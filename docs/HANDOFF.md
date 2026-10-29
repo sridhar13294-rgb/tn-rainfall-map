@@ -424,3 +424,4 @@ GAP: the exam (wx2/score_wx) has no upper-air T RMSE (only z500, t850, t2, u850,
 
 ## 29 Oct 20:10 IST cycle (run by hand: the 19:50 scheduled cycle had not fired by 20:07)
 See rootcause.md 'Exam 29 Oct 20:10'. sh_dtop 0.6 NOT adopted (TN rain). Account 6 also out of weekly GPU quota (3, 4, 6). tn-ua-ctl / tn-ua-shd06 still running (accts 2, 5); tn-ua-tp75 done. The stuck 20:00 scheduled task was re-pointed to the silent night cycle (20:20Z).
+20:25 IST Sridhar PROPOSAL (not adopted): 40 km global + 9 km NIO + 3 km TN (one-way nesting first). Keep the 80 km results/control as the historical reference; never redefine the control silently. Feasibility before commitment. My reply: 40 km = T340 (1024x512, dt ~10 min) ~8-10x the T170 cost and ~4x memory; T255 already OOM on Kaggle T4 -> test T255/T340 on Kaggle TPU v3-8 (JAX native, 128 GB HBM); 80 km stays the Stage 1 global unless the TPU test shows 40 km fits the time budget.
