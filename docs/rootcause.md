@@ -65,3 +65,8 @@ Quota: Kaggle accounts 3 and 4 reached the 30 h weekly GPU limit (pushes refused
 - Side effect: 850 hPa +0.8 -> -2.1 K (the mixing was warming low levels). TN rain day 5 0.6 -> 2.1 mm/day (direction unknown until scored vs gauges).
 - Remaining cold at 250 hPa (-4.8) = other causes still open (radiation/cloud, day-1 shock).
 Next: exam quarter 0 with sh_dtop 0.6 (tn-wx-shd06q0, acct 1) for TN rain/z500; then a proper boundary-layer shallow scheme for the low-level part.
+
+## Exam 29 Oct 20:10 (19 exam starts, quarter 0)
+sh_dtop 0.6 (shallow-mixing fix) vs control: tropics z500 ACC d1/d3/d5 0.79/0.65/0.51 -> 0.83/0.71/0.57, u200 tropics better, India t2 better, India rain d1 better; but India t850 worse (d5 3.43 -> 3.90 K) and TN rain24 d5 RMSE 5.2 -> 11.5 mm, ACC 0.32 -> 0.04. Per start: wet bias in almost every start, largest in SW-monsoon starts (20 May +20.6, 9 Jun +14.7, 8 Aug +15.3 mm) when TN is in the rain shadow. 75 levels alone shows the same TN wet pattern (19 Jul +19.2, 8 Aug +15.0).
+=> Do NOT adopt sh_dtop 0.6. The control's "good" TN rain partly comes from convection being suppressed. New problem P4: when convection is allowed to work (more levels or less shallow mixing), the model rains too much over TN, especially in the SW monsoon. Suspects: rain-shadow not reproduced at 80 km (Ghats too smooth -> no descent), daytime land convection over TN triggering too easily, or too-moist low levels. Next: per-start rain maps (convective vs grid-scale, land vs coast, time of day).
+Genesis 75 levels only (half 1, 42 cases): 8 formed vs 18 with 32L -> 75 levels also hurts genesis by itself.
