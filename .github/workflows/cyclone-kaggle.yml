@@ -1,7 +1,7 @@
 name: Cyclone study - model on Kaggle GPU
 # Runs when data/cyclone/KAGGLE changes on cases. Line 1: job name (slug). Line 2: input files from the era5-cases release
 # (comma-separated). Line 3: command run inside repo/scripts/cyclone/mm on Kaggle. Line 4: accelerator (NvidiaTeslaT4,
-# NvidiaTeslaP100, TpuV38; default NvidiaTeslaT4). Line 5: account 1-10 (1 = Sridhar's; 2-10 = KAGGLE2..10 secrets; default 1).
+# NvidiaTeslaP100, TpuV38; default NvidiaTeslaT4). Line 5: account 1-20 (1 = Sridhar's; 2-20 = KAGGLE2..20 secrets; default 1).
 # Results go to data/cyclone/kaggle/<slug>/.
 on:
   push:
@@ -36,9 +36,29 @@ jobs:
           T9: ${{ secrets.KAGGLE9_API_TOKEN }}
           U10: ${{ secrets.KAGGLE10_USERNAME }}
           T10: ${{ secrets.KAGGLE10_API_TOKEN }}
+          U11: ${{ secrets.KAGGLE11_USERNAME }}
+          T11: ${{ secrets.KAGGLE11_API_TOKEN }}
+          U12: ${{ secrets.KAGGLE12_USERNAME }}
+          T12: ${{ secrets.KAGGLE12_API_TOKEN }}
+          U13: ${{ secrets.KAGGLE13_USERNAME }}
+          T13: ${{ secrets.KAGGLE13_API_TOKEN }}
+          U14: ${{ secrets.KAGGLE14_USERNAME }}
+          T14: ${{ secrets.KAGGLE14_API_TOKEN }}
+          U15: ${{ secrets.KAGGLE15_USERNAME }}
+          T15: ${{ secrets.KAGGLE15_API_TOKEN }}
+          U16: ${{ secrets.KAGGLE16_USERNAME }}
+          T16: ${{ secrets.KAGGLE16_API_TOKEN }}
+          U17: ${{ secrets.KAGGLE17_USERNAME }}
+          T17: ${{ secrets.KAGGLE17_API_TOKEN }}
+          U18: ${{ secrets.KAGGLE18_USERNAME }}
+          T18: ${{ secrets.KAGGLE18_API_TOKEN }}
+          U19: ${{ secrets.KAGGLE19_USERNAME }}
+          T19: ${{ secrets.KAGGLE19_API_TOKEN }}
+          U20: ${{ secrets.KAGGLE20_USERNAME }}
+          T20: ${{ secrets.KAGGLE20_API_TOKEN }}
         run: |
           A=$(sed -n 5p data/cyclone/KAGGLE | tr -d ' '); U=$U1; T=$T1
-          case "$A" in 2) [ -n "$U2" ] && { U=$U2; T=$T2; };; 3) [ -n "$U3" ] && { U=$U3; T=$T3; };; 4) [ -n "$U4" ] && { U=$U4; T=$T4; };; 5) [ -n "$U5" ] && { U=$U5; T=$T5; };; 6) [ -n "$U6" ] && { U=$U6; T=$T6; };; 7) [ -n "$U7" ] && { U=$U7; T=$T7; };; 8) [ -n "$U8" ] && { U=$U8; T=$T8; };; 9) [ -n "$U9" ] && { U=$U9; T=$T9; };; 10) [ -n "$U10" ] && { U=$U10; T=$T10; };; esac
+          case "$A" in 2) [ -n "$U2" ] && { U=$U2; T=$T2; };; 3) [ -n "$U3" ] && { U=$U3; T=$T3; };; 4) [ -n "$U4" ] && { U=$U4; T=$T4; };; 5) [ -n "$U5" ] && { U=$U5; T=$T5; };; 6) [ -n "$U6" ] && { U=$U6; T=$T6; };; 7) [ -n "$U7" ] && { U=$U7; T=$T7; };; 8) [ -n "$U8" ] && { U=$U8; T=$T8; };; 9) [ -n "$U9" ] && { U=$U9; T=$T9; };; 10) [ -n "$U10" ] && { U=$U10; T=$T10; };; 11) [ -n "$U11" ] && { U=$U11; T=$T11; };; 12) [ -n "$U12" ] && { U=$U12; T=$T12; };; 13) [ -n "$U13" ] && { U=$U13; T=$T13; };; 14) [ -n "$U14" ] && { U=$U14; T=$T14; };; 15) [ -n "$U15" ] && { U=$U15; T=$T15; };; 16) [ -n "$U16" ] && { U=$U16; T=$T16; };; 17) [ -n "$U17" ] && { U=$U17; T=$T17; };; 18) [ -n "$U18" ] && { U=$U18; T=$T18; };; 19) [ -n "$U19" ] && { U=$U19; T=$T19; };; 20) [ -n "$U20" ] && { U=$U20; T=$T20; };; esac
           if [ "$A" != "1" ] && [ -n "$A" ] && [ "$U" = "$U1" ]; then echo "account $A not configured - refusing to fall back to account 1"; exit 1; fi
           echo "::add-mask::$T"; { echo "KAGGLE_USERNAME=$U"; echo "KAGGLE_API_TOKEN=$T"; echo "KAGGLE_KEY=$T"; } >> $GITHUB_ENV
       - uses: actions/setup-python@v5
