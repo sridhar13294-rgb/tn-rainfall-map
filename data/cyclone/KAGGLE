@@ -1,6 +1,6 @@
-tn-sb-ctl-r3
+tn-sb-ctl-r3b
 libm_fields.npz
 XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/sb_ctl.json /kaggle/working/sb_ctl.json > /kaggle/working/sb.log 2>&1; tail -5 /kaggle/working/sb.log
 NvidiaTeslaT4
-9
-#r3 2026-10-30T07:40Z
+7
+#r4 2026-10-30T07:41Z
