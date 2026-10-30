@@ -444,3 +444,7 @@ Running: tn-live80-a/b/c (accts 1, 9, 10; live2.py T170 32L, config live_config_
 - Live ensemble 2026102912: tn-live80-a/b done, c running; T85 GitHub run done. Plot + send at 07:00 IST (scheduled).
 - tn-ua-ctl/shd06 COLLECT launched (accts 2, 5). tn-tnr-ctl (acct 8) still running.
 04:30 IST: account 8 ALSO out of weekly GPU quota (tn-tnr-ctl never ran - push refused; tn-live80-18c refused too). Out: 3, 4, 6, 8. 18Z 80 km ensemble: tn-live80-18a (1), 18b (9), 18c2 (1, second session - may queue). tn-tnr-ctl must be re-run on an account with quota (P4 32L comparison).
+
+## 30 Oct 07:00 IST - South Andaman low ensemble result (graph docs/figs/megam_andaman_low_ensemble.png; scripts live_ens_summary.py / live_ens_plot.py)
+80 km 12Z (36 of 51 members - part c refused: account 10 also out of weekly quota), 80 km 18Z (51), 140 km 12Z (51). NO depression formed in MEGAM: median central pressure 1008-1013 hPa all week (IMD expects a depression ~31 Oct) -> genesis not captured (same weak-storm family as P3). Tracks: means move W/WNW across the south Bay to ~11-13N 80-82E by 2-3 Nov; strike-probability maxima offshore north TN (~11N 82E) and south AP (~13.5N 82.5E). Landfall shares 12Z/18Z: north TN 14/6 %, south TN 22/16, south AP 19/6, north AP/Odisha 3/27 (18Z - likely the separate northern circulation), Sri Lanka 3/14, at sea 39/31. 12Z vs 18Z inconsistent; 140 km keeps more at sea (53%). Low confidence.
+Out of weekly GPU quota now: accounts 3, 4, 6, 8, 10.
