@@ -1,0 +1,96 @@
+[{"stream_name":"stdout","time":0.641432302,"data":"+ nvidia-smi || true\n"}
+,{"stream_name":"stdout","time":0.676255039,"data":"Fri Oct 30 15:21:14 2026       \n"}
+,{"stream_name":"stdout","time":0.676286003,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":0.676291601,"data":"| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":0.676295954,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.676300449,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":0.67630427,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":0.676308718,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":0.676312613,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":0.723768192,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":0.723791572,"data":"| N/A   49C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":0.723794984,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":0.723797491,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.723799974,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":0.723802343,"data":"| N/A   53C    P8             11W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":0.723804722,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":0.723807081,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.724718991,"data":"\n"}
+,{"stream_name":"stdout","time":0.724731161,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":0.724735007,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":0.724738417,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":0.724745381,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":0.724748859,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":0.726294614,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":0.726307025,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.04903717,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1.05010698,"data":"accelerator asked NvidiaTeslaT4 -\u003e jax for cuda12\n"}
+,{"stream_name":"stdout","time":1.050122028,"data":"+ pip install -q -U \"jax[cuda12]\"\n"}
+,{"stream_name":"stderr","time":24.957464225,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":24.957488381,"data":"bigframes 2.48.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":24.9574947,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stderr","time":24.957500148,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":24.957505184,"data":"gradio 6.26.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":24.957510115,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":24.957515092,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stdout","time":25.189715084,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":25.189755613,"data":"+ free -g; nproc; python -c \"import jax; print(jax.devices())\" || true\n"}
+,{"stream_name":"stdout","time":25.206904077,"data":"               total        used        free      shared  buff/cache   available\n"}
+,{"stream_name":"stdout","time":25.206926894,"data":"Mem:              31           1          23           0           7          30\n"}
+,{"stream_name":"stdout","time":25.206931306,"data":"Swap:              0           0           0\n"}
+,{"stream_name":"stdout","time":25.209684213,"data":"4\n"}
+,{"stream_name":"stdout","time":31.268841353,"data":"[CudaDevice(id=0), CudaDevice(id=1)]\n"}
+,{"stream_name":"stdout","time":33.610805541,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":33.610838662,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
+,{"stream_name":"stdout","time":45.018445354,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":45.018497449,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
+,{"stream_name":"stdout","time":74.908573878,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":74.908616593,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o libm_wx2020_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020_fields.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" libm_wx2020_fields.npz || { echo BAD_DOWNLOAD libm_wx2020_fields.npz; rm -f libm_wx2020_fields.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o libm_wx2020_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020_fields.npz; }\n"}
+,{"stream_name":"stdout","time":78.92667203,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":78.926703006,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o wx_truth_2020.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/wx_truth_2020.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" wx_truth_2020.npz || { echo BAD_DOWNLOAD wx_truth_2020.npz; rm -f wx_truth_2020.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o wx_truth_2020.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/wx_truth_2020.npz; }\n"}
+,{"stream_name":"stdout","time":119.976253928,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":119.976286755,"data":"setup s 119\n"}
+,{"stream_name":"stdout","time":119.976292615,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 python -W ignore l2_evap.py \u0026\u0026 XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore tn_rain_diag.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz /kaggle/working/tnr_e2.json 2020-05-20,2020-06-09,2020-07-19,2020-08-08,2020-10-27,2020-12-06 '{\"e2\":{\"grid\":\"T170\",\"pbl_tm\":1.0,\"sh_mflux\":0.03,\"evap_ifs\":1.0}}' \u003e /kaggle/working/tnr.log 2\u003e\u00261; tail -12 /kaggle/working/tnr.log 2\u003e\u00261 | tee job.log\n"}
+,{"stream_name":"stdout","time":123.935659974,"data":"F2 coastal sea       rain    5 mm/day: re-evaporated below 850 hPa  mm2  27.9%  IFS eq.6.52   1.3%   | peak layer cooling mm2  3.07  IFS  0.68 K/day   | BL heat removed mm2  40.4 IFS   1.9 W/m2\n"}
+,{"stream_name":"stdout","time":123.935711171,"data":"F2 coastal sea       rain   20 mm/day: re-evaporated below 850 hPa  mm2  14.4%  IFS eq.6.52   0.7%   | peak layer cooling mm2  6.14  IFS  1.51 K/day   | BL heat removed mm2  83.5 IFS   4.3 W/m2\n"}
+,{"stream_name":"stdout","time":123.935717677,"data":"control coastal sea  rain    5 mm/day: re-evaporated below 850 hPa  mm2  78.7%  IFS eq.6.52 100.0%   | peak layer cooling mm2  8.11  IFS 12.69 K/day   | BL heat removed mm2 113.9 IFS 144.7 W/m2\n"}
+,{"stream_name":"stdout","time":123.935722652,"data":"control coastal sea  rain   20 mm/day: re-evaporated below 850 hPa  mm2  45.4%  IFS eq.6.52  80.2%   | peak layer cooling mm2 16.22  IFS 28.26 K/day   | BL heat removed mm2 262.6 IFS 463.9 W/m2\n"}
+,{"stream_name":"stdout","time":123.935727402,"data":"F2 TN land           rain    5 mm/day: re-evaporated below 850 hPa  mm2  27.9%  IFS eq.6.52   0.0%   | peak layer cooling mm2  3.07  IFS  0.00 K/day   | BL heat removed mm2  40.4 IFS   0.0 W/m2\n"}
+,{"stream_name":"stdout","time":123.935732143,"data":"F2 TN land           rain   20 mm/day: re-evaporated below 850 hPa  mm2  14.4%  IFS eq.6.52   0.0%   | peak layer cooling mm2  6.14  IFS  0.00 K/day   | BL heat removed mm2  83.5 IFS   0.0 W/m2\n"}
+,{"stream_name":"stdout","time":123.935746863,"data":"control TN land      rain    5 mm/day: re-evaporated below 850 hPa  mm2  77.3%  IFS eq.6.52  64.4%   | peak layer cooling mm2  7.80  IFS  5.44 K/day   | BL heat removed mm2 111.8 IFS  93.1 W/m2\n"}
+,{"stream_name":"stdout","time":123.935753504,"data":"control TN land      rain   20 mm/day: re-evaporated below 850 hPa  mm2  44.3%  IFS eq.6.52  39.7%   | peak layer cooling mm2 15.60  IFS 13.84 K/day   | BL heat removed mm2 256.6 IFS 230.0 W/m2\n"}
+,{"stream_name":"stdout","time":123.935761054,"data":"F2 coastal sea          5 mm/d [numpy] convective re-evaporated: hand   1.3%  code   1.3%  | water balance +0.0e+00  limiter binds 0\n"}
+,{"stream_name":"stdout","time":123.935764076,"data":"F2 coastal sea          5 mm/d [jax] convective re-evaporated: hand   1.3%  code   1.3%  | water balance +0.0e+00  limiter binds 0\n"}
+,{"stream_name":"stdout","time":123.935767123,"data":"                        5 mm/d [numpy] grid-scale re-evaporated:   0.0%   (old mm2 formula  27.9%)\n"}
+,{"stream_name":"stdout","time":123.935770206,"data":"F2 coastal sea         20 mm/d [numpy] convective re-evaporated: hand   0.7%  code   0.7%  | water balance +0.0e+00  limiter binds 0\n"}
+,{"stream_name":"stdout","time":123.935774328,"data":"F2 coastal sea         20 mm/d [jax] convective re-evaporated: hand   0.7%  code   0.7%  | water balance +0.0e+00  limiter binds 0\n"}
+,{"stream_name":"stdout","time":123.935777494,"data":"                       20 mm/d [numpy] grid-scale re-evaporated:   0.0%   (old mm2 formula  14.4%)\n"}
+,{"stream_name":"stdout","time":123.935780423,"data":"control coastal sea     5 mm/d [numpy] convective re-evaporated: hand 100.0%  code 100.0%  | water balance +0.0e+00  limiter binds 0\n"}
+,{"stream_name":"stdout","time":123.935803825,"data":"control coastal sea     5 mm/d [jax] convective re-evaporated: hand 100.0%  code 100.0%  | water balance -3.6e-12  limiter binds 0\n"}
+,{"stream_name":"stdout","time":123.935806534,"data":"                        5 mm/d [numpy] grid-scale re-evaporated: 100.0%   (old mm2 formula  78.7%)\n"}
+,{"stream_name":"stdout","time":123.935808897,"data":"control coastal sea    20 mm/d [numpy] convective re-evaporated: hand  80.2%  code  80.2%  | water balance +0.0e+00  limiter binds 0\n"}
+,{"stream_name":"stdout","time":123.935811336,"data":"control coastal sea    20 mm/d [jax] convective re-evaporated: hand  80.2%  code  80.2%  | water balance -1.5e-11  limiter binds 0\n"}
+,{"stream_name":"stdout","time":123.935813713,"data":"                       20 mm/d [numpy] grid-scale re-evaporated: 100.0%   (old mm2 formula  45.4%)\n"}
+,{"stream_name":"stdout","time":123.935816043,"data":"control TN land         5 mm/d [numpy] convective re-evaporated: hand  64.4%  code  64.4%  | water balance +0.0e+00  limiter binds 0\n"}
+,{"stream_name":"stdout","time":123.935818493,"data":"control TN land         5 mm/d [jax] convective re-evaporated: hand  64.4%  code  64.4%  | water balance -3.6e-12  limiter binds 0\n"}
+,{"stream_name":"stdout","time":123.935820876,"data":"                        5 mm/d [numpy] grid-scale re-evaporated: 100.0%   (old mm2 formula  77.3%)\n"}
+,{"stream_name":"stdout","time":123.935823441,"data":"control TN land        20 mm/d [numpy] convective re-evaporated: hand  39.7%  code  39.7%  | water balance +2.7e-20  limiter binds 0\n"}
+,{"stream_name":"stdout","time":123.935825811,"data":"control TN land        20 mm/d [jax] convective re-evaporated: hand  39.7%  code  39.7%  | water balance +0.0e+00  limiter binds 0\n"}
+,{"stream_name":"stdout","time":123.935828209,"data":"                       20 mm/d [numpy] grid-scale re-evaporated: 100.0%   (old mm2 formula  44.3%)\n"}
+,{"stream_name":"stdout","time":2270.841310566,"data":"e2 2020-05-20T00 TN box rain model/truth by day [(1, 1.88, 0.76), (2, 6.42, 1.42), (3, 9.69, 0.57), (4, 16.0, 1.01), (5, 15.44, 0.52)] | 5-day mean conv/lsc/sfc rain mm/d {'tn_land': (np.float64(2.29), np.float64(3.86), np.float64(3.84)), 'ghats': (np.float64(1.35), np.float64(1.01), np.float64(1.53)), 'tn_coast_sea': (np.float64(21.27), np.float64(7.36), np.float64(25.02)), 'bay_off': (np.float64(5.25), np.float64(0.4), np.float64(5.3))} | d5 bias T,q [-1.91, 6.05, -3.38, -4.66, -4.02, -3.12, -1.08, -0.33, 1.16, 0.54, -3.43, -3.6, -301.69] [0.003, 0.009, 0.002, 0.034, 0.111, 0.167, 0.394, 1.262, 3.215, 3.629, 0.93, 0.138, -19.76]\n"}
+,{"stream_name":"stdout","time":2270.841367541,"data":"e2 2020-06-09T00 TN box rain model/truth by day [(1, 5.59, 1.71), (2, 8.07, 4.09), (3, 6.83, 3.27), (4, 9.35, 2.11), (5, 13.11, 3.22)] | 5-day mean conv/lsc/sfc rain mm/d {'tn_land': (np.float64(1.69), np.float64(1.19), np.float64(1.98)), 'ghats': (np.float64(0.89), np.float64(13.92), np.float64(12.03)), 'tn_coast_sea': (np.float64(17.11), np.float64(5.94), np.float64(18.09)), 'bay_off': (np.float64(17.21), np.float64(4.66), np.float64(18.87))} | d5 bias T,q [-6.6, 4.78, -3.16, -3.48, -2.12, -1.7, -0.72, 0.82, 0.98, -0.44, -1.38, -2.05, -301.29] [0.003, 0.006, 0.01, 0.045, 0.106, 0.273, 0.098, -0.593, -0.095, 0.328, -0.02, 0.67, -17.373]\n"}
+,{"stream_name":"stdout","time":2270.841373653,"data":"e2 2020-07-19T00 TN box rain model/truth by day [(1, 17.08, 7.64), (2, 6.72, 6.31), (3, 4.36, 1.55), (4, 5.79, 1.83), (5, 3.66, 9.0)] | 5-day mean conv/lsc/sfc rain mm/d {'tn_land': (np.float64(3.99), np.float64(2.08), np.float64(4.51)), 'ghats': (np.float64(3.07), np.float64(0.07), np.float64(3.1)), 'tn_coast_sea': (np.float64(11.17), np.float64(6.96), np.float64(14.31)), 'bay_off': (np.float64(4.78), np.float64(0.49), np.float64(4.82))} | d5 bias T,q [-4.75, 9.21, 1.09, -3.65, -4.7, -4.27, -1.94, 1.11, 2.13, 0.44, -0.22, -1.07, -299.34] [0.003, 0.01, 0.008, -0.015, -0.125, -0.271, -1.411, -2.459, -2.32, -1.431, -0.545, -0.031, -17.334]\n"}
+,{"stream_name":"stdout","time":2270.841404254,"data":"e2 2020-08-08T00 TN box rain model/truth by day [(1, 12.48, 17.39), (2, 8.08, 18.51), (3, 8.18, 5.61), (4, 12.48, 3.46), (5, 13.2, 0.64)] | 5-day mean conv/lsc/sfc rain mm/d {'tn_land': (np.float64(1.76), np.float64(1.9), np.float64(2.38)), 'ghats': (np.float64(1.07), np.float64(16.4), np.float64(16.28)), 'tn_coast_sea': (np.float64(19.82), np.float64(10.3), np.float64(22.9)), 'bay_off': (np.float64(14.2), np.float64(5.68), np.float64(17.0))} | d5 bias T,q [-2.87, 4.7, -0.34, -3.74, -3.81, -2.5, -0.24, 0.61, 1.79, -1.15, -1.5, -2.21, -299.81] [0.003, 0.008, 0.005, -0.005, -0.09, -0.16, -0.147, -0.168, -0.155, 1.005, 0.449, 0.871, -16.738]\n"}
+,{"stream_name":"stdout","time":2270.841410652,"data":"e2 2020-10-27T00 TN box rain model/truth by day [(1, 3.0, 2.05), (2, 4.2, 4.23), (3, 5.11, 3.49), (4, 3.44, 1.32), (5, 2.55, 0.57)] | 5-day mean conv/lsc/sfc rain mm/d {'tn_land': (np.float64(1.17), np.float64(1.25), np.float64(1.84)), 'ghats': (np.float64(0.7), np.float64(0.35), np.float64(0.94)), 'tn_coast_sea': (np.float64(5.66), np.float64(2.91), np.float64(6.89)), 'bay_off': (np.float64(5.29), np.float64(1.11), np.float64(5.75))} | d5 bias T,q [-1.57, 9.74, -2.41, -4.49, -4.11, -3.85, -1.9, 0.58, 1.2, 1.1, -1.39, -1.8, -299.2] [0.001, 0.008, 0.013, 0.019, -0.021, 0.021, -0.407, -0.229, 0.1, -0.624, 2.361, 2.635, -16.539]\n"}
+,{"stream_name":"stdout","time":2270.8414158,"data":"e2 2020-12-06T00 TN box rain model/truth by day [(1, 5.76, 15.81), (2, 6.66, 10.15), (3, 8.41, 6.32), (4, 4.74, 2.01), (5, 2.18, 0.32)] | 5-day mean conv/lsc/sfc rain mm/d {'tn_land': (np.float64(1.37), np.float64(5.98), np.float64(5.81)), 'ghats': (np.float64(1.0), np.float64(0.83), np.float64(1.33)), 'tn_coast_sea': (np.float64(5.05), np.float64(2.15), np.float64(6.32)), 'bay_off': (np.float64(8.29), np.float64(2.67), np.float64(9.94))} | d5 bias T,q [-1.79, 4.28, -0.67, -3.95, -3.61, -2.59, -1.25, 1.49, 2.01, 1.57, -1.26, 0.86, -296.59] [0.001, 0.007, 0.012, 0.026, 0.048, 0.078, 0.057, 0.458, -0.114, -0.587, 4.832, 0.928, -13.87]\n"}
+,{"stream_name":"stdout","time":2270.841909571,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":2270.841927287,"data":"+ rm -rf repo libm_wx2020_fields.npz wx_truth_2020.npz\n"}
+,{"stream_name":"stdout","time":2270.998687246,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":2270.998712116,"data":"total s 2270\n"}
+,{"stream_name":"stderr","time":2272.963260236,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":2272.963309132,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":2273.176439583,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":2273.176464315,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":2273.931915847,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":2274.81429419,"data":"[NbConvertApp] Writing 282598 bytes to __results__.html\n"}
+]
