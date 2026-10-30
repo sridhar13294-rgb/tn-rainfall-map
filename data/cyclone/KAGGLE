@@ -1,6 +1,6 @@
-tn-prof-shmf
-libm_wx2020_fields.npz
-cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 10 '{"shmf":{"grid":"T170","_budget":true,"sh_mflux":0.03}}' > /kaggle/working/prof.log 2>&1; tail -80 /kaggle/working/prof.log
+tn-sb-nocmt
+libm_fields.npz
+XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/sb_nocmt.json /kaggle/working/sb_nocmt.json > /kaggle/working/sb_nocmt.log 2>&1; tail -40 /kaggle/working/sb_nocmt.log
 NvidiaTeslaT4
-7
-#c3 2026-10-30T04:11Z
+9
+#n1 2026-10-30T04:27Z
