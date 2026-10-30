@@ -241,3 +241,19 @@ Sizes of the remaining candidates for the 21.6 W/m2 (to be derived, in this orde
  2. Rain re-evaporation: 1.16 K/day = 0.95 mm/day (15% of rain) - within the usual range; k_evap / ev_frac are constants (later item).
  3. Surface sensible flux 8.7 W/m2 (0.37 K/day); an observed ~12 W/m2 adds only 0.14 K/day (D8 related).
  D9 (convective/anvil cloud) evidence from the radcloud self-test: a 2 mm/day convective column gets total cover 0.52, LWP 273 g/m2, albedo 0.37; 40 mm/day gives cloud 0.6 in every layer 270-940 hPa. With deep convection now in 23% of columns, this explains surface SW 162 -> 104 W/m2 and OLR 201-206.
+
+## 30 Oct 16:00 IST - clear-sky long-wave vs an independent reference (RRTMG, climlab on Kaggle): ROOT CAUSE of most of the low-level heat deficit
+Same column (AFGL tropical, mm2's 32 levels; lw_reference_check.py -> lw_column.json; rrtmg_climlab_reference.py, job tn-rrtmg-ref2).
+800-1000 hPa mass-mean clear-sky LW heating: RRTMG -2.45 K/day (H2O+CO2 only -2.51); MEGAM -3.18 -> MEGAM cools 0.73 K/day = 17.4 W/m2 too much (of the 21.6 W/m2 day-1 deficit). 300-800 hPa: RRTMG -2.18, MEGAM -2.26 (fine; the self-test's own 1.5-2.0 target there was itself wrong). Surface downward LW: RRTMG 391.6, MEGAM 411.5 W/m2.
+Attribution (1 cm-1 SSM, lines/continuum factors varied, attrib in scratch, numbers reproducible with lw_reference_check.py):
+ lines x1.5 continuum x1.5 (as used): -3.09 K/day, DLR 410.4 | lines x1.5 continuum x1.0: -2.74, DLR 391.9 (= RRTMG 391.6) | lines x1.0 continuum x1.0: -2.92, DLR 388.3 | continuum off: -0.78.
+ => The x1.5 on the WATER-VAPOUR CONTINUUM adds 0.35 K/day of low-level cooling and 18.5 W/m2 of surface DLR. It was tuned to a surface-DLR target of 400-420 W/m2; the independent reference gives 392 for this atmosphere, so the calibration target was wrong and the factor has no physical basis. The fitted 17-term scheme adds a further -0.09 (fit error); the SSM line shape leaves -0.29.
+Derived change: continuum factor 1.0 (lines x1.5 kept: best match to RRTMG at low levels and OLR). Implementation: the existing radcloud switch lw_cnt = 1/1.5 = 0.667 scales the fitted continuum coefficients; offline the fitted scheme then gives 800-1000 hPa -2.85 K/day (SSM target -2.74; RRTMG -2.45), 300-800 -2.15 (RRTMG -2.18), OLR 288.7, DLR 393.5 (RRTMG 391.6). L1 + L2 done (no new code).
+
+REGISTERED BEFORE RUNNING (30 Oct 16:00 IST; 10 starts, d5 tropics vs ERA5, deterministic):
+ Run R1 = combo (pbl_tm 1 + sh_mflux 0.03) + lw_cnt 0.667, vs tn-prof-combo:
+  rad 800-1000 hPa mass-mean (all-sky) -1.53 -> -1.20 +- 0.15 K/day; surface LW down (tropics) falls by 12-20 W/m2;
+  850 bias -2.42 -> -1.7 +- 0.3 K; 925 -1.71 -> -1.1 +- 0.3; 1000 -0.96 -> -0.5 +- 0.3;
+  300-500 hPa: change within +-0.3 K; OLR +1..+4 W/m2 (still < 220: D9);
+  must not worsen: 250 within 0.3 K of combo, deep share >= 0.20, grid/deep <= 1.0, no blow-up.
+ Run R2 = control + lw_cnt 0.667, vs tn-prof-bud2 (interaction / compensation check): low levels WARMER by +0.5..+1.0 K at 850-1000 (control already +0.8/+2.5/+2.7) - i.e. the old shallow over-heating was partly compensating the radiation over-cooling; the control is NOT a candidate.
