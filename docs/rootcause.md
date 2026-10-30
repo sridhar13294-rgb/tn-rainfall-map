@@ -257,3 +257,20 @@ REGISTERED BEFORE RUNNING (30 Oct 16:00 IST; 10 starts, d5 tropics vs ERA5, dete
   300-500 hPa: change within +-0.3 K; OLR +1..+4 W/m2 (still < 220: D9);
   must not worsen: 250 within 0.3 K of combo, deep share >= 0.20, grid/deep <= 1.0, no blow-up.
  Run R2 = control + lw_cnt 0.667, vs tn-prof-bud2 (interaction / compensation check): low levels WARMER by +0.5..+1.0 K at 850-1000 (control already +0.8/+2.5/+2.7) - i.e. the old shallow over-heating was partly compensating the radiation over-cooling; the control is NOT a candidate.
+
+## 30 Oct 16:50 IST - P4 (TN wet bias) and P2 (worse with more levels): 5-Why from the existing TN diagnostics (tn-tnr-ctl2, tn-tnr-tp75; 6 starts May-Dec 2020), no GPU
+Signature table (5-day means, control 32L): in ALL regions and ALL six starts - SW monsoon westerlies, NE monsoon easterlies, pre-monsoon calm - RH at 925/850 hPa is 0.43-0.79 while RH at 700 hPa is 0.72-1.00. Grid-scale condensation 3.5-30 mm/day; rain re-evaporation 2.7-9.5 mm/day (falling through the dry boundary layer). Day-5 TN q bias vs ERA5: +1 to +5.2 g/kg at 500-700 hPa, -1.4 to -3.8 g/kg at 925-1000 hPa (75L: same pattern, larger).
+5-Why:
+ 1 Why too much TN rain? Grid-scale rain (TN land 32L conv/grid 2.5/9.2 mm/day; 75L 0.8/14.9).
+ 2 Why grid-scale? The 700 hPa layer is saturated or nearly (0.77-1.00) over TN land, Ghats, coast and Bay alike.
+ 3 Why is 700 hPa saturated? Mid-levels are 1-5 g/kg too moist by day 5 while the boundary layer is 1.4-3.8 g/kg too dry: moisture has been moved UP from the boundary layer.
+ 4 Why moved up? Shallow MSE mixing relaxes q over the whole parcel depth (often 1000-400 hPa) to the column mean in tau_shallow = 1 h = an exchange of 0.3-0.9 kg m-2 s-1, 10-40x observed shallow-cumulus mass fluxes (Candidate 2). Measured over TN (prof budget, control): +2.09 g/kg/day at 615 hPa on day 1, -0.63 at 930 hPa; Ghats +2.58 / -2.12.
+ 5 Why rain and not convection? The same mixing lowers boundary-layer MSE -> CAPE gone -> deep convection on TN land ~0-18%; the moistened mid-levels then condense as grid-scale rain, half of which re-evaporates below.
+Rain shadow (terrain branch of the fishbone) is NOT the root: the same mid-level saturation occurs with easterlies (Dec, 700 RH 0.89-0.91) and calm (May, 0.75-0.83). It may add on top in SWM; examine after this fix.
+P2 link: the mixing deposits moisture at its top; with 75 levels the top layer is thinner, so the same deposit saturates it sooner (75L Ghats RH700 0.97-1.00 vs 32L 0.86-0.93) -> grid-scale rain +60%.
+Fishbone summary: Method (scheme design: shallow mixing over full parcel depth) = ROOT; Measurement (ERA5 truth 0.25->1.5 deg) minor; Machine (80 km Ghats) secondary; Material (initial moisture) no (h0 q bias ~0); Environment (season) no - all seasons; Man (tuning tau 1 h) = the constant behind the root.
+Fix = already derived Candidate 2 / F2: sh_mflux 0.03 (exchange from an observed mass flux) + pbl_tm 1. Measured effect over TN in the Jan-Feb prof runs: 615 hPa moistening 2.09 -> 0.27 g/kg/day, day-1 grid-scale 1.50 -> 0.45 mm/day.
+REGISTERED BEFORE RUNNING (16:50 IST) - tn_rain_diag, same 6 starts, combo settings (pbl_tm 1, sh_mflux 0.03), deterministic:
+ Run P4a (32L, account 11) vs tn-tnr-ctl2: TN box 5-day rain bias +54% -> within +-25% of truth (4.6 mm/day: 3.5-5.8); TN land grid-scale rain down >= 50% (9.2 -> <= 4.6); RH700 over TN land (6-start mean of 5-day means) <= 0.80 (ctl 0.82); d5 TN q bias at 600-700 hPa mean <= +1.0 g/kg (ctl ~ +2.5); convective share of TN land rain up.
+ Run P2a (75L tp75, account 12) vs tn-tnr-tp75: TN box rain within 20% of P4a (32L) - i.e. the level sensitivity largely removed (ctl: 10.2 vs 7.1); TN land grid-scale <= 7.5 (tp75 ctl 14.9).
+ Failure of the TN-box gate -> P4 not explained by Candidate 2 alone (rain shadow / Ghats branch next).
