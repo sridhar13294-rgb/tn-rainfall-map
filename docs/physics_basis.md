@@ -70,3 +70,7 @@ D1/D2 audit against the five risk types (before the results are read):
  4 stability: explicit step, limiter rwe <= 0.25 m/dt. Offline rwe ~0.015 kg m-2 s-1 x 1200 s = 18 kg m-2 vs limit ~64: does NOT bind for the derived values.
  5 domain: only cloud-cooled layers (c > 0.05) between sigma 0.7-0.97, no deep convection; includes land daytime cumulus tops (intended).
  Pre-registered interaction check for tn-prof-d12 vs tn-prof-d1 (tropics d5, sigma 0.81-0.86): h_bl + h_shal must change by less than 0.5 K/day and physq by less than 0.3 g/kg/day apart from the entrainment term itself (h_ent). If larger -> coupling defect (fix the coupling, e.g. entrainment replaces K at the top interface), not a rejection of D2's physics.
+
+## Derivation standard after R1 (30 Oct 17:00 IST)
+Before registering a forecast prediction, the offline calculation must use: the same sounding(s) as the model regime in question; the same vertical levels and layer definitions; the SAME cloud distribution and cloud water as the model produces there (all-sky, from the model's own diagnostics), not clear sky; the same radiation inputs and averaging period (diurnal mean); and compare layer-by-layer heating rates, not only surface fluxes. Only then convert to a forecast response. Regime-specific observational targets (e.g. trade-cumulus heating 1-2 K/day) apply only to matching regimes.
+Lessons logged: D2 (sized on the pre-D1 cloud) and R1 (clear-sky numbers applied to a cloudy model) were derivation errors, not code errors.
