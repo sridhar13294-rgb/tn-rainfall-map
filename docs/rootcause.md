@@ -274,3 +274,17 @@ REGISTERED BEFORE RUNNING (16:50 IST) - tn_rain_diag, same 6 starts, combo setti
  Run P4a (32L, account 11) vs tn-tnr-ctl2: TN box 5-day rain bias +54% -> within +-25% of truth (4.6 mm/day: 3.5-5.8); TN land grid-scale rain down >= 50% (9.2 -> <= 4.6); RH700 over TN land (6-start mean of 5-day means) <= 0.80 (ctl 0.82); d5 TN q bias at 600-700 hPa mean <= +1.0 g/kg (ctl ~ +2.5); convective share of TN land rain up.
  Run P2a (75L tp75, account 12) vs tn-tnr-tp75: TN box rain within 20% of P4a (32L) - i.e. the level sensitivity largely removed (ctl: 10.2 vs 7.1); TN land grid-scale <= 7.5 (tp75 ctl 14.9).
  Failure of the TN-box gate -> P4 not explained by Candidate 2 alone (rain shadow / Ghats branch next).
+
+## 30 Oct 17:10 IST - P3 (weak storms) 5-Why from the existing storm budgets (no GPU)
+Signature (storm-core budgets, 3 controls + cmt_mf + CMT-off): in the core (100 km) deep convection switches OFF for long spells - 'deep-off' share of 3-h steps: control Nivar 0.42 / 0.54 / 0.50, Sidr 0.12-0.21, Titli 0.00-0.12. In those spells the shallow MSE mixing takes over the whole core column: +50..+98 K/day at 850-1000 hPa and -5..-10 K/day at 500-850 hPa, with rain re-evaporation -25..-32 K/day (Nivar 36-48 h). The storms that deepened are exactly those whose core convection never switched off: Titli and Nivar with CMT off (off-share 0.00 -> 992 / 993 hPa) and with cmt_mf (0.00 -> 993 / 996); the ones that stayed weak had off-spells (control Nivar 0.42-0.54 -> 1003-1006; Sidr 0.12-0.42 in all variants -> 998-1003).
+5-Why:
+ 1 Why no intensification? Core deep convection is intermittent (off up to half the time).
+ 2 Why off? When the entraining plume is not deep, the shallow MSE mixing acts over the full parcel depth with tau 1 h and homogenises moist static energy in the core: boundary-layer h drops, CAPE is removed, convection cannot restart for 12-24 h.
+ 3 Why so strong? Exchange rate m/(2 tau) = 0.3-0.9 kg m-2 s-1, 10-40x an observed shallow-cumulus mass flux (Candidate 2 - the same constant behind P1 and P4).
+ 4 Why did CMT changes help 2 of 3 storms? Not through momentum: in those runs the core convection happened to stay on (off-share 0), so the shallow-mixing collapse never started; Sidr had off-spells in every variant and never deepened. This also explains why the CMT gain was 'storm-dependent'.
+ 5 Root: one constant (tau_shallow = 1 h over the full parcel depth) - P1 (cold upper air / heating too low), P4/P2 (moisture lifted to 600-700 hPa -> grid-scale rain) and P3 (core convection collapses) all trace to it. F2 (sh_mflux 0.03 + pbl_tm 1) is the derived fix; its remaining problem is the low-level radiation over-cooling (now under test, R1).
+REGISTERED BEFORE RUNNING (17:10 IST) - storm budget Nivar/Titli/Sidr and quick6 (6 storms), combo settings, deterministic:
+ (a) core shallow heating 850-1000 hPa: max over 72 h <= 10 K/day in all 3 storms (control 25-98);
+ (b) deep-off share in the core <= 0.15 in all 3 storms (control Nivar 0.42-0.54);
+ (c) 72 h pmin deeper than the deepest control by more than the control spread in >= 2 of 3 storms (Titli < 997.2, Nivar < 1000.3, Sidr < 995.8);
+ (d) quick6 vs the deterministic control tn-quick6-ctl-d1: mean 72 h wind >= +2 kt (25.7 -> >= 27.7); track error at 48 and 72 h no more than 10% worse (199 / 273 km).
