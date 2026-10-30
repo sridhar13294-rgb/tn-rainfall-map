@@ -1,6 +1,27 @@
 # MEGAM root-cause log (5-Why / fault tree before any test)
 Rule (Sridhar, 28 Oct): no trial-and-error screening. For each problem: 1) symptom in numbers; 2) 5-Why / fault tree using the heat-budget, the code and reference documents (ECMWF IFS Part IV, papers); 3) each hypothesis with the signature it predicts; 4) at most 1-2 discriminating tests; 5) confirm, then fix; 6) adoption gate (budget + genesis + tracks + exam incl. TN rain).
 
+## PROCESS (Sridhar, 30 Oct 09:54) - investigate before testing
+1. Define the symptom with numbers (region, level, lead time, vs which truth).
+2. 5-Why from the symptom down to a mechanism in the code.
+3. Fishbone - list causes in 6 branches: Dynamics/numerics, Physics schemes, Initial state/insertion, Surface/ocean/land, Resolution/grid & levels, Verification/data.
+4. A candidate passes ONLY if ALL hold: (a) exact code line + implemented equation identified; (b) theory/literature gives the expected value and ours is clearly off (magnitude stated); (c) it explains EVERY measured signature of the problem; (d) no existing test result contradicts it; (e) a predicted signature (which numbers move, which way, how much) is written down BEFORE testing; (f) the fix is physically justified, not a tuning knob.
+5. Quick test: isolated change, same starts, <= ~1 h, measure the predicted signature + adverse effects (stability, conservation, 850 hPa, all-India rain gate where relevant). Signature absent -> reject the candidate (do not stretch the hypothesis).
+6. Full regression only after 5 passes: exam 73 starts (all regions incl. Indian rain regions), genesis, Bay/AS/SI tracks + intensity, ensemble spread; adoption rule vs the control.
+
+### Current problems through the process
+P1 cold upper troposphere (tropics d5 250/300/400/500 hPa -5.9/-5.6/-4.4/-3.3 K vs ERA5; ~1/3 of it in day 1)
+ Why1 the column 190-700 hPa loses heat (budget: -1.5..-2 K/day day 1) -> Why2 convective heating aloft is small vs radiative cooling -> Why3 deep convection fires in only 5-11% of columns, grid-scale condensation (peak ~600 hPa) does the heating -> Why4 boundary-layer moist static energy / CAPE is removed before deep convection can use it -> Why5 the shallow MSE mixing relaxes the whole parcel depth to its mean in 1 h (implied exchange 0.3-0.9 kg m-2 s-1 vs observed 0.02-0.03).
+ Fishbone (others): radiation/clouds (rad_top tested: no), sponge (no), initial state (small at 250 hPa), trigger thresholds (no), levels (tp75 helps aloft but hurts rain), ozone (open), resolution (open).
+ Candidate 2 (shallow mixing rate) passes a-f; predicted: deep share up (>15%), grid-scale down, 250-500 hPa warmer by >=1 K, 615 hPa moistening down, 850 hPa not colder than -1 K change. Quick test: tn-prof-shmf.
+P3 storms fill in 12 h and never intensify (72 h 28 kt vs observed 73 kt, 6 storms; 54-storm audit)
+ Why1 low-level spin is removed faster than it is generated -> Why2 not DFI, not the inserted vortex (Nivar without it is as weak; bogus equations correct), not surface fluxes (audited) -> Why3 a momentum sink acts where convection is on (the core) -> Why4 convective momentum transport relaxes u, v to the cloud-layer mean -> Why5 with tau_cmt = 6 h vs ~2 days for mass-flux CMT (column mass / cloud-base mass flux), ~8x too fast.
+ Fishbone (others): resolution (63 km test pending), heating organisation (budget pending), ocean cooling (small at these winds), diffusion (no), DFI (no), shallow mixing (sh_cap made storms weaker - consistent with BL ventilation, not refuting Candidate 1).
+ Candidate 1 (CMT time scale) passes a-f; predicted: with CMT off, 850 hPa max wind keeps or gains strength through 24 h, central pressure falls >=2-3 hPa more by 72 h, warm core 300 hPa grows. Quick test: tn-sb-cmt.
+P2 rain worse with more levels and P4 TN wet bias (TN box 7.1 vs 4.6 mm/day at 32L, 10.2 at 75L; grid-scale rain on TN land and Ghats, little convective rain, no rain shadow under westerlies)
+ Why1 grid-scale condensation over TN/Ghats -> Why2 mid levels saturate there -> Why3 moisture is lifted to 600-700 hPa without convection raining it out -> Why4a shallow mixing moistens 600-700 hPa (+1.2 g/kg/day) and suppresses deep convection (Candidate 2); Why4b smoothed 80 km Ghats give no lee descent (terrain suspect, separate).
+ Status: Candidate 2 partly explains P2/P4 (prediction: grid-scale rain over TN land and Ghats down, convective share up); terrain branch to be examined with vertical motion fields before any test.
+
 ## P1 Cold tropical upper troposphere (day 5: 250 hPa -5.8 K, 100 hPa +7 K)
 Why 1: model upper air loses heat faster than the real one. Start state OK (day-0 bias ~0 at 200-300 hPa) -> it is the forecast, not the analysis.
 Why 2: physics or dynamics? Physics-off run still -2.5 K at 250-300 and +8 K at 100 hPa -> about half is dynamics/vertical discretisation; undiluted-plume and weaker-LW tests changed <0.5 K -> convection depth and LW strength are NOT the main physics part.
