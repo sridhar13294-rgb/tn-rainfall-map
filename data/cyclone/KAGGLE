@@ -1,6 +1,6 @@
-tn-tnr-f2tp75
-libm_wx2020_fields.npz,wx_truth_2020.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore tn_rain_diag.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz /kaggle/working/tnr_f2tp75.json 2020-05-20,2020-06-09,2020-07-19,2020-08-08,2020-10-27,2020-12-06 '{"f2tp75":{"grid":"T170","layers":"tp75","pbl_tm":1.0,"sh_mflux":0.03}}' > /kaggle/working/tnr.log 2>&1; tail -12 /kaggle/working/tnr.log
+tn-sb-f2
+libm_fields.npz
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/sb_f2.json /kaggle/working/sb_f2.json > /kaggle/working/sb.log 2>&1; tail -20 /kaggle/working/sb.log
 NvidiaTeslaT4
-12
-#p2 2026-10-30T11:10Z
+1
+#m1 2026-10-30T11:18Z
