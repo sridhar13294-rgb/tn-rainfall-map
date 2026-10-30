@@ -20,7 +20,7 @@ for lab, rhp, T1, land in (('F2 coastal sea', [0.88, 0.81, 0.73, 0.71], 298.0, F
     for R in (5.0, 20.0):
         hand = D.evap(R, T, rh, 0.70 if land else 0.85).sum() * 86400 / R * 100
         for name, xp, sc in mods:
-            src_cv = np.zeros_like(T); src_cv[kb] = R / 86400.0; src_ls = np.zeros_like(T)
+            src_cv = np.zeros_like(T); src_cv[kb - 1] = R / 86400.0; src_ls = np.zeros_like(T)
             Ps, ev, lim = evapifs.fall_ifs(xp.asarray(S(src_ls)), xp.asarray(S(src_cv)), xp.asarray(S(q)), xp.asarray(S(qs)), xp.asarray(S(D.p)), xp.asarray(np.array([[D.ps]])),
                                            xp.asarray(S(D.m)), xp.asarray(S(D.sig)), xp.asarray(np.array([[land]])), 0.3, 1200.0, sc, xp)
             ev = np.asarray(ev)[:, 0, 0]; code = ev.sum() * 86400 / R * 100; bal = float(np.asarray(Ps)[0, 0] + ev.sum() - R / 86400.0)
