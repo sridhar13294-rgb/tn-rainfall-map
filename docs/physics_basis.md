@@ -46,3 +46,15 @@ Order: 1 (ice) after F2; 9 and 7 with the rain work (P4); 5, 6, 10, 14 together 
 ## Evidence levels (from 30 Oct): every change carries one
 L1 equation derived (offline, with expected numbers) -> L2 implementation verified (code reproduces the offline numbers; conservation and limiting cases checked) -> L3 forecast validated (pre-registered quick test passed + full regression passed). Nothing is called validated below L3.
 Current: mass-flux CMT L2 (quick test running); ice phase L1 (must also add MELTING of falling ice/snow below the 0 C level (-Lf cooling) so energy is conserved; deposition/sublimation consistent with the mixed-phase qsat); F2 (pbl_tm + sh_mflux) L2, quick test failed 850 hPa; drag L2.
+
+## Derivation register (30 Oct 14:25 IST; order fixed: D1-D5, then D6-D8; same evidence rules L1/L2/L3)
+| Item | Status |
+|---|---|
+| D1 consistent cloud (cld_pdf) | L1+L2 done; quick test tn-prof-d1 / d12 running |
+| D2 cloud-top entrainment (ent_top 0.54) | L1+L2 done; quick test tn-prof-d12 running |
+| D3 single shallow/deep decision | code path found (orphan columns); measurement on_orph/lsc_orph in today's runs; derive after |
+| D4 inserted-vortex moisture | geometry defect confirmed offline (moist core 89-249 km off); predicted drift refuted -> 5-Why open |
+| D5 track response | beta drift refuted offline; D5b environment shear/steering needs wind scoring first |
+| D6 mass-flux vertical profile | OPEN. Code: eta = 1 up to 60% of cloud depth, then linear to 0 (line ~317) - fixed shape. Replace with dM/dz = (eps - delta) M from the plume's own entrainment and detrainment (Tiedtke 1989 / Bechtold 2008). P1, P3 |
+| D7 PBL velocity scale | DONE as L2 (pbl_tm 1: ws = (u*^3 + 7 eps kappa w*^3)^(1/3), Troen-Mahrt/Hong-Pan; old line ~12x too small). L3 failed only as the F2 package (850 hPa) - it is re-tested inside today's d1/d12 runs; no separate work |
+| D8 surface exchange to the lowest level | OPEN, unexplained constant: ck_z default 0.5 = HALF a log-law correction (code comment says '1 on, 0 off; off until tested' - comment and default disagree). Drag cd already uses the full log law at z1, so Ck and Cd are treated inconsistently. Derive: transfer at z1 from roughness lengths z0q/z0t (COARE 3.6), same stability function. Earlier ck_z 1 run cooled the tropical column -> must be derived and predicted, not re-tried |
