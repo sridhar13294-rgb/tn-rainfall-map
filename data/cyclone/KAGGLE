@@ -1,6 +1,6 @@
-tn-quick-t213
-libm_fields.npz
-XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/quick_t213.json 0 1 /kaggle/working/q213.json > /kaggle/working/q213.log 2>&1; tail -8 /kaggle/working/q213.log
+tn-gwd-prof
+libm_wx2020_fields.npz,geo_gwd.npz
+cd . && XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof_ctl.json 10 '{"ctl":{"grid":"T170","_ua":true}}' > /kaggle/working/prof_ctl.log 2>&1; XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof_gwd.json 10 '{"gwd":{"grid":"T170","_ua":true,"gwd":1.0,"gwd_file":"/kaggle/working/geo_gwd.npz"}}' > /kaggle/working/prof_gwd.log 2>&1; tail -25 /kaggle/working/prof_*.log
 NvidiaTeslaT4
-1
-#t1 2026-10-30T02:21Z
+9
+#g1 2026-10-30T02:22Z
