@@ -1,6 +1,6 @@
-tn-tnr-ctl2
-libm_wx2020_fields.npz,wx_truth_2020.npz
-XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore tn_rain_diag.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz /kaggle/working/tnr_ctl.json 2020-05-20,2020-06-09,2020-07-19,2020-08-08,2020-10-27,2020-12-06 '{"ctl":{"grid":"T170"}}' > /kaggle/working/tnr_ctl.log 2>&1; tail -12 /kaggle/working/tnr_ctl.log
+tn-sb-cmt
+libm_fields.npz
+XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/sb_cmt.json /kaggle/working/sb_cmt.json > /kaggle/working/sb_cmt.log 2>&1; tail -60 /kaggle/working/sb_cmt.log
 NvidiaTeslaT4
-7
-#a7 2026-10-30T03:14Z
+1
+#c1 2026-10-30T04:09Z
