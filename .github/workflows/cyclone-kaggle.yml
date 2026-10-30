@@ -83,7 +83,9 @@ jobs:
       - env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          ID=$KAGGLE_USERNAME/$SLUG; D=data/cyclone/kaggle/$SLUG; sleep 60
+          ID=$KAGGLE_USERNAME/$SLUG; D=data/cyclone/kaggle/$SLUG
+          if grep -qi 'error' $D/push.txt 2>/dev/null; then echo "push refused: $(tail -1 $D/push.txt)" | tee -a $D/status.txt; exit 0; fi   # e.g. weekly GPU quota used up - stop instead of polling 6 h
+          sleep 60
           for i in $(seq 1 110); do S=$(kaggle kernels status $ID 2>&1 | tail -1); echo "$(date -u +%H:%M) $S"; echo "$(date -u +%H:%M) $S" | sed "s#$KAGGLE_USERNAME#USER#g" >> $D/status.txt
             case "$S" in *COMPLETE*|*ERROR*|*CANCEL*|*complete*|*error*|*cancel*) break;; esac; sleep 300; done
           kaggle kernels output $ID -p /tmp/kout 2>&1 | tail -3 || true; ls -la /tmp/kout || true
