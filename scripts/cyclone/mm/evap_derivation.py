@@ -20,13 +20,17 @@ def evap(rain_mmday, T, rh, form, a=0.3, base=85000.0):
     for k in np.where(p > base)[0]:                                          # layers below cloud base, top -> bottom
         qs = qsat(T[k], p[k]); dq = (1 - rh[k]) * qs
         if form == 'mm2': e = 2e-5 * (1 - rh[k]) * np.sqrt(max(P, 0) * a) * m[k]
-        else: e = a * 5.44e-4 * dq * (np.sqrt(p[k] / ps) / 5.09e-3 * max(P, 0) / a) ** 0.5777 * m[k]
+        elif form == 'kessler': e = a * 5.44e-4 * dq * (np.sqrt(p[k] / ps) / 5.09e-3 * max(P, 0) / a) ** 0.5777 * m[k]
+        else:   # IFS Cy50r1 Part IV eq. 6.52: convective rain, C_conv 0.05, deficit (RHcr qs - q), zero above RHcr (0.85 sea / 0.70 land, deep)
+            rhcr = form; dqc = max(rhcr - rh[k], 0.0) * qs
+            e = 0.05 * 5.44e-4 * dqc * (np.sqrt(p[k] / ps) / 5.09e-3 * max(P, 0) / 0.05) ** 0.5777 * m[k]
         e = min(e, P); out[k] = e; P -= e
     return out
-for lab, rhp, T1 in (('F2 coastal sea', [0.88, 0.81, 0.73, 0.71], 298.0), ('control coastal sea', [0.54, 0.55, 0.80, 0.72], 302.4)):
+for lab, rhp, T1, rc in (('F2 coastal sea', [0.88, 0.81, 0.73, 0.71], 298.0, 0.85), ('control coastal sea', [0.54, 0.55, 0.80, 0.72], 302.4, 0.85),
+                         ('F2 TN land', [0.88, 0.81, 0.67, 0.47], 296.7, 0.70), ('control TN land', [0.55, 0.57, 0.82, 0.55], 299.8, 0.70)):
     T, rh = column(rhp, T1)
     for R in (5.0, 20.0):
-        e1 = evap(R, T, rh, 'mm2'); e2 = evap(R, T, rh, 'kessler')
+        e1 = evap(R, T, rh, 'mm2'); e2 = evap(R, T, rh, rc)
         f = lambda e: e.sum() * 86400 / R * 100
         cool = lambda e: (e * 2.5e6 / 1004.6 / m * 86400)[p > 85000].max()
-        print(f'{lab:20s} rain {R:4.0f} mm/day: re-evaporated below 850 hPa  mm2 {f(e1):5.1f}%  Kessler/IFS {f(e2):5.1f}%   | peak layer cooling mm2 {cool(e1):5.2f}  Kessler {cool(e2):5.2f} K/day')
+        print(f'{lab:20s} rain {R:4.0f} mm/day: re-evaporated below 850 hPa  mm2 {f(e1):5.1f}%  IFS eq.6.52 {f(e2):5.1f}%   | peak layer cooling mm2 {cool(e1):5.2f}  IFS {cool(e2):5.2f} K/day   | BL heat removed mm2 {e1.sum()*2.5e6:5.1f} IFS {e2.sum()*2.5e6:5.1f} W/m2')
