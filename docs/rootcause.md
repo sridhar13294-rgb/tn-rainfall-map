@@ -125,3 +125,14 @@ Candidate 2 alone (sh_mflux 0.03), heat budget 10 starts, vs control:
 | less 615 hPa moistening | 1.23 -> 0.34 g/kg/day PASS |
 | 850 hPa no more than 1 K colder | +0.8 -> -2.3 (3.1 K colder) FAIL (FMEA predicted it: B-L1 weak PBL mixing) |
 OLR 215 -> 202 (worse). => mechanism CONFIRMED for P1, fix ALONE REJECTED (850 hPa). Next as FMEA action #2: pbl_tm 1 + sh_mflux 0.03 together (tn-prof-combo).
+
+## 30 Oct 13:15 - results vs pre-registered predictions (F2 combined, F1 at 2 days)
+F2 = pbl_tm 1 + sh_mflux 0.03 (10 starts, heat budget), control / F2 alone(shmf) / F2 combined:
+ d5 tropics T 250 -5.9/-4.5/-4.2, 300 -5.6/-3.9/-3.5, 400 -4.4/-2.7/-2.4, 500 -3.3/-1.3/-1.0, 700 -2.9/-0.8/-0.5, 850 +0.8/-2.3/-2.4, 925 +2.4/-1.9/-1.7, 1000 +2.7/-1.3/-1.0; deep share 0.05/0.21/0.24; grid-scale heat (d4-5) 232/81/87 W/m2; OLR 215/202/201.
+ Pre-registered: 850 within +-0.5 K of control -> FAIL (-3.2 K). Upper air, deep share, grid-scale, 615 hPa moistening -> PASS. REJECTED as is.
+ 5-Why on 850 hPa: cold AND moist (q850 +0.78 g/kg) -> radiation -3.0 K/day at 862 hPa (control -1.1) + condensation 1.6 K/day at 862 -> a low cloud deck forms at the boundary-layer top and cools by long-wave from its top -> radiation clouds start at 80% RH at low levels (B-R1) and condensation/cloud are inconsistent (B-G1); slower shallow mixing no longer exports that moisture. => points to F6 (planned action #6). Note: the control itself is +2.4..+2.7 K too warm at 925-1000 hPa (old shallow mixing heated the surface layer +10 K/day); F2 reduces that to -1.7/-1.0, so 'within 0.5 K of control' was a poorly posed target. New test F2+F6 gets an absolute target vs ERA5 (registered before running).
+F1 at 2 days (tau_cmt 172800 s), 6 storms 72 h (hind2) + budget 3 storms:
+ Mean wind real/ctl/F1: 24 h 25.8/20.7/23.8, 48 h 44.2/27.9/28.3, 72 h 73.3/27.7/32.0 kt; pressure 72 h ctl 1002.5 / F1 1000.5. Per storm 72 h pmin vs ctl: Titli -7.5, Nivar -8.2 PASS; Sidr +0.8, Giri +4.6, Phailin +0.2, Hamoon -1.4 FAIL. Warm core (budget): Titli 2.53 vs 1.89, Nivar 3.00 vs 1.72, Sidr 1.38 vs 1.14 (all up).
+ Tracks (hard gate): mean error 24/48/72 h ctl 89/203/246 km, F1 112/244/365 km -> FAIL (Giri includes a tracker jump; worse in 4 of 6, better in Nivar).
+ => Not adoptable. Intensity response real in 2 storms, absent in 4.
+NOISE FLOOR (new, important): the identical control (Sidr, T170, same settings) in two separate jobs gave 72 h pmin 999.4 vs 1003.0 hPa and v850 17.7 vs 15.0 m/s -> GPU non-determinism grows into differences of ~3-4 hPa by 72 h. Single-storm differences below ~4 hPa are noise. Action (C-V2, now urgent): repeat a control 3x to measure the spread; judge per-storm effects only beyond it; use more storms rather than single cases.
