@@ -9,8 +9,10 @@ import sys, os, json, time, numpy as np, jax.numpy as jnp
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE); sys.path.insert(0, os.path.join(HERE, '..', 'analysis'))
 import mm2, ourens as O, landinit
 from dinosaur import spherical_harmonic
-LIB, CFG, OUT = sys.argv[1], sys.argv[2], sys.argv[3]
-C = json.load(open(CFG)); Z = dict(np.load(LIB)); TT = [str(t) for t in Z['times']]; V3 = [str(v) for v in Z['v3']]; V2 = [str(v) for v in Z['v2']]
+LIB, CFG = sys.argv[1], sys.argv[2]
+if len(sys.argv) > 5: CH, NCH, OUT = int(sys.argv[3]), int(sys.argv[4]), sys.argv[5]        # GitHub CPU queue form: LIB CFG CHUNK NCHUNK OUT
+else: CH, NCH, OUT = 0, 1, sys.argv[3]
+C = json.load(open(CFG)); NCH = min(NCH, C.get('nchunk', NCH)); Z = dict(np.load(LIB)); TT = [str(t) for t in Z['times']]; V3 = [str(v) for v in Z['v3']]; V2 = [str(v) for v in Z['v2']]
 G, CP, LV, RD = 9.80616, 1004.6, 2.5e6, 287.04
 def at(P0, t):
     for a, b in zip(P0, P0[1:]):
@@ -20,7 +22,8 @@ def at(P0, t):
     return None
 storms = [s for s in O.LIBL if (not C.get('storms') or s['name'] in C['storms'])]
 res = []; MODELS = {}
-for s in storms:
+for i_s, s in enumerate(storms):
+    if i_s % NCH != CH: continue
     g = O.gen_time(s); key = g.strftime('%Y-%m-%dT%H')
     if key not in TT: continue
     k = TT.index(key); P0 = O.path_of(s); st0 = at(P0, g)
