@@ -42,3 +42,7 @@ A = physically derivable now (replace the constant with the equation); B = empir
 | 19 | Radiation clouds | RHc 0.70 / 0.80, b_ls 1% | consistent with condensation (F6) | A | P1 | F6 |
 | 20 | Constants g, Rd, Rv, cp, Lv, solar 1361, CO2 420 ppm, Earth rotation | standard values | - | C | - | fine (CO2 ~425 ppm in 2026, negligible) |
 Order: 1 (ice) after F2; 9 and 7 with the rain work (P4); 5, 6, 10, 14 together as small consistency fixes; 17, 18 in Stage 2 land work.
+
+## Evidence levels (from 30 Oct): every change carries one
+L1 equation derived (offline, with expected numbers) -> L2 implementation verified (code reproduces the offline numbers; conservation and limiting cases checked) -> L3 forecast validated (pre-registered quick test passed + full regression passed). Nothing is called validated below L3.
+Current: mass-flux CMT L2 (quick test running); ice phase L1 (must also add MELTING of falling ice/snow below the 0 C level (-Lf cooling) so energy is conserved; deposition/sublimation consistent with the mixed-phase qsat); F2 (pbl_tm + sh_mflux) L2, quick test failed 850 hPa; drag L2.
