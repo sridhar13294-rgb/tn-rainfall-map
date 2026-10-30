@@ -1,6 +1,6 @@
-tn-lib84-corr
+tn-lib84-f2corr
 libm_fields.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/lib84_corr.json 0 2 /kaggle/working/h0.json > /kaggle/working/h0.log 2>&1; XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/lib84_corr.json 1 2 /kaggle/working/h1.json > /kaggle/working/h1.log 2>&1; tail -3 /kaggle/working/h0.log /kaggle/working/h1.log
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/lib84_f2corr.json 0 2 /kaggle/working/h0.json > /kaggle/working/h0.log 2>&1; XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/lib84_f2corr.json 1 2 /kaggle/working/h1.json > /kaggle/working/h1.log 2>&1; tail -3 /kaggle/working/h0.log /kaggle/working/h1.log
 NvidiaTeslaT4
-11
-#lcorr 2026-10-30T20:00Z
+12
+#lf2corr 2026-10-30T20:00Z
