@@ -486,3 +486,4 @@ Three 84-storm, 120 h hindcasts (deterministic, T170 32L, both chunks in one job
  tn-lib84-f2corr (acct 12): F2 (pbl_tm 1, sh_mflux 0.03) + the same correctness items = the coupled candidate.
 NOT registered as pass/fail tests (no prediction registered) - they are measurement/baseline data for Monday: per-storm intensity, tracks, spin-down, blow-ups. Score with score_q6.py-style jump-cleaned tracks vs tn-lib84-ctl.
 After the 02:00 IST update no further cycles are scheduled (Sridhar 01:28). Daily rain check paused.
+- 31 Oct 02:00 IST final update: tn-lib84-ctl (7), tn-lib84-corr (11), tn-lib84-f2corr (12) all in progress (GitHub runs active; no push refusal recorded). No further cycles scheduled; daily rain check paused. Resume Monday from here.
