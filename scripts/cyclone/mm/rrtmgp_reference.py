@@ -10,7 +10,12 @@ Ti = np.interp(np.log(pi), np.log(p), T); Ti[-1] = T[-1] + (T[-1] - T[-2]) * 0.5
 h2o = q / (1 - q) / 0.622                                                        # vmr
 o3 = np.interp(np.log(p), np.log([1e2, 1e3, 3e3, 1e4, 3e4, 1e5]), [1e-6, 8e-6, 8e-6, 2e-7, 5e-8, 3e-8])
 try:
-    subprocess.run([sys.executable, '-m', 'pip', 'install', '-q', 'pyrte_rrtmgp'], check=True)
+    if sys.version_info >= (3, 13) and not os.environ.get('RRTMGP_CHILD'):
+        # pyrte_rrtmgp has no 3.13 wheels: re-run this script under python 3.12 with uv
+        subprocess.run([sys.executable, '-m', 'pip', 'install', '-q', 'uv'], check=True)
+        r = subprocess.run(['uv', 'run', '--python', '3.12', '--with', 'pyrte_rrtmgp', '--with', 'xarray', '--with', 'netcdf4', 'python', os.path.abspath(__file__)],
+                           env=dict(os.environ, RRTMGP_CHILD='1'))
+        sys.exit(r.returncode)
     import pyrte_rrtmgp, xarray as xr
     print('pyrte_rrtmgp', getattr(pyrte_rrtmgp, '__version__', '?'), [m for m in dir(pyrte_rrtmgp) if not m.startswith('_')])
     from pyrte_rrtmgp import rrtmgp_gas_optics
