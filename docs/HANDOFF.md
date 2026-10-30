@@ -478,3 +478,11 @@ Open root: the low-level heat deficit (~22 W/m2 day 1) -> cold moist BL; rain ev
 Accounts: 1 out of quota (weekly), 7, 11, 12 usable.
 - 22:05: E1b/E2b (rain evaporation IFS form, corrected): the evaporation term moved exactly as derived (-1.42 -> -0.53 K/day) but 850 only -2.42 -> -2.21 (radiation and convection compensated); deep share fell to 0.16 -> FAIL as registered. E2b: TN box +84% -> +68%, coastal deep 0.69 -> 0.45. Not adopted. Next: SCM reference (NOAA CCPP SCM, GFS v16, TWP-ICE/BOMEX) vs MEGAM column physics on the same forcing; trace the 75L F2 blow-up. Accounts: 7, 11, 12 (1 out of quota).
 - SCM reference rules (Sridhar/peer 22:00, before setup): BOMEX = trade-wind BL + shallow cloud; TWP-ICE = tropical deep convection. GFS v16 and MEGAM must use the SAME initial profiles, prescribed forcing and surface fluxes (or the same SST and surface scheme inputs); map layers by pressure before comparing; compare process TENDENCIES layer by layer (radiation, convection, evaporation, turbulence, surface), not only final T. Purpose = locate where the low-level budget diverges, NOT to find a formula that warms 850 hPa; any correction is derived afterwards from the identified discrepancy. A single-column result cannot alone prove the 3-D 22 W/m2 cause.
+
+## 31 Oct 01:35 IST - long unattended runs (Sridhar away Sat-Mon; Claude weekly limit nearly used)
+Three 84-storm, 120 h hindcasts (deterministic, T170 32L, both chunks in one job, ~6 h each; Kaggle caps a session at 12 h so nothing can run 3 days unattended):
+ tn-lib84-ctl (acct 7): control = baseline for P3 statistics and the regression.
+ tn-lib84-corr (acct 11): control + correctness items (evap_ifs, lw_cnt 0.667, ck_z 1).
+ tn-lib84-f2corr (acct 12): F2 (pbl_tm 1, sh_mflux 0.03) + the same correctness items = the coupled candidate.
+NOT registered as pass/fail tests (no prediction registered) - they are measurement/baseline data for Monday: per-storm intensity, tracks, spin-down, blow-ups. Score with score_q6.py-style jump-cleaned tracks vs tn-lib84-ctl.
+After the 02:00 IST update no further cycles are scheduled (Sridhar 01:28). Daily rain check paused.
