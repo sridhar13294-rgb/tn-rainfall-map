@@ -467,3 +467,4 @@ Proposed Stage 1 exit gate (sent to Sridhar 10:10, awaiting OK): 250 hPa tropics
 - KAGGLE11-20 secrets: not present yet. Usable: 1 and 7.
 - Account 1 left idle on purpose: no derived-and-registered change is ready (cloud-top mixing, cloud consistency, single shallow/deep decision, vortex moisture all need derivation first). No exploratory runs.
 - Derivation queue: B-L3 cloud-top mixing + F6 cloud consistency (P1 850 cold, P4) -> B-C1 single shallow/deep decision (P4) -> A-B4 vortex moisture (P3). P4 derivation must be done by 2 Nov to hold the 4-7 Nov regression.
+- 14:30: cmt_mf REJECTED (tracks +15% at 48 h, +64% at 72 h; mean wind 27.2 vs target 29.7). Default stays off. Found: controls ran without the deterministic flag -> launched tn-quick6-ctl-d1 (acct 1) and -d2 (acct 7), identical deterministic controls. If d1 == d2 bit-for-bit, d1 becomes the control for all future quick tests.
