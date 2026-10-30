@@ -58,3 +58,15 @@ Current: mass-flux CMT L2 (quick test running); ice phase L1 (must also add MELT
 | D6 mass-flux vertical profile | OPEN. Code: eta = 1 up to 60% of cloud depth, then linear to 0 (line ~317) - fixed shape. Replace with dM/dz = (eps - delta) M from the plume's own entrainment and detrainment (Tiedtke 1989 / Bechtold 2008). P1, P3 |
 | D7 PBL velocity scale | DONE as L2 (pbl_tm 1: ws = (u*^3 + 7 eps kappa w*^3)^(1/3), Troen-Mahrt/Hong-Pan; old line ~12x too small). L3 failed only as the F2 package (850 hPa) - it is re-tested inside today's d1/d12 runs; no separate work |
 | D8 surface exchange to the lowest level | OPEN, unexplained constant: ck_z default 0.5 = HALF a log-law correction (code comment says '1 on, 0 off; off until tested' - comment and default disagree). Drag cd already uses the full log law at z1, so Ck and Cd are treated inconsistently. Derive: transfer at z1 from roughness lengths z0q/z0t (COARE 3.6), same stability function. Earlier ck_z 1 run cooled the tropical column -> must be derived and predicted, not re-tried |
+
+## Implementation protection (Sridhar, 30 Oct 14:37) - added to the evidence rules
+Sequence per derivation: derive -> offline tendencies -> code reproduces them -> budgets/signs/units/limits -> isolated test vs unchanged baseline -> INTERACTION test with the schemes acting on the same layers -> full regression. Baseline untouched, every candidate default OFF. A failed implementation test is first traced to where the code differs from the derivation; it does not by itself send the physics back.
+Numerical limiters must not silently weaken the physics: each limiter is logged with whether it binds.
+
+D1/D2 audit against the five risk types (before the results are read):
+ 1 sign/units/indexing: L2 hand-formula match + conservation 1e-10; level 0 = top, so 'layer above' = kt-1 (checked).
+ 2 interaction (OPEN RISK): D2 exchanges s,q across the cloud-top interface kt-1/kt. Two other schemes can act on the same interface: (a) K-diffusion when the cloud top sits at the boundary-layer top hbl (Lock et al. 2000 implement entrainment AS the K at the top interface, replacing it, not adding to it); (b) shallow MSE mixing in shallow columns, whose region ends at the plume top. Double counting would over-dry the deck.
+ 3 conservation: exact (s and q exchanged between two layers).
+ 4 stability: explicit step, limiter rwe <= 0.25 m/dt. Offline rwe ~0.015 kg m-2 s-1 x 1200 s = 18 kg m-2 vs limit ~64: does NOT bind for the derived values.
+ 5 domain: only cloud-cooled layers (c > 0.05) between sigma 0.7-0.97, no deep convection; includes land daytime cumulus tops (intended).
+ Pre-registered interaction check for tn-prof-d12 vs tn-prof-d1 (tropics d5, sigma 0.81-0.86): h_bl + h_shal must change by less than 0.5 K/day and physq by less than 0.3 g/kg/day apart from the entrainment term itself (h_ent). If larger -> coupling defect (fix the coupling, e.g. entrainment replaces K at the top interface), not a rejection of D2's physics.
