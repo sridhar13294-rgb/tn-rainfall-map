@@ -110,3 +110,18 @@ Side results: T213 storm test killed by host memory again (M.run stores fields) 
 ## P2/P4 32L vs 75L TN rain diagnosis (6 starts: 4 SWM, 2 NEM; T170) - 30 Oct 09:50
 TN-box rain model vs truth (ERA5), 5-day mean: 32L 7.1 vs 4.6 mm/day (+54%); 75L 10.2 vs 4.6 (+122%). TN land rain split conv/grid-scale (mm/day): 32L 2.5/9.2, 75L 0.8/14.9; Ghats 32L 4.4/13.4, 75L 1.4/23.8. => P4 (TN wet bias) exists already with 32 levels and is GRID-SCALE rain; 75 levels (P2) amplifies the same thing (convection on TN land 3x less, grid-scale +60%). SWM starts have westerly 850 hPa wind over TN (+8..+11 m/s) yet grid-scale rain on the lee (TN land) - no rain shadow.
 Link to Candidate 2: the shallow MSE mixing moistens 600-700 hPa strongly (+1.2 g/kg/day at 615 hPa, tropics day 1) while suppressing deep convection - mid-level saturation then rains out as grid-scale rain (h_lsc peak ~600 hPa). Hypothesis: Candidate 2 contributes to P1, P2 and P4. tn-prof-shmf budget gives TN/Ghats rain by type to check it; then the all-India rain gate. Ghats smoothness at 80 km (no lee descent) remains a separate suspect for P4.
+
+## 30 Oct 11:30 - quick-test results vs pre-registered predictions
+Candidate 1 (CMT off), storm budget, T170, ctl vs no-CMT:
+| Prediction | Sidr | Titli | Nivar |
+| 850 hPa wind holds/grows to 24 h | 14.3->20.4 PASS | 18.0->19.4 PASS | 14.2->14.5 PASS (ctl 10.1) |
+| pmin >= 2-3 hPa deeper by 72 h | 998.5 vs 999.4 (-0.9) FAIL | 992.0 vs 1000.4 (-8.4) PASS | 993.4 vs 1004.5 (-11.1) PASS |
+| 300 hPa warm core grows | 1.83 vs 1.90 FAIL | 2.36 vs 1.89 PASS | 2.68 vs 1.72 PASS |
+=> SUPPORTED (7 of 9 checks; Sidr weakly). Extra signature: without CMT core deep convection stays on (Nivar 24-48 h: 1.0 vs 0.0-0.2). No blow-ups. Next: CMT at the mass-flux time scale (tau_cmt 2 days) on 6 storms (tn-quick6-cmt2d) + budget (tn-sb-cmt2d), then regression.
+Candidate 2 alone (sh_mflux 0.03), heat budget 10 starts, vs control:
+| deep share > 15% | 0.11/0.05 -> 0.19/0.21 PASS |
+| less grid-scale heating | 168/232 -> 32/81 W/m2 PASS |
+| 250-500 hPa >= 1 K warmer | 250 -5.9->-4.5, 300 -5.6->-3.9, 400 -4.4->-2.7, 500 -3.3->-1.3 PASS |
+| less 615 hPa moistening | 1.23 -> 0.34 g/kg/day PASS |
+| 850 hPa no more than 1 K colder | +0.8 -> -2.3 (3.1 K colder) FAIL (FMEA predicted it: B-L1 weak PBL mixing) |
+OLR 215 -> 202 (worse). => mechanism CONFIRMED for P1, fix ALONE REJECTED (850 hPa). Next as FMEA action #2: pbl_tm 1 + sh_mflux 0.03 together (tn-prof-combo).
