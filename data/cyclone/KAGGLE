@@ -1,6 +1,6 @@
-tn-prof-d1
+tn-l2-jax
 libm_wx2020_fields.npz
-cd . && XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 10 '{"d1":{"grid":"T170","_budget":true,"sh_mflux":0.03,"pbl_tm":1.0,"cld_pdf":1.0}}' > /kaggle/working/prof.log 2>&1; tail -60 /kaggle/working/prof.log
+cd . && python -W ignore l2_jax.py 2>&1 | tail -20
 NvidiaTeslaT4
-7
-#k2 2026-10-30T08:42Z
+1
+#k1 2026-10-30T09:35Z
