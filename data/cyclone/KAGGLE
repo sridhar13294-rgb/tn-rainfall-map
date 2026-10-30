@@ -1,6 +1,6 @@
-tn-quick6-f2
+tn-sb-f2b
 libm_fields.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/quick6_f2.json 0 1 /kaggle/working/q6.json > /kaggle/working/q6.log 2>&1; tail -8 /kaggle/working/q6.log
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/sb_f2.json /kaggle/working/sb_f2.json > /kaggle/working/sb.log 2>&1; tail -20 /kaggle/working/sb.log
 NvidiaTeslaT4
 7
-#m2 2026-10-30T11:19Z
+#m2 2026-10-30T11:49Z
