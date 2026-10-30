@@ -72,7 +72,7 @@ for VN, VS in VARS.items():
           # (trapezoid mean), dynamics = total - physics; regions tropics / TN (8-14N 76-81E) / Western Ghats (8-21N 73-77.5E, land)
           hor = M.coords.horizontal; LAm, LOm = np.asarray(M.LA), np.asarray(M.LO) % 360
           RB = {'tropics': np.abs(LAm) < 20, 'tn': (LAm >= 8) & (LAm <= 14) & (LOm >= 76) & (LOm <= 81), 'ghats': (LAm >= 8) & (LAm <= 21) & (LOm >= 73) & (LOm <= 77.5)}
-          PR = ('h_bl', 'h_deep', 'h_shal', 'h_lsc', 'h_evap')
+          PR = ('h_bl', 'h_deep', 'h_shal', 'h_lsc', 'h_evap', 'h_ent')
           def snap(s_, c_):
               Ts = np.asarray((hor.to_nodal(s_.temperature_variation) + M.ref_t[:, None, None]) / M.K); qs = np.asarray(s_.tracers['specific_humidity'])
               pss = np.asarray(jnp.exp(hor.to_nodal(s_.log_surface_pressure))[0] / M.PA); uu, vv = spherical_harmonic.vor_div_to_uv_nodal(hor, s_.vorticity, s_.divergence)

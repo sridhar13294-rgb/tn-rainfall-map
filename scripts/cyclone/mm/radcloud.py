@@ -176,6 +176,12 @@ def clouds(T, q, p, dp, ps, sea, conv_mask=None, conv_rain=None, conv_src=None, 
     c_ls = 1.0 - xp.sqrt(xp.clip((1.0 - rh) / (1.0 - rhc), 0.0, 1.0))
     c_ls = xp.where(sig > P['sig_min'], c_ls, 0.0)
     qg = c_ls * P['b_ls'] * qs                                               # grid-mean condensate, kg/kg
+    if P.get('pdf', 0.0) > 0:
+        # D1 consistent cloud (Smith 1990 / Le Treut & Li 1991): one uniform sub-grid total-water PDF of half-width
+        # b = (1 - RHc) qs gives both the fraction and the water, from the model's own humidity (no invented b_ls * qs)
+        bw = xp.maximum((1.0 - rhc) * qs, 1e-9); ex = q + bw - qs
+        c_ls = xp.where(sig > P['sig_min'], xp.clip(ex / (2.0 * bw), 0.0, 1.0), 0.0)
+        qg = xp.where(sig > P['sig_min'], xp.where(ex >= 2.0 * bw, q - qs, xp.maximum(ex, 0.0) ** 2 / (4.0 * bw)), 0.0)
     if ls_cond is not None: qg = qg + xp.maximum(ls_cond, 0.0) * P['tau_ls']
     c_tow = xp.zeros_like(T); c_anv = xp.zeros_like(T)
     if conv_mask is not None and conv_rain is not None:
@@ -311,6 +317,12 @@ def clouds(T, q, p, dp, ps, sea, conv_mask=None, conv_rain=None, conv_src=None, 
     c_ls = 1.0 - xp.sqrt(xp.clip((1.0 - rh) / (1.0 - rhc), 0.0, 1.0))
     c_ls = xp.where(sig > P['sig_min'], c_ls, 0.0)
     qg = c_ls * P['b_ls'] * qs                                               # grid-mean condensate, kg/kg
+    if P.get('pdf', 0.0) > 0:
+        # D1 consistent cloud (Smith 1990 / Le Treut & Li 1991): one uniform sub-grid total-water PDF of half-width
+        # b = (1 - RHc) qs gives both the fraction and the water, from the model's own humidity (no invented b_ls * qs)
+        bw = xp.maximum((1.0 - rhc) * qs, 1e-9); ex = q + bw - qs
+        c_ls = xp.where(sig > P['sig_min'], xp.clip(ex / (2.0 * bw), 0.0, 1.0), 0.0)
+        qg = xp.where(sig > P['sig_min'], xp.where(ex >= 2.0 * bw, q - qs, xp.maximum(ex, 0.0) ** 2 / (4.0 * bw)), 0.0)
     if ls_cond is not None: qg = qg + xp.maximum(ls_cond, 0.0) * P['tau_ls']
     c_tow = xp.zeros_like(T); c_anv = xp.zeros_like(T)
     if conv_mask is not None and conv_rain is not None:
