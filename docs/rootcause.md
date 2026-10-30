@@ -173,3 +173,10 @@ REGISTERED (before running, GPU deterministic ops on): cmt_mf vs control
  (a) storm budget Nivar/Titli/Sidr: 72 h pmin deeper than the deepest control by > noise spread in >= 2 of 3 storms, and v850 at 72 h above the highest control in >= 2 of 3;
  (b) 6 quick storms (hind2): jump-cleaned mean track error at 48 h and 72 h no more than 10% worse than control (ctl 202 / 252 km on the cleaned sets);
  (c) mean 72 h wind (6 storms) > control 27.7 kt + 2 kt; no blow-up.
+RESULT (a) 30 Oct 14:00 IST - PASS. 72 h pmin/v850 (controls ctl,r2,r3b; deepest ctl / highest v850):
+ Sidr  cmt_mf 1001.2 / 19.0  vs ctl best 999.4 / 18.1 -> pmin NOT deeper (fail), v850 higher (pass)
+ Titli cmt_mf  993.3 / 31.3  vs 998.8 / 27.9 -> 5.5 hPa deeper (> spread 1.6) pass; v850 pass
+ Nivar cmt_mf  996.3 / 30.5  vs 1002.9 / 23.9 -> 6.6 hPa deeper (> 2.6) pass; v850 pass
+ => pmin 2/3, v850 3/3: gate (a) met. Recovers most of the CMT-off gain (off: Titli 992.0, Nivar 993.4) while derivation says monsoon shear is kept (+0.8 vs +80 m/s/day).
+ Sidr: warm core 300 hPa -0.3 K and deep share 0 in the core at 72 h (ctl 1.7-1.9 K, deep 1.0) - convection shut off in Sidr core under cmt_mf; flux core 66 W/m2 vs 195-260. Checked: tracker artefact. Sidr centre jumps ~280 km at +48 h (9.5N 91.4E -> 11.6N 92.8E) and ~310 km at +66 h (90.7E -> 93.5E, onto the Andaman islands: flux 11-25 W/m2). Up to +45 h the core is normal (wc300 up to 1.1 K, deep 0.8-1.0). Sidr stays a weak, multi-centre low in every variant (ctl/off/2 d all within noise) - same tracker jump issue as the quick-test track scoring; tracker fix (stop at >250 km/6 h) is already in the queue.
+ Gates (b) tracks and (c) mean wind pending tn-quick6-cmtmf. Level: L2 -> L3 only if (b)+(c) pass and regression passes.
