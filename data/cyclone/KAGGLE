@@ -1,6 +1,6 @@
-tn-prof-e1
-libm_wx2020_fields.npz
-cd . && python -W ignore l2_evap.py && XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 10 '{"e1":{"grid":"T170","_budget":true,"sh_mflux":0.03,"pbl_tm":1.0,"evap_ifs":1.0}}' > /kaggle/working/prof.log 2>&1; tail -60 /kaggle/working/prof.log
+tn-tnr-e2
+libm_wx2020_fields.npz,wx_truth_2020.npz
+python -W ignore l2_evap.py && XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore tn_rain_diag.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz /kaggle/working/tnr_e2.json 2020-05-20,2020-06-09,2020-07-19,2020-08-08,2020-10-27,2020-12-06 '{"e2":{"grid":"T170","pbl_tm":1.0,"sh_mflux":0.03,"evap_ifs":1.0}}' > /kaggle/working/tnr.log 2>&1; tail -12 /kaggle/working/tnr.log
 NvidiaTeslaT4
-11
-#e1 2026-10-30T15:00Z
+12
+#e2 2026-10-30T15:01Z
