@@ -454,3 +454,4 @@ CORRECTION: accounts 2 and 5 were refused for weekly GPU quota (not 'queued behi
 Running: tn-quick-t213 (1: T213 ~63 km, 6 quick storms 72 h vs control -> resolution limit?), tn-gwd-prof (9: wx_prof 10 starts _ua, ctl vs gwd=1 as two processes).
 Written: storm_budget.py (storm-following 3-hourly budget: pmin, v850, surface enthalpy flux core/300 km, warm core 300/500 hPa core minus 300-600 km ring, heating by process core/annulus, deep share, rain, RH700) + configs storm_budget_ctl.json (Nivar/Titli/Sidr) and storm_budget_nobogus.json (Nivar without inserted vortex). Launch when an account frees (or on GitHub CPU).
 P4: tnr-ctl (32L) never ran (acct 8 quota) -> 75L-only finding stands (excess = grid-scale rain over Ghats/TN land); 32L comparison pending.
+08:45 IST Sridhar: use account 7 (was reserved for LETKF/Stage 2-3 data assimilation) now. Launched tn-tnr-ctl2 (7): P4 32L rain diagnosis (comparison for tn-tnr-tp75).
