@@ -136,3 +136,13 @@ F1 at 2 days (tau_cmt 172800 s), 6 storms 72 h (hind2) + budget 3 storms:
  Tracks (hard gate): mean error 24/48/72 h ctl 89/203/246 km, F1 112/244/365 km -> FAIL (Giri includes a tracker jump; worse in 4 of 6, better in Nivar).
  => Not adoptable. Intensity response real in 2 storms, absent in 4.
 NOISE FLOOR (new, important): the identical control (Sidr, T170, same settings) in two separate jobs gave 72 h pmin 999.4 vs 1003.0 hPa and v850 17.7 vs 15.0 m/s -> GPU non-determinism grows into differences of ~3-4 hPa by 72 h. Single-storm differences below ~4 hPa are noise. Action (C-V2, now urgent): repeat a control 3x to measure the spread; judge per-storm effects only beyond it; use more storms rather than single cases.
+
+## 30 Oct 13:30 - tracker audit (F1 2 days) and registered targets for F2+F6
+Tracker audit: one-step jumps > 250 km exist in BOTH runs (ctl: Sidr 114 h, Giri 72 h, Phailin 72 h, Titli 78 h, Nivar 36 h, Hamoon 78/84 h; F1: Giri 54 h). Excluding any position after a jump: 24 h ctl 89 / F1 112 km (6 storms; worse in 5), 48 h 202 / 237 (5 storms; worse in 4), 72 h 252 / 353 (4 storms; worse in all 4). => the track degradation is REAL, not a tracker artefact. Tracker fix (measurement): flag/stop tracks at jumps > 250 km per 6 h (to do in score_hind and track()).
+REGISTERED BEFORE RUNNING - F2+F6 (pbl_tm 1 + sh_mflux 0.03 + consistent cloud fraction), 10 starts, d5 tropics vs ERA5 (absolute):
+ 850 hPa bias within +-1.0 K; 925 and 1000 hPa within +-1.5 K; q850 bias within +-0.5 g/kg;
+ 250 hPa bias >= -4.5 K (warmer than or equal); 500 hPa within +-1.5 K;
+ deep share >= 0.20; OLR (tropics) >= 220 W/m2;
+ grid-scale/deep heating ratio (d4-5) <= 1.0; no blow-up.
+ Any one failing -> reject (no re-explaining).
+Noise: per-metric spread (pmin, v850, warm core, track) from the repeat controls tn-sb-ctl-r2/r3b; 4 hPa is provisional only.
