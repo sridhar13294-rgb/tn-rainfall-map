@@ -625,7 +625,12 @@ class Model:
             # and blows the run up (seen in 1 of 3 test runs)
             dT = dTbl + (dT - rad - dTbl) * fac + rad; dq = dqbl + (dq - dqbl) * fac
         diag = dict(rain=Psurf + Pc * 0.0, H=H, E=E, ust=ust, V1=V1, sw_sfc=sw_sfc, lw_dn=lw_dn, Ts=Ts)
-        if S['conv'] == 'mf': diag.update(on_dp=on_dp, on_sh=on_sh, on_bmjsh=(shallow & ~okmf).astype(jnp.float32))   # share of columns: deep plume / shallow plume / old shallow test
+        if S['conv'] == 'mf': diag.update(on_dp=on_dp, on_sh=on_sh, on_bmjsh=(shallow & ~okmf).astype(jnp.float32))
+        if S['conv'] == 'mf':
+            # D3 diagnostic (B-C1): 'orphan' columns = the undiluted parcel test says deep (so no shallow mixing) but the entraining
+            # mass-flux plume is not deep (no deep convection) -> neither scheme acts; only grid-scale condensation is left
+            orph = deep & ~okmf
+            diag.update(on_orph=orph.astype(jnp.float32), lsc_orph=jnp.where(orph, (cond * mass).sum(0), 0.0), lsc_all=(cond * mass).sum(0))   # share of columns: deep plume / shallow plume / old shallow test
         diag.update(h_bl=dTbl, h_deep=dTc, h_shal=dTs, h_lsc=LV / CP * cond, h_evap=-LV / CP * evap)        # heating by process (K/s), for budget diagnostics
         if Rr is not None: diag['rad'] = Rr
         if h_ent is not None: diag['h_ent'] = h_ent

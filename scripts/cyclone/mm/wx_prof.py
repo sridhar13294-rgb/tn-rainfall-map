@@ -85,7 +85,7 @@ for VN, VS in VARS.items():
                   for kk in PR:
                       if kk in dd: e[kk] = mn(dd[kk]) * 86400
                   e['rain'] = float((np.asarray(dd['rain']) * W_).sum() / W_.sum() * 86400)
-                  for kk in ('on_dp', 'on_sh'):
+                  for kk in ('on_dp', 'on_sh', 'on_orph', 'lsc_orph', 'lsc_all'):
                       if kk in dd: e[kk] = float((np.asarray(dd[kk]) * W_).sum() / W_.sum())
                   o[rg] = e
               return o
@@ -103,8 +103,8 @@ for VN, VS in VARS.items():
                       if kk in snaps[0][rg]: e[kk] = tm(kk)
                   e = {k: np.round(v, 3).tolist() for k, v in e.items()}
                   e['rain'] = round(float(np.mean([x[rg]['rain'] for x in snaps])), 2)
-                  for kk in ('on_dp', 'on_sh'):
-                      if kk in snaps[0][rg]: e[kk] = round(float(np.mean([x[rg][kk] for x in snaps])), 3)
+                  for kk in ('on_dp', 'on_sh', 'on_orph', 'lsc_orph', 'lsc_all'):
+                      if kk in snaps[0][rg]: e[kk] = round(float(np.mean([x[rg][kk] for x in snaps])) * (86400 if kk.startswith('lsc') else 1), 3)
                   win[rg] = e
               B[f'{w0}-{w1}h'] = win
           r['budget'] = B; st5, cr5 = sA, cA
