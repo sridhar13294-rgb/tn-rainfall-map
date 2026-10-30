@@ -102,7 +102,7 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='mf', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='radcloud', rad_every=2,
-                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
+                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
@@ -350,6 +350,7 @@ class Model:
             pb = jnp.take_along_axis(p * jnp.ones_like(Tn), kb[None], 0)[0]
             Mb = jnp.maximum(Mb, conv_q / jnp.maximum(qsat(Tb, pb) - qb, 5e-4))
         Mb = jnp.clip(Mb, 0.0, jnp.minimum(S['mf_cap'] * mmin / dt, 1.0)) * deep
+        if not shallow: self._cmt_M = eta * Mb[None]                                               # updraft mass flux per layer (kg m-2 s-1), for mass-flux momentum transport
         # downdraft (mf_dd = its mass flux as a share of the updraft's, ECMWF ~0.3): air from the level of free sink (lower
         # third of the cloud) is cooled to saturation by evaporating rain and sinks moist-adiabatically (moist static energy of
         # that level kept) to the ground, where it spreads out: cools and moistens the lowest layers, takes rain back up.
@@ -507,7 +508,28 @@ class Model:
         cm = reg & ok[None]
         mu = ((u * mass) * cm).sum(0) / jnp.maximum((mass * cm).sum(0), 1.0); mv = ((v * mass) * cm).sum(0) / jnp.maximum((mass * cm).sum(0), 1.0)
         dT = dT + dTc + dTs; dq = dq + dqc + dqs
-        du = du + jnp.where(cm, relax(u, mu, S['tau_cmt'], dt), 0.0); dv = dv + jnp.where(cm, relax(v, mv, S['tau_cmt'], dt), 0.0)
+        if self.S.get('cmt_mf', 0) and S['conv'] == 'mf' and getattr(self, '_cmt_M', None) is not None:
+            # mass-flux convective momentum transport (Gregory et al. 1997; ECMWF IFS): du/dt = g d/dp [M (u_u - u)],
+            # updraft wind from the source up: du_u/dz = -eps (u_u - u) + C_u du/dz (C_u = 0.7: pressure-gradient effect).
+            # Strength follows the actual mass flux M, so it acts strongly only in strong, organised convection.
+            Mf = self._cmt_M; Cu = float(self.S.get('cmt_cu', 0.7))
+            rhq = jnp.clip(q / qsat(T, p), 0, 1); epsq = S['entr'] * (1.3 - rhq)
+            dzl = jnp.concatenate([jnp.maximum(zc[:-1] - zc[1:], 1.0), jnp.ones_like(zc[:1])], 0)        # height from the level below
+            def upd(c, x):
+                uu_b, vu_b, u_b, v_b = c; u_k, v_k, M_k, dz_k, e_k = x
+                act = M_k > 0
+                uu_k = jnp.where(act, uu_b + dz_k * (-e_k * (uu_b - u_b) + Cu * (u_k - u_b) / dz_k), u_k)
+                vu_k = jnp.where(act, vu_b + dz_k * (-e_k * (vu_b - v_b) + Cu * (v_k - v_b) / dz_k), v_k)
+                return (uu_k, vu_k, u_k, v_k), (uu_k, vu_k)
+            xs = (u[::-1], v[::-1], Mf[::-1], dzl[::-1], epsq[::-1])
+            _, (uu_r, vu_r) = jax.lax.scan(upd, (u[-1], v[-1], u[-1], v[-1]), xs)
+            uu_, vu_ = uu_r[::-1], vu_r[::-1]
+            def cmt_tend(F):
+                Fi = jnp.concatenate([jnp.zeros_like(F[:1]), 0.5 * (F[1:] + F[:-1]), jnp.zeros_like(F[:1])], 0)   # interfaces, top -> bottom
+                return G * (Fi[1:] - Fi[:-1]) / dp
+            du = du + cmt_tend(Mf * (uu_ - u)); dv = dv + cmt_tend(Mf * (vu_ - v))
+        else:
+            du = du + jnp.where(cm, relax(u, mu, S['tau_cmt'], dt), 0.0); dv = dv + jnp.where(cm, relax(v, mv, S['tau_cmt'], dt), 0.0)
         # ---------------- large-scale condensation (adjustment) + rain re-evaporation
         Tn = T + dt * dT; qn = jnp.maximum(q + dt * dq, 0)
         qs = qsat(Tn, p); gam = 1 + LV ** 2 * qs / (CP * RV * Tn ** 2); cond = jnp.maximum(qn - qs, 0) / gam / dt

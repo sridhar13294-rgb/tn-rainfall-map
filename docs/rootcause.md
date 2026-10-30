@@ -156,3 +156,20 @@ P1 / 850 hPa cold in F2:
 P3 / tracks with momentum mixing:
 - The current CMT equation (relax u, v toward the cloud-layer mass-weighted mean, one time scale everywhere) conserves column momentum and is dimensionally correct, BUT it is not the mass-flux CMT equation. Mass-flux CMT (Gregory et al. 1997; ECMWF): du/dt = g d/dp [M_u (u_u - u)] with the updraft wind u_u from the entraining plume and a pressure-gradient term (u_u pulled toward u). Its strength scales with the actual mass flux M_u - strong in deep, organised convection, weak elsewhere. Ours acts with the same rate in every convecting column (ITCZ, monsoon trough), so it reshapes the large-scale vertical shear = the steering flow; changing its single time scale (6 h -> 2 d) therefore changes steering everywhere -> tracks. => The defect is the EQUATION, not just tau. Fix = implement mass-flux CMT with the plume's eta x Mb (available in conv_mf). Predicted: storm-core spin-down reduced (strong Mb there) while steering in weak-convection areas changes little -> intensity gain without the track loss.
 Noise floor: inputs, code and settings identical; XLA on GPU uses non-deterministic parallel reductions by default -> rounding differs run to run and grows chaotically. Remedy: XLA_FLAGS --xla_gpu_deterministic_ops=true for all A/B tests (bit-reproducible); chaos still means any real change perturbs the run, so judge on several storms.
+
+## 30 Oct 14:05 - mass-flux CMT: derivation, expected result, implementation, registered predictions
+Derivation (Gregory et al. 1997; ECMWF): environment du/dt = g d/dp [M (u_u - u)]; updraft du_u/dz = -eps (u_u - u) + C_u du/dz, C_u = 0.7, M = eta x Mb from the deep plume. Old code: du/dt = (u_cloudmean - u)/tau_cmt in every convecting column.
+Offline calculation (scratchpad deriv/cmt.py, idealised columns, equal 50-hPa levels):
+| column | scheme | 950 | 850 | 700 | 500 | 300 | 200 hPa (m/s per day) | 850-200 shear change per day |
+| storm core, rain 120 mm/d (Mb 0.093) | old 6 h | -23.1 | -21.1 | -11.1 | +4.9 | +20.9 | +28.9 | +50 |
+|  | old 2 d | -2.9 | -2.6 | -1.4 | +0.6 | +2.6 | +3.6 | +6 |
+|  | mass-flux | +2.2 | -3.7 | -3.7 | -1.8 | +4.4 | +5.0 | +9 |
+| monsoon column, rain 10 mm/d (Mb 0.008) | old 6 h | -25.7 | -33.7 | -17.7 | +6.3 | +30.3 | +46.3 | +80 |
+|  | old 2 d | -3.2 | -4.2 | -2.2 | +0.8 | +3.8 | +5.8 | +10 |
+|  | mass-flux | +0.6 | -0.2 | -0.6 | -0.3 | +0.4 | +0.6 | +0.8 |
+Column momentum conserved in all (sum ~ 0). Reading: the old 6 h rule erases 850-200 hPa shear in every convecting column within hours (+50..+80 m/s/day) and spins down storm low levels at ~ -21 m/s/day; the 2-day rule is still 12x too strong in ordinary monsoon convection (changes steering) while mass-flux CMT is weak there (+0.8) and moderate in storm cores (-3.7 at 850). => explains both results: 'off'/'2 d' helped storms but 2 d still reshaped steering (tracks). Implementation (mm2 option cmt_mf, scan bottom-up) reproduces the offline numbers exactly (check_impl.py: core -3.7 at 850, monsoon shear +0.8).
+Noise floor from 3-4 identical controls (72 h): pmin spread Sidr 3.6, Titli 1.6, Nivar 2.6 hPa; v850 spread 2.8 / 3.8 / 3.2 m/s; warm core 300 hPa 0.8 / 0.1 / 0.6 K. CMT-off effect beyond noise for Titli (-7..-8 hPa, +5..+9 m/s) and Nivar (-9..-12 hPa, +9..+12 m/s); Sidr within noise.
+REGISTERED (before running, GPU deterministic ops on): cmt_mf vs control
+ (a) storm budget Nivar/Titli/Sidr: 72 h pmin deeper than the deepest control by > noise spread in >= 2 of 3 storms, and v850 at 72 h above the highest control in >= 2 of 3;
+ (b) 6 quick storms (hind2): jump-cleaned mean track error at 48 h and 72 h no more than 10% worse than control (ctl 202 / 252 km on the cleaned sets);
+ (c) mean 72 h wind (6 storms) > control 27.7 kt + 2 kt; no blow-up.
