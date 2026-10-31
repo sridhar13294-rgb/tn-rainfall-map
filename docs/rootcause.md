@@ -358,3 +358,13 @@ Derived (COARE 3.0, Fairall et al. 2003, neutral): CHn(z1) = kappa^2 / [ln(z1/z0
 Result at z1 = 80 m: MEGAM's Ck is 12-30% TOO HIGH (ratio 1.30 at 3 m/s, 1.26 at 7, 1.25 at 10, 1.18 at 20, 1.12 at 30 m/s). The full height correction (ck_z = 1) lands within -11..+11% of COARE. Cd is 7-12% above COARE (Charnock 0.018 vs COARE's 0.011 at moderate winds).
 Flux consequence in the F2 coastal-sea state (air 298 K, SST 302 K, q1 17 g/kg): 7 m/s -> MEGAM SH 33 + LH 160 = 193 W/m2 vs COARE 26 + 127 = 153 W/m2 (MEGAM ~25% more).
 => D8 is a real inconsistency, but in the OPPOSITE direction to what P1 and P3 need: correcting it LOWERS surface heat and moisture supply ~20%. So (1) the cold boundary layer is NOT from too-weak sea fluxes (it is cold despite fluxes ~25% too strong); (2) D8 cannot explain the weak storms - a correct Ck would make them weaker still; (3) for P4 it would reduce the moisture feeding the coastal-sea convection (helps). Consistent with the earlier ck_z = 1 run, which cooled the tropical column. D8 goes to the correctness list (with the coupled package), not as a P1/P3 fix.
+
+## 31 Oct 13:15 IST - 84-storm library hindcasts (measurement, not registered tests): tn-lib84-ctl / -corr / -f2corr, deterministic, 120 h
+41 storms had start fields in libm_fields (all three configs, none errored). Jump-cleaned track error on storms valid in all three (n), mean max wind (kt), mean min pressure (hPa); observed mean wind in brackets:
+ 24 h (n37): ctl 106 / 25.5 / 1006.1 | corr 115 / 23.3 / 1006.0 | f2corr 117 / 20.1 / 1006.6  [obs 27.2]
+ 48 h (n29): ctl 207 / 29.3 / 1002.8 | corr 183 / 28.7 / 1002.1 | f2corr 235 / 20.8 / 1004.7  [34.3]
+ 72 h (n24): ctl 247 / 27.6 / 1003.3 | corr 299 / 29.7 / 1001.4 | f2corr 331 / 21.9 / 1004.2  [46.8]
+ 96 h (n13): ctl 318 / 27.2 / 1004.4 | corr 366 / 28.1 / 1002.2 | f2corr 446 / 20.3 / 1004.6  [46.6]
+ 120 h (n6): ctl 337 / 26.4 / 1004.0 | corr 477 / 27.8 / 1002.7 | f2corr 359 / 18.7 / 1004.9  [51.4]
+corr vs ctl at 72 h: track better in 9/25 storms, wind higher in 19/25; storms losing the centre (jump >250 km/6 h or NaN): corr 14, f2corr 13, ctl 22.
+Reading: (1) the correctness items (evap_ifs + continuum x1.0 + ck_z 1) make storms slightly stronger (+2 kt, -2 hPa at 72 h, 19/25 storms) and more coherent (fewer centre losses 22 -> 14) but tracks beyond 48 h worse (+21% at 72 h); (2) F2 weakens storms across the whole library (wind ~20-22 kt vs 27-29; stronger than control in 0/24 at 72 h) - confirms the 6-storm result on 41 storms; (3) all configurations stay far below observed intensity (27-30 vs 47-51 kt at 72-120 h). Small samples at 96-120 h (n 13 / 6).
