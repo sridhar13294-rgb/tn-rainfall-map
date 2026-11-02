@@ -63,7 +63,7 @@ jobs:
           echo "::add-mask::$T"; { echo "KAGGLE_USERNAME=$U"; echo "KAGGLE_API_TOKEN=$T"; echo "KAGGLE_KEY=$T"; } >> $GITHUB_ENV
       - uses: actions/setup-python@v5
         with: {python-version: '3.12'}
-      - run: pip install -q -U kaggle && kaggle --version
+      - run: pip install -q -U kaggle six && kaggle --version
       - run: |
           SLUG=$(sed -n 1p data/cyclone/KAGGLE | tr -d ' '); FILES=$(sed -n 2p data/cyclone/KAGGLE | tr -d ' '); JOB=$(sed -n 3p data/cyclone/KAGGLE)
           ACC=$(sed -n 4p data/cyclone/KAGGLE | tr -d ' '); [ -z "$ACC" ] && ACC=NvidiaTeslaT4
