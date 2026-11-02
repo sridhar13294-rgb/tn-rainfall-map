@@ -1,6 +1,6 @@
-tn-base-gen0
+tn-base-gen1
 libm48_fields.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_ctl.json 0 2 /kaggle/working/gen_0.json > /kaggle/working/gen_0.log 2>&1; tail -3 /kaggle/working/gen_0.log
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/gen_ctl.json 1 2 /kaggle/working/gen_1.json > /kaggle/working/gen_1.log 2>&1; tail -3 /kaggle/working/gen_1.log
 NvidiaTeslaT4
-9
-#g0 2026-11-02T18:11Z
+10
+#g1 2026-11-02T18:12Z
