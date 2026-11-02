@@ -40,7 +40,7 @@ def ua_scores(M, st, kv, levs=(200, 250, 300, 400, 500, 850)):
     return out
 ALL = {}
 for VN, VS in VARS.items():
-  VS = dict(VS); SPLIT = bool(VS.pop('_split', False)); BUDGET = bool(VS.pop('_budget', False)); CHK = VS.pop('_chunk', None); UA = bool(VS.pop('_ua', False)); NL = VS.pop('layers', 32); GR = VS.pop('grid', 'T85')
+  VS = dict(VS); SPLIT = bool(VS.pop('_split', False)); BUDGET = bool(VS.pop('_budget', False)); CHK = VS.pop('_chunk', None); UA = bool(VS.pop('_ua', False)); WIN = VS.pop('_win', None); NL = VS.pop('layers', 32); GR = VS.pop('grid', 'T85')
   M = mm2.Model(GR, NL, None, dict(BASE, **VS)); res = []
   def model_profiles(st, cr):
       hor = M.coords.horizontal
@@ -90,7 +90,7 @@ for VN, VS in VARS.items():
                   o[rg] = e
               return o
           B = {}; sA, cA = st, cr; hA = 0
-          for w0, w1 in ((0, 24), (96, 120)):
+          for w0, w1 in (tuple(tuple(w) for w in WIN) if WIN else ((0, 24), (96, 120))):   # _win: budget windows (h), e.g. [[0,24],[24,48],[48,72],[96,120]]
               if hA < w0: sA, cA = mm2.integrate(M, sA, cA, w0 - hA); hA = w0
               snaps = [snap(sA, cA)]
               for h in range(w0 + 3, w1 + 1, 3): sA, cA = mm2.integrate(M, sA, cA, 3); snaps.append(snap(sA, cA))
