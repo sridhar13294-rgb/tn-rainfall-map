@@ -1,0 +1,140 @@
+[{"stream_name":"stdout","time":0.584557905,"data":"+ nvidia-smi || true\n"}
+,{"stream_name":"stdout","time":0.619947584,"data":"Mon Nov  2 18:05:14 2026       \n"}
+,{"stream_name":"stdout","time":0.619997062,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":0.620002429,"data":"| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":0.620006107,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.620009611,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":0.620013086,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":0.620016586,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":0.620025038,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":0.668587911,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":0.668611334,"data":"| N/A   51C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":0.668616449,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":0.668621408,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.668625295,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":0.668647802,"data":"| N/A   52C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":0.668651676,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":0.668655427,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.674113366,"data":"\n"}
+,{"stream_name":"stdout","time":0.67413576,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":0.674141221,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":0.674146242,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":0.67415163,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":0.674156777,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":0.674162056,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":0.674167437,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.008206288,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1.009349733,"data":"accelerator asked NvidiaTeslaT4 -\u003e jax for cuda12\n"}
+,{"stream_name":"stdout","time":1.009369063,"data":"+ pip install -q -U \"jax[cuda12]\"\n"}
+,{"stream_name":"stderr","time":32.145477496,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":32.145504517,"data":"bigframes 2.48.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":32.145515901,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stderr","time":32.145548617,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":32.145556217,"data":"gradio 6.26.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":32.145560327,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":32.145564235,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stdout","time":32.444092103,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":32.444122293,"data":"+ free -g; nproc; python -c \"import jax; print(jax.devices())\" || true\n"}
+,{"stream_name":"stdout","time":32.457584277,"data":"               total        used        free      shared  buff/cache   available\n"}
+,{"stream_name":"stdout","time":32.457613806,"data":"Mem:              31           1          23           0           7          30\n"}
+,{"stream_name":"stdout","time":32.457617631,"data":"Swap:              0           0           0\n"}
+,{"stream_name":"stdout","time":32.46019478,"data":"4\n"}
+,{"stream_name":"stdout","time":38.014736648,"data":"[CudaDevice(id=0), CudaDevice(id=1)]\n"}
+,{"stream_name":"stdout","time":40.629658268,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":40.629707129,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
+,{"stream_name":"stdout","time":50.795630227,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":50.795685438,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
+,{"stream_name":"stdout","time":76.638032324,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":76.638075192,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o libm_wx2020_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020_fields.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" libm_wx2020_fields.npz || { echo BAD_DOWNLOAD libm_wx2020_fields.npz; rm -f libm_wx2020_fields.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o libm_wx2020_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020_fields.npz; }\n"}
+,{"stream_name":"stdout","time":109.911905036,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":109.911942952,"data":"setup s 109\n"}
+,{"stream_name":"stdout","time":109.911948858,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 cd . \u0026\u0026 python -W ignore scm_ref.py /kaggle/working/scm_ref.json 2\u003e\u00261 | tail -200 2\u003e\u00261 | tee job.log\n"}
+,{"stream_name":"stdout","time":160.954856356,"data":"== env: rc 0 (24 s)\n"}
+,{"stream_name":"stdout","time":160.954890574,"data":"setting libfabric environment variables for conda-build\n"}
+,{"stream_name":"stdout","time":160.954894693,"data":"FI_PROVIDER=tcp\n"}
+,{"stream_name":"stdout","time":160.954916365,"data":"setting libfabric environment variables for conda-build\n"}
+,{"stream_name":"stdout","time":160.954933575,"data":"FI_PROVIDER=tcp\n"}
+,{"stream_name":"stdout","time":160.954937436,"data":"setting openmpi environment variables for conda-build\n"}
+,{"stream_name":"stdout","time":160.954941229,"data":"\n"}
+,{"stream_name":"stdout","time":160.954944791,"data":"== clone: rc 0 (22 s)\n"}
+,{"stream_name":"stdout","time":160.954955531,"data":"Note: switching to 'd939f51fe8875192015fd0a0cfcf3c503cbb69e2'.\n"}
+,{"stream_name":"stdout","time":160.954959617,"data":"\n"}
+,{"stream_name":"stdout","time":160.954962861,"data":"You are in 'detached HEAD' state. You can look around, make experimental\n"}
+,{"stream_name":"stdout","time":160.95496622,"data":"changes and commit them, and you can discard any commits you make in this\n"}
+,{"stream_name":"stdout","time":160.954969619,"data":"state without impacting any branches by switching back to a branch.\n"}
+,{"stream_name":"stdout","time":160.954972994,"data":"\n"}
+,{"stream_name":"stdout","time":160.954995303,"data":"If you want to create a new branch to retain commits you create, you may\n"}
+,{"stream_name":"stdout","time":160.954998726,"data":"do so (now or later) by using -c with the switch command. Example:\n"}
+,{"stream_name":"stdout","time":160.955001115,"data":"\n"}
+,{"stream_name":"stdout","time":160.955003296,"data":"  git switch -c \u003cnew-branch-name\u003e\n"}
+,{"stream_name":"stdout","time":160.95500594,"data":"\n"}
+,{"stream_name":"stdout","time":160.955008035,"data":"Or undo this operation with:\n"}
+,{"stream_name":"stdout","time":160.955010461,"data":"\n"}
+,{"stream_name":"stdout","time":160.955015857,"data":"  git switch -\n"}
+,{"stream_name":"stdout","time":160.9550316,"data":"\n"}
+,{"stream_name":"stdout","time":160.955035252,"data":"Turn off this advice by setting config variable advice.detachedHead to false\n"}
+,{"stream_name":"stdout","time":160.955055546,"data":"\n"}
+,{"stream_name":"stdout","time":160.955059044,"data":"\n"}
+,{"stream_name":"stdout","time":160.955062215,"data":"== build: rc 0 (5 s)\n"}
+,{"stream_name":"stdout","time":160.955065443,"data":"This warning is for project developers.  Use -Wno-author or -Wno-policy to\n"}
+,{"stream_name":"stdout","time":160.95506903,"data":"suppress it.\n"}
+,{"stream_name":"stdout","time":160.955073292,"data":"\n"}
+,{"stream_name":"stdout","time":160.955076474,"data":"-- Found NetCDF: /tmp/scmenv/include (found version \"4.10.1\") found components: C Fortran\n"}
+,{"stream_name":"stdout","time":160.955080455,"data":"-- FindNetCDF defines targets:\n"}
+,{"stream_name":"stdout","time":160.955083694,"data":"--   - NetCDF_VERSION [4.10.1]\n"}
+,{"stream_name":"stdout","time":160.955086945,"data":"--   - NetCDF_PARALLEL [FALSE]\n"}
+,{"stream_name":"stdout","time":160.955090377,"data":"--   - NetCDF_C_CONFIG_EXECUTABLE [/tmp/scmenv/bin/nc-config]\n"}
+,{"stream_name":"stdout","time":160.955095395,"data":"--   - NetCDF::NetCDF_C [SHARED] [Root: /tmp/scmenv] Lib: /tmp/scmenv/lib/libnetcdf.so \n"}
+,{"stream_name":"stdout","time":160.955102902,"data":"--   - NetCDF_Fortran_CONFIG_EXECUTABLE [/tmp/scmenv/bin/nf-config]\n"}
+,{"stream_name":"stdout","time":160.955105211,"data":"--   - NetCDF::NetCDF_Fortran [SHARED] [Root: /tmp/scmenv] Lib: /tmp/scmenv/lib/libnetcdff.so \n"}
+,{"stream_name":"stdout","time":160.955107651,"data":"CMake Error at CMakeLists.txt:71 (find_package):\n"}
+,{"stream_name":"stdout","time":160.955111156,"data":"  By not providing \"Findbacio.cmake\" in CMAKE_MODULE_PATH this project has\n"}
+,{"stream_name":"stdout","time":160.955114448,"data":"  asked CMake to find a package configuration file provided by \"bacio\", but\n"}
+,{"stream_name":"stdout","time":160.955136794,"data":"  CMake did not find one.\n"}
+,{"stream_name":"stdout","time":160.955141316,"data":"\n"}
+,{"stream_name":"stdout","time":160.955145159,"data":"  Could not find a package configuration file provided by \"bacio\" with any of\n"}
+,{"stream_name":"stdout","time":160.95514959,"data":"  the following names:\n"}
+,{"stream_name":"stdout","time":160.955153479,"data":"\n"}
+,{"stream_name":"stdout","time":160.955156674,"data":"    bacio.cps\n"}
+,{"stream_name":"stdout","time":160.955160442,"data":"    bacioConfig.cmake\n"}
+,{"stream_name":"stdout","time":160.955164055,"data":"    bacio-config.cmake\n"}
+,{"stream_name":"stdout","time":160.95516738,"data":"\n"}
+,{"stream_name":"stdout","time":160.95517146,"data":"  Add the installation prefix of \"bacio\" to CMAKE_PREFIX_PATH or set\n"}
+,{"stream_name":"stdout","time":160.955174964,"data":"  \"bacio_DIR\" to a directory containing one of the above files.  If \"bacio\"\n"}
+,{"stream_name":"stdout","time":160.955178708,"data":"  provides a separate development package or SDK, be sure it has been\n"}
+,{"stream_name":"stdout","time":160.955182181,"data":"  installed.\n"}
+,{"stream_name":"stdout","time":160.955185417,"data":"\n"}
+,{"stream_name":"stdout","time":160.95518895,"data":"\n"}
+,{"stream_name":"stdout","time":160.955193532,"data":"-- Configuring incomplete, errors occurred!\n"}
+,{"stream_name":"stdout","time":160.955196997,"data":"make: *** No targets specified and no makefile found.  Stop.\n"}
+,{"stream_name":"stdout","time":160.955206397,"data":"\n"}
+,{"stream_name":"stdout","time":160.955209712,"data":"== runner help: rc 0 (0 s)\n"}
+,{"stream_name":"stdout","time":160.955213002,"data":"ccpp\n"}
+,{"stream_name":"stdout","time":160.95521623,"data":"ccpp_prebuild.err\n"}
+,{"stream_name":"stdout","time":160.955220009,"data":"ccpp_prebuild.out\n"}
+,{"stream_name":"stdout","time":160.95522365,"data":"CMakeCache.txt\n"}
+,{"stream_name":"stdout","time":160.955227185,"data":"CMakeFiles\n"}
+,{"stream_name":"stdout","time":160.955230981,"data":"cm.log\n"}
+,{"stream_name":"stdout","time":160.955234562,"data":"mk.log\n"}
+,{"stream_name":"stdout","time":160.955238372,"data":"/bin/sh: 1: ./run_scm.py: not found\n"}
+,{"stream_name":"stdout","time":160.955242295,"data":"\n"}
+,{"stream_name":"stdout","time":160.955245537,"data":"== run bomex: rc 0 (0 s)\n"}
+,{"stream_name":"stdout","time":160.955248785,"data":"/bin/sh: 1: ./run_scm.py: not found\n"}
+,{"stream_name":"stdout","time":160.955251975,"data":"ls: cannot access 'output_*': No such file or directory\n"}
+,{"stream_name":"stdout","time":160.955255339,"data":"\n"}
+,{"stream_name":"stdout","time":160.955258492,"data":"== run twpice: rc 0 (0 s)\n"}
+,{"stream_name":"stdout","time":160.955261711,"data":"/bin/sh: 1: ./run_scm.py: not found\n"}
+,{"stream_name":"stdout","time":160.955264924,"data":"ls: cannot access 'output_*': No such file or directory\n"}
+,{"stream_name":"stdout","time":160.95526824,"data":"\n"}
+,{"stream_name":"stdout","time":160.955271366,"data":"done [] ImportError('libnetcdf.so.22: cannot open shared object file: No such file or directory')\n"}
+,{"stream_name":"stdout","time":160.955369126,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":160.955384292,"data":"+ rm -rf repo libm_wx2020_fields.npz\n"}
+,{"stream_name":"stdout","time":161.175293425,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":161.175323616,"data":"total s 161\n"}
+,{"stream_name":"stderr","time":164.152298459,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":164.152367308,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":164.387897982,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":164.38793032,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":165.224932508,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":166.19382611,"data":"[NbConvertApp] Writing 281503 bytes to __results__.html\n"}
+]
