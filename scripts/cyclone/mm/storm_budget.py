@@ -42,8 +42,9 @@ for i_s, s in enumerate(storms):
             hor = M.coords.horizontal; LA, LO = np.asarray(M.LA), np.asarray(M.LO); sig = np.asarray(M.sig); ds = np.asarray(M.dsig); zs = np.asarray(M.zs)
             k300, k500, k700, k850 = (int(np.argmin(np.abs(sig - x))) for x in (0.3, 0.5, 0.7, 0.85))
             clat, clon = st0[0], st0[1]; rows = []
-            for h in range(0, C.get('hours', 72) + 1, 3):
-                if h: st, cr = mm2.integrate(M, st, cr, 3)
+            STEP = C.get('step', 3)
+            for h in range(0, C.get('hours', 72) + 1, STEP):
+                if h: st, cr = mm2.integrate(M, st, cr, STEP)
                 T = np.asarray((hor.to_nodal(st.temperature_variation) + M.ref_t[:, None, None]) / M.K); q = np.asarray(st.tracers['specific_humidity'])
                 ps = np.asarray(jnp.exp(hor.to_nodal(st.log_surface_pressure))[0] / M.PA); u, v = spherical_harmonic.vor_div_to_uv_nodal(hor, st.vorticity, st.divergence)
                 uu, vv = np.asarray(u / M.MPS), np.asarray(v / M.MPS)
@@ -68,6 +69,25 @@ for i_s, s in enumerate(storms):
                 for kk in ('h_bl', 'h_deep', 'h_shal', 'h_lsc', 'h_evap'):
                     if kk in dd: e[kk + '_core'] = prof(dd[kk], core); e[kk + '_ann'] = prof(dd[kk], inner)
                 if 'rad' in dd: e['rad_core'] = prof(dd['rad']['heating'], core)
+                if C.get('radial'):
+                    # radial structure (peer 3 Nov): rings 0-100/100-200/200-300/300-500 km - column heating by process (W/m2),
+                    # surface enthalpy flux, azimuthal-mean tangential wind (850 hPa, lowest level), core-minus-ring T by level
+                    dlat = np.radians(LA - clat); dlon = np.radians(((LO - clon + 180) % 360) - 180) * np.cos(np.radians(clat))
+                    rr = np.maximum(np.hypot(dlat, dlon), 1e-9)
+                    vt = lambda U, V: (-U * dlat + V * dlon) / rr                                              # tangential wind, counter-clockwise positive
+                    mass = (ds[:, None, None] * ps[None]) / G
+                    col = lambda X: (np.asarray(X) * mass).sum(0) * CP
+                    RINGS = ((0, 100), (100, 200), (200, 300), (300, 500)); e['radial'] = {}
+                    for a_, b_ in RINGS:
+                        m_ = (d >= a_) & (d < b_); r_ = {}
+                        for kk in ('h_bl', 'h_deep', 'h_shal', 'h_lsc', 'h_evap'):
+                            if kk in dd: r_[kk] = round(mean2(col(dd[kk]), m_), 1)
+                        if 'rad' in dd: r_['rad'] = round(mean2(col(dd['rad']['heating']), m_), 1)
+                        r_['flux'] = round(mean2(H + E, m_), 1); r_['rain'] = round(mean2(dd['rain'], m_) * 86400, 1)
+                        r_['vt850'] = round(mean2(vt(uu[k850], vv[k850]), m_), 2); r_['vt_low'] = round(mean2(vt(uu[-1], vv[-1]), m_), 2)
+                        r_['q_low'] = round(mean2(q[-1], m_) * 1000, 2); r_['T_low'] = round(mean2(T[-1], m_), 2)
+                        e['radial'][f'{a_}-{b_}'] = r_
+                    e['Tanom_core'] = [round(mean2(T[l], core) - mean2(T[l], ring), 2) for l in range(len(sig))]
                 rows.append(e)
                 print(s['name'], var['name'], f"+{h:2d}h p {e['pmin']} v850 {e['vmax850']} wc300 {e['wc300']} wc500 {e['wc500']} flux {e['flux_core']}/{e['flux_300']} deep {e['on_dp_core']}/{e['on_dp_300']} rain {e['rain_core']}/{e['rain_300']} rh700 {e['rh700_core']}/{e['rh700_ring']}", flush=True)
             res.append(dict(name=s['name'], season=s['season'], var=var['name'], t0=key, sig=sig.round(4).tolist(), real=[((p_[0] - g).total_seconds() / 3600, p_[1], p_[2], p_[3]) for p_ in P0], rows=rows, sec=round(time.time() - t)))

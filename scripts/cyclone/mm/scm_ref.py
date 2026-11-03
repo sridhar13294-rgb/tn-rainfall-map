@@ -23,7 +23,7 @@ for lib, tag in (('bacio', 'v2.4.1'), ('sp', 'v2.5.0'), ('w3emc', 'v2.11.0')):
                    f'cmake -DCMAKE_INSTALL_PREFIX={ENV} -DBUILD_TESTING=OFF -DOPENMP=OFF .. > c.log 2>&1; tail -5 c.log; make -j4 install > m.log 2>&1; rc=$?; tail -8 m.log; exit $rc', 'lib ' + lib, cwd=W)
 # static physics data and processed case inputs (v7 scripts)
 if ok: sh('./contrib/get_all_static_data.sh > gs.log 2>&1; tail -5 gs.log; ./contrib/get_thompson_tables.sh > gt.log 2>&1; tail -3 gt.log', 'static data', cwd=SRC)
-if ok: ok = sh(envp + 'mkdir -p scm/bin && cd scm/bin && cmake -DCCPP_SUITES=SCM_GFS_v16 ../src > cm.log 2>&1; tail -30 cm.log; make -j4 > mk.log 2>&1; rc=$?; tail -40 mk.log; ls; exit $rc', 'build', cwd=SRC)
+if ok: ok = sh(envp + 'mkdir -p scm/bin && cd scm/bin && cmake -DCCPP_SUITES=SCM_GFS_v16,SCM_GFS_v16_ps ../src > cm.log 2>&1; tail -30 cm.log; make -j4 > mk.log 2>&1; rc=$?; tail -40 mk.log; ls; exit $rc', 'build', cwd=SRC)
 # run_scm.py launches '(cd run && time mpirun -np 1 scm)' through /bin/sh; Kaggle has no /usr/bin/time (exit 127) -> shim
 open(ENV + '/bin/time', 'w').write('#!/bin/sh\nexec "$@"\n'); os.chmod(ENV + '/bin/time', 0o755)
 if ok: sh(envp + 'which mpirun time; cd scm/bin && ls', 'runner check', cwd=SRC)
