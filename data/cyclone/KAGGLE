@@ -1,6 +1,6 @@
-tn-scm-ref
-libm_wx2020_fields.npz
-cd . && python -W ignore scm_ref.py /kaggle/working/scm_ref.json 2>&1 | tail -200
+tn-corr-wx-q0
+libm_wx2020_fields.npz,wx_truth_2020.npz
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/wx_corr.json 0 4 /kaggle/working/wx_0.json > /kaggle/working/wx_0.log 2>&1; tail -3 /kaggle/working/wx_0.log
 NvidiaTeslaT4
-4
-#s4b 2026-11-03T01:34Z
+5
+#c5 2026-11-03T01:45Z
