@@ -1,71 +1,154 @@
-[{"stream_name":"stdout","time":1.619682145,"data":"+ nvidia-smi || true\n"}
-,{"stream_name":"stdout","time":1.651464422,"data":"Mon Nov  2 18:02:15 2026       \n"}
-,{"stream_name":"stdout","time":1.651491066,"data":"+-----------------------------------------------------------------------------------------+\n"}
-,{"stream_name":"stdout","time":1.6514991270000001,"data":"| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |\n"}
-,{"stream_name":"stdout","time":1.651501568,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
-,{"stream_name":"stdout","time":1.651504028,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
-,{"stream_name":"stdout","time":1.65150643,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
-,{"stream_name":"stdout","time":1.651509408,"data":"|                                         |                        |               MIG M. |\n"}
-,{"stream_name":"stdout","time":1.651528612,"data":"|=========================================+========================+======================|\n"}
-,{"stream_name":"stdout","time":1.732994769,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
-,{"stream_name":"stdout","time":1.7330210400000001,"data":"| N/A   43C    P8              9W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
-,{"stream_name":"stdout","time":1.7330311649999999,"data":"|                                         |                        |                  N/A |\n"}
-,{"stream_name":"stdout","time":1.733036276,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
-,{"stream_name":"stdout","time":1.7330416199999998,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
-,{"stream_name":"stdout","time":1.733047003,"data":"| N/A   46C    P8              9W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
-,{"stream_name":"stdout","time":1.733052379,"data":"|                                         |                        |                  N/A |\n"}
-,{"stream_name":"stdout","time":1.733057642,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
-,{"stream_name":"stdout","time":1.734087563,"data":"\n"}
-,{"stream_name":"stdout","time":1.734111218,"data":"+-----------------------------------------------------------------------------------------+\n"}
-,{"stream_name":"stdout","time":1.734115587,"data":"| Processes:                                                                              |\n"}
-,{"stream_name":"stdout","time":1.734140373,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
-,{"stream_name":"stdout","time":1.734145368,"data":"|        ID   ID                                                               Usage      |\n"}
-,{"stream_name":"stdout","time":1.7341499310000001,"data":"|=========================================================================================|\n"}
-,{"stream_name":"stdout","time":1.735707718,"data":"|  No running processes found                                                             |\n"}
-,{"stream_name":"stdout","time":1.7357239770000001,"data":"+-----------------------------------------------------------------------------------------+\n"}
-,{"stream_name":"stdout","time":2.056108655,"data":"exit 0\n"}
-,{"stream_name":"stdout","time":2.058593165,"data":"accelerator asked NvidiaTeslaT4 -\u003e jax for cuda12\n"}
-,{"stream_name":"stdout","time":2.058617361,"data":"+ pip install -q -U \"jax[cuda12]\"\n"}
-,{"stream_name":"stderr","time":58.52811593,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
-,{"stream_name":"stderr","time":58.528168437,"data":"bigframes 2.48.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
-,{"stream_name":"stderr","time":58.528175661,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.4 which is incompatible.\n"}
-,{"stream_name":"stderr","time":58.528181762,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
-,{"stream_name":"stderr","time":58.528187372,"data":"gradio 6.26.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
-,{"stream_name":"stderr","time":58.528193302,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
-,{"stream_name":"stderr","time":58.528198861999996,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.4 which is incompatible.\n"}
-,{"stream_name":"stdout","time":58.897835223,"data":"exit 0\n"}
-,{"stream_name":"stdout","time":58.897874542,"data":"+ free -g; nproc; python -c \"import jax; print(jax.devices())\" || true\n"}
-,{"stream_name":"stdout","time":58.93993614,"data":"               total        used        free      shared  buff/cache   available\n"}
-,{"stream_name":"stdout","time":58.939972118,"data":"Mem:              31           1          23           0           7          30\n"}
-,{"stream_name":"stdout","time":58.939978256,"data":"Swap:              0           0           0\n"}
-,{"stream_name":"stdout","time":58.947717122,"data":"4\n"}
-,{"stream_name":"stdout","time":75.014156791,"data":"[CudaDevice(id=0), CudaDevice(id=1)]\n"}
-,{"stream_name":"stdout","time":85.672885059,"data":"exit 0\n"}
-,{"stream_name":"stdout","time":85.672942233,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
-,{"stream_name":"stdout","time":97.000355457,"data":"exit 0\n"}
-,{"stream_name":"stdout","time":97.000412683,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
-,{"stream_name":"stdout","time":121.69521061,"data":"exit 0\n"}
-,{"stream_name":"stdout","time":121.695245592,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o libm_wx2020_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020_fields.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" libm_wx2020_fields.npz || { echo BAD_DOWNLOAD libm_wx2020_fields.npz; rm -f libm_wx2020_fields.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o libm_wx2020_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020_fields.npz; }\n"}
-,{"stream_name":"stdout","time":151.573677954,"data":"exit 0\n"}
-,{"stream_name":"stdout","time":151.573719749,"data":"setup s 150\n"}
-,{"stream_name":"stdout","time":151.573724675,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 cd . \u0026\u0026 python -W ignore trace75.py /kaggle/working/libm_wx2020_fields.npz '{\"layers\":\"tp75\",\"grid\":\"T170\",\"pbl_tm\":1.0}' 9 2\u003e\u00261 | tail -150 2\u003e\u00261 | tee job.log\n"}
-,{"stream_name":"stdout","time":176.951264207,"data":"settings {'pbl_tm': 1.0} layers tp75 levels 75 dt_s 1200.0 lowest sigmas [0.9746000170707703, 0.9819999933242798, 0.989300012588501, 0.996399998664856]\n"}
-,{"stream_name":"stdout","time":176.951303942,"data":"[init] nonfinite {'T': 0, 'q': 0, 'ps': 0, 'u': 0, 'v': 0} | T 180.7..310.4 q max 20.9 g/kg min -0.000 | ps 526..1039\n"}
-,{"stream_name":"stdout","time":176.951309623,"data":"Traceback (most recent call last):\n"}
-,{"stream_name":"stdout","time":176.951313831,"data":"  File \"/kaggle/working/repo/scripts/cyclone/mm/trace75.py\", line 36, in \u003cmodule\u003e\n"}
-,{"stream_name":"stdout","time":176.951318832,"data":"    ok = check('init', st, cr)\n"}
-,{"stream_name":"stdout","time":176.951322822,"data":"  File \"/kaggle/working/repo/scripts/cyclone/mm/trace75.py\", line 25, in check\n"}
-,{"stream_name":"stdout","time":176.951326976,"data":"    tn, dd = M.column(jnp.asarray(T), jnp.asarray(q), u / M.MPS, v / M.MPS, jnp.asarray(ps), dict(c, doy0=jnp.float32(M.doy0), utc0=jnp.float32(M.utc0)),\n"}
-,{"stream_name":"stdout","time":176.951331348,"data":"                                                                                                                      ^^^^^^\n"}
-,{"stream_name":"stdout","time":176.95133531,"data":"AttributeError: 'Model' object has no attribute 'doy0'\n"}
-,{"stream_name":"stdout","time":177.107465361,"data":"exit 0\n"}
-,{"stream_name":"stdout","time":177.10751727,"data":"+ rm -rf repo libm_wx2020_fields.npz\n"}
-,{"stream_name":"stdout","time":177.306941487,"data":"exit 0\n"}
-,{"stream_name":"stdout","time":177.306986044,"data":"total s 176\n"}
-,{"stream_name":"stderr","time":180.009688971,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
-,{"stream_name":"stderr","time":180.009722205,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
-,{"stream_name":"stderr","time":180.42507328,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
-,{"stream_name":"stderr","time":180.425096603,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
-,{"stream_name":"stderr","time":181.459777764,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
-,{"stream_name":"stderr","time":182.953312582,"data":"[NbConvertApp] Writing 282052 bytes to __results__.html\n"}
+[{"stream_name":"stdout","time":1.10867081,"data":"+ nvidia-smi || true\n"}
+,{"stream_name":"stdout","time":1.149176712,"data":"Tue Nov  3 01:33:16 2026       \n"}
+,{"stream_name":"stdout","time":1.149202116,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.149206158,"data":"| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":1.149208923,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.14921147,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":1.149214014,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":1.149216516,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":1.149219159,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":1.215647332,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":1.2156767689999999,"data":"| N/A   40C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":1.215680472,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":1.2156829359999999,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.215710735,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":1.215715656,"data":"| N/A   39C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":1.215719429,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":1.215723142,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.216289747,"data":"\n"}
+,{"stream_name":"stdout","time":1.216301338,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.216305972,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":1.216309579,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":1.216313032,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":1.216316377,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":1.21785218,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":1.217864157,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.545004324,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1.546773079,"data":"accelerator asked NvidiaTeslaT4 -\u003e jax for cuda12\n"}
+,{"stream_name":"stdout","time":1.546788496,"data":"+ pip install -q -U \"jax[cuda12]\"\n"}
+,{"stream_name":"stderr","time":32.966017249,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":32.966070635,"data":"bigframes 2.48.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":32.966077002,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stderr","time":32.966081242,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":32.96608574,"data":"gradio 6.26.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":32.966089878,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":32.966093487,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stdout","time":33.196153568,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":33.196199912,"data":"+ free -g; nproc; python -c \"import jax; print(jax.devices())\" || true\n"}
+,{"stream_name":"stdout","time":33.220821734,"data":"               total        used        free      shared  buff/cache   available\n"}
+,{"stream_name":"stdout","time":33.220842988,"data":"Mem:              31           1          23           0           7          30\n"}
+,{"stream_name":"stdout","time":33.220847347,"data":"Swap:              0           0           0\n"}
+,{"stream_name":"stdout","time":33.224597257,"data":"4\n"}
+,{"stream_name":"stdout","time":41.655724328,"data":"[CudaDevice(id=0), CudaDevice(id=1)]\n"}
+,{"stream_name":"stdout","time":45.383660585,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":45.383702897,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
+,{"stream_name":"stdout","time":58.062523262,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":58.062557459,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
+,{"stream_name":"stdout","time":84.746512281,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":84.746564621,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o libm_wx2020_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020_fields.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" libm_wx2020_fields.npz || { echo BAD_DOWNLOAD libm_wx2020_fields.npz; rm -f libm_wx2020_fields.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o libm_wx2020_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020_fields.npz; }\n"}
+,{"stream_name":"stdout","time":91.127609347,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":91.1276327,"data":"setup s 90\n"}
+,{"stream_name":"stdout","time":91.127638395,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 cd . \u0026\u0026 python -W ignore trace75.py /kaggle/working/libm_wx2020_fields.npz '{\"layers\":\"tp75\",\"grid\":\"T170\",\"pbl_tm\":1.0}' 72 2\u003e\u00261 | tail -400 2\u003e\u00261 | tee job.log\n"}
+,{"stream_name":"stdout","time":331.36617934,"data":"settings {'pbl_tm': 1.0} layers tp75 levels 75 dt_s 1200.0 lowest sigmas [0.9746000170707703, 0.9819999933242798, 0.989300012588501, 0.996399998664856]\n"}
+,{"stream_name":"stdout","time":331.366234251,"data":"[init] nonfinite {'T': 0, 'q': 0, 'ps': 0, 'u': 0, 'v': 0} | T 180.7..310.4 q max 20.9 g/kg min -0.000 | ps 526..1039\n"}
+,{"stream_name":"stdout","time":331.366239818,"data":"   tot_T   nonfinite       0 (levels []) | max |rate|     439.3 at level 74 (sigma 0.996) | columns \u003e200/day 5467\n"}
+,{"stream_name":"stdout","time":331.36624449,"data":"   tot_q   nonfinite       0 (levels []) | max |rate|     500.9 at level 74 (sigma 0.996) | columns \u003e200/day 2673\n"}
+,{"stream_name":"stdout","time":331.366248899,"data":"   h_bl    nonfinite       0 (levels []) | max |rate|     287.9 at level 74 (sigma 0.996) | columns \u003e200/day 693\n"}
+,{"stream_name":"stdout","time":331.366252429,"data":"   h_deep  nonfinite       0 (levels []) | max |rate|     124.2 at level 74 (sigma 0.996) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":331.366256667,"data":"   h_shal  nonfinite       0 (levels []) | max |rate|     438.3 at level 28 (sigma 0.283) | columns \u003e200/day 3778\n"}
+,{"stream_name":"stdout","time":331.366260646,"data":"   h_lsc   nonfinite       0 (levels []) | max |rate|     371.8 at level 31 (sigma 0.333) | columns \u003e200/day 732\n"}
+,{"stream_name":"stdout","time":331.366264422,"data":"   h_evap  nonfinite       0 (levels []) | max |rate|      48.3 at level 74 (sigma 0.996) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":331.366268478,"data":"   rad     nonfinite       0 (levels []) | max |rate|     171.3 at level 74 (sigma 0.996) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":331.366272312,"data":"[after DFI] nonfinite {'T': 0, 'q': 0, 'ps': 0, 'u': 0, 'v': 0} | T 183.0..310.4 q max 20.9 g/kg min -0.000 | ps 525..1038\n"}
+,{"stream_name":"stdout","time":331.366275873,"data":"   tot_T   nonfinite       0 (levels []) | max |rate|     440.2 at level 74 (sigma 0.996) | columns \u003e200/day 5558\n"}
+,{"stream_name":"stdout","time":331.366279682,"data":"   tot_q   nonfinite       0 (levels []) | max |rate|     504.1 at level 74 (sigma 0.996) | columns \u003e200/day 2715\n"}
+,{"stream_name":"stdout","time":331.366283188,"data":"   h_bl    nonfinite       0 (levels []) | max |rate|     290.4 at level 74 (sigma 0.996) | columns \u003e200/day 751\n"}
+,{"stream_name":"stdout","time":331.366288336,"data":"   h_deep  nonfinite       0 (levels []) | max |rate|     124.4 at level 74 (sigma 0.996) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":331.366295041,"data":"   h_shal  nonfinite       0 (levels []) | max |rate|     425.7 at level 26 (sigma 0.255) | columns \u003e200/day 3813\n"}
+,{"stream_name":"stdout","time":331.366297418,"data":"   h_lsc   nonfinite       0 (levels []) | max |rate|     372.1 at level 31 (sigma 0.333) | columns \u003e200/day 741\n"}
+,{"stream_name":"stdout","time":331.366301154,"data":"   h_evap  nonfinite       0 (levels []) | max |rate|      48.3 at level 74 (sigma 0.996) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":331.366303637,"data":"   rad     nonfinite       0 (levels []) | max |rate|     177.8 at level 74 (sigma 0.996) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":331.366305985,"data":"[step 1] nonfinite {'T': 0, 'q': 0, 'ps': 0, 'u': 0, 'v': 0} | T 183.0..310.6 q max 21.2 g/kg min -0.000 | ps 525..1038\n"}
+,{"stream_name":"stdout","time":331.366308311,"data":"   tot_T   nonfinite       0 (levels []) | max |rate|     387.6 at level 74 (sigma 0.996) | columns \u003e200/day 3088\n"}
+,{"stream_name":"stdout","time":331.366310753,"data":"   tot_q   nonfinite       0 (levels []) | max |rate|     538.8 at level 72 (sigma 0.982) | columns \u003e200/day 400\n"}
+,{"stream_name":"stdout","time":331.36631316,"data":"   h_bl    nonfinite       0 (levels []) | max |rate|     240.3 at level 74 (sigma 0.996) | columns \u003e200/day 95\n"}
+,{"stream_name":"stdout","time":331.366343484,"data":"   h_deep  nonfinite       0 (levels []) | max |rate|     131.5 at level 74 (sigma 0.996) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":331.366348147,"data":"   h_shal  nonfinite       0 (levels []) | max |rate|     427.4 at level 28 (sigma 0.283) | columns \u003e200/day 3942\n"}
+,{"stream_name":"stdout","time":331.366352475,"data":"   h_lsc   nonfinite       0 (levels []) | max |rate|     354.5 at level 26 (sigma 0.255) | columns \u003e200/day 702\n"}
+,{"stream_name":"stdout","time":331.366356439,"data":"   h_evap  nonfinite       0 (levels []) | max |rate|      54.3 at level 74 (sigma 0.996) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":331.366360345,"data":"   rad     nonfinite       0 (levels []) | max |rate|     165.2 at level 74 (sigma 0.996) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":331.366363811,"data":"[step 2] nonfinite {'T': 0, 'q': 0, 'ps': 0, 'u': 0, 'v': 0} | T 183.2..310.6 q max 22.7 g/kg min -5.936 | ps 525..1038\n"}
+,{"stream_name":"stdout","time":331.36636728,"data":"   tot_T   nonfinite       0 (levels []) | max |rate|     394.7 at level 74 (sigma 0.996) | columns \u003e200/day 1636\n"}
+,{"stream_name":"stdout","time":331.366373203,"data":"   tot_q   nonfinite       0 (levels []) | max |rate|    1245.4 at level 73 (sigma 0.989) | columns \u003e200/day 173\n"}
+,{"stream_name":"stdout","time":331.366376772,"data":"   h_bl    nonfinite       0 (levels []) | max |rate|     200.0 at level 74 (sigma 0.996) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":331.366380399,"data":"   h_deep  nonfinite       0 (levels []) | max |rate|     125.8 at level 74 (sigma 0.996) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":331.366385722,"data":"   h_shal  nonfinite       0 (levels []) | max |rate|     426.9 at level 28 (sigma 0.283) | columns \u003e200/day 3199\n"}
+,{"stream_name":"stdout","time":331.366392709,"data":"   h_lsc   nonfinite       0 (levels []) | max |rate|     366.8 at level 32 (sigma 0.350) | columns \u003e200/day 680\n"}
+,{"stream_name":"stdout","time":331.366395668,"data":"   h_evap  nonfinite       0 (levels []) | max |rate|      57.1 at level 73 (sigma 0.989) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":331.366398112,"data":"   rad     nonfinite       0 (levels []) | max |rate|     150.2 at level 74 (sigma 0.996) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":331.36640044,"data":"[step 3] nonfinite {'T': 0, 'q': 0, 'ps': 0, 'u': 0, 'v': 0} | T 183.6..310.3 q max 37.7 g/kg min -22.613 | ps 525..1038\n"}
+,{"stream_name":"stdout","time":331.366402745,"data":"   tot_T   nonfinite       0 (levels []) | max |rate|     388.2 at level 74 (sigma 0.996) | columns \u003e200/day 1011\n"}
+,{"stream_name":"stdout","time":331.366405057,"data":"   tot_q   nonfinite       0 (levels []) | max |rate|    1841.9 at level 74 (sigma 0.996) | columns \u003e200/day 75\n"}
+,{"stream_name":"stdout","time":331.366407389,"data":"   h_bl    nonfinite       0 (levels []) | max |rate|     263.2 at level 72 (sigma 0.982) | columns \u003e200/day 58\n"}
+,{"stream_name":"stdout","time":331.366409698,"data":"   h_deep  nonfinite       0 (levels []) | max |rate|     133.4 at level 74 (sigma 0.996) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":331.366412023,"data":"   h_shal  nonfinite       0 (levels []) | max |rate|     428.5 at level 28 (sigma 0.283) | columns \u003e200/day 2414\n"}
+,{"stream_name":"stdout","time":331.366414353,"data":"   h_lsc   nonfinite       0 (levels []) | max |rate|     354.0 at level 26 (sigma 0.255) | columns \u003e200/day 573\n"}
+,{"stream_name":"stdout","time":331.366416694,"data":"   h_evap  nonfinite       0 (levels []) | max |rate|      56.3 at level 73 (sigma 0.989) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":331.366422253,"data":"   rad     nonfinite       0 (levels []) | max |rate|     181.9 at level 74 (sigma 0.996) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":331.366437328,"data":"[step 4] nonfinite {'T': 0, 'q': 0, 'ps': 0, 'u': 0, 'v': 0} | T 184.1..309.9 q max 26.7 g/kg min -10.827 | ps 525..1038\n"}
+,{"stream_name":"stdout","time":331.366441582,"data":"   tot_T   nonfinite       0 (levels []) | max |rate|     812.0 at level 73 (sigma 0.989) | columns \u003e200/day 2652\n"}
+,{"stream_name":"stdout","time":331.366446,"data":"   tot_q   nonfinite       0 (levels []) | max |rate|    3245.5 at level 73 (sigma 0.989) | columns \u003e200/day 91\n"}
+,{"stream_name":"stdout","time":331.36645093,"data":"   h_bl    nonfinite       0 (levels []) | max |rate|     538.7 at level 72 (sigma 0.982) | columns \u003e200/day 1851\n"}
+,{"stream_name":"stdout","time":331.366455065,"data":"   h_deep  nonfinite       0 (levels []) | max |rate|     158.0 at level 74 (sigma 0.996) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":331.366458689,"data":"   h_shal  nonfinite       0 (levels []) | max |rate|     409.7 at level 28 (sigma 0.283) | columns \u003e200/day 1957\n"}
+,{"stream_name":"stdout","time":331.366462153,"data":"   h_lsc   nonfinite       0 (levels []) | max |rate|     772.2 at level 73 (sigma 0.989) | columns \u003e200/day 503\n"}
+,{"stream_name":"stdout","time":331.366466118,"data":"   h_evap  nonfinite       0 (levels []) | max |rate|      65.1 at level 73 (sigma 0.989) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":331.366469766,"data":"   rad     nonfinite       0 (levels []) | max |rate|     223.1 at level 74 (sigma 0.996) | columns \u003e200/day 1\n"}
+,{"stream_name":"stdout","time":331.366473344,"data":"[step 5] nonfinite {'T': 0, 'q': 0, 'ps': 0, 'u': 0, 'v': 0} | T 184.7..309.6 q max 32.4 g/kg min -17.185 | ps 525..1038\n"}
+,{"stream_name":"stdout","time":331.366476838,"data":"   tot_T   nonfinite       0 (levels []) | max |rate|     750.2 at level 72 (sigma 0.982) | columns \u003e200/day 4169\n"}
+,{"stream_name":"stdout","time":331.366480283,"data":"   tot_q   nonfinite       0 (levels []) | max |rate|    1451.9 at level 74 (sigma 0.996) | columns \u003e200/day 134\n"}
+,{"stream_name":"stdout","time":331.36648375,"data":"   h_bl    nonfinite       0 (levels []) | max |rate|     816.3 at level 73 (sigma 0.989) | columns \u003e200/day 3705\n"}
+,{"stream_name":"stdout","time":331.36648723,"data":"   h_deep  nonfinite       0 (levels []) | max |rate|     192.6 at level 72 (sigma 0.982) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":331.366490666,"data":"   h_shal  nonfinite       0 (levels []) | max |rate|     471.4 at level 73 (sigma 0.989) | columns \u003e200/day 1749\n"}
+,{"stream_name":"stdout","time":331.366494228,"data":"   h_lsc   nonfinite       0 (levels []) | max |rate|     378.1 at level 34 (sigma 0.386) | columns \u003e200/day 450\n"}
+,{"stream_name":"stdout","time":331.366497796,"data":"   h_evap  nonfinite       0 (levels []) | max |rate|      70.5 at level 73 (sigma 0.989) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":331.36650621,"data":"   rad     nonfinite       0 (levels []) | max |rate|     213.3 at level 74 (sigma 0.996) | columns \u003e200/day 3\n"}
+,{"stream_name":"stdout","time":331.366509163,"data":"[step 6] nonfinite {'T': 0, 'q': 0, 'ps': 0, 'u': 0, 'v': 0} | T 185.5..309.5 q max 24.2 g/kg min -7.488 | ps 524..1038\n"}
+,{"stream_name":"stdout","time":331.366511483,"data":"   tot_T   nonfinite       0 (levels []) | max |rate|    1005.6 at level 72 (sigma 0.982) | columns \u003e200/day 4667\n"}
+,{"stream_name":"stdout","time":331.366513845,"data":"   tot_q   nonfinite       0 (levels []) | max |rate|    1299.9 at level 73 (sigma 0.989) | columns \u003e200/day 128\n"}
+,{"stream_name":"stdout","time":331.366519693,"data":"   h_bl    nonfinite       0 (levels []) | max |rate|    1083.4 at level 72 (sigma 0.982) | columns \u003e200/day 4312\n"}
+,{"stream_name":"stdout","time":331.366534661,"data":"   h_deep  nonfinite       0 (levels []) | max |rate|     267.0 at level 72 (sigma 0.982) | columns \u003e200/day 221\n"}
+,{"stream_name":"stdout","time":331.366538759,"data":"   h_shal  nonfinite       0 (levels []) | max |rate|     395.7 at level 27 (sigma 0.269) | columns \u003e200/day 1754\n"}
+,{"stream_name":"stdout","time":331.366542901,"data":"   h_lsc   nonfinite       0 (levels []) | max |rate|     380.7 at level 72 (sigma 0.982) | columns \u003e200/day 433\n"}
+,{"stream_name":"stdout","time":331.366547545,"data":"   h_evap  nonfinite       0 (levels []) | max |rate|      59.8 at level 73 (sigma 0.989) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":331.366551612,"data":"   rad     nonfinite       0 (levels []) | max |rate|     218.9 at level 74 (sigma 0.996) | columns \u003e200/day 4\n"}
+,{"stream_name":"stdout","time":331.366555132,"data":"[step 7] nonfinite {'T': 0, 'q': 0, 'ps': 0, 'u': 0, 'v': 0} | T 186.4..309.4 q max 35.5 g/kg min -15.589 | ps 524..1038\n"}
+,{"stream_name":"stdout","time":331.366558662,"data":"   tot_T   nonfinite       0 (levels []) | max |rate|    4795.7 at level 73 (sigma 0.989) | columns \u003e200/day 4927\n"}
+,{"stream_name":"stdout","time":331.366562143,"data":"   tot_q   nonfinite       0 (levels []) | max |rate|    1366.5 at level 74 (sigma 0.996) | columns \u003e200/day 333\n"}
+,{"stream_name":"stdout","time":331.366565605,"data":"   h_bl    nonfinite       0 (levels []) | max |rate|    5238.8 at level 72 (sigma 0.982) | columns \u003e200/day 4724\n"}
+,{"stream_name":"stdout","time":331.36656906,"data":"   h_deep  nonfinite       0 (levels []) | max |rate|    1836.5 at level 72 (sigma 0.982) | columns \u003e200/day 203\n"}
+,{"stream_name":"stdout","time":331.36657253,"data":"   h_shal  nonfinite       0 (levels []) | max |rate|     482.1 at level 73 (sigma 0.989) | columns \u003e200/day 1376\n"}
+,{"stream_name":"stdout","time":331.366575962,"data":"   h_lsc   nonfinite       0 (levels []) | max |rate|     378.9 at level 35 (sigma 0.403) | columns \u003e200/day 431\n"}
+,{"stream_name":"stdout","time":331.36657963,"data":"   h_evap  nonfinite       0 (levels []) | max |rate|      65.6 at level 73 (sigma 0.989) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":331.366583093,"data":"   rad     nonfinite       0 (levels []) | max |rate|     218.8 at level 74 (sigma 0.996) | columns \u003e200/day 7\n"}
+,{"stream_name":"stdout","time":331.366586642,"data":"[step 8] nonfinite {'T': 0, 'q': 0, 'ps': 0, 'u': 0, 'v': 0} | T 151.8..324.1 q max 29.0 g/kg min -16.278 | ps 524..1038\n"}
+,{"stream_name":"stdout","time":331.366590105,"data":"   tot_T   nonfinite       0 (levels []) | max |rate|   13142.2 at level 73 (sigma 0.989) | columns \u003e200/day 5182\n"}
+,{"stream_name":"stdout","time":331.366593585,"data":"   tot_q   nonfinite       0 (levels []) | max |rate|    4734.1 at level 74 (sigma 0.996) | columns \u003e200/day 563\n"}
+,{"stream_name":"stdout","time":331.366597041,"data":"   h_bl    nonfinite       0 (levels []) | max |rate|   14224.6 at level 72 (sigma 0.982) | columns \u003e200/day 5375\n"}
+,{"stream_name":"stdout","time":331.366600513,"data":"   h_deep  nonfinite       0 (levels []) | max |rate|    4052.0 at level 72 (sigma 0.982) | columns \u003e200/day 307\n"}
+,{"stream_name":"stdout","time":331.366604055,"data":"   h_shal  nonfinite       0 (levels []) | max |rate|     398.4 at level 28 (sigma 0.283) | columns \u003e200/day 1292\n"}
+,{"stream_name":"stdout","time":331.366613077,"data":"   h_lsc   nonfinite       0 (levels []) | max |rate|     887.7 at level 73 (sigma 0.989) | columns \u003e200/day 448\n"}
+,{"stream_name":"stdout","time":331.366631279,"data":"   h_evap  nonfinite       0 (levels []) | max |rate|      61.0 at level 72 (sigma 0.982) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":331.366636083,"data":"   rad     nonfinite       0 (levels []) | max |rate|     263.3 at level 71 (sigma 0.975) | columns \u003e200/day 22\n"}
+,{"stream_name":"stdout","time":331.366640353,"data":"[step 9] nonfinite {'T': 9830400, 'q': 832, 'ps': 131072, 'u': 9830400, 'v': 9830400} | T nan..nan q max 39.3 g/kg min -28.506 | ps nan..nan\n"}
+,{"stream_name":"stdout","time":331.52269106,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":331.522716841,"data":"+ rm -rf repo libm_wx2020_fields.npz\n"}
+,{"stream_name":"stdout","time":331.721270017,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":331.721296147,"data":"total s 331\n"}
+,{"stream_name":"stderr","time":333.785675974,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":333.785701679,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":334.049676331,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":334.049704905,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":334.834516832,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":335.85649983,"data":"[NbConvertApp] Writing 282053 bytes to __results__.html\n"}
 ]
