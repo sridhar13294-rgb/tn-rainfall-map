@@ -33,8 +33,9 @@ def check(tag, s, c):
         print(f'   {n:7s} nonfinite {int(nf.sum()):7d} (levels {lev_nf}) | max |rate| {a.max():9.1f} at level {kmax[0]} (sigma {sig[kmax[0]]:.3f}) | columns >200/day {int((a.max(0) > 200).sum())}', flush=True)
     return True
 print('settings', VS, 'layers', NL, 'levels', len(sig), 'dt_s', M.dt_s, 'lowest sigmas', sig[-4:].round(4).tolist(), flush=True)
+M.build(t0)                                              # sets doy0/utc0 (needed by the column call)
 ok = check('init', st, cr)
-M.build(t0); st = M.dfi(st); ok = check('after DFI', st, cr) and ok
+st = M.dfi(st); ok = check('after DFI', st, cr) and ok
 for n in range(1, NSTEP + 1):
     if not ok: break
     st, cr = mm2.integrate(M, st, cr, M.dt_s / 3600.0)
