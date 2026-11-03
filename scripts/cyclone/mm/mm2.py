@@ -136,6 +136,8 @@ class Model:
         return P
     def with_params(self, carry, set_):
         """same start, different member settings: no recompiling."""
+        lost = [k for k in (set_ or {}) if k not in DYN and k != 'sppt_seed']
+        if lost: print('WARNING with_params: compile-time settings ignored here (pass them to Model()):', lost, flush=True)
         c = dict(carry); c['prm'] = self.params(set_); return c
     # ------------------------------------------------------------------------------------------------ start state
     def to_nodes(self, a, lats, lons):

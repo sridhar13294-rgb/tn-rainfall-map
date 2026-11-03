@@ -33,7 +33,7 @@ for i, s in enumerate(storms):
     started = set()
     for vn, vs in VAR.items():
         try:
-            tm = time.time(); stat = {kk: vs[kk] for kk in STATIC if kk in vs}; dyn = {kk: v for kk, v in vs.items() if kk not in STATIC}
+            tm = time.time(); stat = {kk: v for kk, v in vs.items() if kk in STATIC or kk not in mm2.DYN}; dyn = {kk: v for kk, v in vs.items() if kk not in stat}   # every non-DYN setting must reach the Model (else silently ignored)
             key_s = json.dumps(stat, sort_keys=True)
             if key_s not in MODELS: MODELS[key_s] = [mm2.Model(C.get('grid', 'T85'), C.get('layers', 32), None, dict(sppt_on=False, **stat)), None, None]   # compiled once per job
             if key_s not in started:                                                               # this storm's start state for this scheme
