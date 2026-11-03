@@ -1,6 +1,6 @@
-tn-lwc-tnr
+tn-ckz-tnr
 libm_wx2020_fields.npz,wx_truth_2020.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore tn_rain_diag.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz /kaggle/working/tnr_lwc.json 2020-05-20,2020-06-09,2020-07-19,2020-08-08,2020-10-27,2020-12-06 '{"lwc":{"rad_prm":{"lw_cnt":0.6667},"grid":"T170"}}' > /kaggle/working/tnr.log 2>&1; tail -12 /kaggle/working/tnr.log
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore tn_rain_diag.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz /kaggle/working/tnr_ckz.json 2020-05-20,2020-06-09,2020-07-19,2020-08-08,2020-10-27,2020-12-06 '{"ckz":{"ck_z":1.0,"grid":"T170"}}' > /kaggle/working/tnr.log 2>&1; tail -12 /kaggle/working/tnr.log
 NvidiaTeslaT4
-9
-#r9 2026-11-03T06:43Z
+10
+#r10 2026-11-03T06:43Z
