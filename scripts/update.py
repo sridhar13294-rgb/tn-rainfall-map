@@ -228,6 +228,18 @@ def main():
     except Exception as e:
         status['tnsmart'] = f'FAILED: {e}'
         print('TN SMART step failed:', e, file=sys.stderr)
+        # TN SMART's station page needs a login since 31 Oct 2026 -> the TN-ALERT app's public page (same gauges and
+        # readings, checked 16/28/30 Oct): today and the two previous days again (late or corrected readings)
+        try:
+            import tnalert
+            today = dt.datetime.now(IST).date()
+            days = [(today - dt.timedelta(days=k)).isoformat() for k in (2, 1, 0)]
+            tnalert.main(days)
+            log = load(P('data/tnalert/log.json'), {})
+            status['tnalert'] = {d: log.get(d, {}).get('status') for d in days}
+        except Exception as e2:
+            status['tnalert'] = f'FAILED: {e2}'
+            print('TN-ALERT step failed:', e2, file=sys.stderr)
 
     # 3. every saved day of the year, per gauge
     files = sorted(f[:10] for f in os.listdir(P('data/daily')) if f.endswith('.json'))
