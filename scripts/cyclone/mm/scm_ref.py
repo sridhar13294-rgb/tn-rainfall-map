@@ -15,18 +15,25 @@ ok = sh(f'cd /tmp && curl -Ls https://micro.mamba.pm/api/micromamba/linux-64/lat
         'python=3.11 gfortran_linux-64 gcc_linux-64 gxx_linux-64 cmake make netcdf-fortran netcdf4 f90nml numpy openmpi', 'env')
 if ok: ok = sh('git clone -q --recursive -b v7.0.0 https://github.com/NCAR/ccpp-scm', 'clone', cwd=W)
 SRC = W + '/ccpp-scm'
-envp = f'export PATH={ENV}/bin:$PATH CC={ENV}/bin/x86_64-conda-linux-gnu-gcc FC={ENV}/bin/x86_64-conda-linux-gnu-gfortran CXX={ENV}/bin/x86_64-conda-linux-gnu-g++ NETCDF={ENV} NETCDF_ROOT={ENV}; '
-if ok: ok = sh(envp + 'mkdir -p scm/bin && cd scm/bin && cmake -DCCPP_SUITES=SCM_GFS_v16 ../src > cm.log 2>&1; tail -30 cm.log; make -j4 > mk.log 2>&1; tail -40 mk.log', 'build', cwd=SRC)
-if ok: sh(envp + 'cd scm/bin && ls; ./run_scm.py --help | head -30', 'runner help', cwd=SRC)
+envp = (f'export PATH={ENV}/bin:$PATH CC={ENV}/bin/x86_64-conda-linux-gnu-gcc FC={ENV}/bin/x86_64-conda-linux-gnu-gfortran CXX={ENV}/bin/x86_64-conda-linux-gnu-g++ '
+        f'NETCDF={ENV} NETCDF_ROOT={ENV} CMAKE_PREFIX_PATH={ENV} LD_LIBRARY_PATH={ENV}/lib; ')
+# NCEP libraries the SCM needs (bacio, sp, w3emc): not on conda-forge -> build from the NOAA-EMC sources into the env
+for lib, tag in (('bacio', 'v2.4.1'), ('sp', 'v2.5.0'), ('w3emc', 'v2.11.0')):
+    if ok: ok = sh(envp + f'git clone -q -b {tag} https://github.com/NOAA-EMC/NCEPLIBS-{lib} && mkdir -p NCEPLIBS-{lib}/b && cd NCEPLIBS-{lib}/b && '
+                   f'cmake -DCMAKE_INSTALL_PREFIX={ENV} -DBUILD_TESTING=OFF -DOPENMP=OFF .. > c.log 2>&1; tail -5 c.log; make -j4 install > m.log 2>&1; rc=$?; tail -8 m.log; exit $rc', 'lib ' + lib, cwd=W)
+# static physics data and processed case inputs (v7 scripts)
+if ok: sh('./contrib/get_all_static_data.sh > gs.log 2>&1; tail -5 gs.log; ./contrib/get_thompson_tables.sh > gt.log 2>&1; tail -3 gt.log', 'static data', cwd=SRC)
+if ok: ok = sh(envp + 'mkdir -p scm/bin && cd scm/bin && cmake -DCCPP_SUITES=SCM_GFS_v16 ../src > cm.log 2>&1; tail -30 cm.log; make -j4 > mk.log 2>&1; rc=$?; tail -40 mk.log; ls; exit $rc', 'build', cwd=SRC)
+if ok: sh(envp + 'cd scm/bin && ls; python run_scm.py --help | head -30', 'runner help', cwd=SRC)
 for case in ('bomex', 'twpice'):
-    if ok: sh(envp + f'cd scm/bin && ./run_scm.py -c {case} -s SCM_GFS_v16 > run_{case}.log 2>&1; tail -25 run_{case}.log; ls -R output_* | head -20', f'run {case}', cwd=SRC)
+    if ok: sh(envp + f'cd scm/bin && python run_scm.py -c {case} -s SCM_GFS_v16 > run_{case}.log 2>&1; tail -25 run_{case}.log; ls -R output_* | head -20', f'run {case}', cwd=SRC)
 # summarise every tendency-like variable
 try:
-    import importlib; sys.path.insert(0, ENV + '/lib/python3.11/site-packages')
+    subprocess.run('pip install -q netCDF4', shell=True)
     from netCDF4 import Dataset
     import numpy as np
     log['cases'] = {}
-    for f in glob.glob(SRC + '/scm/run/output_*/output.nc') + glob.glob(SRC + '/scm/bin/output_*/output.nc'):
+    for f in sorted(set(glob.glob(SRC + '/scm/**/output_*/output.nc', recursive=True))):
         d = Dataset(f); case = f.split('output_')[1].split('/')[0]; e = dict(vars={}, file=f)
         for n, v in d.variables.items():
             e['vars'][n] = dict(dims=list(v.dimensions), units=getattr(v, 'units', ''), desc=getattr(v, 'description', getattr(v, 'long_name', '')))
