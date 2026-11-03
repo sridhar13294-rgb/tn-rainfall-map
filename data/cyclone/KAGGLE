@@ -1,6 +1,6 @@
-tn-tr75-0609
+tn-maps-p2
 libm_wx2020_fields.npz
-cd . && TRACE_START=2020-06-09T00 python -W ignore trace75.py /kaggle/working/libm_wx2020_fields.npz '{"layers":"tp75","grid":"T170","pbl_tm":1.0,"sh_mflux":0.03}' 240 /kaggle/working/trace.json 2>&1 | tail -60
+cd . && XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore maps_run.py /kaggle/working/libm_wx2020_fields.npz 2020-11-21T00 /kaggle/working/maps_p2_tp75f2.npz 240 '{"grid":"T170","layers":"tp75","pbl_tm":1.0,"sh_mflux":0.03}' > /kaggle/working/maps.log 2>&1; tail -5 /kaggle/working/maps.log
 NvidiaTeslaT4
-2
-#t0609 2026-11-03T11:54Z
+3
+#m3 2026-11-03T11:57Z
