@@ -1,23 +1,25 @@
-name: TN-ALERT app probe (find its public rainfall data source)
-# Downloads the public TN-ALERT Android app (package int_.rimes.tnsmart) from Aptoide's public API and lists the web
-# addresses inside it, so the rainfall updater can read the same public station data the app shows.
+name: TN-ALERT rainfall fetch (branch tnalert)
+# Fetches daily station rainfall from the TN-ALERT app's public 'Observed Rainfall' page for the dates in
+# data/tnalert/dates.txt and saves them as data/daily/<date>.json on this branch (nothing goes to the website from here).
 on:
   push:
     branches: [tnalert]
-    paths: ['.github/workflows/tnalert-probe.yml', 'scripts/tnalert_probe.sh']
+    paths: ['.github/workflows/tnalert-probe.yml', 'scripts/tnalert.py', 'data/tnalert/dates.txt']
   workflow_dispatch:
 permissions:
   contents: write
 jobs:
-  probe:
+  fetch:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with: {ref: tnalert}
-      - run: bash scripts/tnalert_probe.sh data/tnalert
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python scripts/tnalert.py $(cat data/tnalert/dates.txt)
       - if: always()
         run: |
-          git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
-          git add data/tnalert; git commit -m "TN-ALERT probe results" || exit 0
+          git config user.name "rainfall-bot"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/daily data/tnalert/log.json; git commit -m "TN-ALERT rainfall fetch $(TZ=Asia/Kolkata date '+%Y-%m-%d %H:%M IST')" || exit 0
           for i in 1 2 3; do git pull --rebase origin tnalert && git push origin HEAD:tnalert && break; sleep 5; done
