@@ -504,3 +504,10 @@ After the 02:00 IST update no further cycles are scheduled (Sridhar 01:28). Dail
   Schedule: 4 Nov P3 storm-budget diagnosis (storm_budget.py, control, 6 storms vs ERA5) + P4 offline derivation; 5-6 Nov P4/P3 candidates registered + quick tests; 7-8 Nov fixes and interaction tests; 9-11 Nov full regression (exam, genesis, lib84, TN rain); 12 Nov Stage 1 decision. Gates are not relaxed for the date.
 - 3 Nov 17:22 IST (Sridhar): P3 target = ERA5 at the model's resolution (ERA5 0.5 deg smoothed to ~1.5 deg: 850 hPa max wind and central-pressure fall within 300 km of the storm), per storm, at 24/48/72 h. Observed best-track winds are reported alongside but are not the Stage 1 gate (unreachable at 80 km - ERA5 itself reaches ~2/3 of best track).
 - 3 Nov 20:25 IST: rainfall website (main) now updates from the TN-ALERT app's public Observed Rainfall page when TN SMART fails (scripts/tnalert.py, fallback in scripts/update.py; daily.yml 09:45 + 18:00 IST, today + 2 previous days). Tested: run 20:25 saved 1-3 Nov. 31 Oct from the official daily report.
+
+## 4 Nov 01:00 IST (silent cycle)
+- P3: numerics (diffusion, DFI) excluded; early pmin 'filling' is mostly the pressure tide; radial budget: low-level spin-down (-24..-36 % in 12 h) with ample core heating -> momentum sink = convective momentum transport (tau_cmt 6 h), as found 29-30 Oct. cmt_mf's earlier track failure is confounded by the steering bias (-3 m/s easterly at 850 over S India, Oct-Dec). Order: find/fix the steering bias (pressure gradient: central India +1.9 hPa, TN -0.7 hPa), then re-test cmt_mf.
+- Shallow mass-flux plume (shmf) rejected (850 -2.0 K, TN rain 1.91, genesis 12 %).
+- P2: 9 Jun hot spot = Andes (25.6 S, 69.6 W), BL heating 1700 K/day in ~20 columns; tn-tr75-0609c records its surface values.
+- SCM GFS v16: BOMEX + TWP-ICE outputs ready -> write scm_megam.py next (P1 BL/cloud-layer comparison).
+- Running: tn-evo-f2l (2), tn-evo-ctll (3), tn-tr75-0609c (7). Free: 1, 4-6, 8-14.

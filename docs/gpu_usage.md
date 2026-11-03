@@ -1,6 +1,14 @@
 # Kaggle GPU account usage (weekly quota 30 h per account; all accounts assumed reset 2 Nov)
 Updated each cycle. Times IST.
 
+## 4 Nov 01:00 cycle
+| Acct | Job | Purpose | State |
+|---|---|---|---|
+| 2 | tn-evo-f2l | P1: F2 BL top vs LCL (mixing-depth derivation) | running |
+| 3 | tn-evo-ctll | P1: control BL top vs LCL | running |
+| 7 | tn-tr75-0609c | P2: hot-spot surface values (Andes) | running |
+| 1, 4-6, 8-14 | - | all earlier jobs scored; free | free |
+
 ## 3 Nov 21:15 (track error + common-cause test)
 | Acct | Job | Purpose | State |
 |---|---|---|---|
