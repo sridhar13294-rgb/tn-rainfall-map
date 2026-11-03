@@ -443,7 +443,10 @@ class Model:
         wsh = jnp.maximum(ws * hbl, 1e-3)
         g_th = 6.5 * (H / (rho * CP)) * (ps / p1) ** KAP / wsh; g_q = 6.5 * (E / rho) / wsh
         def cg(gam):
-            F = jnp.where(inbl, rhoh * Kh * gam[None], 0.0)                                          # kg m-2 s-1 x unit, upward, at interfaces
+            # Troen-Mahrt: flux = K_profile * gamma = rho kappa z (1 - z/h)^2 * 6.5 w'x'_0 / h  (ws cancels) <= 0.39 rho w'x'_0.
+            # It must use the profile K (Kbl), NOT Kh = max(Kbl, Kfree) clipped at 500: with Kfree or the clip, ws no longer
+            # cancels and the explicit flux becomes K/ws-times the surface flux (3 Nov: 75-level blow-up starts here)
+            F = jnp.where(inbl, rhoh * jnp.clip(Kbl, 0.0, 500.0) * gam[None], 0.0)                  # kg m-2 s-1 x unit, upward, at interfaces
             z0_ = jnp.zeros_like(F[:1]); return (jnp.concatenate([F, z0_], 0) - jnp.concatenate([z0_, F], 0)) / mass
         dth = dth + cg(g_th); dq = dq + cg(g_q)
         dT = dth * (p / ps) ** KAP
