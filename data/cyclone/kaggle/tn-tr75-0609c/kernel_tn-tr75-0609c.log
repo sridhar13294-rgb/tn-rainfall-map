@@ -1,0 +1,159 @@
+[{"stream_name":"stdout","time":1.077505502,"data":"+ nvidia-smi || true\n"}
+,{"stream_name":"stdout","time":1.108986389,"data":"Tue Nov  3 19:40:26 2026       \n"}
+,{"stream_name":"stdout","time":1.109010436,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.109015603,"data":"| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":1.109019467,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.109023511,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":1.109027207,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":1.109036398,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":1.109039281,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":1.168644222,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":1.168667884,"data":"| N/A   38C    P8              9W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":1.168672704,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":1.168676655,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.168680421,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":1.168684146,"data":"| N/A   36C    P8              9W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":1.168687775,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":1.168697822,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.169204774,"data":"\n"}
+,{"stream_name":"stdout","time":1.169215902,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.169219975,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":1.16922367,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":1.169227864,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":1.169232005,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":1.170784767,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":1.170801636,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.492711672,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1.495414354,"data":"accelerator asked NvidiaTeslaT4 -\u003e jax for cuda12\n"}
+,{"stream_name":"stdout","time":1.4954348579999999,"data":"+ pip install -q -U \"jax[cuda12]\"\n"}
+,{"stream_name":"stderr","time":71.308826806,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":71.308854361,"data":"bigframes 2.51.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":71.308860221,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stderr","time":71.308865236,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":71.308870137,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":71.308874807,"data":"ydf 0.15.0 requires protobuf\u003c7.0.0,\u003e=5.29.1, but you have protobuf 7.36.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":71.308879057,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stderr","time":71.308883152,"data":"gradio 6.30.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
+,{"stream_name":"stdout","time":71.576581961,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":71.576618512,"data":"+ free -g; nproc; python -c \"import jax; print(jax.devices())\" || true\n"}
+,{"stream_name":"stdout","time":71.604150841,"data":"               total        used        free      shared  buff/cache   available\n"}
+,{"stream_name":"stdout","time":71.604184198,"data":"Mem:              31           1          22           0           8          30\n"}
+,{"stream_name":"stdout","time":71.604188808,"data":"Swap:              0           0           0\n"}
+,{"stream_name":"stdout","time":71.607939764,"data":"4\n"}
+,{"stream_name":"stderr","time":71.847691514,"data":"/usr/local/lib/python3.13/dist-packages/jaxlib/plugin_support.py:99: RuntimeWarning: JAX plugin jax_cuda13_plugin version 0.11.1 is installed, but it is not compatible with the installed jaxlib version 0.12.0.1, so it will not be used.\n"}
+,{"stream_name":"stderr","time":71.847731015,"data":"  warnings.warn(\n"}
+,{"stream_name":"stderr","time":85.579552362,"data":"Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda13.initialize()\n"}
+,{"stream_name":"stderr","time":85.579586338,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stderr","time":85.579592083,"data":"  File \"/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py\", line 520, in discover_pjrt_plugins\n"}
+,{"stream_name":"stderr","time":85.579596822,"data":"    plugin_module.initialize()\n"}
+,{"stream_name":"stderr","time":85.579601556,"data":"    ~~~~~~~~~~~~~~~~~~~~~~~~^^\n"}
+,{"stream_name":"stderr","time":85.579623619,"data":"  File \"/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda13/__init__.py\", line 384, in initialize\n"}
+,{"stream_name":"stderr","time":85.579628713,"data":"    xla_client.register_custom_call_handler(\n"}
+,{"stream_name":"stderr","time":85.579633109,"data":"    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^\n"}
+,{"stream_name":"stderr","time":85.579637771,"data":"        \"CUDA\",\n"}
+,{"stream_name":"stderr","time":85.579642477,"data":"        ^^^^^^^\n"}
+,{"stream_name":"stderr","time":85.579647516,"data":"    ...\u003c2 lines\u003e...\n"}
+,{"stream_name":"stderr","time":85.579652438,"data":"        ),\n"}
+,{"stream_name":"stderr","time":85.579657206,"data":"        ^^\n"}
+,{"stream_name":"stderr","time":85.579662398,"data":"    )\n"}
+,{"stream_name":"stderr","time":85.57968915,"data":"    ^\n"}
+,{"stream_name":"stderr","time":85.579694031,"data":"  File \"/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py\", line 459, in register_custom_call_handler\n"}
+,{"stream_name":"stderr","time":85.579698983,"data":"    handler(name, fn, xla_platform_name, api_version, traits)\n"}
+,{"stream_name":"stderr","time":85.579703574,"data":"    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":85.579707616,"data":"RuntimeError: INVALID_ARGUMENT: XLA FFI handler registration for cudnn_rnn_ffi on platform CUDA (canonical cuda) failed because the handler's API version (0.5) is incompatible with the framework's API version (0.4). Minimum supported API version is (0.1).\n"}
+,{"stream_name":"stderr","time":85.602039864,"data":"Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda12.initialize()\n"}
+,{"stream_name":"stderr","time":85.602065249,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stderr","time":85.602069641,"data":"  File \"/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py\", line 520, in discover_pjrt_plugins\n"}
+,{"stream_name":"stderr","time":85.602101566,"data":"    plugin_module.initialize()\n"}
+,{"stream_name":"stderr","time":85.602105605,"data":"    ~~~~~~~~~~~~~~~~~~~~~~~~^^\n"}
+,{"stream_name":"stderr","time":85.60210867,"data":"  File \"/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda12/__init__.py\", line 372, in initialize\n"}
+,{"stream_name":"stderr","time":85.602112424,"data":"    c_api = xb.register_plugin(\n"}
+,{"stream_name":"stderr","time":85.602115907,"data":"        'cuda', priority=500, library_path=str(path), options=options\n"}
+,{"stream_name":"stderr","time":85.602120123,"data":"    )\n"}
+,{"stream_name":"stderr","time":85.602123468,"data":"  File \"/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py\", line 662, in register_plugin\n"}
+,{"stream_name":"stderr","time":85.602126982,"data":"    c_api = xla_client.load_pjrt_plugin_dynamically(plugin_name, library_path)\n"}
+,{"stream_name":"stderr","time":85.602130277,"data":"  File \"/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py\", line 115, in load_pjrt_plugin_dynamically\n"}
+,{"stream_name":"stderr","time":85.602134167,"data":"    return _xla.load_pjrt_plugin(plugin_name, library_path, c_api=None)\n"}
+,{"stream_name":"stderr","time":85.602137674,"data":"           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":85.602141617,"data":"jax.errors.JaxRuntimeError: ALREADY_EXISTS: PJRT_Api already exists for device type cuda\n"}
+,{"stream_name":"stdout","time":86.031435493,"data":"[CudaDevice(id=0), CudaDevice(id=1)]\n"}
+,{"stream_name":"stdout","time":90.956257661,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":90.956290662,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
+,{"stream_name":"stdout","time":145.884675074,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":145.884749556,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
+,{"stream_name":"stdout","time":177.761611025,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":177.761651703,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o libm_wx2020_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020_fields.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" libm_wx2020_fields.npz || { echo BAD_DOWNLOAD libm_wx2020_fields.npz; rm -f libm_wx2020_fields.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o libm_wx2020_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020_fields.npz; }\n"}
+,{"stream_name":"stdout","time":201.383988068,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":201.384033239,"data":"setup s 200\n"}
+,{"stream_name":"stdout","time":201.384037013,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 cd . \u0026\u0026 TRACE_START=2020-06-09T00 python -W ignore trace75.py /kaggle/working/libm_wx2020_fields.npz '{\"layers\":\"tp75\",\"grid\":\"T170\",\"pbl_tm\":1.0,\"sh_mflux\":0.03}' 80 /kaggle/working/trace.json 2\u003e\u00261 | tail -60 2\u003e\u00261 | tee job.log\n"}
+,{"stream_name":"stdout","time":1066.091431644,"data":"   h_bl    nonfinite       0 (levels []) | max |rate|     760.5 at level 74 (sigma 0.996) | columns \u003e200/day 17\n"}
+,{"stream_name":"stdout","time":1066.091471769,"data":"   h_deep  nonfinite       0 (levels []) | max |rate|     215.8 at level 74 (sigma 0.996) | columns \u003e200/day 2\n"}
+,{"stream_name":"stdout","time":1066.091478622,"data":"   h_shal  nonfinite       0 (levels []) | max |rate|      28.3 at level 74 (sigma 0.996) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":1066.091484212,"data":"   h_lsc   nonfinite       0 (levels []) | max |rate|     192.9 at level 50 (sigma 0.670) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":1066.091489502,"data":"   h_evap  nonfinite       0 (levels []) | max |rate|      39.7 at level 53 (sigma 0.724) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":1066.091494817,"data":"   rad     nonfinite       0 (levels []) | max |rate|     193.6 at level 74 (sigma 0.996) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":1066.091500368,"data":"[step 75] nonfinite {'T': 0, 'q': 0, 'ps': 0, 'u': 0, 'v': 0} | T 186.8..307.1 q max 28.5 g/kg min -1.110 | ps 534..1036\n"}
+,{"stream_name":"stdout","time":1066.091505735,"data":"   tot_T   nonfinite       0 (levels []) | max |rate|    1222.7 at level 66 (sigma 0.931) | columns \u003e200/day 19\n"}
+,{"stream_name":"stdout","time":1066.091510813,"data":"   tot_q   nonfinite       0 (levels []) | max |rate|     649.8 at level 66 (sigma 0.931) | columns \u003e200/day 1\n"}
+,{"stream_name":"stdout","time":1066.091515927,"data":"   h_bl    nonfinite       0 (levels []) | max |rate|    1241.5 at level 66 (sigma 0.931) | columns \u003e200/day 19\n"}
+,{"stream_name":"stdout","time":1066.091521079,"data":"   h_deep  nonfinite       0 (levels []) | max |rate|     212.7 at level 74 (sigma 0.996) | columns \u003e200/day 2\n"}
+,{"stream_name":"stdout","time":1066.091526308,"data":"   h_shal  nonfinite       0 (levels []) | max |rate|      35.5 at level 65 (sigma 0.920) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":1066.091531146,"data":"   h_lsc   nonfinite       0 (levels []) | max |rate|     259.7 at level 74 (sigma 0.996) | columns \u003e200/day 1\n"}
+,{"stream_name":"stdout","time":1066.091536176,"data":"   h_evap  nonfinite       0 (levels []) | max |rate|      36.4 at level 53 (sigma 0.724) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":1066.091541125,"data":"   rad     nonfinite       0 (levels []) | max |rate|     188.0 at level 74 (sigma 0.996) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":1066.091546054,"data":"[step 76] nonfinite {'T': 0, 'q': 0, 'ps': 0, 'u': 0, 'v': 0} | T 187.0..306.8 q max 28.6 g/kg min -0.680 | ps 534..1037\n"}
+,{"stream_name":"stdout","time":1066.091551461,"data":"   tot_T   nonfinite       0 (levels []) | max |rate|    2892.1 at level 71 (sigma 0.975) | columns \u003e200/day 20\n"}
+,{"stream_name":"stdout","time":1066.091556945,"data":"   tot_q   nonfinite       0 (levels []) | max |rate|     741.5 at level 70 (sigma 0.967) | columns \u003e200/day 4\n"}
+,{"stream_name":"stdout","time":1066.091571968,"data":"   h_bl    nonfinite       0 (levels []) | max |rate|    2950.2 at level 70 (sigma 0.967) | columns \u003e200/day 20\n"}
+,{"stream_name":"stdout","time":1066.09157632,"data":"   h_deep  nonfinite       0 (levels []) | max |rate|     345.5 at level 69 (sigma 0.959) | columns \u003e200/day 3\n"}
+,{"stream_name":"stdout","time":1066.091580428,"data":"   h_shal  nonfinite       0 (levels []) | max |rate|      27.2 at level 74 (sigma 0.996) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":1066.091584559,"data":"   h_lsc   nonfinite       0 (levels []) | max |rate|    1080.3 at level 74 (sigma 0.996) | columns \u003e200/day 1\n"}
+,{"stream_name":"stdout","time":1066.091589175,"data":"   h_evap  nonfinite       0 (levels []) | max |rate|      32.1 at level 56 (sigma 0.777) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":1066.091592592,"data":"   rad     nonfinite       0 (levels []) | max |rate|     188.7 at level 74 (sigma 0.996) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":1066.091596828,"data":"[step 77] nonfinite {'T': 0, 'q': 0, 'ps': 0, 'u': 0, 'v': 0} | T 187.1..306.6 q max 28.7 g/kg min -0.891 | ps 534..1037\n"}
+,{"stream_name":"stdout","time":1066.091601054,"data":"   tot_T   nonfinite       0 (levels []) | max |rate|    1961.2 at level 70 (sigma 0.967) | columns \u003e200/day 24\n"}
+,{"stream_name":"stdout","time":1066.091605058,"data":"   tot_q   nonfinite       0 (levels []) | max |rate|    1968.9 at level 71 (sigma 0.975) | columns \u003e200/day 5\n"}
+,{"stream_name":"stdout","time":1066.091608542,"data":"   h_bl    nonfinite       0 (levels []) | max |rate|    2198.1 at level 71 (sigma 0.975) | columns \u003e200/day 21\n"}
+,{"stream_name":"stdout","time":1066.091612526,"data":"   h_deep  nonfinite       0 (levels []) | max |rate|     245.9 at level 71 (sigma 0.975) | columns \u003e200/day 3\n"}
+,{"stream_name":"stdout","time":1066.091618011,"data":"   h_shal  nonfinite       0 (levels []) | max |rate|      29.2 at level 74 (sigma 0.996) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":1066.091630275,"data":"   h_lsc   nonfinite       0 (levels []) | max |rate|     467.6 at level 74 (sigma 0.996) | columns \u003e200/day 2\n"}
+,{"stream_name":"stdout","time":1066.0916335,"data":"   h_evap  nonfinite       0 (levels []) | max |rate|      32.5 at level 56 (sigma 0.777) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":1066.091635987,"data":"   rad     nonfinite       0 (levels []) | max |rate|     190.3 at level 74 (sigma 0.996) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":1066.09163853,"data":"[step 78] nonfinite {'T': 0, 'q': 0, 'ps': 0, 'u': 0, 'v': 0} | T 187.2..306.5 q max 42.1 g/kg min -3.739 | ps 534..1037\n"}
+,{"stream_name":"stdout","time":1066.091641068,"data":"   tot_T   nonfinite       0 (levels []) | max |rate|    3280.3 at level 70 (sigma 0.967) | columns \u003e200/day 23\n"}
+,{"stream_name":"stdout","time":1066.091643611,"data":"   tot_q   nonfinite       0 (levels []) | max |rate|    2484.8 at level 70 (sigma 0.967) | columns \u003e200/day 6\n"}
+,{"stream_name":"stdout","time":1066.091646777,"data":"   h_bl    nonfinite       0 (levels []) | max |rate|    3619.6 at level 70 (sigma 0.967) | columns \u003e200/day 22\n"}
+,{"stream_name":"stdout","time":1066.091650509,"data":"   h_deep  nonfinite       0 (levels []) | max |rate|     635.2 at level 74 (sigma 0.996) | columns \u003e200/day 4\n"}
+,{"stream_name":"stdout","time":1066.091671743,"data":"   h_shal  nonfinite       0 (levels []) | max |rate|      60.6 at level 74 (sigma 0.996) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":1066.091676083,"data":"   h_lsc   nonfinite       0 (levels []) | max |rate|    4035.1 at level 73 (sigma 0.989) | columns \u003e200/day 5\n"}
+,{"stream_name":"stdout","time":1066.091686869,"data":"   h_evap  nonfinite       0 (levels []) | max |rate|      32.7 at level 56 (sigma 0.777) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":1066.091690823,"data":"   rad     nonfinite       0 (levels []) | max |rate|     188.8 at level 74 (sigma 0.996) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":1066.091695251,"data":"[step 79] nonfinite {'T': 0, 'q': 0, 'ps': 0, 'u': 0, 'v': 0} | T 187.3..306.5 q max 28.8 g/kg min -0.078 | ps 534..1037\n"}
+,{"stream_name":"stdout","time":1066.091699473,"data":"   tot_T   nonfinite       0 (levels []) | max |rate|    1358.6 at level 74 (sigma 0.996) | columns \u003e200/day 22\n"}
+,{"stream_name":"stdout","time":1066.091703885,"data":"   tot_q   nonfinite       0 (levels []) | max |rate|    1328.4 at level 74 (sigma 0.996) | columns \u003e200/day 7\n"}
+,{"stream_name":"stdout","time":1066.091708614,"data":"   h_bl    nonfinite       0 (levels []) | max |rate|    2022.1 at level 71 (sigma 0.975) | columns \u003e200/day 22\n"}
+,{"stream_name":"stdout","time":1066.091712734,"data":"   h_deep  nonfinite       0 (levels []) | max |rate|     224.3 at level 74 (sigma 0.996) | columns \u003e200/day 2\n"}
+,{"stream_name":"stdout","time":1066.091716956,"data":"   h_shal  nonfinite       0 (levels []) | max |rate|     147.7 at level 74 (sigma 0.996) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":1066.09172094,"data":"   h_lsc   nonfinite       0 (levels []) | max |rate|    1434.1 at level 74 (sigma 0.996) | columns \u003e200/day 4\n"}
+,{"stream_name":"stdout","time":1066.091724894,"data":"   h_evap  nonfinite       0 (levels []) | max |rate|      34.1 at level 64 (sigma 0.908) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":1066.091728879,"data":"   rad     nonfinite       0 (levels []) | max |rate|     201.4 at level 74 (sigma 0.996) | columns \u003e200/day 1\n"}
+,{"stream_name":"stdout","time":1066.091735727,"data":"[step 80] nonfinite {'T': 0, 'q': 0, 'ps': 0, 'u': 0, 'v': 0} | T 187.5..306.5 q max 28.9 g/kg min 0.000 | ps 534..1038\n"}
+,{"stream_name":"stdout","time":1066.091739498,"data":"   tot_T   nonfinite       0 (levels []) | max |rate|    3286.4 at level 71 (sigma 0.975) | columns \u003e200/day 18\n"}
+,{"stream_name":"stdout","time":1066.091743247,"data":"   tot_q   nonfinite       0 (levels []) | max |rate|    2666.1 at level 71 (sigma 0.975) | columns \u003e200/day 6\n"}
+,{"stream_name":"stdout","time":1066.091748123,"data":"   h_bl    nonfinite       0 (levels []) | max |rate|    3638.4 at level 70 (sigma 0.967) | columns \u003e200/day 18\n"}
+,{"stream_name":"stdout","time":1066.091752094,"data":"   h_deep  nonfinite       0 (levels []) | max |rate|     712.8 at level 74 (sigma 0.996) | columns \u003e200/day 3\n"}
+,{"stream_name":"stdout","time":1066.091756583,"data":"   h_shal  nonfinite       0 (levels []) | max |rate|     108.6 at level 74 (sigma 0.996) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":1066.091760369,"data":"   h_lsc   nonfinite       0 (levels []) | max |rate|    2740.6 at level 73 (sigma 0.989) | columns \u003e200/day 5\n"}
+,{"stream_name":"stdout","time":1066.091764627,"data":"   h_evap  nonfinite       0 (levels []) | max |rate|      36.6 at level 65 (sigma 0.920) | columns \u003e200/day 0\n"}
+,{"stream_name":"stdout","time":1066.091768967,"data":"   rad     nonfinite       0 (levels []) | max |rate|     391.2 at level 73 (sigma 0.989) | columns \u003e200/day 1\n"}
+,{"stream_name":"stdout","time":1066.247358869,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1066.247422817,"data":"+ rm -rf repo libm_wx2020_fields.npz\n"}
+,{"stream_name":"stdout","time":1066.458113121,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1066.458152272,"data":"total s 1065\n"}
+,{"stream_name":"stderr","time":1068.648747767,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":1068.648794002,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":1068.936421372,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":1068.936443048,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":1069.754766013,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":1070.804423276,"data":"[NbConvertApp] Writing 282219 bytes to __results__.html\n"}
+]
