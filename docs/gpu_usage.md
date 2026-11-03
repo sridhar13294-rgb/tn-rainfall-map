@@ -11,7 +11,7 @@ Updated each cycle. Times IST.
 | 5-7 | tn-evi/lwc/ckz-wx-q0 | Decomposition: each correctness item alone, exam q0 | 3 Nov 12:29 | running |
 | 8-10 | tn-evi/lwc/ckz-tnr | Decomposition: each item alone, TN rain | 3 Nov 12:32 | running |
 | 11-13 | tn-evi/lwc/ckz-gen0 | Decomposition: each item alone, genesis | 3 Nov 12:34 | running |
-| 14 | - | free for the 13:00 cycle | - | free |
+| 14 | tn-evo-f2q | P1: F2 budget with moisture-by-process + cloud fraction (850-925 hPa source) | 3 Nov 12:45 | running |
 
 ## 3 Nov 07:00 cycle (all finished)
 | Acct | Job | Outcome |
