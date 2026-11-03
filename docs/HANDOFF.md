@@ -499,3 +499,4 @@ After the 02:00 IST update no further cycles are scheduled (Sridhar 01:28). Dail
 - D11: ECMWF shallow closure on the model's own budget gives Mb 0.02-0.04 (0.01-0.11 extreme) -> the fixed 0.03 is not the P1 cause.
 - genesis2.py silently dropped non-runtime settings (shallow, evap_ifs, rad_prm, diff_x) -> past gen_fullck / gen_heat / gen_diff4 results void for those settings; fixed + warning in with_params.
 - Running: see gpu_usage.md (13 accounts busy, 3 free after its trace). 13:00 cycle scheduled (send_later trig_01FmwcFCfJsy4u4YFtDLCbd1).
+- 3 Nov 12:04 IST (Sridhar): TN SMART dropped from the cycles - he cannot supply daily PDFs or a login and will find another approach himself. Do not ask about it or include it in reports. Focus: the model only.
