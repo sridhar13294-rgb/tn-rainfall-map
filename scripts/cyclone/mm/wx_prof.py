@@ -85,8 +85,9 @@ for VN, VS in VARS.items():
                   for kk in PR:
                       if kk in dd: e[kk] = mn(dd[kk]) * 86400
                   e['rain'] = float((np.asarray(dd['rain']) * W_).sum() / W_.sum() * 86400)
-                  for kk in ('on_dp', 'on_sh', 'on_orph', 'lsc_orph', 'lsc_all'):
+                  for kk in ('on_dp', 'on_sh', 'on_orph', 'lsc_orph', 'lsc_all', 'hbl', 'zlcl'):
                       if kk in dd: e[kk] = float((np.asarray(dd[kk]) * W_).sum() / W_.sum())
+                  if 'hbl' in dd: e['hbl_above_lcl'] = float(((np.asarray(dd['hbl']) > np.asarray(dd['zlcl'])) * W_).sum() / W_.sum())
                   o[rg] = e
               return o
           B = {}; sA, cA = st, cr; hA = 0
@@ -103,7 +104,7 @@ for VN, VS in VARS.items():
                       if kk in snaps[0][rg]: e[kk] = tm(kk)
                   e = {k: np.round(v, 3).tolist() for k, v in e.items()}
                   e['rain'] = round(float(np.mean([x[rg]['rain'] for x in snaps])), 2)
-                  for kk in ('on_dp', 'on_sh', 'on_orph', 'lsc_orph', 'lsc_all'):
+                  for kk in ('on_dp', 'on_sh', 'on_orph', 'lsc_orph', 'lsc_all', 'hbl', 'zlcl', 'hbl_above_lcl'):
                       if kk in snaps[0][rg]: e[kk] = round(float(np.mean([x[rg][kk] for x in snaps])) * (86400 if kk.startswith('lsc') else 1), 3)
                   win[rg] = e
               B[f'{w0}-{w1}h'] = win

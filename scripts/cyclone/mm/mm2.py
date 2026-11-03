@@ -638,6 +638,10 @@ class Model:
             # and blows the run up (seen in 1 of 3 test runs)
             dT = dTbl + (dT - rad - dTbl) * fac + rad; dq = dqbl + (dq - dqbl) * fac
         diag = dict(rain=Psurf + Pc * 0.0, H=H, E=E, ust=ust, V1=V1, sw_sfc=sw_sfc, lw_dn=lw_dn, Ts=Ts)
+        # P1 diagnostic (3 Nov): boundary-layer top vs lifting condensation level of the lowest-level air
+        # (Bolton-type estimate z_lcl ~ 125 m per K of dew-point depression)
+        e1 = jnp.maximum(q1 * p1 / (0.622 + 0.378 * q1), 1.0); Td1 = 243.5 * jnp.log(e1 / 611.2) / (17.67 - jnp.log(e1 / 611.2)) + 273.15
+        diag.update(hbl=hbl, zlcl=jnp.maximum(125.0 * (T1 - Td1), 0.0))
         if S['conv'] == 'mf': diag.update(on_dp=on_dp, on_sh=on_sh, on_bmjsh=(shallow & ~okmf).astype(jnp.float32))
         if S['conv'] == 'mf':
             # D3 diagnostic (B-C1): 'orphan' columns = the undiluted parcel test says deep (so no shallow mixing) but the entraining

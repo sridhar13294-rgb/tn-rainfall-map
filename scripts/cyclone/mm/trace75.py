@@ -33,6 +33,7 @@ def check(tag, s, c):
         kmax = np.unravel_index(np.argmax(a), a.shape)
         lev_nf = sorted(set(np.where(nf)[0].tolist()))[:5]
         rec[n] = dict(maxrate=float(a.max()), level=int(kmax[0]), sigma=float(sig[kmax[0]]), cols200=int((a.max(0) > 200).sum()), lon=float(np.asarray(M.lon)[kmax[1]]), lat=float(np.asarray(M.lat)[kmax[2]]))
+        if n == 'h_bl': rec[n].update({kk: float(np.asarray(dd[kk])[kmax[1], kmax[2]]) for kk in ('H', 'E', 'Ts', 'hbl', 'zlcl', 'V1', 'ust') if kk in dd}, T1=float(T[-1][kmax[1], kmax[2]]), Tk=float(T[kmax[0]][kmax[1], kmax[2]]))
         print(f'   {n:7s} nonfinite {int(nf.sum()):7d} (levels {lev_nf}) | max |rate| {a.max():9.1f} at level {kmax[0]} (sigma {sig[kmax[0]]:.3f}) | columns >200/day {int((a.max(0) > 200).sum())}', flush=True)
     if OUTJ: json.dump(SUM, open(OUTJ, 'w'))
     return True
