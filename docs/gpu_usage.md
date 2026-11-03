@@ -1,6 +1,17 @@
 # Kaggle GPU account usage (weekly quota 30 h per account; all accounts assumed reset 2 Nov)
 Updated each cycle. Times IST.
 
+## 3 Nov 21:15 (track error + common-cause test)
+| Acct | Job | Purpose | State |
+|---|---|---|---|
+| 1 | tn-shmf-tnr | P4: shallow mass-flux plume, TN rain | running |
+| 2 | tn-shmf-evo | P1: same, budget evolution | running |
+| 3-4 | tn-shmf-wx-q0/q1 | track/steering: Oct-Dec u850 bias; exam | running |
+| 5 | tn-shmf-gen0 | genesis gate | running |
+| 6 | tn-shmf-sb | P3: does an inserted storm survive (Nivar/Michaung/Vardah) | running |
+| 7 | tn-tr75-0609b | P2: 9 Jun start to 240 h, hot-spot location | running |
+| 8-14 | - | free | free |
+
 ## 3 Nov 13:15 cycle
 | Acct | Job | Purpose | Started | State |
 |---|---|---|---|---|
