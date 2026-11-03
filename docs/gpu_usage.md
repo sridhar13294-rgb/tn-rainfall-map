@@ -1,6 +1,19 @@
 # Kaggle GPU account usage (weekly quota 30 h per account; all accounts assumed reset 2 Nov)
 Updated each cycle. Times IST.
 
+## 3 Nov 13:15 cycle
+| Acct | Job | Purpose | Started | State |
+|---|---|---|---|---|
+| 1 | tn-sb-p3a | P3: control storm budget Nivar/Michaung/Vardah (vs ERA5 offline) | 3 Nov 13:10 | running |
+| 2 | tn-tp75f2-wx-q0 | P2: 75L F2 exam q0 | 3 Nov 12:26 | running |
+| 3 | tn-tp75f2-tnr | P2a: 75L F2 TN rain | 3 Nov 12:27 | running |
+| 4 | tn-scm-ref | P1 tool: SCM run (MPI-as-root fix) | 3 Nov 13:09 | running |
+| 5-7 | tn-evi/lwc/ckz-wx-q0 | Decomposition: exam q0 | 3 Nov 12:29 | running |
+| 8 | tn-sb-p3b | P3: control storm budget Fengal/Ockhi/Ditwah | 3 Nov 13:11 | running |
+| 9-10 | tn-p4dry-a/b | P4: control TN rain on 12 Apr-Jun starts (dry-regime dataset) | 3 Nov 13:12 | running |
+| 11-13 | tn-evi/lwc/ckz-gen0 | Decomposition: genesis | 3 Nov 12:34 | running |
+| 14 | tn-evo-f2q | P1/P4: F2 moisture by process + cloud fraction | 3 Nov 12:45 | running |
+
 ## 3 Nov 12:30 cycle (previous cycle's jobs all finished; scored in rootcause.md)
 | Acct | Job | Purpose | Started | State |
 |---|---|---|---|---|
