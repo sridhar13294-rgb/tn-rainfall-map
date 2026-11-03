@@ -1,0 +1,33 @@
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda13.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda13/__init__.py", line 373, in initialize
+    c_api = xb.register_plugin(
+        'cuda', priority=500, library_path=str(path), options=options
+    )
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 662, in register_plugin
+    c_api = xla_client.load_pjrt_plugin_dynamically(plugin_name, library_path)
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 115, in load_pjrt_plugin_dynamically
+    return _xla.load_pjrt_plugin(plugin_name, library_path, c_api=None)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: ALREADY_EXISTS: PJRT_Api already exists for device type cuda
+2020-01-06 T170_corr sec 358 z500 rmse d1/d5/d10 [21.8, 70.4, 116.4]
+2020-01-26 T170_corr sec 306 z500 rmse d1/d5/d10 [21.3, 70.1, 116.3]
+2020-02-15 T170_corr sec 306 z500 rmse d1/d5/d10 [21.9, 67.9, 108.0]
+2020-03-06 T170_corr sec 306 z500 rmse d1/d5/d10 [21.1, 73.1, 143.5]
+2020-03-26 T170_corr sec 306 z500 rmse d1/d5/d10 [20.7, 81.3, 120.6]
+2020-04-15 T170_corr sec 306 z500 rmse d1/d5/d10 [20.4, 67.3, 131.6]
+2020-05-05 T170_corr sec 306 z500 rmse d1/d5/d10 [21.6, 78.1, 117.5]
+2020-05-25 T170_corr sec 308 z500 rmse d1/d5/d10 [22.0, 70.8, 120.3]
+2020-06-14 T170_corr sec 306 z500 rmse d1/d5/d10 [24.7, 72.4, 118.5]
+2020-07-04 T170_corr sec 306 z500 rmse d1/d5/d10 [23.4, 82.7, 115.7]
+2020-07-24 T170_corr sec 308 z500 rmse d1/d5/d10 [23.3, 81.0, 129.6]
+2020-08-13 T170_corr sec 308 z500 rmse d1/d5/d10 [23.4, 87.7, 129.3]
+2020-09-02 T170_corr sec 308 z500 rmse d1/d5/d10 [21.8, 70.8, 120.0]
+2020-09-22 T170_corr sec 308 z500 rmse d1/d5/d10 [21.7, 79.9, 134.0]
+2020-10-12 T170_corr sec 306 z500 rmse d1/d5/d10 [21.6, 78.0, 110.2]
+2020-11-01 T170_corr sec 306 z500 rmse d1/d5/d10 [22.3, 70.1, 110.6]
+2020-11-21 T170_corr sec 308 z500 rmse d1/d5/d10 [21.5, 76.3, 106.2]
+2020-12-11 T170_corr sec 308 z500 rmse d1/d5/d10 [21.1, 67.2, 107.3]
