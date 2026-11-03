@@ -1,0 +1,125 @@
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+    <title>Observed Rainfall</title>
+</head>
+
+<body style="margin: 10px;">
+
+    <style type="text/css">
+    .content-wrapper {
+        margin-left: 0px;
+    }
+
+    #map_report_table td,
+    #map_report_table th {
+
+        padding: 5px;
+
+    }
+
+    td {
+        width: 20%;
+        font-size: 11px;
+        text-align: center;
+    }
+
+    #data_table {
+        border: 1px solid black;
+        width: 100%;
+        overflow: auto;
+        margin-bottom: 10px;
+    }
+
+    #table,
+    #table td,
+    #table th {
+        border: 1px solid black;
+    }
+
+    #data_table th {
+        border: 1px solid black;
+        font-size: 12px;
+        padding: 7px;
+        text-align: left;
+        background-color: #f5f5f5;
+        color: black;
+
+    }
+
+    .bt {
+        background-color: #003366;
+        color: white;
+    }
+
+    #data_table td {
+        border: 1px solid black;
+        width: 10%;
+        padding: 5px;
+
+        text-align: right;
+        background-color: white;
+        color: black;
+        font-size: 14px;
+    }
+
+    .tamil {
+        font-size: 14px;
+        font-weight: normal;
+    }
+
+    label {
+        font-weight: normal;
+    }
+
+    @media only screen and (max-width: 324px) {
+        body {
+            font-size: 12px;
+        }
+
+        .btn {
+            font-size: 11px;
+        }
+    }
+    </style>
+    <section class="content tamil">
+        <div class="box box-body">
+            <ul class="nav nav-tabs">
+
+
+                <li class="active"><a
+                        href="https://beta-tnsmart.rimes.int/index.php/Api_mobile/Api_rainfall/daily_data">TNSDMA</a></li>
+
+            </ul><br>
+            <div class="box box-primary box-solid">
+                <form action="https://beta-tnsmart.rimes.int/index.php/Api_mobile/Api_rainfall/daily_data" role="form" enctype="multipart/form-data" method="post" accept-charset="utf-8">
+                <div class="form-group">
+                    <input type="date" name="date" id="date" required="" class="form-control" placeholder="dd-mm-yyyy"
+                        max="2026-11-03" value="2026-11-03" /></th>
+                    <input type="submit" name="submit" value="Submit" class="form-control bt" />
+                </div>
+            </div>
+
+            </form>        </div>
+
+                <!-- <div class="box box-primary box-solid" style="height:auto;width:100%">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" style="background: linear-gradient(to bottom right, #003366 0%, #ffccff 100%);color:white">Observed Rainfall data on 03-11-2026</div>
+                            <div class="map_canvas" id="map" style="width:100%;height:300px;"  align="center" ></div>
+                            <div class="panel-footer" style="background-color: #f5f5f5;color:black"><span style="color:#000000"><b>Rainfall in mm</b></span>
+                            <table>
+                                <tr>
+                                    <td style="background-color:#bfbfbf; height:10px"></td>
+                                    <td style="background-color:#DAF7A6;height:10px"></td>
+                                    <td style="background-color:#46C646;height:10px"></td>
+                                    <td style="background-color:#FFFF00;height:10px"></td>
+                                    <td style="backgroun
