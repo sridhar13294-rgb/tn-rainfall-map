@@ -1,19 +1,28 @@
 # Kaggle GPU account usage (weekly quota 30 h per account; all accounts assumed reset 2 Nov)
 Updated each cycle. Times IST.
 
-## 3 Nov 07:00 cycle
+## 3 Nov 12:30 cycle (previous cycle's jobs all finished; scored in rootcause.md)
 | Acct | Job | Purpose | Started | State |
 |---|---|---|---|---|
-| 1 | tn-tr75-f2fix | P2: 75L + F2 with the fixed counter-gradient flux (registered gates) | 3 Nov 07:25 | running |
-| 2 | tn-evo-f2fix | P1: 32L F2 budget evolution with the fix (registered direction gates) | 3 Nov 07:26 | running |
-| 3 | - | tn-tr75-shm done (stable 24 h); free for the 13:00 cycle | - | free |
-| 4 | tn-scm-ref (rerun) | P1: NOAA CCPP SCM GFS v16 build (now builds bacio/sp/w3emc) + BOMEX/TWP-ICE | 3 Nov 07:12 | running |
-| 5-8 | tn-corr-wx-q0..q3 | Regression: correctness items (evap_ifs, lw_cnt, ck_z) on the 2020 exam | 3 Nov 07:05 | running |
-| 9-10 | tn-corr-gen0/1 (gen1 relaunched 07:27) | Regression: correctness items, genesis (with the static-setting fix) | 3 Nov 07:10 | running |
-| 11 | tn-tnr-f2d | P4: deterministic F2 TN-rain reference | 3 Nov 07:28 | running |
-| 12 | tn-tnr-f2corrd | P4: deterministic F2 + correctness items TN rain | 3 Nov 07:28 | running |
-| 13 | tn-evo-corr | P1: budget time-evolution, control + correctness items | 3 Nov 07:28 | running |
-| 14 | tn-corr-tnr | Regression: correctness items, TN rain | 3 Nov 07:28 | running |
+| 1 | tn-tr75-f2fix2 | P2: fixed F2 at 75L, full per-step JSON (q gate steps 1-9) | 3 Nov 12:25 | running |
+| 2 | tn-tp75f2-wx-q0 | P2: 75L F2 exam quarter 0 (no blow-up in any start) | 3 Nov 12:26 | running |
+| 3 | tn-tp75f2-tnr | P2a: 75L F2 TN rain (registered gate) | 3 Nov 12:27 | running |
+| 4 | tn-scm-ref | P1: GFS v16 single column (builds now; 'time' shim for the run) | 3 Nov 12:28 | running |
+| 5-7 | tn-evi/lwc/ckz-wx-q0 | Decomposition: each correctness item alone, exam q0 | 3 Nov 12:29 | running |
+| 8-10 | tn-evi/lwc/ckz-tnr | Decomposition: each item alone, TN rain | 3 Nov 12:32 | running |
+| 11-13 | tn-evi/lwc/ckz-gen0 | Decomposition: each item alone, genesis | 3 Nov 12:34 | running |
+| 14 | - | free for the 13:00 cycle | - | free |
+
+## 3 Nov 07:00 cycle (all finished)
+| Acct | Job | Outcome |
+|---|---|---|
+| 1 | tn-tr75-f2fix | 75L F2 fixed: no blow-up in 24 h |
+| 2 | tn-evo-f2fix | 32L F2 unchanged by the fix |
+| 3 | tn-tr75-shm | sh_mflux alone stable at 75L |
+| 4 | tn-scm-ref | built; run failed on missing 'time' |
+| 5-10, 14 | tn-corr-* | correctness items together fail regression |
+| 11-12 | tn-tnr-f2d / f2corrd | TN rain 1.85 / 1.98 |
+| 13 | tn-evo-corr | BL evaporation doubles in the control regime |
 
 ## 2 Nov 23:35 cycle (all finished by 3 Nov 01:30)
 | Acct | Job | Outcome |
