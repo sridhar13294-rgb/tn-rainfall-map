@@ -10,7 +10,8 @@ if START.startswith('near:'):                                                   
     want = dt.datetime.strptime(START[5:], '%Y-%m-%d'); START = max([t for t in TT if dt.datetime.strptime(t, '%Y-%m-%dT%H') <= want] or TT[:1])
 print('start', START, 'available', TT[:3], '...', flush=True)
 t0 = dt.datetime.strptime(START, '%Y-%m-%dT%H'); k = TT.index(START); f3 = {v: Z['f3'][k, V3.index(v)] for v in V3}
-M = mm2.Model('T85', 32, None, dict(SET, map_out=True, map_snd=True)); t = time.time()
+SET = dict(SET); GR = SET.pop('grid', 'T170'); NL = SET.pop('layers', 32)                         # grid/layers were ignored before 3 Nov (always T85, 32 levels)
+M = mm2.Model(GR, NL, None, dict(SET, map_out=True, map_snd=True)); t = time.time()
 st, cr = M.init(f3, Z['levs'], Z['lats'], Z['lons'], Z['f2'][k, V2.index('surface_pressure')], Z['f2'][k, V2.index('geopotential_at_surface')] / 9.80616,
                 Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')], when=t0, **landinit.land_kwargs(Z['f2'][k], V2))
 M.build(t0); st = M.dfi(st); out = M.run_wx(st, cr, HOURS, 6)
