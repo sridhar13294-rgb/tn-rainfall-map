@@ -32,7 +32,7 @@ def check(tag, s, c):
         x = np.asarray(x); nf = ~np.isfinite(x); a = np.where(nf, 0, np.abs(x)) * (86400 if n != 'tot_q' else 86400e3)
         kmax = np.unravel_index(np.argmax(a), a.shape)
         lev_nf = sorted(set(np.where(nf)[0].tolist()))[:5]
-        rec[n] = dict(maxrate=float(a.max()), level=int(kmax[0]), sigma=float(sig[kmax[0]]), cols200=int((a.max(0) > 200).sum()))
+        rec[n] = dict(maxrate=float(a.max()), level=int(kmax[0]), sigma=float(sig[kmax[0]]), cols200=int((a.max(0) > 200).sum()), lon=float(np.asarray(M.lon)[kmax[1]]), lat=float(np.asarray(M.lat)[kmax[2]]))
         print(f'   {n:7s} nonfinite {int(nf.sum()):7d} (levels {lev_nf}) | max |rate| {a.max():9.1f} at level {kmax[0]} (sigma {sig[kmax[0]]:.3f}) | columns >200/day {int((a.max(0) > 200).sum())}', flush=True)
     if OUTJ: json.dump(SUM, open(OUTJ, 'w'))
     return True
