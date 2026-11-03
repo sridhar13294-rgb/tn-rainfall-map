@@ -5,7 +5,7 @@ import sys, os, json, datetime as dt, numpy as np, jax.numpy as jnp
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
 import mm2, landinit
 from dinosaur import spherical_harmonic
-LIB, VS, NSTEP = sys.argv[1], json.loads(sys.argv[2]), int(sys.argv[3])
+LIB, VS, NSTEP = sys.argv[1], json.loads(sys.argv[2]), int(sys.argv[3]); OUTJ = sys.argv[4] if len(sys.argv) > 4 else None; SUM = []   # OUTJ: full per-step summary (logs are cut to 30 kB)
 Z = dict(np.load(LIB)); TT = [str(t) for t in Z['times']]; V3 = [str(v) for v in Z['v3']]; V2 = [str(v) for v in Z['v2']]
 VS = dict(VS); NL = VS.pop('layers', 32); GR = VS.pop('grid', 'T170')
 M = mm2.Model(GR, NL, None, dict({'rad': 'radcloud', 'rad_every': 2}, **VS))
@@ -21,6 +21,8 @@ def check(tag, s, c):
     T, q, ps, u, v = state(s)
     bad = {n: int((~np.isfinite(np.asarray(x))).sum()) for n, x in (('T', T), ('q', q), ('ps', ps), ('u', u), ('v', v))}
     print(f'[{tag}] nonfinite {bad} | T {np.nanmin(T):.1f}..{np.nanmax(T):.1f} q max {np.nanmax(q)*1e3:.1f} g/kg min {np.nanmin(q)*1e3:.3f} | ps {np.nanmin(ps)/100:.0f}..{np.nanmax(ps)/100:.0f}', flush=True)
+    rec = dict(tag=tag, nonfinite=bad, qmin_gkg=float(np.nanmin(q) * 1e3), Tmin=float(np.nanmin(T)), Tmax=float(np.nanmax(T))); SUM.append(rec)
+    if OUTJ: json.dump(SUM, open(OUTJ, 'w'))
     if any(bad.values()): return False
     tn, dd = M.column(jnp.asarray(T), jnp.asarray(q), u / M.MPS, v / M.MPS, jnp.asarray(ps), dict(c, doy0=jnp.float32(M.doy0), utc0=jnp.float32(M.utc0)),
                       rad_fresh=True, div=hor.to_nodal(s.divergence) * M.SEC)
@@ -30,7 +32,9 @@ def check(tag, s, c):
         x = np.asarray(x); nf = ~np.isfinite(x); a = np.where(nf, 0, np.abs(x)) * (86400 if n != 'tot_q' else 86400e3)
         kmax = np.unravel_index(np.argmax(a), a.shape)
         lev_nf = sorted(set(np.where(nf)[0].tolist()))[:5]
+        rec[n] = dict(maxrate=float(a.max()), level=int(kmax[0]), sigma=float(sig[kmax[0]]), cols200=int((a.max(0) > 200).sum()))
         print(f'   {n:7s} nonfinite {int(nf.sum()):7d} (levels {lev_nf}) | max |rate| {a.max():9.1f} at level {kmax[0]} (sigma {sig[kmax[0]]:.3f}) | columns >200/day {int((a.max(0) > 200).sum())}', flush=True)
+    if OUTJ: json.dump(SUM, open(OUTJ, 'w'))
     return True
 print('settings', VS, 'layers', NL, 'levels', len(sig), 'dt_s', M.dt_s, 'lowest sigmas', sig[-4:].round(4).tolist(), flush=True)
 M.build(t0)                                              # sets doy0/utc0 (needed by the column call)
