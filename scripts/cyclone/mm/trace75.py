@@ -9,7 +9,7 @@ LIB, VS, NSTEP = sys.argv[1], json.loads(sys.argv[2]), int(sys.argv[3]); OUTJ = 
 Z = dict(np.load(LIB)); TT = [str(t) for t in Z['times']]; V3 = [str(v) for v in Z['v3']]; V2 = [str(v) for v in Z['v2']]
 VS = dict(VS); NL = VS.pop('layers', 32); GR = VS.pop('grid', 'T170')
 M = mm2.Model(GR, NL, None, dict({'rad': 'radcloud', 'rad_every': 2}, **VS))
-key = TT[0]; k = 0; t0 = dt.datetime.strptime(key, '%Y-%m-%dT%H'); f3 = {v: Z['f3'][k, V3.index(v)] for v in V3}
+key = os.environ.get('TRACE_START', TT[0]); k = TT.index(key); t0 = dt.datetime.strptime(key, '%Y-%m-%dT%H'); f3 = {v: Z['f3'][k, V3.index(v)] for v in V3}
 st, cr = M.init(f3, Z['levs'], Z['lats'], Z['lons'], Z['f2'][k, V2.index('surface_pressure')], Z['f2'][k, V2.index('geopotential_at_surface')] / 9.80616,
                 Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')], when=t0, **landinit.land_kwargs(Z['f2'][k], V2))
 hor = M.coords.horizontal; sig = np.asarray(M.sig)
