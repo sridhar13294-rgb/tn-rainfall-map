@@ -1,0 +1,10 @@
+GET https://beta-tnsmart.rimes.int/index.php/Api_mobile/Api_rainfall/daily_srg_24hrs -> 200 25
+POST https://beta-tnsmart.rimes.int/index.php/Api_mobile/Api_rainfall/daily_srg_24hrs date=2026-11-03 -> 200 25
+GET https://beta-tnsmart.rimes.int/index.php/Api_mobile/Api_rainfall/change/english/daily_data -> 307 0
+POST https://beta-tnsmart.rimes.int/index.php/Api_mobile/Api_rainfall/change/english/daily_data date=2026-11-03 -> 303 0
+report 2026-10-31 -> 200 application/pdf 410015
+report 2026-11-01 -> 404 text/html; charset=iso-8859-1 284
+report 2026-11-02 -> 200 application/pdf 1831737
+report 2026-11-03 -> 404 text/html; charset=iso-8859-1 284
+report 31-10-2026 -> 404 text/html; charset=iso-8859-1 284
+report 01-11-2026 -> 404 text/html; charset=iso-8859-1 284
