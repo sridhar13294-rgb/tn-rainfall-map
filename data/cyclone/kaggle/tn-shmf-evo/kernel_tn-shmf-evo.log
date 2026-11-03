@@ -1,0 +1,11 @@
+[{"stream_name":"stderr","time":0.963474154,"data":"  File \"/kaggle/src/script.py\", line 5\n"}
+,{"stream_name":"stderr","time":0.963508822,"data":"    JOB = \"cd repo/scripts/cyclone/mm \u0026\u0026 cd . \u0026\u0026 XLA_FLAGS=\\\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\\\" python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 6 '{\\\"shmf\\\":{\\\"grid\\\":\\\"T170\\\",\\\"_budget\\\":true,\\\\\"shallow\\\\\":\\\\\"mf\\\\\",\\\\\"sh_trig\\\\\":1.0,\\\\\"sh_clos\\\\\":0.6,\\\"_win\\\":[[0,24],[24,48],[48,72],[96,120]]}}' \u003e /kaggle/working/prof.log 2\u003e\u00261; tail -40 /kaggle/working/prof.log\"            # filled in by the workflow\n"}
+,{"stream_name":"stderr","time":0.963520568,"data":"                                                                                                                                                                                                                                                                                                   ^\n"}
+,{"stream_name":"stderr","time":0.963536129,"data":"SyntaxError: unexpected character after line continuation character\n"}
+,{"stream_name":"stderr","time":3.589267639,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":3.589302844,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":3.981729864,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":3.9817546249999998,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":5.926491803,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":6.999932077,"data":"[NbConvertApp] Writing 282791 bytes to __results__.html\n"}
+]
