@@ -10,7 +10,11 @@ Updated each cycle. Times IST.
 | 5 | tn-shmf-gen0 | genesis gate | running |
 | 6 | tn-shmf-sb | P3: does an inserted storm survive (Nivar/Michaung/Vardah) | running |
 | 7 | tn-tr75-0609b | P2: 9 Jun start to 240 h, hot-spot location | running |
-| 8-14 | - | free | free |
+| 4 | tn-scm-ref | SCM: BOMEX suite build (TWP-ICE already done) | running |
+| 8 | tn-sb-r12 | P3: radial 0-12 h storm budget, control | running |
+| 9 | tn-sb-r12d4 | P3: same, 4x weaker small-scale damping | running |
+| 10 | tn-sb-r12nb | P3: same, no initialisation filter | running |
+| 11-14 | - | free | free |
 
 ## 3 Nov 13:15 cycle
 | Acct | Job | Purpose | Started | State |
