@@ -490,3 +490,12 @@ After the 02:00 IST update no further cycles are scheduled (Sridhar 01:28). Dail
 - 31 Oct 13:15: lib84 scored (41 storms): corr = slightly stronger, fewer centre losses, tracks worse after 48 h; f2corr = weaker everywhere (F2 storm weakening confirmed). P3 intensity gap unchanged (~28 vs ~47 kt at 72 h). Shallow-closure question (peer: sh_mflux 0.052) answered: rejected as a physical value - the MSE/q relaxation 'heats' the BL by lifting vapour (P4 mechanism); derive shallow='mf' with the ECMWF sub-cloud MSE closure instead.
 - 2 Nov 23:30 IST: accounts 13 and 14 verified (tiny GPU jobs, 2x T4). (15 does not exist - Sridhar meant 13 and 14.) Kaggle workflow fixed: new kaggle release needs 'six'. Usable: 7, 11, 12, 13, 14 (+1 after its weekly reset). TN SMART station page now behind a login (since 31 Oct) - waiting for Sridhar: login as GitHub secrets TNSMART_USERNAME/TNSMART_PASSWORD, or the daily report PDFs.
 - 2 Nov 23:45: all 14 accounts assigned (docs/gpu_usage.md). evo runs = budget time-evolution (P1/P2/P4, measurement). Score everything at the 07:00 cycle.
+
+## 3 Nov 07:00 IST cycle
+- Overnight jobs all finished. Traces were void (my script defect) -> fixed and rerun. SCM build failed (NCEP bacio/sp/w3emc missing) -> now built from source, rerun on acct 4.
+- Baselines (deterministic control): exam z500 d1/d5/d10 20.2/73.3/120.2 m; genesis 31 %/45 %; TN box rain +43 %.
+- P2 CAUSE: pbl_tm counter-gradient flux used Kh = max(Kbl, Kfree) instead of the profile K -> up to 18.6x the surface flux (D13) -> negative q in thin lowest layers -> blow-up. Fixed in mm2 (commit 60400f2b). sh_mflux alone at 75 L is stable. Test tn-tr75-f2fix registered.
+- P1 located (F2): low cloud deck at 850-925 hPa (D12: RH cloud 0.48/0.59 vs ERA5 0.12/0.21), cloud-top LW cooling -2.4..-3.5 K/day, surface SW -52 W/m2; forms on day 1-2. The defective counter-gradient flux (also active at 32 L) is a candidate contributor -> tn-evo-f2fix registered.
+- D11: ECMWF shallow closure on the model's own budget gives Mb 0.02-0.04 (0.01-0.11 extreme) -> the fixed 0.03 is not the P1 cause.
+- genesis2.py silently dropped non-runtime settings (shallow, evap_ifs, rad_prm, diff_x) -> past gen_fullck / gen_heat / gen_diff4 results void for those settings; fixed + warning in with_params.
+- Running: see gpu_usage.md (13 accounts busy, 3 free after its trace). 13:00 cycle scheduled (send_later trig_01FmwcFCfJsy4u4YFtDLCbd1).

@@ -392,3 +392,4 @@ Fix (commit 60400f2b): F uses clip(Kbl, 0, 500). This changes F2 (pbl_tm 1): ALL
 Registered predictions (before results):
 - tn-tr75-f2fix (75 L, F2 fixed, 72 steps = 24 h): no non-finite values; lowest-layer q min >= -0.1 g/kg over the first 9 steps; max |h_bl| < 300 K/day after step 1. Failure of any = reject the claim that this defect alone causes the 75-level blow-up.
 - tn-evo-f2fix (32 L, F2 fixed, 6 starts, budget windows): direction only (magnitude not derivable offline): d5 tropics q bias at 850 lower than +0.70 g/kg; 850-layer radiation less negative than -2.4 K/day (0-24 h); d5 850 T bias less cold than -2.4 K. If none moves, the defect is not a P1 contributor at 32 L.
+- tn-tr75-shm (75 L, sh_mflux only, old code): stable for 72 steps (24 h), q min 0.000, h_bl max ~330 K/day only at the lowest level (init shock) -> the 75-level blow-up needs pbl_tm, consistent with D13.
