@@ -1,6 +1,6 @@
-tn-corr-tnr
-libm_wx2020_fields.npz,wx_truth_2020.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore tn_rain_diag.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz /kaggle/working/tnr_corr.json 2020-05-20,2020-06-09,2020-07-19,2020-08-08,2020-10-27,2020-12-06 '{"corr":{"grid":"T170","evap_ifs":1.0,"rad_prm":{"lw_cnt":0.6667},"ck_z":1.0}}' > /kaggle/working/tnr.log 2>&1; tail -12 /kaggle/working/tnr.log
+tn-tr75-f2fix2
+libm_wx2020_fields.npz
+cd . && python -W ignore trace75.py /kaggle/working/libm_wx2020_fields.npz '{"layers":"tp75","grid":"T170","pbl_tm":1.0,"sh_mflux":0.03}' 72 /kaggle/working/trace.json 2>&1 | tail -60
 NvidiaTeslaT4
-14
-#c14 2026-11-03T01:53Z
+1
+#r1 2026-11-03T06:37Z
