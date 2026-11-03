@@ -1,6 +1,6 @@
-tn-shmf-sb
-libm_fields.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/sb_shmf.json /kaggle/working/sb_shmf.json > /kaggle/working/sb.log 2>&1; tail -20 /kaggle/working/sb.log
+tn-tr75-0609b
+libm_wx2020_fields.npz
+cd . && TRACE_START=2020-06-09T00 python -W ignore trace75.py /kaggle/working/libm_wx2020_fields.npz '{"layers":"tp75","grid":"T170","pbl_tm":1.0,"sh_mflux":0.03}' 720 /kaggle/working/trace.json 2>&1 | tail -60
 NvidiaTeslaT4
-6
-#h6 2026-11-03T15:31Z
+7
+#h7 2026-11-03T15:32Z
