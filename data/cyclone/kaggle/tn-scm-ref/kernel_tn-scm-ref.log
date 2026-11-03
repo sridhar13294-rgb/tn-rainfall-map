@@ -1,262 +1,262 @@
-[{"stream_name":"stdout","time":1.016669751,"data":"+ nvidia-smi || true\n"}
-,{"stream_name":"stdout","time":1.048163041,"data":"Tue Nov  3 07:33:42 2026       \n"}
-,{"stream_name":"stdout","time":1.048194275,"data":"+-----------------------------------------------------------------------------------------+\n"}
-,{"stream_name":"stdout","time":1.048198557,"data":"| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |\n"}
-,{"stream_name":"stdout","time":1.04820126,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
-,{"stream_name":"stdout","time":1.048221215,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
-,{"stream_name":"stdout","time":1.048250873,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
-,{"stream_name":"stdout","time":1.048255497,"data":"|                                         |                        |               MIG M. |\n"}
-,{"stream_name":"stdout","time":1.048260128,"data":"|=========================================+========================+======================|\n"}
-,{"stream_name":"stdout","time":1.105671306,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
-,{"stream_name":"stdout","time":1.105701465,"data":"| N/A   48C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
-,{"stream_name":"stdout","time":1.105706778,"data":"|                                         |                        |                  N/A |\n"}
-,{"stream_name":"stdout","time":1.105712001,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
-,{"stream_name":"stdout","time":1.105717234,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
-,{"stream_name":"stdout","time":1.10572233,"data":"| N/A   49C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
-,{"stream_name":"stdout","time":1.105727579,"data":"|                                         |                        |                  N/A |\n"}
-,{"stream_name":"stdout","time":1.105732874,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
-,{"stream_name":"stdout","time":1.106426841,"data":"\n"}
-,{"stream_name":"stdout","time":1.106438261,"data":"+-----------------------------------------------------------------------------------------+\n"}
-,{"stream_name":"stdout","time":1.106442865,"data":"| Processes:                                                                              |\n"}
-,{"stream_name":"stdout","time":1.106448221,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
-,{"stream_name":"stdout","time":1.106453613,"data":"|        ID   ID                                                               Usage      |\n"}
-,{"stream_name":"stdout","time":1.106458985,"data":"|=========================================================================================|\n"}
-,{"stream_name":"stdout","time":1.10804125,"data":"|  No running processes found                                                             |\n"}
-,{"stream_name":"stdout","time":1.108058199,"data":"+-----------------------------------------------------------------------------------------+\n"}
-,{"stream_name":"stdout","time":1.428776868,"data":"exit 0\n"}
-,{"stream_name":"stdout","time":1.430462184,"data":"accelerator asked NvidiaTeslaT4 -\u003e jax for cuda12\n"}
-,{"stream_name":"stdout","time":1.430516176,"data":"+ pip install -q -U \"jax[cuda12]\"\n"}
-,{"stream_name":"stderr","time":28.347896584,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
-,{"stream_name":"stderr","time":28.347927727,"data":"bigframes 2.48.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
-,{"stream_name":"stderr","time":28.347932285,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.4 which is incompatible.\n"}
-,{"stream_name":"stderr","time":28.347935235,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
-,{"stream_name":"stderr","time":28.34793776,"data":"gradio 6.26.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
-,{"stream_name":"stderr","time":28.347940209,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
-,{"stream_name":"stderr","time":28.347962797,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.4 which is incompatible.\n"}
-,{"stream_name":"stdout","time":28.619029601,"data":"exit 0\n"}
-,{"stream_name":"stdout","time":28.619070727,"data":"+ free -g; nproc; python -c \"import jax; print(jax.devices())\" || true\n"}
-,{"stream_name":"stdout","time":28.643937527,"data":"               total        used        free      shared  buff/cache   available\n"}
-,{"stream_name":"stdout","time":28.643987702,"data":"Mem:              31           1          23           0           7          30\n"}
-,{"stream_name":"stdout","time":28.643998958,"data":"Swap:              0           0           0\n"}
-,{"stream_name":"stdout","time":28.648621881,"data":"4\n"}
-,{"stream_name":"stdout","time":37.7197003,"data":"[CudaDevice(id=0), CudaDevice(id=1)]\n"}
-,{"stream_name":"stdout","time":41.426769656,"data":"exit 0\n"}
-,{"stream_name":"stdout","time":41.426804179,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
-,{"stream_name":"stdout","time":51.258648448,"data":"exit 0\n"}
-,{"stream_name":"stdout","time":51.258700407,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
-,{"stream_name":"stdout","time":76.862998618,"data":"exit 0\n"}
-,{"stream_name":"stdout","time":76.863039674,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o libm_wx2020_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020_fields.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" libm_wx2020_fields.npz || { echo BAD_DOWNLOAD libm_wx2020_fields.npz; rm -f libm_wx2020_fields.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o libm_wx2020_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020_fields.npz; }\n"}
-,{"stream_name":"stdout","time":79.809229583,"data":"exit 0\n"}
-,{"stream_name":"stdout","time":79.809260647,"data":"setup s 79\n"}
-,{"stream_name":"stdout","time":79.809271559,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 cd . \u0026\u0026 python -W ignore scm_ref.py /kaggle/working/scm_ref.json 2\u003e\u00261 | tail -200 2\u003e\u00261 | tee job.log\n"}
-,{"stream_name":"stdout","time":454.142808164,"data":"qr_acr_qsV2.dat\n"}
-,{"stream_name":"stdout","time":454.142842727,"data":"+ rm -f thompson_tables.tar.gz\n"}
-,{"stream_name":"stdout","time":454.142849116,"data":"+ cd /kaggle/working/scm/ccpp-scm/contrib/../\n"}
-,{"stream_name":"stdout","time":454.142865035,"data":"\n"}
-,{"stream_name":"stdout","time":454.142871805,"data":"== build: rc 0 (155 s)\n"}
-,{"stream_name":"stdout","time":454.142875288,"data":"/CMakeFiles/ccpp_physics.dir/physics/ccpp_SCM_GFS_v16_radiation_cap.F90.o\n"}
-,{"stream_name":"stdout","time":454.142878846,"data":"[ 91%] Building Fortran object ccpp/physics/CMakeFiles/ccpp_physics.dir/physics/ccpp_SCM_GFS_v16_physics_cap.F90.o\n"}
-,{"stream_name":"stdout","time":454.142882649,"data":"[ 92%] Building Fortran object ccpp/physics/CMakeFiles/ccpp_physics.dir/physics/ccpp_SCM_GFS_v16_time_vary_cap.F90.o\n"}
-,{"stream_name":"stdout","time":454.142886222,"data":"[ 93%] Building Fortran object ccpp/physics/CMakeFiles/ccpp_physics.dir/physics/ccpp_SCM_GFS_v16_cap.F90.o\n"}
-,{"stream_name":"stdout","time":454.142889914,"data":"[ 93%] Linking Fortran static library libccpp_physics.a\n"}
-,{"stream_name":"stdout","time":454.142893327,"data":"[ 93%] Built target ccpp_physics\n"}
-,{"stream_name":"stdout","time":454.142896552,"data":"[ 94%] Building Fortran object CMakeFiles/scm.dir/ccpp_static_api.F90.o\n"}
-,{"stream_name":"stdout","time":454.142900691,"data":"[ 95%] Building Fortran object CMakeFiles/scm.dir/scm_utils.F90.o\n"}
-,{"stream_name":"stdout","time":454.142904097,"data":"[ 95%] Building Fortran object CMakeFiles/scm.dir/scm_vgrid.F90.o\n"}
-,{"stream_name":"stdout","time":454.142907433,"data":"[ 96%] Building Fortran object CMakeFiles/scm.dir/scm_forcing.F90.o\n"}
-,{"stream_name":"stdout","time":454.142910877,"data":"[ 96%] Building Fortran object CMakeFiles/scm.dir/scm_setup.F90.o\n"}
-,{"stream_name":"stdout","time":454.14291423,"data":"[ 97%] Building Fortran object CMakeFiles/scm.dir/scm_input.F90.o\n"}
-,{"stream_name":"stdout","time":454.142921652,"data":"[ 97%] Building Fortran object CMakeFiles/scm.dir/scm_output.F90.o\n"}
-,{"stream_name":"stdout","time":454.142935074,"data":"[ 98%] Building Fortran object CMakeFiles/scm.dir/scm_time_integration.F90.o\n"}
-,{"stream_name":"stdout","time":454.142939579,"data":"[ 99%] Building Fortran object CMakeFiles/scm.dir/scm.F90.o\n"}
-,{"stream_name":"stdout","time":454.142943419,"data":"[100%] Linking Fortran executable scm\n"}
-,{"stream_name":"stdout","time":454.142946901,"data":"[100%] Built target scm\n"}
-,{"stream_name":"stdout","time":454.142950833,"data":"ccpp\n"}
-,{"stream_name":"stdout","time":454.142954621,"data":"ccpp_prebuild.err\n"}
-,{"stream_name":"stdout","time":454.142957924,"data":"ccpp_prebuild.out\n"}
-,{"stream_name":"stdout","time":454.142961241,"data":"ccpp_static_api.mod\n"}
-,{"stream_name":"stdout","time":454.142964549,"data":"CMakeCache.txt\n"}
-,{"stream_name":"stdout","time":454.14296778,"data":"CMakeFiles\n"}
-,{"stream_name":"stdout","time":454.142970959,"data":"cmake_install.cmake\n"}
-,{"stream_name":"stdout","time":454.142974111,"data":"cm.log\n"}
-,{"stream_name":"stdout","time":454.142977287,"data":"data_qc.mod\n"}
-,{"stream_name":"stdout","time":454.142980479,"data":"Makefile\n"}
-,{"stream_name":"stdout","time":454.142983602,"data":"mk.log\n"}
-,{"stream_name":"stdout","time":454.142986792,"data":"netcdf_def.mod\n"}
-,{"stream_name":"stdout","time":454.142990012,"data":"netcdf_put.mod\n"}
-,{"stream_name":"stdout","time":454.142993204,"data":"netcdf_read.mod\n"}
-,{"stream_name":"stdout","time":454.142996358,"data":"run_scm.py\n"}
-,{"stream_name":"stdout","time":454.142999756,"data":"scm\n"}
-,{"stream_name":"stdout","time":454.143002945,"data":"scm_forcing.mod\n"}
-,{"stream_name":"stdout","time":454.143006272,"data":"scm_input.mod\n"}
-,{"stream_name":"stdout","time":454.143009471,"data":"scm_main.mod\n"}
-,{"stream_name":"stdout","time":454.143027912,"data":"scm_output.mod\n"}
-,{"stream_name":"stdout","time":454.143031762,"data":"scm_setup.mod\n"}
-,{"stream_name":"stdout","time":454.143035463,"data":"scm_time_integration.mod\n"}
-,{"stream_name":"stdout","time":454.143039456,"data":"scm_utils.mod\n"}
-,{"stream_name":"stdout","time":454.143043217,"data":"scm_vgrid.mod\n"}
-,{"stream_name":"stdout","time":454.143046896,"data":"\n"}
-,{"stream_name":"stdout","time":454.143050227,"data":"== runner check: rc 0 (0 s)\n"}
-,{"stream_name":"stdout","time":454.143053522,"data":"/tmp/scmenv/bin/mpirun\n"}
-,{"stream_name":"stdout","time":454.143056721,"data":"/tmp/scmenv/bin/time\n"}
-,{"stream_name":"stdout","time":454.143059947,"data":"ccpp\n"}
-,{"stream_name":"stdout","time":454.143063147,"data":"ccpp_prebuild.err\n"}
-,{"stream_name":"stdout","time":454.143066513,"data":"ccpp_prebuild.out\n"}
-,{"stream_name":"stdout","time":454.143069715,"data":"ccpp_static_api.mod\n"}
-,{"stream_name":"stdout","time":454.143073533,"data":"CMakeCache.txt\n"}
-,{"stream_name":"stdout","time":454.143077179,"data":"CMakeFiles\n"}
-,{"stream_name":"stdout","time":454.143080485,"data":"cmake_install.cmake\n"}
-,{"stream_name":"stdout","time":454.143083981,"data":"cm.log\n"}
-,{"stream_name":"stdout","time":454.143087456,"data":"data_qc.mod\n"}
-,{"stream_name":"stdout","time":454.143091421,"data":"Makefile\n"}
-,{"stream_name":"stdout","time":454.143096281,"data":"mk.log\n"}
-,{"stream_name":"stdout","time":454.143099959,"data":"netcdf_def.mod\n"}
-,{"stream_name":"stdout","time":454.143103475,"data":"netcdf_put.mod\n"}
-,{"stream_name":"stdout","time":454.14310712,"data":"netcdf_read.mod\n"}
-,{"stream_name":"stdout","time":454.143110616,"data":"run_scm.py\n"}
-,{"stream_name":"stdout","time":454.143114298,"data":"scm\n"}
-,{"stream_name":"stdout","time":454.143117935,"data":"scm_forcing.mod\n"}
-,{"stream_name":"stdout","time":454.143121901,"data":"scm_input.mod\n"}
-,{"stream_name":"stdout","time":454.143125484,"data":"scm_main.mod\n"}
-,{"stream_name":"stdout","time":454.143128757,"data":"scm_output.mod\n"}
-,{"stream_name":"stdout","time":454.14313211,"data":"scm_setup.mod\n"}
-,{"stream_name":"stdout","time":454.143136093,"data":"scm_time_integration.mod\n"}
-,{"stream_name":"stdout","time":454.14313966,"data":"scm_utils.mod\n"}
-,{"stream_name":"stdout","time":454.143143464,"data":"scm_vgrid.mod\n"}
-,{"stream_name":"stdout","time":454.143147573,"data":"\n"}
-,{"stream_name":"stdout","time":454.143151248,"data":"== run bomex: rc 0 (3 s)\n"}
-,{"stream_name":"stdout","time":454.143156914,"data":"_GFS_v16_ps. Exiting...\"\n"}
-,{"stream_name":"stdout","time":454.143160416,"data":"    stderr: \"Calling ccpp_physics_init with suite 'SCM_GFS_v16_ps'\n"}
-,{"stream_name":"stdout","time":454.143163941,"data":"Called ccpp_physics_init with suite 'SCM_GFS_v16_ps', ierr=1\n"}
-,{"stream_name":"stdout","time":454.143167346,"data":"ERROR STOP \n"}
-,{"stream_name":"stdout","time":454.143170534,"data":"\n"}
-,{"stream_name":"stdout","time":454.143173721,"data":"Error termination. Backtrace:\n"}
-,{"stream_name":"stdout","time":454.143176967,"data":"#0  0x5bd8cbe555f5 in __scm_main_MOD_scm_main_sub\n"}
-,{"stream_name":"stdout","time":454.143180306,"data":"\tat /kaggle/working/scm/ccpp-scm/scm/src/scm.F90:61\n"}
-,{"stream_name":"stdout","time":454.143183948,"data":"#1  0x5bd8cbe4f71e in scm\n"}
-,{"stream_name":"stdout","time":454.143187172,"data":"\tat /kaggle/working/scm/ccpp-scm/scm/src/scm.F90:452\n"}
-,{"stream_name":"stdout","time":454.143190512,"data":"#2  0x5bd8cbe4f71e in main\n"}
-,{"stream_name":"stdout","time":454.143197542,"data":"\tat /kaggle/working/scm/ccpp-scm/scm/src/scm.F90:449\"\n"}
-,{"stream_name":"stdout","time":454.143201189,"data":"Traceback (most recent call last):\n"}
-,{"stream_name":"stdout","time":454.143204457,"data":"  File \"/kaggle/working/scm/ccpp-scm/scm/bin/run_scm.py\", line 998, in \u003cmodule\u003e\n"}
-,{"stream_name":"stdout","time":454.143208164,"data":"    main()\n"}
-,{"stream_name":"stdout","time":454.143216061,"data":"  File \"/kaggle/working/scm/ccpp-scm/scm/bin/run_scm.py\", line 969, in main\n"}
-,{"stream_name":"stdout","time":454.143229662,"data":"    (status, time_elapsed) = launch_executable(use_gdb, gdb, mpi_command, ignore_error = l_ignore_error)\n"}
-,{"stream_name":"stdout","time":454.143234119,"data":"                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
-,{"stream_name":"stdout","time":454.143238076,"data":"  File \"/kaggle/working/scm/ccpp-scm/scm/bin/run_scm.py\", line 741, in launch_executable\n"}
-,{"stream_name":"stdout","time":454.14324241,"data":"    (status, stdout, stderr) = execute(cmd, ignore_error = ignore_error)\n"}
-,{"stream_name":"stdout","time":454.143246461,"data":"                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
-,{"stream_name":"stdout","time":454.143250012,"data":"  File \"/kaggle/working/scm/ccpp-scm/scm/bin/run_scm.py\", line 168, in execute\n"}
-,{"stream_name":"stdout","time":454.143253465,"data":"    raise Exception('Execution of command \"{0}\" failed, exit code {1}\\n'.format(cmd, status))\n"}
-,{"stream_name":"stdout","time":454.143257249,"data":"Exception: Execution of command \"(cd /kaggle/working/scm/ccpp-scm/scm/run \u0026\u0026 time mpirun -np 1 /kaggle/working/scm/ccpp-scm/scm/run/scm)\" failed, exit code 1\n"}
-,{"stream_name":"stdout","time":454.143261114,"data":"\n"}
-,{"stream_name":"stdout","time":454.143264166,"data":"../run/output_bomex_SCM_GFS_v16:\n"}
-,{"stream_name":"stdout","time":454.143267469,"data":"bomex_SCM_GFS_v16.nml\n"}
-,{"stream_name":"stdout","time":454.143270716,"data":"logfile\n"}
-,{"stream_name":"stdout","time":454.143273896,"data":"\n"}
-,{"stream_name":"stdout","time":454.143276935,"data":"== direct scm bomex (diagnostic: the executable's own messages): rc 0 (2 s)\n"}
-,{"stream_name":"stdout","time":454.14328047,"data":"00     \n"}
-,{"stream_name":"stdout","time":454.143283627,"data":"  sec               :    0.0000000000000000     \n"}
-,{"stream_name":"stdout","time":454.143286986,"data":"  first_time_step   :  T\n"}
-,{"stream_name":"stdout","time":454.143290169,"data":"  restart           :  F\n"}
-,{"stream_name":"stdout","time":454.143293434,"data":"  lsm_cold_start    :  T\n"}
-,{"stream_name":"stdout","time":454.143296612,"data":"  \n"}
-,{"stream_name":"stdout","time":454.143299811,"data":" lightning threat indexes\n"}
-,{"stream_name":"stdout","time":454.143306668,"data":"  lightning_threat  :  F\n"}
-,{"stream_name":"stdout","time":454.143309116,"data":" ***WARNING***: The shortwave radiation calling period is different than the output period.\n"}
-,{"stream_name":"stdout","time":454.143312226,"data":" From input_GFS_v16.nml, fhswr =    1200.0000000000000     \n"}
-,{"stream_name":"stdout","time":454.143328839,"data":" The given output period in the case configuration namelist is    3600.0000000000000     \n"}
-,{"stream_name":"stdout","time":454.143333526,"data":" This will cause the effective output period of variables that are only given values during shortwave calls to be    3600.0000000000000       seconds.\n"}
-,{"stream_name":"stdout","time":454.143337711,"data":" ***WARNING***: The longwave radiation calling period is different than the output period.\n"}
-,{"stream_name":"stdout","time":454.143353309,"data":" From input_GFS_v16.nml, fhlwr =    1200.0000000000000     \n"}
-,{"stream_name":"stdout","time":454.143357281,"data":" The given output period in the case configuration namelist is    3600.0000000000000     \n"}
-,{"stream_name":"stdout","time":454.143360947,"data":" This will cause the effective output period of variables that are only given values during longwave calls to be    3600.0000000000000       seconds.\n"}
-,{"stream_name":"stdout","time":454.143365084,"data":"Calling ccpp_physics_init with suite 'SCM_GFS_v16_ps'\n"}
-,{"stream_name":"stdout","time":454.143368738,"data":"Called ccpp_physics_init with suite 'SCM_GFS_v16_ps', ierr=1\n"}
-,{"stream_name":"stdout","time":454.143372079,"data":"An error occurred in ccpp_physics_init: Invalid suite SCM_GFS_v16_ps. Exiting...\n"}
-,{"stream_name":"stdout","time":454.143375477,"data":"ERROR STOP \n"}
-,{"stream_name":"stdout","time":454.143378635,"data":"\n"}
-,{"stream_name":"stdout","time":454.143381761,"data":"Error termination. Backtrace:\n"}
-,{"stream_name":"stdout","time":454.143384985,"data":"#0  0x58238c81a5f5 in __scm_main_MOD_scm_main_sub\n"}
-,{"stream_name":"stdout","time":454.143388334,"data":"\tat /kaggle/working/scm/ccpp-scm/scm/src/scm.F90:61\n"}
-,{"stream_name":"stdout","time":454.143391717,"data":"#1  0x58238c81471e in scm\n"}
-,{"stream_name":"stdout","time":454.143394979,"data":"\tat /kaggle/working/scm/ccpp-scm/scm/src/scm.F90:452\n"}
-,{"stream_name":"stdout","time":454.143398291,"data":"#2  0x58238c81471e in main\n"}
-,{"stream_name":"stdout","time":454.143401509,"data":"\tat /kaggle/working/scm/ccpp-scm/scm/src/scm.F90:449\n"}
-,{"stream_name":"stdout","time":454.143404818,"data":"bomex_SCM_GFS_v16.nml\n"}
-,{"stream_name":"stdout","time":454.143408625,"data":"logfile\n"}
-,{"stream_name":"stdout","time":454.143412139,"data":"\n"}
-,{"stream_name":"stdout","time":454.143415846,"data":"== run twpice: rc 0 (26 s)\n"}
-,{"stream_name":"stdout","time":454.143419586,"data":"|\n"}
-,{"stream_name":"stdout","time":454.143423685,"data":"INFO: Executing process 1 of 1: case=twpice, suite=SCM_GFS_v16, namelist=input_GFS_v16.nml\n"}
-,{"stream_name":"stdout","time":454.143427569,"data":"INFO: Parsing case configuration namelist /kaggle/working/scm/ccpp-scm/scm/etc/case_config/twpice.nml\n"}
-,{"stream_name":"stdout","time":454.143431861,"data":"INFO: Creating experiment configuration namelist input_experiment.nml in the run directory from /kaggle/working/scm/ccpp-scm/scm/etc/case_config/twpice.nml using SCM_GFS_v16 and input_GFS_v16.nml \n"}
-,{"stream_name":"stdout","time":454.143437044,"data":"INFO: Using 600.0s as the timestep with an instantaneous output period of 3600.0s and a diagnostic output period of 3600.0s\n"}
-,{"stream_name":"stdout","time":454.143440679,"data":"INFO: Passing control to \"(cd /kaggle/working/scm/ccpp-scm/scm/run \u0026\u0026 time mpirun -np 1 /kaggle/working/scm/ccpp-scm/scm/run/scm)\"\n"}
-,{"stream_name":"stdout","time":454.143444509,"data":"INFO: Process \"(cd /kaggle/working/scm/ccpp-scm/scm/run \u0026\u0026 time mpirun -np 1 /kaggle/working/scm/ccpp-scm/scm/run/scm)\" returned with status 0\n"}
-,{"stream_name":"stdout","time":454.143448356,"data":"WARNING: Unable to get timing information from (cd /kaggle/working/scm/ccpp-scm/scm/run \u0026\u0026 time mpirun -np 1 /kaggle/working/scm/ccpp-scm/scm/run/scm) stderr\n"}
-,{"stream_name":"stdout","time":454.143452812,"data":"INFO: Process \"(case=twpice, suite=SCM_GFS_v16, namelist=input_GFS_v16.nml\" completed successfully\n"}
-,{"stream_name":"stdout","time":454.143456461,"data":"\n"}
-,{"stream_name":"stdout","time":454.143459624,"data":"Passing Summary:\n"}
-,{"stream_name":"stdout","time":454.143466406,"data":"-----------------------------------------------------\n"}
-,{"stream_name":"stdout","time":454.143469732,"data":"| Passing Case | Suite       | Namelist          | Status |\n"}
-,{"stream_name":"stdout","time":454.143473081,"data":"-----------------------------------------------------\n"}
-,{"stream_name":"stdout","time":454.143476322,"data":"| twpice | SCM_GFS_v16 | input_GFS_v16.nml | 0      |\n"}
-,{"stream_name":"stdout","time":454.143479693,"data":"-----------------------------------------------------\n"}
-,{"stream_name":"stdout","time":454.143483011,"data":"[1/1] passing cases\n"}
-,{"stream_name":"stdout","time":454.143511209,"data":"../run/output_bomex_SCM_GFS_v16:\n"}
-,{"stream_name":"stdout","time":454.143515296,"data":"bomex_SCM_GFS_v16.nml\n"}
-,{"stream_name":"stdout","time":454.143519162,"data":"logfile\n"}
-,{"stream_name":"stdout","time":454.143522299,"data":"\n"}
-,{"stream_name":"stdout","time":454.143525424,"data":"../run/output_twpice_SCM_GFS_v16:\n"}
-,{"stream_name":"stdout","time":454.143528646,"data":"logfile\n"}
-,{"stream_name":"stdout","time":454.143531815,"data":"output.nc\n"}
-,{"stream_name":"stdout","time":454.143535059,"data":"twpice_SCM_GFS_v16.nml\n"}
-,{"stream_name":"stdout","time":454.143538207,"data":"\n"}
-,{"stream_name":"stdout","time":454.143541284,"data":"== direct scm twpice (diagnostic: the executable's own messages): rc 0 (24 s)\n"}
-,{"stream_name":"stdout","time":454.143544592,"data":" 31 MINS  24.8 SECS\n"}
-,{"stream_name":"stdout","time":454.143547714,"data":"  EQUATION OF TIME       -14.2052489 MINS, OR   -852.31 SECS, OR-0.062152 RADIANS\n"}
-,{"stream_name":"stdout","time":454.143551124,"data":"  SOLAR CONSTANT        1396.4522113 (DISTANCE AJUSTED)\n"}
-,{"stream_name":"stdout","time":454.143554364,"data":"\n"}
-,{"stream_name":"stdout","time":454.143557427,"data":"\n"}
-,{"stream_name":"stdout","time":454.143560632,"data":"    for cosz calculations: nswr,deltim,deltsw,dtswh =           2   600.00000000000000        1200.0000000000000       0.33333333333333331        anginc,nstp =   1.4544410433286076E-002           6\n"}
-,{"stream_name":"stdout","time":454.143564355,"data":" itt =         3561\n"}
-,{"stream_name":"stdout","time":454.143567615,"data":" model time (s) =    2136600.0000000000     \n"}
-,{"stream_name":"stdout","time":454.143570876,"data":" itt =         3562\n"}
-,{"stream_name":"stdout","time":454.143574476,"data":" model time (s) =    2137200.0000000000     \n"}
-,{"stream_name":"stdout","time":454.143581916,"data":"0 FORECAST DATE          12 FEB.  2006 AT 20 HRS 40.00 MINS\n"}
-,{"stream_name":"stdout","time":454.143593429,"data":"  JULIAN DAY             2453779  PLUS   0.361111\n"}
-,{"stream_name":"stdout","time":454.143597322,"data":"  RADIUS VECTOR          0.9872638\n"}
-,{"stream_name":"stdout","time":454.143601052,"data":"  RIGHT ASCENSION OF SUN  21.7545758 HRS, OR  21 HRS  45 MINS  16.5 SECS\n"}
-,{"stream_name":"stdout","time":454.143605299,"data":"  DECLINATION OF THE SUN -13.5189113 DEGS, OR  -13 DEGS  31 MINS   8.1 SECS\n"}
-,{"stream_name":"stdout","time":454.143609164,"data":"  EQUATION OF TIME       -14.2050092 MINS, OR   -852.30 SECS, OR-0.062151 RADIANS\n"}
-,{"stream_name":"stdout","time":454.143613235,"data":"  SOLAR CONSTANT        1396.4448106 (DISTANCE AJUSTED)\n"}
-,{"stream_name":"stdout","time":454.143616787,"data":"\n"}
-,{"stream_name":"stdout","time":454.143619926,"data":"\n"}
-,{"stream_name":"stdout","time":454.143623061,"data":"    for cosz calculations: nswr,deltim,deltsw,dtswh =           2   600.00000000000000        1200.0000000000000       0.33333333333333331        anginc,nstp =   1.4544410433286076E-002           6\n"}
-,{"stream_name":"stdout","time":454.143630713,"data":" itt =         3563\n"}
-,{"stream_name":"stdout","time":454.14363402,"data":" model time (s) =    2137800.0000000000     \n"}
-,{"stream_name":"stdout","time":454.143637348,"data":" The model_time has exceeded the specifed period of forcing. Forcing will now be held constant at the last specified values.\n"}
-,{"stream_name":"stdout","time":454.143640901,"data":" itt =         3564\n"}
-,{"stream_name":"stdout","time":454.143644077,"data":" model time (s) =    2138400.0000000000     \n"}
-,{"stream_name":"stdout","time":454.143647343,"data":"output_bomex_SCM_GFS_v16:\n"}
-,{"stream_name":"stdout","time":454.143650584,"data":"bomex_SCM_GFS_v16.nml\n"}
-,{"stream_name":"stdout","time":454.143653777,"data":"logfile\n"}
-,{"stream_name":"stdout","time":454.143656942,"data":"\n"}
-,{"stream_name":"stdout","time":454.143660081,"data":"output_twpice_SCM_GFS_v16:\n"}
-,{"stream_name":"stdout","time":454.143664033,"data":"logfile\n"}
-,{"stream_name":"stdout","time":454.143667202,"data":"output.nc\n"}
-,{"stream_name":"stdout","time":454.143674152,"data":"twpice_SCM_GFS_v16.nml\n"}
-,{"stream_name":"stdout","time":454.14367696,"data":"\n"}
-,{"stream_name":"stdout","time":454.143688,"data":"done ['twpice_SCM_GFS_v16'] None\n"}
-,{"stream_name":"stdout","time":454.143691801,"data":"exit 0\n"}
-,{"stream_name":"stdout","time":454.143695593,"data":"+ rm -rf repo libm_wx2020_fields.npz\n"}
-,{"stream_name":"stdout","time":454.348896382,"data":"exit 0\n"}
-,{"stream_name":"stdout","time":454.34892357,"data":"total s 453\n"}
-,{"stream_name":"stderr","time":456.517051773,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
-,{"stream_name":"stderr","time":456.517078793,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
-,{"stream_name":"stderr","time":456.806549373,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
-,{"stream_name":"stderr","time":456.806575262,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
-,{"stream_name":"stderr","time":457.611778648,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
-,{"stream_name":"stderr","time":458.682802146,"data":"[NbConvertApp] Writing 281503 bytes to __results__.html\n"}
+[{"stream_name":"stdout","time":0.931935809,"data":"+ nvidia-smi || true\n"}
+,{"stream_name":"stdout","time":0.996779853,"data":"Tue Nov  3 17:00:46 2026       \n"}
+,{"stream_name":"stdout","time":0.996864923,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":0.996888405,"data":"| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":0.996897251,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.996911668,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":0.996925701,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":0.996934837,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":0.996955965,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":1.093940301,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":1.093966227,"data":"| N/A   48C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":1.093970568,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":1.093974048,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.093977392,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":1.093980921,"data":"| N/A   46C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":1.093984265,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":1.093987648,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.095894945,"data":"\n"}
+,{"stream_name":"stdout","time":1.095913338,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.095918205,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":1.095922282,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":1.095926405,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":1.095930445,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":1.100403632,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":1.10042204,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.431044402,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1.432784878,"data":"accelerator asked NvidiaTeslaT4 -\u003e jax for cuda12\n"}
+,{"stream_name":"stdout","time":1.432805406,"data":"+ pip install -q -U \"jax[cuda12]\"\n"}
+,{"stream_name":"stderr","time":28.353134151,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":28.353173233,"data":"bigframes 2.48.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":28.353178458,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stderr","time":28.353182286,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":28.353185882,"data":"gradio 6.26.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
+,{"stream_name":"stderr","time":28.353189557,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":28.35319781,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stdout","time":28.629781457,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":28.629851593,"data":"+ free -g; nproc; python -c \"import jax; print(jax.devices())\" || true\n"}
+,{"stream_name":"stdout","time":28.651191195,"data":"               total        used        free      shared  buff/cache   available\n"}
+,{"stream_name":"stdout","time":28.651219777,"data":"Mem:              31           1          23           0           7          30\n"}
+,{"stream_name":"stdout","time":28.651224336,"data":"Swap:              0           0           0\n"}
+,{"stream_name":"stdout","time":28.654956371,"data":"4\n"}
+,{"stream_name":"stdout","time":37.536891352,"data":"[CudaDevice(id=0), CudaDevice(id=1)]\n"}
+,{"stream_name":"stdout","time":41.299673273,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":41.2997088,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
+,{"stream_name":"stdout","time":56.18835723,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":56.188432643,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
+,{"stream_name":"stdout","time":111.03055215,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":111.030596211,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o libm_wx2020_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020_fields.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" libm_wx2020_fields.npz || { echo BAD_DOWNLOAD libm_wx2020_fields.npz; rm -f libm_wx2020_fields.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o libm_wx2020_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020_fields.npz; }\n"}
+,{"stream_name":"stdout","time":113.941511488,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":113.941557994,"data":"setup s 113\n"}
+,{"stream_name":"stdout","time":113.941565138,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 cd . \u0026\u0026 python -W ignore scm_ref.py /kaggle/working/scm_ref.json 2\u003e\u00261 | tail -200 2\u003e\u00261 | tee job.log\n"}
+,{"stream_name":"stdout","time":551.94471206,"data":"\n"}
+,{"stream_name":"stdout","time":551.944768977,"data":"\n"}
+,{"stream_name":"stdout","time":551.944774997,"data":"== static data: rc 0 (23 s)\n"}
+,{"stream_name":"stdout","time":551.944779716,"data":"824050K .......... .......... .......... .......... .......... 99%  233M 0s\n"}
+,{"stream_name":"stdout","time":551.944793431,"data":"824100K .......... .......... .......... .........            100%  423M=7.2s\n"}
+,{"stream_name":"stdout","time":551.944797295,"data":"\n"}
+,{"stream_name":"stdout","time":551.944800755,"data":"2026-11-03 17:05:59 (112 MB/s) - ‘raw_case_input.tar.gz’ saved [843918350/843918350]\n"}
+,{"stream_name":"stdout","time":551.944805001,"data":"\n"}
+,{"stream_name":"stdout","time":551.944808403,"data":"qr_acr_qsV2.dat\n"}
+,{"stream_name":"stdout","time":551.944841892,"data":"+ rm -f thompson_tables.tar.gz\n"}
+,{"stream_name":"stdout","time":551.944846623,"data":"+ cd /kaggle/working/scm/ccpp-scm/contrib/../\n"}
+,{"stream_name":"stdout","time":551.944850641,"data":"\n"}
+,{"stream_name":"stdout","time":551.944854643,"data":"== build: rc 0 (165 s)\n"}
+,{"stream_name":"stdout","time":551.944858581,"data":"CMakeFiles/ccpp_physics.dir/physics/ccpp_SCM_GFS_v16_ps_radiation_cap.F90.o\n"}
+,{"stream_name":"stdout","time":551.944862441,"data":"[ 91%] Building Fortran object ccpp/physics/CMakeFiles/ccpp_physics.dir/physics/ccpp_SCM_GFS_v16_ps_time_vary_cap.F90.o\n"}
+,{"stream_name":"stdout","time":551.944866127,"data":"[ 92%] Building Fortran object ccpp/physics/CMakeFiles/ccpp_physics.dir/physics/ccpp_SCM_GFS_v16_ps_cap.F90.o\n"}
+,{"stream_name":"stdout","time":551.944869789,"data":"[ 93%] Building Fortran object ccpp/physics/CMakeFiles/ccpp_physics.dir/physics/ccpp_SCM_GFS_v16_cap.F90.o\n"}
+,{"stream_name":"stdout","time":551.944873471,"data":"[ 94%] Linking Fortran static library libccpp_physics.a\n"}
+,{"stream_name":"stdout","time":551.944877029,"data":"[ 94%] Built target ccpp_physics\n"}
+,{"stream_name":"stdout","time":551.94488051,"data":"[ 95%] Building Fortran object CMakeFiles/scm.dir/ccpp_static_api.F90.o\n"}
+,{"stream_name":"stdout","time":551.944884741,"data":"[ 96%] Building Fortran object CMakeFiles/scm.dir/scm_utils.F90.o\n"}
+,{"stream_name":"stdout","time":551.944888681,"data":"[ 96%] Building Fortran object CMakeFiles/scm.dir/scm_vgrid.F90.o\n"}
+,{"stream_name":"stdout","time":551.944892951,"data":"[ 97%] Building Fortran object CMakeFiles/scm.dir/scm_setup.F90.o\n"}
+,{"stream_name":"stdout","time":551.944897087,"data":"[ 97%] Building Fortran object CMakeFiles/scm.dir/scm_forcing.F90.o\n"}
+,{"stream_name":"stdout","time":551.944901078,"data":"[ 98%] Building Fortran object CMakeFiles/scm.dir/scm_input.F90.o\n"}
+,{"stream_name":"stdout","time":551.944904742,"data":"[ 98%] Building Fortran object CMakeFiles/scm.dir/scm_output.F90.o\n"}
+,{"stream_name":"stdout","time":551.944908582,"data":"[ 99%] Building Fortran object CMakeFiles/scm.dir/scm_time_integration.F90.o\n"}
+,{"stream_name":"stdout","time":551.944912766,"data":"[ 99%] Building Fortran object CMakeFiles/scm.dir/scm.F90.o\n"}
+,{"stream_name":"stdout","time":551.94491671,"data":"[100%] Linking Fortran executable scm\n"}
+,{"stream_name":"stdout","time":551.944920669,"data":"[100%] Built target scm\n"}
+,{"stream_name":"stdout","time":551.944924386,"data":"ccpp\n"}
+,{"stream_name":"stdout","time":551.944927885,"data":"ccpp_prebuild.err\n"}
+,{"stream_name":"stdout","time":551.944932196,"data":"ccpp_prebuild.out\n"}
+,{"stream_name":"stdout","time":551.944936135,"data":"ccpp_static_api.mod\n"}
+,{"stream_name":"stdout","time":551.944939448,"data":"CMakeCache.txt\n"}
+,{"stream_name":"stdout","time":551.944943312,"data":"CMakeFiles\n"}
+,{"stream_name":"stdout","time":551.944946637,"data":"cmake_install.cmake\n"}
+,{"stream_name":"stdout","time":551.944949915,"data":"cm.log\n"}
+,{"stream_name":"stdout","time":551.944953634,"data":"data_qc.mod\n"}
+,{"stream_name":"stdout","time":551.944962474,"data":"Makefile\n"}
+,{"stream_name":"stdout","time":551.944966082,"data":"mk.log\n"}
+,{"stream_name":"stdout","time":551.94496911,"data":"netcdf_def.mod\n"}
+,{"stream_name":"stdout","time":551.944972366,"data":"netcdf_put.mod\n"}
+,{"stream_name":"stdout","time":551.944975875,"data":"netcdf_read.mod\n"}
+,{"stream_name":"stdout","time":551.944979144,"data":"run_scm.py\n"}
+,{"stream_name":"stdout","time":551.9449833,"data":"scm\n"}
+,{"stream_name":"stdout","time":551.944986706,"data":"scm_forcing.mod\n"}
+,{"stream_name":"stdout","time":551.94499009,"data":"scm_input.mod\n"}
+,{"stream_name":"stdout","time":551.944993592,"data":"scm_main.mod\n"}
+,{"stream_name":"stdout","time":551.944997072,"data":"scm_output.mod\n"}
+,{"stream_name":"stdout","time":551.94500121,"data":"scm_setup.mod\n"}
+,{"stream_name":"stdout","time":551.945004464,"data":"scm_time_integration.mod\n"}
+,{"stream_name":"stdout","time":551.94500827,"data":"scm_utils.mod\n"}
+,{"stream_name":"stdout","time":551.94501222,"data":"scm_vgrid.mod\n"}
+,{"stream_name":"stdout","time":551.945015702,"data":"\n"}
+,{"stream_name":"stdout","time":551.945018718,"data":"== runner check: rc 0 (0 s)\n"}
+,{"stream_name":"stdout","time":551.945022952,"data":"/tmp/scmenv/bin/mpirun\n"}
+,{"stream_name":"stdout","time":551.945026214,"data":"/tmp/scmenv/bin/time\n"}
+,{"stream_name":"stdout","time":551.945029624,"data":"ccpp\n"}
+,{"stream_name":"stdout","time":551.945032977,"data":"ccpp_prebuild.err\n"}
+,{"stream_name":"stdout","time":551.945036736,"data":"ccpp_prebuild.out\n"}
+,{"stream_name":"stdout","time":551.945040616,"data":"ccpp_static_api.mod\n"}
+,{"stream_name":"stdout","time":551.945044486,"data":"CMakeCache.txt\n"}
+,{"stream_name":"stdout","time":551.945051192,"data":"CMakeFiles\n"}
+,{"stream_name":"stdout","time":551.945055131,"data":"cmake_install.cmake\n"}
+,{"stream_name":"stdout","time":551.945058955,"data":"cm.log\n"}
+,{"stream_name":"stdout","time":551.945062635,"data":"data_qc.mod\n"}
+,{"stream_name":"stdout","time":551.945065806,"data":"Makefile\n"}
+,{"stream_name":"stdout","time":551.945069048,"data":"mk.log\n"}
+,{"stream_name":"stdout","time":551.945072328,"data":"netcdf_def.mod\n"}
+,{"stream_name":"stdout","time":551.945076909,"data":"netcdf_put.mod\n"}
+,{"stream_name":"stdout","time":551.945080813,"data":"netcdf_read.mod\n"}
+,{"stream_name":"stdout","time":551.945085443,"data":"run_scm.py\n"}
+,{"stream_name":"stdout","time":551.945088644,"data":"scm\n"}
+,{"stream_name":"stdout","time":551.945091969,"data":"scm_forcing.mod\n"}
+,{"stream_name":"stdout","time":551.94509539,"data":"scm_input.mod\n"}
+,{"stream_name":"stdout","time":551.945098957,"data":"scm_main.mod\n"}
+,{"stream_name":"stdout","time":551.945101958,"data":"scm_output.mod\n"}
+,{"stream_name":"stdout","time":551.945105777,"data":"scm_setup.mod\n"}
+,{"stream_name":"stdout","time":551.945109056,"data":"scm_time_integration.mod\n"}
+,{"stream_name":"stdout","time":551.945112935,"data":"scm_utils.mod\n"}
+,{"stream_name":"stdout","time":551.945116711,"data":"scm_vgrid.mod\n"}
+,{"stream_name":"stdout","time":551.945131431,"data":"\n"}
+,{"stream_name":"stdout","time":551.945134799,"data":"== run bomex: rc 0 (3 s)\n"}
+,{"stream_name":"stdout","time":551.945138206,"data":"ace fluxes are used for case bomex. Switching to SDF suite_SCM_GFS_v16_ps.xml from suite_SCM_GFS_v16.xml\n"}
+,{"stream_name":"stdout","time":551.945141514,"data":"INFO: Creating experiment configuration namelist input_experiment.nml in the run directory from /kaggle/working/scm/ccpp-scm/scm/etc/case_config/bomex.nml using SCM_GFS_v16_ps and input_GFS_v16.nml \n"}
+,{"stream_name":"stdout","time":551.945150938,"data":"INFO: Found optional prescribed surface physics namelist /kaggle/working/scm/ccpp-scm/ccpp/physics_namelists/input_GFS_v16_ps.nml; linking it to run directory\n"}
+,{"stream_name":"stdout","time":551.945155275,"data":"INFO: Using 600.0s as the timestep with an instantaneous output period of 3600.0s and a diagnostic output period of 3600.0s\n"}
+,{"stream_name":"stdout","time":551.945158776,"data":"INFO: Passing control to \"(cd /kaggle/working/scm/ccpp-scm/scm/run \u0026\u0026 time mpirun -np 1 /kaggle/working/scm/ccpp-scm/scm/run/scm)\"\n"}
+,{"stream_name":"stdout","time":551.945162798,"data":"INFO: Process \"(cd /kaggle/working/scm/ccpp-scm/scm/run \u0026\u0026 time mpirun -np 1 /kaggle/working/scm/ccpp-scm/scm/run/scm)\" returned with status 0\n"}
+,{"stream_name":"stdout","time":551.945166926,"data":"WARNING: Unable to get timing information from (cd /kaggle/working/scm/ccpp-scm/scm/run \u0026\u0026 time mpirun -np 1 /kaggle/working/scm/ccpp-scm/scm/run/scm) stderr\n"}
+,{"stream_name":"stdout","time":551.945170313,"data":"INFO: Process \"(case=bomex, suite=SCM_GFS_v16, namelist=input_GFS_v16.nml\" completed successfully\n"}
+,{"stream_name":"stdout","time":551.945173727,"data":"\n"}
+,{"stream_name":"stdout","time":551.945177747,"data":"Passing Summary:\n"}
+,{"stream_name":"stdout","time":551.945180832,"data":"----------------------------------------------------\n"}
+,{"stream_name":"stdout","time":551.94518418,"data":"| Passing Case | Suite       | Namelist          | Status |\n"}
+,{"stream_name":"stdout","time":551.945187373,"data":"----------------------------------------------------\n"}
+,{"stream_name":"stdout","time":551.945190542,"data":"| bomex | SCM_GFS_v16 | input_GFS_v16.nml | 0      |\n"}
+,{"stream_name":"stdout","time":551.945193883,"data":"----------------------------------------------------\n"}
+,{"stream_name":"stdout","time":551.945197575,"data":"[1/1] passing cases\n"}
+,{"stream_name":"stdout","time":551.945200526,"data":"../run/output_bomex_SCM_GFS_v16:\n"}
+,{"stream_name":"stdout","time":551.945203926,"data":"bomex_SCM_GFS_v16.nml\n"}
+,{"stream_name":"stdout","time":551.945207619,"data":"logfile\n"}
+,{"stream_name":"stdout","time":551.945211351,"data":"output.nc\n"}
+,{"stream_name":"stdout","time":551.945214626,"data":"\n"}
+,{"stream_name":"stdout","time":551.945218061,"data":"== direct scm bomex (diagnostic: the executable's own messages): rc 0 (2 s)\n"}
+,{"stream_name":"stdout","time":551.94522163,"data":"   6 HRS   4 MINS  57.1 SECS\n"}
+,{"stream_name":"stdout","time":551.945225238,"data":"  DECLINATION OF THE SUN  23.4383718 DEGS, OR   23 DEGS  26 MINS  18.1 SECS\n"}
+,{"stream_name":"stdout","time":551.945229324,"data":"  EQUATION OF TIME        -1.9163775 MINS, OR   -114.98 SECS, OR-0.008385 RADIANS\n"}
+,{"stream_name":"stdout","time":551.945234557,"data":"  SOLAR CONSTANT        1317.9762537 (DISTANCE AJUSTED)\n"}
+,{"stream_name":"stdout","time":551.945238406,"data":"\n"}
+,{"stream_name":"stdout","time":551.945241837,"data":"\n"}
+,{"stream_name":"stdout","time":551.945245264,"data":"    for cosz calculations: nswr,deltim,deltsw,dtswh =           2   600.00000000000000        1200.0000000000000       0.33333333333333331        anginc,nstp =   1.4544410433286076E-002           6\n"}
+,{"stream_name":"stdout","time":551.945249196,"data":" itt =           33\n"}
+,{"stream_name":"stdout","time":551.945252792,"data":" model time (s) =    19800.000000000000     \n"}
+,{"stream_name":"stdout","time":551.945256252,"data":" itt =           34\n"}
+,{"stream_name":"stdout","time":551.94525981,"data":" model time (s) =    20400.000000000000     \n"}
+,{"stream_name":"stdout","time":551.945266954,"data":"0 FORECAST DATE          22 JUNE  1969 AT 18 HRS 40.00 MINS\n"}
+,{"stream_name":"stdout","time":551.945270355,"data":"  JULIAN DAY             2440395  PLUS   0.277778\n"}
+,{"stream_name":"stdout","time":551.945273823,"data":"  RADIUS VECTOR          1.0163887\n"}
+,{"stream_name":"stdout","time":551.945277288,"data":"  RIGHT ASCENSION OF SUN   6.0834911 HRS, OR   6 HRS   5 MINS   0.6 SECS\n"}
+,{"stream_name":"stdout","time":551.945281094,"data":"  DECLINATION OF THE SUN  23.4382573 DEGS, OR   23 DEGS  26 MINS  17.7 SECS\n"}
+,{"stream_name":"stdout","time":551.945284874,"data":"  EQUATION OF TIME        -1.9193743 MINS, OR   -115.16 SECS, OR-0.008398 RADIANS\n"}
+,{"stream_name":"stdout","time":551.945288776,"data":"  SOLAR CONSTANT        1317.9742277 (DISTANCE AJUSTED)\n"}
+,{"stream_name":"stdout","time":551.945292492,"data":"\n"}
+,{"stream_name":"stdout","time":551.945309152,"data":"\n"}
+,{"stream_name":"stdout","time":551.94531235,"data":"    for cosz calculations: nswr,deltim,deltsw,dtswh =           2   600.00000000000000        1200.0000000000000       0.33333333333333331        anginc,nstp =   1.4544410433286076E-002           6\n"}
+,{"stream_name":"stdout","time":551.945316121,"data":" itt =           35\n"}
+,{"stream_name":"stdout","time":551.945319337,"data":" model time (s) =    21000.000000000000     \n"}
+,{"stream_name":"stdout","time":551.945322603,"data":" The model_time has exceeded the specifed period of forcing. Forcing will now be held constant at the last specified values.\n"}
+,{"stream_name":"stdout","time":551.945326042,"data":" itt =           36\n"}
+,{"stream_name":"stdout","time":551.945329187,"data":" model time (s) =    21600.000000000000     \n"}
+,{"stream_name":"stdout","time":551.945332405,"data":"bomex_SCM_GFS_v16.nml\n"}
+,{"stream_name":"stdout","time":551.945335686,"data":"logfile\n"}
+,{"stream_name":"stdout","time":551.945338811,"data":"output.nc\n"}
+,{"stream_name":"stdout","time":551.945341958,"data":"\n"}
+,{"stream_name":"stdout","time":551.945344987,"data":"== run twpice: rc 0 (26 s)\n"}
+,{"stream_name":"stdout","time":551.945348226,"data":"ecuting process 1 of 1: case=twpice, suite=SCM_GFS_v16, namelist=input_GFS_v16.nml\n"}
+,{"stream_name":"stdout","time":551.945351521,"data":"INFO: Parsing case configuration namelist /kaggle/working/scm/ccpp-scm/scm/etc/case_config/twpice.nml\n"}
+,{"stream_name":"stdout","time":551.945356522,"data":"INFO: Creating experiment configuration namelist input_experiment.nml in the run directory from /kaggle/working/scm/ccpp-scm/scm/etc/case_config/twpice.nml using SCM_GFS_v16 and input_GFS_v16.nml \n"}
+,{"stream_name":"stdout","time":551.945364627,"data":"INFO: Using 600.0s as the timestep with an instantaneous output period of 3600.0s and a diagnostic output period of 3600.0s\n"}
+,{"stream_name":"stdout","time":551.945367074,"data":"INFO: Passing control to \"(cd /kaggle/working/scm/ccpp-scm/scm/run \u0026\u0026 time mpirun -np 1 /kaggle/working/scm/ccpp-scm/scm/run/scm)\"\n"}
+,{"stream_name":"stdout","time":551.945370867,"data":"INFO: Process \"(cd /kaggle/working/scm/ccpp-scm/scm/run \u0026\u0026 time mpirun -np 1 /kaggle/working/scm/ccpp-scm/scm/run/scm)\" returned with status 0\n"}
+,{"stream_name":"stdout","time":551.945373404,"data":"WARNING: Unable to get timing information from (cd /kaggle/working/scm/ccpp-scm/scm/run \u0026\u0026 time mpirun -np 1 /kaggle/working/scm/ccpp-scm/scm/run/scm) stderr\n"}
+,{"stream_name":"stdout","time":551.945375902,"data":"INFO: Process \"(case=twpice, suite=SCM_GFS_v16, namelist=input_GFS_v16.nml\" completed successfully\n"}
+,{"stream_name":"stdout","time":551.94537844,"data":"\n"}
+,{"stream_name":"stdout","time":551.945383167,"data":"Passing Summary:\n"}
+,{"stream_name":"stdout","time":551.945385484,"data":"-----------------------------------------------------\n"}
+,{"stream_name":"stdout","time":551.945387789,"data":"| Passing Case | Suite       | Namelist          | Status |\n"}
+,{"stream_name":"stdout","time":551.945390124,"data":"-----------------------------------------------------\n"}
+,{"stream_name":"stdout","time":551.945392373,"data":"| twpice | SCM_GFS_v16 | input_GFS_v16.nml | 0      |\n"}
+,{"stream_name":"stdout","time":551.945394612,"data":"-----------------------------------------------------\n"}
+,{"stream_name":"stdout","time":551.945396846,"data":"[1/1] passing cases\n"}
+,{"stream_name":"stdout","time":551.945399068,"data":"../run/output_bomex_SCM_GFS_v16:\n"}
+,{"stream_name":"stdout","time":551.945401279,"data":"bomex_SCM_GFS_v16.nml\n"}
+,{"stream_name":"stdout","time":551.945403463,"data":"logfile\n"}
+,{"stream_name":"stdout","time":551.94540581,"data":"output.nc\n"}
+,{"stream_name":"stdout","time":551.94540821,"data":"\n"}
+,{"stream_name":"stdout","time":551.9454103,"data":"../run/output_twpice_SCM_GFS_v16:\n"}
+,{"stream_name":"stdout","time":551.945412516,"data":"logfile\n"}
+,{"stream_name":"stdout","time":551.945414673,"data":"output.nc\n"}
+,{"stream_name":"stdout","time":551.945416811,"data":"twpice_SCM_GFS_v16.nml\n"}
+,{"stream_name":"stdout","time":551.945419007,"data":"\n"}
+,{"stream_name":"stdout","time":551.945421142,"data":"== direct scm twpice (diagnostic: the executable's own messages): rc 0 (25 s)\n"}
+,{"stream_name":"stdout","time":551.945423434,"data":"24.8 SECS\n"}
+,{"stream_name":"stdout","time":551.945425598,"data":"  EQUATION OF TIME       -14.2052489 MINS, OR   -852.31 SECS, OR-0.062152 RADIANS\n"}
+,{"stream_name":"stdout","time":551.945427893,"data":"  SOLAR CONSTANT        1396.4522113 (DISTANCE AJUSTED)\n"}
+,{"stream_name":"stdout","time":551.945430152,"data":"\n"}
+,{"stream_name":"stdout","time":551.945432254,"data":"\n"}
+,{"stream_name":"stdout","time":551.945434387,"data":"    for cosz calculations: nswr,deltim,deltsw,dtswh =           2   600.00000000000000        1200.0000000000000       0.33333333333333331        anginc,nstp =   1.4544410433286076E-002           6\n"}
+,{"stream_name":"stdout","time":551.945436863,"data":" itt =         3561\n"}
+,{"stream_name":"stdout","time":551.945439061,"data":" model time (s) =    2136600.0000000000     \n"}
+,{"stream_name":"stdout","time":551.945441287,"data":" itt =         3562\n"}
+,{"stream_name":"stdout","time":551.945443472,"data":" model time (s) =    2137200.0000000000     \n"}
+,{"stream_name":"stdout","time":551.945445698,"data":"0 FORECAST DATE          12 FEB.  2006 AT 20 HRS 40.00 MINS\n"}
+,{"stream_name":"stdout","time":551.945447955,"data":"  JULIAN DAY             2453779  PLUS   0.361111\n"}
+,{"stream_name":"stdout","time":551.945450179,"data":"  RADIUS VECTOR          0.9872638\n"}
+,{"stream_name":"stdout","time":551.945452415,"data":"  RIGHT ASCENSION OF SUN  21.7545758 HRS, OR  21 HRS  45 MINS  16.5 SECS\n"}
+,{"stream_name":"stdout","time":551.945454689,"data":"  DECLINATION OF THE SUN -13.5189113 DEGS, OR  -13 DEGS  31 MINS   8.1 SECS\n"}
+,{"stream_name":"stdout","time":551.945456978,"data":"  EQUATION OF TIME       -14.2050092 MINS, OR   -852.30 SECS, OR-0.062151 RADIANS\n"}
+,{"stream_name":"stdout","time":551.94545925,"data":"  SOLAR CONSTANT        1396.4448106 (DISTANCE AJUSTED)\n"}
+,{"stream_name":"stdout","time":551.94546152,"data":"\n"}
+,{"stream_name":"stdout","time":551.945463633,"data":"\n"}
+,{"stream_name":"stdout","time":551.945468485,"data":"    for cosz calculations: nswr,deltim,deltsw,dtswh =           2   600.00000000000000        1200.0000000000000       0.33333333333333331        anginc,nstp =   1.4544410433286076E-002           6\n"}
+,{"stream_name":"stdout","time":551.945471187,"data":" itt =         3563\n"}
+,{"stream_name":"stdout","time":551.945473368,"data":" model time (s) =    2137800.0000000000     \n"}
+,{"stream_name":"stdout","time":551.945476277,"data":" The model_time has exceeded the specifed period of forcing. Forcing will now be held constant at the last specified values.\n"}
+,{"stream_name":"stdout","time":551.945478712,"data":" itt =         3564\n"}
+,{"stream_name":"stdout","time":551.945480888,"data":" model time (s) =    2138400.0000000000     \n"}
+,{"stream_name":"stdout","time":551.945483128,"data":"output_bomex_SCM_GFS_v16:\n"}
+,{"stream_name":"stdout","time":551.945485332,"data":"bomex_SCM_GFS_v16.nml\n"}
+,{"stream_name":"stdout","time":551.945487524,"data":"logfile\n"}
+,{"stream_name":"stdout","time":551.945489666,"data":"output.nc\n"}
+,{"stream_name":"stdout","time":551.945491808,"data":"\n"}
+,{"stream_name":"stdout","time":551.945493903,"data":"output_twpice_SCM_GFS_v16:\n"}
+,{"stream_name":"stdout","time":551.945496136,"data":"logfile\n"}
+,{"stream_name":"stdout","time":551.945498282,"data":"output.nc\n"}
+,{"stream_name":"stdout","time":551.945500564,"data":"twpice_SCM_GFS_v16.nml\n"}
+,{"stream_name":"stdout","time":551.945523285,"data":"\n"}
+,{"stream_name":"stdout","time":551.945526998,"data":"done ['bomex_SCM_GFS_v16', 'twpice_SCM_GFS_v16'] None\n"}
+,{"stream_name":"stdout","time":551.945530757,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":551.945534226,"data":"+ rm -rf repo libm_wx2020_fields.npz\n"}
+,{"stream_name":"stdout","time":552.148521128,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":552.148552894,"data":"total s 551\n"}
+,{"stream_name":"stderr","time":554.372619223,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":554.372658981,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":554.687098755,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":554.68714026,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":555.510734304,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":556.621893931,"data":"[NbConvertApp] Writing 281503 bytes to __results__.html\n"}
 ]
