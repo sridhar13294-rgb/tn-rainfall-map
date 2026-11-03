@@ -16,7 +16,7 @@ ok = sh(f'cd /tmp && curl -Ls https://micro.mamba.pm/api/micromamba/linux-64/lat
 if ok: ok = sh('git clone -q --recursive -b v7.0.0 https://github.com/NCAR/ccpp-scm', 'clone', cwd=W)
 SRC = W + '/ccpp-scm'
 envp = (f'export PATH={ENV}/bin:$PATH CC={ENV}/bin/x86_64-conda-linux-gnu-gcc FC={ENV}/bin/x86_64-conda-linux-gnu-gfortran CXX={ENV}/bin/x86_64-conda-linux-gnu-g++ '
-        f'NETCDF={ENV} NETCDF_ROOT={ENV} CMAKE_PREFIX_PATH={ENV} LD_LIBRARY_PATH={ENV}/lib; ')
+        f'NETCDF={ENV} NETCDF_ROOT={ENV} CMAKE_PREFIX_PATH={ENV} LD_LIBRARY_PATH={ENV}/lib OMPI_ALLOW_RUN_AS_ROOT=1 OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1 OMPI_MCA_plm=isolated OMPI_MCA_btl_vader_single_copy_mechanism=none OMPI_MCA_rmaps_base_oversubscribe=yes; ')   # Kaggle runs as root: OpenMPI refuses without these
 # NCEP libraries the SCM needs (bacio, sp, w3emc): not on conda-forge -> build from the NOAA-EMC sources into the env
 for lib, tag in (('bacio', 'v2.4.1'), ('sp', 'v2.5.0'), ('w3emc', 'v2.11.0')):
     if ok: ok = sh(envp + f'git clone -q -b {tag} https://github.com/NOAA-EMC/NCEPLIBS-{lib} && mkdir -p NCEPLIBS-{lib}/b && cd NCEPLIBS-{lib}/b && '
@@ -29,6 +29,7 @@ open(ENV + '/bin/time', 'w').write('#!/bin/sh\nexec "$@"\n'); os.chmod(ENV + '/b
 if ok: sh(envp + 'which mpirun time; cd scm/bin && ls', 'runner check', cwd=SRC)
 for case in ('bomex', 'twpice'):
     if ok: sh(envp + f'cd scm/bin && python run_scm.py -c {case} -s SCM_GFS_v16 > run_{case}.log 2>&1; tail -25 run_{case}.log; ls -R ../run/output_* | head -20', f'run {case}', cwd=SRC)
+    if ok: sh(envp + 'cd scm/run && (./scm 2>&1 | tail -40); ls output_*', f'direct scm {case} (diagnostic: the executable\'s own messages)', cwd=SRC)
 # summarise every tendency-like variable
 try:
     subprocess.run('pip install -q netCDF4', shell=True)
