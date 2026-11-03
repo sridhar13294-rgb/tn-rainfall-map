@@ -1,14 +1,5 @@
-== https://beta-tnsmart.rimes.int/index.php/Api_mobile/Api_rainfall/change/english/daily_data
-HTTP/1.1 307 Temporary Redirect
-Content-Type: application/json; charset=UTF-8
-Location: https://beta-tnsmart.rimes.int/index.php/Api_mobile/Api_rainfall/daily_data
-== https://beta-tnsmart.rimes.int/index.php/Api_mobile/Api_rainfall/daily_srg_24hrs?date=2026-11-02
-HTTP/1.1 200 OK
-Content-Type: application/json; charset=UTF-8
-== https://beta-tnsmart.rimes.int/index.php/Api_mobile/Api_rainfall/change/english/daily_data
-HTTP/1.1 307 Temporary Redirect
-Content-Type: application/json; charset=UTF-8
-Location: https://beta-tnsmart.rimes.int/index.php/Api_mobile/Api_rainfall/daily_data
-== https://beta-tnsmart.rimes.int/index.php/Api_mobile/Api_rainfall/daily_data?date=2026-11-02
-HTTP/1.1 200 OK
-Content-Type: text/html; charset=UTF-8
+get_overall_rainfall 2026-10-30 -> 200 application/json; charset=UTF-8 365903
+get_overall_rainfall 2026-10-31 -> 200 application/json; charset=UTF-8 372244
+get_overall_rainfall 2026-11-01 -> 200 application/json; charset=UTF-8 372384
+get_overall_rainfall 2026-11-02 -> 200 application/json; charset=UTF-8 366364
+get_overall_rainfall 2026-11-03 -> 200 application/json; charset=UTF-8 366461
