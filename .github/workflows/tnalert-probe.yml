@@ -1,0 +1,23 @@
+name: TN-ALERT app probe (find its public rainfall data source)
+# Downloads the public TN-ALERT Android app (package int_.rimes.tnsmart) from Aptoide's public API and lists the web
+# addresses inside it, so the rainfall updater can read the same public station data the app shows.
+on:
+  push:
+    branches: [tnalert]
+    paths: ['.github/workflows/tnalert-probe.yml', 'scripts/tnalert_probe.sh']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: tnalert}
+      - run: bash scripts/tnalert_probe.sh data/tnalert
+      - if: always()
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add data/tnalert; git commit -m "TN-ALERT probe results" || exit 0
+          for i in 1 2 3; do git pull --rebase origin tnalert && git push origin HEAD:tnalert && break; sleep 5; done
