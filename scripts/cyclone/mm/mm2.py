@@ -645,7 +645,9 @@ class Model:
             orph = deep & ~okmf
             diag.update(on_orph=orph.astype(jnp.float32), lsc_orph=jnp.where(orph, (cond * mass).sum(0), 0.0), lsc_all=(cond * mass).sum(0))   # share of columns: deep plume / shallow plume / old shallow test
         diag.update(h_bl=dTbl, h_deep=dTc, h_shal=dTs, h_lsc=LV / CP * cond, h_evap=-LV / CP * evap)        # heating by process (K/s), for budget diagnostics
+        diag.update(q_bl=dqbl, q_deep=dqc, q_shal=dqs, q_lsc=-cond, q_evap=evap)                            # moistening by process (kg/kg/s), 850-925 moisture budget (peer 3 Nov)
         if Rr is not None: diag['rad'] = Rr
+        if Rr is not None and 'cloud' in Rr: diag['cld'] = Rr['cloud']                                     # cloud fraction (only on fresh radiation calls)
         if h_ent is not None: diag['h_ent'] = h_ent
         return dict(T=dT, q=dq, u=du, v=dv), diag
     # ------------------------------------------------------------------------------------------------ dynamics + time loop
