@@ -1,6 +1,6 @@
-tn-shmf-evo
-libm_wx2020_fields.npz
-cd . && XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 6 '{"shmf":{"grid":"T170","_budget":true,"shallow":"mf","sh_trig":1.0,"sh_clos":0.6,"_win":[[0,24],[24,48],[48,72],[96,120]]}}' > /kaggle/working/prof.log 2>&1; tail -40 /kaggle/working/prof.log
+tn-sb-r12
+libm_fields.npz
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/sb_r12.json /kaggle/working/sb_r12.json > /kaggle/working/sb.log 2>&1; tail -20 /kaggle/working/sb.log
 NvidiaTeslaT4
-2
-#h2b 2026-11-03T16:52Z
+8
+#s8 2026-11-03T16:57Z
