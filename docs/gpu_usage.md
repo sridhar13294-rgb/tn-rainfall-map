@@ -1,6 +1,20 @@
 # Kaggle GPU account usage (weekly quota 30 h per account; all accounts assumed reset 2 Nov)
 Updated each cycle. Times IST.
 
+## 4 Nov 13:25 cycle
+| Acct | Job | Purpose | State |
+|---|---|---|---|
+| 1-2 | tn-cmt-wx-q0/q1 | P3 diagnostic: exam pressure/wind with cmt_mf alone | running |
+| 3 | tn-f2-gen0 | F2-alone genesis (base decision) | running |
+| 4 | tn-audit-ctl | conservation audit, control | running |
+| 5 | tn-lcl-gen0 | bl_lcl-alone genesis | running |
+| 6-7 | tn-maps-mich-ctl/pkg | steering diagnostic (Michaung) | running |
+| 8 | tn-audit-f2 | conservation audit, F2 | running |
+| 9 | tn-pkg75-wx-q0 | package at 75 L | running |
+| 10 | tn-cmtmf-gen1 | genesis gen1 cmt_mf alone | running |
+| 11 | tn-audit-pkg | conservation audit, package | running |
+| 12-14 | - | free | free |
+
 ## 4 Nov 07:00 cycle
 | Acct | Job | Purpose | State |
 |---|---|---|---|
