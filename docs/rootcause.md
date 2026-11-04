@@ -496,3 +496,4 @@ tn-quick6-pkg (Sidr, Titli, Phailin, Giri, Hamoon, Nivar; 72 h, deterministic) v
 - P1 inside the package (tn-pkg-evo): 850 -1.0 K (pass), q850 -0.67 g/kg (gate +-0.5 FAIL: too dry), 925/1000 -1.9/-1.7 K.
 - TN rain 1.79 (P4 open). Exam/genesis/75 L runs still running.
 Registered measurement (no gate): tn-maps-mich-ctl / tn-maps-mich-pkg - Michaung (real path north along the coast), maps_run from the library start 2023-12-01, 120 h, control vs package; offline: 850/500/200 hPa and deep-layer mean flow in the 300-600 km ring around the REAL position vs the ERA5 case file (michaung_2023) -> is the missing poleward motion in the environment flow or in the vortex?
+- 11:10: package exam (q0+q1, 37 starts) z500 d1/d5/d10 19.8/69.8/116.6 vs control 20.2/72.5/119.8 (d5 -3.7 %, PASS). Oct-Dec TN u850 bias d3/d5 package -2.63/-4.51 vs control -2.16/-3.25 m/s (9 starts) -> the easterly steering error is LARGER with the package: consistent with its worse 72 h tracks.
