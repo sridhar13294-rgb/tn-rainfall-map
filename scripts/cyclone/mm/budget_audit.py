@@ -27,7 +27,7 @@ for key in (TT[0], TT[len(TT) // 2]):
                     Z['f2'][k, V2.index('sea_surface_temperature')], Z['f2'][k, V2.index('land_sea_mask')], when=t0, **landinit.land_kwargs(Z['f2'][k], V2))
     M.build(t0); st = M.dfi(st); hor = M.coords.horizontal; h_done = 0
     LA = np.asarray(M.LA); W = np.cos(np.radians(LA)); trop = np.abs(LA) < 20; dsig = np.asarray(M.dsig)[:, None, None]; sig = np.asarray(M.sig)[:, None, None]
-    for hrs in (6, 24, 72):
+    for hrs in (6, 24):
         st, cr = mm2.integrate(M, st, cr, hrs - h_done); h_done = hrs
         T = np.asarray((hor.to_nodal(st.temperature_variation) + M.ref_t[:, None, None]) / M.K); q = np.asarray(st.tracers['specific_humidity'])
         ps = np.asarray(jnp.exp(hor.to_nodal(st.log_surface_pressure))[0] / M.PA); u, v = spherical_harmonic.vor_div_to_uv_nodal(hor, st.vorticity, st.divergence)
@@ -35,7 +35,8 @@ for key in (TT[0], TT[len(TT) // 2]):
                          rad_fresh=True, div=hor.to_nodal(st.divergence) * M.SEC)
         mass = dsig * ps[None] / G; I = lambda x: (np.asarray(x) * mass).sum(0)
         g = {k_: np.asarray(d[k_]) for k_ in ('h_bl', 'h_deep', 'h_shal', 'h_lsc', 'h_evap', 'q_bl', 'q_deep', 'q_shal', 'q_lsc', 'q_evap', 'H', 'E', 'rain') if k_ in d}
-        R = d['rad']; rad = np.asarray(R['heating']); above = sig[:, 0, 0] <= float(M.S.get('rad_top', 0.12))
+        R = d['rad']; rad = np.asarray(d['rad_app']); radc = np.asarray(R['heating']); above = sig[:, 0, 0] <= float(M.S.get('rad_top', 0.12))
+        res.setdefault('rad_keys', sorted(R.keys()))
         r = {}
         r['BL heat (cp int h_bl - H)'] = CP * I(g['h_bl']) - g['H']
         r['BL water (L int q_bl - L E)'] = LV * (I(g['q_bl']) - g['E'])
@@ -47,8 +48,9 @@ for key in (TT[0], TT[len(TT) // 2]):
         rad_below = np.where(above[:, None, None], 0.0, rad)
         if all(k_ in R for k_ in ('sw_toa_dn', 'sw_toa_up', 'olr', 'sw_net_sfc', 'lw_dn_sfc', 'lw_up_sfc')):
             col = (np.asarray(R['sw_toa_dn']) - np.asarray(R['sw_toa_up']) - np.asarray(R['olr'])) - (np.asarray(R['sw_net_sfc']) + np.asarray(R['lw_dn_sfc']) - np.asarray(R['lw_up_sfc']))
-            r['radiation (cp int rad - flux divergence; full column)'] = CP * I(rad) - col
-            r['  of which: above rad_top replaced by relaxation'] = CP * I(np.where(above[:, None, None], rad, 0.0))
+            r['radiation computed (cp int rad_computed - flux divergence)'] = CP * I(radc) - col
+        r['stratosphere: applied minus computed radiation above rad_top'] = CP * I(np.where(above[:, None, None], rad - radc, 0.0))
+        r['sum of process heating vs total (cp int(dT - rad_app - sum h_*))'] = CP * I(dTp - rad - sum(g['h_' + p_] for p_ in ('bl', 'deep', 'shal', 'lsc', 'evap')))
         r['rain (rain + int(q_deep+q_shal+q_lsc+q_evap))'] = LV * (g['rain'] + I(g['q_deep'] + g['q_shal'] + g['q_lsc'] + g['q_evap']))
         out = {}
         for n_, x in r.items():
