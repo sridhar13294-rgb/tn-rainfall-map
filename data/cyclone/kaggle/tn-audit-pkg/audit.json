@@ -1,0 +1,131 @@
+{
+ "settings": {
+  "pbl_tm": 1.0,
+  "sh_mflux": 0.03,
+  "bl_lcl": 1.0,
+  "cmt_mf": 1.0
+ },
+ "layers": 32,
+ "2020-01-01T00 +6h": {
+  "BL heat (cp int h_bl - H)": {
+   "global_mean": -0.061,
+   "tropics_mean": 0.037,
+   "p99_abs": 3.72,
+   "max_abs": 12.42
+  },
+  "BL water (L int q_bl - L E)": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.01
+  },
+  "deep moist enthalpy": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "shal moist enthalpy": {
+   "global_mean": 0.0,
+   "tropics_mean": 0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "lsc moist enthalpy": {
+   "global_mean": 0.0,
+   "tropics_mean": 0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "evap moist enthalpy": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "water (int dq - (E - rain))": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.01
+  },
+  "energy non-rad (int cp(dT-rad)+L dq - (H+LE))": {
+   "global_mean": -14.918,
+   "tropics_mean": -21.681,
+   "p99_abs": 65.02,
+   "max_abs": 75.78
+  },
+  "rain (rain + int(q_deep+q_shal+q_lsc+q_evap))": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "_reference": {
+   "H": 16.1,
+   "LE": 100.2,
+   "Lrain": 67.4
+  }
+ },
+ "2020-01-01T00 +24h": {
+  "BL heat (cp int h_bl - H)": {
+   "global_mean": -0.11,
+   "tropics_mean": -0.028,
+   "p99_abs": 3.03,
+   "max_abs": 17.86
+  },
+  "BL water (L int q_bl - L E)": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.01
+  },
+  "deep moist enthalpy": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "shal moist enthalpy": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "lsc moist enthalpy": {
+   "global_mean": 0.0,
+   "tropics_mean": 0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "evap moist enthalpy": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "water (int dq - (E - rain))": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.01
+  },
+  "energy non-rad (int cp(dT-rad)+L dq - (H+LE))": {
+   "global_mean": -14.976,
+   "tropics_mean": -21.351,
+   "p99_abs": 66.53,
+   "max_abs": 75.64
+  },
+  "rain (rain + int(q_deep+q_shal+q_lsc+q_evap))": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "_reference": {
+   "H": 15.6,
+   "LE": 90.1,
+   "Lrain": 92.7
+  }
+ }
+}
