@@ -532,3 +532,14 @@ After the 02:00 IST update no further cycles are scheduled (Sridhar 01:28). Dail
 - 4 Nov 16:45 IST: Sridhar allowed pypi.org / files.pythonhosted.org / conda.anaconda.org. LOCAL JAX + Dinosaur now work in this container (CPU). Install recipe (pypi is in no_proxy, so force the agent proxy):
   NO_PROXY=localhost,127.0.0.1 no_proxy=localhost,127.0.0.1 pip install --break-system-packages -q --proxy $HTTPS_PROXY --cert /root/.ccr/ca-bundle.crt "jax[cpu]" xarray scipy scikit-learn "git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0"
   precheck.py now also builds the model on T42 with every settings set and confirms each value reached the model (dynamic check). Use local CPU runs for quick traces/audits/offline derivations before Kaggle.
+
+## 4 Nov 19:23 IST - DECISION (Sridhar): F2 dropped as the base; base = control + cmt_mf (P3 fix)
+Condition set by Sridhar: every disadvantage of dropping F2 must be addressed before Stage 1 closes. Tracked items (each derived -> offline -> registered -> tested alone on the new base with the full suite; no tuning):
+| ID | Disadvantage (lost from F2) | How it is addressed | Registered target (in addition to the 8 Stage-1 checks) |
+|---|---|---|---|
+| D-F2a | shallow scheme exchange mass flux 10-40x observed | re-test F2's realistic shallow scheme (sh_mflux) ALONE on the base, without pbl_tm | shallow mass flux 0.02-0.04 kg/m2/s; genesis >= base |
+| D-F2b | deep convection active in ~5 % of tropical columns | expected from D-F2a | >= 15 % of tropical columns, genesis >= 31 % |
+| D-F2c | upper troposphere 3-6 K too cold | D-F2a, then global items H1-H3 (OLR, cooling drift) | 250/500 hPa bias no worse than F2 (-4.2 / -1.0 K) |
+| D-F2d | ~75 % grid-scale rain over TN land (false land rain) | D-F2a, then P4 root cause (stored cloud water, rain evaporation) | grid-scale share <= 50 % over TN land; TN rain within +-25 % |
+| D-F2e | corrected Troen-Mahrt BL formula | re-test pbl_tm ALONE with bl_lcl (depth <= cloud base) on the base | low-level gates (check 2) + genesis >= base |
+| D-F2f | z500 ~1 m better with F2 | follows from the above; not chased separately | check 1 |
