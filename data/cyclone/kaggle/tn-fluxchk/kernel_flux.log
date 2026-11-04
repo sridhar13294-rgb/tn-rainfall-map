@@ -1,0 +1,19 @@
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda13.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda13/__init__.py", line 373, in initialize
+    c_api = xb.register_plugin(
+        'cuda', priority=500, library_path=str(path), options=options
+    )
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 662, in register_plugin
+    c_api = xla_client.load_pjrt_plugin_dynamically(plugin_name, library_path)
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 115, in load_pjrt_plugin_dynamically
+    return _xla.load_pjrt_plugin(plugin_name, library_path, c_api=None)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: ALREADY_EXISTS: PJRT_Api already exists for device type cuda
+2020-01-01T00 72 {"h": 72, "n": 64764, "LE_model": 147.9, "LE_coare": 126.1, "H_model": -6.1, "H_coare": -7.3, "trop_LE_model": 180.8, "trop_LE_coare": 155.7, "z1_mean": 82.7, "U1_mean": 9.8, "LE_model_ckz1": 127.3, "LE_model_ckz1_sal": 121.7, "LE_model_sal": 141.3}
+2020-04-15T00 72 {"h": 72, "n": 64710, "LE_model": 135.1, "LE_coare": 117.9, "H_model": -4.1, "H_coare": -4.4, "trop_LE_model": 160.7, "trop_LE_coare": 142.2, "z1_mean": 82.8, "U1_mean": 8.93, "LE_model_ckz1": 115.7, "LE_model_ckz1_sal": 110.2, "LE_model_sal": 128.8}
+2020-07-19T00 72 {"h": 72, "n": 64725, "LE_model": 148.9, "LE_coare": 124.8, "H_model": -1.6, "H_coare": -2.9, "trop_LE_model": 184.1, "trop_LE_coare": 155.8, "z1_mean": 82.7, "U1_mean": 9.49, "LE_model_ckz1": 128.8, "LE_model_ckz1_sal": 122.7, "LE_model_sal": 141.9}
+2020-10-27T00 72 {"h": 72, "n": 64770, "LE_model": 143.9, "LE_coare": 120.2, "H_model": -4.3, "H_coare": -5.7, "trop_LE_model": 162.2, "trop_LE_coare": 139.0, "z1_mean": 82.6, "U1_mean": 9.7, "LE_model_ckz1": 124.2, "LE_model_ckz1_sal": 118.6, "LE_model_sal": 137.5}
