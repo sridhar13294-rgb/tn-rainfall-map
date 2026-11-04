@@ -1,0 +1,76 @@
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda13.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda13/__init__.py", line 384, in initialize
+    xla_client.register_custom_call_handler(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        "CUDA",
+        ^^^^^^^
+    ...<2 lines>...
+        ),
+        ^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 459, in register_custom_call_handler
+    handler(name, fn, xla_platform_name, api_version, traits)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: INVALID_ARGUMENT: XLA FFI handler registration for cudnn_rnn_ffi on platform CUDA (canonical cuda) failed because the handler's API version (0.5) is incompatible with the framework's API version (0.4). Minimum supported API version is (0.1).
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda12.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda12/__init__.py", line 372, in initialize
+    c_api = xb.register_plugin(
+        'cuda', priority=500, library_path=str(path), options=options
+    )
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 662, in register_plugin
+    c_api = xla_client.load_pjrt_plugin_dynamically(plugin_name, library_path)
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 115, in load_pjrt_plugin_dynamically
+    return _xla.load_pjrt_plugin(plugin_name, library_path, c_api=None)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: ALREADY_EXISTS: PJRT_Api already exists for device type cuda
+Unnamed 2000 {'T170_cmtmf': (434, 14.7, 5.0)} sec 228
+Unnamed 2000 {'T170_cmtmf': (485, 22.6, 6.0)} sec 160
+Unnamed 2001 {'T170_cmtmf': (32, 11.7, 3.8)} sec 161
+Unnamed 2002 {'T170_cmtmf': (224, 13.2, 4.0)} sec 160
+Unnamed 2003 {'T170_cmtmf': (117, 14.0, 7.1)} sec 161
+Unnamed 2003 {'T170_cmtmf': (452, 20.1, 18.9)} sec 160
+Unnamed 2004 {'T170_cmtmf': (480, 18.0, 5.8)} sec 160
+Unnamed 2005 {'T170_cmtmf': (247, 12.1, 7.0)} sec 160
+Unnamed 2005 {'T170_cmtmf': (161, 15.4, 4.4)} sec 161
+Fanoos 2005 {'T170_cmtmf': (134, 13.0, 2.5)} sec 160
+Unnamed 2006 {'T170_cmtmf': (449, 12.4, -0.3)} sec 161
+Sidr 2007 {'T170_cmtmf': (142, 15.0, 4.5)} sec 160
+Khai-Muk 2008 {'T170_cmtmf': (373, 39.1, 14.8)} sec 161
+Unnamed 2008 {'T170_cmtmf': (272, 19.0, 1.2)} sec 161
+Unnamed 2010 {'T170_cmtmf': (70, 11.7, 6.4)} sec 161
+Giri 2010 {'T170_cmtmf': (106, 14.2, 5.5)} sec 160
+Unnamed 2010 {'T170_cmtmf': (251, 16.9, 6.4)} sec 161
+Thane 2011 {'T170_cmtmf': (404, 48.1, 22.3)} sec 161
+Nilam 2012 {'T170_cmtmf': (272, 11.5, 1.6)} sec 160
+Phailin 2013 {'T170_cmtmf': (438, 13.7, 4.1)} sec 160
+Helen 2013 {'T170_cmtmf': (432, 7.7, 3.5)} sec 159
+Madi 2013 {'T170_cmtmf': (448, 10.8, 3.9)} sec 160
+Unnamed 2014 {'T170_cmtmf': (387, 26.8, 11.9)} sec 161
+Kyant 2016 {'T170_cmtmf': (315, 18.8, 5.1)} sec 161
+Nada 2016 {'T170_cmtmf': (100, 34.5, 10.5)} sec 160
+Unnamed 2017 {'T170_cmtmf': (200, 7.5, 3.8)} sec 160
+Unnamed 2017 {'T170_cmtmf': (206, 6.3, 3.0)} sec 161
+Ockhi 2017 {'T170_cmtmf': (174, 24.0, 4.0)} sec 160
+Titli 2018 {'T170_cmtmf': (261, 29.8, 10.0)} sec 161
+Phethai 2018 {'T170_cmtmf': (471, 25.4, 5.9)} sec 160
+Unnamed 2020 {'T170_cmtmf': (236, 14.3, 6.2)} sec 161
+Nivar 2020 {'T170_cmtmf': (123, 27.0, 6.7)} sec 160
+Krovanh 2020 {'T170_cmtmf': (472, 11.6, 2.0)} sec 160
+Unnamed 2021 {'T170_cmtmf': (218, 11.6, 4.2)} sec 159
+Sitrang 2022 {'T170_cmtmf': (338, 14.3, 5.1)} sec 160
+Mandous 2022 {'T170_cmtmf': (433, 11.5, 1.7)} sec 160
+Hamoon 2023 {'T170_cmtmf': (162, 26.2, 7.4)} sec 222
+Michaung 2023 {'T170_cmtmf': (456, 14.2, 2.6)} sec 160
+Dana 2024 {'T170_cmtmf': (379, 26.8, 11.1)} sec 160
+Unnamed 2024 {'T170_cmtmf': (153, 21.9, 10.0)} sec 160
+Montha 2025 {'T170_cmtmf': (238, 14.4, 4.3)} sec 160
+Ditwah 2025 {'T170_cmtmf': (205, 40.1, 9.7)} sec 160
