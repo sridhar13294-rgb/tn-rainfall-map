@@ -1,1 +1,2 @@
 - 2026-11-04 14:34Z reference renewed (code 8b29e27f8f816581): first reference: current code; control column physics and step 1 verified bit-identical to the 2 Nov control code (23c9b6bb) on 4 Nov
+- 2026-11-04 19:37Z reference renewed (code 9ae083c52aab9e90): landinit warning print only; control verified bit-identical before renewal (5 Nov 01:25)

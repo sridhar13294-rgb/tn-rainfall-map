@@ -34,6 +34,9 @@ def land_start(N, t_low, land, bucket_m, soil_vol=None, soil_t=None, skin_t=None
     land: land mask on the nodes; bucket_m: bucket capacity (m of water). With no fields: exactly the old start
     (tl = t_low, w = 60 % of the bucket)."""
     tl = np.array(t_low, float); w = np.full(tl.shape, 0.6 * bucket_m * 1000.0); land = np.asarray(land, bool)
+    miss = [n for n, x in (('soil water', soil_vol), ('soil temperature', soil_t), ('skin temperature', skin_t)) if x is None]
+    if miss: print('WARNING landinit: no', ', '.join(miss), 'in the start file -> land starts at the lowest-level air temperature'
+                   ' and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)', flush=True)
     if soil_vol is not None:
         v = to_nodes_valid(N, soil_vol); ok = land & np.isfinite(v)
         w = np.where(ok, np.clip(v / POROSITY, 0.0, 1.0) * bucket_m * 1000.0, w)
