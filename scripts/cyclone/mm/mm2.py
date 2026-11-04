@@ -444,6 +444,7 @@ class Model:
         def diffuse(X, sfc):
             rhs = X.at[-1].add(dt * sfc / mass[-1]); return (tridiag(a, b, c, rhs) - X) / dt
         du = diffuse(u, taux); dv = diffuse(v, tauy); dq = diffuse(q, E)
+        dubl_, dvbl_ = du, dv
         dth = diffuse(th, H / CP * (ps / p1) ** KAP)
         # sfc_imp > 0 (P2, 4 Nov): surface heat and moisture fluxes IMPLICIT in the lowest layer (backward Euler, as in IFS /
         # GFS). Explicit form is unstable when dt * rho ck V1 / (layer mass) > 2: thin 75-level bottom layers (7 hPa) with
@@ -535,6 +536,7 @@ class Model:
         cm = reg & ok[None]
         mu = ((u * mass) * cm).sum(0) / jnp.maximum((mass * cm).sum(0), 1.0); mv = ((v * mass) * cm).sum(0) / jnp.maximum((mass * cm).sum(0), 1.0)
         dT = dT + dTc + dTs; dq = dq + dqc + dqs
+        du_pre, dv_pre = du, dv                                                                    # momentum budget diagnostic (CMT part)
         if self.S.get('cmt_mf', 0) and S['conv'] == 'mf' and getattr(self, '_cmt_M', None) is not None:
             # mass-flux convective momentum transport (Gregory et al. 1997; ECMWF IFS): du/dt = g d/dp [M (u_u - u)],
             # updraft wind from the source up: du_u/dz = -eps (u_u - u) + C_u du/dz (C_u = 0.7: pressure-gradient effect).
@@ -557,6 +559,7 @@ class Model:
             du = du + cmt_tend(Mf * (uu_ - u)); dv = dv + cmt_tend(Mf * (vu_ - v))
         else:
             du = du + jnp.where(cm, relax(u, mu, S['tau_cmt'], dt), 0.0); dv = dv + jnp.where(cm, relax(v, mv, S['tau_cmt'], dt), 0.0)
+        du_cmt, dv_cmt = du - du_pre, dv - dv_pre
         # ---------------- large-scale condensation (adjustment) + rain re-evaporation
         Tn = T + dt * dT; qn = jnp.maximum(q + dt * dq, 0)
         qs = qsat(Tn, p); gam = 1 + LV ** 2 * qs / (CP * RV * Tn ** 2); cond = jnp.maximum(qn - qs, 0) / gam / dt
@@ -666,7 +669,8 @@ class Model:
             # mass-flux plume is not deep (no deep convection) -> neither scheme acts; only grid-scale condensation is left
             orph = deep & ~okmf
             diag.update(on_orph=orph.astype(jnp.float32), lsc_orph=jnp.where(orph, (cond * mass).sum(0), 0.0), lsc_all=(cond * mass).sum(0))   # share of columns: deep plume / shallow plume / old shallow test
-        diag.update(h_bl=dTbl, h_deep=dTc, h_shal=dTs, h_lsc=LV / CP * cond, h_evap=-LV / CP * evap)        # heating by process (K/s), for budget diagnostics
+        diag.update(h_bl=dTbl, h_deep=dTc, h_shal=dTs, h_lsc=LV / CP * cond, h_evap=-LV / CP * evap)
+        diag.update(u_bl=dubl_, v_bl=dvbl_, u_cmt=du_cmt, v_cmt=dv_cmt)                                   # momentum tendencies by process (m/s/s)        # heating by process (K/s), for budget diagnostics
         diag.update(q_bl=dqbl, q_deep=dqc, q_shal=dqs, q_lsc=-cond, q_evap=evap)                            # moistening by process (kg/kg/s), 850-925 moisture budget (peer 3 Nov)
         if Rr is not None: diag['rad'] = Rr
         if Rr is not None and 'cloud' in Rr: diag['cld'] = Rr['cloud']                                     # cloud fraction (only on fresh radiation calls)

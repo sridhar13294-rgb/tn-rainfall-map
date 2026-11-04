@@ -40,7 +40,7 @@ def ua_scores(M, st, kv, levs=(200, 250, 300, 400, 500, 850)):
     return out
 ALL = {}
 for VN, VS in VARS.items():
-  VS = dict(VS); SPLIT = bool(VS.pop('_split', False)); BUDGET = bool(VS.pop('_budget', False)); CHK = VS.pop('_chunk', None); UA = bool(VS.pop('_ua', False)); WIN = VS.pop('_win', None); NL = VS.pop('layers', 32); GR = VS.pop('grid', 'T85')
+  VS = dict(VS); SPLIT = bool(VS.pop('_split', False)); BUDGET = bool(VS.pop('_budget', False)); CHK = VS.pop('_chunk', None); UA = bool(VS.pop('_ua', False)); WIN = VS.pop('_win', None); MON = VS.pop('_months', None); NL = VS.pop('layers', 32); GR = VS.pop('grid', 'T85')
   M = mm2.Model(GR, NL, None, dict(BASE, **VS)); res = []
   def model_profiles(st, cr):
       hor = M.coords.horizontal
@@ -59,7 +59,8 @@ for VN, VS in VARS.items():
               prof[name] = vals
           out[reg] = prof
       return out, T, q, ps
-  STARTS = [t for i, t in enumerate(TT) if i % CHK[1] == CHK[0]] if CHK else TT[:NS]   # _chunk [k, n] = the same starts as wx2 chunk k of n
+  STARTS = [t for i, t in enumerate(TT) if i % CHK[1] == CHK[0]] if CHK else TT[:NS]
+  if MON: STARTS = [t for t in TT if t[5:7] in MON][:NS]                                     # _months: e.g. ['10','11','12']   # _chunk [k, n] = the same starts as wx2 chunk k of n
   for n, key in enumerate(STARTS):
       t0 = dt.datetime.strptime(key, '%Y-%m-%dT%H'); k = TT.index(key); f3 = {v: Z['f3'][k, V3.index(v)] for v in V3}
       k5 = TT.index((t0 + dt.timedelta(days=5)).strftime('%Y-%m-%dT%H')) if (t0 + dt.timedelta(days=5)).strftime('%Y-%m-%dT%H') in TT else None
@@ -71,8 +72,9 @@ for VN, VS in VARS.items():
       if BUDGET:   # T budget on model levels: total dT/dt from states 3 h apart, physics (by process) from the column every 3 h
           # (trapezoid mean), dynamics = total - physics; regions tropics / TN (8-14N 76-81E) / Western Ghats (8-21N 73-77.5E, land)
           hor = M.coords.horizontal; LAm, LOm = np.asarray(M.LA), np.asarray(M.LO) % 360
-          RB = {'tropics': np.abs(LAm) < 20, 'tn': (LAm >= 8) & (LAm <= 14) & (LOm >= 76) & (LOm <= 81), 'ghats': (LAm >= 8) & (LAm <= 21) & (LOm >= 73) & (LOm <= 77.5)}
-          PR = ('h_bl', 'h_deep', 'h_shal', 'h_lsc', 'h_evap', 'h_ent', 'q_bl', 'q_deep', 'q_shal', 'q_lsc', 'q_evap', 'cld')   # q_*: x86400 -> kg/kg/day; cld: x86400 -> divide by 86400
+          RB = {'tropics': np.abs(LAm) < 20, 'tn': (LAm >= 8) & (LAm <= 14) & (LOm >= 76) & (LOm <= 81), 'ghats': (LAm >= 8) & (LAm <= 21) & (LOm >= 73) & (LOm <= 77.5),
+                'cindia': (LAm >= 18) & (LAm <= 26) & (LOm >= 74) & (LOm <= 86), 'sbay': (LAm >= 5) & (LAm <= 15) & (LOm >= 80) & (LOm <= 92)}
+          PR = ('h_bl', 'h_deep', 'h_shal', 'h_lsc', 'h_evap', 'h_ent', 'q_bl', 'q_deep', 'q_shal', 'q_lsc', 'q_evap', 'cld', 'u_bl', 'v_bl', 'u_cmt', 'v_cmt')   # q_*: x86400 -> kg/kg/day; cld: x86400 -> divide by 86400
           def snap(s_, c_):
               Ts = np.asarray((hor.to_nodal(s_.temperature_variation) + M.ref_t[:, None, None]) / M.K); qs = np.asarray(s_.tracers['specific_humidity'])
               pss = np.asarray(jnp.exp(hor.to_nodal(s_.log_surface_pressure))[0] / M.PA); uu, vv = spherical_harmonic.vor_div_to_uv_nodal(hor, s_.vorticity, s_.divergence)
