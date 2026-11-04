@@ -519,3 +519,9 @@ After the 02:00 IST update no further cycles are scheduled (Sridhar 01:28). Dail
 - Steering bias traced (L1) to the heating-profile errors; every candidate now also scored on Oct-Dec TN u850 bias.
 - SCM: GFS v16 BOMEX + TWP-ICE outputs ready; scm_megam.py not written yet (next).
 - 4 Nov 11:55: queue on the first free accounts: genesis gen0 with data/cyclone/kaggle_cfg/gen_f2.json and gen_lcl.json (measurement: which of F2 / bl_lcl causes the formation loss). No physics changes until the P3 diagnostic (tn-cmt-wx-q0/q1, tn-lows-ctl/cmt, tn-cmtmf-gen1, tn-quick6-cmt) is scored.
+- 4 Nov 11:54 IST (Sridhar): Stage 1 date moved to END OF NOVEMBER (30 Nov) - quality first: "Stage 1 should work good as a model". Scope unchanged: P1-P4 + track error, plus P2 stability. No shortcuts: every fix derived, offline-checked, registered, tested, then full regression.
+  Stage 1 acceptance (all on the deterministic regression set, vs the current control and ERA5 / IMD truth):
+  1 forecast skill: z500 RMSE d5 and d10 no worse than control, all 4 exam quarters (73 starts); 2 low-level temperature: tropics 850-1000 hPa d5 bias within +-1.5 K, q850 within +-0.5 g/kg;
+  3 cyclones: 72 h intensity within the ERA5-at-resolution target band (pressure +-5 hPa) for the target storms, lib84 intensity gap reduced, no blow-ups; 4 tracks: lib84 and quick6 72 h error no worse than control (aim: better), no systematic southward error;
+  5 genesis: >= control (31 % / 45 %); 6 Tamil Nadu rain: 5-day box total within +-25 % of truth (P4 gate); 7 steering: Oct-Dec TN u850 day-5 bias smaller than control; 8 stability: 75 levels and 32 levels, all exam starts complete, no BL hot spot above 300 K/day.
+  Plan: week 1 (to 9 Nov) diagnose the interaction (southern lows / steering, genesis loss); week 2 (to 16 Nov) P4 derivation + combined candidate; week 3 (to 23 Nov) full regression and fixes of what fails; week 4 (to 30 Nov) confirmation runs, documentation, go-live decision.
