@@ -1,0 +1,19 @@
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda13.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda13/__init__.py", line 373, in initialize
+    c_api = xb.register_plugin(
+        'cuda', priority=500, library_path=str(path), options=options
+    )
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 662, in register_plugin
+    c_api = xla_client.load_pjrt_plugin_dynamically(plugin_name, library_path)
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 115, in load_pjrt_plugin_dynamically
+    return _xla.load_pjrt_plugin(plugin_name, library_path, c_api=None)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: ALREADY_EXISTS: PJRT_Api already exists for device type cuda
+2020-01-01T00 ALL SKY {"OLR": 212.34, "OLR_clr": 251.3, "LW_CRE": 38.96, "ASR": 201.08, "SW_CRE": -115.11, "cover": 0.84, "lwp_gm2": 237.36, "iwp_gm2": 77.28, "atm_rad_cooling": -112.04}
+2020-01-01T00 CLEAR SKY vs RRTMG {"n": 1600, "OLRclr_model": 251.23, "OLRclr_rrtmg": 254.57, "OLRclr_rrtmg_allgases": 251.19, "LWdn_model": 314.64, "LWdn_rrtmg": 305.04, "trop_OLRclr_model": 268.7, "trop_OLRclr_rrtmg": 272.06, "trop_LWdn_model": 393.57, "trop_LWdn_rrtmg": 375.2, "day_atm_SWabs_frac_model": 0.22, "day_atm_SWabs_frac_rrtmg": 0.22}
+2020-07-19T00 ALL SKY {"OLR": 217.08, "OLR_clr": 256.9, "LW_CRE": 39.83, "ASR": 184.83, "SW_CRE": -109.03, "cover": 0.83, "lwp_gm2": 248.22, "iwp_gm2": 81.7, "atm_rad_cooling": -120.49}
+2020-07-19T00 CLEAR SKY vs RRTMG {"n": 1600, "OLRclr_model": 256.79, "OLRclr_rrtmg": 259.92, "OLRclr_rrtmg_allgases": 256.48, "LWdn_model": 330.32, "LWdn_rrtmg": 320.2, "trop_OLRclr_model": 269.87, "trop_OLRclr_rrtmg": 273.43, "trop_LWdn_model": 393.81, "trop_LWdn_rrtmg": 375.91, "day_atm_SWabs_frac_model": 0.22, "day_atm_SWabs_frac_rrtmg": 0.22}
