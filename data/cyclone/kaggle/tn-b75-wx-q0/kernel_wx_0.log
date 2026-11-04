@@ -1,0 +1,34 @@
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda13.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda13/__init__.py", line 373, in initialize
+    c_api = xb.register_plugin(
+        'cuda', priority=500, library_path=str(path), options=options
+    )
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 662, in register_plugin
+    c_api = xla_client.load_pjrt_plugin_dynamically(plugin_name, library_path)
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 115, in load_pjrt_plugin_dynamically
+    return _xla.load_pjrt_plugin(plugin_name, library_path, c_api=None)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: ALREADY_EXISTS: PJRT_Api already exists for device type cuda
+2020-01-01 tp75_b75 sec 819 z500 rmse d1/d5/d10 [21.1, 68.1, 111.1]
+2020-01-21 tp75_b75 sec 756 z500 rmse d1/d5/d10 [19.9, 64.5, 103.8]
+2020-02-10 tp75_b75 sec 755 z500 rmse d1/d5/d10 [20.8, 69.2, 113.7]
+2020-03-01 tp75_b75 sec 752 z500 rmse d1/d5/d10 [20.4, 64.8, 111.9]
+2020-03-21 tp75_b75 sec 755 z500 rmse d1/d5/d10 [20.5, 71.1, 129.1]
+2020-04-10 tp75_b75 sec 756 z500 rmse d1/d5/d10 [17.9, 70.9, 105.1]
+2020-04-30 tp75_b75 sec 751 z500 rmse d1/d5/d10 [21.0, 71.0, 127.3]
+2020-05-20 tp75_b75 sec 751 z500 rmse d1/d5/d10 [23.2, 73.2, 126.7]
+2020-06-09 tp75_b75 sec 755 z500 rmse d1/d5/d10 [23.7, 80.8, 117.3]
+2020-06-29 tp75_b75 sec 757 z500 rmse d1/d5/d10 [24.7, 83.6, 112.4]
+2020-07-19 tp75_b75 sec 756 z500 rmse d1/d5/d10 [22.9, 77.2, 117.4]
+2020-08-08 tp75_b75 sec 752 z500 rmse d1/d5/d10 [23.5, 70.2, 128.0]
+2020-08-28 tp75_b75 sec 751 z500 rmse d1/d5/d10 [22.9, 77.5, 128.5]
+2020-09-17 tp75_b75 sec 750 z500 rmse d1/d5/d10 [20.7, 74.1, 115.1]
+2020-10-07 tp75_b75 sec 750 z500 rmse d1/d5/d10 [22.6, 79.4, 134.3]
+2020-10-27 tp75_b75 sec 756 z500 rmse d1/d5/d10 [23.3, 83.0, 134.3]
+2020-11-16 tp75_b75 sec 751 z500 rmse d1/d5/d10 [21.4, 67.5, 122.0]
+2020-12-06 tp75_b75 sec 756 z500 rmse d1/d5/d10 [20.5, 67.3, 109.7]
+2020-12-26 tp75_b75 sec 756 z500 rmse d1/d5/d10 [21.2, 69.1, 124.6]
