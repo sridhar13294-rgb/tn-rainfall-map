@@ -1,0 +1,52 @@
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda13.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda13/__init__.py", line 384, in initialize
+    xla_client.register_custom_call_handler(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        "CUDA",
+        ^^^^^^^
+    ...<2 lines>...
+        ),
+        ^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 459, in register_custom_call_handler
+    handler(name, fn, xla_platform_name, api_version, traits)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: INVALID_ARGUMENT: XLA FFI handler registration for cudnn_rnn_ffi on platform CUDA (canonical cuda) failed because the handler's API version (0.5) is incompatible with the framework's API version (0.4). Minimum supported API version is (0.1).
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda12.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda12/__init__.py", line 372, in initialize
+    c_api = xb.register_plugin(
+        'cuda', priority=500, library_path=str(path), options=options
+    )
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 662, in register_plugin
+    c_api = xla_client.load_pjrt_plugin_dynamically(plugin_name, library_path)
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 115, in load_pjrt_plugin_dynamically
+    return _xla.load_pjrt_plugin(plugin_name, library_path, c_api=None)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: ALREADY_EXISTS: PJRT_Api already exists for device type cuda
+2020-01-11 T170_ctl2 sec 388 z500 rmse d1/d5/d10 [19.0, 67.9, 128.6]
+2020-01-31 T170_ctl2 sec 323 z500 rmse d1/d5/d10 [19.3, 72.6, 132.4]
+2020-02-20 T170_ctl2 sec 323 z500 rmse d1/d5/d10 [19.0, 72.0, 125.2]
+2020-03-11 T170_ctl2 sec 323 z500 rmse d1/d5/d10 [19.2, 74.7, 111.4]
+2020-03-31 T170_ctl2 sec 323 z500 rmse d1/d5/d10 [18.8, 75.0, 128.3]
+2020-04-20 T170_ctl2 sec 323 z500 rmse d1/d5/d10 [18.9, 63.0, 100.3]
+2020-05-10 T170_ctl2 sec 323 z500 rmse d1/d5/d10 [21.0, 74.6, 117.5]
+2020-05-30 T170_ctl2 sec 320 z500 rmse d1/d5/d10 [21.2, 77.4, 131.3]
+2020-06-19 T170_ctl2 sec 323 z500 rmse d1/d5/d10 [22.2, 77.8, 110.8]
+2020-07-09 T170_ctl2 sec 323 z500 rmse d1/d5/d10 [21.7, 72.5, 120.0]
+2020-07-29 T170_ctl2 sec 323 z500 rmse d1/d5/d10 [20.7, 86.0, 117.0]
+2020-08-18 T170_ctl2 sec 323 z500 rmse d1/d5/d10 [22.6, 82.3, 107.3]
+2020-09-07 T170_ctl2 sec 323 z500 rmse d1/d5/d10 [20.1, 72.8, 116.6]
+2020-09-27 T170_ctl2 sec 321 z500 rmse d1/d5/d10 [22.1, 89.8, 138.9]
+2020-10-17 T170_ctl2 sec 320 z500 rmse d1/d5/d10 [20.3, 63.8, 137.1]
+2020-11-06 T170_ctl2 sec 320 z500 rmse d1/d5/d10 [20.1, 78.8, 118.0]
+2020-11-26 T170_ctl2 sec 320 z500 rmse d1/d5/d10 [19.6, 68.7, 117.8]
+2020-12-16 T170_ctl2 sec 323 z500 rmse d1/d5/d10 [19.5, 63.5, 125.9]
