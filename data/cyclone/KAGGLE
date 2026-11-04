@@ -1,6 +1,6 @@
-tn-rt-ctl
+tn-rt2-ctl
 libm_wx2020_fields.npz,wx_truth_2020.npz
 XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore roundtrip.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz /kaggle/working/rt.json 2020-02-15,2020-04-15,2020-05-20,2020-07-19,2020-08-28,2020-10-27,2020-11-11,2020-12-06 T170 > /kaggle/working/rt.log 2>&1; tail -20 /kaggle/working/rt.log
 NvidiaTeslaT4
-3
-#rt 2026-11-04T17:20Z
+4
+#rt 2026-11-04T17:35Z
