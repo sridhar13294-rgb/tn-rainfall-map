@@ -18,6 +18,7 @@ unless marked ADOPTED. Details and registered gates: docs/rootcause.md.
 | sfc_imp 1 | surface coupling | NUMERICAL fix (option) | implicit surface heat/moisture flux + implicit land skin T | 4 Nov | candidate | 75 L: all 19 exam starts complete; 32 L neutral; Andes h_bl 361 > 300 K/day |
 | bl_lcl 1 | BL depth | option | K-profile depth <= LCL of lowest-level air | 4 Nov | candidate | P1 gates pass; genesis 14 % (with F2); q850 now -0.7 g/kg |
 | cmt_mf 1 | momentum transport | option | Gregory 1997 / ECMWF mass-flux CMT, du/dt = g d/dp [M (u_u - u)], C_u 0.7 | 30 Oct (code unchanged since commit 601c27c2) | candidate | P3 gates pass alone (4 Nov); genesis 31 % = control; 30 Oct rejection on tracks (+17/+34 %) now under re-diagnosis |
+| BASE1 = control + cmt_mf | base candidate | candidate | | 4 Nov | full suite: PASS 1,5,7,8a; FAIL 2 (= control), 3 (Vardah -5.7, Michaung +7.4 hPa), 4 (+9 %), 6 (TN rain 1.81) | control re-run on current code pending (TN rain 1.43 suspect) |
 | PKG = F2 + bl_lcl + cmt_mf | combined | candidate | | 4 Nov | REJECTED (track 72 h +31 %) | easterly bias larger; southern-lows hypothesis under test |
 
 Control formulations that are known weak (not yet replaced): shallow MSE/q relaxation (tau 1 h, exchange mass flux 0.3-0.9 vs observed

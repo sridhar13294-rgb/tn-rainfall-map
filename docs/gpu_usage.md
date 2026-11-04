@@ -1,6 +1,14 @@
 # Kaggle GPU account usage (weekly quota 30 h per account; all accounts assumed reset 2 Nov)
 Updated each cycle. Times IST.
 
+## 4 Nov 19:10 cycle
+| Acct | Job | Purpose | State |
+|---|---|---|---|
+| 1-10 | tn-s-ctl2-* | control suite re-run on today's code (same-code baseline; TN rain drift check) | running |
+| 11 | tn-b75-wx-q0 | new base (cmt_mf + sfc_imp) at 75 L, 19 starts: stability gate | running |
+| 12 | tn-tr75-pkg | 75 L full package trace 10 d: where/when it blows up | running |
+| 13-14 | - | free | free |
+
 ## 4 Nov 13:25 cycle
 | Acct | Job | Purpose | State |
 |---|---|---|---|

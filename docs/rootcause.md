@@ -545,3 +545,20 @@ budget_audit.py: for 2 starts x (6 h, 1 d, 3 d), every column's physics vs its b
 P3 fix alone otherwise: exam (37 starts) z500 d1/d5/d10 20.0/72.4/118.3 vs control 20.2/72.5/119.8 (neutral to slightly better); genesis gen0 31 % (= control), gen1 52 % vs 45 % (better); quick6 72 h +10 % (gate limit).
 **F2 base decision**: genesis gen0 F2 alone 14 % vs control 31 %; bl_lcl alone 33 %. => F2 (pbl_tm + sh_mflux) causes the formation loss, NOT the cloud-base limit and NOT the P3 fix. Recommendation: drop F2 as the base; candidate base = control + cmt_mf (+ bl_lcl, + sfc_imp), F2 parts re-derived only where needed.
 **75 L package (F2 + bl_lcl + cmt_mf + sfc_imp)**: 16 of 19 exam starts BLEW UP (F2 + sfc_imp alone at 75 L: 19/19 complete) -> cmt_mf or bl_lcl is unstable on thin layers. Suspect: cmt_mf flux divergence g dF/dp is explicit; on 7-hPa layers M (u_u - u) dt / (dp/g) can exceed 1 (same class as P2). Traces registered: tn-tr75-cmt (75 L F2 + sfc_imp + cmt_mf, 1 Jan, 80 steps) and tn-tr75-lcl (75 L F2 + sfc_imp + bl_lcl): the one that goes non-finite names the component.
+
+## 4 Nov 19:00 IST cycle - full Stage-1 suite on the new base (control + cmt_mf), 75 L traces, audit rerun
+**base1 suite** (score_suite.py base1; data/cyclone/suite_base1.json):
+| criterion | base1 | control | |
+|---|---|---|---|
+| 1 z500 d5/d10 (73 starts) | 73.1 / 119.2 | 73.3 / 120.2 | PASS |
+| 2 low-level T/q (d5 tropics) | T925 +2.5 K, T1000 +2.7, q850 -1.45 | T925 +2.5, T1000 +2.8, q850 -1.47 | FAIL - identical to control (inherited warm/dry BL) |
+| 3 intensity vs ERA5 72 h (pmin) | Nivar -0.4, Vardah -5.7, Michaung +7.4 hPa | +10.9 / +0.5 / +12.0 | FAIL (2 of 3 just outside; large improvement) |
+| 4 quick6 72 h track | 297 km, lat error -1.27 deg | 273 km (tn-quick6-ctl-d1, 30 Oct) | FAIL (+9 %) |
+| 5 genesis | 36 % / 48 % | 31 % / 45 % | PASS |
+| 6 TN rain ratio | 1.81 | 1.43 | FAIL |
+| 7 Oct-Dec TN u850 d5 | -2.41 m/s | -3.51 | PASS |
+| 8a 32 L stability | 73/73 | | PASS |
+**Hidden-issue flag (TN rain)**: every option tested since 2 Nov gives TN rain 1.56-1.91 (ckz 1.56, lwc 1.60, tp75f2 1.66, pkg 1.79, base1 1.81, f2lcl 1.82, evi 1.83, corr 1.85, shmf 1.91) while the only control run (tn-base-tnr, 2 Nov) gives 1.43. Same script, same starts, deterministic flags. Either the control is the outlier in a noisy 6-start metric, or the code changed control behaviour after 2 Nov. Test: the whole control suite re-run on today's code (tn-s-ctl2-*, accounts 1-10). Prediction if no drift: identical to the 2 Nov control (tnr 1.43, z500 73.3/120.2, quick6 273 km). Any difference = code drift -> bisect the commits since 2 Nov. All baselines in score_suite will switch to ctl2 (same code as the candidates).
+**75 L traces**: tn-tr75-cmt (F2+sfc_imp+cmt_mf) and tn-tr75-lcl (F2+sfc_imp+bl_lcl), 1 Jan, 120 steps (40 h): both finite throughout (max h_bl 317 / 468 K/day). => registered prediction (one of them goes non-finite) NOT confirmed: neither component alone blows up within 40 h. Next: tn-tr75-pkg (full package, 720 steps = 10 d, per-step JSON) finds the time/place of the blow-up; tn-b75-wx-q0 (new base cmt_mf + sfc_imp at 75 L, 19 starts) = stability gate for the base that will actually be used.
+**Audit rerun (tn-audit2-ctl)**: all processes conserve (0.00 W/m2); process sum = total exactly; BL heat vs H +0.55 W/m2 (theta diffusion vs dry static energy, minor). Stratosphere: applied minus computed above rad_top -14.9 W/m2 global (-21 tropics) = the computed radiation there would WARM ~1 K/day and is replaced by relaxation to the START temperature (~0 at +6 h). => not an energy sink relative to the start state; the stratosphere is held. H4 'nudging' closed as a leak candidate; it stays a formulation limitation (no stratospheric radiation).
+**Michaung steering maps** (tn-maps-mich-ctl/pkg): finished; fields uploaded to release model-maps (100 MB each) - comparison with ERA5 to be done offline (medium priority, tracks).
