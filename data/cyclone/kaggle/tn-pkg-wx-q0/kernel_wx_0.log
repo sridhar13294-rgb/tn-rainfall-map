@@ -1,0 +1,34 @@
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda13.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda13/__init__.py", line 373, in initialize
+    c_api = xb.register_plugin(
+        'cuda', priority=500, library_path=str(path), options=options
+    )
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 662, in register_plugin
+    c_api = xla_client.load_pjrt_plugin_dynamically(plugin_name, library_path)
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 115, in load_pjrt_plugin_dynamically
+    return _xla.load_pjrt_plugin(plugin_name, library_path, c_api=None)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: ALREADY_EXISTS: PJRT_Api already exists for device type cuda
+2020-01-01 T170_pkg sec 378 z500 rmse d1/d5/d10 [20.6, 71.2, 104.0]
+2020-01-21 T170_pkg sec 320 z500 rmse d1/d5/d10 [18.4, 61.9, 109.4]
+2020-02-10 T170_pkg sec 321 z500 rmse d1/d5/d10 [19.4, 71.1, 113.9]
+2020-03-01 T170_pkg sec 320 z500 rmse d1/d5/d10 [18.1, 65.3, 105.7]
+2020-03-21 T170_pkg sec 320 z500 rmse d1/d5/d10 [18.9, 68.8, 113.6]
+2020-04-10 T170_pkg sec 321 z500 rmse d1/d5/d10 [18.2, 70.3, 100.6]
+2020-04-30 T170_pkg sec 320 z500 rmse d1/d5/d10 [18.9, 66.0, 113.2]
+2020-05-20 T170_pkg sec 320 z500 rmse d1/d5/d10 [20.8, 68.5, 120.8]
+2020-06-09 T170_pkg sec 320 z500 rmse d1/d5/d10 [21.2, 78.4, 127.4]
+2020-06-29 T170_pkg sec 322 z500 rmse d1/d5/d10 [21.5, 80.5, 111.8]
+2020-07-19 T170_pkg sec 322 z500 rmse d1/d5/d10 [20.7, 67.9, 126.6]
+2020-08-08 T170_pkg sec 322 z500 rmse d1/d5/d10 [20.5, 66.1, 106.9]
+2020-08-28 T170_pkg sec 322 z500 rmse d1/d5/d10 [21.0, 68.8, 117.5]
+2020-09-17 T170_pkg sec 322 z500 rmse d1/d5/d10 [19.7, 74.3, 108.9]
+2020-10-07 T170_pkg sec 320 z500 rmse d1/d5/d10 [20.3, 77.5, 129.0]
+2020-10-27 T170_pkg sec 320 z500 rmse d1/d5/d10 [21.3, 74.5, 146.4]
+2020-11-16 T170_pkg sec 320 z500 rmse d1/d5/d10 [19.6, 72.4, 126.9]
+2020-12-06 T170_pkg sec 320 z500 rmse d1/d5/d10 [18.5, 70.7, 111.2]
+2020-12-26 T170_pkg sec 321 z500 rmse d1/d5/d10 [19.3, 69.4, 118.4]
