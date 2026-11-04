@@ -1,6 +1,20 @@
 # Kaggle GPU account usage (weekly quota 30 h per account; all accounts assumed reset 2 Nov)
 Updated each cycle. Times IST.
 
+## 4 Nov 07:00 cycle
+| Acct | Job | Purpose | State |
+|---|---|---|---|
+| 1 | tn-tp75f2imp-wx-q0 | P2: 75L F2 + implicit surface coupling, exam q0 (all starts must finish) | running |
+| 2 | tn-evo-f2lcl | P1: F2 + BL depth limited to LCL, budget | running |
+| 3 | tn-f2lcl-tnr | P4: same, TN rain | running |
+| 4 | tn-imp-wx-q0 | P2: 32L control + implicit coupling (neutral check) | running |
+| 5 | tn-f2lcl-gen0 | genesis gate for F2 + bl_lcl | running |
+| 6 | tn-f2lcl-wx-q0 | exam gate + Oct-Dec u850 bias for F2 + bl_lcl | running |
+| 7 | tn-tr75-0609d | P2: 9 Jun trace with implicit coupling | running |
+| 8 | tn-sb-cmtmf72 | P3: mass-flux CMT, radial storm budget 72 h | running |
+| 9 | tn-sb-ctl72 | P3: control, same | running |
+| 10-14 | - | free | free |
+
 ## 4 Nov 01:00 cycle
 | Acct | Job | Purpose | State |
 |---|---|---|---|

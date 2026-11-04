@@ -511,3 +511,10 @@ After the 02:00 IST update no further cycles are scheduled (Sridhar 01:28). Dail
 - P2: 9 Jun hot spot = Andes (25.6 S, 69.6 W), BL heating 1700 K/day in ~20 columns; tn-tr75-0609c records its surface values.
 - SCM GFS v16: BOMEX + TWP-ICE outputs ready -> write scm_megam.py next (P1 BL/cloud-layer comparison).
 - Running: tn-evo-f2l (2), tn-evo-ctll (3), tn-tr75-0609c (7). Free: 1, 4-6, 8-14.
+
+## 4 Nov 07:00 IST cycle
+- P2: second cause = explicit surface heat exchange unstable on the thin 75-level bottom layer (Andes winds 50-100 m/s, H to 12 kW/m2); sfc_imp (implicit coupling) coded, default off; tests running (trace, exam q0 at 75 L, 32 L neutral check).
+- P1: F2's BL top sits above cloud base in 77-100 % of columns -> mixes moisture into 850-925 hPa; bl_lcl option (K-profile only to the LCL) coded, default off; 4 tests running.
+- P3: control already meets the ERA5-at-resolution target for Vardah; Nivar/Michaung 11-12 hPa too shallow. cmt_mf intensity re-test running (radial, 72 h).
+- Steering bias traced (L1) to the heating-profile errors; every candidate now also scored on Oct-Dec TN u850 bias.
+- SCM: GFS v16 BOMEX + TWP-ICE outputs ready; scm_megam.py not written yet (next).
