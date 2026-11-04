@@ -1,6 +1,6 @@
-tn-audit-ctl
+tn-audit-f2
 libm_wx2020_fields.npz
-cd . && python -W ignore budget_audit.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/audit.json '{"grid":"T170"}' 2>&1 | tail -30
+cd . && python -W ignore budget_audit.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/audit.json '{"grid":"T170","pbl_tm":1.0,"sh_mflux":0.03}' 2>&1 | tail -30
 NvidiaTeslaT4
-4
-#u4 2026-11-04T07:32Z
+8
+#u8 2026-11-04T07:33Z
