@@ -3,6 +3,7 @@ python scripts/cyclone/score_suite.py NAME   -> table of criteria with PASS / FA
 import glob, json, math, os, re, sys
 import numpy as np
 K = 'data/cyclone/kaggle/'; N = sys.argv[1]; R = {}
+BASE = os.environ.get('BASE', 'ctl2')   # same-code control suite (4 Nov: round-off alone moves noisy metrics; never compare with an older-code control)
 dist = lambda a, b, c, d: 111.2 * math.hypot(a - c, ((b - d + 180) % 360 - 180) * math.cos(math.radians((a + c) / 2)))
 def have(slug, pat): f = glob.glob(K + slug + '/' + pat); return f[0] if f else None
 def exam(prefix):
@@ -59,7 +60,7 @@ def sb(slug):
         if 72 in x: out[r['name']] = dict(pmin=x[72]['pmin'], v850=x[72]['vmax850'], target_p=T[r['name']]['72']['msl_min'], target_v=T[r['name']]['72']['v850_smooth'])
     return out
 # ---------------- criteria
-c_ex, s_ex = exam('tn-base-wx-q'), exam(f'tn-s-{N}-wx')
+c_ex, s_ex = exam(f'tn-s-{BASE}-wx'), exam(f'tn-s-{N}-wx')
 if s_ex:
     common = sorted(set(c_ex[0]) & set(s_ex[0])); A = np.mean([s_ex[0][x] for x in common], 0); B = np.mean([c_ex[0][x] for x in common], 0)
     R['1 forecast z500 d5/d10'] = dict(cand=A[1:].round(1).tolist(), ctl=B[1:].round(1).tolist(), ok=bool(A[1] <= B[1] and A[2] <= B[2]))
@@ -69,14 +70,15 @@ e = evo(f'tn-s-{N}-evo')
 if e: R['2 low-level T / q850 (d5 tropics)'] = dict(cand=e, ok=bool(all(abs(e[k]) <= 1.5 for k in ('T850', 'T925', 'T1000')) and abs(e['q850']) <= 0.5))
 s = sb(f'tn-s-{N}-sb')
 if s: R['3 cyclone intensity vs ERA5 (+-5 hPa)'] = dict(cand=s, ok=all(abs(v['pmin'] - v['target_p']) <= 5 for v in s.values()))
-q, qc = q6(f'tn-s-{N}-q6'), q6('tn-quick6-ctl-d1')
+q, qc = q6(f'tn-s-{N}-q6'), q6(f'tn-s-{BASE}-q6')
 if q: R['4 tracks quick6 72 h (km), mean 72 h lat error'] = dict(cand=q[0], ctl=qc[0], south=q[1], ok=bool(q[0][72] is not None and q[0][72] <= qc[0][72] and (q[1] or 0) > -1.0))
 g0, g1 = gen(f'tn-s-{N}-gen0', f'T170_{N}'), gen(f'tn-s-{N}-gen1', f'T170_{N}')
-if g0 is not None and g1 is not None: R['5 genesis gen0/gen1 %'] = dict(cand=[round(g0), round(g1)], ctl=[31, 45], ok=g0 >= 31 and g1 >= 45)
+c0, c1 = gen(f'tn-s-{BASE}-gen0', f'T170_{BASE}'), gen(f'tn-s-{BASE}-gen1', f'T170_{BASE}')
+if g0 is not None and g1 is not None: R['5 genesis gen0/gen1 %'] = dict(cand=[round(g0), round(g1)], ctl=[round(c0), round(c1)], ok=g0 >= c0 and g1 >= c1)
 t = tnr(f'tn-s-{N}-tnr')
-if t: R['6 TN rain 5-day ratio'] = dict(cand=round(t, 2), ctl=1.43, ok=abs(t - 1) <= 0.25)
+if t: R['6 TN rain 5-day ratio'] = dict(cand=round(t, 2), ctl=round(tnr(f'tn-s-{BASE}-tnr'), 2), ok=abs(t - 1) <= 0.25)
 names = ['1 forecast z500 d5/d10', '2 low-level T / q850 (d5 tropics)', '3 cyclone intensity vs ERA5 (+-5 hPa)', '4 tracks quick6 72 h (km), mean 72 h lat error',
          '5 genesis gen0/gen1 %', '6 TN rain 5-day ratio', '7 steering Oct-Dec TN u850 d5 bias', '8a stability: exam starts complete']
 for n in names:
     r = R.get(n); print(f"{n:48s} {'pending' if r is None else ('PASS' if r['ok'] else 'FAIL'):8s} {'' if r is None else {k: v for k, v in r.items() if k != 'ok'}}")
-json.dump(R, open(f'data/cyclone/suite_{N}.json', 'w'), indent=1, default=float)
+json.dump(dict(R, baseline=BASE), open(f'data/cyclone/suite_{N}.json', 'w'), indent=1, default=float)

@@ -1,6 +1,18 @@
 # Kaggle GPU account usage (weekly quota 30 h per account; all accounts assumed reset 2 Nov)
 Updated each cycle. Times IST.
 
+## 4 Nov 23:00 (step 0 + step 1, overnight)
+| Acct | Job | Purpose | State |
+|---|---|---|---|
+| 1 | tn-radchk | step 1b: radcloud vs RRTMG clear sky + cloud effects vs CERES (T170, 2 starts) | running |
+| 2 | tn-fluxchk | step 1a: ocean fluxes vs COARE 3.5 at T170 (4 starts) | running |
+| 7-8 | tn-r24-ctl-a/b | step 0: 24-start TN rain, control | running |
+| 9-10 | tn-r24-ctlp-a/b | step 0: same + 0.1 % perturbation (noise) | running |
+| 11 | tn-b75-wx-q0 | 75 L base stability | running |
+| 12-13 | tn-r24-b1-a/b | step 0: 24-start TN rain, base1 | running |
+| 14 | tn-gb-ctl | step 1c: global water/energy drift 10 d | running |
+| 3-6 | - | free (ctl2 suite done) | free |
+
 ## 4 Nov 19:10 cycle
 | Acct | Job | Purpose | State |
 |---|---|---|---|

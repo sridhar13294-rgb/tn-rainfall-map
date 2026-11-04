@@ -1,0 +1,85 @@
+{
+ "1 forecast z500 d5/d10": {
+  "cand": [
+   73.3,
+   119.7
+  ],
+  "ctl": [
+   73.3,
+   120.2
+  ],
+  "ok": false
+ },
+ "8a stability: exam starts complete": {
+  "cand": 73,
+  "failed": 0,
+  "ok": true
+ },
+ "7 steering Oct-Dec TN u850 d5 bias": {
+  "cand": -3.0288730539974376,
+  "ctl": -3.512144234910222,
+  "ok": true
+ },
+ "2 low-level T / q850 (d5 tropics)": {
+  "cand": {
+   "T850": 0.8045,
+   "T925": 2.4997166666666666,
+   "T1000": 2.7701,
+   "q850": -1.4166666666666667
+  },
+  "ok": false
+ },
+ "3 cyclone intensity vs ERA5 (+-5 hPa)": {
+  "cand": {
+   "Vardah": {
+    "pmin": 995.7,
+    "v850": 26.3,
+    "target_p": 995.2,
+    "target_v": 25.2
+   },
+   "Nivar": {
+    "pmin": 1005.0,
+    "v850": 18.3,
+    "target_p": 994.1,
+    "target_v": 26.6
+   },
+   "Michaung": {
+    "pmin": 1004.0,
+    "v850": 19.2,
+    "target_p": 992.0,
+    "target_v": 26.9
+   }
+  },
+  "ok": false
+ },
+ "4 tracks quick6 72 h (km), mean 72 h lat error": {
+  "cand": {
+   "24": 88.17660766279691,
+   "48": 220.44533201944634,
+   "72": 288.7771633351238
+  },
+  "ctl": {
+   "24": 93.37892717417775,
+   "48": 198.8163100787599,
+   "72": 273.3462992146246
+  },
+  "south": -1.3059999999999998,
+  "ok": false
+ },
+ "5 genesis gen0/gen1 %": {
+  "cand": [
+   36,
+   48
+  ],
+  "ctl": [
+   31,
+   45
+  ],
+  "ok": true
+ },
+ "6 TN rain 5-day ratio": {
+  "cand": 1.57,
+  "ctl": 1.43,
+  "ok": false
+ }
+}
