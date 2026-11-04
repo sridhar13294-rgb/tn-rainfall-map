@@ -71,6 +71,15 @@ try:
             if M.S.get(k) != v: bad.append(f'{where}: setting {k}={v} did not reach the model (got {M.S.get(k)})')
 except ImportError:
     warn.append('JAX/dinosaur not installed here - dynamic settings check skipped')
+# 6 (4 Nov): control regression - whenever the model code differs from the reference's code hash, the control (all options
+# at defaults) must still be bit-identical to the last accepted version (scripts/cyclone/regress.py)
+try:
+    sys.path.insert(0, os.path.join(ROOT, 'scripts/cyclone')); import regress, numpy as _np
+    if os.path.exists(regress.REF) and str(_np.load(regress.REF)['hash']) != regress.code_hash():
+        print('PRECHECK: model code changed since the regression reference - running the control regression check')
+        if regress.main([]) != 0: bad.append('control regression FAILED: the control model changed (see above); renew the reference only if intended')
+except ImportError:
+    warn.append('regression check skipped (JAX not installed here)')
 for w in warn: print('PRECHECK warning:', w)
 for b in bad: print('PRECHECK REFUSED:', b)
 sys.exit(1 if bad else 0)

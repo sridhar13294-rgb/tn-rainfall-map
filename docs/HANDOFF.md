@@ -543,3 +543,9 @@ Condition set by Sridhar: every disadvantage of dropping F2 must be addressed be
 | D-F2d | ~75 % grid-scale rain over TN land (false land rain) | D-F2a, then P4 root cause (stored cloud water, rain evaporation) | grid-scale share <= 50 % over TN land; TN rain within +-25 % |
 | D-F2e | corrected Troen-Mahrt BL formula | re-test pbl_tm ALONE with bl_lcl (depth <= cloud base) on the base | low-level gates (check 2) + genesis >= base |
 | D-F2f | z500 ~1 m better with F2 | follows from the above; not chased separately | check 1 |
+
+## 4 Nov 20:40 IST - regular code review made automatic (Sridhar: "Won't you review the code regularly?")
+- scripts/cyclone/regress.py: control regression check. Reference = control (all options default) column-physics tendencies on a fixed state + the state after one full step, T42, start 2020-10-27 (input data/cyclone/regress_in.npz, reference data/cyclone/regress_ref.npz). Must be BIT-IDENTICAL. Runs automatically in precheck (every launch) whenever the model code hash differs from the reference; a failure refuses the launch. Renewing the reference needs a stated reason, logged in data/cyclone/regress_log.md (an intended control change is a formulation change -> also into formulation_history.md).
+- `--opts a,b` checks each option switched on actually changes the output (dead-switch check). 4 Nov: cmt_mf, sfc_imp, bl_lcl, pbl_tm, sh_mflux all live.
+- Each cycle also: git diff of scripts/cyclone/mm since the previous cycle read line by line, findings in rootcause.md.
+- Limits: bit-identity holds only for the single column call and step 1; later steps differ by round-off after ANY edit (shown 4 Nov: 2e-4 K at step 2 -> K-scale in a day). So results of noisy metrics (TN rain: 6 starts) must be compared with a control run on the SAME code (ctl2), not an older one.
