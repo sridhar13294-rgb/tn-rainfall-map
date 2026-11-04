@@ -1,0 +1,57 @@
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda13.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda13/__init__.py", line 373, in initialize
+    c_api = xb.register_plugin(
+        'cuda', priority=500, library_path=str(path), options=options
+    )
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 662, in register_plugin
+    c_api = xla_client.load_pjrt_plugin_dynamically(plugin_name, library_path)
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 115, in load_pjrt_plugin_dynamically
+    return _xla.load_pjrt_plugin(plugin_name, library_path, c_api=None)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: ALREADY_EXISTS: PJRT_Api already exists for device type cuda
+Unnamed 2000 {'T170_f2lcl': (499, 13.7, 8.4)} sec 221
+Unnamed 2000 {'T170_f2lcl': (482, 5.9, 3.1)} sec 163
+Unnamed 2001 {'T170_f2lcl': (270, 9.2, 3.3)} sec 163
+Unnamed 2002 {'T170_f2lcl': (440, 5.6, 2.2)} sec 163
+Unnamed 2002 {'T170_f2lcl': (348, 6.8, 2.7)} sec 162
+Unnamed 2003 {'T170_f2lcl': (371, 5.8, 1.8)} sec 162
+Unnamed 2004 {'T170_f2lcl': (472, 6.2, 3.0)} sec 164
+Muifa 2004 {'T170_f2lcl': (140, 5.3, 1.4)} sec 163
+Unnamed 2005 {'T170_f2lcl': (429, 4.9, 1.9)} sec 163
+Baaz 2005 {'T170_f2lcl': (460, 4.9, 1.5)} sec 163
+Unnamed 2005 {'T170_f2lcl': (479, 5.7, 1.5)} sec 163
+Durian 2006 {'T170_f2lcl': (313, 7.2, 2.1)} sec 163
+Rashmi 2008 {'T170_f2lcl': (197, 5.1, 2.2)} sec 162
+Nisha 2008 {'T170_f2lcl': (404, 5.8, 1.3)} sec 163
+Ward 2009 {'T170_f2lcl': (417, 6.4, 1.1)} sec 163
+Unnamed 2010 {'T170_f2lcl': (490, 10.2, 3.2)} sec 162
+Jal 2010 {'T170_f2lcl': (496, 5.9, 2.4)} sec 162
+Unnamed 2011 {'T170_f2lcl': (441, 9.5, 4.4)} sec 164
+Unnamed 2012 {'T170_f2lcl': (266, 13.3, 4.0)} sec 164
+Unnamed 2012 {'T170_f2lcl': (329, 3.5, 2.9)} sec 164
+Unnamed 2013 {'T170_f2lcl': (468, 7.3, 2.5)} sec 162
+Lehar 2013 {'T170_f2lcl': (367, 5.7, 1.0)} sec 163
+Hudhud 2014 {'T170_f2lcl': (185, 6.2, 2.1)} sec 162
+Unnamed 2015 {'T170_f2lcl': (124, 7.0, 2.4)} sec 164
+Unnamed 2016 {'T170_f2lcl': (471, 5.8, 2.5)} sec 162
+Vardah 2016 {'T170_f2lcl': (494, 9.0, 3.8)} sec 163
+Unnamed 2017 {'T170_f2lcl': (460, 16.3, 9.8)} sec 162
+Unnamed 2017 {'T170_f2lcl': (188, 6.7, 3.6)} sec 163
+Unnamed 2017 {'T170_f2lcl': (494, 7.5, 3.3)} sec 163
+Gaja 2018 {'T170_f2lcl': (448, 6.4, 2.1)} sec 163
+Bulbul:Matmo 2019 {'T170_f2lcl': (434, 5.4, 1.0)} sec 163
+Unnamed 2020 {'T170_f2lcl': (354, 7.4, 4.7)} sec 162
+Burevi 2020 {'T170_f2lcl': (447, 6.7, 1.7)} sec 162
+Unnamed 2021 {'T170_f2lcl': (229, 4.6, 1.9)} sec 162
+Jawad 2021 {'T170_f2lcl': (463, 8.4, 3.2)} sec 163
+Unnamed 2022 {'T170_f2lcl': (463, 10.7, 3.0)} sec 162
+Unnamed 2022 {'T170_f2lcl': (441, 7.5, 3.2)} sec 163
+Midhili 2023 {'T170_f2lcl': (453, 4.9, 1.6)} sec 217
+Unnamed 2024 {'T170_f2lcl': (492, 5.7, 1.2)} sec 162
+Fengal 2024 {'T170_f2lcl': (218, 4.0, 1.3)} sec 163
+Unnamed 2025 {'T170_f2lcl': (309, 11.6, 6.1)} sec 162
+Senyar 2025 {'T170_f2lcl': (393, 7.2, 1.8)} sec 164
