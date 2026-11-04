@@ -1,0 +1,57 @@
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda13.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda13/__init__.py", line 373, in initialize
+    c_api = xb.register_plugin(
+        'cuda', priority=500, library_path=str(path), options=options
+    )
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 662, in register_plugin
+    c_api = xla_client.load_pjrt_plugin_dynamically(plugin_name, library_path)
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 115, in load_pjrt_plugin_dynamically
+    return _xla.load_pjrt_plugin(plugin_name, library_path, c_api=None)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: ALREADY_EXISTS: PJRT_Api already exists for device type cuda
+Unnamed 2000 {'T170_base1': (434, 15.8, 5.3)} sec 223
+Unnamed 2000 {'T170_base1': (485, 25.1, 5.8)} sec 167
+Unnamed 2001 {'T170_base1': (194, 11.0, 3.9)} sec 167
+Unnamed 2002 {'T170_base1': (226, 11.8, 3.6)} sec 167
+Unnamed 2003 {'T170_base1': (109, 14.0, 7.1)} sec 167
+Unnamed 2003 {'T170_base1': (452, 32.0, 11.3)} sec 167
+Unnamed 2004 {'T170_base1': (480, 17.9, 6.1)} sec 167
+Unnamed 2005 {'T170_base1': (173, 11.2, 5.9)} sec 167
+Unnamed 2005 {'T170_base1': (16, 16.9, 5.5)} sec 167
+Fanoos 2005 {'T170_base1': (491, 9.3, 4.7)} sec 167
+Unnamed 2006 {'T170_base1': (475, 7.4, 2.3)} sec 167
+Sidr 2007 {'T170_base1': (190, 18.9, 4.0)} sec 167
+Khai-Muk 2008 {'T170_base1': (373, 40.6, 15.6)} sec 167
+Unnamed 2008 {'T170_base1': (138, 17.7, 3.4)} sec 167
+Unnamed 2010 {'T170_base1': (283, 13.0, 5.0)} sec 167
+Giri 2010 {'T170_base1': (106, 15.0, 5.8)} sec 167
+Unnamed 2010 {'T170_base1': (342, 16.7, 6.4)} sec 167
+Thane 2011 {'T170_base1': (303, 53.5, 26.0)} sec 167
+Nilam 2012 {'T170_base1': (500, 13.1, 2.6)} sec 167
+Phailin 2013 {'T170_base1': (467, 14.2, 4.6)} sec 167
+Helen 2013 {'T170_base1': (432, 12.0, 3.5)} sec 167
+Madi 2013 {'T170_base1': (406, 13.2, 3.2)} sec 167
+Unnamed 2014 {'T170_base1': (409, 29.6, 11.7)} sec 167
+Kyant 2016 {'T170_base1': (239, 18.3, 4.6)} sec 167
+Nada 2016 {'T170_base1': (26, 35.6, 11.1)} sec 167
+Unnamed 2017 {'T170_base1': (493, 8.9, 2.9)} sec 167
+Unnamed 2017 {'T170_base1': (206, 7.3, 3.0)} sec 167
+Ockhi 2017 {'T170_base1': (380, 18.7, 3.3)} sec 167
+Titli 2018 {'T170_base1': (185, 30.9, 11.6)} sec 167
+Phethai 2018 {'T170_base1': (435, 23.7, 5.0)} sec 167
+Unnamed 2020 {'T170_base1': (382, 11.9, 5.6)} sec 167
+Nivar 2020 {'T170_base1': (116, 14.6, 5.8)} sec 167
+Krovanh 2020 {'T170_base1': (472, 11.9, 2.0)} sec 167
+Unnamed 2021 {'T170_base1': (99, 15.3, 2.6)} sec 167
+Sitrang 2022 {'T170_base1': (370, 18.1, 4.3)} sec 167
+Mandous 2022 {'T170_base1': (40, 12.3, 2.1)} sec 167
+Hamoon 2023 {'T170_base1': (166, 33.2, 10.0)} sec 219
+Michaung 2023 {'T170_base1': (456, 10.9, 2.0)} sec 167
+Dana 2024 {'T170_base1': (454, 30.0, 12.6)} sec 167
+Unnamed 2024 {'T170_base1': (153, 20.3, 10.1)} sec 167
+Montha 2025 {'T170_base1': (184, 15.5, 3.5)} sec 167
+Ditwah 2025 {'T170_base1': (205, 34.7, 8.5)} sec 167
