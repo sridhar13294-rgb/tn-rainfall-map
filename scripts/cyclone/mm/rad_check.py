@@ -35,9 +35,10 @@ def rrtmg_col(p_hpa, T, q, o3_vmr, Ts, alb, coszen, insol, gases_full=False):
               icld=0, timestep=3600.0)
     r.compute_diagnostics()
     D = r.diagnostics
-    return dict(OLRclr=float(D['OLRclr']), LWdn_sfc_clr=float(D['LW_flux_down_clr'][-1]), ASRclr=float(D['ASRclr']),
-                SWdn_sfc_clr=float(D['SW_flux_down_clr'][-1]), SWup_sfc_clr=float(D['SW_flux_up_clr'][-1]),
-                TdotLW_clr=np.asarray(D['TdotLW_clr'], float))
+    one = lambda x: float(np.ravel(np.asarray(x, float))[0]); sfc = lambda x: float(np.ravel(np.asarray(x, float))[-1])
+    return dict(OLRclr=one(D['OLRclr']), LWdn_sfc_clr=sfc(D['LW_flux_down_clr']), ASRclr=one(D['ASRclr']),
+                SWdn_sfc_clr=sfc(D['SW_flux_down_clr']), SWup_sfc_clr=sfc(D['SW_flux_up_clr']),
+                TdotLW_clr=np.ravel(np.asarray(D['TdotLW_clr'], float)))
 for key in STARTS:
     key = key if 'T' in key else key + 'T00'; k = TT.index(key); t0 = dt.datetime.strptime(key, '%Y-%m-%dT%H')
     f3 = {v: Z['f3'][k, V3.index(v)] for v in V3}; f2 = Z['f2'][k]
