@@ -1,0 +1,33 @@
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda13.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda13/__init__.py", line 373, in initialize
+    c_api = xb.register_plugin(
+        'cuda', priority=500, library_path=str(path), options=options
+    )
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 662, in register_plugin
+    c_api = xla_client.load_pjrt_plugin_dynamically(plugin_name, library_path)
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 115, in load_pjrt_plugin_dynamically
+    return _xla.load_pjrt_plugin(plugin_name, library_path, c_api=None)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: ALREADY_EXISTS: PJRT_Api already exists for device type cuda
+2020-01-06 T170_base1 sec 385 z500 rmse d1/d5/d10 [19.9, 66.2, 112.1]
+2020-01-26 T170_base1 sec 325 z500 rmse d1/d5/d10 [19.5, 67.4, 112.7]
+2020-02-15 T170_base1 sec 326 z500 rmse d1/d5/d10 [19.7, 65.3, 109.0]
+2020-03-06 T170_base1 sec 327 z500 rmse d1/d5/d10 [19.6, 73.2, 135.5]
+2020-03-26 T170_base1 sec 325 z500 rmse d1/d5/d10 [18.4, 79.4, 112.0]
+2020-04-15 T170_base1 sec 327 z500 rmse d1/d5/d10 [18.4, 64.3, 122.3]
+2020-05-05 T170_base1 sec 326 z500 rmse d1/d5/d10 [19.2, 77.0, 125.2]
+2020-05-25 T170_base1 sec 329 z500 rmse d1/d5/d10 [20.0, 68.1, 118.1]
+2020-06-14 T170_base1 sec 326 z500 rmse d1/d5/d10 [22.0, 67.5, 122.5]
+2020-07-04 T170_base1 sec 327 z500 rmse d1/d5/d10 [21.5, 80.3, 116.2]
+2020-07-24 T170_base1 sec 326 z500 rmse d1/d5/d10 [21.3, 76.8, 124.4]
+2020-08-13 T170_base1 sec 328 z500 rmse d1/d5/d10 [21.0, 83.7, 129.8]
+2020-09-02 T170_base1 sec 326 z500 rmse d1/d5/d10 [19.6, 67.4, 108.3]
+2020-09-22 T170_base1 sec 329 z500 rmse d1/d5/d10 [19.5, 78.9, 141.7]
+2020-10-12 T170_base1 sec 329 z500 rmse d1/d5/d10 [19.9, 75.2, 112.5]
+2020-11-01 T170_base1 sec 326 z500 rmse d1/d5/d10 [20.2, 65.4, 105.1]
+2020-11-21 T170_base1 sec 325 z500 rmse d1/d5/d10 [19.7, 73.2, 105.2]
+2020-12-11 T170_base1 sec 329 z500 rmse d1/d5/d10 [19.2, 63.3, 100.9]
