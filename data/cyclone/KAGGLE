@@ -1,6 +1,6 @@
-tn-tr75-lcl
-libm_wx2020_fields.npz
-cd . && python -W ignore trace75.py /kaggle/working/libm_wx2020_fields.npz '{"layers":"tp75","grid":"T170","pbl_tm":1.0,"sh_mflux":0.03,"sfc_imp":1.0,"bl_lcl":1.0}' 120 /kaggle/working/trace.json 2>&1 | tail -60
+tn-s-base1-wx0
+libm_wx2020_fields.npz,wx_truth_2020.npz
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/suite_base1_wx.json 0 4 /kaggle/working/wx_0.json > /kaggle/working/wx_0.log 2>&1; tail -3 /kaggle/working/wx_0.log
 NvidiaTeslaT4
-14
-#r14 2026-11-04T10:05Z
+1
+#sbase1 2026-11-04T10:30Z
