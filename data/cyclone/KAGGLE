@@ -1,6 +1,6 @@
-tn-tr75-cmt
+tn-tr75-lcl
 libm_wx2020_fields.npz
-cd . && python -W ignore trace75.py /kaggle/working/libm_wx2020_fields.npz '{"layers":"tp75","grid":"T170","pbl_tm":1.0,"sh_mflux":0.03,"sfc_imp":1.0,"cmt_mf":1.0}' 120 /kaggle/working/trace.json 2>&1 | tail -60
+cd . && python -W ignore trace75.py /kaggle/working/libm_wx2020_fields.npz '{"layers":"tp75","grid":"T170","pbl_tm":1.0,"sh_mflux":0.03,"sfc_imp":1.0,"bl_lcl":1.0}' 120 /kaggle/working/trace.json 2>&1 | tail -60
 NvidiaTeslaT4
-13
-#r13 2026-11-04T10:04Z
+14
+#r14 2026-11-04T10:05Z
