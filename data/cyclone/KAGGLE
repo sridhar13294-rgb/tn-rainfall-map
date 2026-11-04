@@ -1,6 +1,6 @@
-tn-sb-cmtmf72
+tn-sb-ctl72
 libm_fields.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/sb_cmtmf72.json /kaggle/working/sb_cmtmf72.json > /kaggle/working/sb.log 2>&1; tail -20 /kaggle/working/sb.log
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/sb_ctl72.json /kaggle/working/sb_ctl72.json > /kaggle/working/sb.log 2>&1; tail -20 /kaggle/working/sb.log
 NvidiaTeslaT4
-8
-#c8 2026-11-04T01:39Z
+9
+#c9 2026-11-04T01:39Z
