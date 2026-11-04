@@ -1,6 +1,13 @@
 # Kaggle GPU account usage (weekly quota 30 h per account; all accounts assumed reset 2 Nov)
 Updated each cycle. Times IST.
 
+## 5 Nov 01:20 (silent cycle)
+| Acct | Job | Purpose | State |
+|---|---|---|---|
+| 1 | tn-radchk2 | step 1b: radcloud vs RRTMG clear sky (script fix) | running |
+| 2-14 | - | step 0, roundtrips, 75 L base, flux, budget all finished and scored | free |
+GitHub Actions: land library libm_wx2020L (ERA5 soil/skin) building.
+
 ## 4 Nov 23:00 (step 0 + step 1, overnight)
 | Acct | Job | Purpose | State |
 |---|---|---|---|
