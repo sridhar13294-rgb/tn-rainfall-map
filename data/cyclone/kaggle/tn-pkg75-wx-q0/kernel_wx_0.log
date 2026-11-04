@@ -1,0 +1,114 @@
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda13.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda13/__init__.py", line 373, in initialize
+    c_api = xb.register_plugin(
+        'cuda', priority=500, library_path=str(path), options=options
+    )
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 662, in register_plugin
+    c_api = xla_client.load_pjrt_plugin_dynamically(plugin_name, library_path)
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 115, in load_pjrt_plugin_dynamically
+    return _xla.load_pjrt_plugin(plugin_name, library_path, c_api=None)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: ALREADY_EXISTS: PJRT_Api already exists for device type cuda
+Traceback (most recent call last):
+  File "/kaggle/working/repo/scripts/cyclone/mm/wx2.py", line 27, in <module>
+    if not np.isfinite(out['mslp']).all(): raise RuntimeError('blew up')
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: blew up
+2020-01-01T00 tp75_pkg FAILED RuntimeError('blew up')
+2020-01-21 tp75_pkg sec 775 z500 rmse d1/d5/d10 [19.9, 64.7, 101.6]
+Traceback (most recent call last):
+  File "/kaggle/working/repo/scripts/cyclone/mm/wx2.py", line 27, in <module>
+    if not np.isfinite(out['mslp']).all(): raise RuntimeError('blew up')
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: blew up
+2020-02-10T00 tp75_pkg FAILED RuntimeError('blew up')
+Traceback (most recent call last):
+  File "/kaggle/working/repo/scripts/cyclone/mm/wx2.py", line 27, in <module>
+    if not np.isfinite(out['mslp']).all(): raise RuntimeError('blew up')
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: blew up
+2020-03-01T00 tp75_pkg FAILED RuntimeError('blew up')
+Traceback (most recent call last):
+  File "/kaggle/working/repo/scripts/cyclone/mm/wx2.py", line 27, in <module>
+    if not np.isfinite(out['mslp']).all(): raise RuntimeError('blew up')
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: blew up
+2020-03-21T00 tp75_pkg FAILED RuntimeError('blew up')
+Traceback (most recent call last):
+  File "/kaggle/working/repo/scripts/cyclone/mm/wx2.py", line 27, in <module>
+    if not np.isfinite(out['mslp']).all(): raise RuntimeError('blew up')
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: blew up
+2020-04-10T00 tp75_pkg FAILED RuntimeError('blew up')
+Traceback (most recent call last):
+  File "/kaggle/working/repo/scripts/cyclone/mm/wx2.py", line 27, in <module>
+    if not np.isfinite(out['mslp']).all(): raise RuntimeError('blew up')
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: blew up
+2020-04-30T00 tp75_pkg FAILED RuntimeError('blew up')
+Traceback (most recent call last):
+  File "/kaggle/working/repo/scripts/cyclone/mm/wx2.py", line 27, in <module>
+    if not np.isfinite(out['mslp']).all(): raise RuntimeError('blew up')
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: blew up
+2020-05-20T00 tp75_pkg FAILED RuntimeError('blew up')
+Traceback (most recent call last):
+  File "/kaggle/working/repo/scripts/cyclone/mm/wx2.py", line 27, in <module>
+    if not np.isfinite(out['mslp']).all(): raise RuntimeError('blew up')
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: blew up
+2020-06-09T00 tp75_pkg FAILED RuntimeError('blew up')
+Traceback (most recent call last):
+  File "/kaggle/working/repo/scripts/cyclone/mm/wx2.py", line 27, in <module>
+    if not np.isfinite(out['mslp']).all(): raise RuntimeError('blew up')
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: blew up
+2020-06-29T00 tp75_pkg FAILED RuntimeError('blew up')
+Traceback (most recent call last):
+  File "/kaggle/working/repo/scripts/cyclone/mm/wx2.py", line 27, in <module>
+    if not np.isfinite(out['mslp']).all(): raise RuntimeError('blew up')
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: blew up
+2020-07-19T00 tp75_pkg FAILED RuntimeError('blew up')
+Traceback (most recent call last):
+  File "/kaggle/working/repo/scripts/cyclone/mm/wx2.py", line 27, in <module>
+    if not np.isfinite(out['mslp']).all(): raise RuntimeError('blew up')
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: blew up
+2020-08-08T00 tp75_pkg FAILED RuntimeError('blew up')
+Traceback (most recent call last):
+  File "/kaggle/working/repo/scripts/cyclone/mm/wx2.py", line 27, in <module>
+    if not np.isfinite(out['mslp']).all(): raise RuntimeError('blew up')
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: blew up
+2020-08-28T00 tp75_pkg FAILED RuntimeError('blew up')
+2020-09-17 tp75_pkg sec 775 z500 rmse d1/d5/d10 [22.3, 76.6, 109.5]
+Traceback (most recent call last):
+  File "/kaggle/working/repo/scripts/cyclone/mm/wx2.py", line 27, in <module>
+    if not np.isfinite(out['mslp']).all(): raise RuntimeError('blew up')
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: blew up
+2020-10-07T00 tp75_pkg FAILED RuntimeError('blew up')
+2020-10-27 tp75_pkg sec 774 z500 rmse d1/d5/d10 [24.0, 79.7, 146.5]
+Traceback (most recent call last):
+  File "/kaggle/working/repo/scripts/cyclone/mm/wx2.py", line 27, in <module>
+    if not np.isfinite(out['mslp']).all(): raise RuntimeError('blew up')
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: blew up
+2020-11-16T00 tp75_pkg FAILED RuntimeError('blew up')
+Traceback (most recent call last):
+  File "/kaggle/working/repo/scripts/cyclone/mm/wx2.py", line 27, in <module>
+    if not np.isfinite(out['mslp']).all(): raise RuntimeError('blew up')
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: blew up
+2020-12-06T00 tp75_pkg FAILED RuntimeError('blew up')
+Traceback (most recent call last):
+  File "/kaggle/working/repo/scripts/cyclone/mm/wx2.py", line 27, in <module>
+    if not np.isfinite(out['mslp']).all(): raise RuntimeError('blew up')
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: blew up
+2020-12-26T00 tp75_pkg FAILED RuntimeError('blew up')
