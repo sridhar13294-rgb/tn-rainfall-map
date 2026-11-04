@@ -1,6 +1,6 @@
-tn-mom-ctl
+tn-mom-pkg
 libm_wx2020_fields.npz
-cd . && XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 6 '{"ctl":{"grid":"T170","_budget":true,"_months":["10","11","12"],"_win":[[0,24],[48,72],[96,120]]}}' > /kaggle/working/prof.log 2>&1; tail -40 /kaggle/working/prof.log
+cd . && XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 6 '{"pkg":{"grid":"T170","_budget":true,"pbl_tm":1.0,"sh_mflux":0.03,"bl_lcl":1.0,"cmt_mf":1.0,"_months":["10","11","12"],"_win":[[0,24],[48,72],[96,120]]}}' > /kaggle/working/prof.log 2>&1; tail -40 /kaggle/working/prof.log
 NvidiaTeslaT4
-8
-#o8 2026-11-04T05:42Z
+11
+#o11 2026-11-04T05:43Z
