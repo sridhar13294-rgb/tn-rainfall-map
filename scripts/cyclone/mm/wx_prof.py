@@ -80,6 +80,14 @@ for VN, VS in VARS.items():
               pss = np.asarray(jnp.exp(hor.to_nodal(s_.log_surface_pressure))[0] / M.PA); uu, vv = spherical_harmonic.vor_div_to_uv_nodal(hor, s_.vorticity, s_.divergence)
               tn_, dd = M.column(jnp.asarray(Ts), jnp.asarray(qs), uu / M.MPS, vv / M.MPS, jnp.asarray(pss), dict(c_, doy0=jnp.float32(M.doy0), utc0=jnp.float32(M.utc0)), rad_fresh=True, div=hor.to_nodal(s_.divergence) * M.SEC)
               o = {}
+              # lows diagnostic (4 Nov): MSLP local minima (7x7 grid window) deeper than 2 hPa below the mean of a ~5-cell ring,
+              # in the Bay of Bengal / south Indian region 0-22 N, 75-100 E; their number, mean latitude, longitude, depth
+              from numpy.lib.stride_tricks import sliding_window_view as _sw
+              msl = pss * np.exp(9.80616 * np.asarray(M.zs) / (287.04 * Ts[-1])) / 100.0
+              pad = np.pad(msl, 3, mode='edge'); mn7 = _sw(pad, (7, 7)).min((-1, -2)); pad5 = np.pad(msl, 5, mode='edge'); rg5 = _sw(pad5, (11, 11)).mean((-1, -2))
+              box = (LAm >= 0) & (LAm <= 22) & (LOm >= 75) & (LOm <= 100); low = box & (msl <= mn7) & (rg5 - msl > 2.0)
+              lows = dict(lows_n=float(low.sum()), lows_lat=float(LAm[low].mean()) if low.any() else np.nan, lows_lon=float(LOm[low].mean()) if low.any() else np.nan,
+                          lows_depth=float((rg5 - msl)[low].mean()) if low.any() else np.nan)
               for rg, mk in RB.items():
                   W_ = np.cos(np.radians(LAm)) * mk; mn = lambda X: np.array([(np.asarray(X)[i] * W_).sum() / W_.sum() for i in range(len(M.sig))])
                   e = dict(T=mn(Ts), q=mn(qs), phys=mn(tn_['T']) * 86400, physq=mn(tn_['q']) * 86400 * 1000)
@@ -87,6 +95,7 @@ for VN, VS in VARS.items():
                   for kk in PR:
                       if kk in dd: e[kk] = mn(dd[kk]) * 86400
                   e['rain'] = float((np.asarray(dd['rain']) * W_).sum() / W_.sum() * 86400)
+                  e['mslp'] = float((msl * np.cos(np.radians(LAm)) * mk).sum() / (np.cos(np.radians(LAm)) * mk).sum()); e.update(lows)
                   for kk in ('on_dp', 'on_sh', 'on_orph', 'lsc_orph', 'lsc_all', 'hbl', 'zlcl'):
                       if kk in dd: e[kk] = float((np.asarray(dd[kk]) * W_).sum() / W_.sum())
                   if 'hbl' in dd: e['hbl_above_lcl'] = float(((np.asarray(dd['hbl']) > np.asarray(dd['zlcl'])) * W_).sum() / W_.sum())
@@ -106,8 +115,8 @@ for VN, VS in VARS.items():
                       if kk in snaps[0][rg]: e[kk] = tm(kk)
                   e = {k: np.round(v, 3).tolist() for k, v in e.items()}
                   e['rain'] = round(float(np.mean([x[rg]['rain'] for x in snaps])), 2)
-                  for kk in ('on_dp', 'on_sh', 'on_orph', 'lsc_orph', 'lsc_all', 'hbl', 'zlcl', 'hbl_above_lcl'):
-                      if kk in snaps[0][rg]: e[kk] = round(float(np.mean([x[rg][kk] for x in snaps])) * (86400 if kk.startswith('lsc') else 1), 3)
+                  for kk in ('on_dp', 'on_sh', 'on_orph', 'lsc_orph', 'lsc_all', 'hbl', 'zlcl', 'hbl_above_lcl', 'mslp', 'lows_n', 'lows_lat', 'lows_lon', 'lows_depth'):
+                      if kk in snaps[0][rg]: e[kk] = round(float(np.nanmean([x[rg][kk] for x in snaps])) * (86400 if kk.startswith('lsc') else 1), 3)
                   win[rg] = e
               B[f'{w0}-{w1}h'] = win
           r['budget'] = B; st5, cr5 = sA, cA
