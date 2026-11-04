@@ -1,0 +1,303 @@
+{
+ "settings": {},
+ "layers": 32,
+ "rad_keys": [
+  "cover",
+  "heating",
+  "lw_dn_sfc",
+  "olr",
+  "sw_net_sfc"
+ ],
+ "2020-01-01T00 +6h": {
+  "BL heat (cp int h_bl - H)": {
+   "global_mean": 0.554,
+   "tropics_mean": 0.293,
+   "p99_abs": 4.87,
+   "max_abs": 21.58
+  },
+  "BL water (L int q_bl - L E)": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.01
+  },
+  "deep moist enthalpy": {
+   "global_mean": -0.0,
+   "tropics_mean": 0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "shal moist enthalpy": {
+   "global_mean": 0.0,
+   "tropics_mean": 0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "lsc moist enthalpy": {
+   "global_mean": 0.0,
+   "tropics_mean": 0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "evap moist enthalpy": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "water (int dq - (E - rain))": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.01
+  },
+  "energy non-rad (int cp(dT-rad)+L dq - (H+LE))": {
+   "global_mean": 0.554,
+   "tropics_mean": 0.293,
+   "p99_abs": 4.87,
+   "max_abs": 21.58
+  },
+  "stratosphere: applied minus computed radiation above rad_top": {
+   "global_mean": -14.894,
+   "tropics_mean": -21.38,
+   "p99_abs": 66.28,
+   "max_abs": 80.24
+  },
+  "sum of process heating vs total (cp int(dT - rad_app - sum h_*))": {
+   "global_mean": 0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "rain (rain + int(q_deep+q_shal+q_lsc+q_evap))": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "_reference": {
+   "H": 3.5,
+   "LE": 103.3,
+   "Lrain": 84.6
+  }
+ },
+ "2020-01-01T00 +24h": {
+  "BL heat (cp int h_bl - H)": {
+   "global_mean": 0.593,
+   "tropics_mean": 0.404,
+   "p99_abs": 4.99,
+   "max_abs": 21.56
+  },
+  "BL water (L int q_bl - L E)": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.01
+  },
+  "deep moist enthalpy": {
+   "global_mean": -0.0,
+   "tropics_mean": 0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "shal moist enthalpy": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "lsc moist enthalpy": {
+   "global_mean": 0.0,
+   "tropics_mean": 0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "evap moist enthalpy": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "water (int dq - (E - rain))": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.01
+  },
+  "energy non-rad (int cp(dT-rad)+L dq - (H+LE))": {
+   "global_mean": 0.593,
+   "tropics_mean": 0.404,
+   "p99_abs": 4.99,
+   "max_abs": 21.57
+  },
+  "stratosphere: applied minus computed radiation above rad_top": {
+   "global_mean": -14.874,
+   "tropics_mean": -21.558,
+   "p99_abs": 67.72,
+   "max_abs": 79.73
+  },
+  "sum of process heating vs total (cp int(dT - rad_app - sum h_*))": {
+   "global_mean": 0.0,
+   "tropics_mean": 0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "rain (rain + int(q_deep+q_shal+q_lsc+q_evap))": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "_reference": {
+   "H": -3.9,
+   "LE": 100.4,
+   "Lrain": 101.9
+  }
+ },
+ "2020-06-29T00 +6h": {
+  "BL heat (cp int h_bl - H)": {
+   "global_mean": 0.522,
+   "tropics_mean": 0.304,
+   "p99_abs": 3.85,
+   "max_abs": 9.89
+  },
+  "BL water (L int q_bl - L E)": {
+   "global_mean": 0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.01
+  },
+  "deep moist enthalpy": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "shal moist enthalpy": {
+   "global_mean": 0.0,
+   "tropics_mean": 0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "lsc moist enthalpy": {
+   "global_mean": 0.0,
+   "tropics_mean": 0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "evap moist enthalpy": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "water (int dq - (E - rain))": {
+   "global_mean": 0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.01
+  },
+  "energy non-rad (int cp(dT-rad)+L dq - (H+LE))": {
+   "global_mean": 0.522,
+   "tropics_mean": 0.304,
+   "p99_abs": 3.85,
+   "max_abs": 9.89
+  },
+  "stratosphere: applied minus computed radiation above rad_top": {
+   "global_mean": -14.204,
+   "tropics_mean": -18.237,
+   "p99_abs": 61.63,
+   "max_abs": 74.44
+  },
+  "sum of process heating vs total (cp int(dT - rad_app - sum h_*))": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "rain (rain + int(q_deep+q_shal+q_lsc+q_evap))": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "_reference": {
+   "H": 0.1,
+   "LE": 122.6,
+   "Lrain": 88.8
+  }
+ },
+ "2020-06-29T00 +24h": {
+  "BL heat (cp int h_bl - H)": {
+   "global_mean": 0.566,
+   "tropics_mean": 0.418,
+   "p99_abs": 4.06,
+   "max_abs": 13.05
+  },
+  "BL water (L int q_bl - L E)": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.01
+  },
+  "deep moist enthalpy": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "shal moist enthalpy": {
+   "global_mean": 0.0,
+   "tropics_mean": 0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "lsc moist enthalpy": {
+   "global_mean": 0.0,
+   "tropics_mean": 0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "evap moist enthalpy": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "water (int dq - (E - rain))": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.01
+  },
+  "energy non-rad (int cp(dT-rad)+L dq - (H+LE))": {
+   "global_mean": 0.566,
+   "tropics_mean": 0.417,
+   "p99_abs": 4.06,
+   "max_abs": 13.04
+  },
+  "stratosphere: applied minus computed radiation above rad_top": {
+   "global_mean": -13.512,
+   "tropics_mean": -17.344,
+   "p99_abs": 57.08,
+   "max_abs": 71.58
+  },
+  "sum of process heating vs total (cp int(dT - rad_app - sum h_*))": {
+   "global_mean": 0.0,
+   "tropics_mean": 0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "rain (rain + int(q_deep+q_shal+q_lsc+q_evap))": {
+   "global_mean": -0.0,
+   "tropics_mean": -0.0,
+   "p99_abs": 0.0,
+   "max_abs": 0.0
+  },
+  "_reference": {
+   "H": -6.0,
+   "LE": 109.2,
+   "Lrain": 105.6
+  }
+ }
+}
