@@ -1,6 +1,6 @@
-tn-s-ctl2-gen1
-libm48_fields.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/suite_ctl2_gen.json 1 2 /kaggle/working/gen_1.json > /kaggle/working/gen_1.log 2>&1; tail -3 /kaggle/working/gen_1.log
+tn-s-ctl2-tnr
+libm_wx2020_fields.npz,wx_truth_2020.npz
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore tn_rain_diag.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz /kaggle/working/tnr.json 2020-05-20,2020-06-09,2020-07-19,2020-08-08,2020-10-27,2020-12-06 '{"ctl2": {"grid": "T170"}}' > /kaggle/working/tnr.log 2>&1; tail -12 /kaggle/working/tnr.log
 NvidiaTeslaT4
-6
-#sctl2 2026-11-04T13:36Z
+7
+#sctl2 2026-11-04T13:37Z
