@@ -104,11 +104,11 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='mf', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='radcloud', rad_every=2,
-                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
+                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
-DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt', 'entr', 'mf_kick_t', 'mf_kick_q', 'mf_org', 'mf_wup', 'mf_dd', 'sh_top', 'bmj_dt', 'bmj_ice', 'ck_z', 'mf_ice', 'sh_taper', 'pbl_tm', 'sh_trig', 'sh_clos', 'ev_frac', 'mf_wke', 'rad_top', 'mf_capdp', 'sp_quad', 'sp_top', 'sponge', 'tau_strat', 'src_dp', 'mf_dmin', 'sh_dtop', 'sh_cap', 'sh_mflux', 'sfc_imp')
+DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt', 'entr', 'mf_kick_t', 'mf_kick_q', 'mf_org', 'mf_wup', 'mf_dd', 'sh_top', 'bmj_dt', 'bmj_ice', 'ck_z', 'mf_ice', 'sh_taper', 'pbl_tm', 'sh_trig', 'sh_clos', 'ev_frac', 'mf_wke', 'rad_top', 'mf_capdp', 'sp_quad', 'sp_top', 'sponge', 'tau_strat', 'src_dp', 'mf_dmin', 'sh_dtop', 'sh_cap', 'sh_mflux', 'sfc_imp', 'bl_lcl')
 NWAVE = 8
 class Model:
     def __init__(self, grid='T170', layers=32, dt_min=None, set_=None):
@@ -419,6 +419,13 @@ class Model:
         rib_z = G * zc * (thv - (thv1 + excess)) / (thv1 * Vz2)
         above = rib_z > 0.25
         hbl = jnp.clip(jnp.min(jnp.where(above, zc, 3000.0), axis=0), 100.0, 3000.0)
+        # bl_lcl > 0 (P1, 4 Nov): in a cloud-topped boundary layer the dry K-profile mixes only up to cloud base (the lifting
+        # condensation level of the lowest-level air); above it the transport belongs to the cumulus scheme (IFS EDMF,
+        # Part IV ch. 3). F2 had the BL top above the LCL in 77-100 % of tropical columns (870 vs 550 m) and moistened
+        # 850-925 hPa by +2.3..+2.8 g/kg/day -> the low cloud deck.
+        e1_ = jnp.maximum(q1 * p1 / (0.622 + 0.378 * q1), 1.0); Td1_ = 243.5 * jnp.log(e1_ / 611.2) / (17.67 - jnp.log(e1_ / 611.2)) + 273.15
+        zlcl = jnp.maximum(125.0 * (T1 - Td1_), 0.0)
+        hbl = jnp.where((S['bl_lcl'] > 0) & (zlcl < hbl), jnp.maximum(zlcl, 100.0), hbl)
         # pbl_tm = 1: Troen & Mahrt (1986) / Hong & Pan (1996) as in NCEP and ECMWF-type K-profiles: w* from the actual
         # boundary-layer height, ws = (u*^3 + 7 eps kappa w*^3)^(1/3) with eps = 0.1 (the old line had 0.6 x 0.1 x kappa:
         # ~12x too small, so daytime mixing was ~2.3x too weak), and a counter-gradient heat/moisture flux (below)
@@ -652,8 +659,7 @@ class Model:
         diag = dict(rain=Psurf + Pc * 0.0, H=H, E=E, ust=ust, V1=V1, sw_sfc=sw_sfc, lw_dn=lw_dn, Ts=Ts, chv=chv, beta=beta, dqsdT=qss * 17.67 * 243.5 / (Ts - 29.65) ** 2)
         # P1 diagnostic (3 Nov): boundary-layer top vs lifting condensation level of the lowest-level air
         # (Bolton-type estimate z_lcl ~ 125 m per K of dew-point depression)
-        e1 = jnp.maximum(q1 * p1 / (0.622 + 0.378 * q1), 1.0); Td1 = 243.5 * jnp.log(e1 / 611.2) / (17.67 - jnp.log(e1 / 611.2)) + 273.15
-        diag.update(hbl=hbl, zlcl=jnp.maximum(125.0 * (T1 - Td1), 0.0))
+        diag.update(hbl=hbl, zlcl=zlcl)
         if S['conv'] == 'mf': diag.update(on_dp=on_dp, on_sh=on_sh, on_bmjsh=(shallow & ~okmf).astype(jnp.float32))
         if S['conv'] == 'mf':
             # D3 diagnostic (B-C1): 'orphan' columns = the undiluted parcel test says deep (so no shallow mixing) but the entraining
