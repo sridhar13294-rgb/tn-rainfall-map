@@ -1,0 +1,33 @@
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda13.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda13/__init__.py", line 373, in initialize
+    c_api = xb.register_plugin(
+        'cuda', priority=500, library_path=str(path), options=options
+    )
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 662, in register_plugin
+    c_api = xla_client.load_pjrt_plugin_dynamically(plugin_name, library_path)
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 115, in load_pjrt_plugin_dynamically
+    return _xla.load_pjrt_plugin(plugin_name, library_path, c_api=None)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: ALREADY_EXISTS: PJRT_Api already exists for device type cuda
+2020-01-06 T170_ctl2 sec 371 z500 rmse d1/d5/d10 [20.1, 66.6, 109.3]
+2020-01-26 T170_ctl2 sec 316 z500 rmse d1/d5/d10 [19.5, 68.1, 113.3]
+2020-02-15 T170_ctl2 sec 315 z500 rmse d1/d5/d10 [20.1, 65.1, 118.4]
+2020-03-06 T170_ctl2 sec 315 z500 rmse d1/d5/d10 [20.0, 71.3, 132.1]
+2020-03-26 T170_ctl2 sec 316 z500 rmse d1/d5/d10 [18.7, 79.4, 119.9]
+2020-04-15 T170_ctl2 sec 316 z500 rmse d1/d5/d10 [18.3, 63.2, 121.7]
+2020-05-05 T170_ctl2 sec 316 z500 rmse d1/d5/d10 [19.6, 77.0, 124.6]
+2020-05-25 T170_ctl2 sec 318 z500 rmse d1/d5/d10 [20.3, 68.9, 119.1]
+2020-06-14 T170_ctl2 sec 316 z500 rmse d1/d5/d10 [22.7, 68.3, 122.6]
+2020-07-04 T170_ctl2 sec 315 z500 rmse d1/d5/d10 [21.7, 80.2, 127.8]
+2020-07-24 T170_ctl2 sec 316 z500 rmse d1/d5/d10 [21.4, 77.2, 128.7]
+2020-08-13 T170_ctl2 sec 316 z500 rmse d1/d5/d10 [21.3, 83.8, 126.1]
+2020-09-02 T170_ctl2 sec 316 z500 rmse d1/d5/d10 [20.1, 68.1, 113.6]
+2020-09-22 T170_ctl2 sec 318 z500 rmse d1/d5/d10 [19.7, 78.4, 139.7]
+2020-10-12 T170_ctl2 sec 318 z500 rmse d1/d5/d10 [20.2, 74.9, 109.2]
+2020-11-01 T170_ctl2 sec 315 z500 rmse d1/d5/d10 [20.3, 65.1, 104.6]
+2020-11-21 T170_ctl2 sec 316 z500 rmse d1/d5/d10 [20.0, 73.8, 108.1]
+2020-12-11 T170_ctl2 sec 318 z500 rmse d1/d5/d10 [19.3, 65.1, 104.4]
