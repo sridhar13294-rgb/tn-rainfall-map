@@ -104,11 +104,11 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='mf', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='radcloud', rad_every=2,
-                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
+                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
-DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt', 'entr', 'mf_kick_t', 'mf_kick_q', 'mf_org', 'mf_wup', 'mf_dd', 'sh_top', 'bmj_dt', 'bmj_ice', 'ck_z', 'mf_ice', 'sh_taper', 'pbl_tm', 'sh_trig', 'sh_clos', 'ev_frac', 'mf_wke', 'rad_top', 'mf_capdp', 'sp_quad', 'sp_top', 'sponge', 'tau_strat', 'src_dp', 'mf_dmin', 'sh_dtop', 'sh_cap', 'sh_mflux')
+DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt', 'entr', 'mf_kick_t', 'mf_kick_q', 'mf_org', 'mf_wup', 'mf_dd', 'sh_top', 'bmj_dt', 'bmj_ice', 'ck_z', 'mf_ice', 'sh_taper', 'pbl_tm', 'sh_trig', 'sh_clos', 'ev_frac', 'mf_wke', 'rad_top', 'mf_capdp', 'sp_quad', 'sp_top', 'sponge', 'tau_strat', 'src_dp', 'mf_dmin', 'sh_dtop', 'sh_cap', 'sh_mflux', 'sfc_imp')
 NWAVE = 8
 class Model:
     def __init__(self, grid='T170', layers=32, dt_min=None, set_=None):
@@ -438,6 +438,18 @@ class Model:
             rhs = X.at[-1].add(dt * sfc / mass[-1]); return (tridiag(a, b, c, rhs) - X) / dt
         du = diffuse(u, taux); dv = diffuse(v, tauy); dq = diffuse(q, E)
         dth = diffuse(th, H / CP * (ps / p1) ** KAP)
+        # sfc_imp > 0 (P2, 4 Nov): surface heat and moisture fluxes IMPLICIT in the lowest layer (backward Euler, as in IFS /
+        # GFS). Explicit form is unstable when dt * rho ck V1 / (layer mass) > 2: thin 75-level bottom layers (7 hPa) with
+        # 50-100 m/s winds over the Andes gave H up to 12 kW/m2 and the blow-up. Flux = chv (X_s - X_1^{n+1}).
+        chv = rho * ck * V1; fk = (ps / p1) ** KAP; qss = qsat(Ts, ps)
+        def diffuse_imp(X, coef, Xs):
+            b2 = b.at[-1].add(dt * coef / mass[-1]); rhs = X.at[-1].add(dt * coef * Xs / mass[-1])
+            return (tridiag(a, b2, c, rhs) - X) / dt
+        dth_i = diffuse_imp(th, chv * fk, Ts); dq_i = diffuse_imp(q, chv * beta, qss)
+        imp = S['sfc_imp'] > 0
+        dth = jnp.where(imp, dth_i, dth); dq = jnp.where(imp, dq_i, dq)
+        H = jnp.where(imp, CP * chv * (Ts - (th[-1] + dt * dth_i[-1])), H)                         # fluxes consistent with the implicit step
+        E = jnp.where(imp, chv * beta * (qss - (q[-1] + dt * dq_i[-1])), E)
         # counter-gradient transport (pbl_tm): upward flux rho K gamma inside the boundary layer, gamma = 6.5 w'x'_0 / (ws h)
         inbl = (zh < hbl[None]) & (S['pbl_tm'] > 0) & (H > 0)[None]
         wsh = jnp.maximum(ws * hbl, 1e-3)
@@ -637,7 +649,7 @@ class Model:
             # noise on convection, condensation and rain only: scaling the implicit boundary-layer mixing past 1 overshoots
             # and blows the run up (seen in 1 of 3 test runs)
             dT = dTbl + (dT - rad - dTbl) * fac + rad; dq = dqbl + (dq - dqbl) * fac
-        diag = dict(rain=Psurf + Pc * 0.0, H=H, E=E, ust=ust, V1=V1, sw_sfc=sw_sfc, lw_dn=lw_dn, Ts=Ts)
+        diag = dict(rain=Psurf + Pc * 0.0, H=H, E=E, ust=ust, V1=V1, sw_sfc=sw_sfc, lw_dn=lw_dn, Ts=Ts, chv=chv, beta=beta, dqsdT=qss * 17.67 * 243.5 / (Ts - 29.65) ** 2)
         # P1 diagnostic (3 Nov): boundary-layer top vs lifting condensation level of the lowest-level air
         # (Bolton-type estimate z_lcl ~ 125 m per K of dew-point depression)
         e1 = jnp.maximum(q1 * p1 / (0.622 + 0.378 * q1), 1.0); Td1 = 243.5 * jnp.log(e1 / 611.2) / (17.67 - jnp.log(e1 / 611.2)) + 273.15
@@ -723,7 +735,10 @@ class Model:
             warm = (cr['sst0'] - cr['sst']) / (5 * 86400.0)
             sst = jnp.where(sea, jnp.maximum(cr['sst'] + dt * (cool + warm), cr['sst0'] - 5.0), cr['sst'])
         net = d['sw_sfc'] + d['lw_dn'] - SB * cr['tl'] ** 4 - d['H'] - LV * d['E']
-        tl = jnp.where(self.land, jnp.clip(cr['tl'] + dt * net / S['cap_land'], 230.0, 330.0), cr['tl'])
+        # sfc_imp: land skin temperature implicit too - net flux linearised in tl (LW emission, sensible, latent)
+        kk = 4 * SB * cr['tl'] ** 3 + CP * d['chv'] + LV * d['chv'] * d['beta'] * d['dqsdT']
+        cap = S['cap_land'] + jnp.where(S['sfc_imp'] > 0, dt * kk, 0.0)
+        tl = jnp.where(self.land, jnp.clip(cr['tl'] + dt * net / cap, 230.0, 330.0), cr['tl'])
         w = jnp.where(self.land, jnp.clip(cr['w'] + dt * (d['rain'] - d['E']), 0.0, S['bucket'] * 1000), cr['w'])
         out = dict(cr, sst=sst, tl=tl, w=w, rain=cr['rain'] + dt * d['rain'], t=cr['t'] + dt)
         if 'ocean' in cr: out['ocean'] = ocn
