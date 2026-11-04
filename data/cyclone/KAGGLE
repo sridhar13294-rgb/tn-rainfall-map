@@ -1,6 +1,6 @@
-tn-maps-mich-ctl
+tn-maps-mich-pkg
 libm_fields.npz
-cd . && XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore maps_run.py /kaggle/working/libm_fields.npz near:2023-12-01 /kaggle/working/maps_mich_ctl.npz 120 '{"grid":"T170"}' > /kaggle/working/maps.log 2>&1; tail -5 /kaggle/working/maps.log
+cd . && XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore maps_run.py /kaggle/working/libm_fields.npz near:2023-12-01 /kaggle/working/maps_mich_pkg.npz 120 '{"grid":"T170","pbl_tm":1.0,"sh_mflux":0.03,"bl_lcl":1.0,"cmt_mf":1.0}' > /kaggle/working/maps.log 2>&1; tail -5 /kaggle/working/maps.log
 NvidiaTeslaT4
-6
-#m6 2026-11-04T05:00Z
+7
+#m7 2026-11-04T05:00Z
