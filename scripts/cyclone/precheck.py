@@ -17,7 +17,9 @@ known |= set(re.findall(r"(\w+)=", m.group(1))) if m else set()
 known |= {'grid', 'layers', 'dt_min', 'set', 'name', 'bogus', 'dfi', 'rad_prm'}                    # handled by the drivers
 DRIVER = {'_budget', '_win', '_months', '_chunk', '_split', '_ua'}
 RADP = {'lw_cnt', 'alb_land', 'pdf', 'rhc_low', 'rhc_up'}
+SETS = []
 def check_settings(d, where):
+    SETS.append((where, dict(d)))
     for k, v in d.items():
         if k in DRIVER: continue
         if k not in known: bad.append(f'{where}: setting "{k}" is not read anywhere in mm2.py (typo or ignored)')
@@ -55,6 +57,20 @@ if os.environ.get('FORCE') != '1':
             break
 # 5: full results saved?
 if '/kaggle/working/' not in cmd or not re.search(r"/kaggle/working/[\w.-]+\.json", cmd): warn.append('no .json result file in /kaggle/working - only the last 30 kB of the log will come back')
+# 2b (when JAX + dinosaur are installed here): build the model on a tiny grid with each settings set and confirm every
+# setting arrived in the model's parameter table (catches settings a driver drops or renames)
+try:
+    sys.path.insert(0, MM); import mm2
+    for where, d in SETS:
+        dd = {k: v for k, v in d.items() if k not in DRIVER and k not in ('grid', 'layers', 'dt_min', 'set', 'name', 'bogus', 'dfi')}
+        try:
+            M = mm2.Model('T42', d.get('layers', 32) if not isinstance(d.get('layers'), dict) else 32, None, dd)
+        except Exception as e:
+            bad.append(f'{where}: model does not build with these settings: {repr(e)[:120]}'); continue
+        for k, v in dd.items():
+            if M.S.get(k) != v: bad.append(f'{where}: setting {k}={v} did not reach the model (got {M.S.get(k)})')
+except ImportError:
+    warn.append('JAX/dinosaur not installed here - dynamic settings check skipped')
 for w in warn: print('PRECHECK warning:', w)
 for b in bad: print('PRECHECK REFUSED:', b)
 sys.exit(1 if bad else 0)
