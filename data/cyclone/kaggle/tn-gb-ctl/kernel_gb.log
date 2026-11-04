@@ -1,0 +1,116 @@
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda13.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda13/__init__.py", line 384, in initialize
+    xla_client.register_custom_call_handler(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        "CUDA",
+        ^^^^^^^
+    ...<2 lines>...
+        ),
+        ^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 459, in register_custom_call_handler
+    handler(name, fn, xla_platform_name, api_version, traits)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: INVALID_ARGUMENT: XLA FFI handler registration for cudnn_rnn_ffi on platform CUDA (canonical cuda) failed because the handler's API version (0.5) is incompatible with the framework's API version (0.4). Minimum supported API version is (0.1).
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda12.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda12/__init__.py", line 372, in initialize
+    c_api = xb.register_plugin(
+        'cuda', priority=500, library_path=str(path), options=options
+    )
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 662, in register_plugin
+    c_api = xla_client.load_pjrt_plugin_dynamically(plugin_name, library_path)
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 115, in load_pjrt_plugin_dynamically
+    return _xla.load_pjrt_plugin(plugin_name, library_path, c_api=None)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: ALREADY_EXISTS: PJRT_Api already exists for device type cuda
+2020-01-01T00 0 {"P_mmday": 2.079, "E_mmday": 4.171, "H": 8.52, "OLR": 249.3, "tcw": 24.16, "cpT_MJ": 2538.0026}
+2020-01-01T00 6 {"P_mmday": 2.606, "E_mmday": 3.566, "H": 3.44, "OLR": 231.1, "tcw": 24.333, "cpT_MJ": 2536.7006}
+2020-01-01T00 12 {"P_mmday": 3.189, "E_mmday": 4.089, "H": 1.74, "OLR": 225.3, "tcw": 24.474, "cpT_MJ": 2535.7424}
+2020-01-01T00 18 {"P_mmday": 3.579, "E_mmday": 3.668, "H": -2.39, "OLR": 221.4, "tcw": 24.52, "cpT_MJ": 2534.9808}
+2020-01-01T00 24 {"P_mmday": 3.547, "E_mmday": 3.473, "H": -4.01, "OLR": 219.4, "tcw": 24.485, "cpT_MJ": 2534.0946}
+2020-01-01T00 30 {"P_mmday": 3.582, "E_mmday": 3.908, "H": -0.72, "OLR": 218.1, "tcw": 24.469, "cpT_MJ": 2533.1902}
+2020-01-01T00 36 {"P_mmday": 3.792, "E_mmday": 4.256, "H": -0.05, "OLR": 216.1, "tcw": 24.506, "cpT_MJ": 2532.5676}
+2020-01-01T00 42 {"P_mmday": 3.839, "E_mmday": 3.925, "H": -4.95, "OLR": 214.8, "tcw": 24.511, "cpT_MJ": 2531.934}
+2020-01-01T00 48 {"P_mmday": 3.791, "E_mmday": 3.69, "H": -6.23, "OLR": 214.3, "tcw": 24.456, "cpT_MJ": 2531.1982}
+2020-01-01T00 54 {"P_mmday": 3.827, "E_mmday": 4.037, "H": -2.9, "OLR": 213.9, "tcw": 24.398, "cpT_MJ": 2530.5041}
+2020-01-01T00 60 {"P_mmday": 4.021, "E_mmday": 4.346, "H": -1.97, "OLR": 212.7, "tcw": 24.387, "cpT_MJ": 2530.1451}
+2020-01-01T00 66 {"P_mmday": 4.081, "E_mmday": 4.057, "H": -6.9, "OLR": 212.2, "tcw": 24.346, "cpT_MJ": 2529.6909}
+2020-01-01T00 72 {"P_mmday": 3.886, "E_mmday": 3.773, "H": -8.34, "OLR": 212.3, "tcw": 24.275, "cpT_MJ": 2529.0721}
+2020-01-01T00 78 {"P_mmday": 3.797, "E_mmday": 4.045, "H": -4.81, "OLR": 211.9, "tcw": 24.222, "cpT_MJ": 2528.3858}
+2020-01-01T00 84 {"P_mmday": 3.887, "E_mmday": 4.3, "H": -3.74, "OLR": 211.1, "tcw": 24.234, "cpT_MJ": 2527.9706}
+2020-01-01T00 90 {"P_mmday": 3.915, "E_mmday": 4.033, "H": -7.93, "OLR": 210.6, "tcw": 24.226, "cpT_MJ": 2527.4367}
+2020-01-01T00 96 {"P_mmday": 3.832, "E_mmday": 3.703, "H": -8.93, "OLR": 210.4, "tcw": 24.161, "cpT_MJ": 2526.8383}
+2020-01-01T00 102 {"P_mmday": 3.719, "E_mmday": 4.009, "H": -4.59, "OLR": 210.4, "tcw": 24.11, "cpT_MJ": 2526.1858}
+2020-01-01T00 108 {"P_mmday": 3.677, "E_mmday": 4.264, "H": -2.51, "OLR": 208.8, "tcw": 24.147, "cpT_MJ": 2525.7013}
+2020-01-01T00 114 {"P_mmday": 3.669, "E_mmday": 3.995, "H": -5.39, "OLR": 208.3, "tcw": 24.176, "cpT_MJ": 2525.1809}
+2020-01-01T00 120 {"P_mmday": 3.601, "E_mmday": 3.604, "H": -6.58, "OLR": 208.2, "tcw": 24.151, "cpT_MJ": 2524.5054}
+2020-01-01T00 126 {"P_mmday": 3.744, "E_mmday": 3.908, "H": -3.09, "OLR": 208.5, "tcw": 24.078, "cpT_MJ": 2523.8725}
+2020-01-01T00 132 {"P_mmday": 3.826, "E_mmday": 4.178, "H": -1.26, "OLR": 208.2, "tcw": 24.069, "cpT_MJ": 2523.4992}
+2020-01-01T00 138 {"P_mmday": 3.833, "E_mmday": 3.877, "H": -4.4, "OLR": 208.5, "tcw": 24.052, "cpT_MJ": 2523.0586}
+2020-01-01T00 144 {"P_mmday": 3.652, "E_mmday": 3.487, "H": -5.95, "OLR": 208.2, "tcw": 24.0, "cpT_MJ": 2522.4585}
+2020-01-01T00 150 {"P_mmday": 3.653, "E_mmday": 3.909, "H": -2.36, "OLR": 208.0, "tcw": 23.943, "cpT_MJ": 2521.8621}
+2020-01-01T00 156 {"P_mmday": 3.785, "E_mmday": 4.155, "H": -1.49, "OLR": 207.6, "tcw": 23.937, "cpT_MJ": 2521.5447}
+2020-01-01T00 162 {"P_mmday": 3.858, "E_mmday": 3.939, "H": -4.31, "OLR": 207.4, "tcw": 23.91, "cpT_MJ": 2521.1495}
+2020-01-01T00 168 {"P_mmday": 3.754, "E_mmday": 3.523, "H": -5.32, "OLR": 207.0, "tcw": 23.839, "cpT_MJ": 2520.6555}
+2020-01-01T00 174 {"P_mmday": 3.741, "E_mmday": 3.928, "H": -1.13, "OLR": 206.8, "tcw": 23.773, "cpT_MJ": 2520.1656}
+2020-01-01T00 180 {"P_mmday": 3.864, "E_mmday": 4.156, "H": -0.29, "OLR": 206.4, "tcw": 23.761, "cpT_MJ": 2519.8962}
+2020-01-01T00 186 {"P_mmday": 3.941, "E_mmday": 3.979, "H": -3.68, "OLR": 206.4, "tcw": 23.745, "cpT_MJ": 2519.5316}
+2020-01-01T00 192 {"P_mmday": 3.802, "E_mmday": 3.635, "H": -5.77, "OLR": 206.1, "tcw": 23.703, "cpT_MJ": 2518.9828}
+2020-01-01T00 198 {"P_mmday": 3.86, "E_mmday": 4.053, "H": -1.3, "OLR": 206.3, "tcw": 23.659, "cpT_MJ": 2518.4359}
+2020-01-01T00 204 {"P_mmday": 3.943, "E_mmday": 4.385, "H": -0.61, "OLR": 205.8, "tcw": 23.69, "cpT_MJ": 2518.1842}
+2020-01-01T00 210 {"P_mmday": 4.014, "E_mmday": 4.107, "H": -4.09, "OLR": 206.3, "tcw": 23.699, "cpT_MJ": 2517.8996}
+2020-01-01T00 216 {"P_mmday": 4.035, "E_mmday": 3.743, "H": -4.8, "OLR": 206.3, "tcw": 23.621, "cpT_MJ": 2517.5313}
+2020-01-01T00 222 {"P_mmday": 3.939, "E_mmday": 4.121, "H": 0.22, "OLR": 206.7, "tcw": 23.571, "cpT_MJ": 2517.1505}
+2020-01-01T00 228 {"P_mmday": 3.944, "E_mmday": 4.477, "H": 1.61, "OLR": 206.7, "tcw": 23.615, "cpT_MJ": 2516.9865}
+2020-01-01T00 234 {"P_mmday": 3.96, "E_mmday": 4.18, "H": -2.24, "OLR": 206.3, "tcw": 23.637, "cpT_MJ": 2516.7671}
+2020-01-01T00 240 {"P_mmday": 3.913, "E_mmday": 3.828, "H": -2.75, "OLR": 206.1, "tcw": 23.593, "cpT_MJ": 2516.4449}
+2020-07-19T00 0 {"P_mmday": 2.113, "E_mmday": 5.806, "H": 7.38, "OLR": 256.3, "tcw": 26.93, "cpT_MJ": 2555.1808}
+2020-07-19T00 6 {"P_mmday": 2.681, "E_mmday": 4.017, "H": -0.61, "OLR": 238.1, "tcw": 27.166, "cpT_MJ": 2553.873}
+2020-07-19T00 12 {"P_mmday": 3.305, "E_mmday": 4.579, "H": -3.06, "OLR": 231.4, "tcw": 27.399, "cpT_MJ": 2552.738}
+2020-07-19T00 18 {"P_mmday": 3.56, "E_mmday": 4.056, "H": -4.6, "OLR": 226.6, "tcw": 27.523, "cpT_MJ": 2551.7164}
+2020-07-19T00 24 {"P_mmday": 3.695, "E_mmday": 3.619, "H": -6.56, "OLR": 224.9, "tcw": 27.5, "cpT_MJ": 2550.8118}
+2020-07-19T00 30 {"P_mmday": 3.753, "E_mmday": 4.244, "H": -6.19, "OLR": 223.0, "tcw": 27.457, "cpT_MJ": 2549.9038}
+2020-07-19T00 36 {"P_mmday": 3.885, "E_mmday": 4.576, "H": -6.32, "OLR": 221.4, "tcw": 27.522, "cpT_MJ": 2549.2139}
+2020-07-19T00 42 {"P_mmday": 4.005, "E_mmday": 4.276, "H": -6.72, "OLR": 219.6, "tcw": 27.548, "cpT_MJ": 2548.5151}
+2020-07-19T00 48 {"P_mmday": 4.046, "E_mmday": 3.887, "H": -7.99, "OLR": 219.5, "tcw": 27.476, "cpT_MJ": 2547.8542}
+2020-07-19T00 54 {"P_mmday": 4.115, "E_mmday": 4.415, "H": -6.38, "OLR": 218.9, "tcw": 27.386, "cpT_MJ": 2547.2169}
+2020-07-19T00 60 {"P_mmday": 4.157, "E_mmday": 4.524, "H": -6.42, "OLR": 217.3, "tcw": 27.394, "cpT_MJ": 2546.7371}
+2020-07-19T00 66 {"P_mmday": 4.089, "E_mmday": 4.314, "H": -6.47, "OLR": 216.8, "tcw": 27.377, "cpT_MJ": 2546.191}
+2020-07-19T00 72 {"P_mmday": 4.03, "E_mmday": 3.901, "H": -7.66, "OLR": 217.0, "tcw": 27.3, "cpT_MJ": 2545.5189}
+2020-07-19T00 78 {"P_mmday": 4.083, "E_mmday": 4.464, "H": -5.89, "OLR": 216.3, "tcw": 27.21, "cpT_MJ": 2544.9663}
+2020-07-19T00 84 {"P_mmday": 4.143, "E_mmday": 4.658, "H": -6.45, "OLR": 215.3, "tcw": 27.224, "cpT_MJ": 2544.5577}
+2020-07-19T00 90 {"P_mmday": 4.101, "E_mmday": 4.404, "H": -6.61, "OLR": 214.5, "tcw": 27.231, "cpT_MJ": 2544.0974}
+2020-07-19T00 96 {"P_mmday": 4.023, "E_mmday": 3.985, "H": -8.12, "OLR": 214.7, "tcw": 27.174, "cpT_MJ": 2543.509}
+2020-07-19T00 102 {"P_mmday": 4.061, "E_mmday": 4.586, "H": -6.08, "OLR": 213.9, "tcw": 27.113, "cpT_MJ": 2543.0085}
+2020-07-19T00 108 {"P_mmday": 4.336, "E_mmday": 4.77, "H": -6.4, "OLR": 213.5, "tcw": 27.128, "cpT_MJ": 2542.694}
+2020-07-19T00 114 {"P_mmday": 4.433, "E_mmday": 4.491, "H": -6.57, "OLR": 213.1, "tcw": 27.098, "cpT_MJ": 2542.384}
+2020-07-19T00 120 {"P_mmday": 4.322, "E_mmday": 4.047, "H": -7.99, "OLR": 213.4, "tcw": 27.007, "cpT_MJ": 2542.007}
+2020-07-19T00 126 {"P_mmday": 4.221, "E_mmday": 4.667, "H": -5.63, "OLR": 212.9, "tcw": 26.946, "cpT_MJ": 2541.5223}
+2020-07-19T00 132 {"P_mmday": 4.279, "E_mmday": 4.79, "H": -6.23, "OLR": 212.3, "tcw": 26.986, "cpT_MJ": 2541.3132}
+2020-07-19T00 138 {"P_mmday": 4.27, "E_mmday": 4.413, "H": -5.82, "OLR": 211.9, "tcw": 26.976, "cpT_MJ": 2541.0463}
+2020-07-19T00 144 {"P_mmday": 4.125, "E_mmday": 3.963, "H": -7.53, "OLR": 212.6, "tcw": 26.912, "cpT_MJ": 2540.6548}
+2020-07-19T00 150 {"P_mmday": 4.132, "E_mmday": 4.556, "H": -4.96, "OLR": 212.8, "tcw": 26.855, "cpT_MJ": 2540.2119}
+2020-07-19T00 156 {"P_mmday": 4.275, "E_mmday": 4.649, "H": -5.44, "OLR": 212.3, "tcw": 26.884, "cpT_MJ": 2539.9948}
+2020-07-19T00 162 {"P_mmday": 4.29, "E_mmday": 4.412, "H": -4.77, "OLR": 212.0, "tcw": 26.872, "cpT_MJ": 2539.7198}
+2020-07-19T00 168 {"P_mmday": 4.198, "E_mmday": 4.0, "H": -6.35, "OLR": 212.6, "tcw": 26.788, "cpT_MJ": 2539.3793}
+2020-07-19T00 174 {"P_mmday": 4.137, "E_mmday": 4.573, "H": -3.49, "OLR": 212.3, "tcw": 26.732, "cpT_MJ": 2539.0528}
+2020-07-19T00 180 {"P_mmday": 4.298, "E_mmday": 4.689, "H": -4.77, "OLR": 211.2, "tcw": 26.753, "cpT_MJ": 2538.8833}
+2020-07-19T00 186 {"P_mmday": 4.307, "E_mmday": 4.349, "H": -5.12, "OLR": 211.1, "tcw": 26.726, "cpT_MJ": 2538.6931}
+2020-07-19T00 192 {"P_mmday": 4.221, "E_mmday": 3.965, "H": -7.12, "OLR": 211.7, "tcw": 26.629, "cpT_MJ": 2538.3879}
+2020-07-19T00 198 {"P_mmday": 4.202, "E_mmday": 4.605, "H": -4.51, "OLR": 211.5, "tcw": 26.559, "cpT_MJ": 2538.072}
+2020-07-19T00 204 {"P_mmday": 4.261, "E_mmday": 4.715, "H": -5.41, "OLR": 210.9, "tcw": 26.6, "cpT_MJ": 2537.8966}
+2020-07-19T00 210 {"P_mmday": 4.25, "E_mmday": 4.469, "H": -5.7, "OLR": 210.6, "tcw": 26.614, "cpT_MJ": 2537.6312}
+2020-07-19T00 216 {"P_mmday": 4.184, "E_mmday": 4.128, "H": -7.68, "OLR": 210.5, "tcw": 26.568, "cpT_MJ": 2537.2685}
+2020-07-19T00 222 {"P_mmday": 4.216, "E_mmday": 4.709, "H": -5.43, "OLR": 210.1, "tcw": 26.525, "cpT_MJ": 2536.9418}
+2020-07-19T00 228 {"P_mmday": 4.379, "E_mmday": 4.838, "H": -5.66, "OLR": 209.9, "tcw": 26.557, "cpT_MJ": 2536.8519}
+2020-07-19T00 234 {"P_mmday": 4.484, "E_mmday": 4.568, "H": -6.5, "OLR": 209.9, "tcw": 26.535, "cpT_MJ": 2536.7225}
+2020-07-19T00 240 {"P_mmday": 4.442, "E_mmday": 4.183, "H": -8.13, "OLR": 210.4, "tcw": 26.453, "cpT_MJ": 2536.4773}
