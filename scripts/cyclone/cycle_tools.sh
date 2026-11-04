@@ -4,9 +4,9 @@ R=repos/sridhar13294-rgb/tn-rainfall-map
 # dl RELEASE ASSET DIR  - download a release asset with the REST API (gh release download uses GraphQL = blocked here)
 dl(){ id=$(gh api $R/releases/tags/$1 --jq ".assets[] | select(.name==\"$2\") | .id"); [ -n "$id" ] && gh api -H "Accept: application/octet-stream" $R/releases/assets/$id > $3/$2 && echo "got $2"; }
 # launch SLUG INPUTS CMD ACCOUNT NOTE  - start one Kaggle job (writes data/cyclone/KAGGLE, commits, pushes, waits 40 s)
-launch(){ printf '%s\n' "$1" "$2" "$3" NvidiaTeslaT4 "$4" "#$5 $(date -u +%FT%H:%MZ)" > data/cyclone/KAGGLE; git add data/cyclone/KAGGLE; git commit -qm "Cyclone study: Kaggle job $1
+launch(){ python3 scripts/cyclone/precheck.py "$1" "$4" "$3" || { echo "launch of $1 REFUSED by precheck"; return 1; }; printf '%s\n' "$1" "$2" "$3" NvidiaTeslaT4 "$4" "#$5 $(date -u +%FT%H:%MZ)" > data/cyclone/KAGGLE; git add data/cyclone/KAGGLE; git commit -qm "Cyclone study: Kaggle job $1
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"; git pull -q --rebase origin cases; git push -q origin cases 2>&1|tail -1; sleep 40; }
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"; git pull -q --rebase origin cases; git push -q origin cases 2>&1|tail -1; sleep 40; [ "$(sed -n 1p data/cyclone/KAGGLE)" = "$1" ] && git fetch -q && git log origin/cases -12 --format=%s | grep -q "job $1$" && echo "launched $1 on account $4" || echo "WARNING: $1 not confirmed on origin - check"; }
 # prof JSON -> tropics day-5 T bias summary for a wx_prof job folder
 prof(){ python3 -c "
 import json,numpy as np,sys
