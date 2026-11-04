@@ -1,6 +1,6 @@
-tn-lib84-pkg-b
+tn-maps-mich-ctl
 libm_fields.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/lib84_pkg.json 1 2 /kaggle/working/h1.json > /kaggle/working/h1.log 2>&1; tail -3 /kaggle/working/h1.log
+cd . && XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore maps_run.py /kaggle/working/libm_fields.npz near:2023-12-01 /kaggle/working/maps_mich_ctl.npz 120 '{"grid":"T170"}' > /kaggle/working/maps.log 2>&1; tail -5 /kaggle/working/maps.log
 NvidiaTeslaT4
-13
-#t13 2026-11-04T03:55Z
+6
+#m6 2026-11-04T05:00Z
