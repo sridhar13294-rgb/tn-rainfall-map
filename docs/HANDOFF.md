@@ -518,3 +518,4 @@ After the 02:00 IST update no further cycles are scheduled (Sridhar 01:28). Dail
 - P3: control already meets the ERA5-at-resolution target for Vardah; Nivar/Michaung 11-12 hPa too shallow. cmt_mf intensity re-test running (radial, 72 h).
 - Steering bias traced (L1) to the heating-profile errors; every candidate now also scored on Oct-Dec TN u850 bias.
 - SCM: GFS v16 BOMEX + TWP-ICE outputs ready; scm_megam.py not written yet (next).
+- 4 Nov 11:55: queue on the first free accounts: genesis gen0 with data/cyclone/kaggle_cfg/gen_f2.json and gen_lcl.json (measurement: which of F2 / bl_lcl causes the formation loss). No physics changes until the P3 diagnostic (tn-cmt-wx-q0/q1, tn-lows-ctl/cmt, tn-cmtmf-gen1, tn-quick6-cmt) is scored.
