@@ -22,7 +22,15 @@ jobs:
         run: |
           mkdir -p /tmp/cyc_out; gh release download era5-cases -p wx_truth_2020.npz -D /tmp/cyc_out
           WX_HRES_ONLY=1 python scripts/cyclone/cyc_wx.py || true
-      - if: ${{ !contains(github.event.head_commit.message, 'ECMWF scores only') }}
+      - if: contains(github.event.head_commit.message, 'land library')
+        run: |
+          # 5 Nov: the same 73 exam starts WITH the ERA5 land state (soil water, soil/skin temperature, snow) under a NEW name;
+          # the standard libm_wx2020_fields.npz is not touched (all existing results stay comparable)
+          mkdir -p /tmp/cyc_out
+          LIBM_TIMES=2020-01-01T00/2020-12-26T00/120 LIBM_NAME=wx2020L python scripts/cyclone/cyc_libm.py > /tmp/libm_wxL.out 2>&1 || true
+          tail -5 /tmp/libm_wxL.out; grep -i "source\|land\|soil\|skin" /tmp/libm_wxL.out | head -12 || true
+          [ -f /tmp/cyc_out/libm_wx2020L_fields.npz ] && gh release upload era5-cases /tmp/cyc_out/libm_wx2020L_fields.npz --clobber || true
+      - if: ${{ !contains(github.event.head_commit.message, 'ECMWF scores only') && !contains(github.event.head_commit.message, 'land library') }}
         run: |
           mkdir -p /tmp/cyc_out
           LIBM_TIMES=2020-01-01T00/2020-12-26T00/120 LIBM_NAME=wx2020 python scripts/cyclone/cyc_libm.py > /tmp/libm_wx.out 2>&1 &
