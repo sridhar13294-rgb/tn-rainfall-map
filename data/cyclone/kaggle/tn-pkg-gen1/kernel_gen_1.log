@@ -1,0 +1,76 @@
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda13.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda13/__init__.py", line 384, in initialize
+    xla_client.register_custom_call_handler(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        "CUDA",
+        ^^^^^^^
+    ...<2 lines>...
+        ),
+        ^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 459, in register_custom_call_handler
+    handler(name, fn, xla_platform_name, api_version, traits)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: INVALID_ARGUMENT: XLA FFI handler registration for cudnn_rnn_ffi on platform CUDA (canonical cuda) failed because the handler's API version (0.5) is incompatible with the framework's API version (0.4). Minimum supported API version is (0.1).
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda12.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda12/__init__.py", line 372, in initialize
+    c_api = xb.register_plugin(
+        'cuda', priority=500, library_path=str(path), options=options
+    )
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 662, in register_plugin
+    c_api = xla_client.load_pjrt_plugin_dynamically(plugin_name, library_path)
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 115, in load_pjrt_plugin_dynamically
+    return _xla.load_pjrt_plugin(plugin_name, library_path, c_api=None)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: ALREADY_EXISTS: PJRT_Api already exists for device type cuda
+Unnamed 2000 {'T170_pkg': (498, 6.8, 6.7)} sec 239
+Unnamed 2000 {'T170_pkg': (390, 14.4, 5.7)} sec 168
+Unnamed 2001 {'T170_pkg': (187, 6.6, 3.7)} sec 169
+Unnamed 2002 {'T170_pkg': (458, 9.2, 4.2)} sec 167
+Unnamed 2003 {'T170_pkg': (336, 8.7, 6.0)} sec 169
+Unnamed 2003 {'T170_pkg': (452, 11.7, 4.7)} sec 168
+Unnamed 2004 {'T170_pkg': (480, 6.9, 6.3)} sec 169
+Unnamed 2005 {'T170_pkg': (320, 13.6, 5.3)} sec 167
+Unnamed 2005 {'T170_pkg': (466, 12.6, 7.1)} sec 169
+Fanoos 2005 {'T170_pkg': (57, 5.3, 1.5)} sec 168
+Unnamed 2006 {'T170_pkg': (261, 6.9, 1.0)} sec 167
+Sidr 2007 {'T170_pkg': (190, 9.5, 3.2)} sec 167
+Khai-Muk 2008 {'T170_pkg': (458, 8.7, 4.1)} sec 169
+Unnamed 2008 {'T170_pkg': (322, 20.8, 6.7)} sec 169
+Unnamed 2010 {'T170_pkg': (480, 16.7, 7.9)} sec 168
+Giri 2010 {'T170_pkg': (470, 11.0, 5.0)} sec 169
+Unnamed 2010 {'T170_pkg': (290, 13.4, 6.3)} sec 167
+Thane 2011 {'T170_pkg': (381, 20.1, 10.5)} sec 169
+Nilam 2012 {'T170_pkg': (423, 13.0, 3.8)} sec 168
+Phailin 2013 {'T170_pkg': (477, 13.7, 5.4)} sec 167
+Helen 2013 {'T170_pkg': (470, 8.4, 2.7)} sec 168
+Madi 2013 {'T170_pkg': (449, 8.8, 2.3)} sec 169
+Unnamed 2014 {'T170_pkg': (196, 10.6, 9.1)} sec 168
+Kyant 2016 {'T170_pkg': (226, 17.9, 10.6)} sec 169
+Nada 2016 {'T170_pkg': (59, 19.1, 6.7)} sec 168
+Unnamed 2017 {'T170_pkg': (62, 5.1, 1.9)} sec 169
+Unnamed 2017 {'T170_pkg': (374, 3.6, 0.8)} sec 167
+Ockhi 2017 {'T170_pkg': (222, 10.5, 1.7)} sec 169
+Titli 2018 {'T170_pkg': (219, 11.3, 6.6)} sec 168
+Phethai 2018 {'T170_pkg': (478, 17.5, 7.5)} sec 168
+Unnamed 2020 {'T170_pkg': (455, 7.8, 5.5)} sec 169
+Nivar 2020 {'T170_pkg': (191, 9.4, 4.4)} sec 168
+Krovanh 2020 {'T170_pkg': (454, 5.7, 1.7)} sec 169
+Unnamed 2021 {'T170_pkg': (121, 8.0, 3.9)} sec 169
+Sitrang 2022 {'T170_pkg': (462, 10.8, 8.8)} sec 169
+Mandous 2022 {'T170_pkg': (433, 9.9, 1.2)} sec 167
+Hamoon 2023 {'T170_pkg': (244, 19.1, 9.5)} sec 233
+Michaung 2023 {'T170_pkg': (346, 18.0, 8.4)} sec 169
+Dana 2024 {'T170_pkg': (454, 10.6, 8.7)} sec 168
+Unnamed 2024 {'T170_pkg': (225, 9.3, 4.4)} sec 169
+Montha 2025 {'T170_pkg': (403, 13.4, 6.5)} sec 169
+Ditwah 2025 {'T170_pkg': (205, 27.9, 11.5)} sec 167
