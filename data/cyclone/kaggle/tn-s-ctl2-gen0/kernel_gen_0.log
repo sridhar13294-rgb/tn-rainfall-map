@@ -1,0 +1,76 @@
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda13.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda13/__init__.py", line 384, in initialize
+    xla_client.register_custom_call_handler(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        "CUDA",
+        ^^^^^^^
+    ...<2 lines>...
+        ),
+        ^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 459, in register_custom_call_handler
+    handler(name, fn, xla_platform_name, api_version, traits)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: INVALID_ARGUMENT: XLA FFI handler registration for cudnn_rnn_ffi on platform CUDA (canonical cuda) failed because the handler's API version (0.5) is incompatible with the framework's API version (0.4). Minimum supported API version is (0.1).
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda12.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda12/__init__.py", line 372, in initialize
+    c_api = xb.register_plugin(
+        'cuda', priority=500, library_path=str(path), options=options
+    )
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 662, in register_plugin
+    c_api = xla_client.load_pjrt_plugin_dynamically(plugin_name, library_path)
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 115, in load_pjrt_plugin_dynamically
+    return _xla.load_pjrt_plugin(plugin_name, library_path, c_api=None)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: ALREADY_EXISTS: PJRT_Api already exists for device type cuda
+Unnamed 2000 {'T170_ctl2': (398, 30.5, 11.3)} sec 230
+Unnamed 2000 {'T170_ctl2': (118, 14.9, 6.0)} sec 164
+Unnamed 2001 {'T170_ctl2': (211, 16.4, 4.7)} sec 165
+Unnamed 2002 {'T170_ctl2': (319, 15.8, 4.2)} sec 164
+Unnamed 2002 {'T170_ctl2': (490, 20.2, 6.0)} sec 165
+Unnamed 2003 {'T170_ctl2': (445, 10.3, 2.7)} sec 164
+Unnamed 2004 {'T170_ctl2': (458, 18.6, 8.6)} sec 165
+Muifa 2004 {'T170_ctl2': (77, 9.4, 3.2)} sec 164
+Unnamed 2005 {'T170_ctl2': (133, 11.0, 3.1)} sec 165
+Baaz 2005 {'T170_ctl2': (440, 9.1, 4.1)} sec 164
+Unnamed 2005 {'T170_ctl2': (479, 23.5, 4.7)} sec 164
+Durian 2006 {'T170_ctl2': (479, 10.2, 5.2)} sec 164
+Rashmi 2008 {'T170_ctl2': (446, 10.7, 2.3)} sec 165
+Nisha 2008 {'T170_ctl2': (475, 10.6, 1.2)} sec 165
+Ward 2009 {'T170_ctl2': (438, 10.0, 3.5)} sec 164
+Unnamed 2010 {'T170_ctl2': (86, 19.6, 7.9)} sec 166
+Jal 2010 {'T170_ctl2': (265, 10.2, 2.5)} sec 164
+Unnamed 2011 {'T170_ctl2': (315, 27.4, 8.8)} sec 165
+Unnamed 2012 {'T170_ctl2': (325, 16.5, 2.5)} sec 164
+Unnamed 2012 {'T170_ctl2': (391, 16.2, 2.8)} sec 164
+Unnamed 2013 {'T170_ctl2': (478, 12.0, 4.9)} sec 166
+Lehar 2013 {'T170_ctl2': (457, 9.3, 3.2)} sec 164
+Hudhud 2014 {'T170_ctl2': (201, 23.1, 4.3)} sec 165
+Unnamed 2015 {'T170_ctl2': (486, 19.8, 3.1)} sec 165
+Unnamed 2016 {'T170_ctl2': (471, 14.0, 6.4)} sec 166
+Vardah 2016 {'T170_ctl2': (431, 24.7, 7.3)} sec 164
+Unnamed 2017 {'T170_ctl2': (277, 18.0, 8.1)} sec 165
+Unnamed 2017 {'T170_ctl2': (302, 14.8, 6.3)} sec 166
+Unnamed 2017 {'T170_ctl2': (277, 24.2, 7.8)} sec 165
+Gaja 2018 {'T170_ctl2': (141, 9.9, 3.7)} sec 164
+Bulbul:Matmo 2019 {'T170_ctl2': (445, 14.2, 3.3)} sec 164
+Unnamed 2020 {'T170_ctl2': (99, 15.7, 6.3)} sec 165
+Burevi 2020 {'T170_ctl2': (367, 22.7, 3.9)} sec 164
+Unnamed 2021 {'T170_ctl2': (196, 12.2, 4.2)} sec 164
+Jawad 2021 {'T170_ctl2': (475, 18.8, 3.9)} sec 163
+Unnamed 2022 {'T170_ctl2': (50, 15.8, 6.6)} sec 164
+Unnamed 2022 {'T170_ctl2': (362, 20.6, 3.5)} sec 165
+Midhili 2023 {'T170_ctl2': (451, 8.3, 2.9)} sec 227
+Unnamed 2024 {'T170_ctl2': (94, 15.8, 4.2)} sec 164
+Fengal 2024 {'T170_ctl2': (462, 14.7, 1.9)} sec 164
+Unnamed 2025 {'T170_ctl2': (66, 12.3, 6.1)} sec 165
+Senyar 2025 {'T170_ctl2': (421, 15.6, -0.3)} sec 165
