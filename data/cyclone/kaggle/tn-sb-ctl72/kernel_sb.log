@@ -1,0 +1,109 @@
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda13.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda13/__init__.py", line 384, in initialize
+    xla_client.register_custom_call_handler(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        "CUDA",
+        ^^^^^^^
+    ...<2 lines>...
+        ),
+        ^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 459, in register_custom_call_handler
+    handler(name, fn, xla_platform_name, api_version, traits)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: INVALID_ARGUMENT: XLA FFI handler registration for cudnn_rnn_ffi on platform CUDA (canonical cuda) failed because the handler's API version (0.5) is incompatible with the framework's API version (0.4). Minimum supported API version is (0.1).
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda12.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda12/__init__.py", line 372, in initialize
+    c_api = xb.register_plugin(
+        'cuda', priority=500, library_path=str(path), options=options
+    )
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 662, in register_plugin
+    c_api = xla_client.load_pjrt_plugin_dynamically(plugin_name, library_path)
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 115, in load_pjrt_plugin_dynamically
+    return _xla.load_pjrt_plugin(plugin_name, library_path, c_api=None)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: ALREADY_EXISTS: PJRT_Api already exists for device type cuda
+Vardah T170_ctl + 0h p 1002.1 v850 22.3 wc300 0.65 wc500 1.22 flux 256.8/321.0 deep 1.0/0.978 rain 34.7/33.2 rh700 0.878/0.836
+Vardah T170_ctl + 3h p 1001.9 v850 18.6 wc300 0.98 wc500 1.36 flux 232.0/286.7 deep 1.0/1.0 rain 52.0/49.0 rh700 0.996/0.87
+Vardah T170_ctl + 6h p 1004.2 v850 17.2 wc300 1.08 wc500 1.03 flux 211.7/268.7 deep 1.0/1.0 rain 77.9/66.2 rh700 1.045/0.892
+Vardah T170_ctl + 9h p 1007.1 v850 17.2 wc300 1.06 wc500 0.8 flux 206.9/242.0 deep 1.0/0.866 rain 103.5/72.6 rh700 1.055/0.909
+Vardah T170_ctl +12h p 1005.1 v850 16.5 wc300 1.23 wc500 0.52 flux 189.7/239.7 deep 1.0/0.732 rain 133.2/74.1 rh700 1.069/0.896
+Vardah T170_ctl +15h p 1003.2 v850 17.2 wc300 1.37 wc500 0.52 flux 206.7/248.7 deep 1.0/0.799 rain 164.8/86.5 rh700 1.089/0.886
+Vardah T170_ctl +18h p 1002.5 v850 19.1 wc300 1.34 wc500 0.69 flux 224.8/255.7 deep 1.0/0.733 rain 174.3/83.5 rh700 1.093/0.889
+Vardah T170_ctl +21h p 1003.9 v850 20.2 wc300 1.38 wc500 0.82 flux 195.9/263.8 deep 1.0/0.71 rain 178.2/81.3 rh700 1.089/0.881
+Vardah T170_ctl +24h p 1004.5 v850 21.2 wc300 1.51 wc500 0.88 flux 254.4/293.8 deep 1.0/0.8 rain 203.1/101.6 rh700 1.102/0.907
+Vardah T170_ctl +27h p 1002.3 v850 21.9 wc300 1.44 wc500 1.07 flux 278.0/320.3 deep 1.0/0.777 rain 229.5/107.8 rh700 1.111/0.936
+Vardah T170_ctl +30h p 1001.3 v850 23.0 wc300 1.59 wc500 1.07 flux 268.6/336.0 deep 1.0/0.755 rain 228.5/112.7 rh700 1.11/0.936
+Vardah T170_ctl +33h p 1001.1 v850 24.5 wc300 1.54 wc500 1.27 flux 278.0/341.3 deep 1.0/0.755 rain 232.4/108.4 rh700 1.114/0.945
+Vardah T170_ctl +36h p 1000.5 v850 25.3 wc300 1.75 wc500 1.32 flux 277.2/358.6 deep 1.0/0.666 rain 248.5/109.0 rh700 1.124/0.935
+Vardah T170_ctl +39h p 998.0 v850 26.5 wc300 1.72 wc500 1.47 flux 288.7/379.8 deep 1.0/0.799 rain 250.9/113.1 rh700 1.128/0.93
+Vardah T170_ctl +42h p 997.7 v850 27.7 wc300 2.26 wc500 1.26 flux 314.2/399.5 deep 1.0/0.777 rain 297.8/119.5 rh700 1.146/0.925
+Vardah T170_ctl +45h p 997.9 v850 28.4 wc300 2.34 wc500 1.4 flux 306.3/394.7 deep 1.0/0.8 rain 285.0/121.7 rh700 1.134/0.939
+Vardah T170_ctl +48h p 996.6 v850 28.6 wc300 1.97 wc500 1.77 flux 330.8/399.3 deep 1.0/0.622 rain 220.3/108.2 rh700 1.098/0.922
+Vardah T170_ctl +51h p 995.1 v850 28.7 wc300 1.45 wc500 2.3 flux 337.5/401.6 deep 1.0/0.533 rain 158.3/91.4 rh700 1.043/0.906
+Vardah T170_ctl +54h p 995.7 v850 28.5 wc300 1.07 wc500 2.74 flux 313.3/379.5 deep 1.0/0.533 rain 104.6/78.6 rh700 0.99/0.899
+Vardah T170_ctl +57h p 997.5 v850 28.0 wc300 0.9 wc500 2.9 flux 271.7/349.7 deep 1.0/0.51 rain 72.4/71.6 rh700 0.976/0.903
+Vardah T170_ctl +60h p 997.5 v850 26.7 wc300 1.89 wc500 1.74 flux 255.3/359.0 deep 1.0/0.333 rain 203.0/90.6 rh700 1.107/0.882
+Vardah T170_ctl +63h p 996.1 v850 25.9 wc300 1.7 wc500 2.05 flux 222.1/341.3 deep 1.0/0.288 rain 190.9/90.8 rh700 1.085/0.884
+Vardah T170_ctl +66h p 995.8 v850 26.5 wc300 1.54 wc500 2.27 flux 220.7/321.2 deep 0.8/0.266 rain 147.7/69.5 rh700 1.039/0.863
+Vardah T170_ctl +69h p 996.2 v850 25.3 wc300 1.58 wc500 2.2 flux 249.5/309.6 deep 0.8/0.222 rain 197.9/68.8 rh700 1.103/0.873
+Vardah T170_ctl +72h p 995.7 v850 26.3 wc300 0.76 wc500 2.78 flux 229.1/298.8 deep 1.0/0.222 rain 158.8/59.5 rh700 1.044/0.887
+Nivar T170_ctl + 0h p 1008.3 v850 14.2 wc300 0.19 wc500 0.67 flux 171.1/242.8 deep 1.0/1.0 rain 37.7/34.9 rh700 0.89/0.824
+Nivar T170_ctl + 3h p 1006.8 v850 12.4 wc300 0.46 wc500 0.67 flux 181.6/222.8 deep 1.0/0.955 rain 51.3/48.1 rh700 0.956/0.884
+Nivar T170_ctl + 6h p 1007.5 v850 11.5 wc300 0.49 wc500 0.35 flux 176.4/212.6 deep 1.0/0.889 rain 68.1/54.6 rh700 1.005/0.92
+Nivar T170_ctl + 9h p 1010.8 v850 12.0 wc300 0.62 wc500 0.16 flux 161.9/190.4 deep 1.0/0.844 rain 81.3/57.5 rh700 1.022/0.948
+Nivar T170_ctl +12h p 1010.5 v850 11.9 wc300 0.68 wc500 -0.05 flux 143.6/175.4 deep 1.0/0.755 rain 81.8/58.8 rh700 1.026/0.964
+Nivar T170_ctl +15h p 1008.6 v850 11.2 wc300 0.73 wc500 0.02 flux 144.8/173.1 deep 0.8/0.777 rain 70.6/60.3 rh700 1.012/0.961
+Nivar T170_ctl +18h p 1008.5 v850 12.2 wc300 0.86 wc500 0.14 flux 154.4/174.9 deep 0.8/0.71 rain 62.6/53.7 rh700 1.012/0.95
+Nivar T170_ctl +21h p 1009.7 v850 16.5 wc300 1.18 wc500 0.36 flux 158.3/182.4 deep 1.0/0.733 rain 105.1/57.7 rh700 1.051/0.947
+Nivar T170_ctl +24h p 1010.0 v850 13.3 wc300 -0.22 wc500 -0.29 flux 97.3/96.1 deep 0.0/0.399 rain 10.3/34.6 rh700 0.951/0.958
+Nivar T170_ctl +27h p 1007.7 v850 14.6 wc300 -0.13 wc500 -0.11 flux 73.0/100.1 deep 0.0/0.288 rain 21.9/37.1 rh700 0.998/0.981
+Nivar T170_ctl +30h p 1007.2 v850 18.2 wc300 0.98 wc500 0.51 flux 153.6/193.5 deep 0.8/0.621 rain 73.9/57.0 rh700 1.028/0.989
+Nivar T170_ctl +33h p 1008.7 v850 18.7 wc300 0.17 wc500 -0.05 flux 64.6/119.1 deep 0.2/0.444 rain 66.0/54.0 rh700 1.036/0.949
+Nivar T170_ctl +36h p 1008.6 v850 21.4 wc300 0.54 wc500 0.36 flux 114.0/170.3 deep 0.4/0.51 rain 60.2/52.5 rh700 1.048/0.953
+Nivar T170_ctl +39h p 1006.0 v850 13.5 wc300 0.08 wc500 -0.33 flux 213.6/179.8 deep 0.0/0.155 rain 31.7/29.9 rh700 0.891/0.97
+Nivar T170_ctl +42h p 1005.9 v850 24.6 wc300 0.97 wc500 0.89 flux 201.1/215.0 deep 0.8/0.666 rain 74.5/64.2 rh700 1.059/0.926
+Nivar T170_ctl +45h p 1006.9 v850 24.6 wc300 1.68 wc500 0.84 flux 259.5/275.4 deep 0.8/0.667 rain 131.1/76.9 rh700 1.074/0.882
+Nivar T170_ctl +48h p 1006.9 v850 25.0 wc300 1.74 wc500 0.99 flux 311.6/280.0 deep 0.8/0.689 rain 167.8/88.4 rh700 1.077/0.83
+Nivar T170_ctl +51h p 1005.1 v850 24.9 wc300 1.19 wc500 0.7 flux 178.9/244.0 deep 1.0/0.555 rain 156.4/86.2 rh700 1.099/0.875
+Nivar T170_ctl +54h p 1004.2 v850 24.5 wc300 1.2 wc500 0.82 flux 152.5/239.4 deep 0.8/0.533 rain 131.3/71.9 rh700 1.095/0.887
+Nivar T170_ctl +57h p 1004.5 v850 18.8 wc300 1.16 wc500 0.93 flux 109.2/211.4 deep 0.2/0.555 rain 76.8/64.0 rh700 1.073/0.884
+Nivar T170_ctl +60h p 1005.0 v850 16.9 wc300 0.91 wc500 0.86 flux 112.0/215.2 deep 0.2/0.577 rain 83.8/63.3 rh700 1.062/0.892
+Nivar T170_ctl +63h p 1004.3 v850 15.3 wc300 -0.29 wc500 -0.76 flux 73.7/114.9 deep 0.0/0.155 rain 29.3/13.0 rh700 0.855/0.892
+Nivar T170_ctl +66h p 1003.7 v850 16.9 wc300 -0.12 wc500 -0.55 flux 107.7/159.2 deep 0.0/0.222 rain 30.3/15.7 rh700 0.83/0.901
+Nivar T170_ctl +69h p 1005.2 v850 17.5 wc300 1.5 wc500 0.66 flux 207.2/294.8 deep 0.6/0.622 rain 59.9/62.6 rh700 1.004/0.938
+Nivar T170_ctl +72h p 1005.0 v850 18.3 wc300 1.77 wc500 1.33 flux 307.3/288.9 deep 1.0/0.755 rain 113.7/79.7 rh700 1.072/0.97
+Michaung T170_ctl + 0h p 1005.5 v850 15.7 wc300 0.29 wc500 0.76 flux 176.8/293.0 deep 1.0/1.0 rain 32.2/32.9 rh700 0.874/0.863
+Michaung T170_ctl + 3h p 1005.9 v850 13.6 wc300 0.33 wc500 0.59 flux 201.1/261.0 deep 0.0/0.599 rain 33.6/38.2 rh700 1.001/0.924
+Michaung T170_ctl + 6h p 1004.1 v850 13.9 wc300 0.41 wc500 0.2 flux 224.3/275.2 deep 0.0/0.51 rain 53.3/46.5 rh700 1.041/0.974
+Michaung T170_ctl + 9h p 1004.7 v850 14.7 wc300 0.37 wc500 0.19 flux 192.4/261.1 deep 0.4/0.467 rain 51.6/46.3 rh700 1.037/0.975
+Michaung T170_ctl +12h p 1005.6 v850 13.7 wc300 0.46 wc500 0.1 flux 181.5/240.3 deep 0.6/0.444 rain 66.3/48.5 rh700 1.036/0.973
+Michaung T170_ctl +15h p 1005.7 v850 13.3 wc300 0.79 wc500 0.35 flux 168.3/232.0 deep 0.4/0.6 rain 75.9/57.6 rh700 1.049/0.976
+Michaung T170_ctl +18h p 1005.7 v850 14.9 wc300 0.93 wc500 0.45 flux 200.1/242.4 deep 0.6/0.644 rain 141.2/74.9 rh700 1.076/0.982
+Michaung T170_ctl +21h p 1004.5 v850 16.4 wc300 0.98 wc500 0.62 flux 205.2/257.0 deep 1.0/0.777 rain 162.4/81.6 rh700 1.089/0.986
+Michaung T170_ctl +24h p 1004.6 v850 18.5 wc300 1.41 wc500 0.92 flux 202.4/251.5 deep 1.0/0.6 rain 195.2/86.7 rh700 1.101/0.965
+Michaung T170_ctl +27h p 1005.2 v850 19.4 wc300 1.64 wc500 0.97 flux 163.5/257.5 deep 1.0/0.667 rain 201.1/91.9 rh700 1.095/0.964
+Michaung T170_ctl +30h p 1003.0 v850 19.9 wc300 1.78 wc500 0.99 flux 232.8/296.7 deep 1.0/0.756 rain 209.8/95.6 rh700 1.102/0.966
+Michaung T170_ctl +33h p 1001.7 v850 19.9 wc300 2.08 wc500 1.04 flux 225.7/242.2 deep 0.8/0.643 rain 187.1/85.2 rh700 1.104/0.966
+Michaung T170_ctl +36h p 1001.2 v850 20.5 wc300 2.2 wc500 1.42 flux 253.2/244.1 deep 1.0/0.621 rain 199.7/78.7 rh700 1.098/0.957
+Michaung T170_ctl +39h p 1001.4 v850 21.2 wc300 2.23 wc500 1.62 flux 246.2/242.8 deep 0.8/0.532 rain 176.3/71.2 rh700 1.082/0.93
+Michaung T170_ctl +42h p 1000.8 v850 20.8 wc300 2.91 wc500 1.44 flux 208.8/201.8 deep 1.0/0.622 rain 186.6/69.6 rh700 1.076/0.898
+Michaung T170_ctl +45h p 1000.6 v850 20.7 wc300 2.87 wc500 1.41 flux 206.4/203.6 deep 1.0/0.532 rain 178.9/65.0 rh700 1.078/0.889
+Michaung T170_ctl +48h p 1000.9 v850 21.2 wc300 2.67 wc500 1.5 flux 259.2/207.9 deep 1.0/0.532 rain 139.5/61.1 rh700 1.065/0.877
+Michaung T170_ctl +51h p 1002.5 v850 20.3 wc300 2.2 wc500 1.4 flux 310.4/204.1 deep 0.599/0.465 rain 74.1/58.0 rh700 1.012/0.861
+Michaung T170_ctl +54h p 1002.8 v850 20.8 wc300 2.93 wc500 0.93 flux 46.8/147.9 deep 0.799/0.666 rain 130.5/60.7 rh700 1.059/0.831
+Michaung T170_ctl +57h p 1002.0 v850 22.1 wc300 2.34 wc500 1.77 flux 210.3/143.3 deep 0.2/0.444 rain 37.3/56.2 rh700 1.033/0.85
+Michaung T170_ctl +60h p 1002.1 v850 21.6 wc300 2.29 wc500 1.49 flux 182.3/125.0 deep 0.2/0.443 rain 29.6/43.8 rh700 0.985/0.844
+Michaung T170_ctl +63h p 1004.0 v850 21.5 wc300 2.12 wc500 1.35 flux 201.7/120.4 deep 0.2/0.377 rain 32.1/41.0 rh700 0.954/0.842
+Michaung T170_ctl +66h p 1003.9 v850 21.5 wc300 2.28 wc500 1.47 flux 135.9/115.9 deep 0.399/0.51 rain 37.4/42.8 rh700 0.983/0.845
+Michaung T170_ctl +69h p 1003.5 v850 21.8 wc300 2.35 wc500 1.24 flux 169.5/111.6 deep 0.399/0.421 rain 64.2/47.2 rh700 0.944/0.831
+Michaung T170_ctl +72h p 1004.0 v850 19.2 wc300 3.36 wc500 1.4 flux 64.1/76.9 deep 1.0/0.488 rain 92.2/48.2 rh700 1.023/0.789
