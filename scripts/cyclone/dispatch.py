@@ -8,34 +8,40 @@ MAXPER = int(sys.argv[1]) if len(sys.argv) > 1 else 2; LOOP = float(sys.argv[2])
 Q, DONE = 'data/cyclone/queue.json', 'data/cyclone/queue_done.json'
 def sh(c): return subprocess.run(c, shell=True, capture_output=True, text=True)
 def running():
-    """busy slots per account = workflow runs still in progress (each one is a live Kaggle session or a push about to be
-    made), mapped to the account of that slug's latest launch. Status files go stale; the run list does not."""
-    live = []
-    for stt in ('in_progress', 'queued', 'waiting', 'pending', 'requested'):
-        r = sh(f"gh api 'repos/sridhar13294-rgb/tn-rainfall-map/actions/workflows/cyclone-kaggle.yml/runs?status={stt}&per_page=100' --jq '.workflow_runs[].display_title'").stdout
-        live += [l.replace('Cyclone study: Kaggle job ', '').strip() for l in r.split('\n') if l.strip()]
-    acct_of = {}
-    for h in sh("git log --format=%H -400 -- data/cyclone/KAGGLE").stdout.split():
-        k = sh(f"git show {h}:data/cyclone/KAGGLE").stdout.split('\n')
-        if len(k) >= 5 and k[0].strip() not in acct_of: acct_of[k[0].strip()] = k[4].strip()
+    """busy slots per account = unfinished workflow runs (queued ones will push when they start), each mapped to the
+    account in ITS OWN commit's data/cyclone/KAGGLE (5 Nov 17:40 fix: mapping by slug's latest launch undercounted when a
+    slug had been launched on several accounts -> pushes refused -> relaunch storm). Same slug + account counted once
+    (one Kaggle kernel)."""
     busy = {}
-    for slug in sorted(set(live)):                                              # several runs can poll the same kernel
-        if slug in acct_of: busy.setdefault(acct_of[slug], []).append(slug)
+    for stt in ('in_progress', 'queued', 'waiting', 'pending', 'requested'):
+        r = sh(f"gh api 'repos/sridhar13294-rgb/tn-rainfall-map/actions/workflows/cyclone-kaggle.yml/runs?status={stt}&per_page=100' --jq '.workflow_runs[] | (.display_title + \"|\" + .head_sha)'").stdout
+        for l in r.split('\n'):
+            if '|' not in l: continue
+            slug, sha = l.replace('Cyclone study: Kaggle job ', '').strip().split('|')
+            k = sh(f"git show {sha}:data/cyclone/KAGGLE").stdout.split('\n')
+            if len(k) >= 5 and k[4].strip():
+                b_ = busy.setdefault(k[4].strip(), [])
+                if slug not in b_: b_.append(slug)
     return busy
 while True:
     sh('git pull -q --rebase origin cases')
     q = json.load(open(Q)) if os.path.exists(Q) else []
     # re-queue launches that Kaggle refused (e.g. 'Maximum batch GPU session count of 2 reached') - self-correcting
     d = json.load(open(DONE)) if os.path.exists(DONE) else []; keep = []; back = []
+    def _fresh(j): return bool(j.get('at')) and time.time() - time.mktime(time.strptime(j['at'], '%Y-%m-%dT%H:%MZ')) + time.timezone < 1500
+    freshslugs = {j['slug'] for j in d if _fresh(j)}
     for j in d:
         # refused = the LATEST push attempt failed (push.txt is rewritten by every run; status.txt keeps old lines until the new run polls)
         pt = f"data/cyclone/kaggle/{j['slug']}/push.txt"; last = open(pt).read().strip().split('\n')[-1] if os.path.exists(pt) else ''
         last = 'push refused' if re.search(r'error', last, re.I) else ''
         fresh = j.get('at') and time.time() - time.mktime(time.strptime(j['at'], '%Y-%m-%dT%H:%MZ')) + time.timezone < 1500
-        if 'push refused' in last and not fresh and j['slug'] not in {x['slug'] for x in q}:
+        # 5 Nov 17:35 fix: DONE can hold the same slug several times (each earlier launch) -> re-queue it ONCE only,
+        # and never while a newer launch of that slug is still fresh (fresh = any entry of that slug < 25 min old)
+        if 'push refused' in last and not fresh and j['slug'] not in {x['slug'] for x in q} | {x['slug'] for x in back} | freshslugs:
             back.append({k: v for k, v in j.items() if k not in ('account', 'at')}); print('re-queued (refused):', j['slug'], flush=True)
         else: keep.append(j)
-    if back: q = back + q                                                       # in memory only: files are written + committed at the end
+    if back: q = back + q
+    q = list({j['slug']: j for j in reversed(q)}.values())[::-1]                # never two queue entries of one slug                                                       # in memory only: files are written + committed at the end
     refused = {j['slug'] for j in back}
     if not q: print('queue empty'); break
     busy = running(); left = []; newdone = []
