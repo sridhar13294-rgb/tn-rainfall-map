@@ -606,5 +606,69 @@
   "note": "scnt",
   "account": "14",
   "at": "2026-11-05T12:35Z"
+ },
+ {
+  "slug": "tn-p5-b1-ond",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "note": "p5",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore p5_bias.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz /kaggle/working/p5.json 2020-10-02,2020-10-07,2020-10-12,2020-10-17,2020-10-22,2020-10-27,2020-11-01,2020-11-06,2020-11-11,2020-11-16,2020-11-21,2020-11-26,2020-12-01,2020-12-06,2020-12-11,2020-12-16,2020-12-21,2020-12-26 '{\"cmt_mf\": 1.0, \"grid\": \"T170\"}' > /kaggle/working/p5.log 2>&1; tail -5 /kaggle/working/p5.log",
+  "account": "2",
+  "at": "2026-11-05T13:33Z"
+ },
+ {
+  "slug": "tn-s-cnt-evo",
+  "inputs": "libm_wx2020_fields.npz",
+  "cmd": "cd . && XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 6 '{\"cnt\": {\"cmt_mf\": 1.0, \"rad_prm\": {\"lw_cnt\": 0.667}, \"grid\": \"T170\", \"_budget\": true, \"_win\": [[0, 24], [48, 72], [96, 120]]}}' > /kaggle/working/prof.log 2>&1; tail -40 /kaggle/working/prof.log",
+  "note": "scnt",
+  "account": "3",
+  "at": "2026-11-05T13:34Z"
+ },
+ {
+  "slug": "tn-s-drg-wx0",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/suite_drg_wx.json 0 4 /kaggle/working/wx_0.json > /kaggle/working/wx_0.log 2>&1; tail -3 /kaggle/working/wx_0.log",
+  "note": "sdrg",
+  "account": "4",
+  "at": "2026-11-05T13:35Z"
+ },
+ {
+  "slug": "tn-s-drg-wx1",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/suite_drg_wx.json 1 4 /kaggle/working/wx_1.json > /kaggle/working/wx_1.log 2>&1; tail -3 /kaggle/working/wx_1.log",
+  "note": "sdrg",
+  "account": "7",
+  "at": "2026-11-05T13:35Z"
+ },
+ {
+  "slug": "tn-s-drg-wx2",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/suite_drg_wx.json 2 4 /kaggle/working/wx_2.json > /kaggle/working/wx_2.log 2>&1; tail -3 /kaggle/working/wx_2.log",
+  "note": "sdrg",
+  "account": "9",
+  "at": "2026-11-05T13:36Z"
+ },
+ {
+  "slug": "tn-s-drg-wx3",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/suite_drg_wx.json 3 4 /kaggle/working/wx_3.json > /kaggle/working/wx_3.log 2>&1; tail -3 /kaggle/working/wx_3.log",
+  "note": "sdrg",
+  "account": "11",
+  "at": "2026-11-05T13:37Z"
+ },
+ {
+  "slug": "tn-s-drg-sb",
+  "inputs": "libm_fields.npz",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/suite_drg_sb.json /kaggle/working/sb.json > /kaggle/working/sb.log 2>&1; tail -20 /kaggle/working/sb.log",
+  "note": "sdrg",
+  "account": "13",
+  "at": "2026-11-05T13:38Z"
+ },
+ {
+  "slug": "tn-s-drg-q6",
+  "inputs": "libm_fields.npz",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/suite_drg_q6.json 0 1 /kaggle/working/q6.json > /kaggle/working/q6.log 2>&1; tail -8 /kaggle/working/q6.log",
+  "note": "sdrg",
+  "account": "14",
+  "at": "2026-11-05T13:39Z"
  }
 ]
