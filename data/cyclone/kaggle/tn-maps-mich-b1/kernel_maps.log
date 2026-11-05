@@ -1,0 +1,38 @@
+start 2023-12-01T00 available ['2000-10-14T18', '2000-10-25T12', '2000-11-26T06'] ...
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda13.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda13/__init__.py", line 384, in initialize
+    xla_client.register_custom_call_handler(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        "CUDA",
+        ^^^^^^^
+    ...<2 lines>...
+        ),
+        ^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 459, in register_custom_call_handler
+    handler(name, fn, xla_platform_name, api_version, traits)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: INVALID_ARGUMENT: XLA FFI handler registration for cudnn_rnn_ffi on platform CUDA (canonical cuda) failed because the handler's API version (0.5) is incompatible with the framework's API version (0.4). Minimum supported API version is (0.1).
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda12.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda12/__init__.py", line 372, in initialize
+    c_api = xb.register_plugin(
+        'cuda', priority=500, library_path=str(path), options=options
+    )
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 662, in register_plugin
+    c_api = xla_client.load_pjrt_plugin_dynamically(plugin_name, library_path)
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 115, in load_pjrt_plugin_dynamically
+    return _xla.load_pjrt_plugin(plugin_name, library_path, c_api=None)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: ALREADY_EXISTS: PJRT_Api already exists for device type cuda
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+ran 258 s; fields ['mslp', 'rain', 'rh500', 'rh700', 'rh850', 'snd_ps', 'snd_q100', 'snd_q1000', 'snd_q150', 'snd_q200', 'snd_q250', 'snd_q300', 'snd_q350', 'snd_q400', 'snd_q450', 'snd_q500', 'snd_q550', 'snd_q600', 'snd_q650', 'snd_q700', 'snd_q750', 'snd_q800', 'snd_q850', 'snd_q900', 'snd_q925', 'snd_q950', 'snd_q975', 'snd_t100', 'snd_t1000', 'snd_t150', 'snd_t200', 'snd_t250', 'snd_t300', 'snd_t350', 'snd_t400', 'snd_t450', 'snd_t500', 'snd_t550', 'snd_t600', 'snd_t650', 'snd_t700', 'snd_t750', 'snd_t800', 'snd_t850', 'snd_t900', 'snd_t925', 'snd_t950', 'snd_t975', 'snd_u100', 'snd_u1000', 'snd_u150', 'snd_u200', 'snd_u250', 'snd_u300', 'snd_u350', 'snd_u400', 'snd_u450', 'snd_u500', 'snd_u550', 'snd_u600', 'snd_u650', 'snd_u700', 'snd_u750', 'snd_u800', 'snd_u850', 'snd_u900', 'snd_u925', 'snd_u950', 'snd_u975', 'snd_v100', 'snd_v1000', 'snd_v150', 'snd_v200', 'snd_v250', 'snd_v300', 'snd_v350', 'snd_v400', 'snd_v450', 'snd_v500', 'snd_v550', 'snd_v600', 'snd_v650', 'snd_v700', 'snd_v750', 'snd_v800', 'snd_v850', 'snd_v900', 'snd_v925', 'snd_v950', 'snd_v975', 't2', 't2_old', 't500', 't850', 'tcw', 'u10', 'u200', 'u500', 'u850', 'v10', 'v200', 'v500', 'v850', 'z500', 'z850']
+saved /kaggle/working/maps_mich_b1.npz 104015 KB
