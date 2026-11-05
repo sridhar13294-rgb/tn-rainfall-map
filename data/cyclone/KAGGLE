@@ -1,6 +1,6 @@
-tn-radchk2
-libm_wx2020_fields.npz
-(apt-get install -y -q gfortran > /dev/null 2>&1 || (apt-get update -q > /dev/null 2>&1 && apt-get install -y -q gfortran > /dev/null 2>&1)); pip install -q meson meson-python ninja pooch climlab > /dev/null 2>&1; pip install -q --no-build-isolation git+https://github.com/climlab/climlab-rrtmg > /kaggle/working/rrtmg_build.log 2>&1; tail -3 /kaggle/working/rrtmg_build.log; cd . && XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore rad_check.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/rad.json 2020-01-01,2020-07-19 72 > /kaggle/working/rad.log 2>&1; tail -12 /kaggle/working/rad.log
+tn-s-ctlL-wx0
+libm_wx2020L_fields.npz,wx_truth_2020.npz
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore wx2.py /kaggle/working/libm_wx2020L_fields.npz ../../../data/cyclone/kaggle_cfg/suite_ctlL_wx.json 0 4 /kaggle/working/wx_0.json > /kaggle/working/wx_0.log 2>&1; tail -3 /kaggle/working/wx_0.log
 NvidiaTeslaT4
-1
-#rad 2026-11-04T19:33Z
+2
+#land 2026-11-05T01:33Z
