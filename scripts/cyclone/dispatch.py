@@ -8,15 +8,19 @@ MAXPER = int(sys.argv[1]) if len(sys.argv) > 1 else 2; LOOP = float(sys.argv[2])
 Q, DONE = 'data/cyclone/queue.json', 'data/cyclone/queue_done.json'
 def sh(c): return subprocess.run(c, shell=True, capture_output=True, text=True)
 def running():
-    log = sh("git log --format=%H -400 -- data/cyclone/KAGGLE").stdout.split(); seen = set(); busy = {}
-    for h in log:
+    """busy slots per account = workflow runs still in progress (each one is a live Kaggle session or a push about to be
+    made), mapped to the account of that slug's latest launch. Status files go stale; the run list does not."""
+    live = []
+    for stt in ('in_progress', 'queued', 'waiting', 'pending', 'requested'):
+        r = sh(f"gh api 'repos/sridhar13294-rgb/tn-rainfall-map/actions/workflows/cyclone-kaggle.yml/runs?status={stt}&per_page=100' --jq '.workflow_runs[].display_title'").stdout
+        live += [l.replace('Cyclone study: Kaggle job ', '').strip() for l in r.split('\n') if l.strip()]
+    acct_of = {}
+    for h in sh("git log --format=%H -400 -- data/cyclone/KAGGLE").stdout.split():
         k = sh(f"git show {h}:data/cyclone/KAGGLE").stdout.split('\n')
-        if len(k) < 5: continue
-        slug, acct = k[0].strip(), k[4].strip()
-        if slug in seen: continue
-        seen.add(slug); st = f'data/cyclone/kaggle/{slug}/status.txt'
-        last = open(st).read().strip().split('\n')[-1] if os.path.exists(st) else ''
-        if not re.search(r'COMPLETE|ERROR|CANCEL|refused', last, re.I): busy.setdefault(acct, []).append(slug)
+        if len(k) >= 5 and k[0].strip() not in acct_of: acct_of[k[0].strip()] = k[4].strip()
+    busy = {}
+    for slug in sorted(set(live)):                                              # several runs can poll the same kernel
+        if slug in acct_of: busy.setdefault(acct_of[slug], []).append(slug)
     return busy
 while True:
     sh('git pull -q --rebase origin cases')
