@@ -610,3 +610,10 @@ Action: land library libm_wx2020L (same 73 starts WITH ERA5 soil water, soil/ski
 (d) water-vapour continuum lw_cnt 0.667 with the RRTMG prediction: tropical clear-sky LW down within +-5 W/m2 of RRTMG, low-level LW cooling within +-10 %.
 (e) implicit surface drag (P2 crash 2, needed only with the cloud-base limit).
 (f) clouds: stored cloud water (Zhao-Carr), cloud fraction.
+
+## 5 Nov 09:00 IST - Sridhar: "Run all the tests in parallel" -> 2 jobs per Kaggle account (accepted by Kaggle), queue + dispatcher (scripts/cyclone/dispatch.py, data/cyclone/queue.json)
+Registered BEFORE results (each alone on base1 = control + cmt_mf; compared with base1, noise from ctl2/ctlp):
+**(b) shallow alone, sh_mflux 0.03 (tn-s-shal-*, tn-r24-shal-*)**: d5 tropical T925 bias <= base1 - 1.0 K (base1 +2.47); q850 dry bias <= half of base1 (-1.45 -> >= -0.73); deep-convection share of tropical columns >= 15 %; TN rain 24-start ratio <= base1 (1.70) and grid-scale share over TN land lower; genesis >= base1 - 5 points (risk: F2 lost genesis - F2 also had pbl_tm); z500 within noise.
+**(d) water-vapour continuum x1.0, rad_prm lw_cnt 0.667 (tn-s-cnt-*, tn-r24-cnt-*)**: tropical clear-sky LW down within +-5 W/m2 of RRTMG (was +18) and low-level LW cooling within +-10 % (offline check with rad_check on the run's state - to do); global rain -0.1..-0.3 mm/day; TN rain ratio <= base1; z500 within noise (30 Oct alone: exam passed, TN rain 1.60 on 6 starts - now judged on 24 starts).
+Not yet testable (code/design needed): (c2) force-restore soil, (e) implicit surface drag, (f) cloud water. Land library test and (a) evaporation already running.
+Quota risk: 2 jobs per account doubles the weekly GPU hours used; Kaggle weekly limit ~30 h per account - this week already heavily used; a refused push stops the workflow early ('push refused' in status).
