@@ -32,7 +32,7 @@ while True:
     if back: q = back + q                                                       # in memory only: files are written + committed at the end
     refused = {j['slug'] for j in back}
     if not q: print('queue empty'); break
-    busy = running(); left = []
+    busy = running(); left = []; newdone = []
     for j in q:
         accts = [str(j['account'])] if j.get('account') else [str(a) for a in range(1, 15)]
         free = [a for a in accts if len(busy.get(a, [])) < MAXPER]
@@ -40,9 +40,8 @@ while True:
         a = min(free, key=lambda x: len(busy.get(x, [])))
         r = sh(f". scripts/cyclone/cycle_tools.sh; FORCE=1 launch {j['slug']} {j['inputs']} {shlex.quote(j["cmd"])} {a} {j.get('note', 'q')}")
         out = (r.stdout + r.stderr).strip().split('\n')[-1]; print(j['slug'], '->', a, '|', out, flush=True)
-        if 'launched' in out:
-            busy.setdefault(a, []).append(j['slug']); d = json.load(open(DONE)) if os.path.exists(DONE) else []
-            d.append(dict(j, account=a, at=time.strftime('%Y-%m-%dT%H:%MZ', time.gmtime()))); json.dump(d, open(DONE, 'w'), indent=1)
+        if 'launched' in out:                                                   # kept in memory: writing files between launches breaks the next launch's git sync
+            busy.setdefault(a, []).append(j['slug']); newdone.append(dict(j, account=a, at=time.strftime('%Y-%m-%dT%H:%MZ', time.gmtime())))
         else: left.append(j)
     launched = {j['slug'] for j in q} - {j['slug'] for j in left}
     sh('git pull -q --rebase origin cases')                                      # merge: entries added meanwhile are kept
@@ -51,6 +50,7 @@ while True:
     if back:                                                                    # drop the refused entries from the done list
         dd = json.load(open(DONE)) if os.path.exists(DONE) else []; json.dump([j for j in dd if j['slug'] not in refused or j['slug'] in launched], open(DONE, 'w'), indent=1)
     json.dump(left, open(Q, 'w'), indent=1)
+    dd = json.load(open(DONE)) if os.path.exists(DONE) else []; json.dump(dd + newdone, open(DONE, 'w'), indent=1)
     sh(f"git add {Q} {DONE}; git commit -qm 'Queue: {len(launched)} launched, {len(left)} waiting' ; git pull -q --rebase origin cases; git push -q origin cases")
     print(len(left), 'waiting', flush=True)
     if not left or not LOOP: break
