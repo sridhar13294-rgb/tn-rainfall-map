@@ -81,7 +81,11 @@ while True:
         dd = json.load(open(DONE)) if os.path.exists(DONE) else []; json.dump([j for j in dd if j['slug'] not in refused or j['slug'] in launched], open(DONE, 'w'), indent=1)
     json.dump(left, open(Q, 'w'), indent=1)
     dd = json.load(open(DONE)) if os.path.exists(DONE) else []; json.dump(dd + newdone, open(DONE, 'w'), indent=1)
-    sh(f"git add {Q} {DONE}; git commit -qm 'Queue: {len(launched)} launched, {len(left)} waiting' ; git pull -q --rebase origin cases; git push -q origin cases")
+    sh(f"git add {Q} {DONE}; git commit -qm 'Queue: {len(launched)} launched, {len(left)} waiting'")
+    for _i in range(6):                                                         # 5 Nov 23:15: the single push could fail on a race and leave the queue stale
+        if sh('git pull -q --rebase origin cases && git push -q origin cases').returncode == 0: break
+        time.sleep(15)
+    else: print('WARNING: queue commit not pushed', flush=True)
     print(len(left), 'waiting', flush=True)
     if not left or not LOOP: break
     time.sleep(LOOP * 60)
