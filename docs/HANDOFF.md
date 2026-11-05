@@ -549,3 +549,10 @@ Condition set by Sridhar: every disadvantage of dropping F2 must be addressed be
 - `--opts a,b` checks each option switched on actually changes the output (dead-switch check). 4 Nov: cmt_mf, sfc_imp, bl_lcl, pbl_tm, sh_mflux all live.
 - Each cycle also: git diff of scripts/cyclone/mm since the previous cycle read line by line, findings in rootcause.md.
 - Limits: bit-identity holds only for the single column call and step 1; later steps differ by round-off after ANY edit (shown 4 Nov: 2e-4 K at step 2 -> K-scale in a day). So results of noisy metrics (TN rain: 6 starts) must be compared with a control run on the SAME code (ctl2), not an older one.
+
+## 5 Nov 17:15 IST - SPEED-UP DECISIONS (Sridhar, asked for "2x faster")
+- Compute: Kaggle only (no paid GPU). Accounts 15-18 still coming (each a different real person).
+- Cycles every 3 h around the clock (scored + next jobs launched each time): 19:00, 22:00, 01:00, 04:00, 07:00, 10:00, 13:00, 16:00 IST. Night cycles 01:00/04:00 silent (no messages 00:30-07:00). Each cycle schedules the next with send_later. Message Sridhar only when results changed (always with the full status table).
+- PRE-APPROVAL: a candidate that passes ALL its pre-registered checks is adopted into the base by Claude without waiting; Sridhar reviews after (report says "adopted"). Gates never relaxed; any single failed check = not adopted.
+- PARALLEL STACKING allowed: likely next steps may be tested on top of a candidate while that candidate's own suite is still running (e.g. cloud_qc on top of sh_depth). If the lower candidate fails, the stacked results are void.
+- No outside expert available: P5 continues by offline diagnosis + peer AI reviews (results only, never code).
