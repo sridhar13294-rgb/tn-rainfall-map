@@ -24,7 +24,9 @@ while True:
     # re-queue launches that Kaggle refused (e.g. 'Maximum batch GPU session count of 2 reached') - self-correcting
     d = json.load(open(DONE)) if os.path.exists(DONE) else []; keep = []; back = []
     for j in d:
-        st = f"data/cyclone/kaggle/{j['slug']}/status.txt"; last = open(st).read().strip().split('\n')[-1] if os.path.exists(st) else ''
+        # refused = the LATEST push attempt failed (push.txt is rewritten by every run; status.txt keeps old lines until the new run polls)
+        pt = f"data/cyclone/kaggle/{j['slug']}/push.txt"; last = open(pt).read().strip().split('\n')[-1] if os.path.exists(pt) else ''
+        last = 'push refused' if re.search(r'error', last, re.I) else ''
         fresh = j.get('at') and time.time() - time.mktime(time.strptime(j['at'], '%Y-%m-%dT%H:%MZ')) + time.timezone < 1500
         if 'push refused' in last and not fresh and j['slug'] not in {x['slug'] for x in q}:
             back.append({k: v for k, v in j.items() if k not in ('account', 'at')}); print('re-queued (refused):', j['slug'], flush=True)
