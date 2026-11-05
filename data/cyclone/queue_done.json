@@ -214,5 +214,29 @@
   "note": "slnd",
   "account": "13",
   "at": "2026-11-05T06:31Z"
+ },
+ {
+  "slug": "tn-s-lnd-wx0",
+  "inputs": "libm_wx2020L_fields.npz,wx_truth_2020.npz",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020L_fields.npz ../../../data/cyclone/kaggle_cfg/suite_lnd_wx.json 0 4 /kaggle/working/wx_0.json > /kaggle/working/wx_0.log 2>&1; tail -3 /kaggle/working/wx_0.log",
+  "note": "slnd",
+  "account": "13",
+  "at": "2026-11-05T06:33Z"
+ },
+ {
+  "slug": "tn-s-lnd-wx1",
+  "inputs": "libm_wx2020L_fields.npz,wx_truth_2020.npz",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020L_fields.npz ../../../data/cyclone/kaggle_cfg/suite_lnd_wx.json 1 4 /kaggle/working/wx_1.json > /kaggle/working/wx_1.log 2>&1; tail -3 /kaggle/working/wx_1.log",
+  "note": "slnd",
+  "account": "7",
+  "at": "2026-11-05T06:34Z"
+ },
+ {
+  "slug": "tn-s-lnd-wx3",
+  "inputs": "libm_wx2020L_fields.npz,wx_truth_2020.npz",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020L_fields.npz ../../../data/cyclone/kaggle_cfg/suite_lnd_wx.json 3 4 /kaggle/working/wx_3.json > /kaggle/working/wx_3.log 2>&1; tail -3 /kaggle/working/wx_3.log",
+  "note": "slnd",
+  "account": "13",
+  "at": "2026-11-05T06:35Z"
  }
 ]
