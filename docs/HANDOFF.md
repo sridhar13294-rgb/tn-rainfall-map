@@ -573,3 +573,7 @@ Condition set by Sridhar: every disadvantage of dropping F2 must be addressed be
   awaiting his confirmation: 12-h headings 0-72 h, mean |heading error| <= 30 deg, every best-track turn >= 45 deg
   reproduced within +-12 h with the same sense, no spurious turn >= 45 deg; pass = >= 5 of 6 quick6 storms; position
   error reported, not gated.
+- 5 Nov 19:05 IST Sridhar CONFIRMED the Stage 1 track check: TREND (12-h headings 0-72 h: mean |heading error| <= 30 deg;
+  every best-track turn >= 45 deg reproduced within +-12 h with the same sense; no spurious turn >= 45 deg; >= 5 of 6
+  quick6 storms) AND mean 72-h position error <= 200 km (today 297). 150 km = Stage 3 goal. Replaces the old 'quick6 not
+  worse than base' Stage-1 gate; candidate regression gates (not worse than base within round-off) still apply.
