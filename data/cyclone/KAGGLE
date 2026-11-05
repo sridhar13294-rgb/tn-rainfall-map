@@ -1,6 +1,6 @@
-tn-s-ctlL-wx3
+tn-r24L-ctl-a
 libm_wx2020L_fields.npz,wx_truth_2020.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore wx2.py /kaggle/working/libm_wx2020L_fields.npz ../../../data/cyclone/kaggle_cfg/suite_ctlL_wx.json 3 4 /kaggle/working/wx_3.json > /kaggle/working/wx_3.log 2>&1; tail -3 /kaggle/working/wx_3.log
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore tn_rain_diag.py /kaggle/working/libm_wx2020L_fields.npz /kaggle/working/wx_truth_2020.npz /kaggle/working/tnr.json 2020-01-01,2020-01-31,2020-03-01,2020-03-31,2020-04-30,2020-05-30,2020-06-29,2020-07-29,2020-08-28,2020-09-27,2020-10-27,2020-11-26 '{"ctlL":{"grid":"T170"}}' > /kaggle/working/tnr.log 2>&1; tail -14 /kaggle/working/tnr.log
 NvidiaTeslaT4
-5
-#land 2026-11-05T01:35Z
+6
+#land 2026-11-05T01:36Z
