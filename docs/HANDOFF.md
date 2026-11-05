@@ -592,3 +592,4 @@ Condition set by Sridhar: every disadvantage of dropping F2 must be addressed be
   (HANDOFF 28 Oct had 'check Kaggle terms first'). ACTION: all launches stopped on other people's accounts (accounts_down =
   2-14); only Sridhar's own account 1 is used until he decides. Accounts 15-18 must NOT be added. No workaround of
   Kaggle's limits.
+- 5 Nov 21:36 IST: Sridhar submitted the TPU Research Cloud interest form (affiliation 'Independent researcher'; publication commitment: technical report + open verification code). Approval rolling, not guaranteed. Until then: own Kaggle account 1 only (~30 GPU h/week = ~2 full suites); plan in tomorrow's report (Stage 1 realistic ~mid-December; 15 Nov not reachable).
