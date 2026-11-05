@@ -12,9 +12,13 @@ keep = []
 for ln in lines:
     slug, a = ln[0], ln[1]; u, t = os.environ.get(f'U{a}', ''), os.environ.get(f'T{a}', '')
     if not u or not t: print(slug, 'account', a, 'not configured'); keep.append(ln); continue
-    env = dict(os.environ, KAGGLE_USERNAME=u, KAGGLE_KEY=t, KAGGLE_API_TOKEN=t); D = f'data/cyclone/kaggle/{slug}'; os.makedirs(D, exist_ok=True)
+    kind = 'new-token' if t.startswith('KGAT') else 'legacy-key'
+    # 5 Nov 20:00: a fresh HOME per account - the kaggle CLI caches credentials/tokens under ~/.kaggle and ~/.config, so
+    # in one process later accounts were answered as another account ('Permission kernels.get denied' for 8 of 14).
+    hm = f'/tmp/khome_{a}'; shutil.rmtree(hm, ignore_errors=True); os.makedirs(hm)
+    env = dict(os.environ, HOME=hm, XDG_CONFIG_HOME=hm + '/.config', KAGGLE_CONFIG_DIR=hm + '/.kaggle', KAGGLE_USERNAME=u, KAGGLE_KEY=t, KAGGLE_API_TOKEN=t); D = f'data/cyclone/kaggle/{slug}'; os.makedirs(D, exist_ok=True)
     r = run(f'kaggle kernels status {u}/{slug}', env); s = (r.stdout + r.stderr).strip().split('\n')[-1].replace(u, 'USER')
-    stamp = time.strftime('%H:%M', time.gmtime()); open(f'{D}/status.txt', 'a').write(f'{stamp} {s}\n'); print(slug, a, s)
+    stamp = time.strftime('%H:%M', time.gmtime()); open(f'{D}/status.txt', 'a').write(f'{stamp} {s}\n'); print(slug, a, kind, s)
     if not re.search(r'complete|error|cancel', s, re.I): keep.append(ln); continue
     out = f'/tmp/kout_{slug}'; shutil.rmtree(out, ignore_errors=True); os.makedirs(out)
     print(run(f'kaggle kernels output {u}/{slug} -p {out}', env).stdout[-300:].replace(u, 'USER'))
