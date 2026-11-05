@@ -1,35 +1,5 @@
 [
  {
-  "slug": "tn-rt-lnd",
-  "inputs": "libm_wx2020L_fields.npz,wx_truth_2020.npz",
-  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore roundtrip.py /kaggle/working/libm_wx2020L_fields.npz /kaggle/working/wx_truth_2020.npz /kaggle/working/rt.json 2020-02-15,2020-04-15,2020-05-20,2020-07-19,2020-08-28,2020-10-27,2020-11-11,2020-12-06 T170 '{\"sfc_imp\": 1.0, \"land_rs\": 100.0, \"soil_fr\": 1.0}' > /kaggle/working/rt.log 2>&1; tail -20 /kaggle/working/rt.log",
-  "note": "slnd"
- },
- {
-  "slug": "tn-s-lnd-q6",
-  "inputs": "libm_fields.npz",
-  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/suite_lnd_q6.json 0 1 /kaggle/working/q6.json > /kaggle/working/q6.log 2>&1; tail -8 /kaggle/working/q6.log",
-  "note": "slnd"
- },
- {
-  "slug": "tn-s-lnd-gen0",
-  "inputs": "libm48_fields.npz",
-  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/suite_lnd_gen.json 0 2 /kaggle/working/gen_0.json > /kaggle/working/gen_0.log 2>&1; tail -3 /kaggle/working/gen_0.log",
-  "note": "slnd"
- },
- {
-  "slug": "tn-s-lnd-gen1",
-  "inputs": "libm48_fields.npz",
-  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/suite_lnd_gen.json 1 2 /kaggle/working/gen_1.json > /kaggle/working/gen_1.log 2>&1; tail -3 /kaggle/working/gen_1.log",
-  "note": "slnd"
- },
- {
-  "slug": "tn-s-lnd-sb",
-  "inputs": "libm_fields.npz",
-  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/suite_lnd_sb.json /kaggle/working/sb.json > /kaggle/working/sb.log 2>&1; tail -20 /kaggle/working/sb.log",
-  "note": "slnd"
- },
- {
   "slug": "tn-s-lnd-evo",
   "inputs": "libm_wx2020L_fields.npz",
   "cmd": "cd . && XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx_prof.py /kaggle/working/libm_wx2020L_fields.npz /kaggle/working/prof.json 6 '{\"lnd\": {\"sfc_imp\": 1.0, \"land_rs\": 100.0, \"soil_fr\": 1.0, \"grid\": \"T170\", \"_budget\": true, \"_win\": [[0, 24], [48, 72], [96, 120]]}}' > /kaggle/working/prof.log 2>&1; tail -40 /kaggle/working/prof.log",
