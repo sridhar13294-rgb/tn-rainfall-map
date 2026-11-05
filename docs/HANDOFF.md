@@ -556,3 +556,9 @@ Condition set by Sridhar: every disadvantage of dropping F2 must be addressed be
 - PRE-APPROVAL: a candidate that passes ALL its pre-registered checks is adopted into the base by Claude without waiting; Sridhar reviews after (report says "adopted"). Gates never relaxed; any single failed check = not adopted.
 - PARALLEL STACKING allowed: likely next steps may be tested on top of a candidate while that candidate's own suite is still running (e.g. cloud_qc on top of sh_depth). If the lower candidate fails, the stacked results are void.
 - No outside expert available: P5 continues by offline diagnosis + peer AI reviews (results only, never code).
+- 5 Nov 18:00 PIPELINE CHANGE: Kaggle launches are push-only (cyclone-kaggle.yml registers data/cyclone/pending/<slug>__<acct>
+  and exits); cyclone-collect.yml (push-triggered on cases: KAGGLE or COLLECT_REQ) fetches finished outputs; dispatch.py
+  requests a collection at the start of every pass and counts pending markers as busy. Reason: GitHub allows 20
+  concurrent runners and each launch used to hold one for up to 9 h (the real cap, below Kaggle's 28 sessions).
+- 5 Nov 18:05: repo is PUBLIC (gh api .private = false) - told Sridhar; Kaggle usernames had leaked into 10 push.txt
+  (scrubbed; history keeps them). Push-only exit now sanitises before committing.

@@ -688,3 +688,15 @@ Jobs: tn-p5-b1-ond (18 Oct-Dec starts) and tn-p5-b1-am (12 Apr-May starts): mean
 ## 5 Nov 16:45 IST - 'How will you prove the whole model is not wrong?' (Sridhar + peer) - baselines and the 4-part test plan
 Baselines on the 2020 73-start exam, z500 global RMSE / ACC, d1 / d5 / d10: ECMWF HRES 4.8/1.00, 31.1/0.93, 82.8/0.49; MEGAM base1 20.0/0.98, 73.1/0.67, 119.2/0.14; persistence 61.9/0.72, 106.8/0.17, 115.1/0.05; climatology 83.6 / 83.5 / 83.7. => MEGAM has real skill (beats persistence d1-d5, ACC 0.67 > 0.6 at d5) but useful skill ends ~day 6 (HRES ~day 10); by day 10 it is saturated (~sqrt(2) x climatology). The DAY-1 error (20 vs 4.8 m) is the key number: a fast error source in the first hours.
 Plan (each with an external reference, not ours): (1) dynamical core: (a) physics OFF from real ERA5 starts, d1-d3, + Michaung trough propagation; (b) Jablonowski-Williamson (2006) baroclinic wave vs published reference solutions; (2) physics per process: MEGAM single-column vs GFS v16 SCM (BOMEX, TWP-ICE); (3) coupled budget: 10-day global net energy |imbalance| < 3 W/m2 (now ~-20) and no steady z500 drift; (4) independent 2018-2025 cases vs persistence / climatology / HRES. REGISTERED for (1a) (tn-core-adiab0/2, 37 starts, physics off vs base1 in the same job): if physics-off day-1 z500 RMSE <= 12 m -> the core is not the main fast-error source (physics is); if >= 18 m -> core / initialisation / resolution is, and the architecture question becomes the priority. (Caveat: with no physics the forecast drifts by day 2-3 (no radiation/latent heat), so only day 1 and the first-day trough movement are diagnostic.)
+
+## 5 Nov 18:10 IST - sh_depth (tall-shallow fix) INTERIM: 2 registered checks FAIL -> NOT adopted
+- Pipeline: the suite had not run until 17:50 - duplicate relaunches (dispatcher re-queued each refused slug once per old
+  DONE entry) filled GitHub's 20 concurrent runners with 9-h pollers; fixed (dispatch.py dedupe + per-run account
+  mapping; launches now push-only, cyclone-collect.yml fetches outputs). 31 duplicate runs cancelled.
+- Storm budget (sb, 72 h pmin vs base1; ERA5-at-resolution target): Vardah 989.0 vs 989.5 (995.2), Nivar 997.9 vs 994.5
+  (994.1) -> 3.4 hPa WEAKER (gate: not worse by > 2 hPa) FAIL; Michaung 997.9 vs 999.4 (992.0) better.
+- quick6 72 h: 327 km vs base1 297 (+10 %; gate <= +6 %) FAIL; 24/48 h 135/168 vs 117/221; latitude error -1.17 vs
+  -1.27 (gate > -1.47) pass.
+- => sh_depth is NOT adopted (pre-approval rule: any failed check). Remaining parts (exam = low-level T/q, z500;
+  genesis; 24-start TN rain; evo) still run - they tell whether the tall-shallow fault drives P1/P4 even though the
+  fix as coded hurts Nivar/tracks. Cloud-water stacking on sh_depth NOT started (its base failed).
