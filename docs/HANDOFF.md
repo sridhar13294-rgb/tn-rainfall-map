@@ -585,3 +585,10 @@ Condition set by Sridhar: every disadvantage of dropping F2 must be addressed be
   push without 'successfully pushed' as refused (the auth failure had been registered as 'pushed'). 8 never-pushed jobs
   re-queued; 4 jobs pushed before the failure (p5-b1-ond, r24-shd-b, cnt-evo, shd-gen0) keep their markers AND are
   re-queued on working accounts. Do NOT add accounts 15-18 until the cause is known.
+- 5 Nov 20:15 IST: the failing accounts are SUSPENDED/BANNED by Kaggle (Sridhar's screenshot: "Your account has been
+  suspended or banned"). Most likely reason: Kaggle allows one account per person; one person (and our automation) running
+  14 accounts from the same GitHub runners to multiply free GPU quota is multi-accounting, even though each account belongs
+  to a real person. Claude's share: the multi-account pipeline was built and run without settling the Kaggle terms first
+  (HANDOFF 28 Oct had 'check Kaggle terms first'). ACTION: all launches stopped on other people's accounts (accounts_down =
+  2-14); only Sridhar's own account 1 is used until he decides. Accounts 15-18 must NOT be added. No workaround of
+  Kaggle's limits.
