@@ -1,0 +1,52 @@
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda13.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda13/__init__.py", line 384, in initialize
+    xla_client.register_custom_call_handler(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        "CUDA",
+        ^^^^^^^
+    ...<2 lines>...
+        ),
+        ^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 459, in register_custom_call_handler
+    handler(name, fn, xla_platform_name, api_version, traits)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: INVALID_ARGUMENT: XLA FFI handler registration for cudnn_rnn_ffi on platform CUDA (canonical cuda) failed because the handler's API version (0.5) is incompatible with the framework's API version (0.4). Minimum supported API version is (0.1).
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda12.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda12/__init__.py", line 372, in initialize
+    c_api = xb.register_plugin(
+        'cuda', priority=500, library_path=str(path), options=options
+    )
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 662, in register_plugin
+    c_api = xla_client.load_pjrt_plugin_dynamically(plugin_name, library_path)
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 115, in load_pjrt_plugin_dynamically
+    return _xla.load_pjrt_plugin(plugin_name, library_path, c_api=None)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: ALREADY_EXISTS: PJRT_Api already exists for device type cuda
+dt_s 1200.0 lowest sigma [0.9819999933242798, 0.989300012588501, 0.996399998664856]
++  0h Andes: max lowest-level wind   13.5 m/s (2nd-lowest  13.3, 5th  12.9) | max |h_bl|    97.0 K/day | max |du_bl|    76.6 m/s/day | H at windiest   -47.0 | global max lowest wind   31.7
++  3h Andes: max lowest-level wind   15.7 m/s (2nd-lowest  17.2, 5th  21.7) | max |h_bl|   152.2 K/day | max |du_bl|   361.7 m/s/day | H at windiest  -272.8 | global max lowest wind   29.8
++  6h Andes: max lowest-level wind   13.3 m/s (2nd-lowest  20.9, 5th  26.3) | max |h_bl|   108.0 K/day | max |du_bl|   501.9 m/s/day | H at windiest    32.4 | global max lowest wind   28.8
++  9h Andes: max lowest-level wind   15.3 m/s (2nd-lowest  20.7, 5th  27.0) | max |h_bl|   123.7 K/day | max |du_bl|   595.8 m/s/day | H at windiest  -244.8 | global max lowest wind   28.0
++ 12h Andes: max lowest-level wind   16.5 m/s (2nd-lowest  20.0, 5th  27.3) | max |h_bl|   108.0 K/day | max |du_bl|   538.3 m/s/day | H at windiest  -147.7 | global max lowest wind   26.8
++ 15h Andes: max lowest-level wind   19.2 m/s (2nd-lowest  20.2, 5th  28.9) | max |h_bl|   161.3 K/day | max |du_bl|   620.5 m/s/day | H at windiest  -229.2 | global max lowest wind   25.8
++ 18h Andes: max lowest-level wind   15.5 m/s (2nd-lowest  20.5, 5th  28.1) | max |h_bl|   115.6 K/day | max |du_bl|   588.4 m/s/day | H at windiest   -24.5 | global max lowest wind   25.5
++ 21h Andes: max lowest-level wind   16.0 m/s (2nd-lowest  21.0, 5th  27.3) | max |h_bl|    85.4 K/day | max |du_bl|   425.8 m/s/day | H at windiest    39.9 | global max lowest wind   25.9
++ 24h Andes: max lowest-level wind   18.3 m/s (2nd-lowest  22.0, 5th  28.0) | max |h_bl|    84.8 K/day | max |du_bl|   365.9 m/s/day | H at windiest  -224.1 | global max lowest wind   26.3
++ 27h Andes: max lowest-level wind   19.5 m/s (2nd-lowest  23.5, 5th  29.8) | max |h_bl|    90.6 K/day | max |du_bl|   454.7 m/s/day | H at windiest  -226.2 | global max lowest wind   28.9
++ 30h Andes: max lowest-level wind   19.5 m/s (2nd-lowest  25.5, 5th  32.0) | max |h_bl|   113.1 K/day | max |du_bl|   557.0 m/s/day | H at windiest  -265.0 | global max lowest wind   28.8
++ 33h Andes: max lowest-level wind   19.1 m/s (2nd-lowest  26.1, 5th  33.3) | max |h_bl|   129.3 K/day | max |du_bl|   622.1 m/s/day | H at windiest  -277.8 | global max lowest wind   28.1
++ 36h Andes: max lowest-level wind   17.3 m/s (2nd-lowest  24.9, 5th  32.5) | max |h_bl|    95.3 K/day | max |du_bl|   652.7 m/s/day | H at windiest  -271.5 | global max lowest wind   27.7
++ 39h Andes: max lowest-level wind   16.2 m/s (2nd-lowest  23.0, 5th  30.2) | max |h_bl|   103.3 K/day | max |du_bl|   689.6 m/s/day | H at windiest   -89.2 | global max lowest wind   28.5
++ 42h Andes: max lowest-level wind   16.2 m/s (2nd-lowest  21.9, 5th  29.5) | max |h_bl|   107.7 K/day | max |du_bl|   588.6 m/s/day | H at windiest     3.7 | global max lowest wind   30.9
++ 45h Andes: max lowest-level wind   16.4 m/s (2nd-lowest  21.8, 5th  28.7) | max |h_bl|    97.4 K/day | max |du_bl|   467.2 m/s/day | H at windiest    90.9 | global max lowest wind   30.0
++ 48h Andes: max lowest-level wind   16.3 m/s (2nd-lowest  20.5, 5th  26.9) | max |h_bl|    86.7 K/day | max |du_bl|   516.5 m/s/day | H at windiest  -193.1 | global max lowest wind   29.8
