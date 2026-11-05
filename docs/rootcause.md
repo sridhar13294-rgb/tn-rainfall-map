@@ -700,3 +700,13 @@ Plan (each with an external reference, not ours): (1) dynamical core: (a) physic
 - => sh_depth is NOT adopted (pre-approval rule: any failed check). Remaining parts (exam = low-level T/q, z500;
   genesis; 24-start TN rain; evo) still run - they tell whether the tall-shallow fault drives P1/P4 even though the
   fix as coded hurts Nivar/tracks. Cloud-water stacking on sh_depth NOT started (its base failed).
+
+## 5 Nov 18:30 IST - P5 peer answers to the expert-question brief (AI peer, not a human expert) - checked
+Adopted (diagnostics, no model change): (1) residual motion V_storm - V_env (same storm removal for model and ERA5) as the
+beta-drift / vortex-interaction proxy; (2) steering by layer 850-700 / 850-500 / 850-200 and ring 200-600 vs 300-800 km
+vs the observed 6-h motion; (3) along-/cross-track split of quick6 errors (also NOAA practice, GFSv16 CCB); (4) PV maps at
+the trough; (5) lead-time decomposition 0 / 6-24 / 24-72 / 72-120 h (p5_bias already from day 0). Checked: geostrophic
+illustration correct (10 m / 1000 km at 15 N = 2.6 m/s); IMD official 72-h track error 2024 = 116 km, 2020-2024 mean
+154 km (RSMC New Delhi Annual Verification 2024) - official human forecasts with data assimilation, a reference only, not
+a Stage-1 gate (gate changes are Sridhar's decision). Priority agrees with ours: core wave test (tn-core-adiab running,
+J-W next) -> sigma / IFS Part III items D1/D2/D4 -> energy drift -> storm-removed steering -> drag offline only.
