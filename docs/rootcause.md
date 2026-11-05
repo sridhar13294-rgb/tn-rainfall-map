@@ -736,3 +736,18 @@ Offline confirmation (prediction +4.0 m written before): hour-0 z500 bias tropic
 REGISTERED (tn-s-rd-wx0..3, -sb, -q6 vs base1; same library): z500 day-1 global bias improves by >= +2.5 m and day-1
 RMSE by >= 1.0 m; z500 d5/d10 not worse than base1 + 0.5 m; tracks (quick6 72 h) and storm intensity (sb, 72 h pmin)
 within the round-off spread of base1 (6 % / 2 hPa). Pass -> adopt (it is a constant error, not a tuning).
+
+## 5 Nov 22:15 IST - rd_si ADOPTED (all registered checks pass) + physics-off core test complete
+rd_si (tn-s-rd-*, 73 starts, vs base1, same library): z500 day-1 global bias -13.74 -> -10.23 m (+3.51; registered
+>= +2.5) PASS; day-1 RMSE 20.02 -> 17.77 m (-2.25; >= 1.0) PASS; d5/d10 73.1/119.2 -> 71.6/117.8 (not worse +0.5) PASS;
+quick6 72 h 297.2 -> 303.1 km (+2.0 %; round-off 6 %) PASS; sb 72 h pmin Vardah 989.5 -> 990.5, Nivar 994.5 -> 993.8,
+Michaung 999.4 -> 999.9 (all within 2 hPa) PASS; steering -2.41 -> -2.28; stability 73/73. => ADOPTED (pre-approval).
+NEW BASE = base2 = control + cmt_mf + rd_si. All new candidates are tested on base2 and compared with a base2 control.
+Physics-off (tn-core-adiab1-0..3, 73 starts, default constants = no rd_si): day-1 z500 RMSE 22.37 m, bias -9.99 m
+(base1 20.02 / -13.74). Registered rule (16:45): >= 18 m -> core / initialisation / resolution is the main fast-error
+source -> TRIGGERED. Reading: bias-free error physics-off ~20.0 m vs base1 ~14.6 m (physics improves the pattern, as the
+real atmosphere has physics) -> the test bounds the core's share from above; the clean core checks are J-W and the
+Part III items. NEW LEAD: physics-off has NO radiation or condensation, yet z500 falls -10 m in 24 h (-5.5 m is the
+hour-0 constant offset, now fixed by rd_si) -> a further ~-4.5 m/day drop produced by the adiabatic core itself (an
+adiabatic core should not cool the column). Candidates: horizontal diffusion of T on sigma surfaces (Part III D1),
+DFI, moisture/virtual-T handling without physics. -> D1 offline test is now the top offline item.

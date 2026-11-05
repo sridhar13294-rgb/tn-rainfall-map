@@ -1,0 +1,61 @@
+{
+ "1 forecast z500 d5/d10": {
+  "cand": [
+   71.6,
+   117.8
+  ],
+  "ctl": [
+   73.1,
+   119.2
+  ],
+  "ok": true
+ },
+ "8a stability: exam starts complete": {
+  "cand": 73,
+  "failed": 0,
+  "ok": true
+ },
+ "7 steering Oct-Dec TN u850 d5 bias": {
+  "cand": -2.2770606426816866,
+  "ctl": -2.410167841934563,
+  "ok": true
+ },
+ "3 cyclone intensity vs ERA5 (+-5 hPa)": {
+  "cand": {
+   "Vardah": {
+    "pmin": 990.5,
+    "v850": 32.7,
+    "target_p": 995.2,
+    "target_v": 25.2
+   },
+   "Nivar": {
+    "pmin": 993.8,
+    "v850": 30.1,
+    "target_p": 994.1,
+    "target_v": 26.6
+   },
+   "Michaung": {
+    "pmin": 999.9,
+    "v850": 26.3,
+    "target_p": 992.0,
+    "target_v": 26.9
+   }
+  },
+  "ok": false
+ },
+ "4 tracks quick6 72 h (km), mean 72 h lat error": {
+  "cand": {
+   "24": 117.98830410927155,
+   "48": 246.16612134380543,
+   "72": 303.11717984520874
+  },
+  "ctl": {
+   "24": 116.6496581676762,
+   "48": 221.16097150380938,
+   "72": 297.20082170869057
+  },
+  "south": -1.0619999999999998,
+  "ok": false
+ },
+ "baseline": "base1"
+}

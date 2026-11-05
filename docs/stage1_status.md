@@ -1,5 +1,5 @@
 # Stage 1 status table (kept current every cycle; Sridhar 4 Nov 23:17: "Keep on updating this table")
-Last update: 5 Nov 19:55 IST. Target: 15 Nov (Sridhar 5 Nov 18:57). Stage 3 paused until Stage 1 is done.
+Last update: 5 Nov 22:15 IST. Target 15 Nov no longer reachable (GPU: own account + partner account only); realistic ~2 weeks. Stage 3 paused until Stage 1 is done.
 
 | Item | Stage | Where it stands |
 |---|---|---|
@@ -9,7 +9,7 @@ Last update: 5 Nov 19:55 IST. Target: 15 Nov (Sridhar 5 Nov 18:57). Stage 3 paus
 | P1, warm/dry low levels | Tall-shallow cause confirmed; fix as coded over-corrects | sh_depth: 925/1000 hPa fixed (-0.79 / -0.01 K vs +2.47 / +2.74) BUT 850 hPa -2.26 K (gate +-1.5), q850 +0.67 (gate +-0.5), Nivar 3.4 hPa weaker, tracks +10 % -> NOT adopted. The tall-shallow heating was holding 850 hPa up: the heating it supplied is needed, but from the right process. |
 | Tracks (new check, Sridhar 19:05) | Main open item | Pass = track TREND matches (12-h headings within 30 deg, every real turn reproduced within +-12 h, no false turns; 5 of 6 storms) AND 72-h mean error <= 200 km (now 297). Recurving storms (Hamoon, Sidr, Nivar) go W/SW -> fails the trend part too until P5 is fixed. |
 | P5, large-scale steering | Diagnosing | Michaung: ERA5 trough moves 63 -> 76.5 E, model trough parked at 71-72 E. IFS Part III review: 3 core differences over the Himalaya (T smoothing on sloping levels, no orographic T reference in transport, pure sigma levels) - offline test D1 next. Bias-map and case jobs collected, analysis next cycle. |
-| Core / day-1 error | NEW ROOT CAUSE found | Day-1 z500 error 20.4 m = global bias -13.8 m + ~15 m random. Part of the bias exists at hour 0 (-5.5 m everywhere): Dinosaur's gas constant 286.86 vs 287.04 (thicknesses 0.07 % short). Fix rd_si offline: hour-0 offset -5.5 -> -2.0 m (predicted +4.0, measured +3.7). Full suite queued (tn-s-rd-*). Physics-off test: 24.9 / 24.6 m on 2 starts (OOM; 4-chunk rerun queued). |
+| Core / day-1 error | Gas-constant fix ADOPTED (base2) | Day-1 z500 error 20.4 m = global bias -13.8 m + ~15 m random. Part of the bias exists at hour 0 (-5.5 m everywhere): Dinosaur's gas constant 286.86 vs 287.04 (thicknesses 0.07 % short). Fix rd_si offline: hour-0 offset -5.5 -> -2.0 m (predicted +4.0, measured +3.7). Full suite: day-1 z500 20.0 -> 17.8 m, d5 73.1 -> 71.6, d10 119.2 -> 117.8; tracks/intensity unchanged within round-off -> ADOPTED. Physics-off (73 starts): 22.4 m, bias -10 m -> rule says core/initialisation first; lead: the core alone lowers z500 ~4.5 m/day with no physics (T smoothing on sloping levels suspected, IFS Part III D1). |
 | Your F2 condition (6 items) | Item 1 rejected | Item 5 (BL formula alone) after. |
 | Global health (rain, OLR, drift) | Diagnosing | Atmosphere cools ~20 W/m2; day-1 drift -7 m (tropics) / -14 m (globe) on top of the hour-0 offset. |
 | GPU pipeline | Fixed 5 Nov 18:00 | Push-only launches + collector; GitHub's 20-runner cap removed; duplicate-launch bug fixed. |
