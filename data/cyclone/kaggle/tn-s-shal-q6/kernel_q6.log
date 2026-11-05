@@ -1,0 +1,58 @@
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda13.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda13/__init__.py", line 384, in initialize
+    xla_client.register_custom_call_handler(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        "CUDA",
+        ^^^^^^^
+    ...<2 lines>...
+        ),
+        ^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 459, in register_custom_call_handler
+    handler(name, fn, xla_platform_name, api_version, traits)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: INVALID_ARGUMENT: XLA FFI handler registration for cudnn_rnn_ffi on platform CUDA (canonical cuda) failed because the handler's API version (0.5) is incompatible with the framework's API version (0.4). Minimum supported API version is (0.1).
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda12.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda12/__init__.py", line 372, in initialize
+    c_api = xb.register_plugin(
+        'cuda', priority=500, library_path=str(path), options=options
+    )
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 662, in register_plugin
+    c_api = xla_client.load_pjrt_plugin_dynamically(plugin_name, library_path)
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 115, in load_pjrt_plugin_dynamically
+    return _xla.load_pjrt_plugin(plugin_name, library_path, c_api=None)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: ALREADY_EXISTS: PJRT_Api already exists for device type cuda
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+built 12
+dfi done 40
+Sidr 2007 T170_shal sec 171 [(0, 9.67, 92.99, 23.4, 1004.5, 16.4, 3), (24, 9.83, 91.61, 19.8, 1003.4, 14.8, 3), (48, 10.92, 90.68, 23.2, 1000.0, 15.6, 5), (72, 11.69, 90.16, 23.3, 996.7, 15.7, 3)]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+built 5
+dfi done 9
+Giri 2010 T170_shal sec 104 [(0, 16.92, 92.3, 22.8, 1004.6, 16.0, 3), (24, 17.66, 91.87, 21.8, 1002.6, 13.8, 3), (48, 18.26, 90.37, 21.8, 1001.4, 13.7, 3), (72, 18.32, 88.22, 21.7, 1002.2, 9.9, 3)]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+built 5
+dfi done 9
+Phailin 2013 T170_shal sec 104 [(0, 11.9, 97.55, 29.3, 1004.7, 16.8, 3), (24, 12.26, 97.31, 24.8, 1005.4, 13.7, 3), (48, 13.67, 95.33, 24.2, 1002.0, 12.1, 5), (72, 13.94, 94.28, 26.3, 1001.4, 18.0, 4)]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+built 5
+dfi done 9
+Titli 2018 T170_shal sec 104 [(0, 13.69, 88.23, 26.8, 1004.6, 15.4, 4), (24, 15.54, 86.43, 22.0, 1002.8, 14.8, 4), (48, 15.65, 85.49, 29.3, 996.8, 19.0, 3), (72, 18.03, 84.76, 39.4, 993.5, 22.7, 3)]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+built 5
+dfi done 9
+Nivar 2020 T170_shal sec 104 [(0, 8.01, 85.58, 24.4, 1008.3, 16.0, 5), (24, 8.83, 84.67, 23.6, 1007.7, 14.6, 5), (48, 8.69, 81.83, 27.3, 1002.4, 22.2, 3), (72, 9.65, 81.11, 33.2, 996.3, 28.3, 3)]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+built 6
+dfi done 34
+Hamoon 2023 T170_shal sec 166 [(0, 14.18, 86.56, 24.8, 1009.0, 14.5, 5), (24, 13.97, 85.79, 22.7, 1007.1, 15.9, 3), (48, 14.91, 85.52, 26.7, 1002.2, 19.0, 3), (72, 16.26, 85.99, 32.3, 998.7, 22.9, 3)]
