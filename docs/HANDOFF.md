@@ -562,3 +562,7 @@ Condition set by Sridhar: every disadvantage of dropping F2 must be addressed be
   concurrent runners and each launch used to hold one for up to 9 h (the real cap, below Kaggle's 28 sessions).
 - 5 Nov 18:05: repo is PUBLIC (gh api .private = false) - told Sridhar; Kaggle usernames had leaked into 10 push.txt
   (scrubbed; history keeps them). Push-only exit now sanitises before committing.
+- 5 Nov 18:31 IST Sridhar: "Start stage 3 in parallel". Stage 1 keeps priority (time + GPUs). Spec draft
+  docs/regional_spec.md (for approval: formulation, domains, accounts 15-18). Steps 1-3 (2-D dry core tests locally, 3-D dry
+  terrain/mountain-wave tests, boundary test) do not depend on Stage 1 and start in free cycle time. Status table gets a
+  Stage 3 section.
