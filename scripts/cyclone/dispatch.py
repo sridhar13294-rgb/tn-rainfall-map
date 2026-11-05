@@ -25,11 +25,12 @@ while True:
     d = json.load(open(DONE)) if os.path.exists(DONE) else []; keep = []; back = []
     for j in d:
         st = f"data/cyclone/kaggle/{j['slug']}/status.txt"; last = open(st).read().strip().split('\n')[-1] if os.path.exists(st) else ''
-        if 'push refused' in last and j['slug'] not in {x['slug'] for x in q}:
+        fresh = j.get('at') and time.time() - time.mktime(time.strptime(j['at'], '%Y-%m-%dT%H:%MZ')) + time.timezone < 1500
+        if 'push refused' in last and not fresh and j['slug'] not in {x['slug'] for x in q}:
             back.append({k: v for k, v in j.items() if k not in ('account', 'at')}); print('re-queued (refused):', j['slug'], flush=True)
         else: keep.append(j)
-    if back:
-        q = back + q; json.dump(q, open(Q, 'w'), indent=1); json.dump(keep, open(DONE, 'w'), indent=1)
+    if back: q = back + q                                                       # in memory only: files are written + committed at the end
+    refused = {j['slug'] for j in back}
     if not q: print('queue empty'); break
     busy = running(); left = []
     for j in q:
@@ -45,7 +46,10 @@ while True:
         else: left.append(j)
     launched = {j['slug'] for j in q} - {j['slug'] for j in left}
     sh('git pull -q --rebase origin cases')                                      # merge: entries added meanwhile are kept
-    cur = json.load(open(Q)) if os.path.exists(Q) else []; left = [j for j in cur if j['slug'] not in launched]
+    cur = json.load(open(Q)) if os.path.exists(Q) else []
+    left = [j for j in back + cur if j['slug'] not in launched]; left = list({j['slug']: j for j in left}.values())
+    if back:                                                                    # drop the refused entries from the done list
+        dd = json.load(open(DONE)) if os.path.exists(DONE) else []; json.dump([j for j in dd if j['slug'] not in refused or j['slug'] in launched], open(DONE, 'w'), indent=1)
     json.dump(left, open(Q, 'w'), indent=1)
     sh(f"git add {Q} {DONE}; git commit -qm 'Queue: {len(launched)} launched, {len(left)} waiting' ; git pull -q --rebase origin cases; git push -q origin cases")
     print(len(left), 'waiting', flush=True)
