@@ -1,5 +1,23 @@
 [
  {
+  "slug": "tn-s-shd-wx0",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/suite_shd_wx.json 0 4 /kaggle/working/wx_0.json > /kaggle/working/wx_0.log 2>&1; tail -3 /kaggle/working/wx_0.log",
+  "note": "sshd"
+ },
+ {
+  "slug": "tn-s-shd-gen1",
+  "inputs": "libm48_fields.npz",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/suite_shd_gen.json 1 2 /kaggle/working/gen_1.json > /kaggle/working/gen_1.log 2>&1; tail -3 /kaggle/working/gen_1.log",
+  "note": "sshd"
+ },
+ {
+  "slug": "tn-s-shd-evo",
+  "inputs": "libm_wx2020_fields.npz",
+  "cmd": "cd . && XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 6 '{\"shd\": {\"cmt_mf\": 1.0, \"sh_depth\": 1.0, \"grid\": \"T170\", \"_budget\": true, \"_win\": [[0, 24], [48, 72], [96, 120]]}}' > /kaggle/working/prof.log 2>&1; tail -40 /kaggle/working/prof.log",
+  "note": "sshd"
+ },
+ {
   "slug": "tn-core-adiab0",
   "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
   "note": "core",
