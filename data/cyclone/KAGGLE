@@ -1,6 +1,6 @@
-tn-s-cnt-wx3
-libm_wx2020_fields.npz,wx_truth_2020.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/suite_cnt_wx.json 3 4 /kaggle/working/wx_3.json > /kaggle/working/wx_3.log 2>&1; tail -3 /kaggle/working/wx_3.log
+tn-s-cnt-gen0
+libm48_fields.npz
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/suite_cnt_gen.json 0 2 /kaggle/working/gen_0.json > /kaggle/working/gen_0.log 2>&1; tail -3 /kaggle/working/gen_0.log
 NvidiaTeslaT4
-8
-#scnt 2026-11-05T06:49Z
+10
+#scnt 2026-11-05T06:50Z
