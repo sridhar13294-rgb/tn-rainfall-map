@@ -115,7 +115,14 @@ class Model:
         self.S = dict(DEFAULTS); self.S.update(set_ or {})
         if dt_min is None or (dt_min > DT_MAX.get(grid, 15.0)): dt_min = DT_MAX.get(grid, 15.0)   # longest stable step per grid (Kaggle benchmark: T119 blew up at 30 min)
         self.coords = coordinate_systems.CoordinateSystem((spherical_harmonic.Grid.construct(max_wavenumber=255, gaussian_nodes=192) if grid == 'T255' else getattr(spherical_harmonic.Grid, grid)()), sigma_coordinates.SigmaCoordinates(sigma_bounds(layers)))
-        self.ps = primitive_equations.PrimitiveEquationsSpecs.from_si(); nd = self.ps.nondimensionalize
+        # rd_si > 0 (5 Nov 19:40): Dinosaur's default dry-air gas constant is cp*kappa = 1004*2/7 = 286.86 J/kg/K, while ERA5/IFS
+        # use 287.06 and MEGAM's own physics RD = 287.04, CP = 1004.6 -> every hydrostatic thickness 0.07 % short (z500 -4 m from
+        # hour 0) and dynamics/physics constants inconsistent. rd_si sets the dynamics to the physics values (off by default).
+        if self.S.get('rd_si', 0) > 0:
+            self.ps = primitive_equations.PrimitiveEquationsSpecs.from_si(ideal_gas_constant_si=RD * units.J / units.kilogram / units.degK, kappa_si=(RD / CP) * units.dimensionless)
+        else:
+            self.ps = primitive_equations.PrimitiveEquationsSpecs.from_si()
+        nd = self.ps.nondimensionalize
         self.K, self.SEC, self.MPS, self.PA, self.M = [float(nd(1 * u)) for u in (units.degK, units.s, units.m / units.s, units.pascal, units.m)]
         self.dt_s = dt_min * 60.0; self.dt = nd(dt_min * units.minute)
         lon, sinlat = self.coords.horizontal.nodal_axes; self.lon = np.degrees(lon); self.lat = np.degrees(np.arcsin(sinlat))

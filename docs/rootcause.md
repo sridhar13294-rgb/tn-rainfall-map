@@ -724,3 +724,15 @@ J-W next) -> sigma / IFS Part III items D1/D2/D4 -> energy drift -> storm-remove
   virtual-temperature or level-interpolation handling - to derive, offline at T42 first); (b) day-1 column cooling drift
   (-7 m tropics, -14 m global; links to the -20 W/m2 energy imbalance and P1); (c) bias-free error ~15 m (initial state at
   T170, resolution, physics, core).
+
+## 5 Nov 19:45 IST - ROOT CAUSE of the constant hour-0 z500 offset: wrong dry-air gas constant in the dynamics
+5-Why: hour-0 z500 -5.5 m everywhere (T42 local, 2 starts; T170 tropics -5.0 in 8/8 starts) -> not weather (uniform in
+latitude, with/without DFI, t850 h0 ~0) -> diagnosis/hydrostatics -> geopotential integral exact for isothermal test
+(0.00 m) -> constants: Dinosaur scales.py IDEAL_GAS_CONSTANT = 1004 x 2/7 = 286.86 J/kg/K vs ERA5/IFS 287.06 and MEGAM
+physics RD 287.04 / CP 1004.6 -> every thickness 0.07 % short -> z500 -4.0 m (and dynamics vs physics constants
+inconsistent). Fix: option rd_si (dynamics built with RD, kappa = RD/CP; default off; control regression bit-identical).
+Offline confirmation (prediction +4.0 m written before): hour-0 z500 bias tropics -5.51/-5.18 -> -1.85/-1.53 m, globe
+-5.8/-5.5 -> -2.3/-2.0 m. Residual -2 m (S mid-latitudes -4 m) = other initialisation detail, open.
+REGISTERED (tn-s-rd-wx0..3, -sb, -q6 vs base1; same library): z500 day-1 global bias improves by >= +2.5 m and day-1
+RMSE by >= 1.0 m; z500 d5/d10 not worse than base1 + 0.5 m; tracks (quick6 72 h) and storm intensity (sb, 72 h pmin)
+within the round-off spread of base1 (6 % / 2 hPa). Pass -> adopt (it is a constant error, not a tuning).
