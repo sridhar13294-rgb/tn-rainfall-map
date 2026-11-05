@@ -1,0 +1,51 @@
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda13.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda13/__init__.py", line 373, in initialize
+    c_api = xb.register_plugin(
+        'cuda', priority=500, library_path=str(path), options=options
+    )
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 662, in register_plugin
+    c_api = xla_client.load_pjrt_plugin_dynamically(plugin_name, library_path)
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 115, in load_pjrt_plugin_dynamically
+    return _xla.load_pjrt_plugin(plugin_name, library_path, c_api=None)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: ALREADY_EXISTS: PJRT_Api already exists for device type cuda
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-01-16 T170_evap sec 387 z500 rmse d1/d5/d10 [20.8, 72.0, 117.9]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-02-05 T170_evap sec 330 z500 rmse d1/d5/d10 [20.6, 70.2, 112.5]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-02-25 T170_evap sec 330 z500 rmse d1/d5/d10 [18.4, 71.6, 110.2]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-03-16 T170_evap sec 330 z500 rmse d1/d5/d10 [20.0, 76.2, 116.6]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-04-05 T170_evap sec 329 z500 rmse d1/d5/d10 [20.3, 75.9, 122.0]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-04-25 T170_evap sec 330 z500 rmse d1/d5/d10 [18.9, 65.1, 107.6]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-05-15 T170_evap sec 329 z500 rmse d1/d5/d10 [20.3, 72.3, 122.9]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-06-04 T170_evap sec 330 z500 rmse d1/d5/d10 [22.6, 71.9, 112.5]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-06-24 T170_evap sec 329 z500 rmse d1/d5/d10 [21.3, 79.3, 135.2]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-07-14 T170_evap sec 330 z500 rmse d1/d5/d10 [22.3, 76.3, 128.4]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-08-03 T170_evap sec 329 z500 rmse d1/d5/d10 [20.8, 77.3, 115.5]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-08-23 T170_evap sec 330 z500 rmse d1/d5/d10 [23.1, 77.9, 128.2]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-09-12 T170_evap sec 330 z500 rmse d1/d5/d10 [21.3, 91.5, 114.4]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-10-02 T170_evap sec 330 z500 rmse d1/d5/d10 [21.1, 85.7, 134.7]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-10-22 T170_evap sec 329 z500 rmse d1/d5/d10 [19.9, 82.8, 135.1]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-11-11 T170_evap sec 330 z500 rmse d1/d5/d10 [19.3, 69.3, 115.3]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-12-01 T170_evap sec 330 z500 rmse d1/d5/d10 [21.5, 76.0, 97.5]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-12-21 T170_evap sec 330 z500 rmse d1/d5/d10 [18.7, 63.6, 113.5]
