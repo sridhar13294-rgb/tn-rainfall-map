@@ -1,6 +1,6 @@
-tn-core-adiab2
+tn-p5-b1-ond
 libm_wx2020_fields.npz,wx_truth_2020.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/wx_adiab.json 2 4 /kaggle/working/wx_2.json > /kaggle/working/wx_2.log 2>&1; tail -3 /kaggle/working/wx_2.log
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore p5_bias.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz /kaggle/working/p5.json 2020-10-02,2020-10-07,2020-10-12,2020-10-17,2020-10-22,2020-10-27,2020-11-01,2020-11-06,2020-11-11,2020-11-16,2020-11-21,2020-11-26,2020-12-01,2020-12-06,2020-12-11,2020-12-16,2020-12-21,2020-12-26 '{"cmt_mf": 1.0, "grid": "T170"}' > /kaggle/working/p5.log 2>&1; tail -5 /kaggle/working/p5.log
 NvidiaTeslaT4
-2
-#core 2026-11-05T12:31Z
+10
+#p5 2026-11-05T12:31Z
