@@ -1,0 +1,73 @@
+name: Cyclone study - account check
+# 5 Nov 20:15: which accounts authenticate, and whose they are. Result encrypted with data/cyclone/acct_check_pub.pem
+# (private key only on Claude's machine) because the repo is public; nothing readable is committed or logged.
+on:
+  push:
+    branches: [cases]
+    paths: ['data/cyclone/ACCT_CHECK']
+permissions:
+  contents: write
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install -q -U kaggle six
+      - env:
+          U1: ${{ secrets.KAGGLE_USERNAME }}
+          T1: ${{ secrets.KAGGLE_API_TOKEN }}
+          U2: ${{ secrets.KAGGLE2_USERNAME }}
+          T2: ${{ secrets.KAGGLE2_API_TOKEN }}
+          U3: ${{ secrets.KAGGLE3_USERNAME }}
+          T3: ${{ secrets.KAGGLE3_API_TOKEN }}
+          U4: ${{ secrets.KAGGLE4_USERNAME }}
+          T4: ${{ secrets.KAGGLE4_API_TOKEN }}
+          U5: ${{ secrets.KAGGLE5_USERNAME }}
+          T5: ${{ secrets.KAGGLE5_API_TOKEN }}
+          U6: ${{ secrets.KAGGLE6_USERNAME }}
+          T6: ${{ secrets.KAGGLE6_API_TOKEN }}
+          U7: ${{ secrets.KAGGLE7_USERNAME }}
+          T7: ${{ secrets.KAGGLE7_API_TOKEN }}
+          U8: ${{ secrets.KAGGLE8_USERNAME }}
+          T8: ${{ secrets.KAGGLE8_API_TOKEN }}
+          U9: ${{ secrets.KAGGLE9_USERNAME }}
+          T9: ${{ secrets.KAGGLE9_API_TOKEN }}
+          U10: ${{ secrets.KAGGLE10_USERNAME }}
+          T10: ${{ secrets.KAGGLE10_API_TOKEN }}
+          U11: ${{ secrets.KAGGLE11_USERNAME }}
+          T11: ${{ secrets.KAGGLE11_API_TOKEN }}
+          U12: ${{ secrets.KAGGLE12_USERNAME }}
+          T12: ${{ secrets.KAGGLE12_API_TOKEN }}
+          U13: ${{ secrets.KAGGLE13_USERNAME }}
+          T13: ${{ secrets.KAGGLE13_API_TOKEN }}
+          U14: ${{ secrets.KAGGLE14_USERNAME }}
+          T14: ${{ secrets.KAGGLE14_API_TOKEN }}
+          U15: ${{ secrets.KAGGLE15_USERNAME }}
+          T15: ${{ secrets.KAGGLE15_API_TOKEN }}
+          U16: ${{ secrets.KAGGLE16_USERNAME }}
+          T16: ${{ secrets.KAGGLE16_API_TOKEN }}
+          U17: ${{ secrets.KAGGLE17_USERNAME }}
+          T17: ${{ secrets.KAGGLE17_API_TOKEN }}
+          U18: ${{ secrets.KAGGLE18_USERNAME }}
+          T18: ${{ secrets.KAGGLE18_API_TOKEN }}
+          U19: ${{ secrets.KAGGLE19_USERNAME }}
+          T19: ${{ secrets.KAGGLE19_API_TOKEN }}
+          U20: ${{ secrets.KAGGLE20_USERNAME }}
+          T20: ${{ secrets.KAGGLE20_API_TOKEN }}
+        run: |
+          for i in $(seq 1 20); do eval "v=\$T$i"; [ -n "$v" ] && echo "::add-mask::$v"; done
+          : > /tmp/r.txt
+          for i in $(seq 1 18); do eval "u=\$U$i; t=\$T$i"; [ -z "$u" ] && continue
+            H=/tmp/h$i; mkdir -p $H
+            out=$(HOME=$H KAGGLE_CONFIG_DIR=$H/.kaggle KAGGLE_USERNAME=$u KAGGLE_KEY=$t KAGGLE_API_TOKEN=$t kaggle kernels list --mine --page-size 1 2>&1 | tail -1 | cut -c1-80)
+            case "$out" in *uthenticat*|*401*|*403*|*denied*|*rror*) st=FAIL;; *) st=OK;; esac
+            echo "$i $u $st | $out" >> /tmp/r.txt; done
+          openssl rand -hex 32 > /tmp/k; openssl enc -aes-256-cbc -pbkdf2 -pass file:/tmp/k -in /tmp/r.txt -out data/cyclone/acct_check.enc
+          openssl pkeyutl -encrypt -pubin -inkey data/cyclone/acct_check_pub.pem -pkeyopt rsa_padding_mode:oaep -in /tmp/k -out data/cyclone/acct_check.key.enc
+          shred -u /tmp/r.txt /tmp/k
+          git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add data/cyclone/acct_check.enc data/cyclone/acct_check.key.enc; git commit -qm "Account check (encrypted)" || exit 0
+          for i in 1 2 3 4 5 6; do git pull -q --rebase origin cases && git push -q origin HEAD:cases && break; sleep 15; done
