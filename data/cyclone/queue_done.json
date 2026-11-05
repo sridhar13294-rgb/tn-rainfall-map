@@ -70,5 +70,13 @@
   "note": "sshal",
   "account": "12",
   "at": "2026-11-05T03:55Z"
+ },
+ {
+  "slug": "tn-s-shal-sb",
+  "inputs": "libm_fields.npz",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/suite_shal_sb.json /kaggle/working/sb.json > /kaggle/working/sb.log 2>&1; tail -20 /kaggle/working/sb.log",
+  "note": "sshal",
+  "account": "12",
+  "at": "2026-11-05T04:15Z"
  }
 ]
