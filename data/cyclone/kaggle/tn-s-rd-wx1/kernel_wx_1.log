@@ -1,0 +1,70 @@
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda13.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda13/__init__.py", line 384, in initialize
+    xla_client.register_custom_call_handler(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        "CUDA",
+        ^^^^^^^
+    ...<2 lines>...
+        ),
+        ^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 459, in register_custom_call_handler
+    handler(name, fn, xla_platform_name, api_version, traits)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: INVALID_ARGUMENT: XLA FFI handler registration for cudnn_rnn_ffi on platform CUDA (canonical cuda) failed because the handler's API version (0.5) is incompatible with the framework's API version (0.4). Minimum supported API version is (0.1).
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda12.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda12/__init__.py", line 372, in initialize
+    c_api = xb.register_plugin(
+        'cuda', priority=500, library_path=str(path), options=options
+    )
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 662, in register_plugin
+    c_api = xla_client.load_pjrt_plugin_dynamically(plugin_name, library_path)
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 115, in load_pjrt_plugin_dynamically
+    return _xla.load_pjrt_plugin(plugin_name, library_path, c_api=None)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: ALREADY_EXISTS: PJRT_Api already exists for device type cuda
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-01-06 T170_rd sec 391 z500 rmse d1/d5/d10 [17.8, 64.2, 105.9]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-01-26 T170_rd sec 317 z500 rmse d1/d5/d10 [17.3, 66.4, 113.6]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-02-15 T170_rd sec 317 z500 rmse d1/d5/d10 [17.5, 63.8, 108.6]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-03-06 T170_rd sec 317 z500 rmse d1/d5/d10 [17.4, 71.6, 133.3]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-03-26 T170_rd sec 317 z500 rmse d1/d5/d10 [16.1, 77.9, 114.4]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-04-15 T170_rd sec 317 z500 rmse d1/d5/d10 [16.0, 62.0, 117.7]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-05-05 T170_rd sec 317 z500 rmse d1/d5/d10 [17.0, 74.5, 122.2]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-05-25 T170_rd sec 315 z500 rmse d1/d5/d10 [17.7, 66.5, 122.7]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-06-14 T170_rd sec 317 z500 rmse d1/d5/d10 [19.9, 65.7, 122.9]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-07-04 T170_rd sec 317 z500 rmse d1/d5/d10 [19.4, 78.3, 114.2]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-07-24 T170_rd sec 317 z500 rmse d1/d5/d10 [19.2, 75.6, 124.4]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-08-13 T170_rd sec 318 z500 rmse d1/d5/d10 [18.8, 81.7, 129.3]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-09-02 T170_rd sec 317 z500 rmse d1/d5/d10 [17.4, 65.9, 107.2]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-09-22 T170_rd sec 315 z500 rmse d1/d5/d10 [17.3, 77.7, 141.4]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-10-12 T170_rd sec 317 z500 rmse d1/d5/d10 [17.8, 74.5, 110.9]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-11-01 T170_rd sec 315 z500 rmse d1/d5/d10 [18.0, 64.3, 105.9]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-11-21 T170_rd sec 317 z500 rmse d1/d5/d10 [17.1, 70.3, 94.4]
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+2020-12-11 T170_rd sec 317 z500 rmse d1/d5/d10 [16.9, 61.7, 97.7]

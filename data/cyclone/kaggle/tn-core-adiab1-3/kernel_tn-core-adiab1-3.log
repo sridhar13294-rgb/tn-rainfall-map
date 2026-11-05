@@ -1,0 +1,104 @@
+[{"stream_name":"stdout","time":1.091362434,"data":"+ nvidia-smi || true\n"}
+,{"stream_name":"stdout","time":1.124202574,"data":"Thu Nov  5 14:06:19 2026       \n"}
+,{"stream_name":"stdout","time":1.124226233,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.124232238,"data":"| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":1.124237192,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.124241936,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":1.124246612,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":1.124251138,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":1.124255998,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":1.18032194,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":1.180348036,"data":"| N/A   50C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":1.180354122,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":1.180358747,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.180363379,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":1.180367628,"data":"| N/A   53C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":1.180371716,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":1.180375802,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.180907748,"data":"\n"}
+,{"stream_name":"stdout","time":1.180918898,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.180923613,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":1.180927697,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":1.180932089,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":1.180941563,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":1.182586761,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":1.182603058,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.504697058,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1.507257123,"data":"accelerator asked NvidiaTeslaT4 -\u003e jax for cuda12\n"}
+,{"stream_name":"stdout","time":1.507273698,"data":"+ pip install -q -U \"jax[cuda12]\"\n"}
+,{"stream_name":"stderr","time":64.903512281,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":64.903546013,"data":"bigframes 2.51.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":64.903553186,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stderr","time":64.903563664,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":64.903567445,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":64.903570874,"data":"ydf 0.15.0 requires protobuf\u003c7.0.0,\u003e=5.29.1, but you have protobuf 7.36.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":64.903574279,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stderr","time":64.903577879,"data":"gradio 6.30.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
+,{"stream_name":"stdout","time":65.195688434,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":65.195743191,"data":"+ free -g; nproc; python -c \"import jax; print(jax.devices())\" || true\n"}
+,{"stream_name":"stdout","time":65.216675477,"data":"               total        used        free      shared  buff/cache   available\n"}
+,{"stream_name":"stdout","time":65.216704882,"data":"Mem:              31           1          22           0           8          30\n"}
+,{"stream_name":"stdout","time":65.216710951,"data":"Swap:              0           0           0\n"}
+,{"stream_name":"stdout","time":65.220731417,"data":"4\n"}
+,{"stream_name":"stderr","time":65.474452844,"data":"/usr/local/lib/python3.13/dist-packages/jaxlib/plugin_support.py:99: RuntimeWarning: JAX plugin jax_cuda13_plugin version 0.11.1 is installed, but it is not compatible with the installed jaxlib version 0.12.0.1, so it will not be used.\n"}
+,{"stream_name":"stderr","time":65.47451086,"data":"  warnings.warn(\n"}
+,{"stream_name":"stderr","time":84.519184485,"data":"Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda13.initialize()\n"}
+,{"stream_name":"stderr","time":84.519220652,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stderr","time":84.519227089,"data":"  File \"/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py\", line 520, in discover_pjrt_plugins\n"}
+,{"stream_name":"stderr","time":84.519232852,"data":"    plugin_module.initialize()\n"}
+,{"stream_name":"stderr","time":84.519237876,"data":"    ~~~~~~~~~~~~~~~~~~~~~~~~^^\n"}
+,{"stream_name":"stderr","time":84.519242747,"data":"  File \"/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda13/__init__.py\", line 384, in initialize\n"}
+,{"stream_name":"stderr","time":84.519248327,"data":"    xla_client.register_custom_call_handler(\n"}
+,{"stream_name":"stderr","time":84.519253244,"data":"    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^\n"}
+,{"stream_name":"stderr","time":84.519258787,"data":"        \"CUDA\",\n"}
+,{"stream_name":"stderr","time":84.519264812,"data":"        ^^^^^^^\n"}
+,{"stream_name":"stderr","time":84.519269809,"data":"    ...\u003c2 lines\u003e...\n"}
+,{"stream_name":"stderr","time":84.519275159,"data":"        ),\n"}
+,{"stream_name":"stderr","time":84.519279984,"data":"        ^^\n"}
+,{"stream_name":"stderr","time":84.519285144,"data":"    )\n"}
+,{"stream_name":"stderr","time":84.519313893,"data":"    ^\n"}
+,{"stream_name":"stderr","time":84.519319556,"data":"  File \"/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py\", line 459, in register_custom_call_handler\n"}
+,{"stream_name":"stderr","time":84.519324683,"data":"    handler(name, fn, xla_platform_name, api_version, traits)\n"}
+,{"stream_name":"stderr","time":84.519329028,"data":"    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":84.51933407,"data":"RuntimeError: INVALID_ARGUMENT: XLA FFI handler registration for cudnn_rnn_ffi on platform CUDA (canonical cuda) failed because the handler's API version (0.5) is incompatible with the framework's API version (0.4). Minimum supported API version is (0.1).\n"}
+,{"stream_name":"stderr","time":84.544229839,"data":"Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda12.initialize()\n"}
+,{"stream_name":"stderr","time":84.544256614,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stderr","time":84.544261637,"data":"  File \"/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py\", line 520, in discover_pjrt_plugins\n"}
+,{"stream_name":"stderr","time":84.544266627,"data":"    plugin_module.initialize()\n"}
+,{"stream_name":"stderr","time":84.544270365,"data":"    ~~~~~~~~~~~~~~~~~~~~~~~~^^\n"}
+,{"stream_name":"stderr","time":84.544273902,"data":"  File \"/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda12/__init__.py\", line 372, in initialize\n"}
+,{"stream_name":"stderr","time":84.544277676,"data":"    c_api = xb.register_plugin(\n"}
+,{"stream_name":"stderr","time":84.544281329,"data":"        'cuda', priority=500, library_path=str(path), options=options\n"}
+,{"stream_name":"stderr","time":84.54428527,"data":"    )\n"}
+,{"stream_name":"stderr","time":84.544289573,"data":"  File \"/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py\", line 662, in register_plugin\n"}
+,{"stream_name":"stderr","time":84.544294465,"data":"    c_api = xla_client.load_pjrt_plugin_dynamically(plugin_name, library_path)\n"}
+,{"stream_name":"stderr","time":84.544299602,"data":"  File \"/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py\", line 115, in load_pjrt_plugin_dynamically\n"}
+,{"stream_name":"stderr","time":84.544304922,"data":"    return _xla.load_pjrt_plugin(plugin_name, library_path, c_api=None)\n"}
+,{"stream_name":"stderr","time":84.54430962,"data":"           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":84.544314236,"data":"jax.errors.JaxRuntimeError: ALREADY_EXISTS: PJRT_Api already exists for device type cuda\n"}
+,{"stream_name":"stdout","time":84.994851023,"data":"[CudaDevice(id=0), CudaDevice(id=1)]\n"}
+,{"stream_name":"stdout","time":90.702470734,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":90.702507802,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
+,{"stream_name":"stdout","time":102.34797189,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":102.348015615,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
+,{"stream_name":"stdout","time":126.739406465,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":126.739458587,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o libm_wx2020_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020_fields.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" libm_wx2020_fields.npz || { echo BAD_DOWNLOAD libm_wx2020_fields.npz; rm -f libm_wx2020_fields.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o libm_wx2020_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020_fields.npz; }\n"}
+,{"stream_name":"stdout","time":252.349511196,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":252.349562599,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o wx_truth_2020.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/wx_truth_2020.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" wx_truth_2020.npz || { echo BAD_DOWNLOAD wx_truth_2020.npz; rm -f wx_truth_2020.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o wx_truth_2020.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/wx_truth_2020.npz; }\n"}
+,{"stream_name":"stdout","time":287.83922297,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":287.839260145,"data":"setup s 287\n"}
+,{"stream_name":"stdout","time":287.839270762,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/wx_adiab1.json 3 4 /kaggle/working/wx_3.json \u003e /kaggle/working/wx_3.log 2\u003e\u00261; tail -3 /kaggle/working/wx_3.log 2\u003e\u00261 | tee job.log\n"}
+,{"stream_name":"stdout","time":1870.595472946,"data":"2020-12-01 T170_adiab sec 84 z500 rmse d1/d5/d10 [25.0, -1, -1]\n"}
+,{"stream_name":"stdout","time":1870.595518291,"data":"WARNING landinit: no soil water, soil temperature, skin temperature in the start file -\u003e land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)\n"}
+,{"stream_name":"stdout","time":1870.59553874,"data":"2020-12-21 T170_adiab sec 84 z500 rmse d1/d5/d10 [19.8, -1, -1]\n"}
+,{"stream_name":"stdout","time":1870.596026208,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1870.5960506,"data":"+ rm -rf repo libm_wx2020_fields.npz wx_truth_2020.npz\n"}
+,{"stream_name":"stdout","time":1870.973312119,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1870.973339058,"data":"total s 1870\n"}
+,{"stream_name":"stderr","time":1873.430253093,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":1873.430283072,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":1873.745102434,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":1873.745131491,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":1874.673582787,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":1875.808910395,"data":"[NbConvertApp] Writing 281844 bytes to __results__.html\n"}
+]
