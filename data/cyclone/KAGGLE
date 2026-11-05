@@ -1,6 +1,6 @@
-tn-r24-shd-b
-libm_wx2020_fields.npz,wx_truth_2020.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore tn_rain_diag.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz /kaggle/working/tnr.json 2020-01-16,2020-02-15,2020-03-16,2020-04-15,2020-05-15,2020-06-14,2020-07-14,2020-08-13,2020-09-12,2020-10-12,2020-11-11,2020-12-11 '{"shd": {"cmt_mf": 1.0, "sh_depth": 1.0, "grid": "T170"}}' > /kaggle/working/tnr.log 2>&1; tail -14 /kaggle/working/tnr.log
+tn-s-shd-evo
+libm_wx2020_fields.npz
+cd . && XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 6 '{"shd": {"cmt_mf": 1.0, "sh_depth": 1.0, "grid": "T170", "_budget": true, "_win": [[0, 24], [48, 72], [96, 120]]}}' > /kaggle/working/prof.log 2>&1; tail -40 /kaggle/working/prof.log
 NvidiaTeslaT4
-10
-#sshd 2026-11-05T10:41Z
+13
+#sshd 2026-11-05T10:42Z
