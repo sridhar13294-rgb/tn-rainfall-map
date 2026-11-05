@@ -21,6 +21,15 @@ def running():
 while True:
     sh('git pull -q --rebase origin cases')
     q = json.load(open(Q)) if os.path.exists(Q) else []
+    # re-queue launches that Kaggle refused (e.g. 'Maximum batch GPU session count of 2 reached') - self-correcting
+    d = json.load(open(DONE)) if os.path.exists(DONE) else []; keep = []; back = []
+    for j in d:
+        st = f"data/cyclone/kaggle/{j['slug']}/status.txt"; last = open(st).read().strip().split('\n')[-1] if os.path.exists(st) else ''
+        if 'push refused' in last and j['slug'] not in {x['slug'] for x in q}:
+            back.append({k: v for k, v in j.items() if k not in ('account', 'at')}); print('re-queued (refused):', j['slug'], flush=True)
+        else: keep.append(j)
+    if back:
+        q = back + q; json.dump(q, open(Q, 'w'), indent=1); json.dump(keep, open(DONE, 'w'), indent=1)
     if not q: print('queue empty'); break
     busy = running(); left = []
     for j in q:
