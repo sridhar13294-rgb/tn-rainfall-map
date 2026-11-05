@@ -710,3 +710,17 @@ illustration correct (10 m / 1000 km at 15 N = 2.6 m/s); IMD official 72-h track
 154 km (RSMC New Delhi Annual Verification 2024) - official human forecasts with data assimilation, a reference only, not
 a Stage-1 gate (gate changes are Sridhar's decision). Priority agrees with ours: core wave test (tn-core-adiab running,
 J-W next) -> sigma / IFS Part III items D1/D2/D4 -> energy drift -> storm-removed steering -> drag offline only.
+
+## 5 Nov 19:20 IST - core test (physics off) PARTIAL + day-1 z500 error decomposed
+- tn-core-adiab0/2: OOM-killed after ONE start each (the job compiled both variants). Physics-off day-1 z500 RMSE 24.9 m
+  (2020-01-01), 24.6 m (2020-01-11) vs base1 20.4 m (2020-01-01). Registered rule (16:45): >= 18 m -> core /
+  initialisation / resolution first. n = 2 of 37 -> INDICATIVE, not the registered test; re-run physics-off only,
+  4 chunks (tn-core-adiab1-0..3, wx_adiab1.json). Note: physics-off also lacks the real day-1 diabatic forcing, so its
+  error is an upper bound on the core's share.
+- Day-1 z500 error of base1 (2020-01-01) = 20.4 m RMSE with a GLOBAL MEAN BIAS -13.8 m -> bias-removed ~15 m. Tropics
+  (tn-rt2-ctl, 8 starts): hour-0 bias -5.0 m in EVERY start (-4.8..-5.6; with or without DFI; t850 h0 ~0, mslp h0 +0.25
+  hPa) -> a constant initialisation / z500-diagnostic offset, not forecast error; hour 24 -12.2 m -> -7 m real drift in
+  day 1. => three separate pieces: (a) constant hour-0 offset ~-5 m (candidate: geopotential/z500 diagnosis, e.g.
+  virtual-temperature or level-interpolation handling - to derive, offline at T42 first); (b) day-1 column cooling drift
+  (-7 m tropics, -14 m global; links to the -20 W/m2 energy imbalance and P1); (c) bias-free error ~15 m (initial state at
+  T170, resolution, physics, core).
