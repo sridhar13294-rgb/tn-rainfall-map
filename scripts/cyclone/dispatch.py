@@ -34,8 +34,11 @@ while True:
             busy.setdefault(a, []).append(j['slug']); d = json.load(open(DONE)) if os.path.exists(DONE) else []
             d.append(dict(j, account=a, at=time.strftime('%Y-%m-%dT%H:%MZ', time.gmtime()))); json.dump(d, open(DONE, 'w'), indent=1)
         else: left.append(j)
+    launched = {j['slug'] for j in q} - {j['slug'] for j in left}
+    sh('git pull -q --rebase origin cases')                                      # merge: entries added meanwhile are kept
+    cur = json.load(open(Q)) if os.path.exists(Q) else []; left = [j for j in cur if j['slug'] not in launched]
     json.dump(left, open(Q, 'w'), indent=1)
-    sh(f"git add {Q} {DONE}; git commit -qm 'Queue: {len(q) - len(left)} launched, {len(left)} waiting' ; git pull -q --rebase origin cases; git push -q origin cases")
+    sh(f"git add {Q} {DONE}; git commit -qm 'Queue: {len(launched)} launched, {len(left)} waiting' ; git pull -q --rebase origin cases; git push -q origin cases")
     print(len(left), 'waiting', flush=True)
     if not left or not LOOP: break
     time.sleep(LOOP * 60)
