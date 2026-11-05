@@ -1,23 +1,5 @@
 [
  {
-  "slug": "tn-tr75-pkgd",
-  "inputs": "libm_wx2020_fields.npz",
-  "cmd": "cd . && python -W ignore trace75.py /kaggle/working/libm_wx2020_fields.npz '{\"layers\":\"tp75\",\"grid\":\"T170\",\"pbl_tm\":1.0,\"sh_mflux\":0.03,\"sfc_imp\":1.0,\"cmt_mf\":1.0,\"bl_lcl\":1.0,\"drag_imp\":1.0}' 720 /kaggle/working/trace.json 2>&1 | tail -60",
-  "note": "trpkgd"
- },
- {
-  "slug": "tn-s-shal-wx1",
-  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
-  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/suite_shal_wx.json 1 4 /kaggle/working/wx_1.json > /kaggle/working/wx_1.log 2>&1; tail -3 /kaggle/working/wx_1.log",
-  "note": "sshal"
- },
- {
-  "slug": "tn-s-shal-wx2",
-  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
-  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/suite_shal_wx.json 2 4 /kaggle/working/wx_2.json > /kaggle/working/wx_2.log 2>&1; tail -3 /kaggle/working/wx_2.log",
-  "note": "sshal"
- },
- {
   "slug": "tn-s-shal-wx3",
   "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
   "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/suite_shal_wx.json 3 4 /kaggle/working/wx_3.json > /kaggle/working/wx_3.log 2>&1; tail -3 /kaggle/working/wx_3.log",
