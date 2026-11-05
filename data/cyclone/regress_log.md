@@ -2,3 +2,4 @@
 - 2026-11-04 19:37Z reference renewed (code 9ae083c52aab9e90): landinit warning print only; control verified bit-identical before renewal (5 Nov 01:25)
 - 2026-11-05 01:40Z reference renewed (code 4fb7ad62d67cf6b0): sfc_sal option added (default off); control verified bit-identical before renewal (5 Nov 07:20)
 - 2026-11-05 03:25Z reference renewed (code b2a68c187b764673): drag_imp option added (default off); control verified bit-identical before renewal (5 Nov 09:30)
+- 2026-11-05 05:43Z reference renewed (code 464726d75d1d3b71): soil_fr + land_rs options added (default off); control verified bit-identical before renewal (5 Nov 11:40)

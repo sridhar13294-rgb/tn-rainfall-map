@@ -4,15 +4,15 @@ output-conversion problem, not a physics problem.  python roundtrip.py LIB TRUTH
 import sys, os, json, datetime as dt, numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE); sys.path.insert(0, os.path.join(HERE, '..', 'analysis'))
 import mm2, wxscore as WS, landinit
-LIB, TRU, OUT, STARTS = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4].split(','); GR = sys.argv[5] if len(sys.argv) > 5 else 'T170'
+LIB, TRU, OUT, STARTS = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4].split(','); GR = sys.argv[5] if len(sys.argv) > 5 else 'T170'; SET = json.loads(sys.argv[6]) if len(sys.argv) > 6 else {}
 Z = dict(np.load(LIB)); TT = [str(t) for t in Z['times']]; V3 = [str(v) for v in Z['v3']]; V2 = [str(v) for v in Z['v2']]
 TR = dict(np.load(TRU)); DI = {str(d): i for i, d in enumerate(TR['days'])}
-M = mm2.Model(GR, 32, None, {'rad': 'radcloud', 'rad_every': 2}); res = {}
+M = mm2.Model(GR, 32, None, dict({'rad': 'radcloud', 'rad_every': 2}, **SET)); res = {}
 REG = ('tropics', 'india_central', 'india_nw', 'india_south', 'tamil_nadu')
 for key in STARTS:
     key = key if 'T' in key else key + 'T00'; k = TT.index(key); t0 = dt.datetime.strptime(key, '%Y-%m-%dT%H'); f2 = Z['f2'][k]
     f3 = {v: Z['f3'][k, V3.index(v)] for v in V3}
-    for dfi in (False, True):
+    for dfi in ((True,) if os.environ.get('RT_DFI_ONLY') else (False, True)):
         st, cr = M.init(f3, Z['levs'], Z['lats'], Z['lons'], f2[V2.index('surface_pressure')], f2[V2.index('geopotential_at_surface')] / 9.80616,
                         f2[V2.index('sea_surface_temperature')], f2[V2.index('land_sea_mask')], when=t0, **landinit.land_kwargs(f2, V2))
         M.build(t0)

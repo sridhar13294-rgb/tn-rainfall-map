@@ -104,11 +104,11 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='mf', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='radcloud', rad_every=2,
-                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
+                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
-DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt', 'entr', 'mf_kick_t', 'mf_kick_q', 'mf_org', 'mf_wup', 'mf_dd', 'sh_top', 'bmj_dt', 'bmj_ice', 'ck_z', 'mf_ice', 'sh_taper', 'pbl_tm', 'sh_trig', 'sh_clos', 'ev_frac', 'mf_wke', 'rad_top', 'mf_capdp', 'sp_quad', 'sp_top', 'sponge', 'tau_strat', 'src_dp', 'mf_dmin', 'sh_dtop', 'sh_cap', 'sh_mflux', 'sfc_imp', 'bl_lcl', 'sfc_sal', 'drag_imp')
+DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt', 'entr', 'mf_kick_t', 'mf_kick_q', 'mf_org', 'mf_wup', 'mf_dd', 'sh_top', 'bmj_dt', 'bmj_ice', 'ck_z', 'mf_ice', 'sh_taper', 'pbl_tm', 'sh_trig', 'sh_clos', 'ev_frac', 'mf_wke', 'rad_top', 'mf_capdp', 'sp_quad', 'sp_top', 'sponge', 'tau_strat', 'src_dp', 'mf_dmin', 'sh_dtop', 'sh_cap', 'sh_mflux', 'sfc_imp', 'bl_lcl', 'sfc_sal', 'drag_imp', 'land_rs')
 NWAVE = 8
 class Model:
     def __init__(self, grid='T170', layers=32, dt_min=None, set_=None):
@@ -183,6 +183,8 @@ class Model:
         carry = dict(sst=jnp.asarray(sst, jnp.float32), tl=jnp.asarray(tl0, jnp.float32), w=jnp.asarray(w0, jnp.float32),
                      rain=jnp.zeros(zs.shape, jnp.float32), t=jnp.float32(0.0), sst0=jnp.asarray(sst, jnp.float32), T0=jnp.asarray(sg['t'], jnp.float32),
                      prm=self.params())
+        if self.S.get('soil_fr', 0):                                                                # force-restore deep soil temperature (5 Nov)
+            carry['tl2'] = jnp.asarray(landinit.land_start(N, sg['t'][-1], land, self.S['bucket'], None, soil_t, None)[0], jnp.float32)
         if ocean is not None:                                                                       # 1-D ocean column under every sea point (ocean.py)
             oc0 = profile_from_clim(ocean, when, self.LA, self.LO, sst, sst > 0)
             carry['ocean'] = {k: jnp.asarray(v, jnp.float32) for k, v in oc0.items()}
@@ -409,6 +411,12 @@ class Model:
         ckn = jnp.where(sea, S['ck'] * zfac, 0.8 * cdn); ck = ckn * fst
         rho = p1 / (RD * T1 * (1 + 0.61 * q1)); ust = jnp.sqrt(cd) * V1
         beta = jnp.where(sea, 1.0, jnp.clip(cr['w'] / (0.75 * S['bucket'] * 1000), 0, 1))
+        # land_rs > 0 (track / P4 root cause, 5 Nov): land evaporation through a SURFACE resistance in series with the
+        # aerodynamic one (Monteith 1965; Jarvis 1976; ECMWF TESSEL / ISBA): E = rho (q_s - q_1) / (r_a + r_s),
+        # r_a = 1 / (ck V1), r_s = land_rs / f(soil water) (land_rs = minimum surface resistance, s/m; f = the bucket stress
+        # factor above). Without it the land evaporated like open water: April central India LE 470-620 W/m2 at midday,
+        # H ~ 0 -> cold land, high pressure over central India, dry-season rain excess.
+        beta = jnp.where((S['land_rs'] > 0) & ~sea, 1.0 / (1.0 + ck * V1 * S['land_rs'] / jnp.maximum(beta, 0.02)), beta)
         # sfc_sal > 0 (P4, 5 Nov): saturation humidity over sea water is 2 % lower than over fresh water (salinity, as in COARE 3.5
         # and the IFS: q_s = 0.98 q_sat(SST)). Without it ocean evaporation is ~5 % too large (flux_check vs COARE).
         fsal = jnp.where(sea & (S['sfc_sal'] > 0), 0.98, 1.0)
@@ -761,9 +769,21 @@ class Model:
         # sfc_imp: land skin temperature implicit too - net flux linearised in tl (LW emission, sensible, latent)
         kk = 4 * SB * cr['tl'] ** 3 + CP * d['chv'] + LV * d['chv'] * d['beta'] * d['dqsdT']
         cap = S['cap_land'] + jnp.where(S['sfc_imp'] > 0, dt * kk, 0.0)
-        tl = jnp.where(self.land, jnp.clip(cr['tl'] + dt * net / cap, 230.0, 330.0), cr['tl'])
+        if self.S.get('soil_fr', 0):
+            # soil_fr (track root cause, 5 Nov): force-restore soil (Deardorff 1978, JGR 83; Noilhan & Planton 1989 ISBA):
+            #   dTs/dt = G / C_eff - (2 pi / tau) (Ts - T2),   dT2/dt = (Ts - T2) / tau,   tau = 1 day,
+            #   C_eff = mu sqrt(tau) / (2 sqrt(pi)) (mu = soil thermal inertia, J m-2 K-1 s-1/2; 1400 -> 1.17e5 J m-2 K-1).
+            # The one-slab land had no restore term: a net night-time loss kept cooling the skin (central India -2.7 K by 24 h).
+            tau_s = 86400.0; ceff = self.S['soil_mu'] * math.sqrt(tau_s) / (2 * math.sqrt(math.pi))
+            capf = ceff + jnp.where(S['sfc_imp'] > 0, dt * kk, 0.0)
+            tlf = cr['tl'] + dt * (net / capf - 2 * math.pi / tau_s * (cr['tl'] - cr['tl2']))
+            tl = jnp.where(self.land, jnp.clip(tlf, 230.0, 330.0), cr['tl'])
+            tl2 = jnp.where(self.land, cr['tl2'] + dt * (cr['tl'] - cr['tl2']) / tau_s, cr['tl2'])
+        else:
+            tl = jnp.where(self.land, jnp.clip(cr['tl'] + dt * net / cap, 230.0, 330.0), cr['tl'])
         w = jnp.where(self.land, jnp.clip(cr['w'] + dt * (d['rain'] - d['E']), 0.0, S['bucket'] * 1000), cr['w'])
         out = dict(cr, sst=sst, tl=tl, w=w, rain=cr['rain'] + dt * d['rain'], t=cr['t'] + dt)
+        if self.S.get('soil_fr', 0): out['tl2'] = tl2
         if 'ocean' in cr: out['ocean'] = ocn
         if 'rgo' in cr: out['rgo'] = rg
         if 'rad' in cr: out['rad'] = d['rad']
