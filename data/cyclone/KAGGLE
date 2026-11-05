@@ -1,6 +1,6 @@
-tn-s-evap-gen0
+tn-s-evap-gen1
 libm48_fields.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/suite_evap_gen.json 0 2 /kaggle/working/gen_0.json > /kaggle/working/gen_0.log 2>&1; tail -3 /kaggle/working/gen_0.log
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/suite_evap_gen.json 1 2 /kaggle/working/gen_1.json > /kaggle/working/gen_1.log 2>&1; tail -3 /kaggle/working/gen_1.log
 NvidiaTeslaT4
-12
+13
 #sevap 2026-11-05T01:44Z
