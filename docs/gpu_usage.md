@@ -1,6 +1,17 @@
 # Kaggle GPU account usage (weekly quota 30 h per account; all accounts assumed reset 2 Nov)
 Updated each cycle. Times IST.
 
+## 5 Nov 07:30 cycle
+| Acct | Job | Purpose | State |
+|---|---|---|---|
+| 1, 9-11 | tn-s-evap-wx0..3 | fix 1 evaporation (base + ck_z 1 + sfc_sal): forecast skill, steering | running |
+| 12-13 | tn-s-evap-gen0/1 | fix 1: genesis | running |
+| 14 | tn-s-evap-sb | fix 1: cyclone intensity vs ERA5 | running |
+| 2-5 | tn-s-ctlL-wx0..3 | land test: control on the land library | running |
+| 6-7 | tn-r24L-ctl-a/b | land test: 24-start TN rain | running |
+| 8 | tn-rtL-ctl | land test: hour-0/24 start-up check | running |
+Pending (next free): tn-r24-evap-a/b, tn-s-evap-q6, tn-s-evap-evo. Weekly quota (30 h/account, reset 2 Nov) - heavy use this week; check remaining before the next big suite.
+
 ## 5 Nov 01:20 (silent cycle)
 | Acct | Job | Purpose | State |
 |---|---|---|---|
