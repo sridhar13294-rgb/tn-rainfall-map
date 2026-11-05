@@ -1,6 +1,6 @@
-tn-maps-vardah-b1
+tn-maps-mich-b1
 libm_fields.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore maps_run.py /kaggle/working/libm_fields.npz 2016-12-06T06 /kaggle/working/maps_vardah_b1.npz 120 '{"cmt_mf": 1.0, "grid": "T170"}' > /kaggle/working/maps.log 2>&1; tail -3 /kaggle/working/maps.log
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore maps_run.py /kaggle/working/libm_fields.npz 2023-12-01T00 /kaggle/working/maps_mich_b1.npz 120 '{"cmt_mf": 1.0, "grid": "T170"}' > /kaggle/working/maps.log 2>&1; tail -3 /kaggle/working/maps.log
 NvidiaTeslaT4
-12
-#p5 2026-11-05T12:33Z
+13
+#p5 2026-11-05T12:34Z
