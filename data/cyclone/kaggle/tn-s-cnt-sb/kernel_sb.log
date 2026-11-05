@@ -1,0 +1,112 @@
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda13.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda13/__init__.py", line 384, in initialize
+    xla_client.register_custom_call_handler(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        "CUDA",
+        ^^^^^^^
+    ...<2 lines>...
+        ),
+        ^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 459, in register_custom_call_handler
+    handler(name, fn, xla_platform_name, api_version, traits)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: INVALID_ARGUMENT: XLA FFI handler registration for cudnn_rnn_ffi on platform CUDA (canonical cuda) failed because the handler's API version (0.5) is incompatible with the framework's API version (0.4). Minimum supported API version is (0.1).
+Jax plugin configuration error: Exception when calling jax_plugins.xla_cuda12.initialize()
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 520, in discover_pjrt_plugins
+    plugin_module.initialize()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/jax_plugins/xla_cuda12/__init__.py", line 372, in initialize
+    c_api = xb.register_plugin(
+        'cuda', priority=500, library_path=str(path), options=options
+    )
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/xla_bridge.py", line 662, in register_plugin
+    c_api = xla_client.load_pjrt_plugin_dynamically(plugin_name, library_path)
+  File "/usr/local/lib/python3.13/dist-packages/jaxlib/xla_client.py", line 115, in load_pjrt_plugin_dynamically
+    return _xla.load_pjrt_plugin(plugin_name, library_path, c_api=None)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: ALREADY_EXISTS: PJRT_Api already exists for device type cuda
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+Vardah T170_cnt + 0h p 1002.1 v850 22.3 wc300 0.65 wc500 1.22 flux 256.8/321.0 deep 1.0/0.978 rain 34.7/33.2 rh700 0.878/0.836
+Vardah T170_cnt + 3h p 1001.3 v850 20.7 wc300 0.92 wc500 1.72 flux 260.8/317.5 deep 1.0/1.0 rain 47.8/49.1 rh700 0.958/0.876
+Vardah T170_cnt + 6h p 1003.3 v850 20.6 wc300 1.07 wc500 1.49 flux 250.1/312.3 deep 1.0/0.978 rain 64.9/64.1 rh700 1.014/0.902
+Vardah T170_cnt + 9h p 1005.8 v850 20.4 wc300 1.17 wc500 1.43 flux 223.2/298.5 deep 1.0/0.978 rain 68.3/69.9 rh700 1.021/0.918
+Vardah T170_cnt +12h p 1003.7 v850 20.0 wc300 1.34 wc500 1.51 flux 217.8/292.5 deep 1.0/0.911 rain 70.0/70.0 rh700 1.034/0.91
+Vardah T170_cnt +15h p 1002.1 v850 21.6 wc300 1.15 wc500 1.4 flux 232.1/291.6 deep 1.0/0.888 rain 73.8/71.0 rh700 1.034/0.898
+Vardah T170_cnt +18h p 1001.0 v850 23.6 wc300 1.67 wc500 0.99 flux 238.5/303.3 deep 1.0/0.844 rain 112.9/78.2 rh700 1.046/0.882
+Vardah T170_cnt +21h p 1002.2 v850 25.2 wc300 1.36 wc500 1.21 flux 232.6/306.0 deep 1.0/0.8 rain 107.2/75.5 rh700 1.038/0.885
+Vardah T170_cnt +24h p 1002.5 v850 25.1 wc300 1.2 wc500 1.3 flux 218.8/314.2 deep 1.0/0.845 rain 113.9/85.3 rh700 1.04/0.904
+Vardah T170_cnt +27h p 1000.4 v850 25.1 wc300 0.85 wc500 1.86 flux 255.3/329.5 deep 1.0/0.8 rain 106.0/94.8 rh700 1.047/0.946
+Vardah T170_cnt +30h p 999.1 v850 27.7 wc300 1.46 wc500 1.52 flux 293.7/376.7 deep 1.0/0.844 rain 179.3/111.8 rh700 1.083/0.949
+Vardah T170_cnt +33h p 998.6 v850 30.0 wc300 1.27 wc500 2.12 flux 297.8/382.8 deep 1.0/0.823 rain 147.9/109.9 rh700 1.066/0.935
+Vardah T170_cnt +36h p 997.8 v850 31.3 wc300 1.63 wc500 2.25 flux 305.9/409.5 deep 1.0/0.645 rain 196.3/119.1 rh700 1.098/0.924
+Vardah T170_cnt +39h p 994.9 v850 33.0 wc300 1.66 wc500 2.2 flux 329.6/424.2 deep 1.0/0.69 rain 203.1/130.2 rh700 1.101/0.912
+Vardah T170_cnt +42h p 994.2 v850 32.3 wc300 2.58 wc500 1.52 flux 357.9/420.4 deep 1.0/0.556 rain 325.6/140.5 rh700 1.152/0.917
+Vardah T170_cnt +45h p 994.0 v850 31.6 wc300 2.59 wc500 1.57 flux 356.8/428.1 deep 1.0/0.556 rain 314.1/141.1 rh700 1.153/0.915
+Vardah T170_cnt +48h p 992.5 v850 31.2 wc300 2.5 wc500 1.84 flux 339.9/432.5 deep 1.0/0.4 rain 281.9/128.9 rh700 1.137/0.922
+Vardah T170_cnt +51h p 990.5 v850 31.4 wc300 2.35 wc500 2.28 flux 310.8/427.7 deep 1.0/0.378 rain 241.6/119.0 rh700 1.12/0.901
+Vardah T170_cnt +54h p 991.1 v850 30.7 wc300 2.05 wc500 2.81 flux 309.9/406.1 deep 1.0/0.444 rain 184.0/100.8 rh700 1.101/0.889
+Vardah T170_cnt +57h p 993.3 v850 29.9 wc300 1.82 wc500 2.67 flux 267.8/385.9 deep 1.0/0.378 rain 143.4/96.9 rh700 1.079/0.886
+Vardah T170_cnt +60h p 992.4 v850 30.5 wc300 1.25 wc500 3.56 flux 246.0/370.1 deep 1.0/0.466 rain 112.8/93.5 rh700 1.075/0.912
+Vardah T170_cnt +63h p 991.1 v850 30.0 wc300 1.0 wc500 3.84 flux 238.4/369.8 deep 1.0/0.466 rain 91.4/83.7 rh700 1.058/0.903
+Vardah T170_cnt +66h p 990.8 v850 29.8 wc300 0.87 wc500 3.93 flux 222.4/347.1 deep 0.8/0.421 rain 71.3/73.7 rh700 1.044/0.883
+Vardah T170_cnt +69h p 991.7 v850 29.9 wc300 0.8 wc500 3.98 flux 215.6/328.9 deep 0.8/0.421 rain 70.7/66.4 rh700 1.035/0.873
+Vardah T170_cnt +72h p 992.1 v850 31.3 wc300 0.83 wc500 3.68 flux 237.4/326.0 deep 1.0/0.665 rain 65.5/69.3 rh700 1.039/0.888
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+Nivar T170_cnt + 0h p 1008.3 v850 14.2 wc300 0.19 wc500 0.67 flux 171.1/242.8 deep 1.0/1.0 rain 37.7/34.9 rh700 0.89/0.824
+Nivar T170_cnt + 3h p 1006.4 v850 13.7 wc300 0.26 wc500 0.67 flux 198.0/234.2 deep 0.8/0.911 rain 39.1/43.2 rh700 0.896/0.879
+Nivar T170_cnt + 6h p 1006.9 v850 13.5 wc300 0.34 wc500 0.33 flux 210.0/239.2 deep 1.0/0.889 rain 53.0/49.1 rh700 0.895/0.918
+Nivar T170_cnt + 9h p 1009.7 v850 13.7 wc300 0.51 wc500 0.12 flux 188.7/225.7 deep 0.4/0.644 rain 32.5/44.6 rh700 0.92/0.942
+Nivar T170_cnt +12h p 1009.4 v850 13.6 wc300 0.81 wc500 0.25 flux 198.0/228.0 deep 0.8/0.444 rain 70.4/45.4 rh700 0.989/0.954
+Nivar T170_cnt +15h p 1007.1 v850 14.0 wc300 0.84 wc500 0.32 flux 184.9/222.8 deep 0.6/0.511 rain 59.1/48.6 rh700 0.98/0.95
+Nivar T170_cnt +18h p 1006.9 v850 15.0 wc300 0.88 wc500 0.34 flux 191.9/233.4 deep 0.8/0.6 rain 60.6/50.1 rh700 0.966/0.943
+Nivar T170_cnt +21h p 1008.1 v850 16.3 wc300 1.09 wc500 0.37 flux 208.4/224.2 deep 0.8/0.577 rain 53.4/47.3 rh700 0.939/0.943
+Nivar T170_cnt +24h p 1008.4 v850 17.3 wc300 0.89 wc500 0.11 flux 220.0/209.6 deep 0.8/0.51 rain 70.2/52.6 rh700 0.922/0.954
+Nivar T170_cnt +27h p 1006.2 v850 20.7 wc300 1.11 wc500 0.51 flux 224.0/251.0 deep 0.8/0.688 rain 107.2/68.6 rh700 1.024/0.97
+Nivar T170_cnt +30h p 1005.5 v850 23.5 wc300 1.25 wc500 0.79 flux 193.9/288.5 deep 0.8/0.755 rain 106.7/76.1 rh700 1.037/0.967
+Nivar T170_cnt +33h p 1006.5 v850 26.6 wc300 1.47 wc500 0.83 flux 130.8/296.2 deep 1.0/0.755 rain 125.7/84.6 rh700 1.061/0.959
+Nivar T170_cnt +36h p 1005.5 v850 28.3 wc300 1.62 wc500 1.04 flux 163.7/312.9 deep 0.8/0.622 rain 124.5/94.9 rh700 1.053/0.944
+Nivar T170_cnt +39h p 1002.7 v850 28.5 wc300 1.94 wc500 1.34 flux 213.7/283.0 deep 1.0/0.667 rain 184.6/103.6 rh700 1.12/0.897
+Nivar T170_cnt +42h p 1001.8 v850 27.2 wc300 2.51 wc500 1.53 flux 210.9/287.5 deep 1.0/0.623 rain 194.6/111.5 rh700 1.132/0.836
+Nivar T170_cnt +45h p 1002.2 v850 27.7 wc300 2.13 wc500 1.83 flux 254.7/253.8 deep 0.8/0.533 rain 118.0/98.5 rh700 1.073/0.841
+Nivar T170_cnt +48h p 1000.9 v850 26.2 wc300 1.9 wc500 2.14 flux 263.5/265.1 deep 0.6/0.51 rain 125.0/103.8 rh700 1.071/0.872
+Nivar T170_cnt +51h p 998.1 v850 26.5 wc300 1.71 wc500 2.31 flux 305.6/298.5 deep 0.6/0.622 rain 101.9/99.0 rh700 1.062/0.875
+Nivar T170_cnt +54h p 996.7 v850 26.8 wc300 2.31 wc500 1.61 flux 312.8/288.9 deep 1.0/0.599 rain 183.1/111.7 rh700 1.09/0.889
+Nivar T170_cnt +57h p 997.6 v850 27.3 wc300 2.39 wc500 1.66 flux 282.9/297.8 deep 1.0/0.577 rain 174.7/111.9 rh700 1.084/0.896
+Nivar T170_cnt +60h p 997.3 v850 29.4 wc300 2.6 wc500 2.2 flux 349.3/348.5 deep 1.0/0.755 rain 143.4/123.8 rh700 1.085/0.929
+Nivar T170_cnt +63h p 995.5 v850 29.7 wc300 2.75 wc500 1.95 flux 344.3/357.7 deep 1.0/0.487 rain 247.6/129.7 rh700 1.125/0.93
+Nivar T170_cnt +66h p 993.5 v850 29.9 wc300 2.8 wc500 2.78 flux 393.6/424.9 deep 0.8/0.621 rain 150.1/136.4 rh700 1.085/0.939
+Nivar T170_cnt +69h p 994.1 v850 30.3 wc300 2.87 wc500 2.71 flux 345.6/375.9 deep 1.0/0.688 rain 171.1/152.9 rh700 1.098/0.921
+Nivar T170_cnt +72h p 993.9 v850 30.6 wc300 2.44 wc500 2.03 flux 81.7/310.8 deep 1.0/0.621 rain 245.8/156.4 rh700 1.124/0.906
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+Michaung T170_cnt + 0h p 1005.5 v850 15.7 wc300 0.29 wc500 0.76 flux 176.8/293.0 deep 1.0/1.0 rain 32.2/32.9 rh700 0.874/0.863
+Michaung T170_cnt + 3h p 1005.8 v850 15.5 wc300 0.35 wc500 0.83 flux 199.7/281.1 deep 0.0/0.578 rain 32.9/34.3 rh700 0.985/0.924
+Michaung T170_cnt + 6h p 1003.9 v850 14.8 wc300 0.53 wc500 0.39 flux 211.6/310.0 deep 0.0/0.533 rain 24.9/41.9 rh700 1.031/0.974
+Michaung T170_cnt + 9h p 1003.8 v850 15.7 wc300 0.58 wc500 0.29 flux 265.3/310.8 deep 0.0/0.6 rain 52.5/48.7 rh700 1.025/0.979
+Michaung T170_cnt +12h p 1004.4 v850 15.2 wc300 0.55 wc500 0.23 flux 230.1/298.5 deep 0.0/0.556 rain 60.0/52.6 rh700 1.028/0.975
+Michaung T170_cnt +15h p 1004.2 v850 15.6 wc300 0.57 wc500 0.45 flux 204.0/297.2 deep 0.0/0.577 rain 60.7/54.9 rh700 1.038/0.976
+Michaung T170_cnt +18h p 1003.7 v850 16.6 wc300 0.59 wc500 0.71 flux 253.8/309.0 deep 0.2/0.733 rain 76.9/63.8 rh700 1.052/0.981
+Michaung T170_cnt +21h p 1002.6 v850 19.9 wc300 0.57 wc500 0.96 flux 242.4/319.2 deep 0.4/0.688 rain 68.7/70.4 rh700 1.061/0.979
+Michaung T170_cnt +24h p 1003.0 v850 22.4 wc300 1.02 wc500 1.14 flux 240.0/313.4 deep 1.0/0.644 rain 118.4/75.0 rh700 1.06/0.96
+Michaung T170_cnt +27h p 1003.1 v850 23.8 wc300 1.32 wc500 1.28 flux 207.5/325.0 deep 0.8/0.621 rain 114.6/84.4 rh700 1.053/0.956
+Michaung T170_cnt +30h p 1000.4 v850 24.4 wc300 1.69 wc500 1.47 flux 245.6/333.8 deep 1.0/0.6 rain 142.8/91.1 rh700 1.06/0.96
+Michaung T170_cnt +33h p 998.7 v850 23.7 wc300 1.8 wc500 1.56 flux 248.9/362.2 deep 0.8/0.577 rain 124.5/85.0 rh700 1.063/0.976
+Michaung T170_cnt +36h p 998.2 v850 24.9 wc300 2.16 wc500 1.6 flux 207.3/317.0 deep 0.8/0.487 rain 138.8/78.7 rh700 1.066/0.963
+Michaung T170_cnt +39h p 997.8 v850 25.9 wc300 2.12 wc500 1.73 flux 210.1/334.8 deep 0.6/0.465 rain 114.7/70.7 rh700 1.058/0.944
+Michaung T170_cnt +42h p 996.6 v850 26.8 wc300 2.9 wc500 1.62 flux 242.8/281.9 deep 1.0/0.51 rain 161.1/70.2 rh700 1.056/0.925
+Michaung T170_cnt +45h p 996.1 v850 28.4 wc300 2.88 wc500 1.48 flux 223.2/274.0 deep 1.0/0.51 rain 163.1/68.7 rh700 1.064/0.918
+Michaung T170_cnt +48h p 995.4 v850 29.0 wc300 3.36 wc500 1.54 flux 276.2/265.6 deep 0.8/0.643 rain 158.3/79.5 rh700 1.08/0.891
+Michaung T170_cnt +51h p 996.8 v850 30.0 wc300 3.54 wc500 1.39 flux 308.0/257.1 deep 1.0/0.576 rain 147.0/67.0 rh700 1.066/0.86
+Michaung T170_cnt +54h p 996.4 v850 30.0 wc300 4.01 wc500 1.62 flux 214.0/217.6 deep 1.0/0.643 rain 218.6/79.4 rh700 1.088/0.835
+Michaung T170_cnt +57h p 995.4 v850 28.7 wc300 4.16 wc500 2.01 flux 116.2/177.0 deep 0.8/0.422 rain 206.4/87.1 rh700 1.09/0.815
+Michaung T170_cnt +60h p 995.8 v850 29.4 wc300 4.22 wc500 1.87 flux 149.0/166.9 deep 0.8/0.378 rain 253.9/75.6 rh700 1.093/0.794
+Michaung T170_cnt +63h p 998.1 v850 29.4 wc300 4.06 wc500 1.7 flux 230.9/160.9 deep 0.8/0.267 rain 159.2/61.7 rh700 1.075/0.805
+Michaung T170_cnt +66h p 998.7 v850 28.4 wc300 3.71 wc500 1.48 flux 124.8/186.7 deep 0.599/0.244 rain 174.0/54.9 rh700 1.066/0.839
+Michaung T170_cnt +69h p 999.2 v850 26.7 wc300 3.44 wc500 1.28 flux 116.0/151.2 deep 0.599/0.155 rain 178.1/55.2 rh700 1.103/0.819
+Michaung T170_cnt +72h p 1000.0 v850 27.8 wc300 3.29 wc500 1.02 flux 154.7/138.4 deep 0.199/0.154 rain 118.9/52.0 rh700 1.029/0.771
