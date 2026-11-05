@@ -650,3 +650,17 @@ REGISTERED (tn-andes-b / -drag / -gwd / -gwdrag: 75 L T170 base + sfc_imp, 9 Jun
 Offline check on model states: storing the current condensation as cloud would give ocean LWP 256-400 g/m2 (obs ~80): over
 ocean 3.6 mm/day grid-scale condensation, 2.72 of it at 500-850 hPa -> mid-level grid-scale saturation because deep
 convection rarely fires. Same root as P1 / false land rain (shallow scheme). => cloud water is tested AFTER the shallow fix.
+
+## 5 Nov 12:35 IST - FIX (b) SHALLOW ALONE (sh_mflux 0.03 on base1) scored vs its registered predictions - REJECTED on gates, large partial gains
+| check | base1 | shal | registered prediction | verdict |
+|---|---|---|---|---|
+| z500 d1/d5/d10 (73 starts) | 20.0/73.1/119.2 | 20.9/71.1/117.0 | within noise | BETTER (-2 m d5) |
+| T850 / T925 / T1000 d5 tropics | +0.86/+2.47/+2.74 | -1.93/-1.66/-0.96 | T925 <= +1.47 | warm bias removed but OVERSHOOTS cold: T850 -1.93, T925 -1.66 (gate +-1.5 FAIL) |
+| q850 d5 | -1.45 | +0.48 | >= -0.73 | PASS |
+| TN land grid-scale rain share | 77 % | 49 % | lower | PASS |
+| TN rain 24-start | 1.70 | 1.58 | <= 1.70 | pass (inside noise +-0.13); Jun-Sep 1.76 -> 1.46, Jan-May 2.26 -> 1.72, but Oct-Dec 1.20 -> 1.73 (NE monsoon worse) |
+| genesis gen0/gen1 | 36/48 | 24/29 | >= 31/43 | FAIL |
+| quick6 72 h / lat error | 297 km / -1.27 | 362 km / -1.87 | not worse | FAIL |
+| intensity 72 h (V/N/M) | 989.5/994.5/999.4 | 988.3/996.7/998.1 | not worse | ~same |
+Interpretation (hypotheses, nothing tuned): (1) the shallow heating at 900-940 hPa drops from ~5 K/day to ~0.8 K/day (heat_prof), but the GFS v16 SCM reference (BOMEX) has shallow heating +3..+5 K/day there -> the 0.03 kg/m2/s relaxation removes TOO MUCH of the shallow heating: the old scheme had the right SIZE of heating but a wrong net (P1 +1 K/day). => the defect is the FORMULATION (relaxation to a mixed MSE/q profile with a time scale), not one magnitude: sh_mflux only changes the time scale. A true shallow mass-flux plume (cloud-base mass flux from a closure, entraining plume, detrainment at cloud top, compensating subsidence) is what GFS / IFS do; MEGAM's shallow 'mf' plume (rejected 3 Nov: 850 -2.0 K, genesis 12 %) must be re-checked against the GFS BOMEX profiles offline before any new run. (2) GENESIS depends on the over-active shallow scheme (F2 14 %, shallow 'mf' 12 %, sh_mflux alone 24/29): a compensating error - when the shallow layer stops exporting moisture upward, the lower troposphere becomes moist and cool everywhere, convection becomes widespread instead of organised -> fewer vortices. Next (offline): genesis mechanism, base1 vs shal on the same cases (convective heating distribution, mid-level humidity, CAPE in the formation region), and the shallow heating/moistening profiles of base1 / sh_mflux / 'mf' vs the GFS v16 BOMEX reference.
+Consequences: P1 not closed (cold overshoot); F2 item 1 (shallow) NOT accepted; cloud-water precondition (mid-level grid-scale condensation -50 %) to be checked on the shal state anyway (it tells whether convection takes over).
