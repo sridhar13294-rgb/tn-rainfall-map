@@ -27,8 +27,20 @@ def running():
         slug, a = os.path.basename(f).split('__'); b_ = busy.setdefault(a, [])
         if slug not in b_: b_.append(slug)
     return busy
-while True:
+def collect_now():
+    """ask cyclone-collect.yml to fetch finished push-only kernels (frees their slots), wait for it (max 8 min)"""
+    import glob as _g
+    if not _g.glob('data/cyclone/pending/*__*'): return
+    open('data/cyclone/COLLECT_REQ', 'w').write(time.strftime('%Y-%m-%dT%H:%M:%SZ\n', time.gmtime()))
+    sh("git add data/cyclone/COLLECT_REQ; git commit -qm 'Collect request'; git pull -q --rebase origin cases; git push -q origin cases")
+    time.sleep(30)
+    for _ in range(16):
+        r = sh("gh run list --workflow cyclone-collect.yml -L 3 --json status --jq '.[].status'").stdout.split()
+        if r and all(x == 'completed' for x in r): break
+        time.sleep(30)
     sh('git pull -q --rebase origin cases')
+while True:
+    sh('git pull -q --rebase origin cases'); collect_now()
     q = json.load(open(Q)) if os.path.exists(Q) else []
     # re-queue launches that Kaggle refused (e.g. 'Maximum batch GPU session count of 2 reached') - self-correcting
     d = json.load(open(DONE)) if os.path.exists(DONE) else []; keep = []; back = []

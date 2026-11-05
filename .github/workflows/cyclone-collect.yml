@@ -1,9 +1,12 @@
 name: Cyclone study - collect Kaggle outputs
-# 5 Nov 17:50: launches are push-only (no 9-h polling runner); this collector checks every pending kernel
+# 5 Nov 18:00: launches are push-only (no 9-h polling runner); this collector checks every pending kernel
 # (data/cyclone/pending/<slug>__<account>) and fetches finished outputs. See scripts/cyclone/collect.py.
+# Trigger: pushes to cases that touch KAGGLE (every launch) or COLLECT_REQ (written by dispatch.py at the start of each
+# pass). Schedules only run on the default branch (main must not change before 'go live'), hence push triggers.
 on:
-  schedule: [{cron: '7,27,47 * * * *'}]
-  workflow_dispatch:
+  push:
+    branches: [cases]
+    paths: ['data/cyclone/KAGGLE', 'data/cyclone/COLLECT_REQ']
 permissions:
   contents: write
 concurrency: {group: cyclone-collect, cancel-in-progress: false}
