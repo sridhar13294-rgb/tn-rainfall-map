@@ -751,3 +751,22 @@ Part III items. NEW LEAD: physics-off has NO radiation or condensation, yet z500
 hour-0 constant offset, now fixed by rd_si) -> a further ~-4.5 m/day drop produced by the adiabatic core itself (an
 adiabatic core should not cool the column). Candidates: horizontal diffusion of T on sigma surfaces (Part III D1),
 DFI, moisture/virtual-T handling without physics. -> D1 offline test is now the top offline item.
+
+## 5 Nov 23:10 IST - ROOT CAUSE of the adiabatic (physics-off) height drop: LINEAR vertical semi-Lagrangian interpolation
+5-Why: physics-off z500 falls 2.2-2.9 m/day (T42, 2 starts) -> not mass (ps +-0.03 hPa), not total heat (mass-weighted T
+-0.03 K/day) -> vertical/horizontal redistribution: global-mean T by level +1.16..+1.50 K/day at sigma 0.11 (tropopause),
+-0.27..-0.29 at 0.42-0.49, -0.8..-1.1 at the lowest levels -> insensitive to DFI, diffusion x10, moisture, dt/2, monotone
+limiter (each < 0.3 m change) -> SAME start in Dinosaur's EULERIAN sigma core (imex_rk_sil3, 10 min, same filter): 0.11
+-0.08, 0.49 +0.04, lowest levels -0.81/-1.07 -> the tropopause warming and mid-level cooling are SEMI-LAGRANGIAN-ONLY;
+the lowest-level cooling is common to both = start state (separate item, open) -> Dinosaur docs:
+vertical_interpolation_order default 'linear', "production SL models interpolate at least cubically in the vertical;
+linear vertical is the main source of extra vertical diffusion at long steps"; plus MEGAM's isothermal T_ref = 250 K
+leaves the full tropopause kink in the advected T'. Fix: option sl_vcubic (cubic vertical; default off; control
+bit-identical). Offline confirmation (prediction 'tropopause warming falls >= 50 %' written before): sigma 0.11
++1.50 -> +0.41 (-73 %), 0.49 -0.29 -> -0.06 (Eulerian +0.04), whole profile now close to the Eulerian core;
+physics-off global z500 change -2.23 -> -0.59 and -2.87 -> -1.00 m/day (~ -70 %).
+REGISTERED screen (base2 + sl_vcubic vs base2 = tn-s-rd-*, same starts): tn-s-vc-wx0 (exam quarter 0) day-1 global
+z500 bias better by >= +0.8 m and day-1 RMSE better by >= 0.5 m vs tn-s-rd-wx0; d5/d10 not worse +0.5 m; sb 72 h pmin
+within 2 hPa per storm; quick6 72 h within 6 %; runtime (sec per start) not more than +30 %. Pass -> full exam (wx1-3)
+-> adopt only if the full set passes the same gates. Residual items: isothermal T_ref (a realistic reference profile
+would remove the rest of the kink), lowest-level start-state cooling (both cores).

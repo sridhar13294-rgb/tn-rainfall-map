@@ -719,7 +719,8 @@ class Model:
         if same: return                                                                             # same grid, terrain and coast: reuse the compiled model
         self._jit = {}; self._built = (split, np.asarray(self.oro), np.asarray(self.zs), np.asarray(self.land))
         self.eq = primitive_equations.SemiLagrangianPrimitiveEquations(self.ref_t, self.oro, self.coords, self.ps, humidity_key='specific_humidity',
-                                                                       monotone_tracers=True, nodal_tracers=('specific_humidity',), departure_iterations=1, monotone_dynamics=bool(self.S.get('mono', True)))
+                                                                       monotone_tracers=True, nodal_tracers=('specific_humidity',), departure_iterations=1, monotone_dynamics=bool(self.S.get('mono', True)),
+                                                                       **({'vertical_interpolation_order': 'cubic'} if self.S.get('sl_vcubic', 0) > 0 else {}))   # sl_vcubic (5 Nov 23:00): cubic vertical SL interpolation (Dinosaur default linear smears the tropopause: +1.5 K/day physics-off)
         cl = hor.cos_lat
         class Phys(time_integration.ExplicitODE):
             def explicit_terms(self_, state):
