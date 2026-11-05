@@ -64,7 +64,8 @@ while True:
     for j in q:
         down = set(open('data/cyclone/accounts_down.txt').read().split()) if os.path.exists('data/cyclone/accounts_down.txt') else set()   # 5 Nov 20:10: API auth lost
         accts = [a for a in ([str(j['account'])] if j.get('account') else [str(a) for a in range(1, 15)]) if a not in down]
-        free = [a for a in accts if len(busy.get(a, [])) < MAXPER]
+        amax = dict(l.split() for l in open('data/cyclone/accounts_max.txt').read().split('\n') if l.strip()) if os.path.exists('data/cyclone/accounts_max.txt') else {}   # per-account cap (partner account 4: 1 job at a time)
+        free = [a for a in accts if len(busy.get(a, [])) < int(amax.get(a, MAXPER))]
         if not free: left.append(j); continue
         a = min(free, key=lambda x: len(busy.get(x, [])))
         r = sh(f". scripts/cyclone/cycle_tools.sh; FORCE=1 launch {j['slug']} {j['inputs']} {shlex.quote(j["cmd"])} {a} {j.get('note', 'q')}")
