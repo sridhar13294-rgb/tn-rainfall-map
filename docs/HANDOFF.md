@@ -597,3 +597,11 @@ Condition set by Sridhar: every disadvantage of dropping F2 must be addressed be
 - 5 Nov 22:15 IST: BASE2 = {cmt_mf: 1, rd_si: 1} (rd_si adopted on all registered checks). mm2 default stays off (regression); every new candidate config must include both, and be compared with a base2 control run.
 - 5 Nov 23:45 IST E2E (TIR AI platform, Sridhar's account, 2000 infra credits; free or paid = not yet confirmed): Containers -> Create; region DELHI; image 'Python 3.10 / CUDA 13.1' (Ubuntu 22.04; install Python 3.12 + jax[cuda12] in setup); GPU choice A100 40 GB Rs 179/hr (+18 % GST) - L40S and L4 'capacity unavailable' in Delhi; Chennai lists only H100/H200/B200. Nothing launched. TODO 6 Nov morning: benchmark plan (1-2 h, one T170 exam quarter + sb + q6 timing), automation via TIR Personal Access Token (GitHub secret, never in chat) or SSH key; container deleted right after each job (hourly billing).
 - 6 Nov 01:05 IST: account 1 (Sridhar) hit 'Maximum weekly GPU quota' (vc-wx0, vc-q6 refused, re-queued). Until the weekly reset only partner account 4 runs (1 job at a time): tn-s-vc-sb running there. => the E2E A100 benchmark (Delhi, Rs 179/hr) becomes the main way to keep Stage 1 moving this week.
+- 6 Nov 01:15 IST Sridhar: will buy 20 A100 GPU-hours on E2E (Delhi, A100 40 GB, Rs 180/hr + GST ~Rs 4,250 incl. GST;
+  existing 2000 credits first). RULE: "you should not waste even 1 GPU minute". Claude's E2E rules: (1) every A100 job is
+  pre-checked locally first (regression, T42 compile+run, config parse) - nothing untested goes to the A100; (2) jobs are
+  BATCHED per machine session (one boot/install, several registered tests back to back) to minimise overhead;
+  (3) environment cached (saved image or persistent volume) so later boots skip installation; (4) the workflow deletes
+  the container the moment the batch ends or fails, plus a hard wall-clock limit per session; (5) GPU-minute ledger in
+  docs/gpu_usage.md (start/stop/minutes/cost per session), hard stop at 20 h; (6) only registered, value-ranked tests -
+  no diagnostic re-runs of rejected candidates on paid time.
