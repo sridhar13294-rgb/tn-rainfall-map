@@ -566,3 +566,4 @@ Condition set by Sridhar: every disadvantage of dropping F2 must be addressed be
   docs/regional_spec.md (for approval: formulation, domains, accounts 15-18). Steps 1-3 (2-D dry core tests locally, 3-D dry
   terrain/mountain-wave tests, boundary test) do not depend on Stage 1 and start in free cycle time. Status table gets a
   Stage 3 section.
+- 5 Nov 18:42 IST Sridhar: Stage 3 design APPROVED; 9 km domain as proposed (NIO only); accounts 15-18 Stage 1 first, Stage 3 in free time.

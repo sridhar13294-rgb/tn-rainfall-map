@@ -1,4 +1,4 @@
-# MEGAM-R: regional model specification (Stage 3) - DRAFT for Sridhar's approval
+# MEGAM-R: regional model specification (Stage 3) - APPROVED by Sridhar 5 Nov 18:42 IST
 5 Nov 2026 18:45 IST. Stage 3 started in parallel with Stage 1 (Sridhar 18:31). Option A recorded 29 Oct: our own regional
 model (no WRF in production; WRF only as an optional benchmark). Stage 1 keeps priority for time and GPUs.
 
@@ -51,7 +51,13 @@ track than the 80 km global; TN rain within the Stage-1 rain gate), never relaxe
 - Prognostic cloud water (Stage 1 cloud-water stage) - prerequisite for 3 km microphysics.
 - Steps 1-3 above do NOT depend on Stage 1 and start now.
 
-## 7. Decisions for Sridhar
+## 7. Decisions (Sridhar 5 Nov 18:42 IST)
+1. Design APPROVED (non-hydrostatic from the start, one core for 9 and 3 km).
+2. Domains as proposed - North Indian Ocean only (no South Indian Ocean extension).
+3. Accounts 15-18: Stage 1 first; Stage 3 only in their free time.
+Stop conditions (Claude, 18:40): Stage 3 pauses if Stage 1 slips because of it; waits if the physics-off core test gives day-1 z500 >= 18 m; option B (WRF driven by MEGAM) if step 1 fails its tests after a fair attempt.
+
+## 7a. Original questions
 1. Approve the formulation (non-hydrostatic from the start, one core for 9 and 3 km)?
 2. Domains in section 4 - wider (e.g. include the South Indian Ocean to 20 S) or as proposed?
 3. Accounts 15-18, when added, used mainly for Stage 3 tests?
