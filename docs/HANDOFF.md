@@ -567,3 +567,9 @@ Condition set by Sridhar: every disadvantage of dropping F2 must be addressed be
   terrain/mountain-wave tests, boundary test) do not depend on Stage 1 and start in free cycle time. Status table gets a
   Stage 3 section.
 - 5 Nov 18:42 IST Sridhar: Stage 3 design APPROVED; 9 km domain as proposed (NIO only); accounts 15-18 Stage 1 first, Stage 3 in free time.
+- 5 Nov 19:00 IST Sridhar: STAGE 1 TARGET 15 NOV. Stage 3 PAUSED until Stage 1 is done (spec stays approved). Free support
+  only (accounts 15-18 etc.). Track check redefined BY SRIDHAR: the track TREND must match (e.g. real WNW -> N -> W must
+  be reproduced as WNW -> N -> W); exact position accuracy is a Stage 3 (9 km) goal. Measurable form proposed by Claude,
+  awaiting his confirmation: 12-h headings 0-72 h, mean |heading error| <= 30 deg, every best-track turn >= 45 deg
+  reproduced within +-12 h with the same sense, no spurious turn >= 45 deg; pass = >= 5 of 6 quick6 storms; position
+  error reported, not gated.
