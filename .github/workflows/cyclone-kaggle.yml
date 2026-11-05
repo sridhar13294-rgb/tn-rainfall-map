@@ -85,6 +85,8 @@ jobs:
         run: |
           ID=$KAGGLE_USERNAME/$SLUG; D=data/cyclone/kaggle/$SLUG
           if grep -qi 'error' $D/push.txt 2>/dev/null; then echo "push refused: $(tail -1 $D/push.txt)" | tee -a $D/status.txt; exit 0; fi   # e.g. weekly GPU quota used up - stop instead of polling 6 h
+          # 5 Nov 17:50: push-only - register the kernel for cyclone-collect.yml and free this runner (GitHub allows 20 at once)
+          if [ -s $D/push.txt ] && [ "$(sed -n 3p data/cyclone/KAGGLE | tr -d ' ')" != "COLLECT" ]; then A=$(sed -n 5p data/cyclone/KAGGLE | tr -d ' '); mkdir -p data/cyclone/pending; touch data/cyclone/pending/${SLUG}__${A:-1}; echo "$(date -u +%H:%M) pushed; collector will fetch" >> $D/status.txt; exit 0; fi
           sleep 60
           for i in $(seq 1 110); do S=$(kaggle kernels status $ID 2>&1 | tail -1); echo "$(date -u +%H:%M) $S"; echo "$(date -u +%H:%M) $S" | sed "s#$KAGGLE_USERNAME#USER#g" >> $D/status.txt
             case "$S" in *COMPLETE*|*ERROR*|*CANCEL*|*complete*|*error*|*cancel*) break;; esac; sleep 300; done
@@ -95,5 +97,5 @@ jobs:
       - if: always()
         run: |
           git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
-          git add data/cyclone/kaggle; git commit -qm "Cyclone study: Kaggle job $SLUG" || exit 0
+          git add data/cyclone/kaggle data/cyclone/pending 2>/dev/null; git add data/cyclone/kaggle; git commit -qm "Cyclone study: Kaggle job $SLUG" || exit 0
           for i in 1 2 3 4 5 6; do git pull -q --rebase origin cases && git push -q origin HEAD:cases && break; sleep 15; done

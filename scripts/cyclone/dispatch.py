@@ -22,6 +22,10 @@ def running():
             if len(k) >= 5 and k[4].strip():
                 b_ = busy.setdefault(k[4].strip(), [])
                 if slug not in b_: b_.append(slug)
+    import glob as _g                                                           # push-only launches (5 Nov 17:50): kernels awaiting the collector
+    for f in _g.glob('data/cyclone/pending/*__*'):
+        slug, a = os.path.basename(f).split('__'); b_ = busy.setdefault(a, [])
+        if slug not in b_: b_.append(slug)
     return busy
 while True:
     sh('git pull -q --rebase origin cases')
