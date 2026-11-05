@@ -1,6 +1,6 @@
 """P5 (5 Nov, peer suggestion): large-scale steering circulation audit - SYSTEMATIC part. For many starts, mean forecast
 bias MAPS vs ERA5 over the India / Bay of Bengal / Arabian Sea box (40-120 E, 0-45 N) at lead days 1, 3, 5:
-z500, u850, v850, u200, v200, mslp. From the mean maps: (a) 500-hPa ridge strength = z500 difference 25 N minus 12 N
+z500, u850, v850, u200, v200, mslp. From the mean maps: (0) day 0 included: is the circulation wrong from the start or does it grow? (a) 500-hPa ridge strength = z500 difference 25 N minus 12 N
 along 80-95 E (subtropical-ridge gradient -> deep easterly steering), (b) deep-layer steering bias over the Bay
 (0.25 u850 + ... simplified: mean of 850 and 200 hPa winds, 10-20 N 82-95 E), (c) 200-hPa jet latitude and the
 NW-India upper trough (v200 over 20-35 N 65-80 E). python p5_bias.py LIB TRUTH OUT_JSON 'START,START,...' SETTINGS_JSON"""
@@ -13,7 +13,7 @@ TR = dict(np.load(TRU)); DI = {str(d): i for i, d in enumerate(TR['days'])}
 la = np.asarray(Z['lats'], float); lo = np.asarray(Z['lons'], float)
 iy = np.where((la >= 0) & (la <= 45))[0]; ix = np.where((lo >= 40) & (lo <= 120))[0]
 SET = dict(SET); GR = SET.pop('grid', 'T170'); M = mm2.Model(GR, 32, None, dict({'rad': 'radcloud', 'rad_every': 2}, **SET))
-KEYS = ('z500', 'u850', 'v850', 'u200', 'v200', 'mslp'); acc = {d: {k: [] for k in KEYS} for d in (1, 3, 5)}; used = []
+KEYS = ('z500', 'u850', 'v850', 'u200', 'v200', 'mslp'); acc = {d: {k: [] for k in KEYS} for d in (0, 1, 3, 5)}; used = []
 for key in STARTS:
     key = key if 'T' in key else key + 'T00'
     if key not in TT: continue
@@ -22,7 +22,7 @@ for key in STARTS:
                     f2[V2.index('sea_surface_temperature')], f2[V2.index('land_sea_mask')], when=t0, **landinit.land_kwargs(f2, V2))
     M.build(t0); st = M.dfi(st); out = M.run_wx(st, cr, 120, 24)
     if not np.isfinite(out['mslp']).all(): print(key, 'blew up', flush=True); continue
-    for d in (1, 3, 5):
+    for d in (0, 1, 3, 5):
         v = (t0 + dt.timedelta(days=d)).strftime('%Y-%m-%dT%H')
         if v not in DI: continue
         j = DI[v]
@@ -34,13 +34,19 @@ for key in STARTS:
 LA, LO = la[iy], lo[ix]
 def box(F, a, b, c, d_): return float(np.nanmean(F[np.ix_((LA >= a) & (LA <= b), (LO >= c) & (LO <= d_))]))
 res = dict(settings=SET, starts=used, lat=LA.tolist(), lon=LO.tolist(), days={})
-for d in (1, 3, 5):
+for d in (0, 1, 3, 5):
     m = {kk: np.nanmean(np.stack(v), 0) if v else None for kk, v in acc[d].items()}
     if m['z500'] is None: continue
     r = dict(n=len(acc[d]['z500']))
     r['z500_bias_25N'] = box(m['z500'], 24, 26, 80, 95); r['z500_bias_12N'] = box(m['z500'], 11, 13, 80, 95)
     r['ridge_gradient_bias_25N_minus_12N_m'] = r['z500_bias_25N'] - r['z500_bias_12N']
     r['geostrophic_u500_bias_from_gradient_ms'] = -9.80616 * r['ridge_gradient_bias_25N_minus_12N_m'] / (2 * 7.292e-5 * np.sin(np.radians(18.5)) * 13 * 111200)
+    # peer 5 Nov: verify the implied easterly from the height FIELD (not two box means): geostrophic u500 bias
+    # u_g = -(g / f) dz/dy along 80-95 E, by latitude 8-30 N, and its Bay mean (12-22 N)
+    zb = m['z500'][:, (LO >= 80) & (LO <= 95)].mean(1); dzdy = np.gradient(zb, LA * 111200.0); f = 2 * 7.292e-5 * np.sin(np.radians(np.maximum(np.abs(LA), 5.0)))
+    ug = -9.80616 * dzdy / f; sel = (LA >= 8) & (LA <= 30)
+    r['ug500_bias_profile_8_30N'] = {f'{a:.1f}': round(float(b), 2) for a, b in zip(LA[sel], ug[sel])}
+    r['ug500_bias_bay_12_22N'] = float(ug[(LA >= 12) & (LA <= 22)].mean())
     r['bay_steering_bias_u_v'] = [round((box(m['u850'], 10, 20, 82, 95) + box(m['u200'], 10, 20, 82, 95)) / 2, 2), round((box(m['v850'], 10, 20, 82, 95) + box(m['v200'], 10, 20, 82, 95)) / 2, 2)]
     r['bay_u850_v850_bias'] = [round(box(m['u850'], 10, 20, 82, 95), 2), round(box(m['v850'], 10, 20, 82, 95), 2)]
     r['bay_u200_v200_bias'] = [round(box(m['u200'], 10, 20, 82, 95), 2), round(box(m['v200'], 10, 20, 82, 95), 2)]
