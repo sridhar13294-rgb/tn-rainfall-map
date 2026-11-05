@@ -577,3 +577,11 @@ Condition set by Sridhar: every disadvantage of dropping F2 must be addressed be
   every best-track turn >= 45 deg reproduced within +-12 h with the same sense; no spurious turn >= 45 deg; >= 5 of 6
   quick6 storms) AND mean 72-h position error <= 200 km (today 297). 150 km = Stage 3 goal. Replaces the old 'quick6 not
   worse than base' Stage-1 gate; candidate regression gates (not worse than base within round-off) still apply.
+- 5 Nov 20:10 IST INCIDENT: from ~13:35 UTC (19:05 IST) Kaggle API authentication FAILS for accounts 2, 3, 6, 7, 9, 10, 11, 14
+  ('Authentication required to call the Kaggle API' on push; 'Permission kernels.get denied' on status). Accounts 1, 4, 5,
+  8, 12, 13 still work (all 14 use new KGAT tokens; per-account fresh HOME did not help -> not a CLI cache). Cause unknown:
+  token revocation/expiry or account restriction. Sridhar asked to have each owner check the account + regenerate the API
+  token (GitHub secret update). data/cyclone/accounts_down.txt excludes them in dispatch.py. Launch workflow now treats any
+  push without 'successfully pushed' as refused (the auth failure had been registered as 'pushed'). 8 never-pushed jobs
+  re-queued; 4 jobs pushed before the failure (p5-b1-ond, r24-shd-b, cnt-evo, shd-gen0) keep their markers AND are
+  re-queued on working accounts. Do NOT add accounts 15-18 until the cause is known.

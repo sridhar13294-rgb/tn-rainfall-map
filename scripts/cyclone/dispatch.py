@@ -49,7 +49,7 @@ while True:
     for j in d:
         # refused = the LATEST push attempt failed (push.txt is rewritten by every run; status.txt keeps old lines until the new run polls)
         pt = f"data/cyclone/kaggle/{j['slug']}/push.txt"; last = open(pt).read().strip().split('\n')[-1] if os.path.exists(pt) else ''
-        last = 'push refused' if re.search(r'error', last, re.I) else ''
+        last = 'push refused' if (last and not re.search(r'successfully pushed', last, re.I)) or re.search(r'error|authentication required|denied', last, re.I) else ''
         fresh = j.get('at') and time.time() - time.mktime(time.strptime(j['at'], '%Y-%m-%dT%H:%MZ')) + time.timezone < 1500
         # 5 Nov 17:35 fix: DONE can hold the same slug several times (each earlier launch) -> re-queue it ONCE only,
         # and never while a newer launch of that slug is still fresh (fresh = any entry of that slug < 25 min old)
@@ -62,7 +62,8 @@ while True:
     if not q: print('queue empty'); break
     busy = running(); left = []; newdone = []
     for j in q:
-        accts = [str(j['account'])] if j.get('account') else [str(a) for a in range(1, 15)]
+        down = set(open('data/cyclone/accounts_down.txt').read().split()) if os.path.exists('data/cyclone/accounts_down.txt') else set()   # 5 Nov 20:10: API auth lost
+        accts = [a for a in ([str(j['account'])] if j.get('account') else [str(a) for a in range(1, 15)]) if a not in down]
         free = [a for a in accts if len(busy.get(a, [])) < MAXPER]
         if not free: left.append(j); continue
         a = min(free, key=lambda x: len(busy.get(x, [])))

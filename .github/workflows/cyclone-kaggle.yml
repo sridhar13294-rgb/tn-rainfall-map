@@ -84,6 +84,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           ID=$KAGGLE_USERNAME/$SLUG; D=data/cyclone/kaggle/$SLUG
+          if ! grep -qi 'successfully pushed' $D/push.txt 2>/dev/null && [ "$(sed -n 3p data/cyclone/KAGGLE | tr -d ' ')" != "COLLECT" ]; then echo "push refused: $(head -1 $D/push.txt)" | tee -a $D/status.txt; exit 0; fi   # 5 Nov 20:10: anything but success (e.g. 'Authentication required') is a refusal
           if grep -qi 'error' $D/push.txt 2>/dev/null; then echo "push refused: $(tail -1 $D/push.txt)" | tee -a $D/status.txt; exit 0; fi   # e.g. weekly GPU quota used up - stop instead of polling 6 h
           # 5 Nov 17:50: push-only - register the kernel for cyclone-collect.yml and free this runner (GitHub allows 20 at once)
           if [ -s $D/push.txt ] && [ "$(sed -n 3p data/cyclone/KAGGLE | tr -d ' ')" != "COLLECT" ]; then A=$(sed -n 5p data/cyclone/KAGGLE | tr -d ' '); mkdir -p data/cyclone/pending; touch data/cyclone/pending/${SLUG}__${A:-1}; sed -i "s#$KAGGLE_USERNAME#USER#g" $D/* 2>/dev/null || true; echo "$(date -u +%H:%M) pushed; collector will fetch" >> $D/status.txt; exit 0; fi
