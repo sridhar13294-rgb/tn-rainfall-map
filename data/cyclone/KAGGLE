@@ -1,6 +1,6 @@
-tn-andes-drag
-libm_wx2020L_fields.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore andes_check.py /kaggle/working/libm_wx2020L_fields.npz T170 tp75 '{"cmt_mf": 1.0, "sfc_imp": 1.0, "drag_imp": 1.0}' 48 2020-06-09T00 /kaggle/working/andes.json > /kaggle/working/andes.log 2>&1; tail -20 /kaggle/working/andes.log
+tn-andes-gwd
+libm_wx2020L_fields.npz,geo_gwd.npz
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore andes_check.py /kaggle/working/libm_wx2020L_fields.npz T170 tp75 '{"cmt_mf": 1.0, "sfc_imp": 1.0, "gwd": 1.0}' 48 2020-06-09T00 /kaggle/working/andes.json > /kaggle/working/andes.log 2>&1; tail -20 /kaggle/working/andes.log
 NvidiaTeslaT4
-3
-#andes 2026-11-05T06:45Z
+4
+#andes 2026-11-05T06:46Z
