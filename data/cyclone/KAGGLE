@@ -1,6 +1,6 @@
-tn-s-evap-evo
+tn-tr75-pkgd
 libm_wx2020_fields.npz
-cd . && XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore wx_prof.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/prof.json 6 '{"evap": {"cmt_mf": 1.0, "ck_z": 1.0, "sfc_sal": 1.0, "grid": "T170", "_budget": true, "_win": [[0, 24], [48, 72], [96, 120]]}}' > /kaggle/working/prof.log 2>&1; tail -40 /kaggle/working/prof.log
+cd . && python -W ignore trace75.py /kaggle/working/libm_wx2020_fields.npz '{"layers":"tp75","grid":"T170","pbl_tm":1.0,"sh_mflux":0.03,"sfc_imp":1.0,"cmt_mf":1.0,"bl_lcl":1.0,"drag_imp":1.0}' 720 /kaggle/working/trace.json 2>&1 | tail -60
 NvidiaTeslaT4
-12
-#sevap 2026-11-05T03:25Z
+9
+#trpkgd 2026-11-05T03:26Z
