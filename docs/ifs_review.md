@@ -19,3 +19,12 @@ Proposed order (cheapest first; no code change before the offline numbers):
    terrain-following signature at 400-600 hPa that is absent over the plains points to D1/D2/D4.
 3. Physics-off core test (tn-core-adiab, running): if day-1 z500 error over South Asia stays large with physics off,
    the D-items move up.
+
+### D1 result (5 Nov 22:25, offline, scripts/cyclone/mm/d1_sigma_diffusion.py, start 2020-10-27, base2 constants)
+Spurious T tendency from MEGAM's step filter acting on the pure terrain imprint of T on sigma levels:
+T42: Tibet (28-38 N, 78-100 E) mean +0.10 K/day by level (max |.| 0.54); T85: mean +0.07 (local max 1.1 K/day);
+global mean ~0. Registered threshold: material if > 0.5 K/day over Tibet (box mean) -> NOT MET at T42/T85 (local
+grid-scale extremes ~1 K/day at T85, likely ~2 at T170). => D1 is a real but small, local noise source, a WARMING over
+Tibet (opposite to the falling northern heights) and globally neutral -> NOT the cause of the parked trough or of the
+adiabatic -4.5 m/day z500 drop. Kept as a correctness item (Simmons 1987 correction) for later; next: D2 and the
+adiabatic-drop lead (DFI / virtual-T handling without physics), then D4.

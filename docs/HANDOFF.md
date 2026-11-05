@@ -594,3 +594,4 @@ Condition set by Sridhar: every disadvantage of dropping F2 must be addressed be
   Kaggle's limits.
 - 5 Nov 21:36 IST: Sridhar submitted the TPU Research Cloud interest form (affiliation 'Independent researcher'; publication commitment: technical report + open verification code). Approval rolling, not guaranteed. Until then: own Kaggle account 1 only (~30 GPU h/week = ~2 full suites); plan in tomorrow's report (Stage 1 realistic ~mid-December; 15 Nov not reachable).
 - 5 Nov 21:52 IST Sridhar: account 4 = his project partner (with him from day 1), still working -> re-enabled, max 1 job at a time (accounts_max.txt). Accounts in use: 1 (Sridhar, 2 sessions) + 4 (partner, 1). Friends' accounts stay off.
+- 5 Nov 22:15 IST: BASE2 = {cmt_mf: 1, rd_si: 1} (rd_si adopted on all registered checks). mm2 default stays off (regression); every new candidate config must include both, and be compared with a base2 control run.
