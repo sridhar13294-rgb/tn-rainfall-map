@@ -16,7 +16,7 @@ VAR = [v for v in VAR0 if v[0] in os.environ.get('ONLY', '|'.join(n for n, _ in 
 starts = [k for k in TT if k[5:7] in ('10', '11') and k.endswith('T00')][::6][:N]
 res = {}
 for name, extra in VAR:
-    M = mm2.Model(os.environ.get('GR', 'T42'), 32, None, dict({'rad': 'radcloud', 'rad_every': 2}, **B2, **extra)); acc = []
+    M = mm2.Model(os.environ.get('GR', 'T42'), 32, None, {'rad': 'radcloud', 'rad_every': 2, **B2, **extra}); acc = []
     for key in starts:
         k = TT.index(key); t0 = dt.datetime.strptime(key, '%Y-%m-%dT%H'); f2 = Z['f2'][k]; f3 = {v: Z['f3'][k, V3.index(v)] for v in V3}
         st, cr = M.init(f3, Z['levs'], Z['lats'], Z['lons'], f2[V2.index('surface_pressure')], f2[V2.index('geopotential_at_surface')] / 9.80616,
