@@ -751,7 +751,7 @@ class Model:
     def dfi(self, state):
         if 'dfi' in self._jit: return self._jit['dfi'](state)
         f = self._jit['dfi'] = jax.jit(time_integration.digital_filter_initialization(equation=self.eq, ode_solver=functools.partial(time_integration.semi_lagrangian_crank_nicolson_rk2, warm_start_corrector=True, off_centering=0.05),
-                                                                  filters=[self.filt], time_span=self.ps.nondimensionalize(6 * units.hour), cutoff_period=self.ps.nondimensionalize(6 * units.hour), dt=self.dt))
+                                                                  filters=[self.filt], time_span=self.ps.nondimensionalize(float(self.S.get('dfi_span', 6.0)) * units.hour), cutoff_period=self.ps.nondimensionalize(6 * units.hour), dt=self.dt))
         return f(state)
     def surface(self, state, cr):
         """after each step: ocean mixed layer, land temperature and soil moisture, rain total."""

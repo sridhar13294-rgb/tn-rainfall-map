@@ -791,3 +791,19 @@ with the central-India surface high too strong (+1.7 hPa day 3). Central-India M
 first suspect a diagnostic difference (MSLP reduction over elevated land vs ERA5's method), to check offline. P5 focus
 moves from the 500-hPa ridge to the low-level circulation over India / the Bay (links to P1 low-level biases and the
 land high).
+
+## 6 Nov 13:10 IST - hour-0 central-India MSLP +1.0 hPa: decomposed; DFI removes part of the real thermal tide
+Offline T42, Oct 2020 starts (scripts/cyclone/mm/mslp_h0.py, base2 constants): hour-0 C-India (18-26 N, 74-86 E) MSLP
+bias +1.10/+1.17/+0.73/+1.03 hPa (mean +1.0; T170 P5 run +0.82). Decomposition (2 starts): MEGAM's IFS-style reduction
+applied to ERA5's own ps/T = +0.16 hPa (formula NOT the cause); raw initial state (no DFI) +0.67/+0.75 (model terrain
+~17 m lower -> ps +1.95 hPa, reduction compensates to ~+0.55 net: open); DFI adds +0.45/+0.41 hPa ps with lowest-level T
+unchanged (+0.04 K).
+Hypothesis 1 'the 6-h DFI window attenuates the 12-h tide' -> prediction (DFI change <= +0.15 hPa with dfi_span 12 h)
+FAILED: +0.45/+0.41 unchanged (option dfi_span added, default 6 = control bit-identical).
+Hypothesis 2 'the ADIABATIC DFI removes the solar-forced thermal tide (no forcing in the filter integration -> the tide
+pattern behaves like free fast waves and is filtered)': DFI ps change over the tropics (20 S-20 N) by longitude has a
+semidiurnal component of 0.29 hPa with maxima at local time 03.6 h and 15.6 h = the minima of the real S2 tide -> CONFIRMED
+in sign and phase; it explains 30 % of the DFI change variance (other DFI changes up to -2.2 hPa elsewhere: open).
+Options (to test offline before any GPU): (a) no DFI (keeps the tide; check noise and day-1 skill), (b) diabatic DFI
+(physics in the filter integration, Huang & Lynch 1993). REGISTER before the test: without DFI the hour-0 C-India MSLP
+bias falls by >= 0.3 hPa and T42 day-1 global MSLP / z500 RMSE vs ERA5 (4 starts) are not worse by > 2 %.
