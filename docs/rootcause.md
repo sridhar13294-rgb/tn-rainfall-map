@@ -770,3 +770,24 @@ z500 bias better by >= +0.8 m and day-1 RMSE better by >= 0.5 m vs tn-s-rd-wx0; 
 within 2 hPa per storm; quick6 72 h within 6 %; runtime (sec per start) not more than +30 %. Pass -> full exam (wx1-3)
 -> adopt only if the full set passes the same gates. Residual items: isothermal T_ref (a realistic reference profile
 would remove the rest of the kink), lowest-level start-state cooling (both cores).
+
+## 6 Nov 10:10 IST - sl_vcubic SCREEN: storm-intensity check FAILS -> NOT adopted; P5 Oct-Dec bias maps in
+sl_vcubic (tn-s-vc-sb vs base2 tn-s-rd-sb, 72 h pmin; registered: within 2 hPa per storm): Vardah 998.2 vs 990.5
+(+7.7 weaker), Nivar 989.6 vs 993.8 (-4.2 stronger), Michaung 1001.0 vs 999.9 (+1.1) -> FAIL (2 of 3 outside 2 hPa).
+(vs ERA5-at-resolution targets 995.2 / 994.1 / 992.0 the changes go both ways: Vardah closer, Nivar further.) => the
+cubic vertical interpolation changes storm cores strongly; NOT adopted as is. tn-s-vc-q6 (running on account 4)
+finishes as diagnostic only; tn-s-vc-wx0 NOT re-run on scarce GPU. Open question: why storm cores react so strongly
+(cubic overshoot at sharp vertical gradients in storm cores without a vertical limiter is the first suspect - to derive
+offline before any new GPU run).
+P5 (tn-p5-b1-ond, 18 Oct-Dec starts, base1, India/Bay box mean bias vs ERA5):
+| day | ridge 25N-12N (m) | ug500 Bay | deep steering u,v (Bay) | u850,v850 Bay | u200,v200 Bay | C-India MSLP (hPa) |
+| 0 | +4.1 | -0.7 | -0.18, +0.09 | -0.02, -0.01 | -0.34, +0.18 | +0.82 |
+| 1 | -0.1 | +0.36 | -0.99, -0.22 | -0.95, +0.12 | -1.02, -0.56 | +0.86 |
+| 3 | +6.5 | -1.0 | -1.42, -0.94 | -4.05, -0.45 | +1.21, -1.43 | +1.70 |
+| 5 | +5.0 | 0.0 | +0.47, -0.70 | -2.62, -0.13 | +3.56, -1.27 | +1.17 |
+=> the 500-hPa ridge / geostrophic steering is NOT the main error (|ug500| <= 1 m/s). The Bay steering error is LOW-LEVEL:
+u850 -4.05 m/s by day 3 (too easterly) plus a southward deep-layer component (v -0.94 at day 3 -> storms too far south),
+with the central-India surface high too strong (+1.7 hPa day 3). Central-India MSLP is already +0.82 hPa at DAY 0 ->
+first suspect a diagnostic difference (MSLP reduction over elevated land vs ERA5's method), to check offline. P5 focus
+moves from the 500-hPa ridge to the low-level circulation over India / the Bay (links to P1 low-level biases and the
+land high).
