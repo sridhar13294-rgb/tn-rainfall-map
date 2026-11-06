@@ -53,7 +53,8 @@ while True:
         fresh = j.get('at') and time.time() - time.mktime(time.strptime(j['at'], '%Y-%m-%dT%H:%MZ')) + time.timezone < 1500
         # 5 Nov 17:35 fix: DONE can hold the same slug several times (each earlier launch) -> re-queue it ONCE only,
         # and never while a newer launch of that slug is still fresh (fresh = any entry of that slug < 25 min old)
-        if 'push refused' in last and not fresh and j['slug'] not in {x['slug'] for x in q} | {x['slug'] for x in back} | freshslugs:
+        dropped = set(open('data/cyclone/queue_dropped.txt').read().split()) if os.path.exists('data/cyclone/queue_dropped.txt') else set()   # 6 Nov: jobs cancelled on purpose are never re-queued
+        if 'push refused' in last and not fresh and j['slug'] not in {x['slug'] for x in q} | {x['slug'] for x in back} | freshslugs | dropped:
             back.append({k: v for k, v in j.items() if k not in ('account', 'at')}); print('re-queued (refused):', j['slug'], flush=True)
         else: keep.append(j)
     if back: q = back + q
