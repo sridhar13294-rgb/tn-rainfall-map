@@ -749,6 +749,7 @@ class Model:
             eqs = time_integration.compose_equations([self.eq, self.phys])
             self.step = time_integration.step_with_filters(time_integration.semi_lagrangian_crank_nicolson_rk2(eqs, self.dt, off_centering=0.05, warm_start_corrector=True), [self.filt])
     def dfi(self, state):
+        if self.S.get('dfi_off', 0) > 0: return state                                   # dfi_off (6 Nov): the adiabatic DFI removes part of the solar thermal tide (rootcause 13:10)
         if 'dfi' in self._jit: return self._jit['dfi'](state)
         f = self._jit['dfi'] = jax.jit(time_integration.digital_filter_initialization(equation=self.eq, ode_solver=functools.partial(time_integration.semi_lagrangian_crank_nicolson_rk2, warm_start_corrector=True, off_centering=0.05),
                                                                   filters=[self.filt], time_span=self.ps.nondimensionalize(float(self.S.get('dfi_span', 6.0)) * units.hour), cutoff_period=self.ps.nondimensionalize(6 * units.hour), dt=self.dt))

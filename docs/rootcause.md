@@ -807,3 +807,11 @@ in sign and phase; it explains 30 % of the DFI change variance (other DFI change
 Options (to test offline before any GPU): (a) no DFI (keeps the tide; check noise and day-1 skill), (b) diabatic DFI
 (physics in the filter integration, Huang & Lynch 1993). REGISTER before the test: without DFI the hour-0 C-India MSLP
 bias falls by >= 0.3 hPa and T42 day-1 global MSLP / z500 RMSE vs ERA5 (4 starts) are not worse by > 2 %.
+
+## 6 Nov 16:20 IST - dfi_off offline test (T42, 2 of the 4 registered starts; the run ended early) - PASSES so far
+Hour-0 C-India MSLP +1.10/+1.17 -> +0.67/+0.75 hPa (-0.43; registered >= 0.3) PASS; day-1 global MSLP RMSE 3.70/3.51 ->
+3.69/3.51 hPa and z500 26.72/26.81 -> 26.68/26.46 m (not worse > 2 %) PASS; first-3-h |dMSLP/dt| 0.37 -> 0.45 hPa/h
+(+22 %, includes the real tide; noted, not gated). Option dfi_off (M.dfi returns the state unchanged; default off,
+control bit-identical). REGISTERED T170 screen on base2 (tn-s-nd-sb, -q6, -wx0 vs tn-s-rd-*): sb 72 h pmin within 2 hPa
+per storm; quick6 72 h within 6 %; wx0 day-1 z500 RMSE not worse > 0.3 m and day-1 MSLP RMSE not worse > 2 %; 18/18
+stable. Pass -> full exam -> adopt on all gates.
