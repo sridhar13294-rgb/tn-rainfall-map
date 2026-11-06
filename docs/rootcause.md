@@ -815,3 +815,10 @@ Hour-0 C-India MSLP +1.10/+1.17 -> +0.67/+0.75 hPa (-0.43; registered >= 0.3) PA
 control bit-identical). REGISTERED T170 screen on base2 (tn-s-nd-sb, -q6, -wx0 vs tn-s-rd-*): sb 72 h pmin within 2 hPa
 per storm; quick6 72 h within 6 %; wx0 day-1 z500 RMSE not worse > 0.3 m and day-1 MSLP RMSE not worse > 2 %; 18/18
 stable. Pass -> full exam -> adopt on all gates.
+
+## 6 Nov 18:20 IST - P5 low-level easterly: resolution check for offline diagnosis
+T42 does NOT reproduce it (base2, 4 Oct-Nov starts: Bay u850 -0.78 m/s at day 3, C-India MSLP -4.4 hPa = opposite sign)
+-> T42 unusable for P5. T85 (2 starts) DOES: Bay u850 +1.44 / -1.72 / -3.06 m/s at days 1/2/3, v850 -0.35 / -2.00 / -0.81
+(T170 18 starts: -4.05 / -0.45 at day 3) -> T85 is the offline grid for P5 (one variant per process: ~6 GB RAM).
+Running: mechanism denial at T85, one process changed at a time (physics off, no CMT, shallow <= 200 hPa, implicit
+drag, land module, no DFI) -> the variant that removes most of the day-3 easterly points at the process.
