@@ -1,68 +1,68 @@
 {
- "updated": "2026-11-05T22:25:11.344025+00:00",
+ "updated": "2026-11-06T00:16:17.027609+00:00",
  "method": "quantile",
- "cut_mm_h": 16.36,
- "scale": 0.13,
+ "cut_mm_h": 16.55,
+ "scale": 0.129,
  "lut": [
   [
-   16.36,
+   16.55,
    1.0
   ],
   [
-   17.66,
+   17.86,
    1.13
   ],
   [
-   19.2,
+   19.45,
    1.3
   ],
   [
-   21.02,
+   21.19,
    1.51
   ],
   [
-   22.83,
+   23.03,
    1.76
   ],
   [
-   25.14,
+   25.39,
    2.11
   ],
   [
-   28.16,
+   28.41,
    2.55
   ],
   [
-   32.5,
+   32.84,
    3.32
   ],
   [
-   39.0,
-   4.45
+   39.41,
+   4.43
   ],
   [
-   48.75,
-   6.99
+   48.91,
+   6.96
   ],
   [
    49.19,
-   10.45
+   10.43
   ]
  ],
- "pairs": 544,
- "csi": 0.101,
+ "pairs": 541,
+ "csi": 0.1,
  "area_bias": 1.0,
  "radar_p90": 7.0,
  "radars": {
   "Chennai": {
    "working": false,
    "scan_utc": "2026-11-05T07:50:00+00:00",
-   "note": "picture is 875 min old (radar probably not working)"
+   "note": "picture is 986 min old (radar probably not working)"
   },
   "Karaikal": {
-   "working": false,
-   "scan_utc": null,
-   "note": "no scan time or picture too small"
+   "working": true,
+   "scan_utc": "2026-11-06T00:10:26+00:00",
+   "note": ""
   }
  },
  "gauge_fit": {
@@ -71,6 +71,6 @@
   "ets": 0.56,
   "bias": 0.87,
   "mae": 5.1,
-  "updated": "2026-11-05T22:25:11.344025+00:00"
+  "updated": "2026-11-06T00:16:17.027609+00:00"
  }
 }
