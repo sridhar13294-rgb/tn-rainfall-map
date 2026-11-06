@@ -3,4 +3,4 @@ libm_wx2020_fields.npz,wx_truth_2020.npz
 XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/suite_drg_wx.json 3 4 /kaggle/working/wx_3.json > /kaggle/working/wx_3.log 2>&1; tail -3 /kaggle/working/wx_3.log
 NvidiaTeslaT4
 1
-#sdrg 2026-11-06T04:32Z
+#sdrg 2026-11-06T11:15Z
