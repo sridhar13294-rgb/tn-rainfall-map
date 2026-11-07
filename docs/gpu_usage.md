@@ -135,3 +135,11 @@ GitHub Actions: land library libm_wx2020L (ERA5 soil/skin) building.
 | 9-10 | tn-base-gen0/1 | baseline: genesis 31 % / 45 % |
 | 11-13 | tn-evo-ctl/f2/tp75 | budget evolution (6/6/5 of 10 starts; OOM-killed after) |
 | 14 | tn-base-tnr | baseline: TN box rain +43 % |
+
+## Account 1 (Sridhar) GPU-hour ledger - week from Sat 7 Nov 00:00 UTC (cap 30 h; stop launching at ~28 h)
+| launched (UTC) | job | est. GPU-h | running total |
+|---|---|---|---|
+| 7 Nov 00:22 | tn-s-drg-wx3 (exam quarter) | 1.75 | 1.75 |
+| 7 Nov 00:22 | tn-s-nd-wx0 (exam quarter, diagnostic) | 1.75 | 3.5 |
+(estimates from 5 Nov run times: exam quarter ~1.75 h, sb ~0.35 h, q6 ~0.25 h, gen part ~2 h, r24 half ~1.35 h; replace
+with the measured kernel time when collected)

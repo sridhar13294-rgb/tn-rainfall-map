@@ -822,3 +822,11 @@ T42 does NOT reproduce it (base2, 4 Oct-Nov starts: Bay u850 -0.78 m/s at day 3,
 (T170 18 starts: -4.05 / -0.45 at day 3) -> T85 is the offline grid for P5 (one variant per process: ~6 GB RAM).
 Running: mechanism denial at T85, one process changed at a time (physics off, no CMT, shallow <= 200 hPa, implicit
 drag, land module, no DFI) -> the variant that removes most of the day-3 easterly points at the process.
+
+## 7 Nov 05:55 IST - dfi_off T170 screen: storm check FAILS by 0.1 hPa -> NOT adopted (gate not relaxed)
+tn-s-nd-sb vs base2 tn-s-rd-sb, 72 h pmin (registered: within 2 hPa per storm): Vardah 988.8 vs 990.5 (-1.7) pass,
+Nivar 995.7 vs 993.8 (+1.9) pass, Michaung 1002.0 vs 999.9 (+2.1) FAIL. The 2 hPa gate was set to the round-off spread,
+so this is marginal - but the rule is that gates are never relaxed after a result and a re-run to get a pass is not
+allowed. => dfi_off NOT adopted. tn-s-nd-q6 / -wx0 (already pushed at 05:52, cannot be cancelled) finish as
+diagnostics: they show whether removing the DFI changes tracks and day-1 z500 at T170; a future candidate must keep the
+real tide AND pass storms (e.g. diabatic DFI, or DFI on the balanced part only).
