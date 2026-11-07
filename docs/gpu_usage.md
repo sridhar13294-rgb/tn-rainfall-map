@@ -141,5 +141,7 @@ GitHub Actions: land library libm_wx2020L (ERA5 soil/skin) building.
 |---|---|---|---|
 | 7 Nov 00:22 | tn-s-drg-wx3 (exam quarter) | 1.75 | 1.75 |
 | 7 Nov 00:22 | tn-s-nd-wx0 (exam quarter, diagnostic) | 1.75 | 3.5 |
+| 7 Nov 06:50 | tn-p5-denial (T170, 7 variants x 6 starts x 3 days) | ~1.0 | 4.5 |
+| 7 Nov 06:50 | tn-s-shd-gen0 (LEFTOVER diagnostic of rejected sh_depth - should not have run; cannot cancel) | ~2.0 | 6.5 |
 (estimates from 5 Nov run times: exam quarter ~1.75 h, sb ~0.35 h, q6 ~0.25 h, gen part ~2 h, r24 half ~1.35 h; replace
 with the measured kernel time when collected)
