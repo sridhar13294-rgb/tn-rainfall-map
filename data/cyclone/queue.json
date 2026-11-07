@@ -1,23 +1,5 @@
 [
  {
-  "slug": "tn-p5-denial",
-  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
-  "note": "p5 denial",
-  "cmd": "GR=T170 STRIDE=8 OUT=/kaggle/working/u850_denial.json XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore u850_denial.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 6 '{\"sfc_imp\": 1, \"land_rs\": 100, \"soil_fr\": 1}' > /kaggle/working/u850_denial.log 2>&1; tail -12 /kaggle/working/u850_denial.log"
- },
- {
-  "slug": "tn-s-drg-wx2",
-  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
-  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/suite_drg_wx.json 2 4 /kaggle/working/wx_2.json > /kaggle/working/wx_2.log 2>&1; tail -3 /kaggle/working/wx_2.log",
-  "note": "sdrg"
- },
- {
-  "slug": "tn-s-shd-gen0",
-  "inputs": "libm48_fields.npz",
-  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/suite_shd_gen.json 0 2 /kaggle/working/gen_0.json > /kaggle/working/gen_0.log 2>&1; tail -3 /kaggle/working/gen_0.log",
-  "note": "sshd"
- },
- {
   "slug": "tn-r24-shd-b",
   "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
   "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore tn_rain_diag.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz /kaggle/working/tnr.json 2020-01-16,2020-02-15,2020-03-16,2020-04-15,2020-05-15,2020-06-14,2020-07-14,2020-08-13,2020-09-12,2020-10-12,2020-11-11,2020-12-11 '{\"shd\": {\"cmt_mf\": 1.0, \"sh_depth\": 1.0, \"grid\": \"T170\"}}' > /kaggle/working/tnr.log 2>&1; tail -14 /kaggle/working/tnr.log",
