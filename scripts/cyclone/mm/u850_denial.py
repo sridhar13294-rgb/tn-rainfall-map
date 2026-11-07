@@ -13,7 +13,7 @@ B2 = {'cmt_mf': 1, 'rd_si': 1}
 VAR0 = [('base2', {}), ('physics off', {'phys_off': True}), ('no CMT', {'cmt_mf': 0, 'cmt_cu': 0.0}), ('shallow <=200 hPa', {'sh_depth': 1}),
        ('implicit drag', {'drag_imp': 1}), ('land module', json.loads(sys.argv[4]) if len(sys.argv) > 4 else {'soil_fr': 1, 'land_rs': 1}), ('no DFI', {'dfi_off': 1})]
 VAR = [v for v in VAR0 if v[0] in os.environ.get('ONLY', '|'.join(n for n, _ in VAR0)).split('|')]
-starts = [k for k in TT if k[5:7] in ('10', '11') and k.endswith('T00')][::6][:N]
+starts = [k for k in TT if k[5:7] in ('10', '11') and k.endswith('T00')][::int(os.environ.get('STRIDE', '6'))][:N]
 res = {}
 for name, extra in VAR:
     M = mm2.Model(os.environ.get('GR', 'T42'), 32, None, {'rad': 'radcloud', 'rad_every': 2, **B2, **extra}); acc = []
@@ -29,4 +29,4 @@ for name, extra in VAR:
         acc.append(row)
     a = np.mean(np.array(acc), 0); res[name] = a.tolist()
     print(f'{name:18s}', ' | '.join(f'd{d}: u850 {a[d-1,0]:+.2f} v850 {a[d-1,1]:+.2f} C-India MSLP {a[d-1,2]:+.2f}' for d in (1, 2, 3)), flush=True)
-json.dump(dict(starts=starts, res=res), open('/tmp/claude-0/-home-claude/2c3b34a9-cc00-53e0-8864-49737f9cdb93/scratchpad/u850_denial.json', 'w'))
+json.dump(dict(starts=starts, res=res, grid=os.environ.get('GR', 'T42')), open(os.environ.get('OUT', 'u850_denial.json'), 'w'))

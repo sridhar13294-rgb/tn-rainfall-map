@@ -1,5 +1,11 @@
 [
  {
+  "slug": "tn-p5-denial",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "note": "p5 denial",
+  "cmd": "GR=T170 STRIDE=8 OUT=/kaggle/working/u850_denial.json XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore u850_denial.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 6 '{\"sfc_imp\": 1, \"land_rs\": 100, \"soil_fr\": 1}' > /kaggle/working/u850_denial.log 2>&1; tail -12 /kaggle/working/u850_denial.log"
+ },
+ {
   "slug": "tn-s-drg-wx2",
   "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
   "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/suite_drg_wx.json 2 4 /kaggle/working/wx_2.json > /kaggle/working/wx_2.log 2>&1; tail -3 /kaggle/working/wx_2.log",

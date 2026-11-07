@@ -830,3 +830,11 @@ so this is marginal - but the rule is that gates are never relaxed after a resul
 allowed. => dfi_off NOT adopted. tn-s-nd-q6 / -wx0 (already pushed at 05:52, cannot be cancelled) finish as
 diagnostics: they show whether removing the DFI changes tracks and day-1 z500 at T170; a future candidate must keep the
 real tide AND pass storms (e.g. diabatic DFI, or DFI on the balanced part only).
+
+## 7 Nov 12:15 IST - P5 mechanism denial moved to GPU (T170)
+The container is reclaimed when the session is idle (3 restarts 6-7 Nov), killing long offline runs; one T85 variant
+does not finish in a 10-min foreground call. -> tn-p5-denial on Kaggle (account 1, ~1 GPU-h est.): T170, 6 Oct-Nov
+starts, 3 days, one process changed per variant from base2 (physics off, no CMT, shallow <= 200 hPa, implicit drag,
+land module, no DFI); Bay u850/v850 and C-India MSLP bias vs ERA5 at days 1-3. Reading rule (set before the result):
+the variant that removes >= 50 % of the base2 day-3 Bay u850 bias names the process; if none does, the easterly is
+dynamical / initial-state (physics-off comparison decides which).
