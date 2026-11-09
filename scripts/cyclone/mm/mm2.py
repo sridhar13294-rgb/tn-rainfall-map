@@ -29,6 +29,12 @@ import cloudtop                                   # D2 cloud-top entrainment (nu
 import evapifs                                    # rain re-evaporation, IFS form (numpy / jax)
 import landinit                                   # starting land state from analysed soil fields (numpy; test_land_init.py)
 from dinosaur import coordinate_systems, spherical_harmonic, sigma_coordinates, primitive_equations, scales, time_integration, filtering, vertical_interpolation
+# 10 Nov 2026: same arithmetic on every GPU. Dinosaur picks 6-pass bfloat16 emulation (BF16_BF16_F32_X6) for its float32
+# spectral transforms on Ampere+ GPUs (A100) but true float32 (Precision.HIGHEST) on the T4 and CPU. On the E2E A100 that
+# path needed Triton GEMM (failed with deterministic ops) and, with Triton off, gave day-1 z500 +10 m on all 19 starts.
+# Telling Dinosaur the GPU has no bf16 dot algorithms makes it use HIGHEST, exactly as on the T4: no change on T4 / CPU.
+from dinosaur import jax_numpy_utils as _dju
+_dju._gpu_supports_bf16_dot_algorithms = lambda: False
 units = scales.units
 G, RD, RV, CP, LV, SB, KARM = 9.80616, 287.04, 461.5, 1004.6, 2.5e6, 5.67e-8, 0.4; KAP = RD / CP
 def sigma_bounds(n=32):
