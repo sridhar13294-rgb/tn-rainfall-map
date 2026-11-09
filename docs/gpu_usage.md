@@ -164,3 +164,4 @@ Prediction unchanged for the benchmark (45-90 s per start). P5 reading rule (reg
 | 09 Nov 18:38 UTC | E2E e2e-bench-p5 | 8 min (create -> delete) |
 attempt 5 (18:30Z, ~8 min billed): setup 107 s this time; every forecast failed at once on the A100: XLA 'No supported config found for HLO gemm_fusion_dot' - with --xla_gpu_deterministic_ops autotuning is off and the Triton GEMM path (used only on Ampere+, never on Kaggle's T4) has no default config. Fix: --xla_gpu_enable_triton_gemm=false (cuBLAS, as on the T4). Flag checked locally (same jax 0.12.0.1; a bogus flag is rejected as control). Cannot be tested without an Ampere GPU.
 Failed attempts total: ~23 billed min (~Rs 70).
+attempt 6 (18:40Z): refused before launch, "Insufficient Credits ... additional 36.0" - E2E re-checks 24 h x Rs 180 = Rs 4,320 at EVERY launch, so each rupee spent must be topped up before the next launch. 0 GPU min. Asked Sridhar for a top-up (min Rs 36, suggested Rs 500).
