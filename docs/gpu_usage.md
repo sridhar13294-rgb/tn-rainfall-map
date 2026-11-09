@@ -151,4 +151,4 @@ Same job as Kaggle tn-s-rd-wx0 (base2 exam, quarter 0, 19 starts; T4 = 339-344 s
 Machine: E2E A100 80 GB (Rs 180/h + GST), PyTorch 2.8 image. Hard limit 45 min on the GPU.
 Prediction: 45-90 s per start (A100 memory bandwidth ~6x T4), whole quarter 15-30 min + ~5 min setup;
 z500 d1/d5/d10 per start equal to the T4 run within 0.1 m. Per-start > 120 s -> A100 not worth it vs Kaggle; stop and report.
-| 09 Nov 17:50 UTC | E2E e2e-rd-wx0 | 1 min (create -> delete) |
+9 Nov 17:50Z attempt 1: create refused (HTTP 412) before any instance existed - 0 GPU minutes, nothing billed.
