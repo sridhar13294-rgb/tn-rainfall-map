@@ -86,14 +86,31 @@ elif cmd == 'create':
                 instance_type='paid_usage', public_key=[pub], security_group_id=int(ids['security_group_id']))
     s, r = call('POST', '/notebooks/', body)
     if s >= 300: print('create failed HTTP', s, json.dumps(safe(r))[:800], file=sys.stderr); sys.exit(2)
-    iid = r['data']['id']; t0 = time.time(); ip = ''
+    iid = r['data']['id']; t0 = time.time(); ip = ''; t_run = None
+    import re as _re
+    def find_ip(o):                                                 # the IP field name is not documented: search for it
+        if isinstance(o, dict):
+            for k, v in o.items():
+                if isinstance(v, str) and 'ip' in k.lower() and _re.fullmatch(r'\d+\.\d+\.\d+\.\d+', v.strip()): return v.strip()
+            for v in o.values():
+                x = find_ip(v)
+                if x: return x
+        if isinstance(o, list):
+            for v in o:
+                x = find_ip(v)
+                if x: return x
+        return ''
     while time.time() - t0 < 900:                                   # wait up to 15 min for 'running' + public IP
         s, r = call('GET', f'/notebooks/{iid}/'); d = r.get('data', {}) if isinstance(r, dict) else {}
-        st, ip = str(d.get('status', '')).lower(), d.get('public_ip') or ''
+        st = str(d.get('status', '')).lower(); ip = d.get('public_ip') or find_ip(d)
         print('status', st, 'ip', 'yes' if ip else 'no', file=sys.stderr)
         if st in ('running', 'ready') and ip: break
+        if st in ('running', 'ready'):
+            t_run = t_run or time.time()
+            if time.time() - t_run > 120:                           # running but no IP: stop paying, show field names
+                print('running without an IP field; keys:', sorted(d.keys()), file=sys.stderr); break
         if st in ('failed', 'error'): break
-        time.sleep(20)
+        time.sleep(15)
     print(iid, ip or 'NONE', keyid or 'NONE')
 elif cmd == 'delete':
     iid, keyid = sys.argv[2], sys.argv[3]

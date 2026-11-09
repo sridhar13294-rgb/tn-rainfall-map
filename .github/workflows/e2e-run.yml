@@ -57,7 +57,7 @@ jobs:
           open('/tmp/job.py', 'w').write(src)
           PY
           S="ssh -i /tmp/k -o StrictHostKeyChecking=no -o ServerAliveInterval=30"
-          for u in root ubuntu; do $S -o ConnectTimeout=20 $u@$IP true 2>/dev/null && { echo "U=$u" >> $GITHUB_ENV; USR=$u; break; }; done
+          for u in root ubuntu jovyan; do $S -o ConnectTimeout=20 $u@$IP true 2>/dev/null && { echo "U=$u" >> $GITHUB_ENV; USR=$u; break; }; done
           [ -n "$USR" ] || { echo "ssh failed"; exit 1; }
           scp -i /tmp/k -o StrictHostKeyChecking=no /tmp/job.py $USR@$IP:/tmp/job.py
           $S $USR@$IP "timeout $(( MAXMIN * 60 )) python3 /tmp/job.py" 2>&1 | tail -60 | sed "s#$IP#IP#g" || true

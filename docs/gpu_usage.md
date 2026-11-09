@@ -145,3 +145,9 @@ GitHub Actions: land library libm_wx2020L (ERA5 soil/skin) building.
 | 7 Nov 06:50 | tn-s-shd-gen0 (LEFTOVER diagnostic of rejected sh_depth - should not have run; cannot cancel) | ~2.0 | 6.5 |
 (estimates from 5 Nov run times: exam quarter ~1.75 h, sb ~0.35 h, q6 ~0.25 h, gen part ~2 h, r24 half ~1.35 h; replace
 with the measured kernel time when collected)
+
+## E2E benchmark e2e-rd-wx0 (registered 9 Nov 2026 ~18:40Z, before the run)
+Same job as Kaggle tn-s-rd-wx0 (base2 exam, quarter 0, 19 starts; T4 = 339-344 s per start, ~108 min).
+Machine: E2E A100 80 GB (Rs 180/h + GST), PyTorch 2.8 image. Hard limit 45 min on the GPU.
+Prediction: 45-90 s per start (A100 memory bandwidth ~6x T4), whole quarter 15-30 min + ~5 min setup;
+z500 d1/d5/d10 per start equal to the T4 run within 0.1 m. Per-start > 120 s -> A100 not worth it vs Kaggle; stop and report.
