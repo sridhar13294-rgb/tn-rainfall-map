@@ -11,7 +11,8 @@ la = np.asarray(Z['lats'], float); lo = np.asarray(Z['lons'], float)
 bay = np.ix_((la >= 10) & (la <= 20), (lo >= 82) & (lo <= 95)); ci = np.ix_((la >= 18) & (la <= 26), (lo >= 74) & (lo <= 86))
 B2 = {'cmt_mf': 1, 'rd_si': 1}
 VAR0 = [('base2', {}), ('physics off', {'phys_off': True}), ('no CMT', {'cmt_mf': 0, 'cmt_cu': 0.0}), ('shallow <=200 hPa', {'sh_depth': 1}),
-       ('implicit drag', {'drag_imp': 1}), ('land module', json.loads(sys.argv[4]) if len(sys.argv) > 4 else {'soil_fr': 1, 'land_rs': 1}), ('no DFI', {'dfi_off': 1})]
+       ('implicit drag', {'drag_imp': 1}), ('land module', json.loads(sys.argv[4]) if len(sys.argv) > 4 else {'soil_fr': 1, 'land_rs': 1}), ('no DFI', {'dfi_off': 1}),
+       ('base2 noise1', {'sppt': 0.02, 'sppt_seed': 1}), ('base2 noise2', {'sppt': 0.02, 'sppt_seed': 2})]   # 10 Nov: spread from a tiny perturbation
 VAR = [v for v in VAR0 if v[0] in os.environ.get('ONLY', '|'.join(n for n, _ in VAR0)).split('|')]
 starts = [k for k in TT if k[5:7] in ('10', '11') and k.endswith('T00')][::int(os.environ.get('STRIDE', '6'))][:N]
 res = {}

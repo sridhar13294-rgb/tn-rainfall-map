@@ -853,3 +853,20 @@ the dynamics/large-scale pressure pattern makes it and physics partly holds it b
 scheme explains most of the central-India high (+2.13 -> +0.52) and all of the southward v850, and a third of u850 -> the
 P5 low-level error and the P1 tall-shallow problem are linked (same scheme). Pending: implicit drag, land module, no DFI
 (Kaggle, launched 20:05Z). The 9 Nov E2E numbers for these three are NOT used (A100 precision issue, docs/gpu_usage.md).
+
+## 10 Nov 03:10 IST - P5 denial complete + noise check registered; P2 32 L neutrality result
+| variant | u850 d3 | v850 d3 | C-India MSLP d3 |
+|---|---|---|---|
+| implicit drag | -2.97 (-26 %) | -2.10 | +1.98 |
+| land module | -2.75 (-32 %) | -2.53 | +1.78 |
+| no DFI | -3.22 (-20 %) | -2.42 | +1.88 |
+Reading: NO variant meets the registered 50 % rule. Every change moves day-3 u850 by 11-33 % in the same direction, which
+looks like spread from any perturbation rather than one process. Exception with a distinct signature: shallow <= 200 hPa
+(v850 -3.18 -> +0.77, C-India MSLP +2.13 -> +0.52; others stay -2.1..-2.5 and +1.8..+2.1).
+Noise check (registered before the run): base2 with a 2 % SPPT perturbation, seeds 1 and 2 (tn-p5-den-noise, same 6 starts).
+Prediction: d3 u850 spread among base2 / noise1 / noise2 about +-0.5 m/s. If the noise members also move u850 by ~1 m/s,
+the 11-33 % moves are noise and only the shallow-depth signature (v850, MSLP) is a real signal.
+P2 32 L neutrality (registered 'base1 + drag_imp vs base1: z500 within +-0.5 m; intensity and tracks not worse beyond the
+round-off spread'): z500 d1/d5/d10 20.01/73.0/119.1 vs 20.02/73.1/119.2 PASS; 72-h pmin Vardah 989.9 vs 989.5, Nivar 994.9 vs
+994.5, Michaung 999.3 vs 999.4 PASS; quick6 72-h track 318.9 vs 297.2 km = +7.3 % vs the 6 % spread FAIL (marginal).
+=> drag_imp stays a 75-level-only fix; NOT added to the 32-level base. 32 L does not need it (stable without it).

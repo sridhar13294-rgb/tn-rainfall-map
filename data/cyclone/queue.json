@@ -1,1 +1,8 @@
-[]
+[
+ {
+  "slug": "tn-p5-den-noise",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "note": "p5 noise",
+  "cmd": "GR=T170 ONLY=\"base2 noise1|base2 noise2\" STRIDE=8 OUT=/kaggle/working/den_noise.json XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore u850_denial.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 6 > /kaggle/working/den_noise.log 2>&1; tail -12 /kaggle/working/den_noise.log"
+ }
+]
