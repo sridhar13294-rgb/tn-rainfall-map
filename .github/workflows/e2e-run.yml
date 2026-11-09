@@ -1,0 +1,77 @@
+name: MEGAM - E2E GPU job
+# 9 Nov 2026: paid GPU on E2E TIR (Delhi). Triggered by a push to cases that changes data/cyclone/E2E_JOB:
+#   line 1  mode: discover | run
+#   line 2  slug (results go to data/cyclone/e2e/<slug>/)
+#   line 3  release inputs (comma list, e.g. libm_wx2020_fields.npz,wx_truth_2020.npz)
+#   line 4  max minutes on the GPU (hard limit; default 60)
+#   line 5  job command (Kaggle-style; /kaggle/working is mapped to the run directory)
+# Zero-waste rules: reaper first, delete in an always() step, remote 'timeout', minute ledger appended to
+# docs/gpu_usage.md. Secrets E2E_API_KEY / E2E_API_TOKEN / E2E_PROJECT_ID are added by Sridhar himself.
+on:
+  push:
+    branches: [cases]
+    paths: ['data/cyclone/E2E_JOB']
+permissions:
+  contents: write
+concurrency: {group: e2e-run, cancel-in-progress: false}
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    env:
+      E2E_API_KEY: ${{ secrets.E2E_API_KEY }}
+      E2E_API_TOKEN: ${{ secrets.E2E_API_TOKEN }}
+      E2E_PROJECT_ID: ${{ secrets.E2E_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: mode
+        run: |
+          echo "MODE=$(sed -n 1p data/cyclone/E2E_JOB | tr -d ' ')" >> $GITHUB_ENV
+          echo "SLUG=$(sed -n 2p data/cyclone/E2E_JOB | tr -d ' ')" >> $GITHUB_ENV
+          echo "FILES=$(sed -n 3p data/cyclone/E2E_JOB | tr -d ' ')" >> $GITHUB_ENV
+          M=$(sed -n 4p data/cyclone/E2E_JOB | tr -d ' '); echo "MAXMIN=${M:-60}" >> $GITHUB_ENV
+      - name: discover (no GPU, no cost)
+        if: env.MODE == 'discover'
+        run: python3 scripts/cyclone/e2e/e2e.py discover
+      - name: reap leftovers
+        if: env.MODE == 'run'
+        run: python3 scripts/cyclone/e2e/e2e.py reap
+      - name: create GPU container
+        if: env.MODE == 'run'
+        run: |
+          ssh-keygen -q -t ed25519 -N '' -f /tmp/k -C "megam-$SLUG"
+          echo "T_START=$(date -u +%s)" >> $GITHUB_ENV
+          read IID IP KID < <(python3 scripts/cyclone/e2e/e2e.py create "megam-$SLUG" /tmp/k.pub | tail -1)
+          echo "IID=$IID" >> $GITHUB_ENV; echo "KID=$KID" >> $GITHUB_ENV; echo "::add-mask::$IP"; echo "IP=$IP" >> $GITHUB_ENV
+          [ "$IP" != "NONE" ] || { echo "no running instance"; exit 1; }
+      - name: run the job over SSH
+        if: env.MODE == 'run'
+        run: |
+          JOB=$(sed -n '5,$p' data/cyclone/E2E_JOB)
+          python3 - "$JOB" "$FILES" <<'PY'
+          import sys
+          job, files = sys.argv[1], sys.argv[2]
+          src = open('scripts/cyclone/kaggle/kernel.py').read().replace('/kaggle/working', '/root/work')
+          src = src.replace('__JOB__', 'cd repo/scripts/cyclone/mm && ' + job.replace('/kaggle/working', '/root/work').replace('"', '\\"')).replace('__FILES__', files).replace('__ACC__', 'gpu')
+          src = src.replace("W = '/root/work'; os.chdir(W)", "W = '/root/work'; os.makedirs(W, exist_ok=True); os.chdir(W)")
+          open('/tmp/job.py', 'w').write(src)
+          PY
+          S="ssh -i /tmp/k -o StrictHostKeyChecking=no -o ServerAliveInterval=30"
+          for u in root ubuntu; do $S -o ConnectTimeout=20 $u@$IP true 2>/dev/null && { echo "U=$u" >> $GITHUB_ENV; USR=$u; break; }; done
+          [ -n "$USR" ] || { echo "ssh failed"; exit 1; }
+          scp -i /tmp/k -o StrictHostKeyChecking=no /tmp/job.py $USR@$IP:/tmp/job.py
+          $S $USR@$IP "timeout $(( MAXMIN * 60 )) python3 /tmp/job.py" 2>&1 | tail -60 | sed "s#$IP#IP#g" || true
+          mkdir -p data/cyclone/e2e/$SLUG
+          scp -i /tmp/k -o StrictHostKeyChecking=no "$USR@$IP:/root/work/*.json" "$USR@$IP:/root/work/*.log" data/cyclone/e2e/$SLUG/ 2>/dev/null || true
+      - name: DELETE the container (always)
+        if: always() && env.MODE == 'run'
+        run: |
+          python3 scripts/cyclone/e2e/e2e.py delete "${IID:-NONE}" "${KID:-NONE}" || true
+          python3 scripts/cyclone/e2e/e2e.py reap || true
+          if [ -n "$T_START" ]; then M=$(( ( $(date -u +%s) - T_START + 59 ) / 60 )); echo "| $(date -u +'%d %b %H:%M') UTC | E2E $SLUG | ${M} min (create -> delete) |" >> docs/gpu_usage.md; fi
+      - name: commit results
+        if: always() && env.MODE == 'run'
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add data/cyclone/e2e docs/gpu_usage.md 2>/dev/null; git commit -qm "E2E job $SLUG results" || exit 0
+          for i in 1 2 3 4 5; do git pull -q --rebase origin cases && git push -q origin HEAD:cases && break; sleep 15; done
