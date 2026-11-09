@@ -3,3 +3,4 @@ e2e-bench-p5
 libm_wx2020_fields.npz,wx_truth_2020.npz
 70
 XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding --xla_gpu_enable_triton_gemm=false" python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/suite_rd_wx.json 0 4 /kaggle/working/wx_0.json > /kaggle/working/wx_0.log 2>&1; tail -3 /kaggle/working/wx_0.log; GR=T170 ONLY="implicit drag|land module|no DFI" STRIDE=8 OUT=/kaggle/working/den_3.json XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding --xla_gpu_enable_triton_gemm=false" python -W ignore u850_denial.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 6 '{"sfc_imp": 1, "land_rs": 100, "soil_fr": 1}' > /kaggle/working/den_3.log 2>&1; grep -v WARNING /kaggle/working/den_3.log | tail -5
+# relaunch 19:07:30 (only line 5 is read)
