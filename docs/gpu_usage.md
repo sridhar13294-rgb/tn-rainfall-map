@@ -167,3 +167,19 @@ Failed attempts total: ~23 billed min (~Rs 70).
 attempt 6 (18:40Z): refused before launch, "Insufficient Credits ... additional 36.0" - E2E re-checks 24 h x Rs 180 = Rs 4,320 at EVERY launch, so each rupee spent must be topped up before the next launch. 0 GPU min. Asked Sridhar for a top-up (min Rs 36, suggested Rs 500).
 attempt 7 (19:07Z): Sridhar topped up Rs 40 (shown balance 4,324); relaunch, same checked job.
 | 09 Nov 19:41 UTC | E2E e2e-bench-p5 | 34 min (create -> delete) |
+
+## 10 Nov 01:10 IST - session e2e-bench-p5 RESULT (34 min billed): speed OK, numbers NOT valid
+- Speed: 72 s per start vs 339-344 s on the T4 = 4.7x (prediction 45-90 s: inside).
+- Numbers: prediction "same z500 as T4 within 0.1 m" FAILED: day-1 z500 +10 m on all 19 starts (e.g. 01-01: 28.4 vs 18.2), day 5 ~+28 m.
+  The P5 drag/land/DFI numbers from this run are therefore NOT used.
+- Root cause (5-why): Dinosaur jax_numpy_utils.resolve_dot_precision chooses BF16_BF16_F32_X6 (6-pass bf16 emulation) for
+  float32 spectral transforms on Ampere+ GPUs, true float32 (HIGHEST) on T4/CPU -> the A100 ran different arithmetic. That
+  algorithm is what needed Triton GEMM (attempt-5 failure: gemm_fusion_dot f32[172,341,64] = a T170 transform); with
+  Triton off it lost accuracy. Fix (mm2.py): Dinosaur told the GPU has no bf16 dot algorithms -> HIGHEST everywhere.
+  Checks: simulated A100 resolves X6 -> HIGHEST after the fix; local regression bit-identical (22.259984322409387 both).
+- Next session staged in data/cyclone/e2e/next_job.txt (not launched: balance is below the Rs 4,320 launch check again):
+  gate first = start 2020-01-01 alone; continues ONLY if day-1 z500 is within 0.5 m of the T4 (18.20 m); gate tested both
+  ways locally through the real quoting. Then benchmark quarter + P5 tests base2/drag/land/DFI all on the A100 (same hardware).
+  Prediction: gate passes; 70-110 s per start (true float32 may be slower than the emulation); P5 base2 d3 u850 within
+  0.5 m/s of the T4 value -4.04.
+- Spend so far on E2E: 3 + 12 + 8 + 34 = 57 billed min (~Rs 171 + GST); usable result: speed only.
