@@ -57,17 +57,12 @@ if cmd == 'discover':
         first = d[0] if isinstance(d, list) and d else d
         print(f'== GET {p} {extra or ""} -> HTTP {s}; keys:', sorted(first.keys())[:40] if isinstance(first, dict) else type(first).__name__)
         print(json.dumps(safe(d))[:n]); return d
-    imgs = show('/gpu_service/image/', dict(category='notebook'), 3000)
-    for p in ('/gpu/plans-and-pricing/list/', '/plans-and-pricing/list/'):
-        show(p, dict(service='notebook', currency='INR'), 8000)
-    vids = []
-    for im in imgs if isinstance(imgs, list) else []:
-        if any(w in str(im.get('name', '')).lower() for w in ('python', 'ubuntu', 'pytorch')):
-            vids += [(im.get('name'), v.get('version'), v.get('image_version_id')) for v in im.get('versions', [])][:3]
-    print('candidate images:', vids[:9])
-    for name, ver, vid in vids[:3]:
-        for p in ('/gpu/service/sku/', '/service/sku/'):
-            show(p, dict(service='notebook', image_version_id=vid), 8000)
+    # 9 Nov run 2: image list OK (/gpu_service/image/); docs slug 'get-gpu-service-sku' -> /gpu_service/sku/
+    for vid in (97, 111, 23):          # Python 3.10 CUDA 12.4; Ubuntu 24.04 CUDA 13.0; PyTorch 2.3 (CUDA 12.4)
+        for extra in (dict(image_version_id=vid, service='notebook'), dict(image_version_id=vid, service='notebook', currency='INR'),
+                      dict(image_version_id=vid)):
+            d = show('/gpu_service/sku/', extra, 12000)
+            if d: break
     for p in ('/security_groups/', '/notebooks/'):
         show(p)
 elif cmd == 'reap':
