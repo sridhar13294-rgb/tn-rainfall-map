@@ -57,12 +57,18 @@ if cmd == 'discover':
         first = d[0] if isinstance(d, list) and d else d
         print(f'== GET {p} {extra or ""} -> HTTP {s}; keys:', sorted(first.keys())[:40] if isinstance(first, dict) else type(first).__name__)
         print(json.dumps(safe(d))[:n]); return d
-    # 9 Nov run 2: image list OK (/gpu_service/image/); docs slug 'get-gpu-service-sku' -> /gpu_service/sku/
-    for vid in (97, 111, 23):          # Python 3.10 CUDA 12.4; Ubuntu 24.04 CUDA 13.0; PyTorch 2.3 (CUDA 12.4)
-        for extra in (dict(image_version_id=vid, service='notebook'), dict(image_version_id=vid, service='notebook', currency='INR'),
-                      dict(image_version_id=vid)):
-            d = show('/gpu_service/sku/', extra, 12000)
-            if d: break
+    # 9 Nov run 3: compact table of 1-GPU hourly plans (SKU list = /gpu_service/sku/?image_version_id=..&service=notebook)
+    for vid in (97, 111):              # Python 3.10 CUDA 12.4; Ubuntu 24.04 CUDA 13.0
+        s_, r = call('GET', '/gpu_service/sku/', extra=dict(image_version_id=vid, service='notebook'))
+        print(f'== SKUs for image_version_id {vid}: HTTP {s_}')
+        for kind in ('GPU', 'SPOT_INSTANCE'):
+            for it in (r.get('data') or {}).get(kind, []) or []:
+                if str(it.get('gpu')) != '1': continue
+                for pl in it.get('plans', []):
+                    if pl.get('sku_type') == 'hourly' or kind == 'SPOT_INSTANCE':
+                        print(f"  {kind:13s} {it.get('name'):38s} cpu {it.get('cpu'):>3s} mem {it.get('memory'):>6s} "
+                              f"price_id {pl.get('sku_item_price_id')} Rs/h {pl.get('unit_price')} {pl.get('sku_type')} "
+                              f"loc {pl.get('location')} avail {it.get('is_inventory_available')}")
     for p in ('/security_groups/', '/notebooks/'):
         show(p)
 elif cmd == 'reap':
