@@ -166,3 +166,4 @@ attempt 5 (18:30Z, ~8 min billed): setup 107 s this time; every forecast failed 
 Failed attempts total: ~23 billed min (~Rs 70).
 attempt 6 (18:40Z): refused before launch, "Insufficient Credits ... additional 36.0" - E2E re-checks 24 h x Rs 180 = Rs 4,320 at EVERY launch, so each rupee spent must be topped up before the next launch. 0 GPU min. Asked Sridhar for a top-up (min Rs 36, suggested Rs 500).
 attempt 7 (19:07Z): Sridhar topped up Rs 40 (shown balance 4,324); relaunch, same checked job.
+| 09 Nov 19:41 UTC | E2E e2e-bench-p5 | 34 min (create -> delete) |
