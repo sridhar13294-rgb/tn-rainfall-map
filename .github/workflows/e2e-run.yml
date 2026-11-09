@@ -68,7 +68,7 @@ jobs:
         run: |
           python3 scripts/cyclone/e2e/e2e.py delete "${IID:-NONE}" "${KID:-NONE}" || true
           python3 scripts/cyclone/e2e/e2e.py reap || true
-          if [ -n "$T_START" ]; then M=$(( ( $(date -u +%s) - T_START + 59 ) / 60 )); echo "| $(date -u +'%d %b %H:%M') UTC | E2E $SLUG | ${M} min (create -> delete) |" >> docs/gpu_usage.md; fi
+          if [ -n "$T_START" ] && [ -n "$IID" ] && [ "$IID" != "NONE" ]; then M=$(( ( $(date -u +%s) - T_START + 59 ) / 60 )); echo "| $(date -u +'%d %b %H:%M') UTC | E2E $SLUG | ${M} min (create -> delete) |" >> docs/gpu_usage.md; fi
       - name: commit results
         if: always() && env.MODE == 'run'
         run: |

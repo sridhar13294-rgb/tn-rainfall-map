@@ -34,7 +34,7 @@ SAFE = {'id', 'name', 'sku_item_price_id', 'sku_id', 'unit_price', 'gpu', 'cpu',
         'image_id', 'version_id', 'image_version_id', 'version', 'framework', 'status', 'committed_days', 'is_active',
         'available_inventory_status', 'gpu_name', 'image_version', 'description', 'rules', 'port_range', 'protocol', 'is_default',
         'slug_name', 'sku_name', 'gpu_type', 'gpu_count', 'cpu_count', 'memory_in_gb', 'location', 'price', 'plan_name',
-        'is_inventory_available', 'inventory_status', 'unit', 'sku_type_name', 'display_name', 'type'}
+        'is_inventory_available', 'message', 'errors', 'error', 'detail', 'code', 'inventory_status', 'unit', 'sku_type_name', 'display_name', 'type'}
 
 
 def safe(o, depth=0):                       # keep only harmless fields (public logs)
@@ -75,6 +75,10 @@ elif cmd == 'reap':
     for n in instances():
         if str(n.get('name', '')).startswith('megam-'):
             s, _ = call('DELETE', f"/notebooks/{n['id']}/"); print('reaped', n.get('name'), n['id'], 'HTTP', s)
+    s, r = call('GET', '/ssh_keys/')
+    for k in (r.get('data') or []) if isinstance(r, dict) else []:
+        if str(k.get('label') or k.get('name') or '').startswith('megam-'):
+            s, _ = call('DELETE', f"/ssh_keys/{k.get('id')}/"); print('reaped ssh key', k.get('id'), 'HTTP', s)
     print('reap done')
 elif cmd == 'create':
     name, pub = sys.argv[2], open(sys.argv[3]).read().strip(); ids = json.load(open(IDS))
@@ -85,7 +89,10 @@ elif cmd == 'create':
                 image_version_id=int(ids['image_version_id']), sku_item_price_id=int(ids['sku_item_price_id']),
                 instance_type='paid_usage', public_key=[pub], security_group_id=int(ids['security_group_id']))
     s, r = call('POST', '/notebooks/', body)
-    if s >= 300: print('create failed HTTP', s, json.dumps(safe(r))[:800], file=sys.stderr); sys.exit(2)
+    if s >= 300:
+        print('create failed HTTP', s, json.dumps(safe(r))[:800], file=sys.stderr)
+        if keyid: call('DELETE', f'/ssh_keys/{keyid}/')
+        sys.exit(2)
     iid = r['data']['id']; t0 = time.time(); ip = ''; t_run = None
     import re as _re
     def find_ip(o):                                                 # the IP field name is not documented: search for it
