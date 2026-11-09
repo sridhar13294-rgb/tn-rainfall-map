@@ -974,5 +974,29 @@
   "cmd": "GR=T170 ONLY=\"shallow <=200 hPa\" STRIDE=8 OUT=/kaggle/working/den_shd.json XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore u850_denial.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 6 '{\"sfc_imp\": 1, \"land_rs\": 100, \"soil_fr\": 1}' > /kaggle/working/den_shd.log 2>&1; tail -12 /kaggle/working/den_shd.log",
   "account": "1",
   "at": "2026-11-09T17:36Z"
+ },
+ {
+  "slug": "tn-p5-den-drg",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "note": "p5 denial",
+  "cmd": "GR=T170 ONLY=\"implicit drag\" STRIDE=8 OUT=/kaggle/working/den_drg.json XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore u850_denial.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 6 '{\"sfc_imp\": 1, \"land_rs\": 100, \"soil_fr\": 1}' > /kaggle/working/den_drg.log 2>&1; tail -12 /kaggle/working/den_drg.log",
+  "account": "1",
+  "at": "2026-11-09T20:04Z"
+ },
+ {
+  "slug": "tn-p5-den-lnd",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "note": "p5 denial",
+  "cmd": "GR=T170 ONLY=\"land module\" STRIDE=8 OUT=/kaggle/working/den_lnd.json XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore u850_denial.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 6 '{\"sfc_imp\": 1, \"land_rs\": 100, \"soil_fr\": 1}' > /kaggle/working/den_lnd.log 2>&1; tail -12 /kaggle/working/den_lnd.log",
+  "account": "4",
+  "at": "2026-11-09T20:05Z"
+ },
+ {
+  "slug": "tn-p5-den-dfi",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "note": "p5 denial",
+  "cmd": "GR=T170 ONLY=\"no DFI\" STRIDE=8 OUT=/kaggle/working/den_dfi.json XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore u850_denial.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 6 '{\"sfc_imp\": 1, \"land_rs\": 100, \"soil_fr\": 1}' > /kaggle/working/den_dfi.log 2>&1; tail -12 /kaggle/working/den_dfi.log",
+  "account": "1",
+  "at": "2026-11-09T20:06Z"
  }
 ]
