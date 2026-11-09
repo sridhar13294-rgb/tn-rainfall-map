@@ -1,23 +1,5 @@
 [
  {
-  "slug": "tn-p5-den-phys",
-  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
-  "note": "p5 denial",
-  "cmd": "GR=T170 ONLY=\"physics off\" STRIDE=8 OUT=/kaggle/working/den_phys.json XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore u850_denial.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 6 '{\"sfc_imp\": 1, \"land_rs\": 100, \"soil_fr\": 1}' > /kaggle/working/den_phys.log 2>&1; tail -12 /kaggle/working/den_phys.log"
- },
- {
-  "slug": "tn-p5-den-cmt",
-  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
-  "note": "p5 denial",
-  "cmd": "GR=T170 ONLY=\"no CMT\" STRIDE=8 OUT=/kaggle/working/den_cmt.json XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore u850_denial.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 6 '{\"sfc_imp\": 1, \"land_rs\": 100, \"soil_fr\": 1}' > /kaggle/working/den_cmt.log 2>&1; tail -12 /kaggle/working/den_cmt.log"
- },
- {
-  "slug": "tn-p5-den-shd",
-  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
-  "note": "p5 denial",
-  "cmd": "GR=T170 ONLY=\"shallow <=200 hPa\" STRIDE=8 OUT=/kaggle/working/den_shd.json XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore u850_denial.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 6 '{\"sfc_imp\": 1, \"land_rs\": 100, \"soil_fr\": 1}' > /kaggle/working/den_shd.log 2>&1; tail -12 /kaggle/working/den_shd.log"
- },
- {
   "slug": "tn-p5-den-drg",
   "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
   "note": "p5 denial",
