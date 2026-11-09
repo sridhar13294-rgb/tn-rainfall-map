@@ -162,3 +162,5 @@ Rule from here (Sridhar 23:42 IST): every paid launch passes (1) generated scrip
 ## E2E session e2e-bench-p5 (registered 18:40Z): benchmark quarter (19 starts, T170, 10 days) + P5 tests drag/land/DFI (6 starts, T170, 3 days)
 Prediction unchanged for the benchmark (45-90 s per start). P5 reading rule (registered 6 Nov): a variant that removes >= 50 % of the day-3 Bay u850 bias (base2 -4.04 m/s) names the process. Hard limit 70 min.
 | 09 Nov 18:38 UTC | E2E e2e-bench-p5 | 8 min (create -> delete) |
+attempt 5 (18:30Z, ~8 min billed): setup 107 s this time; every forecast failed at once on the A100: XLA 'No supported config found for HLO gemm_fusion_dot' - with --xla_gpu_deterministic_ops autotuning is off and the Triton GEMM path (used only on Ampere+, never on Kaggle's T4) has no default config. Fix: --xla_gpu_enable_triton_gemm=false (cuBLAS, as on the T4). Flag checked locally (same jax 0.12.0.1; a bogus flag is rejected as control). Cannot be tested without an Ampere GPU.
+Failed attempts total: ~23 billed min (~Rs 70).
