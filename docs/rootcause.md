@@ -870,3 +870,9 @@ P2 32 L neutrality (registered 'base1 + drag_imp vs base1: z500 within +-0.5 m; 
 round-off spread'): z500 d1/d5/d10 20.01/73.0/119.1 vs 20.02/73.1/119.2 PASS; 72-h pmin Vardah 989.9 vs 989.5, Nivar 994.9 vs
 994.5, Michaung 999.3 vs 999.4 PASS; quick6 72-h track 318.9 vs 297.2 km = +7.3 % vs the 6 % spread FAIL (marginal).
 => drag_imp stays a 75-level-only fix; NOT added to the 32-level base. 32 L does not need it (stable without it).
+- 04:05 IST noise result: base2 noise1 (2 % SPPT, seed 1) d3 u850 -3.05 / v850 -3.77 / C-India MSLP +2.18 vs base2 -4.04 / -3.18 / +2.13.
+  Prediction (spread ~+-0.5 m/s) FAILED: a tiny perturbation alone moves day-3 Bay u850 by 1.0 m/s (25 %). => the 11-33 %
+  u850 moves of CMT / drag / land / DFI / shallow-depth are within noise; 6 starts are too few for a u850 attribution.
+  v850 and MSLP move little with noise (-0.6 / +0.05) -> the shallow-depth signature (v850 +0.77, MSLP +0.52) is ~4 and
+  ~30 noise-steps away: REAL. noise2 was killed (OOM: two T170 models in one process - known 7 Nov lesson; my error);
+  re-queued alone as tn-p5-den-noise2.
