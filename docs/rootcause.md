@@ -838,3 +838,18 @@ starts, 3 days, one process changed per variant from base2 (physics off, no CMT,
 land module, no DFI); Bay u850/v850 and C-India MSLP bias vs ERA5 at days 1-3. Reading rule (set before the result):
 the variant that removes >= 50 % of the base2 day-3 Bay u850 bias names the process; if none does, the easterly is
 dynamical / initial-state (physics-off comparison decides which).
+
+## 10 Nov 01:40 IST - P5 denial, first 3 variants (T170, 6 Oct-Nov 2020 starts, Kaggle T4; base2 = same set)
+Day-3 Bay (10-20N, 82-95E) u850 / v850 bias, central-India MSLP bias. Registered rule (6 Nov): a variant that removes >= 50 % of
+the day-3 u850 bias (-4.04 m/s) names the process.
+| variant | u850 d3 | v850 d3 | C-India MSLP d3 |
+|---|---|---|---|
+| base2 | -4.04 | -3.18 | +2.13 |
+| physics off | -7.78 | -1.39 | +8.52 |
+| no CMT | -3.60 (-11 %) | -2.48 | +2.12 |
+| shallow <= 200 hPa (sh_depth) | -2.72 (-33 %) | +0.77 | +0.52 (-76 %) |
+Reading: no variant meets the 50 % rule yet. Physics off is much worse -> the easterly is not created by a physics term;
+the dynamics/large-scale pressure pattern makes it and physics partly holds it back. CMT is not the cause. The tall shallow
+scheme explains most of the central-India high (+2.13 -> +0.52) and all of the southward v850, and a third of u850 -> the
+P5 low-level error and the P1 tall-shallow problem are linked (same scheme). Pending: implicit drag, land module, no DFI
+(Kaggle, launched 20:05Z). The 9 Nov E2E numbers for these three are NOT used (A100 precision issue, docs/gpu_usage.md).
