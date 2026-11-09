@@ -60,7 +60,7 @@ jobs:
           for u in root ubuntu jovyan; do $S -o ConnectTimeout=20 $u@$IP true 2>/dev/null && { echo "U=$u" >> $GITHUB_ENV; USR=$u; break; }; done
           [ -n "$USR" ] || { echo "ssh failed"; exit 1; }
           scp -i /tmp/k -o StrictHostKeyChecking=no /tmp/job.py $USR@$IP:/tmp/job.py
-          $S $USR@$IP "command -v python >/dev/null || ln -sf \$(command -v python3) /usr/local/bin/python; nvidia-smi --query-gpu=name,memory.total --format=csv,noheader; timeout $(( MAXMIN * 60 )) python3 /tmp/job.py" 2>&1 | tail -60 | sed "s#$IP#IP#g" || true
+          $S $USR@$IP "mkdir -p /root/work /kaggle && ln -sfn /root/work /kaggle/working; command -v python >/dev/null || ln -sf \$(command -v python3) /usr/local/bin/python; nvidia-smi --query-gpu=name,memory.total --format=csv,noheader; timeout $(( MAXMIN * 60 )) python3 /tmp/job.py" 2>&1 | tail -60 | sed "s#$IP#IP#g" || true
           mkdir -p data/cyclone/e2e/$SLUG
           scp -i /tmp/k -o StrictHostKeyChecking=no "$USR@$IP:/root/work/*.json" "$USR@$IP:/root/work/*.log" data/cyclone/e2e/$SLUG/ 2>/dev/null || true
       - name: DELETE the container (always)

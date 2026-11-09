@@ -156,3 +156,8 @@ z500 d1/d5/d10 per start equal to the T4 run within 0.1 m. Per-start > 120 s -> 
 | 09 Nov 18:07 UTC | E2E e2e-rd-wx0 | 3 min (create -> delete) |
 attempt 3 (18:04Z): 3 GPU-min lost - my error: a marker line appended to E2E_JOB became part of the command (syntax error on the GPU). Fixed: only line 5 is read; script now dry-run compiled before launch.
 | 09 Nov 18:20 UTC | E2E e2e-rd-wx0 | 12 min (create -> delete) |
+attempt 4 (18:11Z, 12 min billed incl. ~2.5 min create): setup OK (528 s: pip + 1.1 GB inputs), then wx2.py stopped: config path /kaggle/working/wx_truth_2020.npz does not exist on E2E. My error: only the command was re-mapped, not paths inside configs/code. Fixed: /kaggle/working is now a link to the run directory. Local check 4 (same command, T42, 1 start, local /kaggle/working) passed for the benchmark and for the 3 P5 tests before relaunch.
+Rule from here (Sridhar 23:42 IST): every paid launch passes (1) generated script compiled, (2) E2E_JOB exactly 5 lines, printed back, (3) inputs/config exist, (4) the same command run locally at T42 for 1 start. Several jobs share one machine session so the ~9-min setup is paid once.
+
+## E2E session e2e-bench-p5 (registered 18:40Z): benchmark quarter (19 starts, T170, 10 days) + P5 tests drag/land/DFI (6 starts, T170, 3 days)
+Prediction unchanged for the benchmark (45-90 s per start). P5 reading rule (registered 6 Nov): a variant that removes >= 50 % of the day-3 Bay u850 bias (base2 -4.04 m/s) names the process. Hard limit 70 min.
