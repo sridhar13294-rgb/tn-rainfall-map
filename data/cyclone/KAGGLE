@@ -1,6 +1,6 @@
-tn-s-shd-gen0
-libm48_fields.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore genesis2.py /kaggle/working/libm48_fields.npz ../../../data/cyclone/kaggle_cfg/suite_shd_gen.json 0 2 /kaggle/working/gen_0.json > /kaggle/working/gen_0.log 2>&1; tail -3 /kaggle/working/gen_0.log
+tn-p5-den-phys
+libm_wx2020_fields.npz,wx_truth_2020.npz
+GR=T170 ONLY="physics off" STRIDE=8 OUT=/kaggle/working/den_phys.json XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore u850_denial.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 6 '{"sfc_imp": 1, "land_rs": 100, "soil_fr": 1}' > /kaggle/working/den_phys.log 2>&1; tail -12 /kaggle/working/den_phys.log
 NvidiaTeslaT4
 1
-#sshd 2026-11-07T06:50Z
+#p5 2026-11-09T17:32Z
