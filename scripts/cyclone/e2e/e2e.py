@@ -32,7 +32,9 @@ def call(method, path, body=None, extra=None):
 
 SAFE = {'id', 'name', 'sku_item_price_id', 'sku_id', 'unit_price', 'gpu', 'cpu', 'memory', 'series', 'currency', 'sku_type',
         'image_id', 'version_id', 'image_version_id', 'version', 'framework', 'status', 'committed_days', 'is_active',
-        'available_inventory_status', 'gpu_name', 'image_version', 'description', 'rules', 'port_range', 'protocol', 'is_default'}
+        'available_inventory_status', 'gpu_name', 'image_version', 'description', 'rules', 'port_range', 'protocol', 'is_default',
+        'slug_name', 'sku_name', 'gpu_type', 'gpu_count', 'cpu_count', 'memory_in_gb', 'location', 'price', 'plan_name',
+        'is_inventory_available', 'inventory_status', 'unit', 'sku_type_name', 'display_name', 'type'}
 
 
 def safe(o, depth=0):                       # keep only harmless fields (public logs)
@@ -49,9 +51,25 @@ def instances():
 
 cmd = sys.argv[1]
 if cmd == 'discover':
-    for p in ('/images/', '/notebooks/plans/', '/plans/', '/sku/', '/security_groups/', '/ssh_keys/', '/notebooks/'):
-        s, r = call('GET', p)
-        print(f'== GET {p} -> HTTP {s}'); print(json.dumps(safe(r.get('data', r) if isinstance(r, dict) else r))[:6000])
+    # 9 Nov: paths from docs.e2enetworks.com (get-gpu-service-image, get-gpu-plans-and-pricing-list, SKU list)
+    def show(p, extra=None, n=6000):
+        s, r = call('GET', p, extra=extra); d = r.get('data', r) if isinstance(r, dict) else r
+        first = d[0] if isinstance(d, list) and d else d
+        print(f'== GET {p} {extra or ""} -> HTTP {s}; keys:', sorted(first.keys())[:40] if isinstance(first, dict) else type(first).__name__)
+        print(json.dumps(safe(d))[:n]); return d
+    imgs = show('/gpu_service/image/', dict(category='notebook'), 3000)
+    for p in ('/gpu/plans-and-pricing/list/', '/plans-and-pricing/list/'):
+        show(p, dict(service='notebook', currency='INR'), 8000)
+    vids = []
+    for im in imgs if isinstance(imgs, list) else []:
+        if any(w in str(im.get('name', '')).lower() for w in ('python', 'ubuntu', 'pytorch')):
+            vids += [(im.get('name'), v.get('version'), v.get('image_version_id')) for v in im.get('versions', [])][:3]
+    print('candidate images:', vids[:9])
+    for name, ver, vid in vids[:3]:
+        for p in ('/gpu/service/sku/', '/service/sku/'):
+            show(p, dict(service='notebook', image_version_id=vid), 8000)
+    for p in ('/security_groups/', '/notebooks/'):
+        show(p)
 elif cmd == 'reap':
     for n in instances():
         if str(n.get('name', '')).startswith('megam-'):
