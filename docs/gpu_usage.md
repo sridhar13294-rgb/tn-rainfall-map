@@ -155,3 +155,4 @@ z500 d1/d5/d10 per start equal to the T4 run within 0.1 m. Per-start > 120 s -> 
 9 Nov 17:59Z attempt 2: refused, "Insufficient Credits" (E2E needs 24 h of balance to launch). Sridhar added credits; balance Rs 4,320 at 18:04Z.
 | 09 Nov 18:07 UTC | E2E e2e-rd-wx0 | 3 min (create -> delete) |
 attempt 3 (18:04Z): 3 GPU-min lost - my error: a marker line appended to E2E_JOB became part of the command (syntax error on the GPU). Fixed: only line 5 is read; script now dry-run compiled before launch.
+| 09 Nov 18:20 UTC | E2E e2e-rd-wx0 | 12 min (create -> delete) |
