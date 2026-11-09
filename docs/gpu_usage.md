@@ -161,3 +161,4 @@ Rule from here (Sridhar 23:42 IST): every paid launch passes (1) generated scrip
 
 ## E2E session e2e-bench-p5 (registered 18:40Z): benchmark quarter (19 starts, T170, 10 days) + P5 tests drag/land/DFI (6 starts, T170, 3 days)
 Prediction unchanged for the benchmark (45-90 s per start). P5 reading rule (registered 6 Nov): a variant that removes >= 50 % of the day-3 Bay u850 bias (base2 -4.04 m/s) names the process. Hard limit 70 min.
+| 09 Nov 18:38 UTC | E2E e2e-bench-p5 | 8 min (create -> delete) |
