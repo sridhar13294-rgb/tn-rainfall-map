@@ -284,12 +284,14 @@ class Model:
         # ECMWF's trigger test; organised entrainment (mf_org > 0): mixing falls off with height as (qsat / qsat at the
         # source)^(3 mf_org) (Bechtold et al. 2008), so a deep moist plume can reach the upper troposphere
         h_kick = CP * S['mf_kick_t'] + LV * S['mf_kick_q']
-        def plume(c, x):
+        def make_plume(test):
+          def plume(c, x):
             hu, qu, alive, lfc, started, zp, Kw = c; Te, qe, he, pk, zk, sk, rk, k = x
             src = (k == ksrc); dz = jnp.maximum(zk - zp, 0.0)
             eps = S['entr'] * (1.3 - rk) * jnp.power(jnp.clip(qsat(Te, pk) / qs_src, 1e-3, 1.0), 3.0 * S['mf_org'])
             if shallow:                                                                                 # sh_eps > 0 (10 Nov, IFS Cy50r1 eq. 6.7): shallow entrainment
                 eps = jnp.where(S['sh_eps'] > 0, S['sh_eps'] * (1.3 - rk) * jnp.power(jnp.clip(qsat(Te, pk) / qs_src, 1e-3, 1.0), 3.0), eps)   # = 2 x 1.75e-3 (1.3 - RH) f_scale
+                if test: eps = 0.8 / jnp.maximum(zk, 10.0) + 3e-4                                      # IFS eq. 6.18: weakly entraining TEST parcel decides if shallow convection exists
             hu1 = jnp.where(src, he + h_kick, hu + eps * dz * (he - hu)); qu1 = jnp.where(src, qe + S['mf_kick_q'], qu + eps * dz * (qe - qu))
             Td = (hu1 - G * zk - LV * qu1) / CP; sat = qu1 > qsat(Td, pk); Tu = Te
             for _ in range(4):
@@ -313,6 +315,7 @@ class Model:
             hu1 = hu1 + S['mf_ice'] * 3.34e5 * jnp.clip((273.15 - Tu) / 20.0, 0.0, 1.0) * cond
             nh = jnp.where(act, jnp.where(src, he + h_kick, hu1), hu); nq = jnp.where(act, jnp.where(src, qe + S['mf_kick_q'], qv), qu)
             return (nh, nq, alv2, lfc2, st2, jnp.where(act | ~st2, zk, zp), Kw2), (act, jnp.where(run & act, b, 0.0), jnp.where(run & act, cond, 0.0), nh, nq, eps)
+          return plume
         z0 = jnp.zeros_like(ps); f0 = jnp.zeros(ps.shape, bool)
         # src_dp > 0 (Pa): the rising parcel starts from the mass-weighted mean moist static energy and humidity of a src_dp-thick
         # layer centred on the source level (ECMWF-style mixed departure layer), not one model layer - so the trigger and the
@@ -322,8 +325,13 @@ class Model:
         use = (S['src_dp'] > 0) & (ii == ksrc[None])
         h_in = jnp.where(use, h_avg[None], h_e); q_in = jnp.where(use, q_avg[None], qn)
         xs = tuple(a[::-1] for a in (Tn, q_in, h_in, p * jnp.ones_like(Tn), zc, sig * jnp.ones_like(Tn), rh_e, ii * jnp.ones(Tn.shape, jnp.int32)))
-        (_, _, _, lfc, _, _, _), (inc, b, cond, hu, qu, eps_l) = jax.lax.scan(plume, (z0, z0, f0, f0, f0, z0 - 1.0, z0 + 0.5), xs)
+        (_, _, _, lfc, _, _, _), (inc, b, cond, hu, qu, eps_l) = jax.lax.scan(make_plume(False), (z0, z0, f0, f0, f0, z0 - 1.0, z0 + 0.5), xs)
         inc, b, cond, hu, qu, eps_l = [a[::-1] for a in (inc, b, cond, hu, qu, eps_l)]
+        if shallow and self.S.get('sh_eps', 0) > 0:                                                  # trigger from the IFS test parcel (eq. 6.18)
+            (_, _, _, _, _, _, _), (inc_t, _, cond_t, _, _, _) = jax.lax.scan(make_plume(True), (z0, z0, f0, f0, f0, z0 - 1.0, z0 + 0.5), xs)
+            inc_t, cond_t = inc_t[::-1], cond_t[::-1]
+        else:
+            inc_t, cond_t = inc, cond
         sig_top = jnp.min(jnp.where(inc, sig, 1.0), axis=0); cape = (RD * jnp.maximum(b, 0) * dsig / sig * inc).sum(0)
         deep = lfc & ((sig_src - sig_top) * ps > S['mf_dmin']) & (cape > 50.0)   # mf_dmin: minimum cloud depth (Pa) for deep convection (ECMWF ~20000)
         if shallow: deep = lfc & ((sig_src - sig_top) * ps <= 25000.0) & (cape > 0.0) & (sig_src > 0.8)      # 'deep' = this plume is active
@@ -331,8 +339,8 @@ class Model:
             # sh_trig > 0 (ECMWF-type trigger): shallow cumulus wherever the boundary-layer parcel reaches its condensation level
             # (the plume makes cloud) and the cloud stays under 300 hPa deep - it need not become buoyant first. The old test
             # (positive buoyancy and CAPE > 0) almost never passed: the shallow plume did nothing (h_shal ~0 in the budget).
-            cloud = (cond > 0).any(0)
-            deep = jnp.where(S['sh_trig'] > 0, cloud & ((sig_src - sig_top) * ps <= S['sh_dmax']) & (sig_src > 0.8), deep)   # sh_dmax: IFS uses 20000 Pa
+            cloud = (cond_t > 0).any(0); sig_top_t = jnp.min(jnp.where(inc_t, sig, 1.0), axis=0)        # test parcel (= the plume itself unless sh_eps > 0)
+            deep = jnp.where(S['sh_trig'] > 0, cloud & ((sig_src - sig_top_t) * ps <= S['sh_dmax']) & (sig_src > 0.8), deep)   # sh_dmax: IFS uses 20000 Pa
         frac = (sig_src - sig) / jnp.maximum(sig_src - sig_top, 1e-3)
         eta = jnp.where(inc & (ii != ksrc), jnp.clip(jnp.where(frac < 0.6, 1.0, (1 - frac) / 0.4), 0, 1), 0.0) * deep    # mass flux entering each cloud layer from below
         if shallow:
