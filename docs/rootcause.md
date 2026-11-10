@@ -950,3 +950,7 @@ round-off spread'): z500 d1/d5/d10 20.01/73.0/119.1 vs 20.02/73.1/119.2 PASS; 72
   easterly appears east of the Bay on day 1, real pressure growth ~+1.4 hPa in day 1), not a start-state error.
   Side finding (not P5): tropical ocean 30S-30N surface pressure -0.50 hPa at init (-0.43 after DFI), every start -> a
   systematic start-state mass deficit; relates to the remaining hour-0 z500 offset (-2.0 m after rd_si). Logged for the core item.
+- 16:45 IST 12-START DENIALS QUEUED (2-start results are not usable): physics off, land module, implicit drag (tn-p5-d12-phys/
+  lnd/drg). REGISTERED: reference base2 d3 Bay u850 = mean of the two 12-start runs -4.49 (+-0.3 run-to-run floor). A process
+  is named if its denial removes >= 50 % of that bias (|u850| <= 2.25). Physics off: if |u850| d3 >= 4.5 the easterly is made
+  by the dynamics (physics only damps it); if it falls below 2.25 the physics creates it.
