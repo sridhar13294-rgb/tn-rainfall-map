@@ -26,8 +26,13 @@ for name, extra in VAR:
         M.build(t0); st = M.dfi(st); NDAY = int(os.environ.get('NDAY', '3')); out = M.run_wx(st, cr, 24 * NDAY, 24); row = []
         for d in range(0, NDAY + 1):
             v = (t0 + dt.timedelta(days=d)).strftime('%Y-%m-%dT%H'); j = DI[v]; g = lambda F: np.asarray(WS.to_grid(F, M.lon, M.lat))
-            for nm, scale in (('u850', 1.0), ('v850', 1.0), ('mslp', 0.01), ('z500', 1.0)):
-                MAP.setdefault((nm, d), []).append(((g(out[nm][d]) - TR['o_' + nm][j]) * scale)[win])
+            for nm in os.environ.get('VARS', 'u850,v850,mslp,z500').split(','):   # 10 Nov 18:20: field list configurable
+                scale = 0.01 if nm == 'mslp' else 1.0
+                if nm == 'rain24':
+                    if d == 0: continue
+                    F = g(out['rain'][d]) - g(out['rain'][d - 1])                     # same pairing as wx2.py
+                else: F = g(out[nm][d])
+                MAP.setdefault((nm, d), []).append(((F - TR['o_' + nm][j]) * scale)[win])
             if d < 1 or d > 3: continue
             row.append([float(np.nanmean((g(out['u850'][d]) - TR['o_u850'][j])[bay])), float(np.nanmean((g(out['v850'][d]) - TR['o_v850'][j])[bay])),
                         float(np.nanmean((g(out['mslp'][d]) - TR['o_mslp'][j])[ci])) / 100])

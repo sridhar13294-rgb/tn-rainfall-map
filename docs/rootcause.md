@@ -1021,3 +1021,15 @@ round-off spread'): z500 d1/d5/d10 20.01/73.0/119.1 vs 20.02/73.1/119.2 PASS; 72
   trough/Rossby propagation across East Asia, then the tendency budget on native model levels (WHY).
   Noted (Sridhar): 6/8 systems and 4/5 trade belts passing does not establish global accuracy; seasonal and case verification
   still needed.
+- 18:30 IST JETS / WESTERLIES / ROSSBY WAVES / MJO (Sridhar 18:10) - job tn-p5-dyn: base2, 12 Oct-Nov 2020 starts, T170, days
+  0-10, global, per start: u200, v200, z500, u850, rain24 (model day d minus d-1, as wx2.py). REGISTERED before results:
+  JETS - per start/day, per sector (Asia 70-150E, Pacific 150-240E, Atlantic 280-350E): subtropical jet = u200 max 20-45N,
+    eddy-driven/polar jet = u200 max 45-70N; core LATITUDE shift > 2.5 deg or core SPEED bias > 5 m/s = failing start.
+  WESTERLIES - u850 40-60N sector means; |bias| > 2 m/s = failing.
+  ROSSBY WAVES - z500 35-60N, eddy part (minus zonal mean) per longitude: PHASE shift = lag (deg lon) of best model-ERA5
+    correlation (+ = model too far east), AMPLITUDE ratio = model/ERA5 eddy std; failing if |phase| > 10 deg or ratio outside
+    0.8-1.2; shown globally and for East Asia 60-160E.
+  MJO (approximate - no OLR or climatology, so no RMM index): equatorial 15S-15N u200 and u850 eddy profiles and rain24 along
+    longitude; pattern correlation model vs ERA5 and eastward lag; failing if correlation < 0.6 or |lag| > 10 deg. Stated
+    limit: whether a real MJO event was active in these starts is not determined by this check.
+  A feature is SYSTEMATICALLY wrong if >= 7 of 12 starts fail on the same day with the same sign. Says WHERE/WHAT, not WHY.
