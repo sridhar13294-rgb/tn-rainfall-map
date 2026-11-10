@@ -1163,3 +1163,22 @@ REGISTERED reading (before results), per box (Indochina/S China Sea, Bay, Aleuti
   early temperature error in the same places, 12/12). NOT yet shown that this heating builds that pressure error (attribution of
   PGF to processes needs column heating by process - next). Candidate fix = the P1 second shallow design (IFS Part IV, Tiedtke
   shallow mass flux), to be registered with predictions for T850/T500 tendencies AND the SE Asia/Bay u850 error, 32 L + 75 L screen.
+
+## 10 Nov 21:15 IST - P1/P5 CANDIDATE 'ifs_sh' = IFS Cy50r1 shallow convection (Sridhar 20:55 'proceed')
+Why: first-hours tendencies show base2's shallow scheme ('mse': relax moist static energy and q to their column mean from the
+surface to the PARCEL TOP over 1 h - not a cumulus scheme; own comment: 10-40x too strong) heats ~850 hPa (+7 K/day Indochina/Bay,
++2.7 globe) and cools ~500 hPa (-5.3 K/day tropics) in 12/12 starts, where the easterly error forms (PGF+COR leading, 10/12).
+Earlier shallow attempts (sh_mflux, sh_depth, 'mf' inside the 29-30 Oct 'full' package with sh_clos 0.6) were not the IFS scheme.
+IFS Cy50r1 Part IV ch. 6 (read today): shallow = cloud <= 200 hPa deep (6.4.2); entrainment = f_eps 1.75e-3 (1.3 - RH) f_scale with
+f_eps = 2 and f_scale = (qsat/qsat_base)^3 (eq. 6.7); detrainment D = E (1.6 - RH) (eq. 6.9); closure = sub-cloud moist static
+energy balance, factor 1 (eq. 6.35/6.37). New mm2 options (default off; regression bit-identical 22.259984322409387): sh_eps,
+sh_det, sh_dmax. Candidate settings (all from the document, nothing tuned): shallow 'mf', sh_trig 1, sh_dmax 20000, sh_eps 3.5e-3,
+sh_det 1, sh_clos 1. Stated differences left: closure uses surface fluxes only (IFS also includes sub-cloud radiation/advection);
+parcel kick is ours (0.5 K / 5e-4) not eq. 6.19; updraught kinetic energy (mf_wke) off; shallow condensate re-evaporates (no drizzle).
+REGISTERED predictions (first-hours test, T170, 12 starts, same as tn-init-tend):
+  (1) shallow heating at 500 hPa, tropics 15S-15N, 0-6 h: |h_shal| <= 0.3 K/day (base2 -5.33);
+  (2) shallow heating at 850 hPa, globe, 0-6 h: between 0 and +3 K/day, and over Indochina / Bay below +3 (base2 +7.14 / +7.31);
+  (3) 0-6 h T850 error (model TOTAL - ERA5) over Indochina and Bay reduced by >= 50 % (base2 +4.6 / +5.2 K/day);
+  (4) 0-24 h u850 error tendency over Indochina and Bay reduced by >= 30 % (base2 ~-2.9 / ~-1.1 m/s/day).
+If (1)-(3) hold, the full Stage-1 suite at 32 L + the 75 L screen (standing rule) follows, with gates unchanged. Local T42 runs
+only check the code.

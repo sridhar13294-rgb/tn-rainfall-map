@@ -18,7 +18,8 @@ G, RD, A = 9.80616, 287.04, 6.37122e6
 LIB, TRU, GR, N, OUT = sys.argv[1], sys.argv[2], sys.argv[3], int(sys.argv[4]), sys.argv[5]
 Z = dict(np.load(LIB)); TT = [str(t) for t in Z['times']]; V3 = [str(v) for v in Z['v3']]; V2 = [str(v) for v in Z['v2']]
 TR = np.load(TRU); DI = {str(d): i for i, d in enumerate(TR['days'])}; tla = np.asarray(Z['lats'], float); tlo = np.asarray(Z['lons'], float)
-M = mm2.Model(GR, 32, None, {'rad': 'radcloud', 'rad_every': 2, 'cmt_mf': 1, 'rd_si': 1})
+EXTRA = json.loads(os.environ.get('EXTRA', '{}'))   # candidate settings on top of base2 (10 Nov)
+M = mm2.Model(GR, int(os.environ.get('NLEV', '32')), None, dict({'rad': 'radcloud', 'rad_every': 2, 'cmt_mf': 1, 'rd_si': 1}, **EXTRA))
 hor = M.coords.horizontal; sig = np.asarray(M.sig, float); sigb = np.asarray(M.sigb, float)
 K85, K50 = int(np.argmin(np.abs(sig - 0.85))), int(np.argmin(np.abs(sig - 0.5)))
 LA, LO = np.asarray(M.LA, float), np.asarray(M.LO, float); lat_r = np.radians(np.asarray(M.lat, float)); lon_r = np.radians(np.asarray(M.lon, float))
