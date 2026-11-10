@@ -1045,3 +1045,8 @@ round-off spread'): z500 d1/d5/d10 20.01/73.0/119.1 vs 20.02/73.1/119.2 PASS; 72
   one - several may share one cause. Solver and physics frozen until both experiments are read.
   Circulation chain tropics -> Rossby/Asian circulation -> westerlies/jet/pressure gradients -> Indochina/S China Sea -> Bay is a
   HYPOTHESIS, two-way interactions possible; each link needs its own evidence.
+- 18:50 IST CORRECTION (start-state mass): the 'tropical ocean -0.5 hPa at init' (16:40) was MY DIAGNOSTIC: h0_split mapped the
+  model field back to the 1.5 deg grid by nearest point and compared on the 1.5 deg ocean mask -> coastal land points with
+  lower pressure. Direct test (2 starts): model start ps vs regridded ERA5 ps over tropical ocean -0.009 hPa (T85) / +0.065
+  (T170) (terrain shift -0.004/+0.074, spectral truncation -0.005/-0.009); global mean ps ERA5 grid 985.863 vs model grid
+  985.823 (T85) / 985.847 (T170) hPa. => NO start-state mass error. (The expert-question item on it is withdrawn.)
