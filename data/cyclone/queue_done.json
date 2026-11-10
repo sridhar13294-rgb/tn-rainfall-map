@@ -1046,5 +1046,21 @@
   "cmd": "GR=T170 ONLY=\"base2\" STRIDE=1 OUT=/kaggle/working/p5_geo.json XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore p5_geo.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 12 > /kaggle/working/p5_geo.log 2>&1; tail -6 /kaggle/working/p5_geo.log",
   "account": "1",
   "at": "2026-11-10T04:35Z"
+ },
+ {
+  "slug": "tn-s-cnt-q6p",
+  "inputs": "libm_fields.npz",
+  "note": "pinned-stack track re-test",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/suite_cnt_q6.json 0 1 /kaggle/working/q6.json > /kaggle/working/q6.log 2>&1; tail -8 /kaggle/working/q6.log 2>&1 | tee job.log",
+  "account": "1",
+  "at": "2026-11-10T07:40Z"
+ },
+ {
+  "slug": "tn-s-base1-q6p",
+  "inputs": "libm_fields.npz",
+  "note": "pinned-stack track re-test",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/suite_base1_q6.json 0 1 /kaggle/working/q6.json > /kaggle/working/q6.log 2>&1; tail -8 /kaggle/working/q6.log 2>&1 | tee job.log",
+  "account": "4",
+  "at": "2026-11-10T07:42Z"
  }
 ]
