@@ -892,3 +892,9 @@ round-off spread'): z500 d1/d5/d10 20.01/73.0/119.1 vs 20.02/73.1/119.2 PASS; 72
   none near 50 %); physics-off much worse. Next: 850-hPa u-momentum tendency budget by term (dynamics: pressure gradient,
   advection, Coriolis; physics: BL, convection) over the Bay, days 1-2, base2, 12 starts - to locate where the easterly
   acceleration comes from, before any fix.
+- 10:10 IST P5 geostrophic check REGISTERED (tn-p5-geo: base2, 12 starts, T170; saves mean bias maps u850/v850/MSLP d1-d3;
+  scripts/cyclone/analysis/p5_geo_eval.py). Back-of-envelope: C-India MSLP +1.6 hPa over ~800 km at 15 N -> geostrophic
+  easterly ~5 m/s, the size of the Bay u850 bias (-4.65). Prediction: on days 2-3 the geostrophic u from the MSLP bias over the
+  Bay has the same sign and 50-150 % of the u850 bias, pattern r >= 0.5 over 8-25 N 70-100 E. If yes: P5 = a low-level
+  pressure-pattern error (central-India / north-Bay pressure too high) -> next: why that pressure rises (+0.24 d1 -> +1.63 d3).
+  If no: the easterly is ageostrophic (momentum mixing / friction / convective momentum) -> physics budget.

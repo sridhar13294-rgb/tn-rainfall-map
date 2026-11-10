@@ -1,1 +1,8 @@
-[]
+[
+ {
+  "slug": "tn-p5-geo",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "note": "p5 geostrophic maps",
+  "cmd": "GR=T170 ONLY=\"base2\" STRIDE=1 OUT=/kaggle/working/p5_geo.json XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore p5_geo.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 12 > /kaggle/working/p5_geo.log 2>&1; tail -6 /kaggle/working/p5_geo.log"
+ }
+]
