@@ -1062,5 +1062,29 @@
   "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/suite_base1_q6.json 0 1 /kaggle/working/q6.json > /kaggle/working/q6.log 2>&1; tail -8 /kaggle/working/q6.log 2>&1 | tee job.log",
   "account": "4",
   "at": "2026-11-10T07:42Z"
+ },
+ {
+  "slug": "tn-p5-d12-phys",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "note": "p5 12 starts",
+  "cmd": "GR=T170 ONLY=\"physics off\" STRIDE=1 OUT=/kaggle/working/d12_phys.json XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore u850_denial.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 12 '{\"sfc_imp\": 1, \"land_rs\": 100, \"soil_fr\": 1}' > /kaggle/working/d12_phys.log 2>&1; tail -12 /kaggle/working/d12_phys.log",
+  "account": "1",
+  "at": "2026-11-10T10:11Z"
+ },
+ {
+  "slug": "tn-p5-d12-lnd",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "note": "p5 12 starts",
+  "cmd": "GR=T170 ONLY=\"land module\" STRIDE=1 OUT=/kaggle/working/d12_lnd.json XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore u850_denial.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 12 '{\"sfc_imp\": 1, \"land_rs\": 100, \"soil_fr\": 1}' > /kaggle/working/d12_lnd.log 2>&1; tail -12 /kaggle/working/d12_lnd.log",
+  "account": "4",
+  "at": "2026-11-10T10:13Z"
+ },
+ {
+  "slug": "tn-p5-d12-drg",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "note": "p5 12 starts",
+  "cmd": "GR=T170 ONLY=\"implicit drag\" STRIDE=1 OUT=/kaggle/working/d12_drg.json XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore u850_denial.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 12 '{\"sfc_imp\": 1, \"land_rs\": 100, \"soil_fr\": 1}' > /kaggle/working/d12_drg.log 2>&1; tail -12 /kaggle/working/d12_drg.log",
+  "account": "1",
+  "at": "2026-11-10T10:14Z"
  }
 ]
