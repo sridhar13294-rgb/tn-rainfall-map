@@ -1,6 +1,6 @@
-tn-p5-dyn
-libm_wx2020_fields.npz,wx_truth_2020.npz
-VARS="u200,v200,z500,u850,rain24" WIN="-90,90,0,360" NDAY=10 PERSTART=1 GR=T170 ONLY="base2" STRIDE=1 OUT=/kaggle/working/p5_dyn.json XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore p5_geo.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 12 > /kaggle/working/p5_dyn.log 2>&1; tail -4 /kaggle/working/p5_dyn.log
+tn-energy-audit
+libm_wx2020_fields.npz
+SPDIR=/kaggle/working/eas XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore energy_audit.py /kaggle/working/libm_wx2020_fields.npz T170 2020-10-02,2020-01-01 24 /kaggle/working/energy_audit.json > /kaggle/working/energy_full.log 2>&1; SPDIR=/kaggle/working/eas MODE=dyn XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore energy_audit.py /kaggle/working/libm_wx2020_fields.npz T170 2020-10-02,2020-01-01 24 /kaggle/working/energy_audit.json > /kaggle/working/energy_dyn.log 2>&1; rm -rf /kaggle/working/eas; grep -v WARNING /kaggle/working/energy_dyn.log | tail -20
 NvidiaTeslaT4
-1
-#jets westerlies Rossby MJO Sridhar 18-10 2026-11-10T12:44Z
+4
+#closed energy audit T170 2026-11-10T13:19Z
