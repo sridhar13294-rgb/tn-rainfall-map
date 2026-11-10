@@ -1118,5 +1118,13 @@
   "cmd": "SPDIR=/kaggle/working/eas XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore energy_audit.py /kaggle/working/libm_wx2020_fields.npz T170 2020-10-02,2020-01-01 24 /kaggle/working/energy_audit.json > /kaggle/working/energy_full.log 2>&1; SPDIR=/kaggle/working/eas MODE=dyn XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore energy_audit.py /kaggle/working/libm_wx2020_fields.npz T170 2020-10-02,2020-01-01 24 /kaggle/working/energy_audit.json > /kaggle/working/energy_dyn.log 2>&1; rm -rf /kaggle/working/eas; grep -v WARNING /kaggle/working/energy_dyn.log | tail -20",
   "account": "4",
   "at": "2026-11-10T13:20Z"
+ },
+ {
+  "slug": "tn-init-tend",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "note": "first-hours tendencies T170",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore init_tend.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz T170 12 /kaggle/working/init_tend.npz > /kaggle/working/init_tend.log 2>&1; grep -v WARNING /kaggle/working/init_tend.log | tail -45",
+  "account": "4",
+  "at": "2026-11-10T13:43Z"
  }
 ]
