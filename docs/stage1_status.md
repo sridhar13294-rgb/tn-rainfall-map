@@ -1,5 +1,5 @@
 # Stage 1 status table (kept current every cycle; Sridhar 4 Nov 23:17: "Keep on updating this table")
-Last update: 5 Nov 22:15 IST. Target 15 Nov no longer reachable (GPU: own account + partner account only); realistic ~2 weeks. Stage 3 paused until Stage 1 is done.
+Last update: 10 Nov 20:40 IST (see docs/rootcause.md 10 Nov and the status PDF). Standing rule 10 Nov: every candidate also screened at 75 L. Earlier: 5 Nov 22:15 IST. Target 15 Nov no longer reachable (GPU: own account + partner account only); realistic ~2 weeks. Stage 3 paused until Stage 1 is done.
 
 | Item | Stage | Where it stands |
 |---|---|---|

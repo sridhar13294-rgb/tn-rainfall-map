@@ -614,3 +614,13 @@ Condition set by Sridhar: every disadvantage of dropping F2 must be addressed be
 
 ## 9 Nov 23:48 IST - track distance gate changed by Sridhar
 Sridhar: keep the track trend check; 72-h error gate 280-290 km instead of 200. Set at 280 km: today 297-303 km and run-to-run round-off is ~6 % (~18 km), so 280 needs a real improvement. Registered before any new track result; not to be changed after results. 200 km remains the aim after Stage 1; 150 km Stage 3.
+
+## 10 Nov 20:35 IST - STANDING RULE (Sridhar, option 2): every candidate fix is screened at 75 levels too
+- Why: fixes developed at 32 L can fail at 75 L (thin layers expose weak numerics - P2 history; layer-dependent formulations).
+- Rule: (1) every fix is formulated in physical units, independent of the number of layers (checked in the design review);
+  (2) every 32 L candidate test is paired with a 75 L screen = stability trace + exam quarter 0 at 75 L (config = candidate settings
+  on top of data/cyclone/kaggle_cfg/wx_b2_75.json: base2 + sfc_imp + drag_imp, layers tp75), compared with the base2 75 L reference
+  (tn-s-b2-75-wx0) - a candidate that crashes or is worse at 75 L than base2-75 is not adopted even if 32 L passes;
+  (3) the final Stage 1 exam runs at both 32 and 75 L (check 8 requires 75 L stability).
+- Cost: about +30-40 % GPU per candidate. Correction to the 10 Nov status PDF: check 8 is PASS at 32 L (73/73) but only traced at 75 L
+  (10 days stable) - the full 75 L exam on base2 is pending (first quarter queued now).
