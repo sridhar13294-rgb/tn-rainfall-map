@@ -1,6 +1,6 @@
-tn-p5-geo
-libm_wx2020_fields.npz,wx_truth_2020.npz
-GR=T170 ONLY="base2" STRIDE=1 OUT=/kaggle/working/p5_geo.json XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore p5_geo.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 12 > /kaggle/working/p5_geo.log 2>&1; tail -6 /kaggle/working/p5_geo.log
+tn-s-cnt-q6p
+libm_fields.npz
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/suite_cnt_q6.json 0 1 /kaggle/working/q6.json > /kaggle/working/q6.log 2>&1; tail -8 /kaggle/working/q6.log 2>&1 | tee job.log
 NvidiaTeslaT4
 1
-#p5 2026-11-10T04:34Z
+#pinned-stack 2026-11-10T07:40Z
