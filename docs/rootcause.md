@@ -990,3 +990,19 @@ round-off spread'): z500 d1/d5/d10 20.01/73.0/119.1 vs 20.02/73.1/119.2 PASS; 72
   shift > 500 km, |dP| > 2 hPa or |dWind| > 2 m/s = failing start; a system counts as systematically wrong if >= 7 of 12 starts
   fail on the same day with the same sign. tn-p5-wide (account 1, mean maps only, launched before this request) is kept as a
   run-to-run cross-check of the mean maps. Caveat: centre = box max/min, unreliable for flat or split highs (flagged by eye).
+- 18:05 IST GLOBAL CHECK, 12-start MEAN (tn-p5-wide, T170; per-start job tn-p5-glob still queued on Kaggle):
+  REPRODUCED (registered rule): N Pacific High, Azores High, S Pacific High, S Atlantic High, Mascarene High, Aleutian Low; trades
+  N Pacific, S Pacific, N Atlantic, S Indian. FLAGGED: Siberian High TOO WEAK (d1 -0.9, d2 -3.6, d3 -4.7 hPa; terrain caveat);
+  Icelandic Low too shallow (+2.0..+3.4 d2-d4); S Atlantic trades too weak (+2.8 d1, +2.2 d3); China 25-40N 100-120E +1.7/+2.3
+  (d1/d2); Myanmar +1.9/+2.9; Arabian Sea NE monsoon -2.2 (d2); S China Sea/Indochina u850 -2.5 (d1) -3.0 (d2); Bay -1.0 (d1) -4.0 (d2).
+  CHECK 3 (upstream): easterly error over Indochina/S China Sea on day 1 (box -2.5; 20N 100E -6.3, 15N 110E -6.5) while the Bay
+  is -1.0; day 2 the Bay reaches -4.0 with a continuous negative band 15-20N 80-120E (weak at 90E on day 1). Registered
+  criteria for 'upstream origin' MET on the mean - origin INDOCHINA / SOUTH CHINA SEA, not China north of 25N.
+  CHECK 2 (Siberia): Siberian High is too WEAK, and its bias is opposite in sign to the China/Myanmar high bias and does not
+  lead it -> no evidence for a Siberian origin.
+  Pattern: high-MSLP bias over Myanmar/Yunnan/S China (20-30N 95-110E, +3 hPa d1-d3) and a growing LOW-MSLP bias over the
+  tropical W Pacific/S China Sea (0-20N 110-140E: -1..-2.5 d1 -> -3..-6 d3); the easterly error sits between them.
+  Caveats: (a) u850 at 30-40N 70-100E (+10..+16 m/s) is below ground over Tibet - extrapolation artefact, ignored; (b) Oct-Nov
+  2020 had several strong W Pacific typhoons crossing the S China Sea (Molave, Goni, Etau, Vamco) - a mean low bias there can
+  come from a few starts with misplaced/too-deep typhoons; the per-start job decides this before any conclusion.
+  This says WHERE (Indochina/S China Sea/W Pacific), not WHY.
