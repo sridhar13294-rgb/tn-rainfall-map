@@ -1,9 +1,9 @@
 """Jets / westerlies / Rossby waves / MJO check (10 Nov, Sridhar 18:10), per start, from tn-p5-dyn (bias maps; truth adds back).
 python p5_dyn_eval.py P5_DYN_NPZ TRUTH_NPZ. Limits registered in docs/rootcause.md 10 Nov 18:30 (before results)."""
 import sys, datetime as dt, numpy as np
-Z = np.load(sys.argv[1]); TR = np.load(sys.argv[2]); DI = {str(d): i for i, d in enumerate(TR['days'])}
-la, lo = Z['lat'], Z['lon'] % 360; starts = [str(s) for s in Z['starts']]
-days = sorted({int(k.split('_d')[1]) for k in Z.files if k.startswith('ps_u200_d')})
+_z = np.load(sys.argv[1]); Z = {k: _z[k] for k in _z.files}; _t = np.load(sys.argv[2]); TR = {k: _t[k] for k in _t.files}; DI = {str(d): i for i, d in enumerate(TR['days'])}
+la, lo = Z['lat'], Z['lon'] % 360; starts = [str(s) for s in Z['starts']]; Z_files = list(Z)
+days = sorted({int(k.split('_d')[1]) for k in Z if k.startswith('ps_u200_d')})
 def truth(var, s, d):
     t = (dt.datetime.strptime(s, '%Y-%m-%dT%H') + dt.timedelta(days=d)).strftime('%Y-%m-%dT%H'); return np.asarray(TR['o_' + var][DI[t]], float)
 def pair(var, i, s, d):
