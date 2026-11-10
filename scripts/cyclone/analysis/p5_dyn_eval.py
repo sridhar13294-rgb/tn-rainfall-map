@@ -15,6 +15,7 @@ def show(title, rows, unit, lim, signed=True):
     print('day        ' + ' '.join(f'{d:>6d}' for d in days))
     A = np.array(rows)                                  # [start, day]
     print('mean       ' + ' '.join(f'{x:+6.1f}' for x in A.mean(0)))
+    print('mean |x|   ' + ' '.join(f'{x:6.1f}' for x in np.abs(A).mean(0)) + '   (continuous score, added 18:40 before results)')
     print('worst      ' + ' '.join(f'{A[np.argmax(np.abs(A[:, j])), j]:+6.1f}' for j in range(len(days))))
     print('n failing  ' + ' '.join(f'{int((np.abs(A[:, j]) > lim).sum()):>6d}' for j in range(len(days))) + f'   of {len(starts)}' +
           ('   (same-sign >= 7 = systematic: ' + ' '.join(str(int(max((A[:, j] > lim).sum(), (A[:, j] < -lim).sum()) >= 7)) for j in range(len(days))) + ')'))
