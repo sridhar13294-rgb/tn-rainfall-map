@@ -974,3 +974,8 @@ round-off spread'): z500 d1/d5/d10 20.01/73.0/119.1 vs 20.02/73.1/119.2 PASS; 72
   Highs/lows: Siberian, N Pacific, Azores, S Pacific, S Atlantic, Mascarene, Aleutian, Icelandic (+ China, Myanmar, Bay).
   Trades (u850): N/S Pacific, N/S Atlantic, S Indian, Arabian Sea NE monsoon, Bay, S China Sea/Indochina.
   Caveat stated in advance: MSLP over high terrain (parts of Siberia/China) depends on the reduction formula.
+- 17:05 IST 12-START DENIALS RESULT (ref base2 d3 Bay u850 -4.49 +-0.3): physics off -7.41 / v850 -2.73 / C-India MSLP +10.66;
+  implicit drag -4.39 (-2 %); land module -4.01 (-11 %). Registered reading: no process named (none reaches |u850| <= 2.25);
+  physics off >= 4.5 -> the easterly is MADE BY THE DYNAMICS / large-scale flow, physics only damps it (caveat: physics off
+  also removes surface friction and land heating, hence the huge C-India MSLP). => the global circulation check (tn-p5-wide,
+  launched 11:33Z on account 1) is the right next step.
