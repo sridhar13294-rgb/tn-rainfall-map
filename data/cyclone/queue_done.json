@@ -1086,5 +1086,13 @@
   "cmd": "GR=T170 ONLY=\"implicit drag\" STRIDE=1 OUT=/kaggle/working/d12_drg.json XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore u850_denial.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 12 '{\"sfc_imp\": 1, \"land_rs\": 100, \"soil_fr\": 1}' > /kaggle/working/d12_drg.log 2>&1; tail -12 /kaggle/working/d12_drg.log",
   "account": "1",
   "at": "2026-11-10T10:14Z"
+ },
+ {
+  "slug": "tn-p5-wide",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "note": "Sridhar checks 2+3 + global highs/trades",
+  "cmd": "WIN=\"-90,90,0,360\" NDAY=5 GR=T170 ONLY=\"base2\" STRIDE=1 OUT=/kaggle/working/p5_wide.json XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore p5_geo.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 12 > /kaggle/working/p5_wide.log 2>&1; tail -4 /kaggle/working/p5_wide.log",
+  "account": "1",
+  "at": "2026-11-10T11:35Z"
  }
 ]
