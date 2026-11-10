@@ -943,3 +943,10 @@ round-off spread'): z500 d1/d5/d10 20.01/73.0/119.1 vs 20.02/73.1/119.2 PASS; 72
   kernel.py stop check narrowed to 'JAX not on GPU' only. The base2 -4.65 vs -4.33 difference (same code, starts, GPU type)
   therefore means GPU run-to-run variation of ~0.3 m/s in 3-day Bay u850 (12-start mean) exists despite deterministic flags
   -> treat 0.3 m/s as the floor for any u850 comparison; registered 0.5 m/s noise limit remains appropriate.
+- 16:40 IST HOUR-0 SPLIT (h0_split.py, 12 starts, T85; surface pressure, no reduction): Indian Ocean 3-15N 60-100E init -0.30
+  -> after DFI +0.03 hPa (every start within +-0.25) => the start state over the sea is right; the hour-0 MSLP +0.2..0.9 over
+  the sea is the reduction/regridding (model spectral terrain over sea: mean +2 m, spots to +144 m). NE-Bay hour-0 +1.1 hPa
+  is over ~1000 m terrain (model 1080-1112 m vs ERA5 1003 m) -> mostly reduction. => P5 is a FORECAST-GROWN error (u850
+  easterly appears east of the Bay on day 1, real pressure growth ~+1.4 hPa in day 1), not a start-state error.
+  Side finding (not P5): tropical ocean 30S-30N surface pressure -0.50 hPa at init (-0.43 after DFI), every start -> a
+  systematic start-state mass deficit; relates to the remaining hour-0 z500 offset (-2.0 m after rd_si). Logged for the core item.
