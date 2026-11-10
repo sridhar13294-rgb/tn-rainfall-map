@@ -1,6 +1,6 @@
-tn-p5-d12-b2
+tn-p5-d12-shd
 libm_wx2020_fields.npz,wx_truth_2020.npz
-GR=T170 ONLY="base2" STRIDE=1 OUT=/kaggle/working/d12_b2.json XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore u850_denial.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 12 > /kaggle/working/d12_b2.log 2>&1; tail -12 /kaggle/working/d12_b2.log
+GR=T170 ONLY="shallow <=200 hPa" STRIDE=1 OUT=/kaggle/working/d12_shd.json XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore u850_denial.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 12 > /kaggle/working/d12_shd.log 2>&1; tail -12 /kaggle/working/d12_shd.log
 NvidiaTeslaT4
-1
-#p5 2026-11-10T01:40Z
+4
+#p5 2026-11-10T01:41Z
