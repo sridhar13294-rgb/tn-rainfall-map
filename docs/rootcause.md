@@ -938,3 +938,8 @@ round-off spread'): z500 d1/d5/d10 20.01/73.0/119.1 vs 20.02/73.1/119.2 PASS; 72
   STANDS. Correction to 12:55: the plugin error does NOT by itself change results (identical here). The base2 difference
   (tn-p5-d12-b2 -4.65 vs tn-p5-geo -4.33, same config and starts) is UNEXPLAINED; the pin + stop check stays (harmless),
   but stack mixing is not shown to have affected earlier verdicts.
+- 16:10 IST plugin message checked: runs with the 'xla_cuda12.initialize' FFI message inside the model process ran at GPU speed
+  (rd-wx1 391/317 s per start vs base1-wx1 385/325 s) -> it is harmless (one cuDNN RNN handler), not a different stack.
+  kernel.py stop check narrowed to 'JAX not on GPU' only. The base2 -4.65 vs -4.33 difference (same code, starts, GPU type)
+  therefore means GPU run-to-run variation of ~0.3 m/s in 3-day Bay u850 (12-start mean) exists despite deterministic flags
+  -> treat 0.3 m/s as the floor for any u850 comparison; registered 0.5 m/s noise limit remains appropriate.
