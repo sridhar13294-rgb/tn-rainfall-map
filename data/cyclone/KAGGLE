@@ -1,6 +1,6 @@
-tn-s-b2-75-wx0
+tn-init-ifssh
 libm_wx2020_fields.npz,wx_truth_2020.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/wx_b2_75.json 0 4 /kaggle/working/wx_0.json > /kaggle/working/wx_0.log 2>&1; tail -3 /kaggle/working/wx_0.log
+EXTRA='{"shallow":"mf","sh_trig":1,"sh_dmax":20000,"sh_eps":0.0035,"sh_det":1,"sh_clos":1}' XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore init_tend.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz T170 12 /kaggle/working/init_tend_ifssh.npz > /kaggle/working/init_tend_ifssh.log 2>&1; grep -v WARNING /kaggle/working/init_tend_ifssh.log | tail -45
 NvidiaTeslaT4
-1
-#75L reference screen base2 2026-11-10T15:11Z
+4
+#first-hours ifs_sh candidate 2026-11-10T15:39Z
