@@ -1210,3 +1210,22 @@ only check the code.
   over continental Asia / Myanmar -> stronger pressure gradient); base2's spurious warming masked part of it.
   Registration said: if (1)-(3) hold, full suite + 75 L screen follows. They hold, but (4) and the global cold overshoot make the
   suite very likely to fail checks 2 and 4 -> decision put to Sridhar (run suite now vs build candidate 2 = ifs_sh + EDMF first).
+
+## 10 Nov 23:55 IST - EDMF (IFS dry boundary-layer mass flux) built and checked locally: it does NOT address the cold overshoot
+- New mm2 option `edmf` (default off; regression bit-identical 22.259984322409387): IFS Cy50r1 Part IV eqs. 3.42-3.43 mass flux
+  with the surface test parcel of eqs. 6.18-6.20 and the kinetic-energy equation 6.10 (beta Cd = 0.949, f(1+gamma) = 3); scalars only;
+  stops at saturation (cloud base, shallow scheme above) or w = 0. Energy closes to 0.2-0.4 W/m2 per column (explicit flux form).
+- No predictions were registered and no GPU was used: the local T42 checks below showed the option has nothing to act on at 850 hPa.
+  * 1-day T42 forecast (2020-01-01): T850 global bias ifs_sh -0.641 K, ifs_sh+edmf -0.638 K (no change).
+  * Column snapshot after 30 h (2020-06-30 06 UTC): EDMF changes heating only in the lowest 2 layers (-1.1 / +1.1 K/day);
+    0.00 K/day at sigma 0.86 (850 hPa). Plume top median 165 m vs Ri boundary-layer height ~1000 m.
+  * Daytime stratification, E US and Amazon (3 starts, T42, `bl_strat.py`): ifs_sh and ifs_sh+edmf identical to 0.05 K.
+    theta850 falls 1.7-2.7 K (E US) and 2.4-5.6 K (Amazon) in 24-48 h; 850->700 stability grows from +7 K (ERA5) to +9 to +12.7 K.
+    base2 keeps theta850 within 0.3 K. The cooling is at and above 850 hPa, not inside the mixed layer.
+- WHY (from the T170 first-hours budgets already on file, globe 6-24 h, T850 K/day, ifs_sh minus base2 = -1.01 in TOTAL):
+  radiation -1.25 (-1.53 -> -2.78), shallow -1.00, dynamics -0.65, boundary layer -0.38, deep +1.23, rain evaporation +1.26.
+  S Atlantic trades: radiation -3.85 -> -5.74. The largest single term is extra RADIATIVE cooling at 850 hPa: cloud-top cooling
+  from the low cloud/moisture that base2's over-strong shallow mixing used to remove. This links the cold overshoot to the
+  cloud root cause already measured in the energy audit (cloud cover 0.84 vs 0.67, SW CRE -110 vs -47 W/m2).
+- Conclusion: EDMF (dry MF) is not the missing heat source. Next WHY = low cloud amount / cloud-top cooling (cloud scheme),
+  which is also the largest energy-budget error. EDMF stays in the code, off.

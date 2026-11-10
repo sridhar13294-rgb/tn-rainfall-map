@@ -110,7 +110,7 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='mf', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='radcloud', rad_every=2,
-                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
+                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
@@ -520,6 +520,43 @@ class Model:
             F = jnp.where(inbl, rhoh * jnp.clip(Kbl, 0.0, 500.0) * gam[None], 0.0)                  # kg m-2 s-1 x unit, upward, at interfaces
             z0_ = jnp.zeros_like(F[:1]); return (jnp.concatenate([F, z0_], 0) - jnp.concatenate([z0_, F], 0)) / mass
         dth = dth + cg(g_th); dq = dq + cg(g_q)
+        # edmf > 0 (10 Nov, IFS Cy50r1 Part IV ch. 3, eqs. 3.42-3.43 with the plume of eqs. 6.18-6.20 and 6.10): dry boundary-layer
+        # MASS FLUX (the 'MF' of EDMF). A surface thermal (w* of eq. 6.20 from the lowest level; excess dT = 1.5 H/(rho cp w*) in [0.2, 1] K, dq = 1.5 E/(rho w*) in
+        # [1e-4, 5e-4]) rises with entrainment 0.8/z + 3e-4; its kinetic energy follows eq. 6.10; it stops where it saturates (cloud
+        # base: above that the shallow scheme carries the flux) or where w = 0. M = 0.1 rho sigma_w (z/zn)(1 - z/zi)^2,
+        # sigma_w = (1.2 u*^3 + 1.5 kappa w*^3 zn/zi)^(1/3) (1 - zn/zi)^(1/2). Heat and moisture only (not momentum); energy and
+        # water conserved (pure redistribution); explicit, CFL-limited (M dt <= 0.5 layer mass).
+        if self.S.get('edmf', 0) > 0:
+            wst = jnp.cbrt(jnp.maximum(bflux, 0.0) * hbl); act0 = (bflux > 0) & (H > 0)
+            wsx = jnp.maximum(jnp.cbrt(1.2 * jnp.maximum(ust, 0.1) ** 3 + 1.5 * KARM * zc[-1] * jnp.maximum(bflux, 0.0)), 0.1)   # eq. 6.20: surface-layer w*, z = lowest level
+            dTx = jnp.clip(1.5 * H / (rho * CP * wsx), 0.2, 1.0); dqx = jnp.clip(1.5 * E / (rho * wsx), 1e-4, 5e-4)
+            psf = ps
+            def emf(c, x):
+                thu, qu, Ku, alive, zp = c; th_k, q_k, thv_k, z_k, p_k = x
+                first = zp < 0
+                dzk = jnp.where(first, 0.0, jnp.maximum(z_k - zp, 0.0)); eps = 0.8 / jnp.maximum(z_k, 10.0) + 3e-4
+                thu1 = jnp.where(first, th_k + dTx, thu + eps * dzk * (th_k - thu)); qu1 = jnp.where(first, q_k + dqx, qu + eps * dzk * (q_k - qu))
+                Tu = thu1 * (p_k / psf) ** KAP; sat = qu1 >= qsat(Tu, p_k)
+                b = (thu1 * (1 + 0.61 * qu1) - thv_k) / thv_k
+                K1 = jnp.where(first, 0.5 * wsx ** 2, (Ku + dzk * G * b / 3.0) / (1.0 + dzk * eps * 2.0 * 1.949))
+                al = jnp.where(first, act0, alive & (K1 > 0) & ~sat)
+                return (thu1, qu1, K1, al, z_k), (al, thu1, qu1)
+            xs_e = tuple(a_[::-1] for a_ in (th, q, thv, zc, p * jnp.ones_like(th)))
+            zz = jnp.zeros_like(ps)
+            _, (al_e, thu_e, qu_e) = jax.lax.scan(emf, (zz, zz, zz, jnp.zeros(ps.shape, bool), zz - 1.0), xs_e)
+            al_e, thu_e, qu_e = al_e[::-1], thu_e[::-1], qu_e[::-1]
+            zi_mf = jnp.max(jnp.where(al_e, zc + 0.5 * dz, 0.0), axis=0)                          # top interface of the highest active layer
+            zn = zc[-1]; ok_mf = act0 & (zi_mf > zn)
+            rzi = jnp.clip(zn / jnp.maximum(zi_mf, 1.0), 0.0, 1.0)
+            sigw = jnp.cbrt(1.2 * ust ** 3 + 1.5 * KARM * wst ** 3 * rzi) * jnp.sqrt(jnp.maximum(1.0 - rzi, 0.0))
+            Msf = 0.1 * rho * sigw
+            Mi = Msf[None] * (zh / jnp.maximum(zn, 1.0)[None]) * jnp.clip(1.0 - zh / jnp.maximum(zi_mf, 1.0)[None], 0.0, 1.0) ** 2
+            Mi = jnp.where(ok_mf[None] & al_e[1:] & (zh < zi_mf[None]), Mi, 0.0)                    # interface k|k+1 needs the plume at k+1
+            Mi = jnp.minimum(Mi, 0.5 * jnp.minimum(mass[:-1], mass[1:]) / dt)
+            Fth = Mi * (thu_e[1:] - th[1:]); Fq = Mi * (qu_e[1:] - q[1:])                           # upward, upwind (plume excess of the layer below)
+            zf = jnp.zeros_like(Fth[:1])
+            dth = dth + (jnp.concatenate([Fth, zf], 0) - jnp.concatenate([zf, Fth], 0)) / mass
+            dq = dq + (jnp.concatenate([Fq, zf], 0) - jnp.concatenate([zf, Fq], 0)) / mass
         dT = dth * (p / ps) ** KAP
         dTbl, dqbl = dT, dq                                                                         # boundary-layer part (kept out of SPPT)
         # ---------------- convection (Betts-Miller-Janjic type)
