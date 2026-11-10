@@ -18,6 +18,13 @@ def show(title, rows, unit, lim, signed=True):
     print('worst      ' + ' '.join(f'{A[np.argmax(np.abs(A[:, j])), j]:+6.1f}' for j in range(len(days))))
     print('n failing  ' + ' '.join(f'{int((np.abs(A[:, j]) > lim).sum()):>6d}' for j in range(len(days))) + f'   of {len(starts)}' +
           ('   (same-sign >= 7 = systematic: ' + ' '.join(str(int(max((A[:, j] > lim).sum(), (A[:, j] < -lim).sum()) >= 7)) for j in range(len(days))) + ')'))
+    print('class      ' + ' '.join(f'{klass(A[:, j], lim):>6s}' for j in range(len(days))) + '   P=pass  S=systematic  C=case-dependent')
+def klass(col, lim):                                 # Sridhar 18:17 classes (Inconclusive is assigned by eye in the report)
+    n = int((np.abs(col) > lim).sum()); same = max(int((col > lim).sum()), int((col < -lim).sum()))
+    return 'S' if same >= 7 else ('C' if n >= 3 else 'P')
+def jet_centroid(U, latlo, lathi, om):               # Sridhar 18:17: wind-weighted core latitude (robust to two nearby maxima)
+    lm = (la >= latlo) & (la <= lathi); prof = np.nanmean(U[np.ix_(lm, om)], 1); m = prof >= 0.8 * np.nanmax(prof)
+    return float((la[lm][m] * prof[m]).sum() / prof[m].sum())
 def jet(U, latlo, lathi, om):
     lm = (la >= latlo) & (la <= lathi); prof = np.nanmean(U[np.ix_(lm, om)], 1); k = int(np.nanargmax(prof)); return la[lm][k], prof[k]
 for nm, c, d in SECT:
@@ -30,6 +37,8 @@ for nm, c, d in SECT:
                 Um, Ut = pair('u200', i, s, d_); (lm_, sm_), (lt_, st_) = jet(Um, a, b, om), jet(Ut, a, b, om); lr.append(lm_ - lt_); sr.append(sm_ - st_)
             lat_rows.append(lr); spd_rows.append(sr)
         show(f'{nm} {jn}: core LATITUDE shift', lat_rows, 'deg, + = model too far north', 2.5)
+        cen = [[jet_centroid(pair('u200', i, s, d_)[0], a, b, om) - jet_centroid(pair('u200', i, s, d_)[1], a, b, om) for d_ in days] for i, s in enumerate(starts)]
+        show(f'{nm} {jn}: wind-weighted core latitude shift (added 18:25, before results)', cen, 'deg, + = model too far north', 2.5)
         show(f'{nm} {jn}: core SPEED bias', spd_rows, 'm/s', 5.0)
     rows = []
     for i, s in enumerate(starts):
@@ -54,6 +63,21 @@ for title, om in (('Rossby waves z500 35-60N, GLOBAL', np.ones_like(lo, bool)), 
         ph.append(pr); am.append(ar)
     show(title + ': PHASE shift', ph, 'deg lon, + = model too far east', 10.0)
     show(title + ': AMPLITUDE ratio - 1', am, 'fraction', 0.2)
+def clim(var, s, d):
+    t = (dt.datetime.strptime(s, '%Y-%m-%dT%H') + dt.timedelta(days=d)).strftime('%Y-%m-%dT%H'); return np.asarray(TR['c_' + var][DI[t]], float)
+for title, om in (('Rossby waves z500 ANOMALY (minus ERA5 daily climatology) 35-60N, GLOBAL', np.ones_like(lo, bool)),
+                  ('Rossby waves z500 ANOMALY 35-60N, EAST ASIA 60-160E', lonsel(60, 160))):   # Sridhar 18:17, added before results
+    ph, am = [], []
+    for i, s in enumerate(starts):
+        pr, ar = [], []
+        for d_ in days:
+            Fm, Ft = pair('z500', i, s, d_); C = clim('z500', s, d_)
+            p, a_, _ = phase_amp(eddy_profile(Fm - C, 35, 60), eddy_profile(Ft - C, 35, 60), om); pr.append(p); ar.append(a_ - 1.0)
+        ph.append(pr); am.append(ar)
+    show(title + ': PHASE shift', ph, 'deg lon, + = model too far east', 10.0)
+    show(title + ': AMPLITUDE ratio - 1', am, 'fraction', 0.2)
+print('\nTROPICAL CIRCULATION 15S-15N (a tropical-circulation test, NOT an MJO validation: no OLR / climatology / RMM).')
+print('Spatial match (correlation) and propagation drift (lag) are separate results: a good match does not prove correct propagation.')
 for var, title in (('u200', 'MJO-band u200 15S-15N'), ('u850', 'MJO-band u850 15S-15N'), ('rain24', 'MJO-band rain 15S-15N')):
     cr, lg = [], []
     for i, s in enumerate(starts):

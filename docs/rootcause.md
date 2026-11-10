@@ -1033,3 +1033,15 @@ round-off spread'): z500 d1/d5/d10 20.01/73.0/119.1 vs 20.02/73.1/119.2 PASS; 72
     longitude; pattern correlation model vs ERA5 and eastward lag; failing if correlation < 0.6 or |lag| > 10 deg. Stated
     limit: whether a real MJO event was active in these starts is not determined by this check.
   A feature is SYSTEMATICALLY wrong if >= 7 of 12 starts fail on the same day with the same sign. Says WHERE/WHAT, not WHY.
+- 18:25 IST ADDED BEFORE tn-p5-dyn RESULTS (Sridhar 18:17; registered measures unchanged, these are extra):
+  (1) jet: wind-weighted core latitude (centroid of the sector-mean u200 profile where u >= 0.8 max) beside the max-latitude
+      measure (the original already uses the sector-mean profile, but can jump between two maxima); same 2.5 deg limit.
+  (2) Rossby: phase/amplitude also on z500 ANOMALIES (model and ERA5 minus ERA5 daily climatology c_z500) so a background
+      height bias is not mistaken for a wave error; same 10 deg / 0.8-1.2 limits.
+  (3) tropical: labelled 'tropical circulation test, NOT MJO validation'; spatial match (correlation) and propagation drift
+      (lag) reported separately.
+  CLASSES per feature and day: PASS (<= 2 of 12 starts beyond the limit), SYSTEMATIC (>= 7 same sign), CASE-DEPENDENT (3-6, or
+  >= 7 mixed sign), INCONCLUSIVE (diagnostic unsuitable, assigned by eye with the reason). Failed metrics are not fixed one by
+  one - several may share one cause. Solver and physics frozen until both experiments are read.
+  Circulation chain tropics -> Rossby/Asian circulation -> westerlies/jet/pressure gradients -> Indochina/S China Sea -> Bay is a
+  HYPOTHESIS, two-way interactions possible; each link needs its own evidence.
