@@ -12,13 +12,14 @@ All as global (and band) means in W/m2. Also global mean layer thicknesses 1000-
 each audit time (thermal vs mass/coordinate drift, peer point).  python energy_audit.py LIB_NPZ GRID START[,START] HOURS OUT_JSON"""
 import sys, os, json, datetime as dt, numpy as np, jax, jax.numpy as jnp
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
-import mm2, landinit
+import mm2, landinit, pickle
+MODE = os.environ.get('MODE', 'full')   # 10 Nov: 'full' (model + saves states) then 'dyn' (physics-off model on the saved states): one model per process (7 GB OOM)
 from dinosaur import primitive_equations
 G, CP, LV, RD = 9.80616, 1004.6, 2.5e6, 287.04
 LIB, GR, STARTS, HOURS, OUT = sys.argv[1], sys.argv[2], sys.argv[3].split(','), int(sys.argv[4]), sys.argv[5]
 B2 = {'rad': 'radcloud', 'rad_every': 2, 'cmt_mf': 1, 'rd_si': 1}
 Z = dict(np.load(LIB)); TT = [str(t) for t in Z['times']]; V3 = [str(v) for v in Z['v3']]; V2 = [str(v) for v in Z['v2']]
-M = mm2.Model(GR, 32, None, dict(B2)); MD = mm2.Model(GR, 32, None, dict(B2, phys_off=True))
+M = mm2.Model(GR, 32, None, dict(B2, phys_off=(MODE == 'dyn')))
 hor = M.coords.horizontal; dsig = np.asarray(M.dsig); sig = np.asarray(M.sig)
 LA = np.asarray(M.LA); W = np.cos(np.radians(LA)); BANDS = {'globe': np.abs(LA) <= 90, 'tropics 30S-30N': np.abs(LA) <= 30,
                                                           'NH 30-90N': LA > 30, 'SH 30-90S': LA < -30}
@@ -52,14 +53,22 @@ for key in STARTS:
     args = (f3, Z['levs'], Z['lats'], Z['lons'], f2[V2.index('surface_pressure')], f2[V2.index('geopotential_at_surface')] / 9.80616,
             f2[V2.index('sea_surface_temperature')], f2[V2.index('land_sea_mask')])
     st, cr = M.init(*args, when=t0, **landinit.land_kwargs(f2, V2)); M.build(t0); st = M.dfi(st)
-    _ = MD.init(*args, when=t0, **landinit.land_kwargs(f2, V2)); MD.build(t0)
-    step = jax.jit(lambda s, c: (setattr(M, '_carry', c), M.step(s))[1]) if False else None
-    rows = []; E00 = energy(st); TH0 = thick(st)
+    SP = f'/tmp/claude-0/ea_states_{GR}_{key}.pkl'
+    if MODE == 'dyn':
+        SAVED = pickle.load(open(SP, 'rb')); prev = json.load(open(OUT)); out_rows = prev[key]['rows']
+        for r, (h, st_, cr_) in zip(out_rows, SAVED):
+            st_ = jax.tree_util.tree_map(jnp.asarray, st_); cr_ = jax.tree_util.tree_map(jnp.asarray, cr_)
+            M._carry = cr_; Sd = M.step(st_); E0_ = energy(st_)['E']
+            for bn, bm in BANDS.items():
+                r[bn]['DYN'] = gm(energy(Sd)['E'] - E0_, bm) / M.dt_s; r[bn]['COUPLING'] = r[bn]['FULL'] - r[bn]['DYN'] - r[bn]['PHYS']
+            g_ = r['globe']; print(f'{key} {GR} h{h:3d} globe W/m2: FULL {g_["FULL"]:+7.2f} = DYN {g_["DYN"]:+7.2f} + PHYS {g_["PHYS"]:+7.2f} (RAD {g_["RAD"]:+7.2f} SFC {g_["SFC"]:+6.2f} KE {g_["KE_phys"]:+5.2f}) + COUPLING {g_["COUPLING"]:+6.2f} | FILT {g_["FILT"]:+6.2f}', flush=True)
+        json.dump(prev, open(OUT, 'w')); continue
+    rows = []; E00 = energy(st); TH0 = thick(st); SAVED = []
     for h in range(0, HOURS + 1, 3):
         if h > 0: st, cr = mm2.integrate(M, st, cr, 3)
         crx = dict(cr, doy0=jnp.float32(M.doy0), utc0=jnp.float32(M.utc0))
-        M._carry = crx; MD._carry = crx
-        S_full = M.step(st); S_dyn = MD.step(st); S_f = M.filt(st, st)
+        M._carry = crx; SAVED.append((h, jax.device_get(st), jax.device_get(crx)))
+        S_full = M.step(st); S_dyn = st; S_f = M.filt(st, st)
         T, q, u, v, ps = fields(st); S_ = st
         tend, diag = M.column(jnp.asarray(T, jnp.float32), jnp.asarray(q, jnp.float32), jnp.asarray(u, jnp.float32), jnp.asarray(v, jnp.float32),
                               jnp.asarray(ps, jnp.float32), crx, want_diag=True, div=hor.to_nodal(st.divergence) * M.SEC)
@@ -81,12 +90,13 @@ for key in STARTS:
             r['rad_parts']['LW_atm'] = -r['rad_parts']['olr'] + r['rad_parts']['lw_up_sfc'] - r['rad_parts']['lw_dn_sfc']
             r['rad_parts']['SW_abs_atm (RAD - LW_atm)'] = r['globe']['RAD'] - r['rad_parts']['LW_atm']
             print('   rad parts globe W/m2: ' + ' '.join(f'{k} {x:+.1f}' for k, x in r['rad_parts'].items()), flush=True)
+        r['globe']['DYN'] = None; r['globe']['COUPLING'] = None   # filled by MODE=dyn
         Enow = energy(st); r['drift_since_0'] = {c: gm(Enow[c] - E00[c], BANDS['globe']) for c in ('E', 'cpT', 'Lq', 'K', 'PHIs')}
         rows.append(r); g_ = r['globe']
-        print(f'{key} {GR} h{h:3d} globe W/m2: FULL {g_["FULL"]:+7.2f} = DYN {g_["DYN"]:+7.2f} + PHYS {g_["PHYS"]:+7.2f} (RAD {g_["RAD"]:+7.2f} '
-              f'SFC {g_["SFC"]:+6.2f} KE {g_["KE_phys"]:+5.2f} rest {g_["PHYS_minus_RAD_SFC_KE"]:+5.2f}) + COUPLING {g_["COUPLING"]:+6.2f} | FILT {g_["FILT"]:+6.2f} '
+        print(f'{key} {GR} h{h:3d} globe W/m2: FULL {g_["FULL"]:+7.2f} + PHYS {g_["PHYS"]:+7.2f} (RAD {g_["RAD"]:+7.2f} '
+              f'SFC {g_["SFC"]:+6.2f} KE {g_["KE_phys"]:+5.2f} rest {g_["PHYS_minus_RAD_SFC_KE"]:+5.2f}) | FILT {g_["FILT"]:+6.2f} '
               f'| drift since h0 E {r["drift_since_0"]["E"] / 1e6:+.3f} MJ/m2', flush=True)
     TH1 = thick(st)
-    res[key] = dict(rows=rows, thick0=TH0, thick_end=TH1)
+    res[key] = dict(rows=rows, thick0=TH0, thick_end=TH1); pickle.dump(SAVED, open(SP, 'wb'))
     print(f'{key} {GR} layer thickness (m) and mean Tv (K), h0 -> h{HOURS}: ' + ' | '.join(f'{L}: {TH0[L][0]:.1f} -> {TH1[L][0]:.1f} ({TH1[L][0]-TH0[L][0]:+.1f} m), Tv {TH0[L][1]:.2f} -> {TH1[L][1]:.2f}' for L in TH0), flush=True)
     json.dump(res, open(OUT, 'w'))
