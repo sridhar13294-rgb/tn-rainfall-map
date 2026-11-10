@@ -1,45 +1,23 @@
 {
- "run_utc": "2026-11-09T19:55:54+00:00",
+ "run_utc": "2026-11-10T04:04:35+00:00",
  "models": {
   "GFS": {
-   "run": "2026-11-09 12Z",
-   "fields_ok": 1135,
+   "run": "2026-11-09 18Z",
+   "fields_ok": 1151,
    "fields_failed": 0,
    "seconds": 25,
    "errors": [],
    "samples": {
-    "tp": {
-     "shortName": "tp",
-     "units": "kg m**-2",
+    "tmax": {
+     "shortName": "tmax",
+     "units": "K",
      "gridType": "regular_ll",
-     "typeOfLevel": "surface",
-     "level": 0,
+     "typeOfLevel": "heightAboveGround",
+     "level": 2,
      "Ni": 1440,
      "Nj": 721,
      "numberOfDataPoints": 1038240,
-     "stepRange": "0-6"
-    },
-    "msl": {
-     "shortName": "prmsl",
-     "units": "Pa",
-     "gridType": "regular_ll",
-     "typeOfLevel": "meanSea",
-     "level": 0,
-     "Ni": 1440,
-     "Nj": 721,
-     "numberOfDataPoints": 1038240,
-     "stepRange": "30"
-    },
-    "mslt": {
-     "shortName": "prmsl",
-     "units": "Pa",
-     "gridType": "regular_ll",
-     "typeOfLevel": "meanSea",
-     "level": 0,
-     "Ni": 1440,
-     "Nj": 721,
-     "numberOfDataPoints": 1038240,
-     "stepRange": "30"
+     "stepRange": "6-12"
     },
     "t2": {
      "shortName": "2t",
@@ -50,29 +28,7 @@
      "Ni": 1440,
      "Nj": 721,
      "numberOfDataPoints": 1038240,
-     "stepRange": "30"
-    },
-    "tmax": {
-     "shortName": "tmax",
-     "units": "K",
-     "gridType": "regular_ll",
-     "typeOfLevel": "heightAboveGround",
-     "level": 2,
-     "Ni": 1440,
-     "Nj": 721,
-     "numberOfDataPoints": 1038240,
-     "stepRange": "24-30"
-    },
-    "u850": {
-     "shortName": "u",
-     "units": "m s**-1",
-     "gridType": "regular_ll",
-     "typeOfLevel": "isobaricInhPa",
-     "level": 850,
-     "Ni": 1440,
-     "Nj": 721,
-     "numberOfDataPoints": 1038240,
-     "stepRange": "30"
+     "stepRange": "45"
     },
     "tmin": {
      "shortName": "tmin",
@@ -83,62 +39,7 @@
      "Ni": 1440,
      "Nj": 721,
      "numberOfDataPoints": 1038240,
-     "stepRange": "24-30"
-    },
-    "band850": {
-     "shortName": "u",
-     "units": "m s**-1",
-     "gridType": "regular_ll",
-     "typeOfLevel": "isobaricInhPa",
-     "level": 850,
-     "Ni": 1440,
-     "Nj": 721,
-     "numberOfDataPoints": 1038240,
-     "stepRange": "30"
-    },
-    "u850t": {
-     "shortName": "u",
-     "units": "m s**-1",
-     "gridType": "regular_ll",
-     "typeOfLevel": "isobaricInhPa",
-     "level": 850,
-     "Ni": 1440,
-     "Nj": 721,
-     "numberOfDataPoints": 1038240,
-     "stepRange": "30"
-    },
-    "v850": {
-     "shortName": "v",
-     "units": "m s**-1",
-     "gridType": "regular_ll",
-     "typeOfLevel": "isobaricInhPa",
-     "level": 850,
-     "Ni": 1440,
-     "Nj": 721,
-     "numberOfDataPoints": 1038240,
-     "stepRange": "30"
-    },
-    "v850t": {
-     "shortName": "v",
-     "units": "m s**-1",
-     "gridType": "regular_ll",
-     "typeOfLevel": "isobaricInhPa",
-     "level": 850,
-     "Ni": 1440,
-     "Nj": 721,
-     "numberOfDataPoints": 1038240,
-     "stepRange": "30"
-    },
-    "v10": {
-     "shortName": "10v",
-     "units": "m s**-1",
-     "gridType": "regular_ll",
-     "typeOfLevel": "heightAboveGround",
-     "level": 10,
-     "Ni": 1440,
-     "Nj": 721,
-     "numberOfDataPoints": 1038240,
-     "stepRange": "30"
+     "stepRange": "6-12"
     },
     "u10": {
      "shortName": "10u",
@@ -149,103 +50,95 @@
      "Ni": 1440,
      "Nj": 721,
      "numberOfDataPoints": 1038240,
-     "stepRange": "30"
+     "stepRange": "12"
     },
-    "olr": {
-     "shortName": "sulwrf",
-     "units": "W m**-2",
+    "msl": {
+     "shortName": "prmsl",
+     "units": "Pa",
      "gridType": "regular_ll",
-     "typeOfLevel": "nominalTop",
+     "typeOfLevel": "meanSea",
      "level": 0,
-     "Ni": 1440,
-     "Nj": 721,
-     "numberOfDataPoints": 1038240,
-     "stepRange": "24-30"
-    },
-    "cape": {
-     "shortName": "cape",
-     "units": "J kg**-1",
-     "gridType": "regular_ll",
-     "typeOfLevel": "surface",
-     "level": 0,
-     "Ni": 1440,
-     "Nj": 721,
-     "numberOfDataPoints": 1038240,
-     "stepRange": "30"
-    },
-    "pwat": {
-     "shortName": "pwat",
-     "units": "kg m**-2",
-     "gridType": "regular_ll",
-     "typeOfLevel": "atmosphereSingleLayer",
-     "level": 0,
-     "Ni": 1440,
-     "Nj": 721,
-     "numberOfDataPoints": 1038240,
-     "stepRange": "30"
-    }
-   },
-   "days_with_rain": 15
-  },
-  "ECMWF": {
-   "run": "2026-11-09 12Z",
-   "fields_ok": 721,
-   "fields_failed": 10,
-   "seconds": 553,
-   "errors": [
-    "318h mx2t6: all mirrors failed: time budget used up",
-    "318h 2t: all mirrors failed: time budget used up",
-    "342h 10v: all mirrors failed: time budget used up",
-    "318h u: all mirrors failed: time budget used up",
-    "354h 10u: all mirrors failed: time budget used up",
-    "330h mx2t6: all mirrors failed: time budget used up",
-    "354h tp: all mirrors failed: time budget used up",
-    "348h mn2t6: all mirrors failed: time budget used up"
-   ],
-   "samples": {
-    "tmax": {
-     "shortName": "mx2t3",
-     "units": "K",
-     "gridType": "regular_ll",
-     "typeOfLevel": "heightAboveGround",
-     "level": 2,
-     "Ni": 1440,
-     "Nj": 721,
-     "numberOfDataPoints": 1038240,
-     "stepRange": "24-27"
-    },
-    "t2": {
-     "shortName": "2t",
-     "units": "K",
-     "gridType": "regular_ll",
-     "typeOfLevel": "heightAboveGround",
-     "level": 2,
      "Ni": 1440,
      "Nj": 721,
      "numberOfDataPoints": 1038240,
      "stepRange": "12"
     },
-    "tmin": {
-     "shortName": "mn2t3",
-     "units": "K",
+    "v850": {
+     "shortName": "v",
+     "units": "m s**-1",
      "gridType": "regular_ll",
-     "typeOfLevel": "heightAboveGround",
-     "level": 2,
+     "typeOfLevel": "isobaricInhPa",
+     "level": 850,
      "Ni": 1440,
      "Nj": 721,
      "numberOfDataPoints": 1038240,
-     "stepRange": "9-12"
+     "stepRange": "12"
+    },
+    "u850": {
+     "shortName": "u",
+     "units": "m s**-1",
+     "gridType": "regular_ll",
+     "typeOfLevel": "isobaricInhPa",
+     "level": 850,
+     "Ni": 1440,
+     "Nj": 721,
+     "numberOfDataPoints": 1038240,
+     "stepRange": "12"
+    },
+    "v850t": {
+     "shortName": "v",
+     "units": "m s**-1",
+     "gridType": "regular_ll",
+     "typeOfLevel": "isobaricInhPa",
+     "level": 850,
+     "Ni": 1440,
+     "Nj": 721,
+     "numberOfDataPoints": 1038240,
+     "stepRange": "12"
+    },
+    "mslt": {
+     "shortName": "prmsl",
+     "units": "Pa",
+     "gridType": "regular_ll",
+     "typeOfLevel": "meanSea",
+     "level": 0,
+     "Ni": 1440,
+     "Nj": 721,
+     "numberOfDataPoints": 1038240,
+     "stepRange": "12"
+    },
+    "band850": {
+     "shortName": "u",
+     "units": "m s**-1",
+     "gridType": "regular_ll",
+     "typeOfLevel": "isobaricInhPa",
+     "level": 850,
+     "Ni": 1440,
+     "Nj": 721,
+     "numberOfDataPoints": 1038240,
+     "stepRange": "12"
+    },
+    "u850t": {
+     "shortName": "u",
+     "units": "m s**-1",
+     "gridType": "regular_ll",
+     "typeOfLevel": "isobaricInhPa",
+     "level": 850,
+     "Ni": 1440,
+     "Nj": 721,
+     "numberOfDataPoints": 1038240,
+     "stepRange": "12"
     },
     "tp": {
      "shortName": "tp",
-     "units": "m",
+     "units": "kg m**-2",
      "gridType": "regular_ll",
      "typeOfLevel": "surface",
      "level": 0,
      "Ni": 1440,
      "Nj": 721,
      "numberOfDataPoints": 1038240,
-     "stepRange": "0-12"
+     "stepRange": "6-12"
     },
     "v10": {
      "shortName": "10v",
@@ -258,6 +151,126 @@
      "numberOfDataPoints": 1038240,
      "stepRange": "12"
     },
+    "cape": {
+     "shortName": "cape",
+     "units": "J kg**-1",
+     "gridType": "regular_ll",
+     "typeOfLevel": "surface",
+     "level": 0,
+     "Ni": 1440,
+     "Nj": 721,
+     "numberOfDataPoints": 1038240,
+     "stepRange": "12"
+    },
+    "olr": {
+     "shortName": "sulwrf",
+     "units": "W m**-2",
+     "gridType": "regular_ll",
+     "typeOfLevel": "nominalTop",
+     "level": 0,
+     "Ni": 1440,
+     "Nj": 721,
+     "numberOfDataPoints": 1038240,
+     "stepRange": "6-12"
+    },
+    "pwat": {
+     "shortName": "pwat",
+     "units": "kg m**-2",
+     "gridType": "regular_ll",
+     "typeOfLevel": "atmosphereSingleLayer",
+     "level": 0,
+     "Ni": 1440,
+     "Nj": 721,
+     "numberOfDataPoints": 1038240,
+     "stepRange": "12"
+    }
+   },
+   "days_with_rain": 15
+  },
+  "ECMWF": {
+   "run": "2026-11-09 12Z",
+   "fields_ok": 732,
+   "fields_failed": 0,
+   "seconds": 72,
+   "errors": [],
+   "samples": {
+    "t2": {
+     "shortName": "2t",
+     "units": "K",
+     "gridType": "regular_ll",
+     "typeOfLevel": "heightAboveGround",
+     "level": 2,
+     "Ni": 1440,
+     "Nj": 721,
+     "numberOfDataPoints": 1038240,
+     "stepRange": "39"
+    },
+    "tmax": {
+     "shortName": "mx2t3",
+     "units": "K",
+     "gridType": "regular_ll",
+     "typeOfLevel": "heightAboveGround",
+     "level": 2,
+     "Ni": 1440,
+     "Nj": 721,
+     "numberOfDataPoints": 1038240,
+     "stepRange": "36-39"
+    },
+    "tmin": {
+     "shortName": "mn2t3",
+     "units": "K",
+     "gridType": "regular_ll",
+     "typeOfLevel": "heightAboveGround",
+     "level": 2,
+     "Ni": 1440,
+     "Nj": 721,
+     "numberOfDataPoints": 1038240,
+     "stepRange": "36-39"
+    },
+    "ttr": {
+     "shortName": "ttr",
+     "units": "J m**-2",
+     "gridType": "regular_ll",
+     "typeOfLevel": "nominalTop",
+     "level": 0,
+     "Ni": 1440,
+     "Nj": 721,
+     "numberOfDataPoints": 1038240,
+     "stepRange": "0-12"
+    },
+    "v850": {
+     "shortName": "v",
+     "units": "m s**-1",
+     "gridType": "regular_ll",
+     "typeOfLevel": "isobaricInhPa",
+     "level": 850,
+     "Ni": 1440,
+     "Nj": 721,
+     "numberOfDataPoints": 1038240,
+     "stepRange": "12"
+    },
+    "u10": {
+     "shortName": "10u",
+     "units": "m s**-1",
+     "gridType": "regular_ll",
+     "typeOfLevel": "heightAboveGround",
+     "level": 10,
+     "Ni": 1440,
+     "Nj": 721,
+     "numberOfDataPoints": 1038240,
+     "stepRange": "12"
+    },
+    "tp": {
+     "shortName": "tp",
+     "units": "m",
+     "gridType": "regular_ll",
+     "typeOfLevel": "surface",
+     "level": 0,
+     "Ni": 1440,
+     "Nj": 721,
+     "numberOfDataPoints": 1038240,
+     "stepRange": "0-18"
+    },
     "msl": {
      "shortName": "msl",
      "units": "Pa",
@@ -267,7 +280,7 @@
      "Ni": 1440,
      "Nj": 721,
      "numberOfDataPoints": 1038240,
-     "stepRange": "12"
+     "stepRange": "18"
     },
     "mslt": {
      "shortName": "msl",
@@ -278,7 +291,7 @@
      "Ni": 1440,
      "Nj": 721,
      "numberOfDataPoints": 1038240,
-     "stepRange": "12"
+     "stepRange": "18"
     },
     "u850": {
      "shortName": "u",
@@ -302,8 +315,8 @@
      "numberOfDataPoints": 1038240,
      "stepRange": "12"
     },
-    "u10": {
-     "shortName": "10u",
+    "v10": {
+     "shortName": "10v",
      "units": "m s**-1",
      "gridType": "regular_ll",
      "typeOfLevel": "heightAboveGround",
@@ -311,29 +324,7 @@
      "Ni": 1440,
      "Nj": 721,
      "numberOfDataPoints": 1038240,
-     "stepRange": "60"
-    },
-    "ttr": {
-     "shortName": "ttr",
-     "units": "J m**-2",
-     "gridType": "regular_ll",
-     "typeOfLevel": "nominalTop",
-     "level": 0,
-     "Ni": 1440,
-     "Nj": 721,
-     "numberOfDataPoints": 1038240,
-     "stepRange": "0-60"
-    },
-    "v850": {
-     "shortName": "v",
-     "units": "m s**-1",
-     "gridType": "regular_ll",
-     "typeOfLevel": "isobaricInhPa",
-     "level": 850,
-     "Ni": 1440,
-     "Nj": 721,
-     "numberOfDataPoints": 1038240,
-     "stepRange": "60"
+     "stepRange": "18"
     }
    },
    "mirrors": [
@@ -394,32 +385,12 @@
    "days_with_rain": 14
   },
   "ECMWF AI": {
-   "run": "2026-11-09 12Z",
-   "fields_ok": 457,
-   "fields_failed": 58,
-   "seconds": 373,
-   "errors": [
-    "288h 10v: all mirrors failed: time budget used up",
-    "288h 2t: all mirrors failed: time budget used up",
-    "300h tp: all mirrors failed: time budget used up",
-    "300h u: all mirrors failed: time budget used up",
-    "300h v: all mirrors failed: time budget used up",
-    "300h msl: all mirrors failed: time budget used up",
-    "300h 10u: all mirrors failed: time budget used up",
-    "300h 10v: all mirrors failed: time budget used up"
-   ],
+   "run": "2026-11-09 18Z",
+   "fields_ok": 541,
+   "fields_failed": 0,
+   "seconds": 51,
+   "errors": [],
    "samples": {
-    "tp": {
-     "shortName": "tp",
-     "units": "kg m**-2",
-     "gridType": "regular_ll",
-     "typeOfLevel": "surface",
-     "level": 0,
-     "Ni": 1440,
-     "Nj": 721,
-     "numberOfDataPoints": 1038240,
-     "stepRange": "0"
-    },
     "t2": {
      "shortName": "2t",
      "units": "K",
@@ -429,29 +400,7 @@
      "Ni": 1440,
      "Nj": 721,
      "numberOfDataPoints": 1038240,
-     "stepRange": "48"
-    },
-    "u850": {
-     "shortName": "u",
-     "units": "m s**-1",
-     "gridType": "regular_ll",
-     "typeOfLevel": "isobaricInhPa",
-     "level": 850,
-     "Ni": 1440,
-     "Nj": 721,
-     "numberOfDataPoints": 1038240,
-     "stepRange": "36"
-    },
-    "band850": {
-     "shortName": "u",
-     "units": "m s**-1",
-     "gridType": "regular_ll",
-     "typeOfLevel": "isobaricInhPa",
-     "level": 850,
-     "Ni": 1440,
-     "Nj": 721,
-     "numberOfDataPoints": 1038240,
-     "stepRange": "36"
+     "stepRange": "90"
     },
     "v10": {
      "shortName": "10v",
@@ -462,29 +411,7 @@
      "Ni": 1440,
      "Nj": 721,
      "numberOfDataPoints": 1038240,
-     "stepRange": "36"
-    },
-    "v850": {
-     "shortName": "v",
-     "units": "m s**-1",
-     "gridType": "regular_ll",
-     "typeOfLevel": "isobaricInhPa",
-     "level": 850,
-     "Ni": 1440,
-     "Nj": 721,
-     "numberOfDataPoints": 1038240,
-     "stepRange": "72"
-    },
-    "u10": {
-     "shortName": "10u",
-     "units": "m s**-1",
-     "gridType": "regular_ll",
-     "typeOfLevel": "heightAboveGround",
-     "level": 10,
-     "Ni": 1440,
-     "Nj": 721,
-     "numberOfDataPoints": 1038240,
-     "stepRange": "72"
+     "stepRange": "90"
     },
     "msl": {
      "shortName": "msl",
@@ -495,7 +422,7 @@
      "Ni": 1440,
      "Nj": 721,
      "numberOfDataPoints": 1038240,
-     "stepRange": "12"
+     "stepRange": "90"
     },
     "mslt": {
      "shortName": "msl",
@@ -506,7 +433,62 @@
      "Ni": 1440,
      "Nj": 721,
      "numberOfDataPoints": 1038240,
-     "stepRange": "12"
+     "stepRange": "90"
+    },
+    "u850": {
+     "shortName": "u",
+     "units": "m s**-1",
+     "gridType": "regular_ll",
+     "typeOfLevel": "isobaricInhPa",
+     "level": 850,
+     "Ni": 1440,
+     "Nj": 721,
+     "numberOfDataPoints": 1038240,
+     "stepRange": "90"
+    },
+    "band850": {
+     "shortName": "u",
+     "units": "m s**-1",
+     "gridType": "regular_ll",
+     "typeOfLevel": "isobaricInhPa",
+     "level": 850,
+     "Ni": 1440,
+     "Nj": 721,
+     "numberOfDataPoints": 1038240,
+     "stepRange": "90"
+    },
+    "tp": {
+     "shortName": "tp",
+     "units": "kg m**-2",
+     "gridType": "regular_ll",
+     "typeOfLevel": "surface",
+     "level": 0,
+     "Ni": 1440,
+     "Nj": 721,
+     "numberOfDataPoints": 1038240,
+     "stepRange": "0-90"
+    },
+    "v850": {
+     "shortName": "v",
+     "units": "m s**-1",
+     "gridType": "regular_ll",
+     "typeOfLevel": "isobaricInhPa",
+     "level": 850,
+     "Ni": 1440,
+     "Nj": 721,
+     "numberOfDataPoints": 1038240,
+     "stepRange": "90"
+    },
+    "u10": {
+     "shortName": "10u",
+     "units": "m s**-1",
+     "gridType": "regular_ll",
+     "typeOfLevel": "heightAboveGround",
+     "level": 10,
+     "Ni": 1440,
+     "Nj": 721,
+     "numberOfDataPoints": 1038240,
+     "stepRange": "18"
     }
    },
    "mirrors": [
@@ -540,24 +522,15 @@
     "tp",
     "z"
    ],
-   "days_with_rain": 11
+   "days_with_rain": 14
   },
   "ICON": {
-   "run": "2026-11-09 12Z",
-   "fields_ok": 202,
+   "run": "2026-11-10 00Z",
+   "fields_ok": 215,
    "fields_failed": 0,
-   "seconds": 28,
+   "seconds": 82,
    "errors": [],
    "samples": {
-    "v10": {
-     "shortName": "10v",
-     "units": "m s**-1",
-     "gridType": "unstructured_grid",
-     "typeOfLevel": "heightAboveGround",
-     "level": 10,
-     "numberOfDataPoints": 2949120,
-     "stepRange": "24"
-    },
     "u10": {
      "shortName": "10u",
      "units": "m s**-1",
@@ -567,6 +540,15 @@
      "numberOfDataPoints": 2949120,
      "stepRange": "12"
     },
+    "v10": {
+     "shortName": "10v",
+     "units": "m s**-1",
+     "gridType": "unstructured_grid",
+     "typeOfLevel": "heightAboveGround",
+     "level": 10,
+     "numberOfDataPoints": 2949120,
+     "stepRange": "6"
+    },
     "t2": {
      "shortName": "2t",
      "units": "K",
@@ -574,16 +556,7 @@
      "typeOfLevel": "heightAboveGround",
      "level": 2,
      "numberOfDataPoints": 2949120,
-     "stepRange": "18"
-    },
-    "tp": {
-     "shortName": "tp",
-     "units": "kg m**-2",
-     "gridType": "unstructured_grid",
-     "typeOfLevel": "surface",
-     "level": 0,
-     "numberOfDataPoints": 2949120,
-     "stepRange": "0-18"
+     "stepRange": "12"
     },
     "msl": {
      "shortName": "prmsl",
@@ -592,7 +565,7 @@
      "typeOfLevel": "meanSea",
      "level": 0,
      "numberOfDataPoints": 2949120,
-     "stepRange": "12"
+     "stepRange": "6"
     },
     "mslt": {
      "shortName": "prmsl",
@@ -601,7 +574,16 @@
      "typeOfLevel": "meanSea",
      "level": 0,
      "numberOfDataPoints": 2949120,
-     "stepRange": "12"
+     "stepRange": "6"
+    },
+    "tp": {
+     "shortName": "tp",
+     "units": "kg m**-2",
+     "gridType": "unstructured_grid",
+     "typeOfLevel": "surface",
+     "level": 0,
+     "numberOfDataPoints": 2949120,
+     "stepRange": "0-6"
     }
    },
    "cells": 2949120,
@@ -611,9 +593,20 @@
    "run": "2026-11-09 12Z",
    "fields_ok": 272,
    "fields_failed": 0,
-   "seconds": 72,
+   "seconds": 57,
    "errors": [],
    "samples": {
+    "t2": {
+     "shortName": "2t",
+     "units": "K",
+     "gridType": "regular_ll",
+     "typeOfLevel": "heightAboveGround",
+     "level": 2,
+     "Ni": 2400,
+     "Nj": 1201,
+     "numberOfDataPoints": 2882400,
+     "stepRange": "24"
+    },
     "msl": {
      "shortName": "prmsl",
      "units": "Pa",
@@ -636,17 +629,6 @@
      "numberOfDataPoints": 2882400,
      "stepRange": "12"
     },
-    "t2": {
-     "shortName": "2t",
-     "units": "K",
-     "gridType": "regular_ll",
-     "typeOfLevel": "heightAboveGround",
-     "level": 2,
-     "Ni": 2400,
-     "Nj": 1201,
-     "numberOfDataPoints": 2882400,
-     "stepRange": "15"
-    },
     "v10": {
      "shortName": "10v",
      "units": "m s**-1",
@@ -667,7 +649,7 @@
      "Ni": 2400,
      "Nj": 1201,
      "numberOfDataPoints": 2882400,
-     "stepRange": "24"
+     "stepRange": "12"
     },
     "tp": {
      "shortName": "unknown",
@@ -695,97 +677,97 @@
  },
  "verify": {
   "gauge_cells": 184,
-  "days": 31,
+  "days": 30,
   "weights": {
    "GFS": 0.198,
-   "ECMWF": 0.197,
-   "ECMWF AI": 0.225,
-   "GEM": 0.153,
-   "ICON": 0.226
+   "ECMWF": 0.199,
+   "ECMWF AI": 0.226,
+   "GEM": 0.157,
+   "ICON": 0.22
   },
   "note": null,
   "archived_days": 5
  },
  "ourfc": {
   "version": 3,
-  "satellite_weight": 0.6,
+  "satellite_weight": 0.38,
   "leads": {
    "1": {
     "chance": [
-     -3.8101,
-     2.7363,
-     -0.8439,
-     0.0886,
-     0.0236
+     -3.661,
+     2.66,
+     -0.8147,
+     0.0638,
+     0.0496
     ],
     "amount": [
-     1.2295,
-     1.1015,
-     -0.481,
-     -0.0128,
-     0.0147
+     1.2898,
+     1.122,
+     -0.5034,
+     -0.0239,
+     0.0367
     ],
-    "smear": 1.42,
-    "level": 0.517,
+    "smear": 1.436,
+    "level": 0.521,
     "samples": 6930,
-    "wet_samples": 2698,
+    "wet_samples": 2781,
     "days": 30
    },
    "2": {
     "chance": [
-     -3.2498,
-     2.5759,
-     -0.8404,
-     -0.0919,
-     0.0734
+     -3.2589,
+     2.5077,
+     -0.7881,
+     -0.0723,
+     0.0448
     ],
     "amount": [
-     1.3703,
-     0.876,
-     -0.3485,
-     0.017,
-     0.0277
+     1.3454,
+     0.8434,
+     -0.3061,
+     0.0078,
+     0.0423
     ],
-    "smear": 1.456,
-    "level": 0.532,
-    "samples": 6699,
-    "wet_samples": 2630,
-    "days": 29
+    "smear": 1.467,
+    "level": 0.53,
+    "samples": 6930,
+    "wet_samples": 2781,
+    "days": 30
    },
    "3": {
     "chance": [
-     -3.0621,
-     2.6498,
-     -0.9094,
-     -0.2242,
-     0.2111
+     -3.0221,
+     2.6168,
+     -0.9081,
+     -0.1932,
+     0.1589
     ],
     "amount": [
-     1.1747,
-     0.8345,
-     -0.23,
-     -0.0303,
-     0.013
+     1.1583,
+     0.7983,
+     -0.1867,
+     -0.0392,
+     0.0291
     ],
-    "smear": 1.454,
-    "level": 0.531,
-    "samples": 6468,
-    "wet_samples": 2593,
-    "days": 28
+    "smear": 1.463,
+    "level": 0.526,
+    "samples": 6699,
+    "wet_samples": 2743,
+    "days": 29
    }
   },
   "latest_obs_day": "2026-11-10",
-  "latest_partial": true
+  "latest_partial": false
  },
  "mslp": {
-  "GFS": 63,
+  "GFS": 64,
   "ECMWF": 59,
-  "ECMWF AI": 50,
+  "ECMWF AI": 60,
   "GEM": 39,
-  "ICON": 29
+  "ICON": 31
  },
- "wind": "ok (27 frames)",
- "steer": "ok (9 times)",
+ "wind": "ok (28 frames)",
+ "steer": "ok (10 times)",
  "anom850": "15 days, climatology {var}.mon.ltm.1991-2020.nc",
  "sst_file_anom_note": "Daily sea surface temperature anomalies | ",
  "sst": "latest 2026-11-08, history 90 days, base 1991-2020",
@@ -793,25 +775,25 @@
  "mjo": "romi, latest 2026-11-05",
  "outlook": {
   "cycles": [
+   "09 Nov 18Z",
    "09 Nov 12Z",
    "09 Nov 06Z",
    "09 Nov 00Z",
    "08 Nov 18Z",
    "08 Nov 12Z",
    "08 Nov 06Z",
-   "08 Nov 00Z",
-   "07 Nov 18Z"
+   "08 Nov 00Z"
   ],
   "members": 32,
   "errors": [],
-  "seconds": 38,
+  "seconds": 32,
   "t_bias": {
-   "tmax": 0.4,
+   "tmax": 0.3,
    "tmin": -0.3
   }
  },
  "systems": {
-  "GFS": 2,
+  "GFS": 1,
   "ECMWF": 1,
   "ECMWF AI": 1,
   "GEM": 1
@@ -821,40 +803,46 @@
    "2026-11-10",
    [
     [
-     8.59,
-     80.14,
+     8.47,
+     80.2,
      3,
-     154
+     168
     ],
     [
-     4.1,
-     74.44,
-     3,
-     560
-    ],
-    [
-     7.14,
-     89.41,
-     3,
-     1128
-    ],
-    [
-     4.86,
-     67.15,
-     3,
-     1168
-    ],
-    [
-     19.24,
-     91.07,
-     3,
-     1301
-    ],
-    [
-     6.29,
-     93.24,
+     13.98,
+     85.14,
      2,
-     1560
+     526
+    ],
+    [
+     4.02,
+     74.37,
+     3,
+     572
+    ],
+    [
+     7.26,
+     89.38,
+     3,
+     1121
+    ],
+    [
+     4.77,
+     66.93,
+     3,
+     1195
+    ],
+    [
+     19.07,
+     91.38,
+     2,
+     1322
+    ],
+    [
+     6.5,
+     92.97,
+     2,
+     1523
     ]
    ]
   ],
@@ -862,34 +850,28 @@
    "2026-11-11",
    [
     [
-     5.4,
-     78.55,
+     4.92,
+     78.66,
      2,
-     318
+     372
     ],
     [
-     4.72,
-     72.92,
-     3,
-     617
+     3.59,
+     84.67,
+     2,
+     900
     ],
     [
-     3.63,
-     84.5,
+     7.76,
+     89.18,
      3,
-     884
+     1080
     ],
     [
-     7.8,
-     88.68,
+     7.56,
+     93.05,
      3,
-     1026
-    ],
-    [
-     7.45,
-     93.21,
-     3,
-     1517
+     1497
     ]
    ]
   ],
@@ -897,28 +879,22 @@
    "2026-11-12",
    [
     [
-     4.59,
-     78.8,
+     4.55,
+     79.32,
      3,
-     411
+     438
     ],
     [
-     4.0,
-     74.52,
-     2,
-     563
+     3.91,
+     73.57,
+     3,
+     633
     ],
     [
-     8.73,
-     89.54,
-     2,
-     1087
-    ],
-    [
-     8.05,
-     92.71,
-     2,
-     1446
+     8.54,
+     89.98,
+     3,
+     1140
     ]
    ]
   ],
@@ -926,16 +902,16 @@
    "2026-11-13",
    [
     [
-     3.49,
-     82.83,
-     3,
-     776
+     3.14,
+     82.07,
+     2,
+     743
     ],
     [
-     5.73,
-     88.4,
-     2,
-     1100
+     6.11,
+     88.16,
+     3,
+     1054
     ]
    ]
   ],
@@ -943,22 +919,16 @@
    "2026-11-14",
    [
     [
-     5.16,
-     84.29,
-     2,
-     750
-    ],
-    [
-     5.89,
-     86.45,
+     5.8,
+     84.79,
      3,
-     910
+     755
     ],
     [
-     10.19,
-     68.5,
-     2,
-     960
+     10.48,
+     68.55,
+     3,
+     961
     ]
    ]
   ]
@@ -966,11 +936,11 @@
  "ensembles": {
   "GEFS": {
    "wind850_fields": 1240,
-   "run": "2026-11-09 12Z",
-   "fields_ok": 4867,
+   "run": "2026-11-09 18Z",
+   "fields_ok": 4929,
    "fields_failed": 0,
    "errors": [],
-   "seconds": 53
+   "seconds": 54
   },
   "ECMWF ENS": {
    "mirrors": [
@@ -983,7 +953,7 @@
    "fields_ok": 4550,
    "fields_failed": 0,
    "errors": [],
-   "seconds": 1564
+   "seconds": 582
   }
  },
  "ourfc4": {
@@ -1006,102 +976,102 @@
    "2026-11-24": "det"
   },
   "members": "GEFS control + 4",
-  "seconds": 9,
+  "seconds": 7,
   "districts": {
    "2026-11-10": {
     "Ramanathapuram": [
-     11.6,
-     0.14,
-     72
+     10.9,
+     0.17,
+     73
     ],
     "Nagapattinam": [
-     8.7,
-     0.05,
-     57
+     5.0,
+     0.04,
+     45
+    ],
+    "Thoothukudi": [
+     3.8,
+     0.21,
+     50
     ],
     "Tirunelveli": [
-     1.0,
+     0.5,
      0.05,
      34
     ],
-    "Thoothukudi": [
-     0.9,
-     0.08,
-     51
+    "Ariyalur": [
+     0.0,
+     0.0,
+     5
     ],
-    "Thiruvarur": [
-     0.5,
-     0.03,
-     29
-    ],
-    "Mayiladuthurai": [
-     0.2,
-     0.02,
-     26
+    "Chengalpattu": [
+     0.0,
+     0.0,
+     0
     ]
    },
    "2026-11-11": {
-    "Nagapattinam": [
-     21.9,
-     0.13,
-     81
-    ],
     "Ramanathapuram": [
-     8.1,
-     0.13,
-     66
+     3.0,
+     0.1,
+     56
     ],
-    "Thiruvarur": [
-     2.6,
+    "Nagapattinam": [
+     2.2,
      0.03,
-     46
-    ],
-    "Mayiladuthurai": [
-     2.3,
-     0.04,
      42
     ],
-    "Thanjavur": [
-     0.9,
-     0.04,
-     35
-    ],
-    "Thoothukudi": [
-     0.9,
+    "Thiruvarur": [
+     0.4,
      0.03,
-     35
+     23
+    ],
+    "Ariyalur": [
+     0.0,
+     0.0,
+     4
+    ],
+    "Chengalpattu": [
+     0.0,
+     0.0,
+     2
+    ],
+    "Chennai": [
+     0.0,
+     0.0,
+     1
     ]
    },
    "2026-11-12": {
-    "Nagapattinam": [
-     37.4,
-     0.27,
-     95
+    "Ramanathapuram": [
+     6.0,
+     0.17,
+     64
     ],
-    "Thiruvarur": [
-     25.9,
-     0.24,
-     76
+    "Nagapattinam": [
+     5.6,
+     0.03,
+     36
     ],
     "Mayiladuthurai": [
-     19.5,
-     0.11,
-     75
+     0.8,
+     0.02,
+     27
     ],
-    "Thanjavur": [
-     16.0,
-     0.19,
-     61
+    "Thoothukudi": [
+     0.7,
+     0.05,
+     36
     ],
-    "Ramanathapuram": [
-     12.3,
-     0.16,
-     77
+    "Kanniyakumari": [
+     0.4,
+     0.04,
+     30
     ],
-    "Cuddalore": [
-     2.8,
-     0.1,
-     54
+    "Thiruvarur": [
+     0.4,
+     0.03,
+     28
     ]
    }
   }
@@ -1117,23 +1087,23 @@
    [
     [
      4.06,
-     74.38,
-     87
+     74.02,
+     92
     ],
     [
-     4.65,
-     70.13,
-     48
+     4.86,
+     68.23,
+     58
     ],
     [
-     3.64,
-     77.57,
-     13
+     6.45,
+     92.91,
+     66
     ],
     [
-     6.36,
-     92.92,
-     56
+     7.03,
+     89.19,
+     85
     ]
    ]
   ],
@@ -1143,27 +1113,27 @@
     "GEFS": 31,
     "ECMWF ENS": 50
    },
-   50,
+   56,
    [
     [
-     4.56,
-     77.02,
-     42
+     4.92,
+     71.52,
+     67
     ],
     [
-     4.71,
-     72.87,
-     64
-    ],
-    [
-     6.89,
-     92.86,
+     4.48,
+     76.13,
      55
     ],
     [
-     19.04,
-     91.23,
-     49
+     7.29,
+     92.51,
+     71
+    ],
+    [
+     7.75,
+     88.57,
+     59
     ]
    ]
   ],
@@ -1173,27 +1143,27 @@
     "GEFS": 31,
     "ECMWF ENS": 50
    },
-   32,
+   34,
    [
     [
-     5.29,
-     79.12,
-     58
+     8.64,
+     91.27,
+     36
     ],
     [
-     7.38,
-     92.24,
-     58
+     6.67,
+     92.6,
+     34
     ],
     [
-     4.7,
-     74.77,
-     44
+     4.88,
+     73.48,
+     50
     ],
     [
-     4.21,
-     81.96,
-     21
+     4.45,
+     78.03,
+     38
     ]
    ]
   ],
@@ -1203,26 +1173,26 @@
     "GEFS": 31,
     "ECMWF ENS": 50
    },
-   16,
+   14,
    [
     [
-     10.48,
-     90.81,
-     19
+     8.62,
+     91.63,
+     43
     ],
     [
-     7.41,
-     91.48,
-     41
+     7.51,
+     88.29,
+     43
     ],
     [
-     4.67,
-     84.08,
-     48
+     4.8,
+     77.87,
+     46
     ],
     [
-     4.18,
-     77.06,
+     4.3,
+     80.43,
      34
     ]
    ]
@@ -1233,27 +1203,27 @@
     "GEFS": 31,
     "ECMWF ENS": 50
    },
-   20,
+   26,
    [
     [
-     8.4,
-     83.29,
-     28
+     9.58,
+     90.98,
+     21
     ],
     [
-     8.41,
-     88.18,
-     25
+     9.63,
+     86.16,
+     34
     ],
     [
-     7.82,
-     72.75,
-     27
+     7.66,
+     92.5,
+     13
     ],
     [
-     7.78,
-     91.58,
-     26
+     7.8,
+     73.06,
+     18
     ]
    ]
   ],
@@ -1263,27 +1233,27 @@
     "GEFS": 31,
     "ECMWF ENS": 50
    },
-   38,
+   52,
    [
     [
-     10.94,
-     83.26,
-     19
+     11.46,
+     91.65,
+     20
     ],
     [
-     12.03,
-     90.91,
-     15
+     12.56,
+     88.09,
+     13
     ],
     [
-     7.77,
-     80.15,
-     34
+     11.57,
+     83.03,
+     13
     ],
     [
-     9.86,
-     88.34,
-     22
+     8.39,
+     81.32,
+     30
     ]
    ]
   ],
@@ -1296,24 +1266,24 @@
    60,
    [
     [
-     11.69,
-     82.13,
-     31
+     12.04,
+     80.15,
+     14
     ],
     [
-     11.65,
-     86.62,
-     30
-    ],
-    [
-     11.53,
-     71.19,
+     14.46,
+     89.72,
      16
     ],
     [
-     8.19,
-     88.36,
-     18
+     11.16,
+     84.96,
+     25
+    ],
+    [
+     13.37,
+     82.36,
+     23
     ]
    ]
   ],
@@ -1323,27 +1293,27 @@
     "GEFS": 31,
     "ECMWF ENS": 50
    },
-   57,
+   60,
    [
     [
-     13.11,
-     83.33,
+     13.05,
+     85.36,
+     32
+    ],
+    [
+     15.4,
+     91.12,
+     29
+    ],
+    [
+     12.83,
+     81.08,
      22
     ],
     [
-     11.5,
-     81.02,
-     13
-    ],
-    [
-     14.37,
-     90.01,
-     18
-    ],
-    [
-     15.46,
-     86.53,
-     12
+     12.32,
+     71.59,
+     14
     ]
    ]
   ],
@@ -1353,26 +1323,26 @@
     "GEFS": 31,
     "ECMWF ENS": 50
    },
-   62,
+   57,
    [
     [
-     14.31,
-     84.73,
-     19
+     14.25,
+     84.87,
+     11
     ],
     [
-     15.25,
-     88.62,
-     13
+     13.06,
+     81.33,
+     20
     ],
     [
-     13.08,
-     80.83,
+     11.1,
+     84.95,
      16
     ],
     [
-     11.27,
-     83.45,
+     17.5,
+     86.14,
      11
     ]
    ]
@@ -1383,27 +1353,27 @@
     "GEFS": 31,
     "ECMWF ENS": 50
    },
-   66,
+   68,
    [
     [
-     10.72,
-     81.8,
-     19
+     10.1,
+     80.72,
+     33
     ],
     [
-     17.19,
-     86.08,
-     12
+     15.09,
+     89.87,
+     13
     ],
     [
-     15.57,
-     82.22,
-     17
+     22.31,
+     89.66,
+     32
     ],
     [
-     6.34,
-     77.13,
-     31
+     6.5,
+     77.25,
+     30
     ]
    ]
   ]
@@ -1417,5 +1387,5 @@
  "mjo_fc": "FAILED: [Errno -77] NetCDF: Access failure: 'https://psl.noaa.gov/thredds/dodsC/Datasets/cpc_blended_olr-2.5deg/olr.cbo-2.5deg.day.mean.nc'",
  "points": 231,
  "days": 15,
- "seconds": 2743
+ "seconds": 988
 }
