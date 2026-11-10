@@ -53,7 +53,7 @@ for key in STARTS:
     args = (f3, Z['levs'], Z['lats'], Z['lons'], f2[V2.index('surface_pressure')], f2[V2.index('geopotential_at_surface')] / 9.80616,
             f2[V2.index('sea_surface_temperature')], f2[V2.index('land_sea_mask')])
     st, cr = M.init(*args, when=t0, **landinit.land_kwargs(f2, V2)); M.build(t0); st = M.dfi(st)
-    SP = f'/tmp/claude-0/ea_states_{GR}_{key}.pkl'
+    SPD = os.environ.get('SPDIR', '/tmp/claude-0'); os.makedirs(SPD, exist_ok=True); SP = f'{SPD}/ea_states_{GR}_{key}.pkl'
     if MODE == 'dyn':
         SAVED = pickle.load(open(SP, 'rb')); prev = json.load(open(OUT)); out_rows = prev[key]['rows']
         for r, (h, st_, cr_) in zip(out_rows, SAVED):

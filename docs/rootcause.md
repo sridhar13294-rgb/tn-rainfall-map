@@ -1063,3 +1063,7 @@ radiative -103 (SW absorbed ~ +79, LW ~ -183; OLR ~ 239, surface LW down ~ 342, 
 latent ~ +84, net ~ 0. A model term off by > 10 W/m2 (day mean, h3-h24) is a lead; DYN, FILT or COUPLING beyond +-2 W/m2 is a
 numerical energy leak. Caveat: single days in Jan/Oct vs annual means, 3-hourly samples of the diurnal cycle; the radiation cache
 is empty at hour 0 (h0 excluded from means). Says WHICH term; does not by itself say why.
+- 19:25 IST energy audit: local T85 killed twice by the 7 GB memory limit (model + extra compiled audit steps); T42 two-pass
+  test reproduces the one-process numbers exactly (DYN -1.40, COUPLING -4.59). Moved to Kaggle at T170 (Sridhar: T170 only):
+  tn-energy-audit, two processes in one job (full pass, then physics-off pass on the saved states), 2 starts x 24 h. Reading
+  as registered 19:00.

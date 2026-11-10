@@ -1,1 +1,8 @@
-[]
+[
+ {
+  "slug": "tn-energy-audit",
+  "inputs": "libm_wx2020_fields.npz",
+  "note": "closed energy audit T170",
+  "cmd": "SPDIR=/kaggle/working/eas XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore energy_audit.py /kaggle/working/libm_wx2020_fields.npz T170 2020-10-02,2020-01-01 24 /kaggle/working/energy_audit.json > /kaggle/working/energy_full.log 2>&1; SPDIR=/kaggle/working/eas MODE=dyn XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore energy_audit.py /kaggle/working/libm_wx2020_fields.npz T170 2020-10-02,2020-01-01 24 /kaggle/working/energy_audit.json > /kaggle/working/energy_dyn.log 2>&1; rm -rf /kaggle/working/eas; grep -v WARNING /kaggle/working/energy_dyn.log | tail -20"
+ }
+]
