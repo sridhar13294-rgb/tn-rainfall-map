@@ -910,3 +910,7 @@ round-off spread'): z500 d1/d5/d10 20.01/73.0/119.1 vs 20.02/73.1/119.2 PASS; 72
   (geo, d12-nz, d12-shd): base2 -4.33/-0.71/+1.70, noise1 -4.30/-0.61/+1.67 (noise 0.03 m/s), shallow-depth -4.01/+0.80/+1.04
   (u850 -7 %, v850 +1.51, MSLP -0.66) -> shallow depth still NOT the cause (MSLP check fails, u850 far from 50 %).
   Consequence to check: the '6 % track round-off spread' used as a neutrality limit may partly be this stack mixing.
+- 13:15 IST continuum (cnt) track verdict re-test: the 5 Nov rejection compared cnt-q6 (clean cuda12 stack) with base1-q6
+  (plugin-error stack) -> mismatched. Re-run both on the pinned stack (tn-s-cnt-q6p, tn-s-base1-q6p), same configs, same
+  registered gate (quick6 72-h mean track error not worse than base1 beyond the round-off spread). If cnt passes, its other
+  checks (z500, TN u850, stability passed 5 Nov; rain/genesis pending then) are re-confirmed before adoption.
