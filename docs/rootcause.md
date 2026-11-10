@@ -1189,3 +1189,9 @@ only check the code.
   the IFS test parcel usually exceeds 200 hPa -> 'deep', not shallow. Hypothesis: base2's 'mse' heating was standing in for the
   IFS boundary-layer mass-flux (EDMF, Part IV ch. 3) + deep-scheme low-level heating, which MEGAM lacks. Registered T170 test launched
   (tn-init-ifssh) to decide predictions (1)-(4).
+- 22:20 IST (cycle, no GPU) design notes for the likely next candidate, IFS Cy50r1 Part IV ch. 3: turbulence = EDMF. The dry convective
+  boundary layer gets a MASS-FLUX updraught (eq. 3.42-3.43: M_u,surf = 0.1 rho sigma_w, sigma_w = (1.2 u*^3 + 1.5 kappa w*^3 zn/zi)^(1/3)
+  (1 - zn/zi)^(1/2); M_u = M_u,surf (z/zn)(1 - z/zi)^2; plume = the shallow test parcel eq. 6.18-6.20 with entrainment x3 in cloud;
+  scalars only, not momentum); the CLOUDY boundary layer is the shallow scheme's job; stratocumulus (EIS = max(he700 - he950,
+  he950 - he_sfc) > 5 K, he = hl + cp T* 5.87 qt) gets diffusion up to cloud top. MEGAM has K-profile diffusion (+ optional counter-
+  gradient pbl_tm), no BL mass flux -> candidate 2 = ifs_sh + EDMF dry mass flux, to be registered only after tn-init-ifssh is scored.
