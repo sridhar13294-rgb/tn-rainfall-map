@@ -1,1 +1,8 @@
-[]
+[
+ {
+  "slug": "tn-init-tend",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "note": "first-hours tendencies T170",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore init_tend.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz T170 12 /kaggle/working/init_tend.npz > /kaggle/working/init_tend.log 2>&1; grep -v WARNING /kaggle/working/init_tend.log | tail -45"
+ }
+]

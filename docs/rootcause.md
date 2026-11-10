@@ -1091,3 +1091,17 @@ is empty at hour 0 (h0 excluded from means). Says WHICH term; does not by itself
   Indochina/S China Sea and the Bay within the same 1-2 days (no robust one-day lead); the W Pacific pressure dip is a later
   consequence, not the trigger. Elsewhere: Aleutian Low too deep and S Atlantic trades too weak are also systematic -> the
   model has more than one large-scale error; WHERE only, not WHY.
+
+## 10 Nov 19:20 IST - FIRST-HOURS TENDENCY DIAGNOSIS ('how to find the WHY'; Sridhar 'Ok' 19:04)
+Method: Klinker & Sardeshmukh (1992) / Rodwell & Palmer (2007) initial tendencies. scripts/cyclone/mm/init_tend.py: 12 Oct-Nov
+2020 starts, T170, base2, init + DFI; every step of the first 24 h at sigma ~0.85 (and 0.5): TOTAL change of u/v/T split into PHYS
+(exact column tendencies: u by BL, CMT, rest; T by radiation, BL, deep, shallow, condensation, re-evaporation), PGF (pressure-
+gradient force on sigma levels), COR (Coriolis), REST = TOTAL - PHYS - PGF - COR (transport, metric terms, diffusion, coupling,
+numerics); windows 0-6 h and 6-24 h; reference = ERA5 real day0->day1 change (u850, T850) over the same starts. Job tn-init-tend.
+REGISTERED reading (before results), per box (Indochina/S China Sea, Bay, Aleutian, S Atlantic trades, globe):
+  error tendency = model TOTAL - ERA5 real change. The LEADING term is the one with the same sign as the error tendency, at least
+  50 % of its size, and that sign in >= 8 of 12 starts. Interpretation: PGF+COR leading = the wind is pushed out of balance by the
+  pressure/mass field (next: what builds that pressure - the T tendency terms at 850/500); REST leading = transport/numerics/
+  coupling; PHYS (BL/CMT) leading = physics drag/mixing. No term meeting the rule = the error is not formed in the first day
+  locally (it grows later or comes from elsewhere). Caveat: physics enters the time step inside the RK2/Crank-Nicolson scheme,
+  so the column tendency at the start state approximates its contribution; the difference falls into REST.
