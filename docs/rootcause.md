@@ -928,3 +928,8 @@ round-off spread'): z500 d1/d5/d10 20.01/73.0/119.1 vs 20.02/73.1/119.2 PASS; 72
   Registered: confirm if SE flank > 1 m/s; reject if < 0.3 at T85 -> REJECTED. The core's terrain pressure-gradient error is
   small; the P5 easterly is not a sigma-coordinate PGF artefact. Next: is the high-MSLP error NE of the Bay (21-27N
   90-105E) already in the start state (init + DFI) or grown in day 1? (h0_map.py, 12 starts, T85).
+- 15:40 IST HOUR-0 MAP RESULT (h0_map.py, 12 Oct-Nov starts, T85, init + DFI as in forecasts): MSLP bias box 21-27N 90-105E
+  hour 0 +1.11 hPa -> hour 24 +2.48 hPa: ~45 % is already in the start state, ~55 % grows in day 1. The start state is also
+  +0.2..+0.9 hPa high over most of the tropical ocean 3-15N (where the reduction is trivial -> a real surface-pressure
+  offset), with terrain spots (27N 85E +6.2: Himalayan foothills). => two parts: (1) start-state surface pressure too high
+  (init / DFI; the 6 Nov C-India split was formula +0.16, terrain +0.55, DFI +0.4); (2) day-1 growth of +1.4 hPa NE of the Bay.
