@@ -1234,5 +1234,6 @@ only check the code.
 - Stability at 75 levels (check 8): 19/19 complete, all scores finite. Compared with 32-level base2 (tn-s-rd-wx0), same 19 starts, global RMSE:
   z500 d1 19.46 vs 17.80 (+9 %, worse 19/19), d3/d5 equal (43.9/71.5), d10 117.9 vs 119.5 (-1.3 %, better 12/19);
   mslp +2 to +5 % worse d1-d5; u850 +2 to +5 % worse (better only 3/19 at d3-d5); t850 equal within 1 % to d5, +3 % at d10.
+- Caveat: the 75-level config also has sfc_imp=1, drag_imp=1 (implicit surface flux and drag, needed for 75-level stability); the 32-level reference does not, so the gap mixes level count and these two options.
 - Reading: 75 levels is stable but not better; the day-1 z500/mslp gap (19/19) is systematic and points at the start
   (vertical interpolation / DFI at 75 levels), not at the physics. This is the reference every 75-level candidate screen is compared with.
