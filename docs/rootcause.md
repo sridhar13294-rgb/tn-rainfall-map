@@ -1105,3 +1105,21 @@ REGISTERED reading (before results), per box (Indochina/S China Sea, Bay, Aleuti
   coupling; PHYS (BL/CMT) leading = physics drag/mixing. No term meeting the rule = the error is not formed in the first day
   locally (it grows later or comes from elsewhere). Caveat: physics enters the time step inside the RK2/Crank-Nicolson scheme,
   so the column tendency at the start state approximates its contribution; the difference falls into REST.
+- 19:55 IST ENERGY AUDIT RESULT (tn-energy-audit, T170, base2, 2020-10-02 and 2020-01-01, 24 h, 3-hourly, day means h3-h24, globe):
+  FULL -36.8 / -37.8 W/m2 (the model atmosphere loses ~3.2 MJ/m2 per day; real ~0).
+  PHYS -28.2 / -29.0 = RAD -138.5 / -133.3 (reference ~-103 -> 30-35 W/m2 TOO MUCH radiative cooling: LEAD) + SFC +113.7 / +107.0
+    (ref ~+104) + KE removed by drag -3.9 / -3.2 (not returned as heat).
+  Radiation parts: SW absorbed in the atmosphere +52.9 / +54.4 (ref ~+79: -25, LEAD); surface SW net 134.5 / 140.8 (ref ~161: -20..-27,
+    LEAD); OLR 228 / 226 (ref ~239: -11..-13, LEAD); atmospheric LW -191 / -188 (ref ~-183: -5..-8); surface LW down 361 / 352 (ref ~342:
+    +10..+19, LEAD); total SW absorbed (atm + surface) ~188-195 vs ~240 -> planetary albedo ~0.43-0.45 vs ~0.29 (inferred: TOA SW is
+    not kept in the radiation cache; insolation itself not yet checked). Fits the 4-5 Nov findings: convective/anvil cloud too
+    extensive and bright (D9) and the water-vapour continuum (lw_cnt) too strong.
+  Surface: latent LvE +117 / +107 (ref ~84: +23..+33, LEAD = the known +16-20 % ocean evaporation formula); sensible H -3.5 / -0.1 (ref
+    ~+20: -20..-24, LEAD; the low levels are too warm, P1).
+  NUMERICAL (registered limit +-2): DYN -4.7 / -6.7 (negative in 16 of 16 samples) -> LEAK in the dynamics step; COUPLING -4.0 / -2.1
+    -> leak (Oct); FILT -0.4 / -0.6 OK. Non-physical loss total (DYN + COUPLING + KE not heated) ~ -10..-15 W/m2.
+  Layer thickness, 24 h: 1000-850 +6.0 / +6.7 m (Tv +1.3 / +1.4 K: low levels warm), 850-500 -13.3 / -12.5 m (-0.8 K), 500-200 -30.1
+    / -27.2 m (-1.0..-1.1 K: upper troposphere cools ~1 K/day) -> the z500 day-1 drift (-14 m) is THERMAL (peer test).
+  Classification (diagnostic / tendency / coupling): TENDENCY errors in radiation (clouds/SW, continuum) and surface fluxes, plus a
+  numerical dynamics + coupling leak. Next checks: TOA insolation and clear-sky vs all-sky SW (cloud vs gas), DYN leak location.
+  No change made.
