@@ -69,7 +69,7 @@ while True:
         free = [a for a in accts if len(busy.get(a, [])) < int(amax.get(a, MAXPER))]
         if not free: left.append(j); continue
         a = min(free, key=lambda x: len(busy.get(x, [])))
-        r = sh(f". scripts/cyclone/cycle_tools.sh; FORCE=1 launch {j['slug']} {j['inputs']} {shlex.quote(j["cmd"])} {a} {j.get('note', 'q')}")
+        r = sh(f". scripts/cyclone/cycle_tools.sh; FORCE=1 launch {j['slug']} {j['inputs']} {shlex.quote(j["cmd"])} {a} {shlex.quote(j.get('note', 'q'))}")
         out = (r.stdout + r.stderr).strip().split('\n')[-1]; print(j['slug'], '->', a, '|', out, flush=True)
         if 'launched' in out:                                                   # kept in memory: writing files between launches breaks the next launch's git sync
             busy.setdefault(a, []).append(j['slug']); newdone.append(dict(j, account=a, at=time.strftime('%Y-%m-%dT%H:%MZ', time.gmtime())))
