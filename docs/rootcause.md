@@ -1195,3 +1195,18 @@ only check the code.
   scalars only, not momentum); the CLOUDY boundary layer is the shallow scheme's job; stratocumulus (EIS = max(he700 - he950,
   he950 - he_sfc) > 5 K, he = hl + cp T* 5.87 qt) gets diffusion up to cloud top. MEGAM has K-profile diffusion (+ optional counter-
   gradient pbl_tm), no BL mass flux -> candidate 2 = ifs_sh + EDMF dry mass flux, to be registered only after tn-init-ifssh is scored.
+- 23:25 IST ifs_sh REGISTERED TEST RESULT (tn-init-ifssh, T170, 12 starts, vs base2 tn-init-tend):
+  (1) tropics 0-6 h shallow heating 500 hPa: -5.33 -> -0.00 K/day  PASS
+  (2) shallow heating 850: globe +2.66 -> +0.59, Indochina +7.14 -> +1.85, Bay +7.31 -> +0.08  PASS
+  (3) 0-6 h T850 error (model - ERA5): Indochina +4.62 -> +0.21 (-95 %), Bay +5.20 -> -0.93 (-82 %)  PASS
+  (4) 0-24 h u850 error tendency: Indochina -2.83 -> -3.95, Bay -1.05 -> -2.43 m/s/day = WORSE  FAIL
+  Cold overshoot: T850 TOTAL globe +1.34 -> -0.91 (0-6 h), +0.12 -> -0.89 (6-24 h); tropics +5.30 -> -1.21 / +0.83 -> -1.30 (ERA5 ~0).
+  PGF+COR imbalance grows: Indochina -4.34 -> -4.88 / -6.36 -> -7.06; Bay -2.83 -> -2.85 / -2.46 -> -4.17.
+  Reading: the IFS shallow scheme removes the wrong shallow heating profile exactly as predicted (P1 mechanism located and
+  removable), BUT (a) without base2's spurious low-level heating the lower troposphere cools ~0.9 K/day globally (a missing heat
+  source - the EDMF boundary-layer mass flux is the documented candidate), and (b) the Asian easterly error gets WORSE, so the
+  shallow heating was NOT building the easterly - it was partly offsetting it. The 20:55 hypothesis 'shallow heating builds the
+  pressure error' is REJECTED. New hypothesis (not tested): the easterly follows LOW-LEVEL COOLING (colder air -> higher pressure
+  over continental Asia / Myanmar -> stronger pressure gradient); base2's spurious warming masked part of it.
+  Registration said: if (1)-(3) hold, full suite + 75 L screen follows. They hold, but (4) and the global cold overshoot make the
+  suite very likely to fail checks 2 and 4 -> decision put to Sridhar (run suite now vs build candidate 2 = ifs_sh + EDMF first).
