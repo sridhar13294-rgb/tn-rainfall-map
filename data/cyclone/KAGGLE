@@ -1,6 +1,6 @@
-tn-p5-d12-phys
+tn-p5-d12-lnd
 libm_wx2020_fields.npz,wx_truth_2020.npz
-GR=T170 ONLY="physics off" STRIDE=1 OUT=/kaggle/working/d12_phys.json XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore u850_denial.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 12 '{"sfc_imp": 1, "land_rs": 100, "soil_fr": 1}' > /kaggle/working/d12_phys.log 2>&1; tail -12 /kaggle/working/d12_phys.log
+GR=T170 ONLY="land module" STRIDE=1 OUT=/kaggle/working/d12_lnd.json XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore u850_denial.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 12 '{"sfc_imp": 1, "land_rs": 100, "soil_fr": 1}' > /kaggle/working/d12_lnd.log 2>&1; tail -12 /kaggle/working/d12_lnd.log
 NvidiaTeslaT4
-1
-#p5 2026-11-10T10:11Z
+4
+#p5 2026-11-10T10:12Z
