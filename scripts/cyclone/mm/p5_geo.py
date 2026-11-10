@@ -33,7 +33,7 @@ for name, extra in VAR:
                         float(np.nanmean((g(out['mslp'][d]) - TR['o_mslp'][j])[ci])) / 100])
         acc.append(row)
     a = np.mean(np.array(acc), 0); res[name] = a.tolist()
-    print(f'{name:18s}', ' | '.join(f'd{d}: u850 {a[d-1,0]:+.2f} v850 {a[d-1,1]:+.2f} C-India MSLP {a[d-1,2]:+.2f}' for d in (1, 2, 3)), flush=True)
+    print(f'{name:18s}', ' | '.join(f'd{d}: u850 {a[d-1,0]:+.2f} v850 {a[d-1,1]:+.2f} C-India MSLP {a[d-1,2]:+.2f}' for d in range(1, len(a) + 1)), flush=True)
 json.dump(dict(starts=starts, res=res, grid=os.environ.get('GR', 'T42')), open(os.environ.get('OUT', 'p5_geo.json'), 'w'))
 np.savez_compressed(os.environ.get('OUT', 'p5_geo.json').replace('.json', '.npz'), lat=la[(la >= W0) & (la <= W1)], lon=lo[(lo >= W2) & (lo <= W3)],
                     **{f'{nm}_d{d}': np.nanmean(np.array(v), 0) for (nm, d), v in MAP.items()})

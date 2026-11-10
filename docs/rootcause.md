@@ -967,3 +967,10 @@ round-off spread'): z500 d1/d5/d10 20.01/73.0/119.1 vs 20.02/73.1/119.2 PASS; 72
    (3) 'Upstream origin' only if an easterly u850 bias <= -2 m/s exists over China/Indochina (12-30N 100-120E) at least one
        day BEFORE the Bay box reaches -2 m/s, AND the maps show a connected band between them on that day. Otherwise local
        growth. A Siberian origin would additionally need the Siberia/China MSLP bias to lead the Myanmar/Bay one in time.
+- 16:35 IST GLOBAL EXTENSION (Sridhar 16:28: 'not only Siberian High - other global highs and trade winds'; T170 only, 16:30):
+  tn-p5-wide switched to the whole globe (WIN -90,90,0,360; T42 smoke test only checks the code, no result used). Evaluation
+  scripts/cyclone/analysis/p5_global_eval.py. REGISTERED reading, same rule for every feature: REPRODUCED if |bias| <= 2 hPa
+  (MSLP) or 2 m/s (u850) through day 3 and MSLP bias grows < 1 hPa/day (day 0 -> 3); else FLAGGED with where/when.
+  Highs/lows: Siberian, N Pacific, Azores, S Pacific, S Atlantic, Mascarene, Aleutian, Icelandic (+ China, Myanmar, Bay).
+  Trades (u850): N/S Pacific, N/S Atlantic, S Indian, Arabian Sea NE monsoon, Bay, S China Sea/Indochina.
+  Caveat stated in advance: MSLP over high terrain (parts of Siberia/China) depends on the reduction formula.
