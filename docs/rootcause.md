@@ -1050,3 +1050,16 @@ round-off spread'): z500 d1/d5/d10 20.01/73.0/119.1 vs 20.02/73.1/119.2 PASS; 72
   lower pressure. Direct test (2 starts): model start ps vs regridded ERA5 ps over tropical ocean -0.009 hPa (T85) / +0.065
   (T170) (terrain shift -0.004/+0.074, spectral truncation -0.005/-0.009); global mean ps ERA5 grid 985.863 vs model grid
   985.823 (T85) / 985.847 (T170) hPa. => NO start-state mass error. (The expert-question item on it is withdrawn.)
+
+## 10 Nov 19:00 IST - CLOSED ENERGY AUDIT (Sridhar 18:32 'do the audit'; peer review 18:29)
+Already known (4 Nov budget_audit): every physics process conserves internally (moist enthalpy 0.000 W/m2; water closes; BL heat
+vs surface H +0.5). Never audited: the dynamics step, diffusion and physics-dynamics coupling, and the closed total. New:
+scripts/cyclone/mm/energy_audit.py - E = sum dsig ps/g (cp T + Lv q + K) + Phi_s ps/g; every 3 h one step split into FULL, DYN
+(physics off), FILT (diffusion once), PHYS (RAD / SFC = H + Lv E / KE removed by drag-CMT / rest), COUPLING = FULL - DYN - PHYS;
+radiation parts (OLR, surface LW up/down, surface SW net, atmospheric LW and SW); layer thicknesses 1000-850 / 850-500 / 500-200.
+Run: T85, base2, starts 2020-10-02 and 2020-01-01, 24 h (local CPU; T170 later on Kaggle if needed).
+REGISTERED reading (before results): reference global-mean atmosphere (Wild et al. 2013 / Trenberth et al. 2009, annual means):
+radiative -103 (SW absorbed ~ +79, LW ~ -183; OLR ~ 239, surface LW down ~ 342, up ~ 398, surface SW net ~ 161), sensible ~ +20,
+latent ~ +84, net ~ 0. A model term off by > 10 W/m2 (day mean, h3-h24) is a lead; DYN, FILT or COUPLING beyond +-2 W/m2 is a
+numerical energy leak. Caveat: single days in Jan/Oct vs annual means, 3-hourly samples of the diurnal cycle; the radiation cache
+is empty at hour 0 (h0 excluded from means). Says WHICH term; does not by itself say why.
