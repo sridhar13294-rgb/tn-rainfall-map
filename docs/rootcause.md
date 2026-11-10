@@ -1140,3 +1140,26 @@ REGISTERED reading (before results), per box (Indochina/S China Sea, Bay, Aleuti
   By thermal wind, jet speed follows the upper-tropospheric equator-to-pole temperature gradient; the audit shows the upper
   troposphere cooling ~1 K/day and clouds/convection badly placed - a too-cold tropical upper troposphere (or too-warm subtropics)
   would weaken the jet. Needs evidence: zonal-mean T tendency by latitude at 500/200 (init_tend maps, T500 saved) and its terms.
+- 20:55 IST FIRST-HOURS TENDENCY RESULT (tn-init-tend, T170, 12 Oct-Nov starts, sigma 0.862; registered reading 19:20). u850 in m/s/day.
+  Indochina/S China Sea: ERA5 real -0.20; model TOTAL -3.06 (0-6 h) / -3.00 (6-24 h) -> error tendency ~-2.9 (matches the day-1 bias -2.5).
+    PGF+COR -4.34 / -6.36 (same sign, > 100 % of the error, negative in 10/12 starts both windows) -> LEADING TERM = PGF+COR.
+    PHYS +0.48 / +1.33 and REST +0.80 / +2.03 oppose it.
+  Bay: ERA5 -0.11; TOTAL -1.27 / -1.04 -> error ~-1.1; PGF+COR -2.83 / -2.46, negative in 10/12 -> LEADING = PGF+COR.
+  S Atlantic trades: error ~+2.4; 0-6 h PGF+COR +2.42 (8/12 positive) LEADING; 6-24 h PGF+COR +1.09 (46 %, fails 50 %), REST +2.24
+    (11/12) LEADING -> pressure imbalance first, then transport/numerics.
+  Aleutian: u850 error small (-0.5..+0.2) - the deepening needs a mass (surface pressure) tendency, not measured here.
+  Reading (registered): PGF+COR leading = the wind is pushed by a pressure/mass field out of balance -> what builds the pressure:
+  T850 (K/day): Indochina TOTAL +4.45 / +0.12 vs ERA5 -0.17; Bay +5.04 / +1.67 vs -0.16; globe +1.34 / +0.12 vs -0.01. The dominant heating
+    is SHALLOW CONVECTION: h_shal +7.14 / +2.45 (Indochina), +7.31 / +5.55 (Bay), +2.66 / +1.24 (globe), positive in 12 of 12 starts.
+  T500 (zonal means, K/day): shallow convection COOLS 500 hPa: tropics -5.33 / -2.60, subtropics -3.03 / -1.64, mid-latitudes ~0.
+    => the shallow scheme moves heat DOWN (warms ~850, cools ~500) in every start: the P1 mechanism (warm low levels) and the
+    upper/mid-troposphere cooling of the audit (thickness 850-500 -13 m/day).
+  Jet (thermal-wind) evidence: MIXED. 0-6 h: tropics cool faster than mid-latitudes (all longitudes -3.48 vs -1.94; Asia -2.25 vs -1.10)
+    = FOR a weaker jet; 6-24 h reversed (tropics -0.62 vs mid-lat -1.18; Asia -0.48 vs -0.93) = AGAINST. 500 hPa is below the jet (200
+    hPa not saved) -> the jet link is neither confirmed nor rejected.
+  Consistency check: the 12-start shallow-DEPTH denial (cap 200 hPa) removed only 7-14 % of the Bay u850 error; that variant changed
+    the heating profile but over-cooled 850 (-2.26 K) -> the problem is the shallow scheme's vertical heating PROFILE, not its depth alone.
+  Status: WHERE + first part of WHY found (pressure-field imbalance, with the shallow-convection heating profile as the largest
+  early temperature error in the same places, 12/12). NOT yet shown that this heating builds that pressure error (attribution of
+  PGF to processes needs column heating by process - next). Candidate fix = the P1 second shallow design (IFS Part IV, Tiedtke
+  shallow mass flux), to be registered with predictions for T850/T500 tendencies AND the SE Asia/Bay u850 error, 32 L + 75 L screen.
