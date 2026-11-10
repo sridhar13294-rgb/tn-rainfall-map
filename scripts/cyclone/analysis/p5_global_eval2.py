@@ -45,3 +45,39 @@ for name, a, b, c, d in TRADES:
     print(f'{name:26s} mean ' + ' '.join(f'd{k} {rows[:, j].mean():+5.1f}' for j, k in enumerate(days)) +
           ' | starts beyond +-2: ' + ' '.join(f'd{k} {int((np.abs(rows[:, j]) > 2).sum())}' for j, k in enumerate(days)) +
           ' | worst ' + ' '.join(f'{rows[:, j].min():+5.1f}' for j, k in enumerate(days)))
+
+# ---- Sridhar 18:06: five per-start questions (registered 10 Nov 18:15 IST, before tn-p5-glob results) ----
+def bmean(F, a, b, c, d):
+    lm, om = sel(a, b, c, d); w = np.cos(np.radians(la[lm]))[:, None] * np.ones(om.sum())[None, :]; X = np.asarray(F, float)[np.ix_(lm, om)]
+    return float((X * w).sum() / w.sum())
+SEA, BAY, DIP, TCB = (12, 24, 100, 120), (10, 20, 82, 95), (0, 20, 110, 140), (5, 25, 105, 140)
+print('\n=== Five per-start questions (u850 m/s, MSLP hPa) ===')
+print('start          typhoon? (ERA5 min MSLP 5-25N 105-140E, d0-3) | SEA u850 d0..d3 | Bay u850 d0..d3 | dip MSLP d0..d3 | first<=-2: SEA / Bay | TC centre shift km / depth diff hPa (d1..d3)')
+Q = []
+for i, s in enumerate(starts):
+    era_min = min(float(np.nanmin(truth('mslp', s, k)[np.ix_(*sel(*TCB))])) / 100 for k in days if k <= 3)
+    ty = era_min <= 995.0
+    sea = [bmean(Z[f'ps_u850_d{k}'][i], *SEA) for k in days if k <= 3]; bay = [bmean(Z[f'ps_u850_d{k}'][i], *BAY) for k in days if k <= 3]
+    dip = [bmean(Z[f'ps_mslp_d{k}'][i], *DIP) for k in days if k <= 3]
+    fs = next((k for k, x in enumerate(sea) if x <= -2), None); fb = next((k for k, x in enumerate(bay) if x <= -2), None)
+    tc = []
+    if ty:
+        lm, om = sel(*TCB); LA, LO = la[lm], lo[om]
+        for k in [k for k in days if 1 <= k <= 3]:
+            Pt = truth('mslp', s, k)[np.ix_(lm, om)] / 100; Pm = Pt + np.asarray(Z[f'ps_mslp_d{k}'][i], float)[np.ix_(lm, om)]
+            it, jt = np.unravel_index(np.nanargmin(Pt), Pt.shape); im, jm = np.unravel_index(np.nanargmin(Pm), Pm.shape)
+            tc.append(f'{km(LA[it], LO[jt], LA[im], LO[jm]):4.0f}/{Pm[im, jm] - Pt[it, jt]:+4.1f}')
+    Q.append(dict(ty=ty, sea=sea, bay=bay, dip=dip, fs=fs, fb=fb, tc=tc))
+    print(f'{s}  {"TYPHOON" if ty else "none   "} {era_min:6.1f} | ' + ' '.join(f'{x:+5.1f}' for x in sea) + ' | ' + ' '.join(f'{x:+5.1f}' for x in bay) +
+          ' | ' + ' '.join(f'{x:+5.1f}' for x in dip) + f' | {fs} / {fb} | ' + ' '.join(tc))
+n = len(Q); nt = [q for q in Q if not q['ty']]
+q1 = sum(1 for q in Q if min(q['sea'][1:3]) <= -2)
+q2 = sum(1 for q in nt if min(q['sea'][1:3]) <= -2)
+both = [q for q in Q if q['fb'] is not None]; q3 = sum(1 for q in both if q['fs'] is not None and q['fs'] < q['fb'])
+q4 = sum(1 for q in Q if q['fs'] is not None and q['dip'][q['fs']] <= -1.5)
+q5 = [q for q in Q if q['ty']]
+print(f'Q1 SEA easterly <= -2 m/s on day 1 or 2: {q1}/{n} starts (systematic if >= 7)')
+print(f'Q2 same in starts WITHOUT a strong typhoon: {q2}/{len(nt)} (present without typhoons if >= half)')
+print(f'Q3 SEA reaches -2 before the Bay: {q3}/{len(both)} starts in which the Bay reaches -2 (leads if >= 2/3)')
+print(f'Q4 S China Sea/W Pacific dip <= -1.5 hPa on the day SEA first reaches -2: {q4}/{q1 if q1 else 0} (accompanies if >= 2/3)')
+print(f'Q5 typhoon starts: {len(q5)}; centre shift km / depth diff per day listed above (misplaced if > 300 km, too deep if < -5 hPa)')
