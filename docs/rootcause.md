@@ -1123,3 +1123,20 @@ REGISTERED reading (before results), per box (Indochina/S China Sea, Bay, Aleuti
   Classification (diagnostic / tendency / coupling): TENDENCY errors in radiation (clouds/SW, continuum) and surface fluxes, plus a
   numerical dynamics + coupling leak. Next checks: TOA insolation and clear-sky vs all-sky SW (cloud vs gas), DYN leak location.
   No change made.
+- 20:15 IST SUNLIGHT CHECK (existing tn-radchk2, T170, Jan + Jul day-3 states): clear-sky daytime atmospheric SW absorption
+  fraction model 0.22 = RRTMG 0.22, clear-sky OLR = RRTMG with all gases (+-0.3) -> gas optics and insolation geometry RIGHT.
+  All-sky: SW cloud radiative effect -115 / -109 W/m2 vs CERES ~-47; cloud cover 0.84 / 0.83 vs ~0.67; LW CRE 39-40 vs ~26.
+  => the 45-50 W/m2 missing solar absorption (audit) is CLOUDS (too much / too bright), not gases or the sun.
+- 20:15 IST JETS / WESTERLIES / ROSSBY / TROPICS RESULT (tn-p5-dyn, T170, 12 starts, 10 days; classes as registered):
+  ASIAN SUBTROPICAL JET SPEED: TOO WEAK, SYSTEMATIC FROM DAY 1: mean -6.2 / -8.7 / -10.3 m/s (d1/d2/d3), 9-11 of 12 starts, all same
+    sign (worst -16 by d3). Pacific and Atlantic subtropical jets also weaken, more slowly (-2.4 / -2.0 d1, -3.7 / -4.0 d3; C, some S
+    late). Jet LATITUDE (both measures) P to day 3-4, C after. Eddy-driven/polar jets P to day 3-5, C later. 850-hPa westerlies:
+    Asia C from day 2, Pacific/Atlantic P to day 5.
+  ROSSBY waves (raw and climatology-removed): phase P to day 6 globally, C after; East Asia AMPLITUDE too strong (+0.3..+0.8), C from
+    day 3, S days 8-10.
+  TROPICS (not MJO validation): u200/u850 spatial match 0.96 -> 0.73 (d1 -> d5), drift -2..-6 deg (within 10) -> PASS to day ~8;
+    RAIN pattern match falls below 0.6 from day 2 (5/12), day 3 (9/12) -> tropical rain placement SYSTEMATICALLY poor from day 2-3.
+  Reading (hypothesis, not proven): the earliest and largest systematic large-scale error is the weakening Asian subtropical jet.
+  By thermal wind, jet speed follows the upper-tropospheric equator-to-pole temperature gradient; the audit shows the upper
+  troposphere cooling ~1 K/day and clouds/convection badly placed - a too-cold tropical upper troposphere (or too-warm subtropics)
+  would weaken the jet. Needs evidence: zonal-mean T tendency by latitude at 500/200 (init_tend maps, T500 saved) and its terms.
