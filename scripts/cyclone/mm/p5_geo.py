@@ -36,4 +36,7 @@ for name, extra in VAR:
     print(f'{name:18s}', ' | '.join(f'd{d}: u850 {a[d-1,0]:+.2f} v850 {a[d-1,1]:+.2f} C-India MSLP {a[d-1,2]:+.2f}' for d in range(1, len(a) + 1)), flush=True)
 json.dump(dict(starts=starts, res=res, grid=os.environ.get('GR', 'T42')), open(os.environ.get('OUT', 'p5_geo.json'), 'w'))
 np.savez_compressed(os.environ.get('OUT', 'p5_geo.json').replace('.json', '.npz'), lat=la[(la >= W0) & (la <= W1)], lon=lo[(lo >= W2) & (lo <= W3)],
-                    **{f'{nm}_d{d}': np.nanmean(np.array(v), 0) for (nm, d), v in MAP.items()})
+                    **{f'{nm}_d{d}': np.nanmean(np.array(v), 0) for (nm, d), v in MAP.items()},
+                    # 10 Nov 17:20 (Sridhar: compare the 12 starts individually, not only the mean): per-start bias maps, float16
+                    **({f'ps_{nm}_d{d}': np.array(v, np.float16) for (nm, d), v in MAP.items()} if os.environ.get('PERSTART') else {}),
+                    starts=np.array(starts))

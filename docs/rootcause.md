@@ -979,3 +979,14 @@ round-off spread'): z500 d1/d5/d10 20.01/73.0/119.1 vs 20.02/73.1/119.2 PASS; 72
   physics off >= 4.5 -> the easterly is MADE BY THE DYNAMICS / large-scale flow, physics only damps it (caveat: physics off
   also removes surface friction and land heating, hence the huge C-India MSLP). => the global circulation check (tn-p5-wide,
   launched 11:33Z on account 1) is the right next step.
+- 17:25 IST WORDING CORRECTION (Sridhar 17:15): the 12-start denials show only that THE TESTED PHYSICS PROCESSES DO NOT EXPLAIN
+  the easterly and that the complete physics package partly compensates; physics-off also removes friction and land heating
+  and changes the whole evolution, so this is NOT proof of a dynamical-core defect. 'Global circulation error' and 'core error'
+  are different claims: the global check says WHERE the forecast goes wrong, a tendency budget must still say WHY.
+  Status: P5 unresolved, investigation narrowed. No physics or core change until the global evidence is in.
+- 17:25 IST GLOBAL PER-START JOB tn-p5-glob (account 4): same as tn-p5-wide but saves every start's bias maps (PERSTART=1);
+  evaluation scripts/cyclone/analysis/p5_global_eval2.py: per system and start, POSITION (centre shift km), STRENGTH (central
+  MSLP diff), WIND (850-hPa speed diff in the system box), EVOLUTION (days 0-5); trades per start. REGISTERED limits: centre
+  shift > 500 km, |dP| > 2 hPa or |dWind| > 2 m/s = failing start; a system counts as systematically wrong if >= 7 of 12 starts
+  fail on the same day with the same sign. tn-p5-wide (account 1, mean maps only, launched before this request) is kept as a
+  run-to-run cross-check of the mean maps. Caveat: centre = box max/min, unreliable for flat or split highs (flagged by eye).
