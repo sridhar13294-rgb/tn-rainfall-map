@@ -954,3 +954,16 @@ round-off spread'): z500 d1/d5/d10 20.01/73.0/119.1 vs 20.02/73.1/119.2 PASS; 72
   lnd/drg). REGISTERED: reference base2 d3 Bay u850 = mean of the two 12-start runs -4.49 (+-0.3 run-to-run floor). A process
   is named if its denial removes >= 50 % of that bias (|u850| <= 2.25). Physics off: if |u850| d3 >= 4.5 the easterly is made
   by the dynamics (physics only damps it); if it falls below 2.25 the physics creates it.
+
+## 10 Nov 16:00 IST - Sridhar's three checks before any change ("a wind error east of the Bay does not by itself mean it came from Siberia")
+1. CORIOLIS - PASSED. Dinosaur: Omega 7.292e-5 1/s (sidereal 7.2921e-5), radius 6,371,220 m; f on the T85 grid equals
+   2*7.2921e-5*sin(lat) at 5-60 N to 4-5 digits, north positive, latitudes ordered S->N. Our code (mm2.fcor, bogus vortex)
+   uses 2*7.292e-5*sin(lat) - only in the ocean coupling and storm bogus. No error.
+2. SIBERIAN HIGH and 3. UPSTREAM - job tn-p5-wide: base2, 12 Oct-Nov starts, T170, daily bias maps day 0-5 of MSLP, u850,
+   v850, z500 over 0-70 N, 40-140 E. REGISTERED reading:
+   (2) Boxes Siberia 45-65N 80-120E, China 25-40N 100-120E, Myanmar 18-28N 92-100E, Bay 10-20N 82-95E. 'Reproduced' if the
+       MSLP bias stays within +-2 hPa through day 3 and grows by < 1 hPa/day, and the u850/v850 biases stay within +-2 m/s.
+       Anything beyond = a regional error, reported with where and when it starts.
+   (3) 'Upstream origin' only if an easterly u850 bias <= -2 m/s exists over China/Indochina (12-30N 100-120E) at least one
+       day BEFORE the Bay box reaches -2 m/s, AND the maps show a connected band between them on that day. Otherwise local
+       growth. A Siberian origin would additionally need the Siberia/China MSLP bias to lead the Myanmar/Bay one in time.
