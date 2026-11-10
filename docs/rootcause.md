@@ -1182,3 +1182,10 @@ REGISTERED predictions (first-hours test, T170, 12 starts, same as tn-init-tend)
   (4) 0-24 h u850 error tendency over Indochina and Bay reduced by >= 30 % (base2 ~-2.9 / ~-1.1 m/s/day).
 If (1)-(3) hold, the full Stage-1 suite at 32 L + the 75 L screen (standing rule) follows, with gates unchanged. Local T42 runs
 only check the code.
+- 21:40 IST ifs_sh code check (T42, 1 start, NOT the registered test): with eq. 6.18 test-parcel trigger added (first version used the
+  strong entrainment for the trigger too -> plume never condensed, inactive - fixed, regression still bit-identical): tropics 0-6 h
+  shallow heating 850 +0.13 (base2 +3.43), 500 0.00 (base2 -2.53); tropical T850 total -1.72 K/day (base2 +0.87; ERA5 ~-0.1). Indication:
+  500 hPa spurious cooling gone, but the 850 heating disappears too -> cold overshoot as in earlier attempts. Over warm tropical ocean
+  the IFS test parcel usually exceeds 200 hPa -> 'deep', not shallow. Hypothesis: base2's 'mse' heating was standing in for the
+  IFS boundary-layer mass-flux (EDMF, Part IV ch. 3) + deep-scheme low-level heating, which MEGAM lacks. Registered T170 test launched
+  (tn-init-ifssh) to decide predictions (1)-(4).
