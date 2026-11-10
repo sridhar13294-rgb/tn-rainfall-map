@@ -876,3 +876,10 @@ round-off spread'): z500 d1/d5/d10 20.01/73.0/119.1 vs 20.02/73.1/119.2 PASS; 72
   v850 and MSLP move little with noise (-0.6 / +0.05) -> the shallow-depth signature (v850 +0.77, MSLP +0.52) is ~4 and
   ~30 noise-steps away: REAL. noise2 was killed (OOM: two T170 models in one process - known 7 Nov lesson; my error);
   re-queued alone as tn-p5-den-noise2.
+- 07:15 IST CORRECTION: every P5 denial run (base2 included, tn-p5-denial 7 Nov) used STRIDE 8 over the 12 Oct-Nov starts
+  = only 2 starts (2020-10-02, 2020-11-11), not 6. noise2 (seed 2): d3 u850 -3.13 / v850 -3.66 / MSLP +1.91. With 2 starts a
+  2 % perturbation moves Bay u850 by ~1 m/s -> no P5 attribution possible from these runs. Re-run on all 12 starts (one variant
+  per job): tn-p5-d12-b2 (base2), -shd (shallow <= 200 hPa), -nz (base2 noise1).
+  REGISTERED before the runs: (a) noise: |base2 - noise1| d3 u850 <= 0.5 m/s at 12 starts (else 12 starts are still too few
+  and the test needs the full 2020 year); (b) shallow-depth keeps its signature: d3 v850 at least 1.5 m/s less southward and
+  C-India MSLP at least 1.0 hPa lower than base2; (c) 50 % rule for u850 unchanged.
