@@ -898,3 +898,15 @@ round-off spread'): z500 d1/d5/d10 20.01/73.0/119.1 vs 20.02/73.1/119.2 PASS; 72
   Bay has the same sign and 50-150 % of the u850 bias, pattern r >= 0.5 over 8-25 N 70-100 E. If yes: P5 = a low-level
   pressure-pattern error (central-India / north-Bay pressure too high) -> next: why that pressure rises (+0.24 d1 -> +1.63 d3).
   If no: the easterly is ageostrophic (momentum mixing / friction / convective momentum) -> physics budget.
+- 12:55 IST GEOSTROPHIC CHECK RESULT (tn-p5-geo, base2, 12 starts): Bay u850 bias d1/d2/d3 -0.95/-3.98/-4.33; geostrophic u from
+  the MSLP bias -1.24/-5.32/-6.77 (share 130/134/156 %), pattern r over 8-25N 70-100E +0.11/+0.24/+0.18.
+  Registered: same sign YES; share 50-150 % d2 YES, d3 NO (156 %); pattern r >= 0.5 NO. => NOT confirmed. The box means
+  agree in sign and size but the maps do not match: the u850 error is not simply the geostrophic wind of the MSLP error.
+- 12:55 IST PIPELINE FINDING: identical base2 runs gave d3 Bay u850 -4.65 (tn-p5-d12-b2) and -4.33 (tn-p5-geo). Cause: Kaggle
+  preinstalls jax_cuda13_plugin 0.11.1; with the unpinned 'pip install -U jax[cuda12]' some runs failed to initialise the
+  cuda12 plugin ('XLA FFI handler ... API version 0.5 vs 0.4') and ran on a different library stack. Affected (plugin error in
+  log): tn-p5-d12-b2, tn-p5-den-shd, tn-p5-denial, tn-s-rd-wx0 (and possibly earlier suites). Fix in kernel.py: remove the
+  cuda13 plugin, pin jax[cuda12]==0.12.0.1, stop (exit 3) if the plugin does not load. Same-stack comparison at 12 starts
+  (geo, d12-nz, d12-shd): base2 -4.33/-0.71/+1.70, noise1 -4.30/-0.61/+1.67 (noise 0.03 m/s), shallow-depth -4.01/+0.80/+1.04
+  (u850 -7 %, v850 +1.51, MSLP -0.66) -> shallow depth still NOT the cause (MSLP check fails, u850 far from 50 %).
+  Consequence to check: the '6 % track round-off spread' used as a neutrality limit may partly be this stack mixing.

@@ -14,8 +14,17 @@ acc = 'tpu' if (ACC.lower().startswith('tpu') or os.environ.get('TPU_NAME') or g
                 or os.environ.get('TPU_ACCELERATOR_TYPE')) else 'cuda12'
 print('accelerator asked', ACC, '-> jax for', acc, flush=True)
 if acc == 'tpu': sh('pip uninstall -y -q jax-cuda12-plugin jax-cuda12-pjrt 2>/dev/null; pip install -q -U "jax[tpu]" -f https://storage.googleapis.com/jax-releases/libtpu_releases.html')
-else: sh('pip install -q -U "jax[cuda12]"')
-sh('free -g; nproc; python -c "import jax; print(jax.devices())" || true')
+else:
+    # 10 Nov: one fixed GPU stack for every run. Kaggle preinstalls jax_cuda13_plugin 0.11.1; with an unpinned upgrade some runs
+    # failed to initialise the cuda12 plugin (FFI API 0.5 vs 0.4) and ran on another library stack -> base2 d3 Bay u850 -4.65 vs
+    # -4.33 for identical code and starts. Remove the cuda13 plugin, pin versions, and STOP if the cuda12 plugin does not load.
+    sh('pip uninstall -y -q jax-cuda13-plugin jax-cuda13-pjrt 2>/dev/null; pip install -q "jax[cuda12]==0.12.0.1"')
+    chk = subprocess.run('python -c "import jax; d = jax.devices(); print(d, jax.__version__); assert d[0].platform == \'gpu\'"',
+                         shell=True, capture_output=True, text=True)
+    print(chk.stdout, chk.stderr[-2000:], flush=True)
+    if chk.returncode or 'plugin configuration error' in chk.stderr or 'Exception when calling' in chk.stderr:
+        print('STACK CHECK FAILED - stopping before any model run (no mixed-library results)', flush=True); sys.exit(3)
+sh('free -g; nproc')
 sh('pip install -q xarray "git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0"')
 sh('rm -rf repo && git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo')
 for f in "__FILES__".split(','):
