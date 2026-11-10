@@ -883,3 +883,12 @@ round-off spread'): z500 d1/d5/d10 20.01/73.0/119.1 vs 20.02/73.1/119.2 PASS; 72
   REGISTERED before the runs: (a) noise: |base2 - noise1| d3 u850 <= 0.5 m/s at 12 starts (else 12 starts are still too few
   and the test needs the full 2020 year); (b) shallow-depth keeps its signature: d3 v850 at least 1.5 m/s less southward and
   C-India MSLP at least 1.0 hPa lower than base2; (c) 50 % rule for u850 unchanged.
+- 09:00 IST 12-START RESULT (all Oct-Nov 2020 T00 starts, T170): d3 u850 / v850 / C-India MSLP
+  base2 -4.65 / -0.69 / +1.63; base2 noise1 -4.30 / -0.61 / +1.67; shallow <= 200 hPa -4.01 / +0.80 / +1.04.
+  (a) noise |base2 - noise1| u850 0.35 <= 0.5 -> PASS: 12 starts are enough. (b) shallow-depth signature: v850 +1.49 (needed
+  >= 1.5) FAIL marginally, MSLP -0.59 (needed >= 1.0) FAIL; u850 -14 % (50 % rule) FAIL. => the 2-start signature was mostly
+  sampling: shallow depth is NOT the P5 cause. Robust facts: Bay u850 easterly bias -1.0 (d1) -> -4.1 (d2) -> -4.7 m/s (d3),
+  grows fastest on day 2; v850 small at 12 starts. Not explained by CMT, drag, land, DFI or shallow depth (all 2-start but
+  none near 50 %); physics-off much worse. Next: 850-hPa u-momentum tendency budget by term (dynamics: pressure gradient,
+  advection, Coriolis; physics: BL, convection) over the Bay, days 1-2, base2, 12 starts - to locate where the easterly
+  acceleration comes from, before any fix.
