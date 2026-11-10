@@ -1102,5 +1102,13 @@
   "cmd": "WIN=\"-90,90,0,360\" NDAY=5 PERSTART=1 GR=T170 ONLY=\"base2\" STRIDE=1 OUT=/kaggle/working/p5_glob.json XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore p5_geo.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 12 > /kaggle/working/p5_glob.log 2>&1; tail -4 /kaggle/working/p5_glob.log",
   "account": "4",
   "at": "2026-11-10T11:52Z"
+ },
+ {
+  "slug": "tn-p5-dyn",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "note": "jets westerlies Rossby MJO Sridhar 18-10",
+  "cmd": "VARS=\"u200,v200,z500,u850,rain24\" WIN=\"-90,90,0,360\" NDAY=10 PERSTART=1 GR=T170 ONLY=\"base2\" STRIDE=1 OUT=/kaggle/working/p5_dyn.json XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore p5_geo.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 12 > /kaggle/working/p5_dyn.log 2>&1; tail -4 /kaggle/working/p5_dyn.log",
+  "account": "1",
+  "at": "2026-11-10T12:45Z"
  }
 ]
