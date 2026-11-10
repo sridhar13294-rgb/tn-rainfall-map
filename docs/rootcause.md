@@ -933,3 +933,8 @@ round-off spread'): z500 d1/d5/d10 20.01/73.0/119.1 vs 20.02/73.1/119.2 PASS; 72
   +0.2..+0.9 hPa high over most of the tropical ocean 3-15N (where the reduction is trivial -> a real surface-pressure
   offset), with terrain spots (27N 85E +6.2: Himalayan foothills). => two parts: (1) start-state surface pressure too high
   (init / DFI; the 6 Nov C-India split was formula +0.16, terrain +0.55, DFI +0.4); (2) day-1 growth of +1.4 hPa NE of the Bay.
+- 15:55 IST CONTINUUM TRACK RE-TEST (pinned stack): base1-q6p 24/48/72 h 116.6/221.2/297.2 km, cnt-q6p 104.4/232.6/328.7 km
+  -> IDENTICAL to the 5 Nov runs (base1-q6 had the plugin error, cnt-q6 did not). cnt +10.6 % on 72-h tracks -> rejection
+  STANDS. Correction to 12:55: the plugin error does NOT by itself change results (identical here). The base2 difference
+  (tn-p5-d12-b2 -4.65 vs tn-p5-geo -4.33, same config and starts) is UNEXPLAINED; the pin + stop check stays (harmless),
+  but stack mixing is not shown to have affected earlier verdicts.
