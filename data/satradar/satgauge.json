@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-09T21:02:23.423278+00:00",
+ "updated": "2026-11-10T03:29:32.631464+00:00",
  "method": "satellite day totals vs TN SMART gauges on 0.25 degree squares (same squares as the forecast check)",
  "gauge_fit": {
   "cut": 0,
@@ -27,15 +27,15 @@
   "2026-11-08",
   "2026-11-09"
  ],
- "radar_cut": 9.46,
+ "radar_cut": 9.1,
  "overall": {
   "radar_matched": {
    "cells": 2576,
    "mae": 2.6,
-   "bias": 0.14,
-   "pod": 0.15,
-   "far": 0.15,
-   "ets": 0.11,
+   "bias": 0.15,
+   "pod": 0.16,
+   "far": 0.16,
+   "ets": 0.12,
    "heavy": {
     "hit": 0,
     "miss": 1,
@@ -62,46 +62,12 @@
  },
  "days": [
   {
-   "day": "2026-10-10",
-   "frames": 96,
-   "radar_matched": {
-    "cells": 184,
-    "mae": 2.7,
-    "bias": 0.48,
-    "pod": 0.31,
-    "far": 0.38,
-    "ets": 0.17,
-    "heavy": {
-     "hit": 0,
-     "miss": 0,
-     "false": 0
-    },
-    "sat_mean": 1.5,
-    "gauge_mean": 3.1
-   },
-   "gauge_fitted": {
-    "cells": 184,
-    "mae": 5.2,
-    "bias": 2.12,
-    "pod": 0.8,
-    "far": 0.47,
-    "ets": 0.3,
-    "heavy": {
-     "hit": 0,
-     "miss": 0,
-     "false": 0
-    },
-    "sat_mean": 6.6,
-    "gauge_mean": 3.1
-   }
-  },
-  {
    "day": "2026-10-11",
    "frames": 96,
    "radar_matched": {
     "cells": 184,
     "mae": 1.5,
-    "bias": 0.06,
+    "bias": 0.07,
     "pod": 0.0,
     "far": 1.0,
     "ets": -0.01,
@@ -135,10 +101,10 @@
    "radar_matched": {
     "cells": 184,
     "mae": 0.9,
-    "bias": 0.17,
-    "pod": 0.25,
+    "bias": 0.19,
+    "pod": 0.3,
     "far": 0.0,
-    "ets": 0.23,
+    "ets": 0.28,
     "heavy": {
      "hit": 0,
      "miss": 0,
@@ -169,10 +135,10 @@
    "radar_matched": {
     "cells": 184,
     "mae": 2.2,
-    "bias": 0.05,
+    "bias": 0.06,
     "pod": 0.12,
-    "far": 0.0,
-    "ets": 0.1,
+    "far": 0.25,
+    "ets": 0.09,
     "heavy": {
      "hit": 0,
      "miss": 0,
@@ -203,7 +169,7 @@
    "radar_matched": {
     "cells": 184,
     "mae": 1.5,
-    "bias": 0.31,
+    "bias": 0.33,
     "pod": 0.14,
     "far": 0.67,
     "ets": 0.08,
@@ -212,7 +178,7 @@
      "miss": 0,
      "false": 0
     },
-    "sat_mean": 0.4,
+    "sat_mean": 0.5,
     "gauge_mean": 1.4
    },
    "gauge_fitted": {
@@ -237,16 +203,16 @@
    "radar_matched": {
     "cells": 184,
     "mae": 5.4,
-    "bias": 0.52,
-    "pod": 0.68,
+    "bias": 0.55,
+    "pod": 0.72,
     "far": 0.1,
-    "ets": 0.44,
+    "ets": 0.48,
     "heavy": {
      "hit": 0,
      "miss": 1,
      "false": 0
     },
-    "sat_mean": 4.3,
+    "sat_mean": 4.5,
     "gauge_mean": 8.2
    },
    "gauge_fitted": {
@@ -270,17 +236,17 @@
    "frames": 96,
    "radar_matched": {
     "cells": 184,
-    "mae": 13.8,
-    "bias": 0.83,
-    "pod": 0.72,
-    "far": 0.09,
-    "ets": 0.34,
+    "mae": 13.9,
+    "bias": 0.85,
+    "pod": 0.73,
+    "far": 0.1,
+    "ets": 0.35,
     "heavy": {
      "hit": 3,
      "miss": 6,
      "false": 11
     },
-    "sat_mean": 15.4,
+    "sat_mean": 15.7,
     "gauge_mean": 18.5
    },
    "gauge_fitted": {
@@ -304,9 +270,9 @@
    "frames": 96,
    "radar_matched": {
     "cells": 184,
-    "mae": 14.2,
-    "bias": 0.47,
-    "pod": 0.5,
+    "mae": 14.1,
+    "bias": 0.48,
+    "pod": 0.51,
     "far": 0.18,
     "ets": 0.07,
     "heavy": {
@@ -314,7 +280,7 @@
      "miss": 2,
      "false": 0
     },
-    "sat_mean": 7.5,
+    "sat_mean": 7.8,
     "gauge_mean": 16.2
    },
    "gauge_fitted": {
@@ -338,17 +304,17 @@
    "frames": 96,
    "radar_matched": {
     "cells": 184,
-    "mae": 28.8,
-    "bias": 1.96,
+    "mae": 29.0,
+    "bias": 1.97,
     "pod": 0.84,
-    "far": 0.15,
-    "ets": 0.27,
+    "far": 0.16,
+    "ets": 0.25,
     "heavy": {
      "hit": 15,
      "miss": 1,
-     "false": 34
+     "false": 35
     },
-    "sat_mean": 42.4,
+    "sat_mean": 42.7,
     "gauge_mean": 21.7
    },
    "gauge_fitted": {
@@ -372,8 +338,8 @@
    "frames": 96,
    "radar_matched": {
     "cells": 184,
-    "mae": 3.4,
-    "bias": 1.25,
+    "mae": 3.5,
+    "bias": 1.29,
     "pod": 0.62,
     "far": 0.44,
     "ets": 0.3,
@@ -382,7 +348,7 @@
      "miss": 1,
      "false": 0
     },
-    "sat_mean": 3.5,
+    "sat_mean": 3.7,
     "gauge_mean": 2.8
    },
    "gauge_fitted": {
@@ -406,8 +372,8 @@
    "frames": 96,
    "radar_matched": {
     "cells": 184,
-    "mae": 4.9,
-    "bias": 1.09,
+    "mae": 5.0,
+    "bias": 1.14,
     "pod": 0.58,
     "far": 0.27,
     "ets": 0.23,
@@ -416,7 +382,7 @@
      "miss": 0,
      "false": 0
     },
-    "sat_mean": 6.6,
+    "sat_mean": 6.9,
     "gauge_mean": 6.1
    },
    "gauge_fitted": {
@@ -440,17 +406,17 @@
    "frames": 96,
    "radar_matched": {
     "cells": 184,
-    "mae": 6.9,
-    "bias": 0.36,
-    "pod": 0.5,
+    "mae": 6.8,
+    "bias": 0.38,
+    "pod": 0.52,
     "far": 0.12,
-    "ets": 0.29,
+    "ets": 0.31,
     "heavy": {
      "hit": 0,
      "miss": 2,
      "false": 1
     },
-    "sat_mean": 3.5,
+    "sat_mean": 3.6,
     "gauge_mean": 9.6
    },
    "gauge_fitted": {
@@ -475,16 +441,16 @@
    "radar_matched": {
     "cells": 184,
     "mae": 14.7,
-    "bias": 0.63,
-    "pod": 0.6,
+    "bias": 0.65,
+    "pod": 0.63,
     "far": 0.07,
-    "ets": 0.13,
+    "ets": 0.15,
     "heavy": {
      "hit": 0,
      "miss": 6,
      "false": 7
     },
-    "sat_mean": 12.7,
+    "sat_mean": 13.1,
     "gauge_mean": 20.2
    },
    "gauge_fitted": {
@@ -509,16 +475,16 @@
    "radar_matched": {
     "cells": 184,
     "mae": 18.0,
-    "bias": 1.02,
-    "pod": 0.71,
+    "bias": 1.04,
+    "pod": 0.72,
     "far": 0.08,
-    "ets": 0.18,
+    "ets": 0.19,
     "heavy": {
      "hit": 2,
      "miss": 3,
      "false": 16
     },
-    "sat_mean": 19.5,
+    "sat_mean": 19.9,
     "gauge_mean": 19.2
    },
    "gauge_fitted": {
@@ -542,17 +508,17 @@
    "frames": 96,
    "radar_matched": {
     "cells": 184,
-    "mae": 13.5,
-    "bias": 0.1,
-    "pod": 0.31,
-    "far": 0.0,
-    "ets": 0.11,
+    "mae": 13.4,
+    "bias": 0.11,
+    "pod": 0.34,
+    "far": 0.02,
+    "ets": 0.12,
     "heavy": {
      "hit": 0,
      "miss": 8,
      "false": 0
     },
-    "sat_mean": 1.6,
+    "sat_mean": 1.7,
     "gauge_mean": 15.0
    },
    "gauge_fitted": {
@@ -576,9 +542,9 @@
    "frames": 96,
    "radar_matched": {
     "cells": 184,
-    "mae": 18.9,
-    "bias": 0.3,
-    "pod": 0.65,
+    "mae": 18.7,
+    "bias": 0.32,
+    "pod": 0.66,
     "far": 0.0,
     "ets": 0.26,
     "heavy": {
@@ -586,7 +552,7 @@
      "miss": 18,
      "false": 0
     },
-    "sat_mean": 7.8,
+    "sat_mean": 8.1,
     "gauge_mean": 25.6
    },
    "gauge_fitted": {
@@ -611,7 +577,7 @@
    "radar_matched": {
     "cells": 184,
     "mae": 19.8,
-    "bias": 0.63,
+    "bias": 0.64,
     "pod": 0.44,
     "far": 0.03,
     "ets": 0.03,
@@ -620,7 +586,7 @@
      "miss": 7,
      "false": 9
     },
-    "sat_mean": 13.7,
+    "sat_mean": 14.0,
     "gauge_mean": 21.7
    },
    "gauge_fitted": {
@@ -645,7 +611,7 @@
    "radar_matched": {
     "cells": 184,
     "mae": 2.1,
-    "bias": 0.02,
+    "bias": 0.03,
     "pod": 0.0,
     "far": null,
     "ets": 0.0,
@@ -849,7 +815,7 @@
    "radar_matched": {
     "cells": 184,
     "mae": 1.1,
-    "bias": 0.36,
+    "bias": 0.39,
     "pod": 0.47,
     "far": 0.27,
     "ets": 0.37,
@@ -883,7 +849,7 @@
    "radar_matched": {
     "cells": 184,
     "mae": 1.5,
-    "bias": 0.11,
+    "bias": 0.12,
     "pod": 0.19,
     "far": 0.0,
     "ets": 0.17,
@@ -917,10 +883,10 @@
    "radar_matched": {
     "cells": 184,
     "mae": 2.0,
-    "bias": 0.29,
+    "bias": 0.3,
     "pod": 0.23,
-    "far": 0.22,
-    "ets": 0.17,
+    "far": 0.3,
+    "ets": 0.16,
     "heavy": {
      "hit": 0,
      "miss": 0,
@@ -951,16 +917,16 @@
    "radar_matched": {
     "cells": 184,
     "mae": 5.4,
-    "bias": 0.36,
-    "pod": 0.37,
-    "far": 0.15,
-    "ets": 0.17,
+    "bias": 0.38,
+    "pod": 0.39,
+    "far": 0.16,
+    "ets": 0.18,
     "heavy": {
      "hit": 0,
      "miss": 1,
      "false": 0
     },
-    "sat_mean": 2.3,
+    "sat_mean": 2.4,
     "gauge_mean": 6.3
    },
    "gauge_fitted": {
@@ -986,15 +952,15 @@
     "cells": 184,
     "mae": 5.1,
     "bias": 0.1,
-    "pod": 0.1,
-    "far": 0.09,
-    "ets": 0.04,
+    "pod": 0.11,
+    "far": 0.08,
+    "ets": 0.05,
     "heavy": {
      "hit": 0,
      "miss": 0,
      "false": 0
     },
-    "sat_mean": 0.5,
+    "sat_mean": 0.6,
     "gauge_mean": 5.5
    },
    "gauge_fitted": {
@@ -1019,16 +985,16 @@
    "radar_matched": {
     "cells": 184,
     "mae": 6.7,
-    "bias": 0.03,
-    "pod": 0.06,
+    "bias": 0.04,
+    "pod": 0.08,
     "far": 0.0,
-    "ets": 0.03,
+    "ets": 0.04,
     "heavy": {
      "hit": 0,
      "miss": 0,
      "false": 0
     },
-    "sat_mean": 0.2,
+    "sat_mean": 0.3,
     "gauge_mean": 7.0
    },
    "gauge_fitted": {
@@ -1053,16 +1019,16 @@
    "radar_matched": {
     "cells": 184,
     "mae": 4.8,
-    "bias": 0.14,
-    "pod": 0.21,
-    "far": 0.18,
+    "bias": 0.15,
+    "pod": 0.22,
+    "far": 0.17,
     "ets": 0.1,
     "heavy": {
      "hit": 0,
      "miss": 0,
      "false": 0
     },
-    "sat_mean": 0.7,
+    "sat_mean": 0.8,
     "gauge_mean": 5.3
    },
    "gauge_fitted": {
@@ -1088,7 +1054,7 @@
     "cells": 184,
     "mae": 6.3,
     "bias": 0.01,
-    "pod": 0.01,
+    "pod": 0.02,
     "far": 0.0,
     "ets": 0.01,
     "heavy": {
@@ -1096,7 +1062,7 @@
      "miss": 0,
      "false": 0
     },
-    "sat_mean": 0.0,
+    "sat_mean": 0.1,
     "gauge_mean": 6.3
    },
    "gauge_fitted": {
