@@ -914,3 +914,17 @@ round-off spread'): z500 d1/d5/d10 20.01/73.0/119.1 vs 20.02/73.1/119.2 PASS; 72
   (plugin-error stack) -> mismatched. Re-run both on the pinned stack (tn-s-cnt-q6p, tn-s-base1-q6p), same configs, same
   registered gate (quick6 72-h mean track error not worse than base1 beyond the round-off spread). If cnt passes, its other
   checks (z500, TN u850, stability passed 5 Nov; rain/genesis pending then) are re-confirmed before adoption.
+- 13:40 IST P5 MAP FINDING (tn-p5-geo maps): the u850 easterly error appears on day 1 EAST of the Bay (105-120E, 12-24N: -3..-5
+  m/s; Bay ~-1) and reaches the Bay on day 2 (90E 18N -7.0). A high-MSLP error sits north-east of the Bay from day 1 (24N
+  90-105E +3.9 -> +6.2 hPa) = SE flank of the Tibetan Plateau / Myanmar hills. Lead: terrain-following (pure sigma)
+  pressure-gradient error over steep terrain (IFS review D2/D4); fits 'T85/T170 show it, T42 not' and the hour-0 terrain
+  +0.55 hPa.
+  REGISTERED before running scripts/cyclone/mm/rest_test.py (standard atmosphere at rest, hydrostatic ps over real terrain,
+  physics off, no DFI, 24 h): if the core has a significant terrain pressure-gradient error, 24-h mean |u850| on the SE Tibet
+  flank (20-30N 90-110E) > 1 m/s while the flat ocean (5S-5N 60-90E) < 0.2 m/s, and it is larger at T85 than at T42. If the
+  SE-flank value is < 0.3 m/s at T85, the lead is rejected.
+- 14:00 IST REST TEST RESULT (rest_test.py, standard atmosphere at rest, real terrain, physics off, no DFI, 24 h): mean|u850|
+  SE Tibet flank T42 0.09 / T85 0.16 m/s (max 0.37 / 0.76), Bay 0.04 / 0.04, flat ocean 0.01 / 0.01, Andes 0.11 / 0.10.
+  Registered: confirm if SE flank > 1 m/s; reject if < 0.3 at T85 -> REJECTED. The core's terrain pressure-gradient error is
+  small; the P5 easterly is not a sigma-coordinate PGF artefact. Next: is the high-MSLP error NE of the Bay (21-27N
+  90-105E) already in the start state (init + DFI) or grown in day 1? (h0_map.py, 12 starts, T85).
