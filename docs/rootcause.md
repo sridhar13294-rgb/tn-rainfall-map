@@ -1067,3 +1067,27 @@ is empty at hour 0 (h0 excluded from means). Says WHICH term; does not by itself
   test reproduces the one-process numbers exactly (DYN -1.40, COUPLING -4.59). Moved to Kaggle at T170 (Sridhar: T170 only):
   tn-energy-audit, two processes in one job (full pass, then physics-off pass on the saved states), 2 starts x 24 h. Reading
   as registered 19:00.
+- 19:45 IST GLOBAL PER-START RESULT (tn-p5-glob, T170, 12 Oct-Nov 2020 starts; registered readings 16:00/16:35/17:25/18:15).
+  Run-to-run: the mean SEA / Bay u850 boxes equal tn-p5-wide exactly (-2.5/-3.0/-3.0; -1.0/-4.0/-4.3) -> reproducible.
+  POSITION (centre = box max/min): INCONCLUSIVE for broad highs - day-0 'shifts' already 953 km (S Pacific High), 206 km (N
+  Pacific High) where model = ERA5, so the centre jumps inside flat highs (caveat registered 17:25). Counts below use STRENGTH
+  (central pressure, |dP| > 2 hPa) and WIND (|dW| > 2 m/s) only.
+  Aleutian Low: TOO DEEP from day 1 (mean dP -1.4/-2.4/-3.6/-4.9 d1-d4; 10-11 of 12 starts) -> SYSTEMATIC.
+  Icelandic Low: 9-10 of 12 fail d2-d4 but the sign flips (+2.5 d2, -1.1 d3, -3.2 d4) -> CASE-DEPENDENT.
+  Siberian High: strength 3-6/12 d1-d3 (C), 10/12 d4; wind +2.2..+2.4 in 7-9/12 -> INCONCLUSIVE for wind (850 hPa is below
+  ground over the Mongolian/Tibetan part of the box) and position; the box-mean -4.7 hPa (wide) vs central max +0.5..+2 shows
+  a structure/terrain issue, not a clean weak high.
+  N Pacific High, Azores, S Atlantic, Mascarene: PASS to day 3 (<= 4/12); S Pacific High C (6/12 d2-d3, stronger +1.5).
+  Trades (u850, starts beyond 2 m/s): S ATLANTIC SYSTEMATIC too weak (+2.8 d1 10/12; +2.2 d3 7/12); N Atlantic C (3-5/12);
+  N/S Pacific, S Indian PASS; Arabian Sea too easterly d2 8/12 (S); Bay S (11/12 d2, 12/12 d3); S China Sea/Indochina S (8/12 d1,
+  9/12 d2); China 25-40N too westerly d3-d5 8-10/12 (terrain caveat).
+  FIVE QUESTIONS: Q1 SEA easterly <= -2 on d1/d2 in 12/12 -> SYSTEMATIC. Q2 present in 9/9 non-typhoon starts (3 typhoon
+  starts by ERA5 < 995 hPa) -> NOT a typhoon-driven average: a repeatable MEGAM weakness. Q3 SEA before the Bay in 7/12 (4 same
+  day, 1 Bay first) = 58 % < 2/3 -> 'SEA leads' NOT established per start (the mean-map lead of 18:05 is weaker than it looked).
+  Q4 dip <= -1.5 on the SEA onset day in 4/12 -> NOT met: the W Pacific/S China Sea low develops a day or two LATER (d2-d3
+  -2..-5 in almost every start) - it follows the easterly, it does not accompany its onset. Q5 typhoon centre metric jumps
+  between lows (3066/2730 km) -> INCONCLUSIVE; Oct 22 start 231-513 km / +3.2..-3.9 hPa; Oct 27 d3 7.2 hPa too deep.
+  Reading: the South/South-East Asian low-level easterly error is systematic and not caused by typhoons; it appears over
+  Indochina/S China Sea and the Bay within the same 1-2 days (no robust one-day lead); the W Pacific pressure dip is a later
+  consequence, not the trigger. Elsewhere: Aleutian Low too deep and S Atlantic trades too weak are also systematic -> the
+  model has more than one large-scale error; WHERE only, not WHY.
