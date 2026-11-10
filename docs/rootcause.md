@@ -1006,3 +1006,18 @@ round-off spread'): z500 d1/d5/d10 20.01/73.0/119.1 vs 20.02/73.1/119.2 PASS; 72
   2020 had several strong W Pacific typhoons crossing the S China Sea (Molave, Goni, Etau, Vamco) - a mean low bias there can
   come from a few starts with misplaced/too-deep typhoons; the per-start job decides this before any conclusion.
   This says WHERE (Indochina/S China Sea/W Pacific), not WHY.
+- 18:15 IST SRIDHAR'S FIVE PER-START QUESTIONS - REGISTERED before tn-p5-glob results (script committed 6b3fc1ea; this note
+  written 18:25, still before results). Boxes: SE Asia SEA 12-24N 100-120E (u850), Bay 10-20N 82-95E (u850), dip 0-20N
+  110-140E (MSLP), typhoon box 5-25N 105-140E. Typhoon start (objective, from ERA5 itself): ERA5 min MSLP in the typhoon box
+  <= 995 hPa on any day 0-3 (1.5 deg truth grid; ERA5 minimum printed for every start so borderline cases are visible).
+  Q1 systematic: SEA u850 <= -2 m/s on day 1 or 2 in >= 7 of 12 starts.
+  Q2 without typhoons: the same in >= half of the non-typhoon starts.
+  Q3 timing: SEA reaches -2 before the Bay in >= 2/3 of the starts in which the Bay reaches -2.
+  Q4 pressure dip: dip box <= -1.5 hPa on the day SEA first reaches -2, in >= 2/3 of those starts.
+  Q5 typhoon starts: centre shift > 300 km = misplaced, depth diff < -5 hPa = too deep (box min can jump to another low:
+  checked by eye).
+  Reading: Q1 + Q2 yes = repeatable MEGAM weakness; Q1 yes but Q2 no with Q5 misplaced/too deep = typhoon-driven average.
+  If repeatable (still no solver/physics change): SE Asian pressure-gradient evolution, W Pacific subtropical circulation,
+  trough/Rossby propagation across East Asia, then the tendency budget on native model levels (WHY).
+  Noted (Sridhar): 6/8 systems and 4/5 trade belts passing does not establish global accuracy; seasonal and case verification
+  still needed.
