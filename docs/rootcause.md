@@ -1520,3 +1520,11 @@ Next: per-layer RH distribution h0 vs h24 vs ERA5 q levels (which layers saturat
   leave through mid levels, i.e. the model's heating/ascent profile is too BOTTOM-HEAVY (base2's shallow 'mse' heats 850 by +7 K/day),
   and it imports moisture into the lower troposphere. The IFS-package run of the same check was killed (two models in one job, OOM)
   -> re-queued alone (tn-div-pkg, acct 1).
+
+## 11 Nov 23:00 IST - IFS package removes the excess low-level convergence; BL-top entrainment has no effect
+- tn-div-pkg (T170, 12 starts, IFS package + evap + continuum + cloud RH): 850-hPa convergence vs ERA5, tropics +3 % (d1) / +8 % (d2)
+  (base2 +65 / +64 %); Indian Ocean+Bay -5 / +14 % (base2 +66 / +56); warm pool +14 / +17 % (+70 / +79); trades +9 / +20 % (+96 / +112).
+  200-hPa divergence -4 / +4 %. => the 1.5-2x inflow was base2's bottom-heavy heating (shallow 'mse'); the IFS convection fixes it.
+- tn-moist-entr (BL-top entrainment, IFS eq. 3.50, on top of the package): humidity and cloud identical to the package to the printed
+  digit (q925 +7 %, q850 +9 %, cover +44 % at 24 h). Either the term is inactive in practice (to be verified: Kh at the BL-top
+  interface may already exceed K_e) or it is too small -> suspect 2 NOT supported as implemented.
