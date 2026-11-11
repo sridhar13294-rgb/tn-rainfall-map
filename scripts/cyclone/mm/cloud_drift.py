@@ -15,7 +15,7 @@ NLEV = os.environ.get('NLEV', '32'); NLEV = int(NLEV) if NLEV.isdigit() else NLE
 BINS = [(85000, 110000, '>850'), (70000, 85000, '850-700'), (50000, 70000, '700-500'), (30000, 50000, '500-300'), (0, 30000, '<300')]
 res = {}
 for nm, setx in CANDS.items():
-    M = mm2.Model(GR, NLEV, None, setx); hor = M.coords.horizontal; W = np.cos(np.radians(np.asarray(M.LA)))
+    M = mm2.Model(GR, NLEV, float(os.environ['DT']) if 'DT' in os.environ else None, setx); hor = M.coords.horizontal; W = np.cos(np.radians(np.asarray(M.LA)))
     TROP = np.abs(np.asarray(M.LA)) <= 30
     for k in KS:
         t0 = dt.datetime.strptime(TT[k], '%Y-%m-%dT%H'); f2 = Z['f2'][k]; f3 = {v: np.array(Z['f3'][k, V3.index(v)]) for v in V3}

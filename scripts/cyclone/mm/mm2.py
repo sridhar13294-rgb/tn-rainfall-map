@@ -110,7 +110,7 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='mf', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='radcloud', rad_every=2,
-                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
+                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
@@ -378,6 +378,50 @@ class Model:
             kb = jnp.maximum(ksrc - 1, 0)
             dhb = jnp.maximum(jnp.take_along_axis(hu - h_e, kb[None], 0)[0], 1000.0)
             Mb = jnp.where(S['sh_clos'] > 0, S['sh_clos'] * jnp.maximum(Hs + LV * E, 0.0) / dhb, Mb)
+        if shallow and self.S.get('sh_ifs2', 0) > 0 and Hs is not None and E is not None:
+            # sh_ifs2 > 0 (11 Nov, IFS Cy50r1 Part IV 6.4.2, 6.5, 6.7): shallow cumulus vented as in the IFS.
+            #  (i) closure at CLOUD BASE (eq. 6.35/6.37): Mb = (H + L E) / (h_up - h_env)_base; denominator >= 0.75 cp only when Mb
+            #      would exceed the CFL limit (as IFS). The rhs uses the surface MSE flux (LeMone & Pennell: cloud-base moisture flux
+            #      ~ surface flux), not the full sub-cloud tendency.
+            # (ii) sub-cloud layer (eqs. 6.40-6.41, m = 1): the cloud-base fluxes decrease linearly in pressure to zero at the ground,
+            #      so the whole sub-cloud layer is vented, not one source layer.
+            #(iii) transport in the cloud layer solved IMPLICITLY (eq. 6.69, shifted/upwind environment values) instead of the explicit
+            #      0.3 x thinnest-layer / dt cap (IFS: that cap made results depend on the time step); IFS limits kept: M <= 3 dp/(g dt)
+            #      per layer and 2 kg m-2 s-1. Energy (h) and water conserved exactly (telescoping fluxes, zero at top and ground).
+            kcb = jnp.max(jnp.where(inc & (cond > 0), ii, -1), axis=0)                               # cloud-base layer (lowest condensing)
+            has_cb = (kcb >= 0) & deep; kcb_ = jnp.maximum(kcb, 0)
+            tk = lambda a, k_: jnp.take_along_axis(a, k_[None], 0)[0]
+            dh_b = tk(hu, kcb_) - tk(h_e, kcb_)
+            eta_cb = jnp.maximum(tk(eta_ifs, kcb_), 1e-6)
+            eta_c = jnp.where(ii < kcb_[None], eta_ifs / eta_cb[None], 0.0) * has_cb[None]            # flux through the bottom of each cloud layer above the base, per unit Mb
+            Fs = jnp.maximum(Hs + LV * E, 0.0)
+            lim = jnp.minimum(jnp.min(jnp.where(eta_c > 0, 3.0 * mass / (dt * jnp.maximum(eta_c, 1e-6)), 1e9), axis=0), 3.0 * tk(mass, kcb_) / dt)
+            lim = jnp.minimum(lim, 2.0)
+            Mb0 = Fs / jnp.maximum(dh_b, 1.0)
+            Mb2 = jnp.where(Mb0 > lim, Fs / jnp.maximum(dh_b, 0.75 * CP), Mb0)
+            Mb2 = jnp.where(has_cb & (dh_b > 0), jnp.clip(Mb2, 0.0, lim), 0.0)
+            # explicit fluxes through the cloud-base interface and below (sub-cloud, linear in p to 0 at the ground)
+            p_bot = p + 0.5 * mass * G
+            pb_cb = tk(p_bot, kcb_)
+            Z = jnp.clip((ps[None] - p_bot) / jnp.maximum(ps - pb_cb, 1.0)[None], 0.0, 1.0)
+            hb_in = tk(sh(hu), kcb_); qb_in = tk(sh(qu), kcb_)
+            Fh_b = Mb2 * (hb_in - tk(h_e, kcb_)); Fq_b = Mb2 * (qb_in - tk(qn, kcb_))
+            subc = (ii >= kcb_[None]) & has_cb[None] & (ii < L - 1)
+            Fh_x = jnp.where(subc, Z * Fh_b[None], 0.0); Fq_x = jnp.where(subc, Z * Fq_b[None], 0.0)
+            Mk = Mb2[None] * eta_c
+            def imp(Ftop, x):
+                m_k, h0, q0, M_k, hup, qup, fhx, fqx, cl = x
+                Fht, Fqt = Ftop
+                hn = jnp.where(cl, (m_k * h0 / dt + M_k * hup - Fht) / (m_k / dt + M_k), h0 + dt * (fhx - Fht) / m_k)
+                qn_ = jnp.where(cl, (m_k * q0 / dt + M_k * qup - Fqt) / (m_k / dt + M_k), q0 + dt * (fqx - Fqt) / m_k)
+                Fhb = jnp.where(cl, M_k * (hup - hn), fhx); Fqb = jnp.where(cl, M_k * (qup - qn_), fqx)
+                return (Fhb, Fqb), (hn, qn_)
+            cl = (ii < kcb_[None]) & has_cb[None]
+            xs_i = (mass, h_e, qn, Mk, sh(hu), sh(qu), Fh_x, Fq_x, cl * jnp.ones(Tn.shape, bool))
+            _, (h_new, q_new) = jax.lax.scan(imp, (jnp.zeros_like(ps), jnp.zeros_like(ps)), xs_i)
+            dh_s = (h_new - h_e) / dt; dq_s = (q_new - qn) / dt
+            self._sh2_diag = dict(Mb=Mb2, kcb=kcb)
+            return (dh_s - LV * dq_s) / CP, dq_s, jnp.zeros_like(Tn), inc & deep[None], deep
         if S['mf_closure'] == 'hybrid' and div is not None:
             # moisture-convergence closure (Tiedtke 1989, ECMWF's original scheme): the updraft carries away at least the moisture
             # that the boundary layer gathers by low-level inflow plus surface evaporation. This ties convection to the low's
