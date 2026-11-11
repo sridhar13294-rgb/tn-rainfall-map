@@ -1,0 +1,111 @@
+[{"stream_name":"stdout","time":1.3654732809999999,"data":"+ nvidia-smi || true\n"}
+,{"stream_name":"stdout","time":1.398229026,"data":"Wed Nov 11 14:49:36 2026       \n"}
+,{"stream_name":"stdout","time":1.398255561,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.398261402,"data":"| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":1.398266341,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.398270916,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":1.398275087,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":1.398279256,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":1.398285284,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":1.746346505,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":1.746374491,"data":"| N/A   54C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":1.746381821,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":1.746386916,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.746392351,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":1.746397468,"data":"| N/A   55C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":1.746402535,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":1.746407634,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.747149998,"data":"\n"}
+,{"stream_name":"stdout","time":1.747164283,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.747170416,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":1.747175599,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":1.7471807400000001,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":1.747189111,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":1.74885025,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":1.748867525,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":2.070277617,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":2.073478769,"data":"accelerator asked NvidiaTeslaT4 -\u003e jax for cuda12\n"}
+,{"stream_name":"stdout","time":2.073547011,"data":"+ pip uninstall -y -q jax-cuda13-plugin jax-cuda13-pjrt 2\u003e/dev/null; pip install -q \"jax[cuda12]==0.12.0.1\"\n"}
+,{"stream_name":"stderr","time":71.640742114,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":71.640781027,"data":"bigframes 2.51.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":71.640786453,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stderr","time":71.640789865,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":71.640793218,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":71.64079661,"data":"ydf 0.15.0 requires protobuf\u003c7.0.0,\u003e=5.29.1, but you have protobuf 7.36.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":71.640799851,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stderr","time":71.640803015,"data":"gradio 6.30.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
+,{"stream_name":"stdout","time":71.926535434,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":88.405667546,"data":"[CudaDevice(id=0), CudaDevice(id=1)] 0.12.0.1\n"}
+,{"stream_name":"stdout","time":88.405709834,"data":" \n"}
+,{"stream_name":"stdout","time":88.405714355,"data":"+ free -g; nproc\n"}
+,{"stream_name":"stdout","time":88.42363746,"data":"               total        used        free      shared  buff/cache   available\n"}
+,{"stream_name":"stdout","time":88.423659015,"data":"Mem:              31           1          21           0           9          30\n"}
+,{"stream_name":"stdout","time":88.423663579,"data":"Swap:              0           0           0\n"}
+,{"stream_name":"stdout","time":88.427569053,"data":"4\n"}
+,{"stream_name":"stdout","time":88.42801977,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":88.428039311,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
+,{"stream_name":"stdout","time":98.35620245,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":98.356240316,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
+,{"stream_name":"stdout","time":111.779624151,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":111.779664838,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o libm_wx2020_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020_fields.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" libm_wx2020_fields.npz || { echo BAD_DOWNLOAD libm_wx2020_fields.npz; rm -f libm_wx2020_fields.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o libm_wx2020_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020_fields.npz; }\n"}
+,{"stream_name":"stdout","time":115.427396213,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":115.4274282,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o wx_truth_2020.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/wx_truth_2020.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" wx_truth_2020.npz || { echo BAD_DOWNLOAD wx_truth_2020.npz; rm -f wx_truth_2020.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o wx_truth_2020.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/wx_truth_2020.npz; }\n"}
+,{"stream_name":"stdout","time":150.17435653,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":150.174400462,"data":"setup s 149\n"}
+,{"stream_name":"stdout","time":150.174407565,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 EXTRA='{\"phys_ifs\":1,\"ck_z\":1.0,\"sfc_sal\":0.98,\"rad_prm\":{\"lw_cnt\":0.667,\"qs_mix\":1}}' NLEV=32 XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore init_tend.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz T170 12 /kaggle/working/it_pkgall.npz \u003e /kaggle/working/it_pkgall.log 2\u003e\u00261; grep -v WARNING /kaggle/working/it_pkgall.log | tail -45 2\u003e\u00261 | tee job.log\n"}
+,{"stream_name":"stdout","time":9373.590735668,"data":"2020-11-21T00 done\n"}
+,{"stream_name":"stdout","time":9373.590779502,"data":"2020-11-26T00 done\n"}
+,{"stream_name":"stdout","time":9373.590784489,"data":"\n"}
+,{"stream_name":"stdout","time":9373.59078809,"data":"MEAN of 12 starts, T170, sigma 0.862 (~850 hPa). u/v tendencies in m/s per DAY (negative u = easterly push)\n"}
+,{"stream_name":"stdout","time":9373.5907916,"data":"\n"}
+,{"stream_name":"stdout","time":9373.590794681,"data":"Indochina/S China Sea 12-24N 100-120E:  ERA5 real change day0-\u003e1: u850 -0.20 m/s/day, T850 -0.17 K/day\n"}
+,{"stream_name":"stdout","time":9373.590798444,"data":"  0-6h   per-start u850 TOTAL:  +2.8  -6.6  -4.5  -1.8  -6.3  -1.5  -5.7  -4.2  -8.8  -1.1  -2.8  -6.8\n"}
+,{"stream_name":"stdout","time":9373.590801838,"data":"  6-24h  per-start u850 TOTAL:  -0.9  -2.1  -2.0  +1.9  -6.2  -0.5  -3.1  -3.3  -0.2  +2.7  -5.5  -4.0\n"}
+,{"stream_name":"stdout","time":9373.590805168,"data":"  0-6h   u: TOTAL  -3.95 PHYS  +0.47 u_bl  +0.44 u_cmt  +0.03 PGF  +3.99 COR  -8.90 PGF+COR  -4.91 REST  +0.49\n"}
+,{"stream_name":"stdout","time":9373.590808584,"data":"  0-6h   T850 K/day: TOTAL -2.33 PHYS -0.63 DYN -1.70 rad_app -1.11 h_bl -0.99 h_deep +0.19 h_shal +0.00 h_lsc +1.35 h_evap -0.08\n"}
+,{"stream_name":"stdout","time":9373.590812242,"data":"  6-24h  u: TOTAL  -1.93 PHYS  +1.79 u_bl  +1.55 u_cmt  +0.24 PGF  +3.77 COR  -9.19 PGF+COR  -5.42 REST  +1.70\n"}
+,{"stream_name":"stdout","time":9373.590815668,"data":"  6-24h  T850 K/day: TOTAL -1.08 PHYS -1.36 DYN +0.28 rad_app -4.07 h_bl -1.88 h_deep +1.30 h_shal +0.00 h_lsc +3.47 h_evap -0.18\n"}
+,{"stream_name":"stdout","time":9373.590819028,"data":"\n"}
+,{"stream_name":"stdout","time":9373.590822152,"data":"Bay of Bengal 10-20N 82-95E:  ERA5 real change day0-\u003e1: u850 -0.11 m/s/day, T850 -0.16 K/day\n"}
+,{"stream_name":"stdout","time":9373.590825521,"data":"  0-6h   per-start u850 TOTAL:  +0.0  -1.1  -2.3  -5.9  +3.8  -0.0  -2.7  -1.8  -3.0  +1.4  +0.1  -2.0\n"}
+,{"stream_name":"stdout","time":9373.590828994,"data":"  6-24h  per-start u850 TOTAL:  +0.8  -7.6  +1.7  -1.9  -3.1  -1.1  -2.3  -3.1  -2.4  +1.0  -2.0  -4.5\n"}
+,{"stream_name":"stdout","time":9373.590832292,"data":"  0-6h   u: TOTAL  -1.13 PHYS  -0.04 u_bl  -0.06 u_cmt  +0.02 PGF  -6.31 COR  +3.74 PGF+COR  -2.57 REST  +1.48\n"}
+,{"stream_name":"stdout","time":9373.590835632,"data":"  0-6h   T850 K/day: TOTAL -1.74 PHYS -0.77 DYN -0.98 rad_app -1.17 h_bl -0.18 h_deep +0.59 h_shal +0.00 h_lsc +0.07 h_evap -0.07\n"}
+,{"stream_name":"stdout","time":9373.590838977,"data":"  6-24h  u: TOTAL  -2.03 PHYS  -0.02 u_bl  -0.16 u_cmt  +0.14 PGF  -7.58 COR  +5.03 PGF+COR  -2.56 REST  +0.55\n"}
+,{"stream_name":"stdout","time":9373.590842498,"data":"  6-24h  T850 K/day: TOTAL -1.25 PHYS -0.49 DYN -0.76 rad_app -2.95 h_bl -0.68 h_deep +2.16 h_shal +0.00 h_lsc +1.06 h_evap -0.08\n"}
+,{"stream_name":"stdout","time":9373.590858485,"data":"\n"}
+,{"stream_name":"stdout","time":9373.590861164,"data":"Aleutian 40-65N 160-220E:  ERA5 real change day0-\u003e1: u850 -0.06 m/s/day, T850 -0.37 K/day\n"}
+,{"stream_name":"stdout","time":9373.590863865,"data":"  0-6h   per-start u850 TOTAL:  -1.2  +3.1  -1.0  -0.8  +1.1  -3.1  -4.4  -3.1  +0.6  +1.3  +0.1  -3.4\n"}
+,{"stream_name":"stdout","time":9373.590866534,"data":"  6-24h  per-start u850 TOTAL:  +3.1  +2.7  -1.7  +0.6  +1.2  -1.8  -1.2  -3.7  +2.6  +0.8  +1.2  -2.1\n"}
+,{"stream_name":"stdout","time":9373.590870166,"data":"  0-6h   u: TOTAL  -0.91 PHYS  -3.49 u_bl  -3.53 u_cmt  +0.04 PGF -18.04 COR +20.13 PGF+COR  +2.09 REST  +0.48\n"}
+,{"stream_name":"stdout","time":9373.590872938,"data":"  0-6h   T850 K/day: TOTAL -1.95 PHYS -2.02 DYN +0.08 rad_app -1.28 h_bl -2.79 h_deep +0.21 h_shal +0.00 h_lsc +2.04 h_evap -0.19\n"}
+,{"stream_name":"stdout","time":9373.590875684,"data":"  6-24h  u: TOTAL  +0.13 PHYS  -3.23 u_bl  -3.34 u_cmt  +0.11 PGF -10.94 COR +14.47 PGF+COR  +3.53 REST  -0.16\n"}
+,{"stream_name":"stdout","time":9373.590878392,"data":"  6-24h  T850 K/day: TOTAL -1.08 PHYS -0.50 DYN -0.58 rad_app -1.41 h_bl -2.21 h_deep +0.42 h_shal +0.00 h_lsc +3.04 h_evap -0.34\n"}
+,{"stream_name":"stdout","time":9373.590881124,"data":"\n"}
+,{"stream_name":"stdout","time":9373.59088356,"data":"S Atlantic trades 5-20S 330-360E:  ERA5 real change day0-\u003e1: u850 +0.10 m/s/day, T850 +0.07 K/day\n"}
+,{"stream_name":"stdout","time":9373.590886306,"data":"  0-6h   per-start u850 TOTAL:  +0.6  -1.8  +3.2  +0.4  +4.5  +2.7  +1.2  -2.2  -1.1  +0.2  -3.1  -3.0\n"}
+,{"stream_name":"stdout","time":9373.590888987,"data":"  6-24h  per-start u850 TOTAL:  +1.4  +0.3  -0.1  -0.4  +4.0  -1.3  +0.3  +0.8  +0.6  -0.6  -1.0  +1.5\n"}
+,{"stream_name":"stdout","time":9373.590891689,"data":"  0-6h   u: TOTAL  +0.13 PHYS  -0.17 u_bl  -0.15 u_cmt  -0.02 PGF  +4.18 COR  -4.05 PGF+COR  +0.13 REST  +0.17\n"}
+,{"stream_name":"stdout","time":9373.590894607,"data":"  0-6h   T850 K/day: TOTAL -2.77 PHYS -3.51 DYN +0.73 rad_app -2.83 h_bl -0.54 h_deep -0.15 h_shal +0.00 h_lsc +0.02 h_evap -0.00\n"}
+,{"stream_name":"stdout","time":9373.590897306,"data":"  6-24h  u: TOTAL  +0.46 PHYS  -1.13 u_bl  -1.06 u_cmt  -0.08 PGF  +3.39 COR  -2.93 PGF+COR  +0.45 REST  +1.14\n"}
+,{"stream_name":"stdout","time":9373.590900021,"data":"  6-24h  T850 K/day: TOTAL -2.12 PHYS -6.43 DYN +4.31 rad_app -5.87 h_bl -2.74 h_deep -0.30 h_shal +0.00 h_lsc +2.51 h_evap -0.02\n"}
+,{"stream_name":"stdout","time":9373.590902756,"data":"\n"}
+,{"stream_name":"stdout","time":9373.590905262,"data":"globe:  ERA5 real change day0-\u003e1: u850 +0.01 m/s/day, T850 -0.01 K/day\n"}
+,{"stream_name":"stdout","time":9373.590907952,"data":"  0-6h   per-start u850 TOTAL:  -0.8  -0.5  -0.6  -0.3  -0.1  -0.1  -0.7  -0.5  -0.8  -0.4  -0.5  -0.1\n"}
+,{"stream_name":"stdout","time":9373.590910646,"data":"  6-24h  per-start u850 TOTAL:  +0.1  -0.0  -0.0  +0.0  -0.0  +0.0  -0.1  +0.0  +0.1  -0.1  +0.0  +0.0\n"}
+,{"stream_name":"stdout","time":9373.590913304,"data":"  0-6h   u: TOTAL  -0.45 PHYS  -1.07 u_bl  -1.09 u_cmt  +0.02 PGF  +0.17 COR  +0.33 PGF+COR  +0.50 REST  +0.12\n"}
+,{"stream_name":"stdout","time":9373.590916086,"data":"  0-6h   T850 K/day: TOTAL -1.95 PHYS -2.08 DYN +0.13 rad_app -1.63 h_bl -1.16 h_deep +0.12 h_shal +0.00 h_lsc +0.66 h_evap -0.07\n"}
+,{"stream_name":"stdout","time":9373.590919156,"data":"  6-24h  u: TOTAL  +0.01 PHYS  -1.10 u_bl  -1.17 u_cmt  +0.07 PGF  +0.28 COR  +0.77 PGF+COR  +1.04 REST  +0.07\n"}
+,{"stream_name":"stdout","time":9373.590921836,"data":"  6-24h  T850 K/day: TOTAL -1.14 PHYS -1.51 DYN +0.38 rad_app -2.78 h_bl -1.29 h_deep +0.88 h_shal +0.00 h_lsc +1.86 h_evap -0.19\n"}
+,{"stream_name":"stdout","time":9373.590927964,"data":"saved /kaggle/working/it_pkgall.npz\n"}
+,{"stream_name":"stdout","time":9373.591217983,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":9373.59123312,"data":"+ rm -rf repo libm_wx2020_fields.npz wx_truth_2020.npz\n"}
+,{"stream_name":"stdout","time":9373.777784607,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":9373.77781061,"data":"total s 9372\n"}
+,{"stream_name":"stderr","time":9376.007987625,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":9376.008017414,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":9376.291850612,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":9376.291889266,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":9377.14723841,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":9378.183917568,"data":"[NbConvertApp] Writing 285084 bytes to __results__.html\n"}
+]
