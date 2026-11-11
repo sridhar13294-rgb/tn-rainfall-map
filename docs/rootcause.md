@@ -1496,3 +1496,14 @@ Next: per-layer RH distribution h0 vs h24 vs ERA5 q levels (which layers saturat
   evaporation (deep columns -3.1 of 4.8, shallow columns -2.7 of 5.3); deep cloud-base mass flux median 0.005 kg m-2 s-1 (31 % zero),
   PCAPE median 57 Pa of which PCAPE_bl 37. The remaining ~2.6 mm/day must leave by large-scale export/subsidence and BL-top entrainment
   -> the T170 process budget (tn-prof-pkgall) decides between weak deep closure, missing BL-top entrainment, and dynamics.
+
+## 11 Nov 22:00 IST - independent causes for P5 / tracks (while the moisture runs are on Kaggle)
+- Land: already tested 5 Nov - the land module removes the cold land (central India 2-m T -2.7 -> -0.6 K) but central-India MSLP falls only
+  20 % and the tracks barely move (296 vs 289 km). Not the track cause.
+- Known case evidence (5 Nov, Michaung): the upstream westerly trough PARKS at 71-72 E in the model while ERA5's propagates 63 -> 76.5 E;
+  environmental 500-hPa steering too far north (+2.5..+5 vs +0.7..+2.1 m/s). A slow westerly wave fits a too-weak subtropical jet.
+- Asian subtropical jet too weak from day 1 (-6.2 m/s, 10 Nov): does the 500-hPa heating pattern explain it? T170 first-hours maps
+  (tn-prof-32imp, 6-24 h, 60-140 E): T500 tendency 10-20 N -0.46, 20-30 N -0.76, 30-40 N -0.66, 40-50 N -1.29 K/day -> the tropics cool
+  LESS than the subtropics: the 500-hPa gradient STRENGTHENS slightly (+0.2 K/day; ifs_sh +0.8). Physics momentum drag at 500 hPa ~0
+  (PHYS -0.03 m/s/day). => the jet weakening is NOT explained by 500-hPa heating or drag. Next: the 200-hPa budget (init_tend now also
+  at sigma 0.2; tn-prof-b2jet queued, acct 4): u200 TOTAL / PHYS / PGF+COR / REST and T200 by process over the jet region.
