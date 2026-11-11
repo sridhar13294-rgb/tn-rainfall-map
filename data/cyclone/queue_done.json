@@ -1246,5 +1246,21 @@
   "cmd": "CANDS='{\"pkgall\":{\"phys_ifs\":1,\"ck_z\":1.0,\"sfc_sal\":0.98,\"rad_prm\":{\"lw_cnt\":0.667,\"qs_mix\":1}}}' DT=20 XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore div_check.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz T170 1,7,13,19,25,31,37,43,49,55,61,67 > /kaggle/working/div.log 2>&1; grep -v 'WARNING\\| done' /kaggle/working/div.log | tail -40",
   "account": "1",
   "at": "2026-11-11T16:43Z"
+ },
+ {
+  "slug": "tn-prof-b2jet",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "note": "first-hours budget incl. 200 hPa (Asian jet), base2",
+  "cmd": "NLEV=32 XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore init_tend.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz T170 12 /kaggle/working/it_b2_jet.npz > /kaggle/working/it_b2_jet.log 2>&1; grep -v WARNING /kaggle/working/it_b2_jet.log | tail -45",
+  "account": "4",
+  "at": "2026-11-11T17:34Z"
+ },
+ {
+  "slug": "tn-p5-dyn-pkg",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "note": "global winds/jets/trades/Rossby/rain check, IFS package",
+  "cmd": "VARS=\"u200,v200,z500,u850,rain24\" WIN=\"-90,90,0,360\" NDAY=10 PERSTART=1 GR=T170 ONLY=\"ifs package\" STRIDE=1 OUT=/kaggle/working/p5_dyn_pkg.json XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore p5_geo.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 12 > /kaggle/working/p5_dyn_pkg.log 2>&1; tail -4 /kaggle/working/p5_dyn_pkg.log",
+  "account": "1",
+  "at": "2026-11-11T17:35Z"
  }
 ]
