@@ -313,6 +313,13 @@ def clouds(T, q, p, dp, ps, sea, conv_mask=None, conv_rain=None, conv_src=None, 
     (mm2: cond). Returns dict: c (fraction), lwp/iwp (in-cloud, kg m-2 per layer), re_l/re_i (m), cover, fractions."""
     P = dict(DEFAULTS); P.update(prm or {})
     mass = dp / G; sig = p / ps; qs = qsat(T, p, xp); rh = xp.clip(q / qs, 0.0, 1.0)
+    if P.get('qs_mix', 0.0) > 0:
+        # 11 Nov: relative humidity for the cloud fraction w.r.t. the IFS MIXED-PHASE saturation (Part IV ch. 7: es = a es_liq +
+        # (1 - a) es_ice, a = ((T - 250.16)/(273.16 - 250.16))^2, Teten coefficients 17.502/32.19 water, 22.587/-0.7 ice). Below
+        # ~250 K the air is saturated over ice at a liquid RH of 0.6-0.8, so a liquid-only RH misses cirrus and mixed-phase cloud.
+        es_w = 611.21 * xp.exp(17.502 * (T - 273.16) / (T - 32.19)); es_i = 611.21 * xp.exp(22.587 * (T - 273.16) / (T + 0.7))
+        a_ = xp.clip((T - 250.16) / (273.16 - 250.16), 0.0, 1.0) ** 2
+        es_m = a_ * es_w + (1.0 - a_) * es_i; qs = 0.622 * es_m / xp.maximum(p - 0.378 * es_m, 1.0); rh = xp.clip(q / qs, 0.0, 1.0)
     rhc = P['rhc_up'] + (P['rhc_low'] - P['rhc_up']) * xp.exp(1.0 - xp.maximum(sig, 0.05) ** (-P['rhc_n']))
     c_ls = 1.0 - xp.sqrt(xp.clip((1.0 - rh) / (1.0 - rhc), 0.0, 1.0))
     c_ls = xp.where(sig > P['sig_min'], c_ls, 0.0)

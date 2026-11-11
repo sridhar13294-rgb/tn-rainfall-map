@@ -1464,3 +1464,16 @@ Next: per-layer RH distribution h0 vs h24 vs ERA5 q levels (which layers saturat
   per-column analysis is needed; A and B may feed back through radiation/precipitation. Cloud relationship to be developed and validated
   on separate date sets (development / calibration check / independent validation), by RH, level, latitude band and regime.
 - Launched: tn-moist-pkgevap (acct 4: package + COARE evaporation), tn-moist-pkgevapcnt (acct 1: + continuum fix).
+
+## 11 Nov 19:30 IST - PROBLEM A ROOT CAUSE FOUND: the cloud scheme's humidity is relative to LIQUID water only
+- radcloud.clouds() computes RH = q / qsat_liquid. Below ~250 K air is saturated over ice at a liquid RH of 0.6-0.8, so cirrus and
+  mixed-phase cloud are missed. New option rad_prm.qs_mix = 1: RH w.r.t. the IFS mixed-phase saturation (Part IV ch. 7,
+  es = a es_liq + (1 - a) es_ice, a = ((T - 250.16)/23)^2, Teten 17.502/32.19 and 22.587/-0.7). No parameter fitted; critical RH unchanged.
+- Total cover on ERA5 start states (T42), scheme / ERA5, liquid RH -> mixed-phase RH:
+  development set (starts 1, 25, 49): 0.34 -> 0.62 / 0.63; validation set 1 (13, 37, 61): 0.33 -> 0.62 / 0.62;
+  validation set 2 (7, 31, 55): 0.34 -> 0.63 / 0.63. Per column-RH bin the curve now follows ERA5 within -0.08..+0.06 (driest bin
+  0.27-0.29 vs 0.34-0.37; RH 0.6-0.7 0.86 vs 0.80-0.82) on all three sets.
+- Housekeeping: radcloud.py contains TWO definitions of clouds(); the first (line ~168) is dead code overridden by the second. The option
+  is in the live one. Regression with qs_mix off bit-identical (22.259984322409387).
+- Still open: with the mixed-phase RH the forecast's low-level moistening (+7..+12 % at 925/850, problem B) will make even more
+  low cloud unless B is fixed (evaporation screens running). Next T170 screen: IFS convection + evaporation fix + continuum + qs_mix.
