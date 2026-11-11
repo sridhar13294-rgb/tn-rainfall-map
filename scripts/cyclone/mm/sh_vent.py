@@ -1,3 +1,4 @@
+# NOTE: needs a temporary debug hook in mm2.conv_mf (self._dbg_sh = dict(act, Mb, Mb_raw, cap, ninc, dtop, cloud, cloud_t, ...)), not committed.
 # Why does ifs_sh vent so little sub-cloud moisture? Snapshot after HRS h (ifs_sh), tropical ocean columns: trigger, plume depth, Mb, vent vs E
 import sys, os, datetime as dt, numpy as np, jax.numpy as jnp
 sys.path.insert(0, '/tmp/claude-0/disp/scripts/cyclone/mm'); sys.path.insert(0, '/tmp/claude-0/disp/scripts/cyclone/analysis')
