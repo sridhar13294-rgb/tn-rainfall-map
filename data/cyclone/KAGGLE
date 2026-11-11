@@ -1,6 +1,6 @@
-tn-prof-32imp
+tn-prof-75imp
 libm_wx2020_fields.npz,wx_truth_2020.npz
-EXTRA='{"sfc_imp":1,"drag_imp":1}' NLEV=32 XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore init_tend.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz T170 12 /kaggle/working/it_32imp.npz > /kaggle/working/it_32imp.log 2>&1; grep -v WARNING /kaggle/working/it_32imp.log | tail -45
+EXTRA='{"sfc_imp":1,"drag_imp":1}' NLEV=tp75 XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore init_tend.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz T170 12 /kaggle/working/it_75imp.npz > /kaggle/working/it_75imp.log 2>&1; grep -v WARNING /kaggle/working/it_75imp.log | tail -45
 NvidiaTeslaT4
-4
-#first-hours process profiles 32L+imp 2026-11-11T04:52Z
+1
+#first-hours process profiles 75L+imp 2026-11-11T04:53Z
