@@ -1237,3 +1237,15 @@ only check the code.
 - Caveat: the 75-level config also has sfc_imp=1, drag_imp=1 (implicit surface flux and drag, needed for 75-level stability); the 32-level reference does not, so the gap mixes level count and these two options.
 - Reading: 75 levels is stable but not better; the day-1 z500/mslp gap (19/19) is systematic and points at the start
   (vertical interpolation / DFI at 75 levels), not at the physics. This is the reference every 75-level candidate screen is compared with.
+
+## 11 Nov 10:30 IST - 75-level day-1 gap located in the TROPICS and in the first day's column cooling (not the start state)
+- T170 bias split (19 starts, tn-s-b2-75-wx0 vs tn-s-rd-wx0): day-1 z500 bias tropics -10.2 m (75L) vs -8.0 m (32L), rmse 13.9 vs 11.8
+  (+17 %); extratropics nearly equal (NH -15.3 vs -14.4, SH -8.8 vs -8.7). Tropical mslp rmse stays worse to day 5 (361 vs 302 Pa).
+- Both level sets lose z500 globally every day: -10 m (d1), -16 (d2), -19 (d3), -23/-27 (d5): the column cools ~0.3-0.5 K/day,
+  matching the energy audit (FULL -37 W/m2, radiation -133 vs ~-103 reference). This global cooling is the largest single error.
+- T42 screen (gap75.py, 3 starts, partial): hour 0 equal (z500 rmse ~7 m both, after DFI), so the start state is NOT the cause;
+  sfc_imp + drag_imp at 32L change day-1 z500 by only -0.3 to -0.6 m bias; 75L tropics day-1 z500 bias -15.6 vs -9.9 m (32L+imp).
+- Next (measurement, T170, 12 starts): first-hours process profiles (init_tend.py, new: per-level tropics/globe means of every
+  heating and moistening process + total) at 32L+imp and 75L+imp. Expectation registered: the 75L-32L difference in tropical
+  column heating is small (~0.1 K/day for the 2.2 m z500 gap) but its VERTICAL distribution by process will differ; the process
+  whose profile changes most with layer count is the 75L cause. Same output gives the low-level moistening by process (P1/P4/P5 track).

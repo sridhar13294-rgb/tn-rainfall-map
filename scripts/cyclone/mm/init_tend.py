@@ -19,7 +19,8 @@ LIB, TRU, GR, N, OUT = sys.argv[1], sys.argv[2], sys.argv[3], int(sys.argv[4]), 
 Z = dict(np.load(LIB)); TT = [str(t) for t in Z['times']]; V3 = [str(v) for v in Z['v3']]; V2 = [str(v) for v in Z['v2']]
 TR = np.load(TRU); DI = {str(d): i for i, d in enumerate(TR['days'])}; tla = np.asarray(Z['lats'], float); tlo = np.asarray(Z['lons'], float)
 EXTRA = json.loads(os.environ.get('EXTRA', '{}'))   # candidate settings on top of base2 (10 Nov)
-M = mm2.Model(GR, int(os.environ.get('NLEV', '32')), None, dict({'rad': 'radcloud', 'rad_every': 2, 'cmt_mf': 1, 'rd_si': 1}, **EXTRA))
+NLEV = os.environ.get('NLEV', '32'); NLEV = int(NLEV) if NLEV.isdigit() else NLEV   # 11 Nov: 'tp75' allowed
+M = mm2.Model(GR, NLEV, None, dict({'rad': 'radcloud', 'rad_every': 2, 'cmt_mf': 1, 'rd_si': 1}, **EXTRA))
 hor = M.coords.horizontal; sig = np.asarray(M.sig, float); sigb = np.asarray(M.sigb, float)
 K85, K50 = int(np.argmin(np.abs(sig - 0.85))), int(np.argmin(np.abs(sig - 0.5)))
 LA, LO = np.asarray(M.LA, float), np.asarray(M.LO, float); lat_r = np.radians(np.asarray(M.lat, float)); lon_r = np.radians(np.asarray(M.lon, float))
@@ -73,6 +74,15 @@ for k in starts:
                 if pk in diag: parts[f'T{lv}_{pk}'] = np.asarray(diag[pk][kk], float)
             for nm, X in parts.items():
                 s_ = sums.setdefault((w, nm), [0.0, 0]); s_[0] = s_[0] + X; s_[1] += 1
+        TRm = np.abs(LA) <= 30; Wt = cosl * TRm; Wg = cosl
+        for pk in ('rad_app', 'h_bl', 'h_deep', 'h_shal', 'h_lsc', 'h_evap', 'q_bl', 'q_deep', 'q_shal', 'q_lsc', 'q_evap'):
+            if pk in diag:
+                X = np.asarray(diag[pk], float)
+                for rn, Ww in (('trop', Wt), ('globe', Wg)):
+                    s_ = sums.setdefault((w, f'prof_{rn}_{pk}'), [0.0, 0]); s_[0] = s_[0] + (X * Ww[None]).sum((1, 2)) / Ww.sum(); s_[1] += 1
+        for rn, Ww in (('trop', Wt), ('globe', Wg)):
+            for nm_, X in (('TOTAL', (T1 - T) / M.dt_s), ('qTOTAL', (q1 - q) / M.dt_s), ('p', sig[:, None, None] * ps[None])):
+                s_ = sums.setdefault((w, f'prof_{rn}_{nm_}'), [0.0, 0]); s_[0] = s_[0] + (X * Ww[None]).sum((1, 2)) / Ww.sum(); s_[1] += 1
         st, cr = st1, cr1
     for (w, nm), (S_, c_) in sums.items(): add(w, nm, S_ / c_)
     d0 = DI[TT[k]]; d1 = DI[(t0 + dt.timedelta(days=1)).strftime('%Y-%m-%dT%H')]
@@ -98,4 +108,6 @@ np.savez_compressed(OUT, lat=np.asarray(M.lat), lon=np.asarray(M.lon), starts=np
                     **{f'{w}__{nm}': np.mean(v, 0).astype(np.float32) for (w, nm), v in acc.items()},
                     **{f'per_start__{w}__{nm}': np.array(v, np.float16) for (w, nm), v in acc.items() if nm.startswith(('u850', 'T850'))},
                     obs_du850=np.mean(obs['u'], 0).astype(np.float32), obs_dv850=np.mean(obs['v'], 0).astype(np.float32), obs_dT850=np.mean(obs['T'], 0).astype(np.float32))
+PROF = {f'{w}__{nm}': np.mean(v, 0).tolist() for (w, nm), v in acc.items() if nm.startswith('prof_')}
+json.dump(PROF, open(OUT.replace('.npz', '_prof.json'), 'w'))
 print('saved', OUT)
