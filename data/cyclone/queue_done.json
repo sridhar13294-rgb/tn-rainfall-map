@@ -1262,5 +1262,13 @@
   "cmd": "VARS=\"u200,v200,z500,u850,rain24\" WIN=\"-90,90,0,360\" NDAY=10 PERSTART=1 GR=T170 ONLY=\"ifs package\" STRIDE=1 OUT=/kaggle/working/p5_dyn_pkg.json XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore p5_geo.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 12 > /kaggle/working/p5_dyn_pkg.log 2>&1; tail -4 /kaggle/working/p5_dyn_pkg.log",
   "account": "1",
   "at": "2026-11-11T17:35Z"
+ },
+ {
+  "slug": "tn-moist-pbl0",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_moist_2020.npz",
+  "note": "humidity/cloud vs ERA5 T170 package with pre-40r1 closure",
+  "cmd": "CANDS='{\"pkgall+pbl0\":{\"phys_ifs\":1,\"ifs_pbl\":0,\"ck_z\":1.0,\"sfc_sal\":0.98,\"rad_prm\":{\"lw_cnt\":0.667,\"qs_mix\":1}}}' DT=20 XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore moist_vs_era5.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_moist_2020.npz T170 1,7,13,19,25,31,37,43,49,55,61,67 /kaggle/working/me_pbl0.json > /kaggle/working/me_pbl0.log 2>&1; grep -v WARNING /kaggle/working/me_pbl0.log | tail -40",
+  "account": "1",
+  "at": "2026-11-11T18:06Z"
  }
 ]
