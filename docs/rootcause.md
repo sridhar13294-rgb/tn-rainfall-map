@@ -1395,3 +1395,17 @@ Reading:
   moved one term and broke another, consistent with this.
 Decision needed (Sridhar): continue piecewise, or replace the convection/cloud/boundary-layer package as one consistent, documented
 scheme (IFS Cy50r1 Part IV chapters 3 + 6 together).
+
+## 11 Nov 17:30 IST - IFS package v1, convection part built (ifs_phys.py, phys_ifs=1; docs/ifs_package.md)
+- Built: shallow and deep test parcels (6.18-6.21, dry lift to the LCL and KE from cloud base for deep), full updraught (6.7-6.12, entrainment
+  only where buoyant), Sundqvist precipitation with freezing/Bergeron (6.43-6.46), downdraught from the min-h level (6.13-6.17), Kessler
+  sub-cloud evaporation (6.49-6.52), melting, PCAPE closure with tau = H/w alpha_x and PCAPE_bl (6.22-6.34), sub-cloud MSE closure for
+  shallow (6.35-6.37), linear sub-cloud fluxes (6.40-6.41), implicit transport with CFL 3 / 2 kg m-2 s-1 (6.69-6.70). Regression with
+  phys_ifs=0 bit-identical. Column water closes to 1e-9..2e-6 kg m-2 s-1 (rain up to 3e-4).
+- First look (T42, 20-min step, ERA5 start): deep convection active in ~5 % of tropical columns, cloud-base mass flux median 0 (PCAPE of the
+  entraining plume near zero on the near-moist-neutral analysed soundings), shallow ~1 %.
+- 48-h drift (2 starts): IDENTICAL to ifs_sh within noise (cover 0.87, RH >850 0.842 vs 0.858, tropics 850-700 T -2 K in 48 h).
+  => With three different convection schemes (base2 'mse', ifs_sh, IFS package convection) and with single processes switched off the
+  drift stays. The one component common to ALL of them is the boundary-layer scheme (K-profile from a Ri height, explicit surface layer):
+  daytime heat stays in the lowest layer (+52 K/day there, stable theta above; 11 Nov morning column check), moisture accumulates
+  below 850 hPa. Next: the BL part of the package (task 45: IFS EDMF K-profile with zi from the plume, eq. 3.42-3.50).
