@@ -1591,3 +1591,51 @@ Tropics 30S-30N, 6-24 h, g/kg/day, layer below 850 hPa (convection = deep + shal
   interpolation is one known piece), and the Asian jet loses ~3.5 m/s/day MORE (Tibet-specific part, consistent with the pure sigma
   coordinate). Dinosaur (pinned commit) contains hybrid_coordinates.py and SemiLagrangianPrimitiveEquationsHybrid: an IFS-type hybrid
   sigma-pressure core is available upstream; switching needs mm2's sigma assumptions (p = sigma ps in physics, init, diagnostics) generalised.
+
+## 12 Nov 04:10 IST - tn-moist-lcl32 scored (IFS package + bl_lcl, 32 L, T170, 12 starts Jan-Dec 2020) vs ERA5 (wx_truth_moist_2020)
+Global means, model vs ERA5, per start (h24 / h48):
+- q850: h24 -0.8..+3.5 % (mean +2.0); h48 -2.6..+2.9 % (mean +0.4). Package alone (T170) was +8 %. => low-level humidity excess at
+  850 hPa REMOVED in 12/12 starts (class Pass at +-3 %).
+- q925: h24 +2.0..+5.6 % (mean +4.4); h48 +0.4..+3.7 % (mean +2.3). Was +7 %. => two-thirds removed; small positive residual, same sign
+  in 12/12 (systematic but within +-4 %).
+- q700 h48 -3.6..+0.0 % (mean -1.2); q500 h48 +0.3..+5.1 % (mean +2.4); TCWV h48 -0.1..+2.4 % (mean +1.3).
+- => PROBLEM B (low-level moisture excess): FIXED by bl_lcl at 32 L (K-diffusion capped at cloud base, as in IFS EDMF). 75 L (lcl75b) and
+  the base2-at-75 reference (b275) still running.
+- CLOUD COVER: hour 0 0.58-0.62 vs ERA5 0.62-0.63 (qs_mix OK), but h24 0.92-0.94 and h48 0.95-0.96 vs ERA5 0.61-0.65 in 12/12 starts
+  with humidity now within ~2 % of ERA5. => Problem A is solved only at the start: the diagnostic cloud scheme saturates the sky within
+  24 h of forecast. Since q is right, the cause is either the forecast temperature (RH via T: -0.4 K at 925 hPa found 12 Nov 00:10) or the
+  RH->cloud mapping reacting to the model's own sub-grid variability. Next: per-level cloud + RH + T vs ERA5 at h24 (local T42 first).
+
+## 12 Nov 04:25 IST - jet: core test against an ANALYTIC reference (registered before running)
+- Finding first: mm2 already runs the semi-Lagrangian with monotone_dynamics=True, and Dinosaur's quasi-monotone limiter clips the
+  CUBIC vertical interpolation to the 2x2x2 bracketing cell (Bermejo & Staniforth 1992, as in IFS). So the 6 Nov suspicion "cubic
+  overshoot without a vertical limiter shifts storm cores" is WRONG: the limiter was on in that screen. The 6 Nov storm changes
+  (+7.7 / -4.2 / +1.1 hPa, opposite signs, 1 start per storm) need a noise check before they are blamed on vcubic.
+- Test jw_check.py: Jablonowski-Williamson steady state (exact balanced solution, two 35 m/s jets, no real-data imbalance, no Tibet),
+  MEGAM core settings, physics off, T42, dt 20 min (as jet_check), 32 L, 3 days.
+- Registered reading: NH jet loss >= 2 m/s/day -> the general core loss is numerical damping of a balanced jet, and the variants
+  (vcubic, off-centering, diffusion, T_ref, step) say which piece; loss < 0.5 m/s/day -> the core does not damp a balanced jet, and
+  the real-data loss comes from imbalance/adjustment of the ERA5 start on sigma levels (then the hybrid coordinate becomes the lead).
+- 04:40 RESULT (JW steady state, T42, 20 min, 3 days, physics off): NH jet 34.94 -> 34.81 m/s = -0.04 m/s/day (default); vcubic -0.04;
+  no off-centering +0.01; no diffusion -0.03; JW reference T -0.04. => the core does NOT damp a balanced zonal jet: time scheme,
+  off-centering, diffusion and T_ref are cleared. Caveat (honest): JW is zonally symmetric with zero vertical motion, so it does NOT
+  exercise the SL interpolation errors (along-flow structure, vertical displacement) - which is exactly where cubic vertical helped on
+  real data (-7.2 -> -4.7). So: the general real-data loss is interpolation of non-symmetric / vertically moving flow, or start adjustment.
+- 04:45 next test REGISTERED (hyb_jet.py): real ERA5 start, physics off, T42, 20 min, 3 Oct-Nov starts, three cores with the same
+  reference levels: sigma (MEGAM) / hybrid core with A=0 (control) / true hybrid (B = ((s-0.1)/0.9)^1.3, near-pressure above ~250 hPa).
+  Reading: Tibet/sigma hypothesis CONFIRMED if hybrid vs hybA0 reduces the Asia day-1 error by >= 2 m/s while Pacific/Atlantic change
+  < 1 m/s; REJECTED if Asia changes < 1 m/s. hybA0 vs sigma must agree within ~0.5 m/s (otherwise the cores differ and the comparison
+  is reported as inconclusive).
+- 05:05 RESULT (hyb_jet.py, real ERA5 starts 7 Oct / 1 Nov / 26 Nov, physics off, T42, no DFI; day-1 jet-peak error vs ERA5):
+  | core | Asia | Pacific | Atlantic |
+  | sigma (MEGAM) | -8.6 | -5.9 | -4.5 |
+  | hybrid core, A=0 (control) | -8.9 | -5.7 | -4.5 |
+  | hybrid levels | -7.8 | -5.6 | -4.3 |
+  Control agrees with sigma within 0.3 (cores consistent). Hybrid vs control: Asia +1.1, Pacific +0.1, Atlantic +0.2 m/s.
+  => between the registered thresholds (>= 2 confirm, < 1 reject): PARTIAL. The sigma coordinate over Tibet is a real but SMALL piece
+  (~1 of the ~3.5 m/s extra Asian loss). It does not justify the multi-day hybrid refactor on its own; noted as a later improvement.
+- Timing of the loss (sigma, same starts): Asia jet on own levels 52.3 -> 48.7 (6 h) -> 47.6 (12 h) -> 46.0 (24 h): ~60 % of the day-1
+  loss happens in the first 6 h (-3.6 m/s, a rate of -14 m/s/day), then ~-1.3 m/s per 6 h. Matches the T170 200-hPa budget (0-6 h REST
+  -10 m/s/day). DFI did not change it (01:40). => the dominant piece is a fast start-up loss in the first hours, not a steady damping
+  (JW: no damping). Next (10:00 cycle): where in the first 6 h - level-by-level and jet-core-relative u tendency in the first steps
+  (vertical: the jet core sharpness on 32 levels vs the SL departure-point interpolation; horizontal: T42 vs T170 same start).
