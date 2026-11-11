@@ -1528,3 +1528,16 @@ Next: per-layer RH distribution h0 vs h24 vs ERA5 q levels (which layers saturat
 - tn-moist-entr (BL-top entrainment, IFS eq. 3.50, on top of the package): humidity and cloud identical to the package to the printed
   digit (q925 +7 %, q850 +9 %, cover +44 % at 24 h). Either the term is inactive in practice (to be verified: Kh at the BL-top
   interface may already exceed K_e) or it is too small -> suspect 2 NOT supported as implemented.
+
+## 11 Nov 23:15 IST - PROBLEM B LEFTOVER LOCATED: the IFS convection vents too little moisture from below 850 hPa (tn-prof-pkgall, T170, 12 starts)
+Tropics 30S-30N, 6-24 h, g/kg/day, layer below 850 hPa (convection = deep + shallow in each scheme):
+| run | total | BL + surface | convection | condensation | rain evap | dynamics |
+|---|---|---|---|---|---|---|
+| ifs_sh | +0.45 | +3.46 | -2.16 | -0.23 | +0.42 | -1.04 |
+| IFS package (+COARE evap, continuum, cloud RH) | +0.50 | +2.56 | -1.06 | -0.29 | +0.14 | -0.86 |
+- The supply is SMALLER in the package (COARE evaporation: 3.46 -> 2.56) and rain evaporation is smaller (+0.42 -> +0.14), but convection
+  removes only HALF as much (-2.16 -> -1.06), so the low levels still gain +0.5 g/kg/day. => the leftover of problem B is WEAK CONVECTIVE
+  VENTING in the IFS convection v1, consistent with the 20:40 column check: deep cloud-base mass flux median 0.005 kg m-2 s-1 (31 % zero),
+  PCAPE_bl removing ~2/3 of PCAPE over tropical ocean.
+- Next (12 Nov): check the closure against IFS Part IV 6.22-6.34 term by term (PCAPE_bl units/sign and T* = 1, the sub-cloud layer
+  definition, tau = H/w x alpha_x with alpha_x = 1 + 1.6 dx/125 km), and the sub-cloud flux profile; register predictions; T170 screen.
