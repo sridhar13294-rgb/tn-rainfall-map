@@ -14,7 +14,7 @@ tla = np.linspace(-90, 90, 121); TLA = np.repeat(tla[:, None], 240, 1); TW = np.
 def tm(X, m): return float(np.nansum(X * TW * m) / np.nansum(TW * m * np.isfinite(X)))
 res = {}
 for nm, ex in CANDS.items():
-    M = mm2.Model(GR, 32, float(os.environ.get('DT', 20)), dict(B2, **ex)); hor = M.coords.horizontal
+    NL = os.environ.get('NLEV', '32'); M = mm2.Model(GR, int(NL) if NL.isdigit() else NL, float(os.environ.get('DT', 20)), dict(B2, **ex)); hor = M.coords.horizontal
     for k in KS:
         t0 = dt.datetime.strptime(TT[k], '%Y-%m-%dT%H'); f2 = Z['f2'][k]; f3 = {v: np.array(Z['f3'][k, V3.index(v)]) for v in V3}
         st, cr = M.init(f3, Z['levs'], Z['lats'], Z['lons'], f2[V2.index('surface_pressure')], f2[V2.index('geopotential_at_surface')]/9.80616, f2[V2.index('sea_surface_temperature')], f2[V2.index('land_sea_mask')], when=t0, **landinit.land_kwargs(f2, V2))
