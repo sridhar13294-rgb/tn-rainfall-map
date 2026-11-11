@@ -1322,3 +1322,11 @@ Reading (against the 11:50 hypothesis):
   halved the tropical rain bias and the TN easterly - interpreted then as compensation with the radiation cooling excess.
   Today's chain explains the compensation: base2's shallow scheme pumps the excess moisture into mid levels -> cloud -> cooling.
 - Next screen (local, running): RH/cloud drift for ifs_sh + evaporation fix, and base2 + evaporation fix.
+- 16:20 IST screen result (T42 grid, 20-min step, 2 starts, global RH/cloud at 24/48 h): ifs_sh + evaporation fix (ck_z 1, sfc_sal 0.98)
+  RH >850 0.824/0.850 vs ifs_sh 0.830/0.858; cover 0.866 vs 0.871 -> evaporation is NOT the driver of the drift either.
+- Decisive clue (T170 profiles, column-mean radiative heating): -1.24 K/day globally ALREADY in hours 0-6 (cover from RH still ~0.3) and
+  -1.27 at 6-24 h after cover has tripled; same in base2 and ifs_sh. ~-140 W/m2 vs reference ~-103 from the FIRST hours -> the radiation
+  excess does not come from the moistening drift. It comes with the radiation's own cloud from the start: convective + anvil cloud
+  (Slingo) and cloud water (LWP 186 vs 50-90 g/m2 observed, 4 Nov), SW cloud effect -110 vs -47. Next (offline, hour 0, T42 grid, no
+  forecast): radiation on the ERA5 start state with (a) as is, (b) convective/anvil cloud off, (c) cloud water x0.5, vs reference -103
+  and CERES SW CRE -47 -> which cloud part makes the excess.
