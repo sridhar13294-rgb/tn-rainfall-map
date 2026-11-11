@@ -1490,3 +1490,9 @@ Next: per-layer RH distribution h0 vs h24 vs ERA5 q levels (which layers saturat
   cloud excess grows (+44 / +49 %) because the low-level humidity error is unchanged - as predicted at 19:30.
 - Next (launched tn-prof-pkgall, acct 4): first-hours process budget of the full candidate (q and T by process per level, globe/tropics)
   to find what keeps adding / failing to remove water below 850 hPa (BL, convection, condensation, rain evaporation, dynamics).
+- 20:40 IST shallow-trigger check (sh_trig.py, T42 grid, 20-min step, IFS package, state after 24 h, tropical ocean): CORRECTION to the
+  "shallow fires in ~1 % of columns" (that was the hour-0 snapshot): after spin-up deep 56 %, shallow 19 %, none 25 %; by TPW: <30 mm
+  shallow 38 % / deep 14 %, 45-55 mm deep 90 %, >55 mm deep 98 %. Convection removes 2.2 mm/day of water below 850 hPa against 4.9 mm/day
+  evaporation (deep columns -3.1 of 4.8, shallow columns -2.7 of 5.3); deep cloud-base mass flux median 0.005 kg m-2 s-1 (31 % zero),
+  PCAPE median 57 Pa of which PCAPE_bl 37. The remaining ~2.6 mm/day must leave by large-scale export/subsidence and BL-top entrainment
+  -> the T170 process budget (tn-prof-pkgall) decides between weak deep closure, missing BL-top entrainment, and dynamics.
