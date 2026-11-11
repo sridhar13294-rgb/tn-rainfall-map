@@ -1433,3 +1433,18 @@ scheme (IFS Cy50r1 Part IV chapters 3 + 6 together).
   steep: a calibration/structure defect of the diagnostic cloud scheme that AMPLIFIES a modest moistening into a large cloud and
   radiation error. The moistening itself is real but modest (+5..+10 %; base2 moves moisture from 925 to 700-500 hPa, +22..+34 %).
 - Launched at T170, 12 starts: tn-moist-b2 (acct 4), tn-moist-ifssh / tn-moist-ifspkg (acct 1).
+
+## 11 Nov 17:20 IST - cloud vs humidity curve against ERA5 (cloud_curve.py, T42, 6 starts across 2020, global)
+Total cover in bins of column-mean RH (1000-300 hPa): scheme / ERA5
+| RH bin | 0.2-0.3 | 0.3-0.4 | 0.4-0.5 | 0.5-0.6 | 0.6-0.7 | 0.7-0.8 | 0.8-0.9 |
+|---|---|---|---|---|---|---|---|
+| hour 0 (ERA5 state) | 0.11/0.36 | 0.20/0.46 | 0.26/0.56 | 0.35/0.68 | 0.46/0.81 | 0.62/0.92 | 0.78/0.99 |
+| hour 24 (model state) | 0.37/0.36 | 0.56/0.43 | 0.66/0.49 | 0.76/0.57 | 0.85/0.67 | 0.93/0.78 | 0.98/0.88 |
+Share of the globe with column RH >= 0.8: 4 % at hour 0, 18 % at hour 24. Global cover 0.34 -> 0.76 (ERA5 0.63 both).
+Reading - TWO defects, not one:
+(a) On real (ERA5) humidity the scheme gives about HALF of ERA5's cloud at every RH (critical RH 0.8 low / 0.7 aloft too high for
+    1.5-deg / T42 grid-mean humidity: grid-mean RH under-represents sub-grid saturated air).
+(b) At the SAME column-mean RH the model's cloud doubles within 24 h (0.35 -> 0.76 at RH 0.5-0.6): the model's humidity becomes
+    vertically layered - individual layers near saturation (and more columns at RH >= 0.8: 4 % -> 18 %). Lowering the critical RH to
+    fix (a) would make (b) worse, so a calibration alone cannot work; (b) is the model process (which layers saturate, and why).
+Next: per-layer RH distribution h0 vs h24 vs ERA5 q levels (which layers saturate), using the T170 tn-moist-* results when they arrive.
