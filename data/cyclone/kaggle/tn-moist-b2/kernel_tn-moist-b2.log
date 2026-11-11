@@ -1,0 +1,102 @@
+[{"stream_name":"stdout","time":0.782727107,"data":"+ nvidia-smi || true\n"}
+,{"stream_name":"stdout","time":0.819905181,"data":"Wed Nov 11 11:02:53 2026       \n"}
+,{"stream_name":"stdout","time":0.819929683,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":0.819934813,"data":"| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":0.819939376,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.819943329,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":0.819946985,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":0.819950834,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":0.819954518,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":0.876036472,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":0.876056862,"data":"| N/A   53C    P8             11W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":0.876062057,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":0.876066035,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.876069768,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":0.876073668,"data":"| N/A   48C    P8              9W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":0.87607753,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":0.876081523,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.876839825,"data":"\n"}
+,{"stream_name":"stdout","time":0.876856975,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":0.876875597,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":0.87688055,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":0.876884646,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":0.876888958,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":0.87903614,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":0.879051507,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.202232443,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1.209109573,"data":"accelerator asked NvidiaTeslaT4 -\u003e jax for cuda12\n"}
+,{"stream_name":"stdout","time":1.209130351,"data":"+ pip uninstall -y -q jax-cuda13-plugin jax-cuda13-pjrt 2\u003e/dev/null; pip install -q \"jax[cuda12]==0.12.0.1\"\n"}
+,{"stream_name":"stderr","time":36.70211611,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":36.702151147,"data":"bigframes 2.51.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":36.70215751,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stderr","time":36.702162658,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":36.702173722,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":36.702178145,"data":"ydf 0.15.0 requires protobuf\u003c7.0.0,\u003e=5.29.1, but you have protobuf 7.36.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":36.702181448,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stderr","time":36.702184624,"data":"gradio 6.30.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
+,{"stream_name":"stdout","time":36.956859327,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":52.52674911,"data":"[CudaDevice(id=0), CudaDevice(id=1)] 0.12.0.1\n"}
+,{"stream_name":"stdout","time":52.526797553,"data":" \n"}
+,{"stream_name":"stdout","time":52.526804036,"data":"+ free -g; nproc\n"}
+,{"stream_name":"stdout","time":52.544553277,"data":"               total        used        free      shared  buff/cache   available\n"}
+,{"stream_name":"stdout","time":52.544574025,"data":"Mem:              31           1          21           0           9          30\n"}
+,{"stream_name":"stdout","time":52.544577831,"data":"Swap:              0           0           0\n"}
+,{"stream_name":"stdout","time":52.548223431,"data":"4\n"}
+,{"stream_name":"stdout","time":52.548565281,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":52.548581814,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
+,{"stream_name":"stdout","time":61.271896641,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":61.271950044,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
+,{"stream_name":"stdout","time":84.049476891,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":84.049521907,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o libm_wx2020_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020_fields.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" libm_wx2020_fields.npz || { echo BAD_DOWNLOAD libm_wx2020_fields.npz; rm -f libm_wx2020_fields.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o libm_wx2020_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020_fields.npz; }\n"}
+,{"stream_name":"stdout","time":87.255357518,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":87.255390161,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o wx_truth_moist_2020.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/wx_truth_moist_2020.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" wx_truth_moist_2020.npz || { echo BAD_DOWNLOAD wx_truth_moist_2020.npz; rm -f wx_truth_moist_2020.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o wx_truth_moist_2020.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/wx_truth_moist_2020.npz; }\n"}
+,{"stream_name":"stdout","time":88.587092771,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":88.58712211,"data":"setup s 88\n"}
+,{"stream_name":"stdout","time":88.587129063,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 CANDS='{\"base2\":{}}' DT=20 XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore moist_vs_era5.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_moist_2020.npz T170 1,7,13,19,25,31,37,43,49,55,61,67 /kaggle/working/me_b2.json \u003e /kaggle/working/me_b2.log 2\u003e\u00261; grep -v WARNING /kaggle/working/me_b2.log | tail -40 2\u003e\u00261 | tee job.log\n"}
+,{"stream_name":"stdout","time":1727.053516402,"data":"base2 2020-01-06T00 h0 tcwv_globe 24.06/23.89 tcc_globe 0.3403/0.6272 q925_globe 0.008249/0.008301 q850_globe 0.006046/0.006009 q700_globe 0.003189/0.00314 q500_globe 0.001132/0.001116\n"}
+,{"stream_name":"stdout","time":1727.053558219,"data":"base2 2020-01-06T00 h24 tcwv_globe 24.66/23.97 tcc_globe 0.7656/0.6288 q925_globe 0.007265/0.008297 q850_globe 0.005777/0.006105 q700_globe 0.003858/0.003151 q500_globe 0.001503/0.001119\n"}
+,{"stream_name":"stdout","time":1727.053565954,"data":"base2 2020-01-06T00 h48 tcwv_globe 24.76/24.09 tcc_globe 0.8245/0.639 q925_globe 0.007134/0.008286 q850_globe 0.00595/0.006156 q700_globe 0.003988/0.003189 q500_globe 0.001468/0.001133\n"}
+,{"stream_name":"stdout","time":1727.053571642,"data":"base2 2020-02-05T00 h0 tcwv_globe 24.13/23.99 tcc_globe 0.349/0.6354 q925_globe 0.008196/0.008235 q850_globe 0.006055/0.006023 q700_globe 0.003196/0.003147 q500_globe 0.001153/0.001138\n"}
+,{"stream_name":"stdout","time":1727.053577254,"data":"base2 2020-02-05T00 h24 tcwv_globe 24.7/24.13 tcc_globe 0.7857/0.6411 q925_globe 0.007222/0.008296 q850_globe 0.005877/0.006118 q700_globe 0.003897/0.003162 q500_globe 0.001472/0.001145\n"}
+,{"stream_name":"stdout","time":1727.053582684,"data":"base2 2020-02-05T00 h48 tcwv_globe 24.78/24.25 tcc_globe 0.8187/0.6247 q925_globe 0.007128/0.008314 q850_globe 0.006008/0.006179 q700_globe 0.003991/0.003195 q500_globe 0.001468/0.001147\n"}
+,{"stream_name":"stdout","time":1727.053588244,"data":"base2 2020-03-06T00 h0 tcwv_globe 24.25/24.1 tcc_globe 0.3334/0.6267 q925_globe 0.008359/0.008407 q850_globe 0.006105/0.006066 q700_globe 0.003189/0.003137 q500_globe 0.001123/0.001105\n"}
+,{"stream_name":"stdout","time":1727.053593775,"data":"base2 2020-03-06T00 h24 tcwv_globe 24.75/23.99 tcc_globe 0.7542/0.6361 q925_globe 0.0073/0.008322 q850_globe 0.00579/0.006021 q700_globe 0.003831/0.003119 q500_globe 0.001547/0.001117\n"}
+,{"stream_name":"stdout","time":1727.053599024,"data":"base2 2020-03-06T00 h48 tcwv_globe 24.82/23.94 tcc_globe 0.8106/0.649 q925_globe 0.007089/0.008327 q850_globe 0.005908/0.006059 q700_globe 0.003975/0.003067 q500_globe 0.00153/0.001138\n"}
+,{"stream_name":"stdout","time":1727.053604871,"data":"base2 2020-04-05T00 h0 tcwv_globe 24.58/24.44 tcc_globe 0.3228/0.6138 q925_globe 0.008297/0.008326 q850_globe 0.006205/0.006175 q700_globe 0.003319/0.003269 q500_globe 0.00116/0.001136\n"}
+,{"stream_name":"stdout","time":1727.053610776,"data":"base2 2020-04-05T00 h24 tcwv_globe 25.35/24.57 tcc_globe 0.7616/0.6066 q925_globe 0.007321/0.008368 q850_globe 0.005997/0.006202 q700_globe 0.00403/0.003311 q500_globe 0.001574/0.001144\n"}
+,{"stream_name":"stdout","time":1727.05361805,"data":"base2 2020-04-05T00 h48 tcwv_globe 25.43/24.53 tcc_globe 0.8142/0.6243 q925_globe 0.007209/0.008349 q850_globe 0.006032/0.006218 q700_globe 0.004135/0.00333 q500_globe 0.001593/0.001143\n"}
+,{"stream_name":"stdout","time":1727.053674463,"data":"base2 2020-05-05T00 h0 tcwv_globe 25.01/24.83 tcc_globe 0.3305/0.6316 q925_globe 0.008403/0.00843 q850_globe 0.006317/0.006292 q700_globe 0.003369/0.003315 q500_globe 0.00119/0.001169\n"}
+,{"stream_name":"stdout","time":1727.053682474,"data":"base2 2020-05-05T00 h24 tcwv_globe 25.65/24.75 tcc_globe 0.7585/0.6245 q925_globe 0.00743/0.008407 q850_globe 0.006067/0.00629 q700_globe 0.004109/0.003287 q500_globe 0.00156/0.001163\n"}
+,{"stream_name":"stdout","time":1727.053686759,"data":"base2 2020-05-05T00 h48 tcwv_globe 25.81/24.8 tcc_globe 0.8094/0.6256 q925_globe 0.007367/0.008403 q850_globe 0.006143/0.006278 q700_globe 0.004184/0.003291 q500_globe 0.00158/0.001192\n"}
+,{"stream_name":"stdout","time":1727.053690722,"data":"base2 2020-06-04T00 h0 tcwv_globe 25.97/25.81 tcc_globe 0.3455/0.6399 q925_globe 0.008705/0.008739 q850_globe 0.006584/0.006552 q700_globe 0.003532/0.003482 q500_globe 0.00127/0.001254\n"}
+,{"stream_name":"stdout","time":1727.053694784,"data":"base2 2020-06-04T00 h24 tcwv_globe 26.67/25.68 tcc_globe 0.7879/0.6303 q925_globe 0.007911/0.00875 q850_globe 0.006461/0.006593 q700_globe 0.004169/0.003423 q500_globe 0.001597/0.001229\n"}
+,{"stream_name":"stdout","time":1727.053698668,"data":"base2 2020-06-04T00 h48 tcwv_globe 26.73/25.63 tcc_globe 0.8119/0.6284 q925_globe 0.007774/0.008742 q850_globe 0.006499/0.006569 q700_globe 0.004249/0.003426 q500_globe 0.001613/0.001206\n"}
+,{"stream_name":"stdout","time":1727.053702421,"data":"base2 2020-07-04T00 h0 tcwv_globe 26.6/26.38 tcc_globe 0.3469/0.6174 q925_globe 0.008847/0.008877 q850_globe 0.006783/0.006762 q700_globe 0.003579/0.003512 q500_globe 0.00131/0.001288\n"}
+,{"stream_name":"stdout","time":1727.053708119,"data":"base2 2020-07-04T00 h24 tcwv_globe 27.25/26.37 tcc_globe 0.7852/0.6205 q925_globe 0.008071/0.008925 q850_globe 0.006612/0.006741 q700_globe 0.004239/0.003497 q500_globe 0.001637/0.001276\n"}
+,{"stream_name":"stdout","time":1727.053716281,"data":"base2 2020-07-04T00 h48 tcwv_globe 27.38/26.52 tcc_globe 0.8102/0.6223 q925_globe 0.00793/0.00899 q850_globe 0.006606/0.006776 q700_globe 0.004392/0.003532 q500_globe 0.001668/0.001292\n"}
+,{"stream_name":"stdout","time":1727.053718916,"data":"base2 2020-08-03T00 h0 tcwv_globe 26.91/26.73 tcc_globe 0.3452/0.6126 q925_globe 0.00896/0.008988 q850_globe 0.00687/0.006845 q700_globe 0.003644/0.003584 q500_globe 0.001327/0.001309\n"}
+,{"stream_name":"stdout","time":1727.053722014,"data":"base2 2020-08-03T00 h24 tcwv_globe 27.61/26.81 tcc_globe 0.7823/0.6253 q925_globe 0.008269/0.00902 q850_globe 0.006732/0.006826 q700_globe 0.00426/0.00359 q500_globe 0.001657/0.001318\n"}
+,{"stream_name":"stdout","time":1727.053724635,"data":"base2 2020-08-03T00 h48 tcwv_globe 27.74/26.82 tcc_globe 0.8036/0.6083 q925_globe 0.008079/0.009028 q850_globe 0.006782/0.006866 q700_globe 0.004402/0.003581 q500_globe 0.001686/0.001314\n"}
+,{"stream_name":"stdout","time":1727.053727212,"data":"base2 2020-09-02T00 h0 tcwv_globe 26.23/26.04 tcc_globe 0.3498/0.6306 q925_globe 0.008838/0.008871 q850_globe 0.00668/0.00665 q700_globe 0.00351/0.003449 q500_globe 0.001274/0.001255\n"}
+,{"stream_name":"stdout","time":1727.053729802,"data":"base2 2020-09-02T00 h24 tcwv_globe 26.83/25.92 tcc_globe 0.7848/0.615 q925_globe 0.007961/0.008823 q850_globe 0.006509/0.006624 q700_globe 0.00419/0.003443 q500_globe 0.001597/0.001219\n"}
+,{"stream_name":"stdout","time":1727.053732516,"data":"base2 2020-09-02T00 h48 tcwv_globe 26.94/25.89 tcc_globe 0.8117/0.608 q925_globe 0.007833/0.008754 q850_globe 0.006564/0.006647 q700_globe 0.004288/0.00347 q500_globe 0.001625/0.001212\n"}
+,{"stream_name":"stdout","time":1727.05373509,"data":"base2 2020-10-02T00 h0 tcwv_globe 25.04/24.87 tcc_globe 0.3401/0.6001 q925_globe 0.008442/0.00848 q850_globe 0.006305/0.006276 q700_globe 0.003397/0.003349 q500_globe 0.001194/0.001172\n"}
+,{"stream_name":"stdout","time":1727.053741902,"data":"base2 2020-10-02T00 h24 tcwv_globe 25.78/24.94 tcc_globe 0.7714/0.6155 q925_globe 0.007541/0.008466 q850_globe 0.006177/0.006291 q700_globe 0.004108/0.003382 q500_globe 0.001546/0.001163\n"}
+,{"stream_name":"stdout","time":1727.053762479,"data":"base2 2020-10-02T00 h48 tcwv_globe 25.8/24.96 tcc_globe 0.8135/0.6103 q925_globe 0.007399/0.00845 q850_globe 0.006202/0.006274 q700_globe 0.004188/0.003411 q500_globe 0.001568/0.00116\n"}
+,{"stream_name":"stdout","time":1727.053767032,"data":"base2 2020-11-01T00 h0 tcwv_globe 24.07/23.87 tcc_globe 0.3362/0.6205 q925_globe 0.008122/0.008161 q850_globe 0.00602/0.005988 q700_globe 0.003208/0.003154 q500_globe 0.001173/0.001154\n"}
+,{"stream_name":"stdout","time":1727.053771555,"data":"base2 2020-11-01T00 h24 tcwv_globe 24.69/23.8 tcc_globe 0.783/0.6475 q925_globe 0.007272/0.008125 q850_globe 0.005871/0.005958 q700_globe 0.003853/0.003154 q500_globe 0.001483/0.001146\n"}
+,{"stream_name":"stdout","time":1727.053776069,"data":"base2 2020-11-01T00 h48 tcwv_globe 24.77/23.76 tcc_globe 0.8214/0.6391 q925_globe 0.007129/0.008111 q850_globe 0.005905/0.005938 q700_globe 0.004011/0.003166 q500_globe 0.001472/0.00114\n"}
+,{"stream_name":"stdout","time":1727.05378085,"data":"base2 2020-12-01T00 h0 tcwv_globe 23.63/23.47 tcc_globe 0.3321/0.6277 q925_globe 0.008052/0.00809 q850_globe 0.005997/0.005966 q700_globe 0.00312/0.003064 q500_globe 0.001127/0.001112\n"}
+,{"stream_name":"stdout","time":1727.053784929,"data":"base2 2020-12-01T00 h24 tcwv_globe 24.04/23.45 tcc_globe 0.7775/0.6302 q925_globe 0.00702/0.008047 q850_globe 0.005673/0.00596 q700_globe 0.003824/0.003069 q500_globe 0.001446/0.001106\n"}
+,{"stream_name":"stdout","time":1727.053788993,"data":"base2 2020-12-01T00 h48 tcwv_globe 24.08/23.46 tcc_globe 0.8177/0.616 q925_globe 0.006945/0.008069 q850_globe 0.005707/0.005923 q700_globe 0.003889/0.003072 q500_globe 0.001452/0.001118\n"}
+,{"stream_name":"stdout","time":1727.054131582,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1727.054150674,"data":"+ rm -rf repo libm_wx2020_fields.npz wx_truth_moist_2020.npz\n"}
+,{"stream_name":"stdout","time":1727.343912321,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1727.343944968,"data":"total s 1727\n"}
+,{"stream_name":"stderr","time":1729.564227605,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":1729.564253792,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":1729.840907099,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":1729.840951741,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":1730.690123805,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":1731.759038129,"data":"[NbConvertApp] Writing 284616 bytes to __results__.html\n"}
+]
