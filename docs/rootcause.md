@@ -1330,3 +1330,27 @@ Reading (against the 11:50 hypothesis):
   (Slingo) and cloud water (LWP 186 vs 50-90 g/m2 observed, 4 Nov), SW cloud effect -110 vs -47. Next (offline, hour 0, T42 grid, no
   forecast): radiation on the ERA5 start state with (a) as is, (b) convective/anvil cloud off, (c) cloud water x0.5, vs reference -103
   and CERES SW CRE -47 -> which cloud part makes the excess.
+
+## 11 Nov 17:30 IST - radiation by cloud part (rad_parts.py, offline radiation on the model state, T42 grid, 20-min step, 2 starts)
+| state | case | atm rad W/m2 | SW abs atm | SW net sfc | SW CRE | OLR | cover | LWP g/m2 |
+|---|---|---|---|---|---|---|---|---|
+| h0 | as is | -121.9 | 69.2 | 174.1 | -61.7 | 252.9 | 0.34 | 122 |
+| h0 | no conv/anvil cloud | -124.6 | 69.3 | 191.6 | -44.0 | 257.2 | 0.30 | 65 |
+| h0 | cloud water x0.5 | -122.1 | 68.6 | 185.6 | -50.7 | 253.6 | 0.34 | 61 |
+| h0 | clouds off (clear sky) | -118.1 | 67.9 | 237.1 | 0 | 263.8 | - | 0 |
+| h24 | as is | -122.8 | 68.5 | 126.2 | -110.4 | 222.2 | 0.77 | 217 |
+| h24 | cloud water x0.5 | -125.6 | 67.8 | 150.0 | -87.3 | 226.1 | 0.77 | 109 |
+| h24 | clouds off | -119.6 | 68.0 | 237.1 | 0 | 256.6 | - | 0 |
+References (CERES-EBAF / Wild 2013, approximate): all-sky atm -103..-105; clear-sky atm ~-113 (TOA clear SW abs ~287 - OLR_clr 266 -
+sfc clear SW net ~214 + sfc clear LW net ~-80); SW CRE -47; OLR 239 / clear 266; atmospheric CRE ~+5..+10 (clouds REDUCE the
+atmosphere's cooling).
+Reading:
+- Clear sky: -118 vs ~-113 (-5): small. Gas optics already verified against RRTMG.
+- Clouds change the ATMOSPHERE's cooling by -3..-4 W/m2 (more cooling) where the real atmosphere gets ~+5..+10 (less cooling):
+  a -10..-14 W/m2 error present at hour 0. SW absorbed in the atmosphere hardly changes with clouds (+1.3 W/m2; real clouds add a few
+  W/m2 of near-IR absorption) -> suspect: cloud SW absorption (droplet near-IR single-scattering co-albedo) and cloud LW at cloud base.
+- TOA/surface sunlight: at h0 SW CRE -62 (close to -47; conv/anvil cloud adds -18 and doubles LWP), at h24 -110 as cover/LWP grow with
+  the moistening (cover 0.34 -> 0.77, LWP 122 -> 217). This is where the surface loses 35-50 W/m2 of sunlight.
+=> Two separate errors: (1) cloud-radiation coupling to the atmosphere wrong sign at h0 (~-10..-14 W/m2), (2) cloud growth from the
+moistening drift (SW at the surface, ~-50 W/m2 by day 1). Next decisive check: RRTMG ALL-SKY with the SAME cloud fractions and water
+(tn-radchk machinery) -> are our cloud optics right? Then the moistening drift's process (still open after shallow/evap screens).
