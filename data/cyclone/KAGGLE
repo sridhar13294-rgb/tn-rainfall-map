@@ -1,6 +1,6 @@
-tn-prof-b2jet
+tn-p5-dyn-pkg
 libm_wx2020_fields.npz,wx_truth_2020.npz
-NLEV=32 XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore init_tend.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz T170 12 /kaggle/working/it_b2_jet.npz > /kaggle/working/it_b2_jet.log 2>&1; grep -v WARNING /kaggle/working/it_b2_jet.log | tail -45
+VARS="u200,v200,z500,u850,rain24" WIN="-90,90,0,360" NDAY=10 PERSTART=1 GR=T170 ONLY="ifs package" STRIDE=1 OUT=/kaggle/working/p5_dyn_pkg.json XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore p5_geo.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 12 > /kaggle/working/p5_dyn_pkg.log 2>&1; tail -4 /kaggle/working/p5_dyn_pkg.log
 NvidiaTeslaT4
-4
-#first-hours budget incl. 200 hPa (Asian jet), base2 2026-11-11T17:33Z
+1
+#global winds/jets/trades/Rossby/rain check, IFS package 2026-11-11T17:34Z
