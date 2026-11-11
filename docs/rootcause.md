@@ -1271,3 +1271,27 @@ Large-scale (RH) cloud of radcloud on the model state, global means:
   Working hypothesis (to confirm at T170, 12 starts): deep convection removes too little boundary-layer moisture; base2 hides it by
   pumping the excess into the free troposphere (mid-level moistening -> cloud -> cooling), ifs_sh leaves it in the BL (low deck, P1).
   Queued tn-prof-ifssh (acct 1) for the ifs_sh moisture budget with the same profiles.
+
+## 11 Nov 13:10 IST - T170 first-hours process profiles, 12 starts each (tn-prof-32imp, tn-prof-75imp, tn-prof-ifssh), tropics 30S-30N, 6-24 h
+Moisture budget (g/kg/day; DYN = total - physics):
+| layer | run | total | BL+sfc | deep | shallow | condensation | rain evap | DYN |
+|---|---|---|---|---|---|---|---|---|
+| below 850 | base2 32L | -0.75 | +3.44 | -0.45 | -3.92 | -0.12 | +1.28 | -0.98 |
+| below 850 | ifs_sh 32L | +0.45 | +3.46 | -1.81 | -0.35 | -0.23 | +0.42 | -1.04 |
+| 500-700 | base2 32L | +0.47 | 0 | -0.27 | +2.20 | -1.76 | +0.16 | +0.13 |
+| 500-700 | ifs_sh 32L | +0.15 | 0 | -0.41 | 0.00 | -0.03 | +0.40 | +0.20 |
+Column heating (K/day): base2 deep +0.45, grid-scale condensation +1.57, rain evap -0.95, radiation -1.32;
+ifs_sh deep +1.30, condensation +0.31, rain evap -0.64, radiation -1.32.
+Reading (against the 11:50 hypothesis):
+- base2: CONFIRMED in a sharper form. The 'mse' shallow scheme carries boundary-layer vapour to 500-700 hPa (+2.20) where grid-scale
+  condensation rains it out (-1.76; heating +4.39 against shallow cooling -4.61 K/day). Deep convection makes only ~30 % of tropical
+  latent heating (0.45 of ~1.6). Net +0.47 g/kg/day moistening at 500-700 -> mid-level cloud -> cooling. Not a real atmospheric cycle.
+- ifs_sh: deep convection takes over (+1.30, ~80 % of latent heating, realistic) and mid levels moisten little (+0.15), BUT the layer
+  below 850 GAINS +0.45 g/kg/day: the IFS-type shallow scheme vents only -0.35 (base2 -3.92). Surface supply +3.46 is not removed
+  -> RH 0.73 -> 0.89 -> low deck (P1) -> cloud-top cooling. In IFS the shallow scheme is the main vent of the trade-wind sub-cloud
+  layer (closure eq. 6.35: mass flux = sub-cloud MSE gain / (h_up - h_mean)). Next WHY: why our ifs_sh shallow mass flux is so small
+  (closure, trigger area, or detrainment) - offline check of the cloud-base mass flux against eq. 6.35 with the surface fluxes.
+- 75L vs 32L (base2+imp): tropical column cooling -0.514 vs -0.492 K/day (as registered: ~0.1 K/day order, small). Below 500 hPa
+  75L is ~0.1 K/day colder; largest process changes: DYN below 850 -1.72 vs -1.16 K/day, rain evaporation 700-850 -2.10 vs -1.80,
+  deep 300-500 +0.87 vs +0.54. Lead: near-surface vertical transport/coupling with thin layers (DYN), not one physics scheme. Next:
+  split DYN below 850 (vertical advection of the +7 K/day shallow heating profile through thin layers) - lower priority than ifs_sh.
