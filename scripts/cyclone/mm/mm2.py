@@ -111,7 +111,7 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='mf', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='radcloud', rad_every=2,
-                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, phys_ifs=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
+                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, phys_ifs=0.0, bl_entr=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
@@ -525,6 +525,16 @@ class Model:
         rii = G * (thv[:-1] - thv[1:]) / (thv[1:] * (zc[:-1] - zc[1:])) / jnp.maximum(dUdz ** 2, 1e-6)
         Kfree = 30.0 ** 2 * dUdz * jnp.where(rii > 0, 1.0 / (1 + 10 * rii) ** 2, jnp.sqrt(1 - 18 * jnp.minimum(rii, 0)))
         Kh = jnp.clip(jnp.maximum(Kbl, Kfree), 0.0, 500.0)
+        if self.S.get('bl_entr', 0) > 0:
+            # bl_entr (11 Nov, IFS Cy50r1 Part IV eq. 3.50): entrainment at the top of the convective boundary layer, w'thv'_top =
+            # -0.2 w'thv'_surface, as a diffusion coefficient on the first interface at/above the BL top: K_e = 0.2 B_s dz / dthv.
+            # Mixes free-tropospheric (dry, warm) air into the boundary layer; our K-profile goes to zero there and had no such flux.
+            Bs = jnp.maximum(H / (rho * CP) + 0.61 * th1 * E / rho, 0.0)                              # surface virtual heat flux, K m s-1
+            kt = jnp.argmax(zh >= hbl[None], axis=0)                                                    # first interface at/above the BL top
+            dzh = jnp.maximum(zc[:-1] - zc[1:], 1.0); dthv = jnp.maximum(thv[:-1] - thv[1:], 0.1)
+            Ke = 0.2 * Bs[None] * dzh / dthv
+            top = (jnp.arange(Kh.shape[0])[:, None, None] == kt[None]) & (Bs[None] > 0)
+            Kh = jnp.where(top, jnp.clip(jnp.maximum(Kh, Ke), 0.0, 500.0), Kh)
         rhoh = 0.5 * (p[:-1] / (RD * T[:-1]) + p[1:] / (RD * T[1:])); coef = rhoh * Kh / jnp.maximum(zc[:-1] - zc[1:], 1.0)   # kg m-2 s-1
         A = jnp.concatenate([jnp.zeros_like(coef[:1]), coef], 0); C_ = jnp.concatenate([coef, jnp.zeros_like(coef[:1])], 0)
         a = -dt * A / mass; c = -dt * C_ / mass; b = 1 - a - c
