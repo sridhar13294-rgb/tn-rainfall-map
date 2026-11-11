@@ -734,6 +734,7 @@ class Model:
                 ent_on = bool(self.S.get('ent_top', 0))                                              # D2 needs the cloud part of the LW heating
                 rprm = dict(dict(alb_land=S['alb_land']), **(self.S.get('rad_prm') or {}))
                 if self.S.get('cld_pdf', 0): rprm['pdf'] = 1.0                                       # D1: one sub-grid water PDF for cloud fraction and water
+                if self.S.get('rad_dbg', 0): self._rad_in = dict(T=Tn, q=qn, p=p, dp=dp, ps=ps, Ts=Ts, sea=sea, mu0=mu0, cm=cm, Psrc=Pconv_src, cond=cond, s0=1361.0 * ecc, prm=rprm)   # diagnostics only (eager calls)
                 Rr = radcloud.radiation(Tn, qn, p, dp, ps, Ts, sea, mu0, conv_mask=cm, conv_rain=Pconv_src.sum(0), conv_src=Pconv_src,
                                         ls_cond=cond, xp=jnp, s0=1361.0 * ecc, prm=rprm, clear_sky=ent_on)
                 o = {k: Rr[k] for k in RADKEYS}

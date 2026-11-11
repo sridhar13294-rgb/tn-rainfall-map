@@ -1354,3 +1354,25 @@ Reading:
 => Two separate errors: (1) cloud-radiation coupling to the atmosphere wrong sign at h0 (~-10..-14 W/m2), (2) cloud growth from the
 moistening drift (SW at the surface, ~-50 W/m2 by day 1). Next decisive check: RRTMG ALL-SKY with the SAME cloud fractions and water
 (tn-radchk machinery) -> are our cloud optics right? Then the moistening drift's process (still open after shallow/evap screens).
+
+## 11 Nov 19:00 IST - ALL-SKY radiation vs RRTMG with the SAME clouds (rad_allsky.py, local climlab-rrtmg build, T42 grid, 1664 columns)
+CORRECTION 1: the 5 Nov clear-sky RRTMG check (rad_check.py) built columns with climlab.column_state(lev=points), which forces the bottom
+bound to 1000 hPa -> NEGATIVE lowest-layer thickness wherever ps > 1000 hPa (RRTMG SW segfaults with cloud there). rad_allsky passes the
+model's real interfaces. The 5 Nov "clear sky = RRTMG" statement is therefore withdrawn for the lowest layer / atmospheric totals.
+CORRECTION 2: the 17:30 reading "clouds change the atmosphere's cooling with the WRONG SIGN" is withdrawn: RRTMG with the same clouds
+gives the same sign (atmospheric CRE -5.9 vs MEGAM -6.9 at h0); the +5..+10 reference reflects real cloud amounts/structure, not optics.
+Results, W/m2 (MEGAM / RRTMG / diff):
+| state | atm all-sky | atm clear | atm CRE | SW abs atm | TOA SW CRE | TOA LW CRE | OLR |
+|---|---|---|---|---|---|---|---|
+| 2020-07-19 h0 | -131.6/-121.0/-10.6 | -124.7/-115.1/-9.6 | -6.9/-5.9 | 67.6/74.7 | -65.0/-56.1 | 12.3/12.7 | 255.3/253.8 |
+| 2020-01-06 h0 | -121.3/-111.1/-10.2 | -115.6/-106.2/-9.4 | -5.7/-4.9 | 68.7/75.3 | -66.8/-57.9 | 11.7/12.0 | 248.1/247.1 |
+| 2020-07-19 h24 | -125.1/-111.8/-13.3 | -126.0/-113.8/-12.2 | +0.9/+2.0 | 66.4/75.1 | -123.3/-114.8 | 40.9/41.8 | 218.3/217.0 |
+| h0 + lw_cnt 0.667 | -125.6/-121.0/-4.6 | -115.4/-115.1/-0.3 | -10.2/-5.9 | 67.6/74.7 | -65.0/-56.1 | 13.1/12.7 | 256.5/253.8 |
+Reading:
+- MEGAM cools the atmosphere 10-13 W/m2 more than RRTMG on the same state and clouds, almost all CLEAR SKY. With the water-vapour
+  continuum at x1.0 (lw_cnt 0.667, the 4 Nov correctness item) clear sky matches RRTMG to -0.3 W/m2. Remaining: SW absorbed in the
+  atmosphere -7 (about half gases, half missing cloud absorption) and TOA SW cloud effect ~9 W/m2 (15 %) too bright.
+- Cloud OPTICS are close to RRTMG (TOA LW CRE within 1 W/m2, SW within 15 %). The huge day-1 SW cloud effect (-115..-123 vs CERES -47) is
+  the cloud AMOUNT (cover 0.41 -> 0.80 in 24 h) - RRTMG gives the same with those clouds. So: radiation code ~-10 (continuum, known fix)
+  + ~-5..-7 (SW absorption); the dominant error is the moistening -> cloud amount growth, whose process is still not found
+  (shallow transport, evaporation ruled out today).

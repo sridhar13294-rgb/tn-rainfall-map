@@ -1,14 +1,14 @@
 """Which cloud part makes the radiation excess? (11 Nov) Radiation recomputed offline on the model state at hour 0 (ERA5 start after
 DFI) and hour 24, global means: (a) as is, (b) no convective/anvil cloud, (c) cloud water x0.5, (d) clear sky.
 References: atmospheric radiative heating ~-103 W/m2 (Wild 2013), SW CRE ~-47, LW CRE ~+26, OLR ~239, cover ~0.67 (CERES).
-NOTE: needs the temporary hook self._rad_in in mm2.column's fresh() (not committed). python rad_parts.py LIB GRID STARTS"""
+NOTE: set rad_dbg=1 (mm2 stores the radiation inputs on eager column() calls). python rad_parts.py LIB GRID STARTS"""
 import sys, os, datetime as dt, numpy as np, jax.numpy as jnp
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE); sys.path.insert(0, os.path.join(HERE, '..', 'analysis'))
 import mm2, landinit, radcloud as R
 from dinosaur import primitive_equations
 Z = dict(np.load(sys.argv[1])); TT=[str(t) for t in Z['times']]; V3=[str(v) for v in Z['v3']]; V2=[str(v) for v in Z['v2']]
 GR = sys.argv[2]; KS = [int(x) for x in sys.argv[3].split(',')]
-setx = {'rad':'radcloud','rad_every':1,'cmt_mf':1.0,'rd_si':1.0}; setx.update(__import__('json').loads(os.environ.get('EXTRA', '{}')))
+setx = {'rad':'radcloud','rad_every':1,'cmt_mf':1.0,'rd_si':1.0,'rad_dbg':1}; setx.update(__import__('json').loads(os.environ.get('EXTRA', '{}')))
 M = mm2.Model(GR, 32, float(os.environ.get('DT', 20)), setx); W = np.cos(np.radians(np.asarray(M.LA)))
 gm = lambda X: float((np.asarray(X) * W).sum() / W.sum())
 acc = {}
