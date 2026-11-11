@@ -1,0 +1,16 @@
+WARNING landinit: no soil water, soil temperature, skin temperature in the start file -> land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)
+pkg+bl_lcl_75 2020-01-06T00 h0 tcwv_globe 24.06/23.89 tcc_globe 0.6502/0.6272 q925_globe 0.008264/0.008301 q850_globe 0.006049/0.006009 q700_globe 0.003163/0.00314 q500_globe 0.001123/0.001116
+pkg+bl_lcl_75 2020-01-06T00 h24 tcwv_globe 24.6/23.97 tcc_globe 0.9477/0.6288 q925_globe 0.008563/0.008301 q850_globe 0.006129/0.006106 q700_globe 0.003167/0.003151 q500_globe 0.001147/0.001119
+Traceback (most recent call last):
+  File "/kaggle/working/repo/scripts/cyclone/mm/moist_vs_era5.py", line 29, in <module>
+    I = {k_: (np.asarray(v_, np.float64) if not isinstance(v_, dict) else v_) for k_, v_ in M._rad_in.items()}
+              ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/array.py", line 448, in __array__
+    return np.asarray(self._value, dtype=dtype, **kwds)  # pyrefly: ignore[no-matching-overload]
+                      ^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/profiler.py", line 588, in wrapper
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.13/dist-packages/jax/_src/array.py", line 696, in _value
+    npy_value, did_copy = self._to_np_array_did_copy()
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+jax.errors.JaxRuntimeError: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 7.38GiB with allocator GPU_0_bfc on device 0. [tf-allocator-allocation-error=''] [executable_name='jit_add']
