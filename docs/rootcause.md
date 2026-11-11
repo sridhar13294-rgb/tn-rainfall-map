@@ -1575,3 +1575,14 @@ Tropics 30S-30N, 6-24 h, g/kg/day, layer below 850 hPa (convection = deep + shal
   configuration) slows the jet ~6-7 m/s in the first day, at T42 and T170 alike.
 - Running: physics-off at 75 levels, with non-monotone semi-Lagrangian dynamics (mm2 sets monotone_dynamics=True: a monotone limiter on
   the WIND interpolation clips extrema every step - IFS applies quasi-monotone limiters to tracers, not to winds), and with cubic vertical SL.
+- 02:40 IST jet variants (physics off, T42, 3 starts; day-1 jet error vs ERA5): linear vertical SL -7.2; non-monotone wind SL -7.2 (limiter
+  NOT the cause); cubic vertical SL -4.7; 75 levels (linear) -5.6; cubic + 75 levels -4.7; cubic + 3 departure iterations -4.7.
+  => about a third of the core's jet loss is vertical interpolation of the semi-Lagrangian scheme (linear smooths the sharp jet core;
+  IFS uses cubic); the remaining ~-4.7 m/s/day is untouched by levels, iterations, limiter, DFI, diffusion and physics.
+- Global wind check on the IFS package (tn-p5-dyn-pkg, T170, 12 starts): Asian subtropical jet speed -6.2 / -8.3 / -9.6 m/s (d1-d3) vs
+  base2 -6.2 / -8.7 / -10.3: the physics package does not change the jet weakening (consistent with a core cause); jet latitude slightly
+  better after day 4.
+- Hypothesis being tested: the PURE SIGMA coordinate (mm2 uses Dinosaur SigmaCoordinates). The Asian jet sits beside/above Tibet where
+  sigma surfaces at jet level slope by several km; the pressure-gradient force on sloping sigma levels is a difference of two large
+  terms and the SL vertical interpolation acts along sloping surfaces. IFS uses hybrid sigma-pressure levels (pure pressure aloft).
+  Test: is the weakening specific to Asia (Pacific/Atlantic jets weaken -2.4 / -2.0 at day 1 with physics on, 10 Nov)? Running.

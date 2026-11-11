@@ -9,7 +9,9 @@ TR = dict(np.load(sys.argv[2])); DI = {str(d): i for i, d in enumerate(TR['days'
 GR, KS = sys.argv[3], [int(x) for x in sys.argv[4].split(',')]
 B2 = {'rad': 'radcloud', 'rad_every': 2, 'cmt_mf': 1.0, 'rd_si': 1.0}
 VARS = json.loads(os.environ.get('VARIANTS', 'null')) or {'default': {}, 'no DFI': {'dfi_off': 1}, 'diffusion x4 weaker': {'diff_x': 4.0}}
-lat = np.linspace(-90, 90, 121); lon = np.arange(240) * 1.5; sec = (lon >= 60) & (lon <= 140); band = (lat >= 20) & (lat <= 50)
+lat = np.linspace(-90, 90, 121); lon = np.arange(240) * 1.5; band = (lat >= 20) & (lat <= 50)
+SECTORS = {'Asia 60-140E': (60, 140), 'Pacific 150-220E': (150, 220), 'Atlantic 280-340E': (280, 340)}
+SEC = os.environ.get('SECTOR', 'Asia 60-140E'); sec = (lon >= SECTORS[SEC][0]) & (lon <= SECTORS[SEC][1])
 def jet(u):                                                       # u [121, 240] -> (peak speed, latitude)
     prof = u[:, sec].mean(1); i = np.argmax(np.where(band, prof, -99)); return float(prof[i]), float(lat[i])
 res = {}
