@@ -1409,3 +1409,15 @@ scheme (IFS Cy50r1 Part IV chapters 3 + 6 together).
   drift stays. The one component common to ALL of them is the boundary-layer scheme (K-profile from a Ri height, explicit surface layer):
   daytime heat stays in the lowest layer (+52 K/day there, stable theta above; 11 Nov morning column check), moisture accumulates
   below 850 hPa. Next: the BL part of the package (task 45: IFS EDMF K-profile with zi from the plume, eq. 3.42-3.50).
+
+## 11 Nov 16:00 IST - stronger boundary-layer mixing (pbl_tm) does not change the drift; the drift is insensitive to every physics change
+- cloud_drift (T42, 20-min step, 2 starts, 48 h): ifs_sh + pbl_tm: cover 0.90 vs 0.87, RH >850 0.855 vs 0.858; IFS package + pbl_tm:
+  0.91 vs 0.87, RH >850 0.848 vs 0.842. Slightly MORE cloud, same low-level drift.
+- Physics-off check (sfc_start.py): lowest layer cools -0.9..-1.1 K/day over ocean and land with NO physics (as found 5 Nov in both cores);
+  base2 instead WARMS it +1.7..+2.6 K/day over ocean (shallow 'mse'); ifs_sh / package cool it ~-1 K/day.
+- Summary of today's screens: convection scheme (3 versions), shallow mass flux, evaporation, rain evaporation, downdraughts, deep off,
+  BL mixing strength -> none removes the 24-48 h rise of low/mid-level RH (+0.1) and cloud cover (0.27 -> 0.8-0.9).
+- Limitation of the method: the drift is measured against the hour-0 state (ERA5 on our 32 sigma levels via 13 pressure levels), not
+  against ERA5 at +24/48 h; the truth file has no humidity or cloud. Hour-0 RH/cloud on our levels may itself be biased (only 3 ERA5 levels
+  below 850 hPa). Next: add ERA5 humidity / cloud truth (q 925/850/700, total column water vapour, total and low cloud cover) at +1..+10 days
+  to the truth file (cyc_wx.py, WeatherBench2 ERA5) so the drift is measured against reality.
