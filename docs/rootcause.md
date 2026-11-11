@@ -1541,3 +1541,15 @@ Tropics 30S-30N, 6-24 h, g/kg/day, layer below 850 hPa (convection = deep + shal
   PCAPE_bl removing ~2/3 of PCAPE over tropical ocean.
 - Next (12 Nov): check the closure against IFS Part IV 6.22-6.34 term by term (PCAPE_bl units/sign and T* = 1, the sub-cloud layer
   definition, tau = H/w x alpha_x with alpha_x = 1 + 1.6 dx/125 km), and the sub-cloud flux profile; register predictions; T170 screen.
+
+## 11 Nov 23:55 IST - closure check (IFS Part IV 6.22-6.34) and a first screen
+- Code vs documentation: PCAPE (6.22), the closure (6.25), tau = H/w x alpha_x (6.26-6.27, alpha_x = 2.0 at T170), the unit base flux
+  (cancels), PCAPE_bl integral and tau_bl (6.33-6.34) match. One difference: IFS 6.33 uses dTv/dt|bl = diffusion + radiation + ADVECTION;
+  v1 passes diffusion + radiation only. New switch ifs_pbl = 0: the pre-40r1 IFS closure (PCAPE_bl = 0, Gregory et al. 2000).
+- Column snapshot (T42 grid, 20-min step, 24 h): with PCAPE_bl = 0 deep cloud-base mass flux median 0.005 -> 0.017 kg m-2 s-1 (zero in
+  31 % -> 2 %), convection removes 2.2 -> 7.3 mm/day below 850 hPa (instantaneous, after 24 h of weak venting).
+- BUT the forecast humidity barely moves (1 start, T42, 24 h): q925 +6.2 %, q850 +7.4 % (package +6.7 / +7.9 %). Stronger venting is
+  compensated elsewhere within hours. => the closure strength is NOT the controlling factor either; the low-level humidity excess is robust
+  to supply (evaporation), removal (convection strength), BL-top entrainment and the convection scheme. T170 confirmation queued
+  (tn-moist-pbl0). Next: check whether the excess is an equilibrium of the model's surface layer / lowest-level vertical structure
+  (where the model holds its moisture relative to ERA5 by level, near-surface RH, and the 925-hPa interpolation itself).
