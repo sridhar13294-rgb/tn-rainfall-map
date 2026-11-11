@@ -25,11 +25,15 @@ for nm, ex in CANDS.items():
             T = (aux.temperature_variation + M.ref_t[:, None, None]) / M.K; cl_ = hor.cos_lat
             u = aux.cos_lat_u[0] / cl_ / M.MPS; v = aux.cos_lat_u[1] / cl_ / M.MPS; q = st.tracers['specific_humidity']; ps = jnp.exp(hor.to_nodal(st.log_surface_pressure))[0] / M.PA
             crx = dict(cr, doy0=jnp.float32(M.doy0), utc0=jnp.float32(M.utc0)); M._carry = crx
-            M.column(*(jnp.asarray(x, jnp.float32) for x in (T, q, u, v, ps)), crx, want_diag=True, div=hor.to_nodal(st.divergence) * M.SEC)
-            I = {k_: (np.asarray(v_, np.float64) if not isinstance(v_, dict) else v_) for k_, v_ in M._rad_in.items()}
-            cl = R.clouds(I['T'], I['q'], I['p'], I['dp'], I['ps'], I['sea'].astype(bool), I['cm'].astype(bool), I['Psrc'].sum(0), I['Psrc'], I['cond'], np, I['prm'])
-            qn = np.asarray(q, float); pn = I['p']; psn = I['ps']; mass = I['dp'] / 9.80616
-            fld = {'tcwv': (qn * mass).sum(0), 'tcc': np.asarray(cl['cover'])}
+            if os.environ.get('NOCLOUD'):                                                         # 12 Nov: 75 levels at T170 run out of GPU memory in the eager column call -> humidity only
+                psn = np.asarray(ps, float); pn = np.asarray(M.sig, float)[:, None, None] * psn[None]; mass = np.asarray(M.dsig, float)[:, None, None] * psn[None] / 9.80616
+                qn = np.asarray(q, float); fld = {'tcwv': (qn * mass).sum(0)}
+            else:
+                M.column(*(jnp.asarray(x, jnp.float32) for x in (T, q, u, v, ps)), crx, want_diag=True, div=hor.to_nodal(st.divergence) * M.SEC)
+                I = {k_: (np.asarray(v_, np.float64) if not isinstance(v_, dict) else v_) for k_, v_ in M._rad_in.items()}
+                cl = R.clouds(I['T'], I['q'], I['p'], I['dp'], I['ps'], I['sea'].astype(bool), I['cm'].astype(bool), I['Psrc'].sum(0), I['Psrc'], I['cond'], np, I['prm'])
+                qn = np.asarray(q, float); pn = I['p']; psn = I['ps']; mass = I['dp'] / 9.80616
+                fld = {'tcwv': (qn * mass).sum(0), 'tcc': np.asarray(cl['cover'])}
             lp = np.log(pn)
             for P in (925, 850, 700, 500):
                 x = np.log(P * 100.0); i_ = np.clip((lp < x).sum(0), 1, pn.shape[0] - 1)
