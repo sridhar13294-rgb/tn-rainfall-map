@@ -1,6 +1,6 @@
-tn-prof-ifssh
-libm_wx2020_fields.npz,wx_truth_2020.npz
-EXTRA='{"shallow":"mf","sh_trig":1,"sh_dmax":20000,"sh_eps":0.0035,"sh_det":1,"sh_clos":1}' NLEV=32 XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore init_tend.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz T170 12 /kaggle/working/it_ifssh_prof.npz > /kaggle/working/it_ifssh_prof.log 2>&1; grep -v WARNING /kaggle/working/it_ifssh_prof.log | tail -45
+tn-moist-b2
+libm_wx2020_fields.npz,wx_truth_moist_2020.npz
+CANDS='{"base2":{}}' DT=20 XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore moist_vs_era5.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_moist_2020.npz T170 1,7,13,19,25,31,37,43,49,55,61,67 /kaggle/working/me_b2.json > /kaggle/working/me_b2.log 2>&1; grep -v WARNING /kaggle/working/me_b2.log | tail -40
 NvidiaTeslaT4
-1
-#first-hours process profiles ifs_sh 32L 2026-11-11T05:01Z
+4
+#humidity/cloud vs ERA5 T170 b2 2026-11-11T11:02Z
