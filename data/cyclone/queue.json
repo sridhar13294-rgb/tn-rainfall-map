@@ -1,1 +1,18 @@
-[]
+[
+ {
+  "slug": "tn-moist-entr",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_moist_2020.npz",
+  "note": "humidity/cloud vs ERA5 T170 pkgall+BL-top entrainment",
+  "cmd": "CANDS='{\"pkgall+entr\":{\"phys_ifs\":1,\"ck_z\":1.0,\"sfc_sal\":0.98,\"bl_entr\":1,\"rad_prm\":{\"lw_cnt\":0.667,\"qs_mix\":1}}}' DT=20 XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore moist_vs_era5.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_moist_2020.npz T170 1,7,13,19,25,31,37,43,49,55,61,67 /kaggle/working/me_entr.json > /kaggle/working/me_entr.log 2>&1; grep -v WARNING /kaggle/working/me_entr.log | tail -40",
+  "account": "1",
+  "at": "2026-11-11T15:47Z"
+ },
+ {
+  "slug": "tn-div-chk",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "note": "upper divergence / low-level convergence vs ERA5 T170",
+  "cmd": "CANDS='{\"base2\":{},\"pkgall\":{\"phys_ifs\":1,\"ck_z\":1.0,\"sfc_sal\":0.98,\"rad_prm\":{\"lw_cnt\":0.667,\"qs_mix\":1}}}' DT=20 XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore div_check.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz T170 1,7,13,19,25,31,37,43,49,55,61,67 > /kaggle/working/div.log 2>&1; grep -v 'WARNING\\| done' /kaggle/working/div.log | tail -40",
+  "account": "1",
+  "at": "2026-11-11T15:47Z"
+ }
+]
