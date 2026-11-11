@@ -1310,3 +1310,15 @@ Reading (against the 11:50 hypothesis):
   supply into the dry air above, so the layer below 850 moistens (+0.45 g/kg/day at T170) and the low deck forms.
 - Next: derive the IFS cloud-base closure and limiter exactly from Part IV (eq. 6.35-6.37 and the CFL treatment), register predictions,
   T42 code check, then T170 first-hours test at 32 L and the 75 L screen.
+
+## 11 Nov 16:00 IST - sh_ifs2 built (IFS cloud-base closure + linear sub-cloud fluxes + implicit transport) - no effect on the moistening
+- Code: off by default, regression bit-identical, shallow tendencies conserve water/energy (max column error 1e-4 kg/m2/day, 0.1 W/m2).
+- T42 grid, 20-min step, 24 h: cloud-base mass flux median 0.067 (p10-p90 0.023-0.116) kg/m2/s vs 0.052 capped before; sub-850 venting
+  by shallow -0.57 vs -0.66 mm/day (E = 5.9 mm/day). Cloud/RH drift (2 starts, 48 h): identical to ifs_sh within 0.005
+  (RH >850 0.857 vs 0.858, cover 0.871 vs 0.871). => The shallow mass-flux defects are real (kept, off) but they are NOT what moistens
+  the low levels: shallow acts in only ~25 % of tropical-ocean columns and its tops stay below 850 hPa.
+- Back to the supply side: ocean evaporation is +17..+20 % above COARE 3.5 on the same inputs (4 Nov, flux_check; energy audit LvE
+  107-117 vs ~84 W/m2). That fix (ck_z 1 + sfc_sal 0.98) was rejected ALONE on 5 Nov (z500 d5 +2 m, storms 4-6 hPa weaker) while it
+  halved the tropical rain bias and the TN easterly - interpreted then as compensation with the radiation cooling excess.
+  Today's chain explains the compensation: base2's shallow scheme pumps the excess moisture into mid levels -> cloud -> cooling.
+- Next screen (local, running): RH/cloud drift for ifs_sh + evaporation fix, and base2 + evaporation fix.
