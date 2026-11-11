@@ -22,7 +22,7 @@ EXTRA = json.loads(os.environ.get('EXTRA', '{}'))   # candidate settings on top 
 NLEV = os.environ.get('NLEV', '32'); NLEV = int(NLEV) if NLEV.isdigit() else NLEV   # 11 Nov: 'tp75' allowed
 M = mm2.Model(GR, NLEV, None, dict({'rad': 'radcloud', 'rad_every': 2, 'cmt_mf': 1, 'rd_si': 1}, **EXTRA))
 hor = M.coords.horizontal; sig = np.asarray(M.sig, float); sigb = np.asarray(M.sigb, float)
-K85, K50 = int(np.argmin(np.abs(sig - 0.85))), int(np.argmin(np.abs(sig - 0.5)))
+K85, K50 = int(np.argmin(np.abs(sig - 0.85))), int(np.argmin(np.abs(sig - 0.5))); K20 = int(np.argmin(np.abs(sig - 0.2)))   # 11 Nov: + 200 hPa (jet)
 LA, LO = np.asarray(M.LA, float), np.asarray(M.LO, float); lat_r = np.radians(np.asarray(M.lat, float)); lon_r = np.radians(np.asarray(M.lon, float))
 cosl = np.cos(np.radians(LA)); f = 2 * 7.292e-5 * np.sin(np.radians(LA))
 def fields(S):
@@ -60,7 +60,7 @@ for k in starts:
         T, q, u, v, ps = fields(st)
         tend, diag = M.column(*(jnp.asarray(x, jnp.float32) for x in (T, q, u, v, ps)), crx, want_diag=True, div=hor.to_nodal(st.divergence) * M.SEC)
         st1, cr1 = mm2.integrate(M, st, cr, dth); T1, q1, u1, v1, ps1 = fields(st1)
-        for kk, lv in ((K85, '850'), (K50, '500')):
+        for kk, lv in ((K85, '850'), (K50, '500'), (K20, '200')):
             pu, pv = pgf(T, q, ps, kk)
             tu, tv, tT = (u1[kk] - u[kk]) / M.dt_s, (v1[kk] - v[kk]) / M.dt_s, (T1[kk] - T[kk]) / M.dt_s
             phu, phv = np.asarray(tend['u'][kk], float), np.asarray(tend['v'][kk], float)
@@ -106,7 +106,7 @@ for bx, (a, b, c, d) in BOX.items():
         print(f'  {w:6s} T850 K/day: ' + ' '.join(f'{n} {bm(np.mean(acc[(w, "T850_" + n)], 0) * 86400, a, b, c, d, LA, LO):+5.2f}' for n in ('TOTAL', 'PHYS', 'DYN', 'rad_app', 'h_bl', 'h_deep', 'h_shal', 'h_lsc', 'h_evap') if (w, 'T850_' + n) in acc))
 np.savez_compressed(OUT, lat=np.asarray(M.lat), lon=np.asarray(M.lon), starts=np.array([TT[k] for k in starts]),
                     **{f'{w}__{nm}': np.mean(v, 0).astype(np.float32) for (w, nm), v in acc.items()},
-                    **{f'per_start__{w}__{nm}': np.array(v, np.float16) for (w, nm), v in acc.items() if nm.startswith(('u850', 'T850'))},
+                    **{f'per_start__{w}__{nm}': np.array(v, np.float16) for (w, nm), v in acc.items() if nm.startswith(('u850', 'T850', 'u200', 'T200'))},
                     obs_du850=np.mean(obs['u'], 0).astype(np.float32), obs_dv850=np.mean(obs['v'], 0).astype(np.float32), obs_dT850=np.mean(obs['T'], 0).astype(np.float32))
 PROF = {f'{w}__{nm}': np.mean(v, 0).tolist() for (w, nm), v in acc.items() if nm.startswith('prof_')}
 json.dump(PROF, open(OUT.replace('.npz', '_prof.json'), 'w'))
