@@ -1564,3 +1564,14 @@ Tropics 30S-30N, 6-24 h, g/kg/day, layer below 850 hPa (convection = deep + shal
 - 1-start screen (T42, 2020-01-06): IFS package -> + bl_lcl: q850 +7.8 -> +0.8 % (h24), +10.8 -> -0.7 % (h48); q925 +6.7 -> +3.9 / +2.8 %;
   TCWV +4.9 -> +3.6 / +2.0 %; q700 / q500 unchanged (+2 / +6 %). Cloud cover still 0.94-0.97 vs 0.63 (needs the per-level look).
 - Queued T170 12 starts: tn-moist-lcl32 (acct 1), tn-moist-lcl75 (acct 4).
+
+## 12 Nov 01:40 IST - Asian jet: the day-1 weakening is in the DYNAMICAL CORE, not the physics (jet_check.py, T42, 3 Oct-Nov starts)
+- T170 200-hPa budget (tn-prof-b2jet, base2, 12 starts): 0-6 h u200 tendency 25-45 N, 60-140 E: TOTAL -5..-8 m/s/day, PHYS 0,
+  PGF+COR +3.6..+4.5, REST (transport/diffusion/numerics) -9.6..-11.4. 6-24 h: tropical T200 -3 K/day (physics -2.9) vs 35-55 N
+  -0.3..+0.5 -> the upper-level temperature contrast shrinks (second, slower contributor).
+- Jet peak (max over 20-50 N of the 60-140 E mean u200), ERA5 start on our levels -> after DFI -> model day 1 | ERA5 day 1:
+  default 53.1 -> 52.7 -> 47.6 | 54.1 (error -6.5; T170 exam -6.2); no DFI 47.7; diffusion x4 weaker 47.9; no stratosphere relaxation 47.6;
+  PHYSICS OFF 46.9 (-7.2). => not DFI, not horizontal diffusion, not the stratosphere relaxation, not the physics: the core (or its
+  configuration) slows the jet ~6-7 m/s in the first day, at T42 and T170 alike.
+- Running: physics-off at 75 levels, with non-monotone semi-Lagrangian dynamics (mm2 sets monotone_dynamics=True: a monotone limiter on
+  the WIND interpolation clips extrema every step - IFS applies quasi-monotone limiters to tracers, not to winds), and with cubic vertical SL.
