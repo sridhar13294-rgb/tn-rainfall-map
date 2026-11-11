@@ -1477,3 +1477,16 @@ Next: per-layer RH distribution h0 vs h24 vs ERA5 q levels (which layers saturat
   is in the live one. Regression with qs_mix off bit-identical (22.259984322409387).
 - Still open: with the mixed-phase RH the forecast's low-level moistening (+7..+12 % at 925/850, problem B) will make even more
   low cloud unless B is fixed (evaporation screens running). Next T170 screen: IFS convection + evaporation fix + continuum + qs_mix.
+
+## 11 Nov 20:20 IST - T170 screens (12 starts, vs real ERA5): evaporation fix explains only ~1/5 of the low-level moistening
+| global h24 (h48) | q925 | q850 | q700 | q500 | cloud cover h0 / h24 / h48 |
+|---|---|---|---|---|---|
+| IFS convection | +9 (+7) % | +10 (+12) % | +2 % | +4 % | -56 % / +29 % / +35 % |
+| + evaporation fix (COARE) | +7 (+5) % | +9 (+10) % | +2 % | +4 % | -56 % / +28 % / +34 % |
+| + continuum | +7 (+6) % | +9 (+10) % | +2 % | +4 % | -56 % / +29 % / +35 % |
+| + mixed-phase cloud RH | +7 (+6) % | +9 (+10) % | +2 % | +4 % | -4 % / +44 % / +49 % |
+- Evaporation: contributes (~2 percentage points of the ~10) but another low-level moisture source/retention remains (peer decision table:
+  "improves but remains high"). Continuum: no humidity effect (as expected). Cloud RH fix: start cloud right (-4 %), but the forecast
+  cloud excess grows (+44 / +49 %) because the low-level humidity error is unchanged - as predicted at 19:30.
+- Next (launched tn-prof-pkgall, acct 4): first-hours process budget of the full candidate (q and T by process per level, globe/tropics)
+  to find what keeps adding / failing to remove water below 850 hPa (BL, convection, condensation, rain evaporation, dynamics).
