@@ -1586,3 +1586,8 @@ Tropics 30S-30N, 6-24 h, g/kg/day, layer below 850 hPa (convection = deep + shal
   sigma surfaces at jet level slope by several km; the pressure-gradient force on sloping sigma levels is a difference of two large
   terms and the SL vertical interpolation acts along sloping surfaces. IFS uses hybrid sigma-pressure levels (pure pressure aloft).
   Test: is the weakening specific to Asia (Pacific/Atlantic jets weaken -2.4 / -2.0 at day 1 with physics on, 10 Nov)? Running.
+- 03:00 IST sector test (T42, 3 starts, day-1 jet-peak error vs ERA5; physics on / off): Asia 60-140E -6.5 / -7.2; Pacific 150-220E
+  -5.7 / -4.0; Atlantic 280-340E -3.3 / -3.4. => every jet loses ~3.5-4 m/s/day in the core alone (general part: the linear vertical SL
+  interpolation is one known piece), and the Asian jet loses ~3.5 m/s/day MORE (Tibet-specific part, consistent with the pure sigma
+  coordinate). Dinosaur (pinned commit) contains hybrid_coordinates.py and SemiLagrangianPrimitiveEquationsHybrid: an IFS-type hybrid
+  sigma-pressure core is available upstream; switching needs mm2's sigma assumptions (p = sigma ps in physics, init, diagnostics) generalised.
