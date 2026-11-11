@@ -1421,3 +1421,15 @@ scheme (IFS Cy50r1 Part IV chapters 3 + 6 together).
   against ERA5 at +24/48 h; the truth file has no humidity or cloud. Hour-0 RH/cloud on our levels may itself be biased (only 3 ERA5 levels
   below 850 hPa). Next: add ERA5 humidity / cloud truth (q 925/850/700, total column water vapour, total and low cloud cover) at +1..+10 days
   to the truth file (cyc_wx.py, WeatherBench2 ERA5) so the drift is measured against reality.
+
+## 11 Nov 16:40 IST - drift measured against REAL ERA5 (moist_vs_era5.py, wx_truth_moist_2020.npz, T42, 2 starts, global means)
+| | h0 model/ERA5 | base2 h24 | ifs_sh h24 |
+|---|---|---|---|
+| q 925 / 850 / 700 / 500 | within 1 % at all levels | -10 % / -4 % / +22 % / +34 % | +7 % / +5 % / +5 % / +20 % |
+| column water vapour | 25.4 / 25.3 | +3 % | +6 % |
+| total cloud cover | 0.34 / 0.61 (-44 %) | 0.77 / 0.62 (+23 %) | 0.81 / 0.62 (+30 %) |
+- The start state is RIGHT (humidity within 1 %). CORRECTION to the 11:30 entry ("the cloud scheme is not the cause"): on ERA5's true
+  humidity the cloud scheme gives 0.34 cover vs 0.61 real, and after a 5-10 % humidity rise 0.8 -> its response to humidity is far too
+  steep: a calibration/structure defect of the diagnostic cloud scheme that AMPLIFIES a modest moistening into a large cloud and
+  radiation error. The moistening itself is real but modest (+5..+10 %; base2 moves moisture from 925 to 700-500 hPa, +22..+34 %).
+- Launched at T170, 12 starts: tn-moist-b2 (acct 4), tn-moist-ifssh / tn-moist-ifspkg (acct 1).
