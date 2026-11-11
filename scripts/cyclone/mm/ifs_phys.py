@@ -112,7 +112,7 @@ def implicit_transport(phi, mass, A, Mnet, Fx, S, use_imp, dt):
     return (pn - phi) / dt
 
 
-def convection(T, q, p, mass, zc, ps, H, E, ust, rho, land, dt, dx, dT_bl, dq_bl, u_bl):
+def convection(T, q, p, mass, zc, ps, H, E, ust, rho, land, dt, dx, dT_bl, dq_bl, u_bl, use_pbl=True):
     """IFS convection, one call. dT_bl, dq_bl: non-convective tendencies (BL diffusion + radiation) for the closures.
     Returns dict(dT, dq, prc (convective precipitation production per layer, kg m-2 s-1, for the cloud scheme), P_sfc (convective
     precipitation at the ground), mask (cloud layers), deep, shallow, M (updraught mass flux per layer, for momentum transport))."""
@@ -184,6 +184,10 @@ def convection(T, q, p, mass, zc, ps, H, E, ust, rho, land, dt, dx, dT_bl, dq_bl
     dTv_bl = dT_bl * (1.0 + 0.608 * q) + 0.608 * T * dq_bl
     tau_bl = jnp.where(land, tau_c, zcb / jnp.maximum(u_bl, 2.0))
     pcape_bl = jnp.where(is_deep & inml_d, tau_bl * (dTv_bl * dp * subc).sum(0), 0.0)               # (6.33-6.34), T* = 1 K
+    # IFS 6.33: dTv/dt|bl must include turbulent diffusion, radiation AND ADVECTION. v1 passes diffusion + radiation only (no advective
+    # tendency available in the column call), which leaves PCAPE_bl biased high (BL heating not offset by advection) -> use_pbl=False
+    # gives the pre-40r1 IFS closure (PCAPE_bl = 0, Gregory et al. 2000) until the advective tendency is passed in.
+    if not use_pbl: pcape_bl = jnp.zeros_like(pcape_bl)
     Mb_deep = jnp.maximum(pcape - pcape_bl, 0.0) / (tau * jnp.maximum(den, 1e-6))
     hdiff = tk(hu, kcb) - tk(h, kcb)
     Fbl = ((CP * dT_bl + LV * dq_bl) * mass * subc).sum(0)                                         # (6.35) rhs: non-convective sub-cloud MSE tendency
