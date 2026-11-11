@@ -1265,3 +1265,9 @@ Large-scale (RH) cloud of radcloud on the model state, global means:
   incl. humidity transport and negative-q filling). The running T170 jobs (tn-prof-32imp, tn-prof-75imp) record q tendency by process
   per level plus the total; dynamics = total - physics. Registered reading: the process (or dynamics) with the largest positive 700-300 hPa
   moistening in 0-24 h that is not balanced by condensation is the cause; if dynamics dominates, transport/positivity is suspect.
+- 11 Nov 11:50 local T42 look (75L+imp base2, 1 start, init_tend profiles, g/kg/day, tropics 6-24 h): the 500-700 hPa moistening (+0.50)
+  is the base2 shallow 'mse' scheme lifting boundary-layer vapour (+0.72; up to +1.24 at 0-6 h), against deep convection -0.12,
+  condensation -0.41, rain evaporation +0.26, dynamics +0.05. Below 850: surface/BL +4.07, shallow -2.19, deep only -1.02.
+  Working hypothesis (to confirm at T170, 12 starts): deep convection removes too little boundary-layer moisture; base2 hides it by
+  pumping the excess into the free troposphere (mid-level moistening -> cloud -> cooling), ifs_sh leaves it in the BL (low deck, P1).
+  Queued tn-prof-ifssh (acct 1) for the ifs_sh moisture budget with the same profiles.
