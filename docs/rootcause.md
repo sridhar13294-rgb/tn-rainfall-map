@@ -1249,3 +1249,19 @@ only check the code.
   heating and moistening process + total) at 32L+imp and 75L+imp. Expectation registered: the 75L-32L difference in tropical
   column heating is small (~0.1 K/day for the 2.2 m z500 gap) but its VERTICAL distribution by process will differ; the process
   whose profile changes most with layer count is the 75L cause. Same output gives the low-level moistening by process (P1/P4/P5 track).
+
+## 11 Nov 11:30 IST - cloud drift (cloud_drift.py, T42 screen, 2 starts): the cloud SCHEME is not the cause; the model MOISTENS the troposphere within 1-2 days
+Large-scale (RH) cloud of radcloud on the model state, global means:
+| | cover | low cover | RH >850 | RH 850-700 | RH 700-500 | RH 500-300 |
+|---|---|---|---|---|---|---|
+| ERA5 start (h0) | 0.27 | 0.23 | 0.73 | 0.56 | 0.43 | 0.37 |
+| base2 h24 / h48 | 0.74 / 0.82 | 0.58 / 0.66 | 0.73 / 0.72 | 0.65 / 0.70 | 0.57 / 0.62 | 0.53 / 0.58 |
+| ifs_sh h24 / h48 | 0.81 / 0.91 | 0.70 / 0.81 | 0.85 / 0.89 | 0.64 / 0.69 | 0.51 / 0.55 | 0.50 / 0.55 |
+- On ERA5 humidity the scheme makes LITTLE cloud (0.27); cover triples in 24 h because RH rises 0.1-0.2 at every level above 850 hPa
+  (base2) and in the lowest layers too with ifs_sh (0.73 -> 0.89: the boundary-layer moisture is no longer vented). The column cooling
+  (~0.5 K/day) explains only ~+0.03 RH; the rest is real moistening. ERA5 does not drift like this.
+- => Cloud excess, cloud-top cooling (P1), extra radiative energy loss (global z500 fall) are CONSEQUENCES of a fast moistening of the
+  model troposphere. Next WHY: which process moistens (BL / shallow / deep detrainment / rain evaporation / condensation deficit / dynamics
+  incl. humidity transport and negative-q filling). The running T170 jobs (tn-prof-32imp, tn-prof-75imp) record q tendency by process
+  per level plus the total; dynamics = total - physics. Registered reading: the process (or dynamics) with the largest positive 700-300 hPa
+  moistening in 0-24 h that is not balanced by condensation is the cause; if dynamics dominates, transport/positivity is suspect.

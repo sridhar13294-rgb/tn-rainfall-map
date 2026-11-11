@@ -1,4 +1,4 @@
-"""Cloud drift (11 Nov, P1/P4/P5 common-cause test): the model's radiation cloud (radcloud, incl. convective/anvil) and RH by
+"""Cloud drift (11 Nov, P1/P4/P5 common-cause test): the model's large-scale RH cloud (radcloud.clouds without the convective part) and RH by
 pressure band, on the ERA5 start (hour 0, after DFI) and after 24 / 48 h, per candidate. If the cloud excess (energy audit:
 cover 0.84 vs ~0.67) is already there at hour 0 the cloud SCHEME is the cause; if it grows with RH it is a moistening PROCESS.
 python cloud_drift.py LIB GRID STARTS(comma idx) OUT_JSON   env CANDS (json {name: settings}), NLEV"""
@@ -28,10 +28,10 @@ for nm, setx in CANDS.items():
             T = (aux.temperature_variation + M.ref_t[:, None, None]) / M.K; cl = hor.cos_lat
             u = aux.cos_lat_u[0] / cl / M.MPS; v = aux.cos_lat_u[1] / cl / M.MPS; q = st.tracers['specific_humidity']
             ps = jnp.exp(hor.to_nodal(st.log_surface_pressure))[0] / M.PA
-            crx = dict(cr, doy0=jnp.float32(M.doy0), utc0=jnp.float32(M.utc0)); M._carry = crx
-            _, diag = M.column(*(jnp.asarray(x, jnp.float32) for x in (T, q, u, v, ps)), crx, want_diag=True, rad_fresh=True, div=hor.to_nodal(st.divergence) * M.SEC)
-            c = np.asarray(diag['cld'], float); Tn = np.asarray(T, float); qn = np.asarray(q, float); psn = np.asarray(ps, float)
+            Tn = np.asarray(T, float); qn = np.asarray(q, float); psn = np.asarray(ps, float)
             p = np.asarray(M.sig, float)[:, None, None] * psn[None]; rh = qn / np.asarray(radcloud.qsat(Tn, p))
+            dpn = np.asarray(M.dsig, float)[:, None, None] * psn[None]
+            c = radcloud.clouds(Tn, qn, p, dpn, psn, np.asarray(cr['sst']) > 0)['c']   # large-scale (RH) cloud only: the low deck is large-scale
             tot = np.asarray(radcloud.total_cover(c)); low = np.asarray(radcloud.total_cover(np.where(p > 68000, c, 0.0)))
             r = {}
             for reg, m in (('globe', np.ones_like(TROP)), ('tropics', TROP)):
