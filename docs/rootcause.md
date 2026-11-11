@@ -1553,3 +1553,14 @@ Tropics 30S-30N, 6-24 h, g/kg/day, layer below 850 hPa (convection = deep + shal
   to supply (evaporation), removal (convection strength), BL-top entrainment and the convection scheme. T170 confirmation queued
   (tn-moist-pbl0). Next: check whether the excess is an equilibrium of the model's surface layer / lowest-level vertical structure
   (where the model holds its moisture relative to ERA5 by level, near-surface RH, and the 925-hPa interpolation itself).
+
+## 12 Nov 00:10 IST - convection INPUTS (Sridhar 23:48): the boundary layer pushes surface moisture ABOVE cloud base -> leftover of B
+- conv_inputs.py (IFS package, T42 grid, 20-min step, 24 h, tropical ocean 25S-25N), 32 and 75 levels give the same picture:
+  925 hPa: model T -0.4..-0.5 K, q +0.5..+0.6 g/kg vs ERA5 -> RH 0.90 vs 0.84. The BL + radiation tendency handed to convection moistens
+  +2..+3.3 g/kg/day up to ~1.5 km (well above the ~600 m cloud base) and radiation cools that layer's top by -5.9..-6.6 K/day (cloud-top
+  cooling of the low deck) -> a self-reinforcing loop: BL moisture above cloud base -> saturation -> cloud -> cloud-top cooling.
+- The dry K-profile reaches the Ri height (~1.5 km) instead of cloud base; in the IFS EDMF the K-diffusion stops at the cloud base zi,cb
+  in a cumulus-topped layer and the shallow mass flux carries the cloud layer (Part IV ch. 3; MEGAM option bl_lcl, built 4 Nov, never adopted).
+- 1-start screen (T42, 2020-01-06): IFS package -> + bl_lcl: q850 +7.8 -> +0.8 % (h24), +10.8 -> -0.7 % (h48); q925 +6.7 -> +3.9 / +2.8 %;
+  TCWV +4.9 -> +3.6 / +2.0 %; q700 / q500 unchanged (+2 / +6 %). Cloud cover still 0.94-0.97 vs 0.63 (needs the per-level look).
+- Queued T170 12 starts: tn-moist-lcl32 (acct 1), tn-moist-lcl75 (acct 4).

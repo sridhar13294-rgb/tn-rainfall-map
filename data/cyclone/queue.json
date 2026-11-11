@@ -1,5 +1,21 @@
 [
  {
+  "slug": "tn-moist-lcl75",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_moist_2020.npz",
+  "note": "humidity/cloud vs ERA5 T170 package+bl_lcl tp75",
+  "cmd": "NLEV=tp75 CANDS='{\"pkg+bl_lcl_75\":{\"phys_ifs\":1,\"bl_lcl\":1,\"sfc_imp\":1,\"drag_imp\":1,\"ck_z\":1.0,\"sfc_sal\":0.98,\"rad_prm\":{\"lw_cnt\":0.667,\"qs_mix\":1}}}' DT=20 XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore moist_vs_era5.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_moist_2020.npz T170 1,7,13,19,25,31,37,43,49,55,61,67 /kaggle/working/me_lcl75.json > /kaggle/working/me_lcl75.log 2>&1; grep -v WARNING /kaggle/working/me_lcl75.log | tail -40",
+  "account": "4",
+  "at": "2026-11-11T18:39Z"
+ },
+ {
+  "slug": "tn-moist-lcl32",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_moist_2020.npz",
+  "note": "humidity/cloud vs ERA5 T170 package+bl_lcl 32",
+  "cmd": "NLEV=32 CANDS='{\"pkg+bl_lcl\":{\"phys_ifs\":1,\"bl_lcl\":1,\"ck_z\":1.0,\"sfc_sal\":0.98,\"rad_prm\":{\"lw_cnt\":0.667,\"qs_mix\":1}}}' DT=20 XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore moist_vs_era5.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_moist_2020.npz T170 1,7,13,19,25,31,37,43,49,55,61,67 /kaggle/working/me_lcl32.json > /kaggle/working/me_lcl32.log 2>&1; grep -v WARNING /kaggle/working/me_lcl32.log | tail -40",
+  "account": "1",
+  "at": "2026-11-11T18:39Z"
+ },
+ {
   "slug": "tn-moist-b275",
   "inputs": "libm_wx2020_fields.npz,wx_truth_moist_2020.npz",
   "note": "humidity/cloud vs ERA5 T170 75 levels b2_75",
