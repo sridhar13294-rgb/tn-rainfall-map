@@ -1,6 +1,6 @@
-tn-moist-ifspkg
+tn-moist-pkgevap
 libm_wx2020_fields.npz,wx_truth_moist_2020.npz
-CANDS='{"ifs_pkg":{"phys_ifs":1}}' DT=20 XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore moist_vs_era5.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_moist_2020.npz T170 1,7,13,19,25,31,37,43,49,55,61,67 /kaggle/working/me_ifspkg.json > /kaggle/working/me_ifspkg.log 2>&1; grep -v WARNING /kaggle/working/me_ifspkg.log | tail -40
+CANDS='{"pkg+evap":{"phys_ifs":1,"ck_z":1.0,"sfc_sal":0.98}}' DT=20 XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore moist_vs_era5.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_moist_2020.npz T170 1,7,13,19,25,31,37,43,49,55,61,67 /kaggle/working/me_pkgevap.json > /kaggle/working/me_pkgevap.log 2>&1; grep -v WARNING /kaggle/working/me_pkgevap.log | tail -40
 NvidiaTeslaT4
-1
-#humidity/cloud vs ERA5 T170 ifspkg 2026-11-11T11:04Z
+4
+#humidity/cloud vs ERA5 T170 pkgevap 2026-11-11T12:57Z
