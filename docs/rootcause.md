@@ -1448,3 +1448,19 @@ Reading - TWO defects, not one:
     vertically layered - individual layers near saturation (and more columns at RH >= 0.8: 4 % -> 18 %). Lowering the critical RH to
     fix (a) would make (b) worse, so a calibration alone cannot work; (b) is the model process (which layers saturate, and why).
 Next: per-layer RH distribution h0 vs h24 vs ERA5 q levels (which layers saturate), using the T170 tn-moist-* results when they arrive.
+
+## 11 Nov 18:40 IST - T170, 12 starts, humidity / cloud vs REAL ERA5 (tn-moist-b2 / -ifssh / -ifspkg); every number holds in 12/12 starts
+| global, h24 (h48) | q925 | q850 | q700 | q500 | TCWV | cloud cover (h0) |
+|---|---|---|---|---|---|---|
+| base2 | -11 (-13) % | -3 % | +22 (+25) % | +32 % | +3 % | 0.77 vs 0.63 (h0 0.34 vs 0.62) |
+| ifs_sh | +7 % | +6 (+10) % | +4 % | +19 (+16) % | +6 % | 0.81 |
+| IFS package (convection) | +9 (+7) % | +10 (+12) % | +2 (+1) % | +4 (+2) % | +5 % | 0.81 |
+- Start humidity correct (within 2 %) at T170; start cloud -46..-56 % (problem A confirmed at T170, 12/12).
+- Problem B LOCATED: base2 moves water from 925 to 700-500 (shallow 'mse' pump). With the IFS convection the mid/upper troposphere
+  stays at ERA5 (700 +1..+2 %, 500 +0..+4 %, tropics 500 -4..0 %) - the only remaining humidity error is BELOW 850 hPa (+7..+12 %).
+  Candidates for the low-level excess: ocean evaporation (+17..+20 % vs COARE, 4 Nov), boundary-layer top entrainment/venting.
+- Caveats (peer, 18:22): ERA5 tcc is ERA5's own model diagnostic (prognostic cloud, max-random overlap) - same definition family as ours
+  but not an observation (CERES/ISCCP ~0.66-0.68 agrees); bin tables mix category shifts with within-category change - a paired
+  per-column analysis is needed; A and B may feed back through radiation/precipitation. Cloud relationship to be developed and validated
+  on separate date sets (development / calibration check / independent validation), by RH, level, latitude band and regime.
+- Launched: tn-moist-pkgevap (acct 4: package + COARE evaporation), tn-moist-pkgevapcnt (acct 1: + continuum fix).
