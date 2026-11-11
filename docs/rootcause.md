@@ -1376,3 +1376,22 @@ Reading:
   the cloud AMOUNT (cover 0.41 -> 0.80 in 24 h) - RRTMG gives the same with those clouds. So: radiation code ~-10 (continuum, known fix)
   + ~-5..-7 (SW absorption); the dominant error is the moistening -> cloud amount growth, whose process is still not found
   (shallow transport, evaporation ruled out today).
+
+## 11 Nov 15:10 IST - process-denial moisture test (cloud_drift.py, T42 grid, 20-min step, 2 starts, ifs_sh base, global means)
+| run | RH >850 h24/h48 | q >850 g/kg h24 | T >850 h24 (h0 285.88) | RH 700-500 h24 | cover h24 |
+|---|---|---|---|---|---|
+| ifs_sh | 0.830/0.858 | 9.10 (h0 8.63) | 284.89 (-1.0 K) | 0.498 | 0.79 |
+| rain evaporation off | 0.805/0.825 | 9.07 | 285.23 (-0.65) | 0.473 | 0.76 |
+| deep convection off | 0.847/0.855 | 9.68 | 285.25 | 0.510 | 0.85 |
+| downdraughts off | 0.802/0.830 | 8.95 | 285.22 | 0.505 | 0.75 |
+Tropics below 850: T -1.48 K in 24 h (ifs_sh), q +0.51 g/kg.
+Reading:
+- NO single process causes the drift: switching off rain evaporation or downdraughts removes only ~1/4 of the low-level RH rise;
+  switching off deep convection makes it worse (moister).
+- About HALF of the low-level RH rise is COOLING (-1.0 K/day globally, -1.5 K/day tropics below 850 hPa: radiation, rain evaporation and
+  dynamics not balanced by boundary-layer/convective heating), the other half real moistening (+0.47 g/kg/day).
+- => The moistening/cooling is a BALANCE error of the convection + boundary layer + radiation package as a whole, not one faulty process.
+  base2 hides it with the over-strong shallow mixing (+7 K/day at 850). Piecewise fixes (sh_depth, cnt, evap, ifs_sh, edmf, sh_ifs2) each
+  moved one term and broke another, consistent with this.
+Decision needed (Sridhar): continue piecewise, or replace the convection/cloud/boundary-layer package as one consistent, documented
+scheme (IFS Cy50r1 Part IV chapters 3 + 6 together).

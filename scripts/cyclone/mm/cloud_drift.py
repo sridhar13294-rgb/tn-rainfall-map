@@ -40,7 +40,7 @@ for nm, setx in CANDS.items():
                 for a, b, lab in BINS:
                     sel = (p >= a) & (p < b)
                     wsum = (sel * W[None] * m[None]).sum()
-                    r[reg]['c ' + lab] = float((c * sel * W[None] * m[None]).sum() / wsum); r[reg]['rh ' + lab] = float((rh * sel * W[None] * m[None]).sum() / wsum)
+                    r[reg]['c ' + lab] = float((c * sel * W[None] * m[None]).sum() / wsum); r[reg]['rh ' + lab] = float((rh * sel * W[None] * m[None]).sum() / wsum); r[reg]['q ' + lab] = 1000 * float((qn * sel * W[None] * m[None]).sum() / wsum); r[reg]['T ' + lab] = float((Tn * sel * W[None] * m[None]).sum() / wsum)
             res.setdefault(nm, {}).setdefault(str(h), []).append(r)
             print(nm, TT[k], f'h{h}', 'globe cover %.3f low %.3f' % (r['globe']['cover'], r['globe']['low_cover']), ' '.join(f"c{lab} {r['globe']['c ' + lab]:.3f}/rh {r['globe']['rh ' + lab]:.2f}" for _, _, lab in BINS), flush=True)
         json.dump(res, open(OUT, 'w'))
