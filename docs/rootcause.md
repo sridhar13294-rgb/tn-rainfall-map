@@ -1507,3 +1507,16 @@ Next: per-layer RH distribution h0 vs h24 vs ERA5 q levels (which layers saturat
   LESS than the subtropics: the 500-hPa gradient STRENGTHENS slightly (+0.2 K/day; ifs_sh +0.8). Physics momentum drag at 500 hPa ~0
   (PHYS -0.03 m/s/day). => the jet weakening is NOT explained by 500-hPa heating or drag. Next: the 200-hPa budget (init_tend now also
   at sigma 0.2; tn-prof-b2jet queued, acct 4): u200 TOTAL / PHYS / PGF+COR / REST and T200 by process over the jet region.
+
+## 11 Nov 22:15 IST - T170 divergence check (tn-div-chk, base2, 12 starts): LOW-LEVEL CONVERGENCE far too strong, 12/12 starts
+| region | 200-hPa divergence d1 (d2) model/ERA5 | 850-hPa convergence d1 (d2) model/ERA5 |
+|---|---|---|
+| tropics 25S-25N | -11 % (+5 %) | +65 % (+64 %), stronger 12/12 |
+| Indian Ocean + Bay | -4 % (+13 %) | +66 % (+56 %), 12/12 |
+| W Pacific warm pool | -2 % (+45 %) | +70 % (+79 %), 12/12 |
+| E Pacific / Atlantic trades | -21 % (+3 %) | +96 % (+112 %), 12/12 |
+- Upper divergence about right (the T42 'too weak' was resolution); the 850-hPa inflow is 1.5-2x ERA5's everywhere in the tropics from
+  day 1 (Sridhar's hypothesis, 20:43). Strong low-level convergence without matching upper divergence -> the mass converging at 850 must
+  leave through mid levels, i.e. the model's heating/ascent profile is too BOTTOM-HEAVY (base2's shallow 'mse' heats 850 by +7 K/day),
+  and it imports moisture into the lower troposphere. The IFS-package run of the same check was killed (two models in one job, OOM)
+  -> re-queued alone (tn-div-pkg, acct 1).
