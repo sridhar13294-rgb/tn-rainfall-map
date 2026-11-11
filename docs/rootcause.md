@@ -1295,3 +1295,18 @@ Reading (against the 11:50 hypothesis):
   75L is ~0.1 K/day colder; largest process changes: DYN below 850 -1.72 vs -1.16 K/day, rain evaporation 700-850 -2.10 vs -1.80,
   deep 300-500 +0.87 vs +0.54. Lead: near-surface vertical transport/coupling with thin layers (DYN), not one physics scheme. Next:
   split DYN below 850 (vertical advection of the +7 K/day shallow heating profile through thin layers) - lower priority than ifs_sh.
+
+## 11 Nov 14:30 IST - why ifs_sh vents so little (sh_vent.py, T42 grid with the T170 20-min step, 24 h spin-up, tropical ocean)
+- Shallow applies in ~30 % of tropical-ocean columns (deep convection active in ~25-50 %; shallow is switched off there).
+- Cloud-base mass flux: the closure (sh_clos, eq. 6.35 as coded) asks for median 0.105 kg/m2/s (p10-p90 0.05-0.15);
+  the numerical cap mf_cap * (thinnest cloud layer mass) / dt = 0.3 * m_min / dt clips it to 0.052 in almost every column.
+  (At the 60-min T42 step the cap is 0.017; it scales with 1/dt and with layer thickness -> lower at 75 levels.)
+- Defects found (both break the 10 Nov rule "physical units, independent of the number of levels / time step"):
+  D-a  closure evaluated one layer above the source (kb = ksrc - 1), not at cloud base as IFS eq. 6.35/6.37 says: the plume
+       excess there is only the kick -> (h_u - h) small (floor 1 kJ/kg) -> Mb 3-5x the observed shallow-cumulus 0.02-0.03 (BOMEX).
+  D-b  the cap depends on dt and on the thinnest layer: it, not physics, sets the mass flux; at 75 levels it is ~2x lower.
+- Plume: 4-8 layers deep, median depth 13 kPa from the source -> cloud tops ~860 hPa. The moisture stays inside the 950-860 hPa
+  cloud layer (sub-850 net shallow vent ~0 in the median column): with tops below the trade inversion nothing carries the surface
+  supply into the dry air above, so the layer below 850 moistens (+0.45 g/kg/day at T170) and the low deck forms.
+- Next: derive the IFS cloud-base closure and limiter exactly from Part IV (eq. 6.35-6.37 and the CFL treatment), register predictions,
+  T42 code check, then T170 first-hours test at 32 L and the 75 L screen.
