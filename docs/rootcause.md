@@ -1813,3 +1813,12 @@ Variants (cloud_parts.py, T42, start 1 Nov, 24/48 h; reference lcl = -0.8 / -1.1
   ~0.3 K, bl_lcl cap ~0.4 K, radiation vs RRTMG ~0.3 K. Cloud cover is insensitive to all of them (0.92-0.93).
   => A (cloud) and P1 (t925) may NOT be the same problem after all: warming 925 hPa by 0.3 K moves the cover by 0.00. Next: ERA5
   relative humidity by level (WB2 has it; 'rh truth' job) to split A into "model RH too high" vs "cloud scheme maps RH to too much cloud".
+- 16:00 FINAL vcubic storm check (3-member means, registered rule): vz mean Vardah 996.6 / Nivar 992.3 / Michaung 1001.3 vs nz mean
+  990.2 / 992.4 / 999.6 -> +6.4 / -0.1 / +1.7 hPa. Vardah outside 2 hPa -> sl_vcubic FAILS the storm gate; NOT adopted (D1 open).
+  (vs ERA5 targets 995.2 / 994.1 / 992.0: Vardah error -5.0 -> +1.4, Nivar -1.7 -> -1.8, Michaung +7.6 -> +9.3; gate-definition
+  question put to Sridhar 13:45, unanswered; current rule applies.)
+- 16:00 tn-moist-lcl75b (IFS package + bl_lcl, 75 L tp75, T170, 12 starts) vs ERA5, h48: q850 -0.8..+4.0 % (mean +2.0; 9/12 within
+  +-3 %), q925 +1.4..+5.5 % (mean +3.6), q700 -3.3..-0.3 %, q500 -0.7..+3.7 %, TCWV +0.7..+2.9 %. Reference base2 at 75 L (tn-moist-b275):
+  q925 -9..-12 %, q700 +24..+32 %, q500 +23..+33 %. => at 75 L the package + bl_lcl removes the mid-level moistening completely and
+  most of the low-level error; residual +2..+4 % at 850-925 (positive in 10/12: small systematic) - slightly larger than at 32 L
+  (+0.4 / +2.3 %). B at 75 L: 'mostly fixed'.
