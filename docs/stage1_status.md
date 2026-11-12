@@ -2,27 +2,28 @@
 Last update: 10 Nov 20:40 IST (see docs/rootcause.md 10 Nov and the status PDF). Standing rule 10 Nov: every candidate also screened at 75 L. Earlier: 5 Nov 22:15 IST. Target 15 Nov no longer reachable (GPU: own account + partner account only); realistic ~2 weeks. Stage 3 paused until Stage 1 is done.
 
 ## One-word status (Sridhar 12 Nov 09:53: include this in EVERY report; update each cycle)
-Updated 12 Nov 10:15 IST.
+Updated 12 Nov 16:00 IST.
 | Problem | Status |
 |---|---|
-| A Cloud | Reopened (start OK; forecast 0.95 vs ERA5 0.63) |
-| B Low-level moisture | Fixed* (32 L, 48 h; 75 L pending) |
-| P1 Low-level T/q | Unscored |
-| P2 TN rain / 75 L | Open |
-| P3 Storm intensity | Open (re-check on new package) |
-| P4 Dry-season rain | Open |
-| P5a Jets | Narrowing |
-| P5b Bay steering | Re-measuring |
-| Tracks | Open |
-| D1 Linear vertical SL | Testing (noise + cubic twins on Kaggle) |
-| D2 SL-Eulerian gap | Diagnosing |
+| A Cloud | Fixing - half explained (rad vs RRTMG 850-1000, cloud feedback, bl_lcl); rest = long-standing 700-850 hPa heat deficit |
+| B Low-level moisture | Fixed (32 L, 48 h); mostly (75 L: q850 +2 %, q925 +3.6 %) |
+| P1 Low-level T/q | Fixing - same driver as A (t850 -1.2 K at d2 on package; base2 had it hidden by shallow overheating) |
+| P2 TN rain / 75 L | Measuring (queued, account 4) |
+| P3 Storm intensity | Measuring (queued) |
+| P4 Dry-season rain | Measuring (queued) |
+| P5a Jets | Narrowing (linear vertical SL = D1; sigma/Tibet ~1 m/s) |
+| P5b Bay steering | Measured on package: NOT fixed (u850 d3 -4.07, C-India MSLP d3 +2.3) |
+| Tracks | Measuring (queued) |
+| D1 Linear vertical SL | Gate fails (cubic weakens Vardah 6.4 hPa on 3-run means) |
+| D2 SL-Eulerian gap | Closed (T85: cubic SL = Eulerian) |
 | D3 Sigma over Tibet | Deferred |
-| D4 250 K T_ref | Testing |
+| D4 250 K T_ref | Closed |
 | S1 First-6-h jet loss | Explained (= D1) |
-| S2 DFI removes tide | Waiting (noise check) |
+| S2 DFI removes tide | Waiting |
 | S3 Hour-0 C-India MSLP | Open |
-| S4 Lowest-level start cooling | Open |
+| S4 Lowest-level start cooling | Not a bug (physical, both cores) |
 | 75 L stability | Fixed |
+Kaggle: account 1 at its weekly 30-h GPU limit (marked down until reset); account 4 runs the queue one job at a time.
 
 | Item | Stage | Where it stands |
 |---|---|---|
