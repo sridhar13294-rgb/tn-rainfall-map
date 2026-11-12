@@ -1651,3 +1651,7 @@ At 6 h: Asia SL 52.3 -> 48.7, Eulerian 52.3 -> 50.3.
 (10 vs 20 min identical). The remaining ~-3..-5 m/s with the Eulerian core = start state / T42 / no physics (to separate later).
 Candidate fix: Eulerian dynamics (same library, same physics coupling, same levels). Costs: shorter step (GPU time x2-3), stability with
 full physics and at 75 levels unknown, storm intensity/track effects unknown -> registered screen needed before adoption.
+- 09:20 same harness, SL + cubic vertical interpolation (sl_vcubic, limiter on): Asia -5.7, Pacific -4.3, Atlantic -3.8
+  (SL linear -8.6 / -5.9 / -4.5; Eulerian -4.7 / -2.7 / -3.5). => cubic vertical closes ~3/4 of the SL-Eulerian gap in Asia, ~1/2 in the
+  Pacific, most in the Atlantic; remaining SL-Eulerian gap ~1-1.6 m/s (Asia: hybrid levels gave +1.1). Mm v1 (mm.py) was Eulerian
+  at T85 with a 6-min step; v2 moved to SL for T170 at 20 min (Eulerian T170 needs ~3 min -> ~6x more steps, physics each RK stage).

@@ -36,6 +36,14 @@ def make(core):
         step = time_integration.step_with_filters(time_integration.imex_rk_sil3(eq, dte), [filt])
         run = jax.jit(lambda s: jax.lax.fori_loop(0, n, lambda i, x: step(x), s))
         return coords, pc, run
+    if core == 'sigcub':                                                    # semi-Lagrangian with cubic vertical interpolation (sl_vcubic)
+        coords = M.coords
+        eq = primitive_equations.SemiLagrangianPrimitiveEquations(M.ref_t, M.oro, coords, M.ps, humidity_key='specific_humidity', monotone_tracers=True,
+                                                                  nodal_tracers=('specific_humidity',), monotone_dynamics=True, vertical_interpolation_order='cubic')
+        pc = lambda ps: M.sig[:, None, None] * ps
+        filt = primitive_equations.step_filter_excluding_nodal_tracers(time_integration.horizontal_diffusion_step_filter(hor, dt=M.dt, tau=tau, order=2), nodal_tracers=('specific_humidity',))
+        step = time_integration.step_with_filters(time_integration.semi_lagrangian_crank_nicolson_rk2(eq, M.dt, off_centering=0.05, warm_start_corrector=True), [filt])
+        return coords, pc, jax.jit(lambda s: jax.lax.fori_loop(0, nday, lambda i, x: step(x), s))
     if core == 'sigma':
         coords = M.coords
         eq = primitive_equations.SemiLagrangianPrimitiveEquations(M.ref_t, M.oro, coords, M.ps, humidity_key='specific_humidity', monotone_tracers=True,
@@ -71,7 +79,7 @@ for k in KS:
     for c in CORES:
         if c not in CORE: CORE[c] = make(c)          # needs M.oro from the first init (same terrain every start)
         coords, pc, run = CORE[c]
-        if c == 'sigma': st = st_s
+        if c in ('sigma', 'sigcub'): st = st_s
         elif c == 'euler': st = st_s.replace(tracers={'specific_humidity': hor.to_modal(st_s.tracers['specific_humidity'])})   # Eulerian core: modal tracer
         else:
             want = jnp.asarray(pc(ps_mod)); f = {n: np.asarray(interp(want, levs, x)) for n, x in (('t', T3), ('q', np.maximum(Q3, 0)), ('u', U3), ('v', V3_))}
