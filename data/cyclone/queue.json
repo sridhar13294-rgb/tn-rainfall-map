@@ -1,5 +1,13 @@
 [
  {
+  "slug": "tn-p5-dyn-hyb",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "note": "D3 T170 screen: base2 + hybrid levels, 12 starts, jets/z500 vs tn-p5-dyn (base2)",
+  "cmd": "VARS=\"u200,v200,z500,u850,rain24\" WIN=\"-90,90,0,360\" NDAY=10 PERSTART=1 GR=T170 ONLY=\"base2 hyb\" STRIDE=1 OUT=/kaggle/working/p5_dyn_hyb.json XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore p5_geo.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 12 > /kaggle/working/p5_dyn_hyb.log 2>&1; tail -4 /kaggle/working/p5_dyn_hyb.log",
+  "account": "4",
+  "at": "2026-11-12T17:13Z"
+ },
+ {
   "slug": "tn-r24-lcl-a",
   "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
   "note": "P2/P4 baseline: TN rain 24-start, package+bl_lcl",

@@ -1993,3 +1993,8 @@ D3 - hybrid vertical coordinate: SCOPE (mm2.py touch points, grep): coordinate s
   (23.8 / 41.2); t850, u200 RMSE equal within 0.01. REGISTERED next (jet_check.py, full physics, T42, 3 Oct-Nov starts, sector jets):
   hyb adopted-candidate if the Asian jet day-1 error improves by >= 0.7 m/s with Pacific and Atlantic not worse by > 0.3 m/s
   (hyb_jet.py physics-off predicted +1.1 / +0.1 / +0.2).
+- 23:30 RESULT D3 jet check (full physics, T42, 3 starts; day-1 jet error sigma -> hyb): Asia -7.6 -> -6.7 (+0.9), Pacific -7.6 -> -7.3 (+0.3),
+  Atlantic -4.8 -> -4.6 (+0.2) => registered local criterion MET (>= +0.7 Asia, others not worse). D3 becomes a candidate.
+  REGISTERED T170 screen (tn-p5-dyn-hyb, base2 + hyb, same 12 starts as tn-p5-dyn): Asian subtropical jet speed bias d1-d3 better than
+  base2 (-6.2 / -8.7 / -10.3) by >= 0.5 m/s on average, no worse jet latitude classes, global z500 not worse; then the storm check
+  (3-member means, current rule) before adoption.
