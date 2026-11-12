@@ -1740,3 +1740,10 @@ IFS convecting column, incl. shallow); if the RH part alone rises to >= 0.85, th
   process is short in the first 6 h, before the cloud has grown: radiation -1.2..-2.1 and BL vs a reference) and the AMPLIFIER (the
   cloud-radiation feedback). Reference needed: an observed/IFS low-level heating budget (e.g. ERA5 mean temperature tendency due to
   parametrisations, or the RRTMG clear-sky check of the start column already done: clear-sky matched after lw_cnt).
+- 11:50 NOISE CHECK RESULT (registered 09:35): 72 h pmin of base2 runs {rd, nz1, nz2, nz3}: Vardah 990.5 / 992.2 / 987.0 / 991.3
+  (spread 5.2 hPa), Nivar 993.8 / 992.7 / 991.0 / 993.6 (2.8), Michaung 999.9 / 999.3 / 999.3 / 1000.2 (0.9).
+  => spread > 2 hPa in 2 of 3 storms: a single run cannot resolve the 2 hPa gate (Vardah alone moves 5.2 hPa from a 0.1 %
+  perturbation). Per the registered rule the storm check now uses 3-member MEANS with the same 2 hPa threshold. nz means: Vardah 990.2,
+  Nivar 992.4, Michaung 999.6. vcubic judged on mean(vz1-3) vs these (vz1/vz2 running, vz3 queued).
+  Consequence for earlier verdicts made on single storm runs (dfi_off failed by 0.1 hPa on Michaung, the spread there is 0.9 -> that
+  failure stands as measured; vcubic 6 Nov Vardah +7.7 exceeds even the 5.2 spread). Not re-judged; noted.
