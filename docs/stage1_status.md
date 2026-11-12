@@ -1,6 +1,29 @@
 # Stage 1 status table (kept current every cycle; Sridhar 4 Nov 23:17: "Keep on updating this table")
 Last update: 10 Nov 20:40 IST (see docs/rootcause.md 10 Nov and the status PDF). Standing rule 10 Nov: every candidate also screened at 75 L. Earlier: 5 Nov 22:15 IST. Target 15 Nov no longer reachable (GPU: own account + partner account only); realistic ~2 weeks. Stage 3 paused until Stage 1 is done.
 
+## One-word status (Sridhar 12 Nov 09:53: include this in EVERY report; update each cycle)
+Updated 12 Nov 10:15 IST.
+| Problem | Status |
+|---|---|
+| A Cloud | Reopened (start OK; forecast 0.95 vs ERA5 0.63) |
+| B Low-level moisture | Fixed* (32 L, 48 h; 75 L pending) |
+| P1 Low-level T/q | Unscored |
+| P2 TN rain / 75 L | Open |
+| P3 Storm intensity | Open (re-check on new package) |
+| P4 Dry-season rain | Open |
+| P5a Jets | Narrowing |
+| P5b Bay steering | Re-measuring |
+| Tracks | Open |
+| D1 Linear vertical SL | Testing (noise + cubic twins on Kaggle) |
+| D2 SL-Eulerian gap | Diagnosing |
+| D3 Sigma over Tibet | Deferred |
+| D4 250 K T_ref | Testing |
+| S1 First-6-h jet loss | Explained (= D1) |
+| S2 DFI removes tide | Waiting (noise check) |
+| S3 Hour-0 C-India MSLP | Open |
+| S4 Lowest-level start cooling | Open |
+| 75 L stability | Fixed |
+
 | Item | Stage | Where it stands |
 |---|---|---|
 | P3, cyclone intensity | Nearly done | cmt_mf fix works (Nivar on target). Michaung/Vardah residuals are track consequences. |
