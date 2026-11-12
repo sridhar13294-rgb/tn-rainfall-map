@@ -19,7 +19,8 @@ for nm, ex in CANDS.items():
         t0 = dt.datetime.strptime(TT[k], '%Y-%m-%dT%H'); f2 = Z['f2'][k]; f3 = {v: np.array(Z['f3'][k, V3.index(v)]) for v in V3}
         st, cr = M.init(f3, Z['levs'], Z['lats'], Z['lons'], f2[V2.index('surface_pressure')], f2[V2.index('geopotential_at_surface')] / 9.80616,
                         f2[V2.index('sea_surface_temperature')], f2[V2.index('land_sea_mask')], when=t0, **landinit.land_kwargs(f2, V2))
-        M.build(t0); st = M.dfi(st); st, cr = mm2.integrate(M, st, cr, 24)          # day 1 = hours 24-48 (ERA5 day index 1)
+        M.build(t0); st = M.dfi(st); DAY = int(os.environ.get('DAY', 1))
+        if DAY == 1: st, cr = mm2.integrate(M, st, cr, 24)          # day 1 = hours 24-48 (ERA5 day index 1); DAY=0: hours 0-24 (spin-up)
         S = {}
         for h in range(24):
             st, cr = mm2.integrate(M, st, cr, 1)
@@ -36,7 +37,7 @@ for nm, ex in CANDS.items():
         for a, X in S.items():
             Xg = WS.to_grid(X, M.lon, M.lat); Ob = FT.get('o_' + a)
             if Ob is None: continue
-            Ob = Ob[i, 1].astype(float) * (1000.0 if a == 'tp24' else 1.0); land = WS.to_grid(np.asarray(M.land, float), M.lon, M.lat) > 0.5
+            Ob = Ob[i, DAY].astype(float) * (1000.0 if a == 'tp24' else 1.0); land = WS.to_grid(np.asarray(M.land, float), M.lon, M.lat) > 0.5
             for reg, m in (('globe', np.ones_like(land)), ('ocean 40S-40N', (~land) & (np.abs(TLA) <= 40)), ('land', land)):
                 ok = m & np.isfinite(Xg) & np.isfinite(Ob)
                 g = lambda Y: float((Y * TW * ok).sum() / (TW * ok).sum())
