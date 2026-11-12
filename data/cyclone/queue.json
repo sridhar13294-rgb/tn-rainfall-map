@@ -8,14 +8,6 @@
   "at": "2026-11-11T18:18Z"
  },
  {
-  "slug": "tn-nz1-sb",
-  "inputs": "libm_fields.npz",
-  "note": "noise twin base2 sppt 1e-3 seed 1",
-  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/suite_nz1_sb.json /kaggle/working/sb.json > /kaggle/working/sb.log 2>&1; tail -20 /kaggle/working/sb.log",
-  "account": "1",
-  "at": "2026-11-12T03:54Z"
- },
- {
   "slug": "tn-nz2-sb",
   "inputs": "libm_fields.npz",
   "note": "noise twin base2 sppt 1e-3 seed 2",
