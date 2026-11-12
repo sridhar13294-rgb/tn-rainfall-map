@@ -1909,3 +1909,11 @@ Variants (cloud_parts.py, T42, start 1 Nov, 24/48 h; reference lcl = -0.8 / -1.1
 - 18:45 P3 first member on the package (tn-lz1-sb): 72 h pmin Vardah 995.4 / Nivar 1004.6 / Michaung 1005.8 vs base2 nz means 990.2 / 992.4 /
   999.6 and ERA5-at-T170 targets 995.2 / 994.1 / 992.0. 1 of 3 members (lz2 running, lz3 queued) - no verdict yet; first sign: the
   package weakens Nivar (+12 hPa) and Michaung (+6) well beyond the noise spread.
+
+## 12 Nov 19:20 IST - A/P1: the UNASSIGNED 0.3-0.5 K (Sridhar 19:14 "first find the unexplained cause") - REGISTERED
+Candidate from the dynamics work (D1): with PHYSICS OFF the linear vertical semi-Lagrangian interpolation cools the middle troposphere
+(z500 -2.2..-2.9 m/day; s4_check: -0.0..-0.2 K/day at sigma 0.70-0.85), and cubic vertical interpolation removed that on 5 Nov.
+-0.15..-0.2 K/day over 2 days = -0.3..-0.4 K = the size of the unassigned remainder. It is not physics, so none of today's physics
+tests could see it.
+Test (rh_vs_era5.py, same 3 starts, T42): package (phys_ifs + bl_lcl + sfc_sal + continuum + qs_mix) + sl_vcubic.
+CONFIRMED if t850 AND t700 d2 biases both improve by >= 0.3 K (from -1.21 / -1.12); rejected if < 0.15 K.
