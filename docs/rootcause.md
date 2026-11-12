@@ -1669,3 +1669,12 @@ Reading (fixed now): spread per storm = max - min of 72 h pmin over {tn-s-rd-sb,
   |mean(vz) - mean(nz)| <= 2 hPa per storm - the SAME 2 hPa threshold, on a quantity with ~1/sqrt(3) of the noise (stricter, not
   relaxed). This design is fixed now, before any vz result is seen, and applies to every later candidate. The old single-run vcubic
   verdict is not re-judged; vcubic is judged only on the new vz-vs-nz means.
+- 10:05 SL details (T42, same 3 starts, day-1 jet error Asia/Pacific/Atlantic): SL+cubic -5.7/-4.3/-3.8; + limiter OFF -5.6/-4.3/-3.8;
+  + off-centering 0 -5.6/-4.3/-3.8 => neither the quasi-monotone limiter (which in Dinosaur also bounds the vertical, unlike IFS) nor
+  off-centering matters. First 6 h, Asia: SL linear 52.3 -> 48.7, SL cubic -> 50.0, Eulerian -> 50.3 => the fast start-up loss (S1) is
+  almost entirely the LINEAR vertical interpolation (D1); cubic removes it. Remaining SL-cubic vs Eulerian gap builds over 6-24 h (~1 m/s).
+- Decomposition vs ERA5 (Asia, 3 starts): ERA5 day 0 54.8 -> day 1 54.6; model start on its own T42 levels 52.3 (-2.5 = representation
+  at T42: truncation + interpolation; T170 exam day 0 was -1.8). Day-1 change: ERA5 -0.2, SL linear -6.3, SL cubic -3.4, Eulerian -2.4.
+  Pacific ERA5 +8.1 (jet strengthening) vs cubic +4.8 / Eulerian +6.5; Atlantic ERA5 -3.4 vs cubic -5.8 / Eulerian -5.3.
+  => the ~2 m/s/day left even in the Eulerian core is common to both cores: candidates T42 resolution (eddy forcing of the jet), no
+  physics. Running T85 (sigma / SL cubic / Eulerian) to see if it shrinks with resolution.

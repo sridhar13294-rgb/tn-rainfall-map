@@ -39,10 +39,10 @@ def make(core):
     if core == 'sigcub':                                                    # semi-Lagrangian with cubic vertical interpolation (sl_vcubic)
         coords = M.coords
         eq = primitive_equations.SemiLagrangianPrimitiveEquations(M.ref_t, M.oro, coords, M.ps, humidity_key='specific_humidity', monotone_tracers=True,
-                                                                  nodal_tracers=('specific_humidity',), monotone_dynamics=True, vertical_interpolation_order='cubic')
+                                                                  nodal_tracers=('specific_humidity',), monotone_dynamics=bool(int(os.environ.get('SLMONO', 1))), vertical_interpolation_order='cubic')
         pc = lambda ps: M.sig[:, None, None] * ps
         filt = primitive_equations.step_filter_excluding_nodal_tracers(time_integration.horizontal_diffusion_step_filter(hor, dt=M.dt, tau=tau, order=2), nodal_tracers=('specific_humidity',))
-        step = time_integration.step_with_filters(time_integration.semi_lagrangian_crank_nicolson_rk2(eq, M.dt, off_centering=0.05, warm_start_corrector=True), [filt])
+        step = time_integration.step_with_filters(time_integration.semi_lagrangian_crank_nicolson_rk2(eq, M.dt, off_centering=float(os.environ.get('SLOC', 0.05)), warm_start_corrector=True), [filt])
         return coords, pc, jax.jit(lambda s: jax.lax.fori_loop(0, nday, lambda i, x: step(x), s))
     if core == 'sigma':
         coords = M.coords
