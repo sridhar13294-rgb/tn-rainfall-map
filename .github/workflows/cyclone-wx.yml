@@ -36,7 +36,13 @@ jobs:
           mkdir -p /tmp/cyc_out
           python scripts/cyclone/cyc_moist.py || true
           [ -f /tmp/cyc_out/wx_truth_moist_2020.npz ] && gh release upload era5-cases /tmp/cyc_out/wx_truth_moist_2020.npz --clobber || true
-      - if: ${{ !contains(github.event.head_commit.message, 'ECMWF scores only') && !contains(github.event.head_commit.message, 'land library') && !contains(github.event.head_commit.message, 'moist truth') }}
+      - if: contains(github.event.head_commit.message, 'flux truth')
+        run: |
+          # 12 Nov: ERA5 surface/TOA energy fluxes + BL height, daily means of days 0-2 of every exam start, under a NEW name
+          mkdir -p /tmp/cyc_out
+          python scripts/cyclone/cyc_flux.py || true
+          [ -f /tmp/cyc_out/flux_truth_2020.npz ] && gh release upload era5-cases /tmp/cyc_out/flux_truth_2020.npz --clobber || true
+      - if: ${{ !contains(github.event.head_commit.message, 'ECMWF scores only') && !contains(github.event.head_commit.message, 'land library') && !contains(github.event.head_commit.message, 'moist truth') && !contains(github.event.head_commit.message, 'flux truth') }}
         run: |
           mkdir -p /tmp/cyc_out
           LIBM_TIMES=2020-01-01T00/2020-12-26T00/120 LIBM_NAME=wx2020 python scripts/cyclone/cyc_libm.py > /tmp/libm_wx.out 2>&1 &

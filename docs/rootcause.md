@@ -1760,3 +1760,17 @@ Variants (cloud_parts.py, T42, start 1 Nov, 24/48 h; reference lcl = -0.8 / -1.1
  (b) package without bl_lcl - if bl_lcl's cap removes heat transport above cloud base, t925 is warmer by >= 0.4 K (but q925 wetter).
  (c) lcl + edmf (IFS 3.42-3.43 dry mass flux: heat/moisture carried from the surface layer to cloud base) - if the missing piece is the
      non-local BL heat transport, t925 warms by >= 0.4 K with q925 not wetter than +3 %.
+- 13:15 RESULT (T42, start 1 Nov; t925 bias vs ERA5 h24 / h48; q925 bias; cover):
+  | variant | t925 | q925 | cover h48 |
+  | lcl (reference) | -0.8 / -1.1 K | +2.5 / +1.3 % | 0.93 |
+  | (a) lcl + cld_fix (RH cloud frozen in radiation) | -0.5 / -0.8 | +2.8 / +2.2 % | (0.90 diagnosed) |
+  | (b) package without bl_lcl | -0.5 / -0.7 | +5.6 / +4.8 % | 0.92 |
+  | (c) lcl + edmf | -0.8 / -1.1 | +2.9 / +1.6 % | 0.93 |
+  Reading (registered 12:30): (a) NOT an amplifier-only problem: freezing the cloud removes ~0.3 K of the 1.1 K; the rest cools
+  without the cloud feedback -> the INITIATOR is elsewhere. (b) bl_lcl costs +0.3..+0.4 K of cooling at 925 hPa (meets the 0.4
+  threshold at 48 h only) while it removes ~3.5 % of the moisture excess -> part of the cost, not the initiator. (c) EDMF mass flux:
+  no effect -> rejected as the missing piece.
+  => ~0.7 K/2 days of 925-hPa cooling with frozen cloud and without bl_lcl. Need a REFERENCE per energy term: ERA5 daily-mean surface
+  sensible/latent heat flux, surface net LW/SW, TOA net LW/SW and BL height for the exam starts (cyc_flux.py, GitHub 'flux truth',
+  new file flux_truth_2020.npz). Registered use: model day-1 means of the same terms; a term differing from ERA5 by >= 5 W m-2
+  globally (or >= 10 W m-2 over the tropical/subtropical ocean) in the direction that cools the low levels is the initiator candidate.
