@@ -30,13 +30,13 @@ for nm, ex in CANDS.items():
             _, d = M.column(T, q, u, v, ps, crx, want_diag=True, div=hor.to_nodal(st.divergence) * M.SEC)
             Ts = np.asarray(d['Ts'], float)
             f = dict(shf=-np.asarray(d['H'], float), lhf=-LV * np.asarray(d['E'], float), snsw=np.asarray(d['sw_sfc'], float),
-                     snlw=np.asarray(d['lw_dn'], float) - SB * Ts ** 4, tnlw=-np.asarray(cr['rad']['olr'], float), blh=np.asarray(d['hbl'], float), tp24=np.asarray(d['rain'], float) * 86400.0 / 1000.0)
+                     snlw=np.asarray(d['lw_dn'], float) - SB * Ts ** 4, tnlw=-np.asarray(cr['rad']['olr'], float), blh=np.asarray(d['hbl'], float), tp24=np.asarray(d['rain'], float) * 86400.0)
             for a, b in f.items(): S[a] = S.get(a, 0) + b / 24
         i = FD[TT[k]]
         for a, X in S.items():
             Xg = WS.to_grid(X, M.lon, M.lat); Ob = FT.get('o_' + a)
             if Ob is None: continue
-            Ob = Ob[i, 1].astype(float); land = WS.to_grid(np.asarray(M.land, float), M.lon, M.lat) > 0.5
+            Ob = Ob[i, 1].astype(float) * (1000.0 if a == 'tp24' else 1.0); land = WS.to_grid(np.asarray(M.land, float), M.lon, M.lat) > 0.5
             for reg, m in (('globe', np.ones_like(land)), ('ocean 40S-40N', (~land) & (np.abs(TLA) <= 40)), ('land', land)):
                 ok = m & np.isfinite(Xg) & np.isfinite(Ob)
                 g = lambda Y: float((Y * TW * ok).sum() / (TW * ok).sum())

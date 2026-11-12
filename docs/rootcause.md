@@ -1836,3 +1836,9 @@ Variants (cloud_parts.py, T42, start 1 Nov, 24/48 h; reference lcl = -0.8 / -1.1
   -3.4 W m-2 at h0, -8.6 at h24; 850-1000 hPa -0.3..-0.5 K/day), latent heat flux -12 W m-2 globally (-25 over the 40S-40N ocean)
   vs ERA5 -> less latent heating aloft. Next: the same energy terms for base2 (was the evaporation deficit introduced by ck_z/sfc_sal
   or by the package?) and the precipitation vs ERA5 (latent heating actually released).
+- 18:30 ENERGY TERMS base2 vs ERA5 (same 3 starts, day 1): LHF globe -105 vs -85 (+24 % too strong), ocean 40S-40N -150 vs -129 (+17 %);
+  SHF globe +1.4 vs -15.8 (WRONG SIGN: net downward - the old shallow scheme's +7 K/day heating made the low levels warmer than the
+  surface), ocean +5.5 vs -12.8; BL height 943 vs 786 m (ocean). Candidate lcl: LHF ocean -104 (-19 %), SHF -14 (right), BLH 412.
+  => the old base got its warmth from a wrong-signed sensible heat flux plus too much evaporation; the package fixed the SHF but the
+  evaporation swung from +17 % to -19 % over the ocean (-46 W m-2). Decomposition running: package WITHOUT ck_z/sfc_sal (the COARE
+  evaporation changes) -> splits the swing into "package (moister surface layer)" vs "COARE coefficient change"; plus rain vs ERA5.
