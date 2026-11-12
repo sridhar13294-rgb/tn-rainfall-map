@@ -1691,3 +1691,11 @@ Reading (fixed now): spread per storm = max - min of 72 h pmin over {tn-s-rd-sb,
   => doubling resolution barely changes the Asian loss in either core: the ~2 m/s/day common loss is NOT grid resolution. Left:
   no physics in this test (but physics on/off gave the same jet error on 10 Nov) and the START STATE itself (ERA5 interpolated from
   pressure levels; jet core between the 250 and 200 hPa analysis levels). SL cubic at T85 re-running (first attempt timed out).
+- 10:40 T85 SL cubic: Asia -4.4, Pacific -2.2, Atlantic -3.4 vs Eulerian T85 -4.5 / -1.8 / -2.7 (SL linear -8.1 / -4.1 / -4.2).
+  => at T85 the SL core WITH cubic vertical interpolation matches the Eulerian core (within ~0.5); the 1-1.6 m/s gap seen at T42 (D2)
+  is a coarse-grid effect of the horizontal interpolation and shrinks with resolution -> D2 CLOSED (expected negligible at T170).
+- D4 (T42, standard-atmosphere T_ref instead of isothermal 250 K, SL cubic): -5.7 / -4.3 / -3.9 vs -5.7 / -4.3 / -3.8 -> no jet effect;
+  D4 CLOSED for the jet (the tropopause T effect of T_ref not separately needed: cubic already removed most of it on 5 Nov).
+- So the dynamics' jet loss = D1 (linear vertical SL; fix = sl_vcubic, built) + D3 (sigma over Tibet, ~1 m/s Asia, deferred). The
+  remaining ~-2..-4 m/s at day 1 common to all cores and resolutions = start state (-1.7 at T85 already at hour 0) + evolution without
+  physics in this test.
