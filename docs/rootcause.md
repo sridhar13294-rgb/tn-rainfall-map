@@ -1998,3 +1998,11 @@ D3 - hybrid vertical coordinate: SCOPE (mm2.py touch points, grep): coordinate s
   REGISTERED T170 screen (tn-p5-dyn-hyb, base2 + hyb, same 12 starts as tn-p5-dyn): Asian subtropical jet speed bias d1-d3 better than
   base2 (-6.2 / -8.7 / -10.3) by >= 0.5 m/s on average, no worse jet latitude classes, global z500 not worse; then the storm check
   (3-member means, current rule) before adoption.
+- 04:05 (13 Nov) P3 package storm members complete (tn-lz1/2/3-sb, 72 h pmin): Vardah 995.4 / 995.3 / 995.3, Nivar 1004.6 / 1004.6 / 1004.3,
+  Michaung 1005.8 / 1005.8 / 1005.7 -> means 995.3 / 1004.5 / 1005.8 vs base2 nz means 990.2 / 992.4 / 999.6 and ERA5-at-T170 targets
+  995.2 / 994.1 / 992.0. Spread between package members <= 0.3 hPa (base2: up to 5.2) - the package is far less chaotic.
+  => the package weakens Nivar by 12.1 hPa and Michaung by 6.2 (both AWAY from their targets) and Vardah by 5.1 (onto its target).
+  Storm check (registered rule, vs base2 within 2 hPa): FAILS for all three. P3 suspects (to test): the colder/drier lower troposphere
+  (A/P1 energy deficit, larger over warm-core inflow), the IFS deep closure (PCAPE removed over tau 720-10800 s: too strong venting
+  of the storm core instability), weaker surface enthalpy flux (package LHF -8..-11 % vs ERA5).
+  Kaggle: tn-p5-dyn-hyb (D3 T170 screen) launched on account 4 at 04:00; 4 waiting (TN rain x2, tracks, exam quarter).
