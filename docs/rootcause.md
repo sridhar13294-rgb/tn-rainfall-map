@@ -1699,3 +1699,27 @@ Reading (fixed now): spread per storm = max - min of 72 h pmin over {tn-s-rd-sb,
 - So the dynamics' jet loss = D1 (linear vertical SL; fix = sl_vcubic, built) + D3 (sigma over Tibet, ~1 m/s Asia, deferred). The
   remaining ~-2..-4 m/s at day 1 common to all cores and resolutions = start state (-1.7 at T85 already at hour 0) + evolution without
   physics in this test.
+
+## 12 Nov 10:50 IST - Problem A in the forecast: which cloud component fills the sky (Sridhar 10:23: fix issues before the exam)
+History from the T170 humidity jobs (h24 global cover vs ERA5 ~0.63): base2 0.77; IFS package 0.82; + evap + continuum 0.82;
++ qs_mix 0.91-0.92; + bl_lcl 0.93. => the forecast cover was already too high with base2 (+0.14); the package adds ~+0.05 and the
+mixed-phase RH (qs_mix) ~+0.09 in the forecast (at hour 0 qs_mix brought the cover UP to ERA5's 0.62). The cover = large-scale RH
+cloud + convective towers (Slingo 0.245 + 0.125 ln P, x f_tow 0.5 over the convective layer) + anvils (2 (C - 0.3) over the top 100 hPa
+of deep convection), maximum-random overlap. At hour 0 there is no convection -> only the RH part shows; after spin-up the tower/anvil
+parts switch on in every convecting column (the IFS mask now includes shallow convection: ~19 % of columns).
+REGISTERED (cloud_parts.py, T42, 1 start, lcl32 candidate, h0/24/48): if the tower+anvil components explain >= 2/3 of the 0.62 -> 0.93
+rise (cover with them removed stays <= 0.72), the cause is the convective-cloud diagnosis (a pre-IFS Slingo-type scheme fed by every
+IFS convecting column, incl. shallow); if the RH part alone rises to >= 0.85, the cause is the RH cloud scheme / the forecast RH
+(then: which levels).
+- 11:05 RESULT (cloud_parts.py, T42, start 1 Nov, h0 / h24 / h48; global):
+  candidate lcl (IFS package + bl_lcl + COARE + continuum + qs_mix): cover 0.58 / 0.90 / 0.93 (ERA5 0.62 / 0.65 / 0.64); RH-cloud alone
+  0.58 / 0.895 / 0.93; towers 0.00 / 0.06 / 0.07; anvils 0.00 / 0.06 / 0.06. Low cover 0.27 -> 0.75 -> 0.77; mid 0.17 -> 0.32; high 0.44 -> 0.64.
+  => registered branch 2: the RH (large-scale) cloud alone fills the sky; the convective cloud is NOT the cause.
+  Per level (global mean): RH at sigma 0.91-0.95 0.73 -> 0.83-0.84 in 24 h, RH-cloud there 0.17-0.20 -> 0.40-0.42; T falls 0.5-0.9 K
+  through sigma 0.7-0.99. vs ERA5: t925 -0.8 K (h24), -1.1 K (h48); q925 +2.5 / +1.3 %.
+  base2 for contrast: t925 +1.5 K (warm, the old P1), q925 -12 %, but RH-cloud also 0.30 -> 0.76 (mid/high levels moisten: q700 +22 %).
+  => 5-Why: forecast cloud excess <- lower-tropospheric RH +0.10 in 24 h <- cooling ~0.8-1 K/day below ~700 hPa plus a little
+  moistening <- ? (candidates: radiation incl. low-cloud-top LW cooling (positive feedback: cloud -> cooling -> RH -> cloud),
+  the dynamics' lowest-level start cooling S4 (-0.8..-1.1 K/day physics-off, both cores), BL / convection). Note: P1 on this
+  candidate is now COLD (t925 -1.1 K at 48 h) instead of the old warm +1.5 K.
+  Next: first-hours T budget by process per level (init_tend.py, candidate settings) - which process cools 925-700 hPa.
