@@ -1879,3 +1879,11 @@ Variants (cloud_parts.py, T42, start 1 Nov, 24/48 h; reference lcl = -0.8 / -1.1
   day-3 easterly is common to both physics versions -> not a convection-scheme effect; next: the 850-hPa momentum budget (P5 item 3).
 
 (15:35 note: the clock times written on the 12 Nov afternoon entries above were wrong - estimated, not read from a clock; corrected to approximate real IST.)
+- 15:50 base2 vs ERA5 (rh_vs_era5.py, same 3 starts): t700 d1/d2 -1.34 / -1.55 K (package -0.81 / -1.12); t850 +0.18 / +0.05 globe,
+  +0.80 / +0.75 tropical ocean (package -0.85 / -1.21); RH d2: 925 -0.13 (dry), 700 +0.21, 500 +0.30 (package 925 +0.06, 700 +0.11, 500 +0.21).
+  => the 700-hPa cooling is OLDER than the package and was LARGER in base2 (-1.55 vs -1.12 K at d2): the package improves it. At 850 hPa the
+  old shallow scheme's +3..+6 K/day overheating hid the same cooling (base2 +0.8 K warm over the tropical ocean); the package removes that
+  wrong heating and exposes it. => the A/P1 driver at 700-850 hPa is a long-standing, model-wide heat deficit in the lower-to-middle
+  troposphere, not a package defect. Measured and cleared for it: radiation at 700-850 (= RRTMG), evaporation, dynamics alone (physics-off
+  +0.0..-0.2 K/day there). Left: the vertical distribution of latent heating (rain total right) and the large-scale cloud/condensation
+  scheme shared by both versions.
