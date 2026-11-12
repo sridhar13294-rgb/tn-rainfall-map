@@ -1865,3 +1865,8 @@ Variants (cloud_parts.py, T42, start 1 Nov, 24/48 h; reference lcl = -0.8 / -1.1
   improves only 0.55 -> 0.50. => NOT adopted: one k-set cannot match both; the deficit is small (~0.1 K/day diurnal mean) - leave.
   => the unexplained ~0.3 K/day at 700-850 hPa is NOT radiation and NOT evaporation. Next: which process changed between base2
   (850 hPa warm) and the package (850 hPa cold): first-hours T budget by process, base2 vs package, same starts.
+- 21:30 PROCESS BUDGET base2 vs package (init_tend.py, T42, 2 starts; K/day): at 880-990 hPa base2 is warmed by its old shallow scheme
+  (+3..+6) and cooled by rain evaporation (-1.3..-2.5); the package has neither (shallow +0, evaporation -0.1..-0.4), more radiative
+  cooling at 880-950 hPa (tropics 6-24 h -2.3..-2.7 vs base2 -1.1..-1.9: its low cloud deck) and much weaker convective heating in the
+  first 6 h (tropics 400-700 hPa +0.1..+0.4 vs base2 +1.1..+1.8). At 700-850 hPa the TOTAL tendency is similar in both (about -0.5..-1 K/day)
+  -> the 700-850 hPa cooling may be common to every model version (not introduced by the package). Checking base2 vs ERA5 t850/t700.
