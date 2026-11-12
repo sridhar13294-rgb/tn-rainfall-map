@@ -1842,3 +1842,11 @@ Variants (cloud_parts.py, T42, start 1 Nov, 24/48 h; reference lcl = -0.8 / -1.1
   => the old base got its warmth from a wrong-signed sensible heat flux plus too much evaporation; the package fixed the SHF but the
   evaporation swung from +17 % to -19 % over the ocean (-46 W m-2). Decomposition running: package WITHOUT ck_z/sfc_sal (the COARE
   evaporation changes) -> splits the swing into "package (moister surface layer)" vs "COARE coefficient change"; plus rain vs ERA5.
+- 19:15 DECOMPOSITION of the evaporation swing (same 3 starts, ocean 40S-40N, day-1 LHF vs ERA5 -128.7): base2 -150.1 (+17 %);
+  package + bl_lcl WITHOUT ck_z/sfc_sal -118.9 (-8 %); + ck_z 1 + sfc_sal 0.98 -104.3 (-19 %). Rain vs ERA5 (mm/day): globe 3.1 / 2.9 vs
+  3.0, ocean 4.2 / 3.8 vs 3.7 -> precipitation (latent heating released) is RIGHT in both.
+  => the package itself brings evaporation to -8 % of ERA5; the 5 Nov COARE changes (adopted into the candidate on 11 Nov to remove ~2 %
+  of the moisture excess) now OVER-correct it to -19 %. ck_z = 1 was derived against the old base (where LHF was +17 %); on the package
+  it is no longer supported by the reference. sfc_sal (2 % lower saturation over sea water) is a physical fact (COARE 3.5 / IFS) and stays.
+  REGISTERED (rh_vs_era5.py, same starts): package + bl_lcl + sfc_sal WITHOUT ck_z: t850 d2 bias better than lcl's -1.29 K by >= 0.3 K
+  and LHF ocean within -10 % of ERA5, with q925 not above +4 %. (If the temperature does not move, evaporation is cleared as an A/P1 cause.)
