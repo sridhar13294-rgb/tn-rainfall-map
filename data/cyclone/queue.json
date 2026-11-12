@@ -6,21 +6,5 @@
   "cmd": "NOCLOUD=1 NLEV=tp75 CANDS='{\"pkgall_75\":{\"phys_ifs\":1,\"sfc_imp\":1,\"drag_imp\":1,\"ck_z\":1.0,\"sfc_sal\":0.98,\"rad_prm\":{\"lw_cnt\":0.667,\"qs_mix\":1}}}' DT=20 XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore moist_vs_era5.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_moist_2020.npz T170 1,7,13,19,25,31,37,43,49,55,61,67 /kaggle/working/me_pkg_75.json > /kaggle/working/me_pkg_75.log 2>&1; grep -v WARNING /kaggle/working/me_pkg_75.log | tail -40",
   "account": "4",
   "at": "2026-11-11T18:18Z"
- },
- {
-  "slug": "tn-vz3-sb",
-  "inputs": "libm_fields.npz",
-  "note": "vcubic twin base2+sl_vcubic sppt 1e-3 seed 3",
-  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/suite_vz3_sb.json /kaggle/working/sb.json > /kaggle/working/sb.log 2>&1; tail -20 /kaggle/working/sb.log",
-  "account": "1",
-  "at": "2026-11-12T03:54Z"
- },
- {
-  "slug": "tn-moist-b275",
-  "inputs": "libm_wx2020_fields.npz,wx_truth_moist_2020.npz",
-  "note": "humidity/cloud vs ERA5 T170 75 levels b2_75",
-  "cmd": "NOCLOUD=1 NLEV=tp75 CANDS='{\"base2_75\":{\"sfc_imp\":1,\"drag_imp\":1}}' DT=20 XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore moist_vs_era5.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_moist_2020.npz T170 1,7,13,19,25,31,37,43,49,55,61,67 /kaggle/working/me_b2_75.json > /kaggle/working/me_b2_75.log 2>&1; grep -v WARNING /kaggle/working/me_b2_75.log | tail -40",
-  "account": "1",
-  "at": "2026-11-12T04:34Z"
  }
 ]
