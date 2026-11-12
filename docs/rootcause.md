@@ -1972,3 +1972,13 @@ S3 - hour-0 central-India MSLP (s3_check.py: T170 INITIAL STATE, no DFI, no time
   residual was a T42 effect: coarser terrain smoothing). The T170 hour-0 value of +0.8 hPa (P5 runs) therefore comes from the DFI
   (S2: it removes part of the real thermal tide, +0.4 hPa measured 6 Nov, plus its other changes). S3 is CLOSED as a separate item and
   merges into S2.
+D3 - hybrid vertical coordinate: SCOPE (mm2.py touch points, grep): coordinate setup (l.124-140), start-state interpolation
+  (l.186 interp_pressure_to_sigma -> per-column target pressures a + b ps, as hyb_jet.py already does), the physics column
+  (l.465 p = sig ps, dp = dsig ps -> a + b ps, da + db ps), sigma-fraction tests inside the convection/BL code (l.337-345, 641, 820:
+  sig thresholds -> p / ps), diagnostics (l.899-1000: geopotential on sigma, lowest-level height, MSLP reduction, 850/700 indices),
+  the equation object (SemiLagrangianPrimitiveEquationsHybrid, already exercised in hyb_jet.py), DFI, and every analysis script that
+  reads M.sig (storm_budget, hind2, wx2, p5_bias, tn_rain_diag). Plan: option 'hyb' (default 0 = sigma, bit-identical), with
+  p_c, dp, p_b computed once per step from (a, b, ps) and passed everywhere sig * ps is used today; level set = hyb_jet.py's (same
+  reference pressures as today's 32 / 75 levels, B = ((s - 0.1)/0.9)^1.3). Expected gain from hyb_jet: Asia jet +1.1 m/s/day (T42).
+  Order: mm2 core + init + column (local T42 regression: hyb = 0 bit-identical; hyb = 1 runs 48 h stable at 32 and 75 L) -> diagnostics
+  -> scripts -> T170 screen (jets, storms on 3-run means, z500).
