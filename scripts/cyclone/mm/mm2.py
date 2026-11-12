@@ -513,7 +513,11 @@ class Model:
         # 850-925 hPa by +2.3..+2.8 g/kg/day -> the low cloud deck.
         e1_ = jnp.maximum(q1 * p1 / (0.622 + 0.378 * q1), 1.0); Td1_ = 243.5 * jnp.log(e1_ / 611.2) / (17.67 - jnp.log(e1_ / 611.2)) + 273.15
         zlcl = jnp.maximum(125.0 * (T1 - Td1_), 0.0)
-        hbl = jnp.where((S['bl_lcl'] > 0) & (zlcl < hbl), jnp.maximum(zlcl, 100.0), hbl)
+        # bl_lcl = 2 (12 Nov): cloud base ABOVE GROUND = height of the lowest level + its LCL (the 125 m/K estimate is relative to
+        # the parcel's own level; bl_lcl = 1 measured it from the ground, ~70-100 m too low). ERA5 BL height over the 40S-40N ocean is
+        # 786 m vs the model's 412 m (flux_vs_era5.py).
+        zcb = zlcl + jnp.where(S['bl_lcl'] > 1.5, zc[-1], 0.0)
+        hbl = jnp.where((S['bl_lcl'] > 0) & (zcb < hbl), jnp.maximum(zcb, 100.0), hbl)
         # pbl_tm = 1: Troen & Mahrt (1986) / Hong & Pan (1996) as in NCEP and ECMWF-type K-profiles: w* from the actual
         # boundary-layer height, ws = (u*^3 + 7 eps kappa w*^3)^(1/3) with eps = 0.1 (the old line had 0.6 x 0.1 x kappa:
         # ~12x too small, so daytime mixing was ~2.3x too weak), and a counter-gradient heat/moisture flux (below)

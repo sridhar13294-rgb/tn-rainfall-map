@@ -1779,3 +1779,14 @@ Variants (cloud_parts.py, T42, start 1 Nov, 24/48 h; reference lcl = -0.8 / -1.1
   Michaung +1.6. => cubic vertical interpolation REALLY weakens Vardah ~6-7 hPa (beyond the 5.2 noise spread) -> storm gate FAILS for
   Vardah (final after vz3). Context only (not a gate): ERA5-at-T170 targets Vardah 995.2 / Nivar 994.1 / Michaung 992.0 -> Vardah
   moves TOWARD its target (990.2 -> ~996.9), Michaung away (999.6 -> ~1001), Nivar ~same.
+- 14:05 ENERGY TERMS vs ERA5 (flux_vs_era5.py, candidate lcl, T42, 3 Oct-Nov starts, day-1 means; ERA5 sign, W m-2):
+  sensible heat globe -16.4 vs -15.8, ocean 40S-40N -14.3 vs -12.8, land -20.8 vs -25.8 -> SHF is RIGHT (not the initiator).
+  latent heat globe -73.1 vs -84.9, ocean 40S-40N -103.7 vs -128.7 (-19 %), land -47.8 vs -36.8.
+  BL height: ocean 40S-40N 412 vs 786 m (ERA5), land 453 vs 503 m. (ERA5 radiation fields are empty for 2020 in the WB2 archive.)
+  => the surface heat INPUT is right but the model keeps it in a boundary layer half as deep as ERA5's over the ocean: the 925-hPa
+  layer (~750 m) is inside ERA5's mixed layer but above ours, so it gets no surface heat and cools under radiation + dynamics; the
+  shallow, moist BL also evaporates 19 % less (smaller q deficit at the surface). Caveat: ERA5 BLH is a bulk-Ri diagnostic, ours is
+  the LCL-capped mixing height - not identical definitions, so the factor 2 is indicative, not exact.
+  Found while checking: bl_lcl measures the LCL from the GROUND although the 125 m/K estimate is relative to the lowest model level
+  (~70-100 m up). New option bl_lcl = 2 adds that height (default and bl_lcl = 1 unchanged; base2 6-h run bit-identical).
+  REGISTERED: lcl2 (bl_lcl 2) - t925 bias at 48 h smaller than lcl's -1.1 by >= 0.3 K and q925 not above +3 %; BL height closer to ERA5.
