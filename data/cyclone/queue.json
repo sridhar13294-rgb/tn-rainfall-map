@@ -1,1 +1,58 @@
-[]
+[
+ {
+  "slug": "tn-lz1-sb",
+  "inputs": "libm_fields.npz",
+  "note": "P3 baseline: package+bl_lcl storm member 1 (vs nz means)",
+  "account": "1",
+  "at": "2026-11-12T08:24Z",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/suite_lz1_sb.json /kaggle/working/sb.json > /kaggle/working/sb.log 2>&1; tail -20 /kaggle/working/sb.log"
+ },
+ {
+  "slug": "tn-lz2-sb",
+  "inputs": "libm_fields.npz",
+  "note": "P3 baseline: package+bl_lcl storm member 2 (vs nz means)",
+  "account": "1",
+  "at": "2026-11-12T08:24Z",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/suite_lz2_sb.json /kaggle/working/sb.json > /kaggle/working/sb.log 2>&1; tail -20 /kaggle/working/sb.log"
+ },
+ {
+  "slug": "tn-lz3-sb",
+  "inputs": "libm_fields.npz",
+  "note": "P3 baseline: package+bl_lcl storm member 3 (vs nz means)",
+  "account": "1",
+  "at": "2026-11-12T08:24Z",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/suite_lz3_sb.json /kaggle/working/sb.json > /kaggle/working/sb.log 2>&1; tail -20 /kaggle/working/sb.log"
+ },
+ {
+  "slug": "tn-lcl-q6",
+  "inputs": "libm_fields.npz",
+  "note": "Tracks baseline: package+bl_lcl quick6 72 h",
+  "account": "4",
+  "at": "2026-11-12T08:24Z",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/suite_lcl_q6.json 0 1 /kaggle/working/q6.json > /kaggle/working/q6.log 2>&1; tail -8 /kaggle/working/q6.log"
+ },
+ {
+  "slug": "tn-r24-lcl-a",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "note": "P2/P4 baseline: TN rain 24-start, package+bl_lcl",
+  "account": "1",
+  "at": "2026-11-12T08:24Z",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore tn_rain_diag.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz /kaggle/working/tnr.json 2020-01-01,2020-01-31,2020-03-01,2020-03-31,2020-04-30,2020-05-30,2020-06-29,2020-07-29,2020-08-28,2020-09-27,2020-10-27,2020-11-26 '{\"lcl\": {\"cmt_mf\": 1.0, \"rd_si\": 1.0, \"phys_ifs\": 1.0, \"bl_lcl\": 1.0, \"ck_z\": 1.0, \"sfc_sal\": 0.98, \"rad_prm\": {\"lw_cnt\": 0.667, \"qs_mix\": 1}, \"grid\": \"T170\"}}' > /kaggle/working/tnr.log 2>&1; tail -14 /kaggle/working/tnr.log"
+ },
+ {
+  "slug": "tn-r24-lcl-b",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "note": "P2/P4 baseline: TN rain 24-start, package+bl_lcl",
+  "account": "1",
+  "at": "2026-11-12T08:24Z",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore tn_rain_diag.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz /kaggle/working/tnr.json 2020-01-16,2020-02-15,2020-03-16,2020-04-15,2020-05-15,2020-06-14,2020-07-14,2020-08-13,2020-09-12,2020-10-12,2020-11-11,2020-12-11 '{\"lcl\": {\"cmt_mf\": 1.0, \"rd_si\": 1.0, \"phys_ifs\": 1.0, \"bl_lcl\": 1.0, \"ck_z\": 1.0, \"sfc_sal\": 0.98, \"rad_prm\": {\"lw_cnt\": 0.667, \"qs_mix\": 1}, \"grid\": \"T170\"}}' > /kaggle/working/tnr.log 2>&1; tail -14 /kaggle/working/tnr.log"
+ },
+ {
+  "slug": "tn-lcl-wx0",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "note": "P1/z500 baseline: exam quarter 0, package+bl_lcl",
+  "account": "1",
+  "at": "2026-11-12T08:24Z",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/wx_lcl.json 0 4 /kaggle/working/wx_0.json > /kaggle/working/wx_0.log 2>&1; tail -3 /kaggle/working/wx_0.log"
+ }
+]
