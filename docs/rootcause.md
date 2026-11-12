@@ -1723,3 +1723,20 @@ IFS convecting column, incl. shallow); if the RH part alone rises to >= 0.85, th
   the dynamics' lowest-level start cooling S4 (-0.8..-1.1 K/day physics-off, both cores), BL / convection). Note: P1 on this
   candidate is now COLD (t925 -1.1 K at 48 h) instead of the old warm +1.5 K.
   Next: first-hours T budget by process per level (init_tend.py, candidate settings) - which process cools 925-700 hPa.
+- 11:40 first-hours T budget (init_tend.py, candidate lcl, T42, 2 starts, GLOBAL mean, K/day; DYN = total - physics):
+  0-6 h  at 976/957/937/916 hPa: TOTAL -0.8/-1.6/-1.8/-1.5; rad -2.1/-1.5/-1.2/-1.3; BL +3.9/+1.0/0.0/-0.3; conv -0.5/+0.1/+0.2/+0.3;
+         lsc +0.1/+0.1/+0.1/+0.2; rain evap -0.2; DYN -2.1/-1.0/-0.6/-0.2.
+  6-24 h at 976/957/937/916/894: TOTAL -0.8/-1.0/-1.1/-0.8/-0.3; rad -0.2/-1.6/-0.7/-2.4/-4.0 (cloud-top LW cooling of the growing low
+         deck at ~900 hPa); BL +2.3/+1.3/-0.7/+1.3/+1.5; DYN -2.1/-1.2/-1.1/-1.4/+0.4.
+- S4 check (s4_check.py, PHYSICS OFF, T42, 3 Oct-Nov starts, 24 h): cooling confined to the lowest 4 levels: sigma 0.99/0.97/0.95/0.93
+  -1.11/-0.80/-0.57/-0.34 K; same over sea (-0.99..), tropical sea (-0.99), extratropical sea (-1.00), low land (-1.22); high land
+  -0.39 (the lowest levels there are ~600 hPa). DFI changes T by <= 0.01 K. ERA5 t925 day0->1: -0.01 K. With the 5 Nov result (same in
+  the Eulerian core) => S4 is NOT a numerical/initial-state error: it is the real dynamical cooling of the near-surface layer (warm
+  low-level air converging and rising in the tropics, cold-air outflow elsewhere) that the PHYSICS must balance (surface heat flux,
+  BL mixing, shallow-cumulus condensation heating). Reclassified: S4 'not a bug'.
+- => A (forecast cloud) and P1 (now cold, t925 -1.1 K at 48 h) are ONE problem: the physics supplies ~1 K/day too little heat to the
+  lowest ~100 hPa (or radiation cools it too much), the layer cools, RH rises 0.73 -> 0.83, the RH cloud grows, its top cools by LW
+  (-4 K/day at 894 hPa) -> more cooling below -> more RH (positive feedback). Two things to separate next: the INITIATOR (which
+  process is short in the first 6 h, before the cloud has grown: radiation -1.2..-2.1 and BL vs a reference) and the AMPLIFIER (the
+  cloud-radiation feedback). Reference needed: an observed/IFS low-level heating budget (e.g. ERA5 mean temperature tendency due to
+  parametrisations, or the RRTMG clear-sky check of the start column already done: clear-sky matched after lw_cnt).
