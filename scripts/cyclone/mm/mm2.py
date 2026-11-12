@@ -29,7 +29,7 @@ import cloudtop                                   # D2 cloud-top entrainment (nu
 import evapifs                                    # rain re-evaporation, IFS form (numpy / jax)
 import ifs_phys                                   # IFS Cy50r1 convection package (phys_ifs, 11 Nov; docs/ifs_package.md)
 import landinit                                   # starting land state from analysed soil fields (numpy; test_land_init.py)
-from dinosaur import coordinate_systems, spherical_harmonic, sigma_coordinates, primitive_equations, scales, time_integration, filtering, vertical_interpolation
+from dinosaur import coordinate_systems, spherical_harmonic, sigma_coordinates, primitive_equations, scales, time_integration, filtering, vertical_interpolation, hybrid_coordinates
 # 10 Nov 2026: same arithmetic on every GPU. Dinosaur picks 6-pass bfloat16 emulation (BF16_BF16_F32_X6) for its float32
 # spectral transforms on Ampere+ GPUs (A100) but true float32 (Precision.HIGHEST) on the T4 and CPU. On the E2E A100 that
 # path needed Triton GEMM (failed with deterministic ops) and, with Triton off, gave day-1 z500 +10 m on all 19 starts.
@@ -137,6 +137,19 @@ class Model:
         self.fcor = jnp.asarray(2 * 7.292e-5 * np.sin(np.radians(self.LA)), jnp.float32)
         self.sig = self.coords.vertical.centers.astype(np.float32); self.dsig = self.coords.vertical.layer_thickness.astype(np.float32)
         self.sigb = self.coords.vertical.boundaries.astype(np.float32)
+        # hyb (12 Nov, D3): hybrid vertical coordinate for the DYNAMICS and physics (IFS-type). Same reference pressures as the sigma
+        # levels (A + B p0 = sigma p0 at p0 = 1013.25 hPa), B = ((s - 0.1)/0.9)^1.3 -> near-pressure levels above ~250 hPa, so the jet
+        # levels no longer slope with the Tibetan Plateau (hyb_jet.py: Asia jet +1.1 m/s/day). self.coords stays sigma for the purely
+        # horizontal diagnostics (T, u, v from the state are identical); self.coords_dyn carries the equations. Default 0 = sigma.
+        self.hyb = bool(self.S.get('hyb', 0))
+        if self.hyb:
+            sb_ = self.sigb.astype(np.float64); Bb = np.clip((sb_ - 0.1) / 0.9, 0.0, 1.0) ** float(self.S.get('hyb_exp', 1.3)); Ab = (sb_ - Bb) * 101325.0
+            self.hA_b, self.hB_b = Ab.astype(np.float32), Bb.astype(np.float32)
+            self.hA_c, self.hB_c = (0.5 * (Ab[1:] + Ab[:-1])).astype(np.float32), (0.5 * (Bb[1:] + Bb[:-1])).astype(np.float32)
+            self.hdA, self.hdB = np.diff(Ab).astype(np.float32), np.diff(Bb).astype(np.float32)
+            self.coords_dyn = coordinate_systems.CoordinateSystem(self.coords.horizontal, hybrid_coordinates.HybridCoordinates(a_boundaries=Ab / 100.0, b_boundaries=Bb))
+        else:
+            self.coords_dyn = self.coords
         self.ref_t = np.full(len(self.sig), 250.0, np.float32) * self.K
         # SPPT code is compiled in when any member may use it (set sppt_on=True for an ensemble whose control has sppt=0)
         self.sppt_on = bool(self.S['sppt'] > 0) if self.S.get('sppt_on') is None else bool(self.S['sppt_on'])
@@ -183,7 +196,12 @@ class Model:
         dz = zs_mod - zs; Tm = (Ts - 0.0065 * dz / 2) * (1 + 0.608 * Qs)
         ps = ps * np.exp(-G * dz / (RD * Tm)); zs = zs_mod
         pc = vertical_interpolation.PressureCoordinates(levs)
-        sg = vertical_interpolation.interp_pressure_to_sigma({'t': T3, 'q': np.maximum(Q3, 0), 'u': U3, 'v': V3}, pc, self.coords.vertical, ps[None] / 100.0)
+        if self.hyb:                                                                                 # hybrid levels: interpolate to each column's own level pressures
+            want = jnp.asarray(np.asarray(self.pres(ps, np)[0]) / 100.0)
+            itp = vertical_interpolation.vectorize_vertical_interpolation(vertical_interpolation._linear_interp_with_safe_extrap)
+            sg = {k_: np.asarray(itp(want, levs, x_)) for k_, x_ in (('t', T3), ('q', np.maximum(Q3, 0)), ('u', U3), ('v', V3))}
+        else:
+            sg = vertical_interpolation.interp_pressure_to_sigma({'t': T3, 'q': np.maximum(Q3, 0), 'u': U3, 'v': V3}, pc, self.coords.vertical, ps[None] / 100.0)
         sg = {k: np.asarray(v, np.float32) for k, v in sg.items()}
         vor, div = spherical_harmonic.uv_nodal_to_vor_div_modal(hor, sg['u'] * self.MPS, sg['v'] * self.MPS)
         st = primitive_equations.State(vorticity=vor, divergence=div, temperature_variation=hor.to_modal(sg['t'] * self.K - self.ref_t[:, None, None]),
@@ -463,6 +481,8 @@ class Model:
         and diagnostics (surface rain, surface fluxes)."""
         S = dict(self.S); S.update(cr['prm']); dt = self.dt_s; sig = jnp.asarray(self.sig)[:, None, None]; dsig = jnp.asarray(self.dsig)[:, None, None]
         sb = jnp.asarray(self.sigb)[:, None, None]; p = sig * ps; dp = dsig * ps; mass = dp / G; L = T.shape[0]
+        if self.hyb:                                                                                 # D3: per-column level pressures; sig = p / ps keeps every sigma test as p / ps
+            p, dp, pb_ = self.pres(ps); sig = p / ps[None]; dsig = dp / ps[None]; sb = pb_ / ps[None]; mass = dp / G
         land = self.land; sea = (~land) & (cr['sst'] > 0)
         Ts = jnp.where(sea, cr['sst'], cr['tl'])
         # heights of layer centres and interfaces above the ground
@@ -857,7 +877,7 @@ class Model:
         self.built_for = when_utc
         if same: return                                                                             # same grid, terrain and coast: reuse the compiled model
         self._jit = {}; self._built = (split, np.asarray(self.oro), np.asarray(self.zs), np.asarray(self.land))
-        self.eq = primitive_equations.SemiLagrangianPrimitiveEquations(self.ref_t, self.oro, self.coords, self.ps, humidity_key='specific_humidity',
+        self.eq = (primitive_equations.SemiLagrangianPrimitiveEquationsHybrid if self.hyb else primitive_equations.SemiLagrangianPrimitiveEquations)(self.ref_t, self.oro, self.coords_dyn, self.ps, humidity_key='specific_humidity',
                                                                        monotone_tracers=True, nodal_tracers=('specific_humidity',), departure_iterations=int(self.S.get('sl_iter', 1)), monotone_dynamics=bool(self.S.get('mono', True)),
                                                                        **({'vertical_interpolation_order': 'cubic'} if self.S.get('sl_vcubic', 0) > 0 else {}))   # sl_vcubic (5 Nov 23:00): cubic vertical SL interpolation (Dinosaur default linear smears the tropopause: +1.5 K/day physics-off)
         cl = hor.cos_lat
@@ -887,6 +907,18 @@ class Model:
         else:
             eqs = time_integration.compose_equations([self.eq, self.phys])
             self.step = time_integration.step_with_filters(time_integration.semi_lagrangian_crank_nicolson_rk2(eqs, self.dt, off_centering=0.05, warm_start_corrector=True), [self.filt])
+    def pres(self, ps, xp=jnp):
+        """(12 Nov, D3) layer-centre pressure, layer thickness and interface pressure (Pa) for surface pressure ps [X, Y]."""
+        if not self.hyb:
+            return (xp.asarray(self.sig)[:, None, None] * ps[None], xp.asarray(self.dsig)[:, None, None] * ps[None], xp.asarray(self.sigb)[:, None, None] * ps[None])
+        return (xp.asarray(self.hA_c)[:, None, None] + xp.asarray(self.hB_c)[:, None, None] * ps[None], xp.asarray(self.hdA)[:, None, None] + xp.asarray(self.hdB)[:, None, None] * ps[None],
+                xp.asarray(self.hA_b)[:, None, None] + xp.asarray(self.hB_b)[:, None, None] * ps[None])
+    def geopot(self, T, q, ps, zs_n):
+        """(12 Nov, D3) hydrostatic geopotential (m2 s-2) at layer centres from interface pressures, virtual temperature; for hyb."""
+        pc, dp, pb = self.pres(ps); Tv = T * (1 + 0.608 * q)
+        dphi_lay = RD * Tv * jnp.log(pb[1:] / jnp.maximum(pb[:-1], 1.0))                          # thickness of each layer
+        phi_top = G * zs_n[None] + jnp.cumsum(dphi_lay[::-1], axis=0)[::-1]                          # geopotential at each layer's top interface
+        return (phi_top - dphi_lay) + RD * Tv * jnp.log(pb[1:] / pc)                                 # centre = bottom interface + the part between it and the centre
     def dfi(self, state):
         if self.S.get('dfi_off', 0) > 0: return state                                   # dfi_off (6 Nov): the adiabatic DFI removes part of the solar thermal tide (rootcause 13:10)
         if 'dfi' in self._jit: return self._jit['dfi'](state)
@@ -902,7 +934,7 @@ class Model:
         _, d = self.column(T, q, u, v, ps, cr, rad_fresh=True, div=hor.to_nodal(state.divergence) * self.SEC); dt = self.dt_s; sea = (~self.land) & (cr['sst'] > 0)
         # mixed layer: strong winds stir up cooler water (about ent K/day at 25 m/s), recovering slowly toward the start
         if 'ocean' in cr:                                                                           # ocean column: heat, wind stirring, cold wake
-            p1 = self.sig[-1] * ps; rho1 = p1 / (RD * T[-1] * (1 + 0.61 * q[-1]))
+            p1 = self.pres(ps)[0][-1]; rho1 = p1 / (RD * T[-1] * (1 + 0.61 * q[-1]))
             kt = rho1 * d['ust'] ** 2 / d['V1']                                                     # stress on the sea = rho cd V1 (u1, v1)
             Qns = d['lw_dn'] - SB * cr['sst'] ** 4 - d['H'] - LV * d['E']
             ocn, sst_o = ocean_step(cr['ocean'], Qns, d['sw_sfc'], kt * u[-1], kt * v[-1], self.fcor, dt, mask=sea, fw=d['E'] - d['rain'], xp=jnp)
@@ -951,7 +983,7 @@ class Model:
             u, v = spherical_harmonic.vor_div_to_uv_nodal(hor, state.vorticity, state.divergence); u, v = u / self.MPS, v / self.MPS
             T = (hor.to_nodal(state.temperature_variation) + self.ref_t[:, None, None]) / self.K
             ps = jnp.exp(hor.to_nodal(state.log_surface_pressure))[0] / self.PA
-            phi = primitive_equations.get_geopotential_on_sigma(T * (1 + 0.608 * state.tracers['specific_humidity']) * self.K, nodal_orography=zs_n[None] * self.M, sigma=self.coords.vertical,   # virtual temperature: moist air is lighter (~50 m at 500 hPa in the tropics)
+            phi = self.geopot(T, state.tracers['specific_humidity'], ps, zs_n) if self.hyb else primitive_equations.get_geopotential_on_sigma(T * (1 + 0.608 * state.tracers['specific_humidity']) * self.K, nodal_orography=zs_n[None] * self.M, sigma=self.coords.vertical,   # virtual temperature: moist air is lighter (~50 m at 500 hPa in the tropics)
                                                                 gravity_acceleration=self.ps.gravity_acceleration, ideal_gas_constant=self.ps.ideal_gas_constant) / (self.M ** 2 / self.SEC ** 2)
             mslp = ps * jnp.exp(G * zs_n / (RD * (T[-1] + 0.0065 * zs_n / 2)))
             vo = hor.to_nodal(state.vorticity) * self.SEC
@@ -983,17 +1015,18 @@ class Model:
             u, v = spherical_harmonic.vor_div_to_uv_nodal(hor, state.vorticity, state.divergence); u, v = u / self.MPS, v / self.MPS
             T = (hor.to_nodal(state.temperature_variation) + self.ref_t[:, None, None]) / self.K
             ps = jnp.exp(hor.to_nodal(state.log_surface_pressure))[0] / self.PA
-            phi = primitive_equations.get_geopotential_on_sigma(T * (1 + 0.608 * state.tracers['specific_humidity']) * self.K, nodal_orography=zs_n[None] * self.M, sigma=self.coords.vertical,   # virtual temperature: moist air is lighter (~50 m at 500 hPa in the tropics)
+            phi = self.geopot(T, state.tracers['specific_humidity'], ps, zs_n) if self.hyb else primitive_equations.get_geopotential_on_sigma(T * (1 + 0.608 * state.tracers['specific_humidity']) * self.K, nodal_orography=zs_n[None] * self.M, sigma=self.coords.vertical,   # virtual temperature: moist air is lighter (~50 m at 500 hPa in the tropics)
                                                                 gravity_acceleration=self.ps.gravity_acceleration, ideal_gas_constant=self.ps.ideal_gas_constant) / (self.M ** 2 / self.SEC ** 2)
-            lp = jnp.log(jnp.asarray(self.sig)[:, None, None] * ps[None])
+            lp = jnp.log(self.pres(ps)[0])
+            s_low = (self.pres(ps)[0][-1] / ps) if self.hyb else float(self.sig[-1])            # D3: lowest level's p / ps
             # mean sea-level pressure the ECMWF way (IFS documentation): T* at the surface from the lowest level, warm and
             # cold limits so high warm plateaus (Tibet) do not give absurd values.
-            a0 = 0.0065 * RD / G; Tst = T[-1] * (1 + a0 * (1.0 / float(self.sig[-1]) - 1)); T0 = Tst + 0.0065 * zs_n
+            a0 = 0.0065 * RD / G; Tst = T[-1] * (1 + a0 * (1.0 / s_low - 1)); T0 = Tst + 0.0065 * zs_n
             alpha = jnp.where((T0 > 290.5) & (Tst <= 290.5), RD * (290.5 - Tst) / jnp.maximum(G * zs_n, 1.0), 0.0065 * RD / G)
             alpha = jnp.where((T0 > 290.5) & (Tst > 290.5), 0.0, alpha); Tst = jnp.where((T0 > 290.5) & (Tst > 290.5), 0.5 * (290.5 + Tst), Tst)
             Tst = jnp.where(Tst < 255.0, 0.5 * (255.0 + Tst), Tst); x = G * zs_n / (RD * Tst)
             mslp = jnp.where(zs_n > 1.0, ps * jnp.exp(x * (1 - alpha * x / 2 + (alpha * x) ** 2 / 3)), ps)
-            z1 = RD * T[-1] / G * jnp.log(1.0 / float(self.sig[-1]))                                # height of the lowest level above ground
+            z1 = RD * T[-1] / G * jnp.log(1.0 / s_low)                                # height of the lowest level above ground
             # 2-m temperature from the surface-layer (log) profile between the skin and the lowest level, as forecast centres do
             land = self.land; Tsk = jnp.where((~land) & (cr['sst'] > 0), cr['sst'], cr['tl']); z0 = jnp.where(land, 0.1, 2e-4)
             th1 = T[-1] + G / CP * z1; f = jnp.log(2.0 / z0) / jnp.log(jnp.maximum(z1, 3.0) / z0)
@@ -1016,7 +1049,7 @@ class Model:
     def _map_extras(self, state, T, u, v, ps, lp, phi, to_p):
         """extra fields for the forecast maps (setting map_out=True): humidity, column water, 10 m wind, 850/700 heights."""
         q = state.tracers['specific_humidity']; rh = q / qsat(T, jnp.exp(lp))
-        tcw = (q * jnp.asarray(self.dsig)[:, None, None]).sum(0) * ps / G
+        tcw = ((q * self.pres(ps)[1]).sum(0) / G) if self.hyb else ((q * jnp.asarray(self.dsig)[:, None, None]).sum(0) * ps / G)
         return dict(rh850=to_p(rh, lp, 85000.0), rh700=to_p(rh, lp, 70000.0), rh500=to_p(rh, lp, 50000.0), tcw=tcw,
                     u10=u[-1] * 0.85, v10=v[-1] * 0.85, z850=to_p(phi, lp, 85000.0) / G, t500=to_p(T, lp, 50000.0),
                     u500=to_p(u, lp, 50000.0), v500=to_p(v, lp, 50000.0),

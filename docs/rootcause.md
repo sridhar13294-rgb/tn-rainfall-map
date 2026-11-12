@@ -1953,7 +1953,7 @@ CONFIRMED if t850 AND t700 d2 biases both improve by >= 0.3 K (from -1.21 / -1.1
   whether the spin-up exists at the real resolution before any fix is built for it. The atmospheric solar-absorption deficit
   (67 vs ~79 W m-2; no aerosols) is resolution-independent -> next fix to build (aerosol climatology as in IFS).
 
-## 12 Nov 22:30 IST - D1 / D3 / S3 (Sridhar 21:50 "work on D1, D2, D3 and S3"; D2 already closed at 10:40 - T85 cubic SL = Eulerian)
+## 12 Nov ~21:55 IST - D1 / D3 / S3 (Sridhar 21:50 "work on D1, D2, D3 and S3"; D2 already closed at 10:40 - T85 cubic SL = Eulerian)
 D1 - WHY cubic changes the storms (from the 6 storm runs already done, nz1-3 vs vz1-3, sb.json; no new GPU):
 - tracks vs best track: 72 h error nz / vz (3-member means): Vardah 358 / 201 km, Nivar 113 / 138, Michaung 278 / 373; all 3 storms
   250 / 237 km. Vardah's cubic track stays east (89.3E at 72 h vs nz 87.2E; best track 90.7E) - much closer to reality; Michaung's
@@ -1982,3 +1982,10 @@ D3 - hybrid vertical coordinate: SCOPE (mm2.py touch points, grep): coordinate s
   reference pressures as today's 32 / 75 levels, B = ((s - 0.1)/0.9)^1.3). Expected gain from hyb_jet: Asia jet +1.1 m/s/day (T42).
   Order: mm2 core + init + column (local T42 regression: hyb = 0 bit-identical; hyb = 1 runs 48 h stable at 32 and 75 L) -> diagnostics
   -> scripts -> T170 screen (jets, storms on 3-run means, z500).
+- 22:10 D3 BUILT (mm2.py option hyb; default 0): coords_dyn = HybridCoordinates (A, B from the sigma boundaries, B = ((s-0.1)/0.9)^1.3),
+  SemiLagrangianPrimitiveEquationsHybrid, start state interpolated to each column's own level pressures, physics column p/dp/interfaces
+  from A + B ps (sigma tests become p / ps), geopotential by hydrostatic integration on the interfaces (checked vs Dinosaur's sigma
+  geopotential on a sigma state: <= 0.3 m at 500 hPa), MSLP / lowest-level height / column water from the level pressures.
+  Regression hyb = 0: base2 6-h run bit-identical (mslp 100809.609375, rain 0.43390631675720215). hyb = 1, T42, 32 L, 48 h, 1 start:
+  stable, finite; vs ERA5 RMSE / bias: z500 d1 22.9 / -9.9 m (sigma 23.4 / -11.2), d2 38.9 / -11.1 (39.9 / -14.6); t850 d2 3.75 (3.76);
+  u200 d2 6.95 (6.95); mslp d2 464 / +58 Pa (461 / +22). Next: 75 L stability, the jet check (sector jets) with hyb in the full model.
