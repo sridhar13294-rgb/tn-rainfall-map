@@ -22,6 +22,7 @@ def rr(pb, T, q, o3v, Ts, alb, cz, ins, cf, clwp, ciwp, rl, ri):
     r = RRTMG(state=st, specific_humidity=q, absorber_vmr=vmr, albedo=alb, coszen=max(cz, 1e-4), insolation=ins, timestep=3600.0,
               cldfrac=cf, clwp=clwp, ciwp=ciwp, r_liq=rl, r_ice=ri, icld=2)
     r.compute_diagnostics(); D = r.diagnostics
+    LOWHEAT[0] = (np.ravel(np.asarray(D['TdotLW'], float)), np.ravel(np.asarray(D['TdotSW'], float)), np.ravel(np.asarray(D['TdotLW_clr'], float)), np.ravel(np.asarray(D['TdotSW_clr'], float)))   # K/day per layer (12 Nov)
     one = lambda x: float(np.ravel(np.asarray(x, float))[0]); sfc = lambda x: float(np.ravel(np.asarray(x, float))[-1])
     o = {}
     for tag, sx in (('', ''), ('_clr', '_clr')):
@@ -30,7 +31,7 @@ def rr(pb, T, q, o3v, Ts, alb, cz, ins, cf, clwp, ciwp, rl, ri):
         o['asr' + tag] = asr; o['olr' + tag] = olr; o['swsfc' + tag] = swn; o['lwsfc' + tag] = lwn; o['atm' + tag] = asr - olr - swn - lwn
         o['swatm' + tag] = asr - swn; o['lwatm' + tag] = -olr - lwn
     return o
-res = {}
+res = {}; LOWHEAT = [None]
 for key in STARTS:
     key = key if 'T' in key else key + 'T00'; k = TT.index(key); t0 = dt.datetime.strptime(key, '%Y-%m-%dT%H'); f2 = Z['f2'][k]
     f3 = {v: np.array(Z['f3'][k, V3.index(v)]) for v in V3}
@@ -71,17 +72,23 @@ for key in STARTS:
             for tg in ('', '_clr'):
                 m_['atm' + tg] = m_['asr' + tg] - m_['olr' + tg] - m_['swsfc' + tg] - m_['lwsfc' + tg]
                 m_['swatm' + tg] = m_['asr' + tg] - m_['swsfc' + tg]; m_['lwatm' + tg] = -m_['olr' + tg] - m_['lwsfc' + tg]
+            # 12 Nov (A + P1): mass-weighted LW / SW heating of the 850-1000 hPa layer, all-sky and clear-sky, model vs RRTMG (K/day)
+            pl = I['p'][:, i, j]; lo_ = (pl >= 85000) & (pl <= 100000); wdp = I['dp'][:, i, j] * lo_; wsum = max(wdp.sum(), 1.0)
+            rlw, rsw, rlwc, rswc = LOWHEAT[0]
+            a.update(lwlow=float((rlw * wdp).sum() / wsum), swlow=float((rsw * wdp).sum() / wsum), lwlow_clr=float((rlwc * wdp).sum() / wsum), swlow_clr=float((rswc * wdp).sum() / wsum))
+            m_.update(lwlow=float((lw['heating'][:, i, j] * 86400 * wdp).sum() / wsum), swlow=float((sw['heating'][:, i, j] * 86400 * wdp).sum() / wsum),
+                      lwlow_clr=float((lw['heating_clr'][:, i, j] * 86400 * wdp).sum() / wsum), swlow_clr=float((sw['heating_clr'][:, i, j] * 86400 * wdp).sum() / wsum))
             rows.append(dict(lat=float(LA[i, j]), w=float(W[i, j]), cz=cz, cover=float(cl['cover'][i, j]), m=m_, r=a))
     def wm(f, sel=lambda r: True):
         R_ = [r for r in rows if sel(r)]; w_ = np.array([r['w'] for r in R_]); return float((np.array([f(r) for r in R_]) * w_).sum() / w_.sum())
     S = {}
     for src in ('m', 'r'):
-        for kk in ('atm', 'atm_clr', 'swatm', 'swatm_clr', 'lwatm', 'lwatm_clr', 'asr', 'asr_clr', 'olr', 'olr_clr', 'swsfc', 'swsfc_clr', 'lwsfc', 'lwsfc_clr'):
+        for kk in ('atm', 'atm_clr', 'swatm', 'swatm_clr', 'lwatm', 'lwatm_clr', 'asr', 'asr_clr', 'olr', 'olr_clr', 'swsfc', 'swsfc_clr', 'lwsfc', 'lwsfc_clr', 'lwlow', 'swlow', 'lwlow_clr', 'swlow_clr'):
             S[f'{src}_{kk}'] = wm(lambda r: r[src][kk])
         S[f'{src}_atmCRE'] = S[f'{src}_atm'] - S[f'{src}_atm_clr']; S[f'{src}_swCRE_toa'] = S[f'{src}_asr'] - S[f'{src}_asr_clr']; S[f'{src}_lwCRE_toa'] = S[f'{src}_olr_clr'] - S[f'{src}_olr']
         S[f'{src}_swCRE_atm'] = S[f'{src}_swatm'] - S[f'{src}_swatm_clr']; S[f'{src}_lwCRE_atm'] = S[f'{src}_lwatm'] - S[f'{src}_lwatm_clr']
     S['n'] = len(rows); S['cover'] = wm(lambda r: r['cover'])
     res[key] = S; json.dump(res, open(OUT, 'w'))
     print(key, f'h{HRS:.0f} n={len(rows)} cover {S["cover"]:.2f}', flush=True)
-    for kk in ('atm', 'atm_clr', 'atmCRE', 'swCRE_atm', 'lwCRE_atm', 'swCRE_toa', 'lwCRE_toa', 'swatm', 'swsfc', 'lwsfc', 'olr'):
+    for kk in ('atm', 'atm_clr', 'atmCRE', 'swCRE_atm', 'lwCRE_atm', 'swCRE_toa', 'lwCRE_toa', 'swatm', 'swsfc', 'lwsfc', 'olr', 'lwlow', 'swlow', 'lwlow_clr', 'swlow_clr'):
         print(f'   {kk:10s} MEGAM {S["m_" + kk]:+8.1f}  RRTMG {S["r_" + kk]:+8.1f}  diff {S["m_" + kk] - S["r_" + kk]:+7.1f}', flush=True)

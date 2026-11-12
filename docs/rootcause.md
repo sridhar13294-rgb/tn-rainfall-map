@@ -1790,3 +1790,9 @@ Variants (cloud_parts.py, T42, start 1 Nov, 24/48 h; reference lcl = -0.8 / -1.1
   Found while checking: bl_lcl measures the LCL from the GROUND although the 125 m/K estimate is relative to the lowest model level
   (~70-100 m up). New option bl_lcl = 2 adds that height (default and bl_lcl = 1 unchanged; base2 6-h run bit-identical).
   REGISTERED: lcl2 (bl_lcl 2) - t925 bias at 48 h smaller than lcl's -1.1 by >= 0.3 K and q925 not above +3 %; BL height closer to ERA5.
+- 14:40 RESULT lcl2 (bl_lcl = 2, cloud base above ground): t925 -0.8 / -1.1 K (unchanged), cover 0.90 / 0.93; ocean BL height 412 -> 502 m
+  (ERA5 786); LHF unchanged (-104 vs -129). => registered prediction NOT met (needed >= +0.3 K): the ~90 m deeper mixing does not
+  warm 925 hPa. lcl2 kept as a correctness fix candidate only (it is what the IFS definition says), not as the A/P1 fix.
+- Next (running): low-level RADIATIVE heating vs RRTMG on the SAME forecast columns (rad_allsky.py now also reports the 850-1000 hPa
+  mass-weighted LW/SW heating, all-sky and clear-sky, model vs RRTMG), hour 0 and hour 24. Registered: a model-minus-RRTMG difference
+  of <= -0.3 K/day in that layer (model cools more) would be the initiator; within +-0.2 K/day clears radiation.
