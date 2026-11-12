@@ -1899,3 +1899,10 @@ Variants (cloud_parts.py, T42, start 1 Nov, 24/48 h; reference lcl = -0.8 / -1.1
   REGISTERED sufficiency test (det_prec = 1, upper bound; rh_vs_era5 + flux_vs_era5, same 3 starts): mechanism CONFIRMED if t850 and t700
   d2 biases both improve by >= 0.4 K (from -1.21 / -1.12) and RH 700 d2 excess falls by >= 0.03; rain change reported (cost). If < 0.2 K:
   rejected.
+- 17:10 RESULT det_prec = 1 (upper bound): t850 d1/d2 -0.70 / -0.99 K (was -0.85 / -1.21), t700 -0.74 / -1.01 (was -0.81 / -1.12); RH700 excess
+  d2 0.086 (was 0.107); rain globe 3.2 vs 3.0 (+0.2), ocean 4.2 vs 3.7. => registered criteria NOT met (+0.22 / +0.11 K vs >= 0.4):
+  detrained-condensate evaporation is a SMALL contributor (~0.1-0.2 K at d2 even at its upper bound), not the main driver. Rejected as
+  the A/P1 fix.
+  Tally at d2 (850 hPa, -1.2 K): radiation vs RRTMG ~0.3, cloud feedback ~0.3, bl_lcl ~0.3 (925), detrained condensate <= 0.2,
+  evaporation ~0.1 - several small contributors, each confirmed against a reference, none dominant; ~0.3-0.5 K still unassigned.
+  Caveat: all these are T42 local runs; the T170 exam quarter (tn-lcl-wx0, queued) gives the real-resolution P1 numbers.
