@@ -73,7 +73,7 @@ for key in STARTS:
                 m_['atm' + tg] = m_['asr' + tg] - m_['olr' + tg] - m_['swsfc' + tg] - m_['lwsfc' + tg]
                 m_['swatm' + tg] = m_['asr' + tg] - m_['swsfc' + tg]; m_['lwatm' + tg] = -m_['olr' + tg] - m_['lwsfc' + tg]
             # 12 Nov (A + P1): mass-weighted LW / SW heating of the 850-1000 hPa layer, all-sky and clear-sky, model vs RRTMG (K/day)
-            pl = I['p'][:, i, j]; lo_ = (pl >= 85000) & (pl <= 100000); wdp = I['dp'][:, i, j] * lo_; wsum = max(wdp.sum(), 1.0)
+            pl = I['p'][:, i, j]; lo_ = (pl >= float(os.environ.get('PLO', 85000))) & (pl <= float(os.environ.get('PHI', 100000))); wdp = I['dp'][:, i, j] * lo_; wsum = max(wdp.sum(), 1.0)
             rlw, rsw, rlwc, rswc = LOWHEAT[0]
             a.update(lwlow=float((rlw * wdp).sum() / wsum), swlow=float((rsw * wdp).sum() / wsum), lwlow_clr=float((rlwc * wdp).sum() / wsum), swlow_clr=float((rswc * wdp).sum() / wsum))
             m_.update(lwlow=float((lw['heating'][:, i, j] * 86400 * wdp).sum() / wsum), swlow=float((sw['heating'][:, i, j] * 86400 * wdp).sum() / wsum),

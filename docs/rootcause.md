@@ -1850,3 +1850,10 @@ Variants (cloud_parts.py, T42, start 1 Nov, 24/48 h; reference lcl = -0.8 / -1.1
   it is no longer supported by the reference. sfc_sal (2 % lower saturation over sea water) is a physical fact (COARE 3.5 / IFS) and stays.
   REGISTERED (rh_vs_era5.py, same starts): package + bl_lcl + sfc_sal WITHOUT ck_z: t850 d2 bias better than lcl's -1.29 K by >= 0.3 K
   and LHF ocean within -10 % of ERA5, with q925 not above +4 %. (If the temperature does not move, evaporation is cleared as an A/P1 cause.)
+- 20:00 RESULT package + bl_lcl + sfc_sal WITHOUT ck_z: t850 d1/d2 -0.85 / -1.21 K (lcl -0.89 / -1.29), t700 -0.81 / -1.12 (lcl -0.82 / -1.17);
+  RH unchanged within 0.003; LHF ocean -114 vs ERA5 -129 (-11 %; lcl -19 %); rain 3.0 vs 3.0 (globe), 4.0 vs 3.7 (ocean).
+  => registered prediction NOT met (+0.08 K vs >= +0.3): evaporation is CLEARED as an A/P1 cause. Separately (correctness, reference-
+  based): ck_z = 1 is no longer supported on the package (LHF -19 % vs -11 % without it) -> drop ck_z from the candidate, keep sfc_sal.
+  Tally for the 925-700 hPa cooling (~0.6 K/day): radiation vs RRTMG (low layer) ~0.15 K/day, cloud-radiation feedback ~0.15, bl_lcl
+  ~0.2 at 925 only; evaporation ~0.04. Rain (column latent heating) right. Next: RRTMG comparison for the 700-850 hPa layer and the
+  heating profile split by process vs a reference profile; SW water-vapour coefficient fit (rad_fit.py).
