@@ -1774,3 +1774,8 @@ Variants (cloud_parts.py, T42, start 1 Nov, 24/48 h; reference lcl = -0.8 / -1.1
   sensible/latent heat flux, surface net LW/SW, TOA net LW/SW and BL height for the exam starts (cyc_flux.py, GitHub 'flux truth',
   new file flux_truth_2020.npz). Registered use: model day-1 means of the same terms; a term differing from ERA5 by >= 5 W m-2
   globally (or >= 10 W m-2 over the tropical/subtropical ocean) in the direction that cools the low levels is the initiator candidate.
+- 13:35 vcubic twins so far (72 h pmin): vz1 Vardah 997.3 / Nivar 994.6 / Michaung 1002.3; vz2 996.4 / 991.6 / 1000.0 (vz3 running).
+  vs nz means 990.2 / 992.4 / 999.6: Vardah +6.6 (cannot come within 2 hPa whatever vz3 gives unless vz3 < 977), Nivar +0.7,
+  Michaung +1.6. => cubic vertical interpolation REALLY weakens Vardah ~6-7 hPa (beyond the 5.2 noise spread) -> storm gate FAILS for
+  Vardah (final after vz3). Context only (not a gate): ERA5-at-T170 targets Vardah 995.2 / Nivar 994.1 / Michaung 992.0 -> Vardah
+  moves TOWARD its target (990.2 -> ~996.9), Michaung away (999.6 -> ~1001), Nivar ~same.
