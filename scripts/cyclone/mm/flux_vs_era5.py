@@ -30,7 +30,7 @@ for nm, ex in CANDS.items():
             _, d = M.column(T, q, u, v, ps, crx, want_diag=True, div=hor.to_nodal(st.divergence) * M.SEC)
             Ts = np.asarray(d['Ts'], float)
             f = dict(shf=-np.asarray(d['H'], float), lhf=-LV * np.asarray(d['E'], float), snsw=np.asarray(d['sw_sfc'], float),
-                     snlw=np.asarray(d['lw_dn'], float) - SB * Ts ** 4, tnlw=-np.asarray(cr['rad']['olr'], float), blh=np.asarray(d['hbl'], float))
+                     snlw=np.asarray(d['lw_dn'], float) - SB * Ts ** 4, tnlw=-np.asarray(cr['rad']['olr'], float), blh=np.asarray(d['hbl'], float), tp24=np.asarray(d['rain'], float) * 86400.0 / 1000.0)
             for a, b in f.items(): S[a] = S.get(a, 0) + b / 24
         i = FD[TT[k]]
         for a, X in S.items():
