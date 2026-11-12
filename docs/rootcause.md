@@ -1807,3 +1807,9 @@ Variants (cloud_parts.py, T42, start 1 Nov, 24/48 h; reference lcl = -0.8 / -1.1
   REGISTERED sufficiency test (rad_low_add = +0.4 K/day in 850-1000 hPa, the measured mean difference; diagnostic only): if t925 at 48 h
   improves to >= -0.4 K and cover falls by >= 0.1, radiation is the initiator and the fix is in the low-level radiation (to be derived
   from the reference, not by adding heat).
+- 15:40 RESULT rad_low_add +0.4 K/day (sufficiency test): t925 -0.6 / -0.8 K (was -0.8 / -1.1), cover 0.89 / 0.92 (unchanged).
+  => registered prediction NOT met (needed >= -0.4 K and cover -0.1). Radiation's low-level over-cooling vs RRTMG is a REAL
+  contributor (~0.3 K of the 1.1 K at 48 h) but not sufficient. Tally of measured contributors at 48 h: cloud-radiation feedback
+  ~0.3 K, bl_lcl cap ~0.4 K, radiation vs RRTMG ~0.3 K. Cloud cover is insensitive to all of them (0.92-0.93).
+  => A (cloud) and P1 (t925) may NOT be the same problem after all: warming 925 hPa by 0.3 K moves the cover by 0.00. Next: ERA5
+  relative humidity by level (WB2 has it; 'rh truth' job) to split A into "model RH too high" vs "cloud scheme maps RH to too much cloud".
