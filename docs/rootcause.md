@@ -1822,7 +1822,7 @@ Variants (cloud_parts.py, T42, start 1 Nov, 24/48 h; reference lcl = -0.8 / -1.1
   q925 -9..-12 %, q700 +24..+32 %, q500 +23..+33 %. => at 75 L the package + bl_lcl removes the mid-level moistening completely and
   most of the low-level error; residual +2..+4 % at 850-925 (positive in 10/12: small systematic) - slightly larger than at 32 L
   (+0.4 / +2.3 %). B at 75 L: 'mostly fixed'.
-- 17:00 RESULT rh_vs_era5.py (lcl candidate, T42, 3 Oct-Nov starts; ERA5 daily means; model RH w.r.t. IFS mixed-phase saturation):
+- ~14:00 RESULT rh_vs_era5.py (lcl candidate, T42, 3 Oct-Nov starts; ERA5 daily means; model RH w.r.t. IFS mixed-phase saturation):
   TEMPERATURE vs ERA5 (d0 / d1 / d2): t850 globe -0.05 / -0.89 / -1.29 K, ocean 40S-40N -0.07 / -0.95 / -1.34, poleward 40 +0.07 / -0.51 / -0.70;
   t700 globe -0.06 / -0.82 / -1.17. => the cold drift is NOT a near-surface problem: the whole 925-700 hPa layer cools ~0.6 K/day,
   tropics included (850 hPa gate +-1.5 K will be exceeded within ~2.5 days).
@@ -1836,13 +1836,13 @@ Variants (cloud_parts.py, T42, start 1 Nov, 24/48 h; reference lcl = -0.8 / -1.1
   -3.4 W m-2 at h0, -8.6 at h24; 850-1000 hPa -0.3..-0.5 K/day), latent heat flux -12 W m-2 globally (-25 over the 40S-40N ocean)
   vs ERA5 -> less latent heating aloft. Next: the same energy terms for base2 (was the evaporation deficit introduced by ck_z/sfc_sal
   or by the package?) and the precipitation vs ERA5 (latent heating actually released).
-- 18:30 ENERGY TERMS base2 vs ERA5 (same 3 starts, day 1): LHF globe -105 vs -85 (+24 % too strong), ocean 40S-40N -150 vs -129 (+17 %);
+- ~14:20 ENERGY TERMS base2 vs ERA5 (same 3 starts, day 1): LHF globe -105 vs -85 (+24 % too strong), ocean 40S-40N -150 vs -129 (+17 %);
   SHF globe +1.4 vs -15.8 (WRONG SIGN: net downward - the old shallow scheme's +7 K/day heating made the low levels warmer than the
   surface), ocean +5.5 vs -12.8; BL height 943 vs 786 m (ocean). Candidate lcl: LHF ocean -104 (-19 %), SHF -14 (right), BLH 412.
   => the old base got its warmth from a wrong-signed sensible heat flux plus too much evaporation; the package fixed the SHF but the
   evaporation swung from +17 % to -19 % over the ocean (-46 W m-2). Decomposition running: package WITHOUT ck_z/sfc_sal (the COARE
   evaporation changes) -> splits the swing into "package (moister surface layer)" vs "COARE coefficient change"; plus rain vs ERA5.
-- 19:15 DECOMPOSITION of the evaporation swing (same 3 starts, ocean 40S-40N, day-1 LHF vs ERA5 -128.7): base2 -150.1 (+17 %);
+- ~14:45 DECOMPOSITION of the evaporation swing (same 3 starts, ocean 40S-40N, day-1 LHF vs ERA5 -128.7): base2 -150.1 (+17 %);
   package + bl_lcl WITHOUT ck_z/sfc_sal -118.9 (-8 %); + ck_z 1 + sfc_sal 0.98 -104.3 (-19 %). Rain vs ERA5 (mm/day): globe 3.1 / 2.9 vs
   3.0, ocean 4.2 / 3.8 vs 3.7 -> precipitation (latent heating released) is RIGHT in both.
   => the package itself brings evaporation to -8 % of ERA5; the 5 Nov COARE changes (adopted into the candidate on 11 Nov to remove ~2 %
@@ -1850,14 +1850,14 @@ Variants (cloud_parts.py, T42, start 1 Nov, 24/48 h; reference lcl = -0.8 / -1.1
   it is no longer supported by the reference. sfc_sal (2 % lower saturation over sea water) is a physical fact (COARE 3.5 / IFS) and stays.
   REGISTERED (rh_vs_era5.py, same starts): package + bl_lcl + sfc_sal WITHOUT ck_z: t850 d2 bias better than lcl's -1.29 K by >= 0.3 K
   and LHF ocean within -10 % of ERA5, with q925 not above +4 %. (If the temperature does not move, evaporation is cleared as an A/P1 cause.)
-- 20:00 RESULT package + bl_lcl + sfc_sal WITHOUT ck_z: t850 d1/d2 -0.85 / -1.21 K (lcl -0.89 / -1.29), t700 -0.81 / -1.12 (lcl -0.82 / -1.17);
+- ~15:00 RESULT package + bl_lcl + sfc_sal WITHOUT ck_z: t850 d1/d2 -0.85 / -1.21 K (lcl -0.89 / -1.29), t700 -0.81 / -1.12 (lcl -0.82 / -1.17);
   RH unchanged within 0.003; LHF ocean -114 vs ERA5 -129 (-11 %; lcl -19 %); rain 3.0 vs 3.0 (globe), 4.0 vs 3.7 (ocean).
   => registered prediction NOT met (+0.08 K vs >= +0.3): evaporation is CLEARED as an A/P1 cause. Separately (correctness, reference-
   based): ck_z = 1 is no longer supported on the package (LHF -19 % vs -11 % without it) -> drop ck_z from the candidate, keep sfc_sal.
   Tally for the 925-700 hPa cooling (~0.6 K/day): radiation vs RRTMG (low layer) ~0.15 K/day, cloud-radiation feedback ~0.15, bl_lcl
   ~0.2 at 925 only; evaporation ~0.04. Rain (column latent heating) right. Next: RRTMG comparison for the 700-850 hPa layer and the
   heating profile split by process vs a reference profile; SW water-vapour coefficient fit (rad_fit.py).
-- 20:40 RESULT radiation vs RRTMG, 700-850 hPa (same columns): LW all-sky -1.8 vs -2.0 (h0), -2.1 vs -2.2 (h24); SW +0.6/+0.5 vs +0.7;
+- ~15:10 RESULT radiation vs RRTMG, 700-850 hPa (same columns): LW all-sky -1.8 vs -2.0 (h0), -2.1 vs -2.2 (h24); SW +0.6/+0.5 vs +0.7;
   clear-sky within 0.1 => radiation is RIGHT in the 700-850 hPa layer (the over-cooling vs RRTMG is confined to 850-1000 hPa).
   SW water-vapour fit (rad_fit.py, 790 training columns Oct, 847 validation Jan/Jul, clear-sky day side): before, column absorption
   145 vs 152 (train) / 153 vs 154 (val), 850-1000 hPa heating 1.31 vs 1.49 K/day; fitted K = [0.00016, 0.061, 0.55, 2.36, 22.5]
@@ -1865,15 +1865,17 @@ Variants (cloud_parts.py, T42, start 1 Nov, 24/48 h; reference lcl = -0.8 / -1.1
   improves only 0.55 -> 0.50. => NOT adopted: one k-set cannot match both; the deficit is small (~0.1 K/day diurnal mean) - leave.
   => the unexplained ~0.3 K/day at 700-850 hPa is NOT radiation and NOT evaporation. Next: which process changed between base2
   (850 hPa warm) and the package (850 hPa cold): first-hours T budget by process, base2 vs package, same starts.
-- 21:30 PROCESS BUDGET base2 vs package (init_tend.py, T42, 2 starts; K/day): at 880-990 hPa base2 is warmed by its old shallow scheme
+- ~15:25 PROCESS BUDGET base2 vs package (init_tend.py, T42, 2 starts; K/day): at 880-990 hPa base2 is warmed by its old shallow scheme
   (+3..+6) and cooled by rain evaporation (-1.3..-2.5); the package has neither (shallow +0, evaporation -0.1..-0.4), more radiative
   cooling at 880-950 hPa (tropics 6-24 h -2.3..-2.7 vs base2 -1.1..-1.9: its low cloud deck) and much weaker convective heating in the
   first 6 h (tropics 400-700 hPa +0.1..+0.4 vs base2 +1.1..+1.8). At 700-850 hPa the TOTAL tendency is similar in both (about -0.5..-1 K/day)
   -> the 700-850 hPa cooling may be common to every model version (not introduced by the package). Checking base2 vs ERA5 t850/t700.
-- 21:45 P5b RE-MEASURED on the package (tn-p5-lcl-ond: IFS package + bl_lcl + ck_z + sfc_sal + continuum + qs_mix, 18 Oct-Dec starts,
+- 15:35 P5b RE-MEASURED on the package (tn-p5-lcl-ond: IFS package + bl_lcl + ck_z + sfc_sal + continuum + qs_mix, 18 Oct-Dec starts,
   T170) vs base1 (tn-p5-b1-ond, 6 Nov table): Bay u850 bias d1/d3/d5 -1.98 / -4.07 / -3.61 m/s (base1 -0.95 / -4.05 / -2.62); v850
   +0.72 / +1.29 / +1.36 (base1 +0.12 / -0.45 / -0.13); deep-layer steering v d3/d5 -0.53 / -1.14 (base1 -0.94 / -0.70); central-India
   MSLP d0/d1/d3/d5 +0.79 / +1.23 / +2.28 / +2.22 hPa (base1 +0.82 / +0.86 / +1.70 / +1.17); 500-hPa ridge gradient d3 +12.5 m (base1 +6.5).
   => the physics package does NOT fix the Bay low-level easterly (same -4 m/s at day 3) and makes the central-India surface high
   stronger by day 3-5 (+0.6..+1.0 hPa) - consistent with the colder lower troposphere (A/P1) over land. P5b stays OPEN; its
   day-3 easterly is common to both physics versions -> not a convection-scheme effect; next: the 850-hPa momentum budget (P5 item 3).
+
+(15:35 note: the clock times written on the 12 Nov afternoon entries above were wrong - estimated, not read from a clock; corrected to approximate real IST.)
