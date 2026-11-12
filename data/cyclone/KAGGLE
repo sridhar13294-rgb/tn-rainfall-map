@@ -1,6 +1,6 @@
-tn-nz3-sb
+tn-vz1-sb
 libm_fields.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/suite_nz3_sb.json /kaggle/working/sb.json > /kaggle/working/sb.log 2>&1; tail -20 /kaggle/working/sb.log
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/suite_vz1_sb.json /kaggle/working/sb.json > /kaggle/working/sb.log 2>&1; tail -20 /kaggle/working/sb.log
 NvidiaTeslaT4
 1
-#noise twin base2 sppt 1e-3 seed 3 2026-11-12T04:37Z
+#vcubic twin base2+sl_vcubic sppt 1e-3 seed 1 2026-11-12T05:28Z
