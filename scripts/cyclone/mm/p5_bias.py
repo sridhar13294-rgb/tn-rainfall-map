@@ -12,7 +12,7 @@ Z = dict(np.load(LIB)); TT = [str(t) for t in Z['times']]; V3 = [str(v) for v in
 TR = dict(np.load(TRU)); DI = {str(d): i for i, d in enumerate(TR['days'])}
 la = np.asarray(Z['lats'], float); lo = np.asarray(Z['lons'], float)
 iy = np.where((la >= 0) & (la <= 45))[0]; ix = np.where((lo >= 40) & (lo <= 120))[0]
-SET = dict(SET); GR = SET.pop('grid', 'T170'); M = mm2.Model(GR, 32, None, dict({'rad': 'radcloud', 'rad_every': 2}, **SET))
+SET = dict(SET); GR = SET.pop('grid', 'T170'); M = mm2.Model(GR, 32, SET.pop('dt_min', None), dict({'rad': 'radcloud', 'rad_every': 2}, **SET))
 KEYS = ('z500', 'u850', 'v850', 'u200', 'v200', 'mslp'); acc = {d: {k: [] for k in KEYS} for d in (0, 1, 3, 5)}; used = []
 for key in STARTS:
     key = key if 'T' in key else key + 'T00'
