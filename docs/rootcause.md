@@ -1952,3 +1952,17 @@ CONFIRMED if t850 AND t700 d2 biases both improve by >= 0.3 K (from -1.21 / -1.1
   day-0 deficit may be resolution (T42 smooths the humid convective columns). The T170 exam quarter (tn-lcl-wx0, queued) decides
   whether the spin-up exists at the real resolution before any fix is built for it. The atmospheric solar-absorption deficit
   (67 vs ~79 W m-2; no aerosols) is resolution-independent -> next fix to build (aerosol climatology as in IFS).
+
+## 12 Nov 22:30 IST - D1 / D3 / S3 (Sridhar 21:50 "work on D1, D2, D3 and S3"; D2 already closed at 10:40 - T85 cubic SL = Eulerian)
+D1 - WHY cubic changes the storms (from the 6 storm runs already done, nz1-3 vs vz1-3, sb.json; no new GPU):
+- tracks vs best track: 72 h error nz / vz (3-member means): Vardah 358 / 201 km, Nivar 113 / 138, Michaung 278 / 373; all 3 storms
+  250 / 237 km. Vardah's cubic track stays east (89.3E at 72 h vs nz 87.2E; best track 90.7E) - much closer to reality; Michaung's
+  cubic track runs north faster (16.5N vs 15.8N at 72 h) toward the Andhra coast.
+- Vardah weakening in cubic starts at 36-48 h over OPEN SEA (88-89E): core rain 211 -> 76 mm/day, core RH700 1.09 -> 0.99, deep-
+  convection-on fraction 1.0 -> 0.6, while the 500/300 hPa warm core is similar until 48 h. Michaung's cubic run weakens after 60 h
+  (core RH700 0.87, rain 50 vs 165) as it nears the coast.
+  => the storm differences come from the CHANGED LARGE-SCALE FLOW (steering and the environment the storm moves into), not from a
+  core-scale numerical artefact of the interpolation: cubic changes the upper winds (that is its purpose - the jets), which moves the
+  storms. The storm-intensity gate as defined ("same as base within 2 hPa") cannot separate an environment/track change from a
+  defect; on tracks, cubic is slightly better overall (237 vs 250 km) and much better for Vardah. Decision on the gate definition is
+  Sridhar's (asked 13:45); until then cubic stays rejected under the registered rule.
