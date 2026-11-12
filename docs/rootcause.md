@@ -1870,3 +1870,10 @@ Variants (cloud_parts.py, T42, start 1 Nov, 24/48 h; reference lcl = -0.8 / -1.1
   cooling at 880-950 hPa (tropics 6-24 h -2.3..-2.7 vs base2 -1.1..-1.9: its low cloud deck) and much weaker convective heating in the
   first 6 h (tropics 400-700 hPa +0.1..+0.4 vs base2 +1.1..+1.8). At 700-850 hPa the TOTAL tendency is similar in both (about -0.5..-1 K/day)
   -> the 700-850 hPa cooling may be common to every model version (not introduced by the package). Checking base2 vs ERA5 t850/t700.
+- 21:45 P5b RE-MEASURED on the package (tn-p5-lcl-ond: IFS package + bl_lcl + ck_z + sfc_sal + continuum + qs_mix, 18 Oct-Dec starts,
+  T170) vs base1 (tn-p5-b1-ond, 6 Nov table): Bay u850 bias d1/d3/d5 -1.98 / -4.07 / -3.61 m/s (base1 -0.95 / -4.05 / -2.62); v850
+  +0.72 / +1.29 / +1.36 (base1 +0.12 / -0.45 / -0.13); deep-layer steering v d3/d5 -0.53 / -1.14 (base1 -0.94 / -0.70); central-India
+  MSLP d0/d1/d3/d5 +0.79 / +1.23 / +2.28 / +2.22 hPa (base1 +0.82 / +0.86 / +1.70 / +1.17); 500-hPa ridge gradient d3 +12.5 m (base1 +6.5).
+  => the physics package does NOT fix the Bay low-level easterly (same -4 m/s at day 3) and makes the central-India surface high
+  stronger by day 3-5 (+0.6..+1.0 hPa) - consistent with the colder lower troposphere (A/P1) over land. P5b stays OPEN; its
+  day-3 easterly is common to both physics versions -> not a convection-scheme effect; next: the 850-hPa momentum budget (P5 item 3).
