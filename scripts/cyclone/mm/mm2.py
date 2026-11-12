@@ -684,7 +684,7 @@ class Model:
             radh = cr['rad']['heating'] if (S['rad'] == 'radcloud' and 'rad' in cr) else 0.0
             if self.S.get('rad_dbg', 0): self._ifs_in = (Tn, qn, p * jnp.ones_like(Tn), mass, zc, ps, H, E, ust, rho, ~sea, dt, 111.2e3 * 180.0 / len(self.lat), dTbl + radh, dqbl, V1)
             Cv = ifs_phys.convection(Tn, qn, p * jnp.ones_like(Tn), mass, zc, ps, H, E, ust, rho, ~sea, dt, 111.2e3 * 180.0 / len(self.lat),
-                                     dTbl + radh, dqbl, V1, use_pbl=self.S.get('ifs_pbl', 1.0) > 0)
+                                     dTbl + radh, dqbl, V1, use_pbl=self.S.get('ifs_pbl', 1.0) > 0, det_prec=float(self.S.get('det_prec', 0.0)))
             dTc, dqc, Pmf = Cv['dT'], Cv['dq'], Cv['prc']; reg = Cv['mask']; okmf = Cv['deep'] | Cv['shallow']; ok = okmf
             dTs = jnp.zeros_like(dTc); dqs = jnp.zeros_like(dqc)
             on_dp = Cv['deep'].astype(jnp.float32); on_sh = Cv['shallow'].astype(jnp.float32)

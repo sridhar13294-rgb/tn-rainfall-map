@@ -112,7 +112,7 @@ def implicit_transport(phi, mass, A, Mnet, Fx, S, use_imp, dt):
     return (pn - phi) / dt
 
 
-def convection(T, q, p, mass, zc, ps, H, E, ust, rho, land, dt, dx, dT_bl, dq_bl, u_bl, use_pbl=True):
+def convection(T, q, p, mass, zc, ps, H, E, ust, rho, land, dt, dx, dT_bl, dq_bl, u_bl, use_pbl=True, det_prec=0.0):
     """IFS convection, one call. dT_bl, dq_bl: non-convective tendencies (BL diffusion + radiation) for the closures.
     Returns dict(dT, dq, prc (convective precipitation production per layer, kg m-2 s-1, for the cloud scheme), P_sfc (convective
     precipitation at the ground), mask (cloud layers), deep, shallow, M (updraught mass flux per layer, for momentum transport))."""
@@ -247,6 +247,12 @@ def convection(T, q, p, mass, zc, ps, H, E, ust, rho, land, dt, dx, dT_bl, dq_bl
     # Kessler evaporation below cloud base (6.49-6.52)
     prod = prc * Mb[None]
     aT = jnp.where(is_deep[None], alpha_liq(Tu), 1.0)
+    # det_prec (12 Nov, DIAGNOSTIC sufficiency test for A/P1): v1 evaporates ALL detrained condensate where it detrains (pre-prognostic
+    # IFS); in Cy50r1 it feeds the prognostic cloud scheme, from which part precipitates. det_prec = fraction of the detrained condensate
+    # turned into precipitation at the detrainment level (1 = upper bound). Default 0 = v1 unchanged.
+    if det_prec:
+        eta_in0 = jnp.where(ii == kcb[None], 1.0, sh(eta)) * incl
+        prod = prod + det_prec * Mb[None] * jnp.maximum(eta_in0 - eta, 0.0) * incl * lu
     snow_frac = jnp.where(incl, 1.0 - aT, 0.0)
     rhcr = jnp.where(is_deep, jnp.where(land, 0.70, 0.85), jnp.where(land, 0.75, 0.90))
     rh_cl = (rh * incl).sum(0) / jnp.maximum(incl.sum(0), 1)
@@ -273,7 +279,7 @@ def convection(T, q, p, mass, zc, ps, H, E, ust, rho, land, dt, dx, dT_bl, dq_bl
     # detrained ice sublimates (Lf beyond the Lv inside h): net detrainment per layer x frozen share of the updraught condensate
     eta_in = jnp.where(ii == kcb[None], 1.0, sh(eta)) * incl
     D_rel = jnp.maximum(eta_in - eta, 0.0) * incl
-    S_h = S_h - LF * Mb[None] * D_rel * lu * (1.0 - aT)
+    S_h = S_h - (1.0 - det_prec) * LF * Mb[None] * D_rel * lu * (1.0 - aT)
     dh = implicit_transport(h, mass, A_h, Mnet, Fx_h, S_h, imp, dt)
     dqt = implicit_transport(q, mass, A_q, Mnet, Fx_q, S_q, imp, dt)
     dh = jnp.where(active[None], dh, 0.0); dqt = jnp.where(active[None], dqt, 0.0)

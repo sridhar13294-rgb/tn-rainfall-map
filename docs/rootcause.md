@@ -1890,3 +1890,12 @@ Variants (cloud_parts.py, T42, start 1 Nov, 24/48 h; reference lcl = -0.8 / -1.1
 - 16:10 cycle: tn-moist-pkg75 (package WITHOUT bl_lcl, 75 L, T170, 12 starts) h48 vs ERA5: q850 +10.1 % (8.0..12.5), q925 +6.6 %, q700 0.0,
   q500 +1.3, TCWV +3.6 %. With bl_lcl (lcl75b): q850 +2.0 %, q925 +3.6 %. => at 75 L bl_lcl removes 80 % of the 850-hPa moisture excess too:
   B's fix is confirmed at both 32 and 75 levels. Kaggle: account 1 at weekly limit; account 4 now running tn-lz1-sb (6 waiting).
+- 16:40 HYPOTHESIS for the remaining 700-850 hPa heat deficit (5-Why): rain total right, radiation right there, evaporation cleared ->
+  WHERE the latent heat stays. IFS v1 as built turns ALL detrained condensate back into vapour where it detrains (pre-prognostic IFS;
+  Cy50r1 instead feeds it to the prognostic cloud scheme, from which part precipitates). In the 700-850 hPa layer congestus/shallow plumes
+  detrain most of their condensate -> condensation heating in the plume is cancelled by evaporation cooling at detrainment, and the
+  layer is moistened = exactly the observed cooling + RH rise. New diagnostic switch det_prec (fraction of detrained condensate turned
+  into precipitation at the detrainment level; default 0 = v1 unchanged).
+  REGISTERED sufficiency test (det_prec = 1, upper bound; rh_vs_era5 + flux_vs_era5, same 3 starts): mechanism CONFIRMED if t850 and t700
+  d2 biases both improve by >= 0.4 K (from -1.21 / -1.12) and RH 700 d2 excess falls by >= 0.03; rain change reported (cost). If < 0.2 K:
+  rejected.
