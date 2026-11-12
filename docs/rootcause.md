@@ -1887,3 +1887,6 @@ Variants (cloud_parts.py, T42, start 1 Nov, 24/48 h; reference lcl = -0.8 / -1.1
   troposphere, not a package defect. Measured and cleared for it: radiation at 700-850 (= RRTMG), evaporation, dynamics alone (physics-off
   +0.0..-0.2 K/day there). Left: the vertical distribution of latent heating (rain total right) and the large-scale cloud/condensation
   scheme shared by both versions.
+- 16:10 cycle: tn-moist-pkg75 (package WITHOUT bl_lcl, 75 L, T170, 12 starts) h48 vs ERA5: q850 +10.1 % (8.0..12.5), q925 +6.6 %, q700 0.0,
+  q500 +1.3, TCWV +3.6 %. With bl_lcl (lcl75b): q850 +2.0 %, q925 +3.6 %. => at 75 L bl_lcl removes 80 % of the 850-hPa moisture excess too:
+  B's fix is confirmed at both 32 and 75 levels. Kaggle: account 1 at weekly limit; account 4 now running tn-lz1-sb (6 waiting).
