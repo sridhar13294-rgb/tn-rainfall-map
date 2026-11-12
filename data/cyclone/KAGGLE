@@ -1,6 +1,6 @@
-tn-moist-lcl75b
-libm_wx2020_fields.npz,wx_truth_moist_2020.npz
-NOCLOUD=1 NLEV=tp75 CANDS='{"pkg+bl_lcl_75":{"phys_ifs":1,"bl_lcl":1,"sfc_imp":1,"drag_imp":1,"ck_z":1.0,"sfc_sal":0.98,"rad_prm":{"lw_cnt":0.667,"qs_mix":1}}}' DT=20 XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore moist_vs_era5.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_moist_2020.npz T170 1,7,13,19,25,31,37,43,49,55,61,67 /kaggle/working/me_lcl75b.json > /kaggle/working/me_lcl75b.log 2>&1; grep -v WARNING /kaggle/working/me_lcl75b.log | tail -40
+tn-nz3-sb
+libm_fields.npz
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/suite_nz3_sb.json /kaggle/working/sb.json > /kaggle/working/sb.log 2>&1; tail -20 /kaggle/working/sb.log
 NvidiaTeslaT4
-4
-#humidity vs ERA5 T170 75 levels package+bl_lcl (humidity only) 2026-11-12T04:36Z
+1
+#noise twin base2 sppt 1e-3 seed 3 2026-11-12T04:37Z
