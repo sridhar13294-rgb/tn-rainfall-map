@@ -1989,3 +1989,7 @@ D3 - hybrid vertical coordinate: SCOPE (mm2.py touch points, grep): coordinate s
   Regression hyb = 0: base2 6-h run bit-identical (mslp 100809.609375, rain 0.43390631675720215). hyb = 1, T42, 32 L, 48 h, 1 start:
   stable, finite; vs ERA5 RMSE / bias: z500 d1 22.9 / -9.9 m (sigma 23.4 / -11.2), d2 38.9 / -11.1 (39.9 / -14.6); t850 d2 3.75 (3.76);
   u200 d2 6.95 (6.95); mslp d2 464 / +58 Pa (461 / +22). Next: 75 L stability, the jet check (sector jets) with hyb in the full model.
+- 22:25 D3 hyb at 75 L (tp75, T42, 48 h, 1 start): stable; z500 d1/d2 bias -10.6 / -12.2 m (sigma 75 L -11.0 / -13.6), RMSE 23.6 / 41.0
+  (23.8 / 41.2); t850, u200 RMSE equal within 0.01. REGISTERED next (jet_check.py, full physics, T42, 3 Oct-Nov starts, sector jets):
+  hyb adopted-candidate if the Asian jet day-1 error improves by >= 0.7 m/s with Pacific and Atlantic not worse by > 0.3 m/s
+  (hyb_jet.py physics-off predicted +1.1 / +0.1 / +0.2).
