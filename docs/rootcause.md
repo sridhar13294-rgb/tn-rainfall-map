@@ -1655,3 +1655,17 @@ full physics and at 75 levels unknown, storm intensity/track effects unknown -> 
   (SL linear -8.6 / -5.9 / -4.5; Eulerian -4.7 / -2.7 / -3.5). => cubic vertical closes ~3/4 of the SL-Eulerian gap in Asia, ~1/2 in the
   Pacific, most in the Atlantic; remaining SL-Eulerian gap ~1-1.6 m/s (Asia: hybrid levels gave +1.1). Mm v1 (mm.py) was Eulerian
   at T85 with a 6-min step; v2 moved to SL for T170 at 20 min (Eulerian T170 needs ~3 min -> ~6x more steps, physics each RK stage).
+
+## 12 Nov 09:35 IST - dynamics fix step 1: storm-gate NOISE check (Sridhar 09:23 "Yes start") - REGISTERED before results
+Why: the storm gate (72 h pmin within 2 hPa per storm, single run each) was set to a round-off spread assumed from the OLD control
+(3-4 repeats: Sidr 3.6, Titli 1.6, Nivar 2.6 hPa). If base2's own spread is larger than 2 hPa, a single-run comparison cannot tell a
+dynamics change (sl_vcubic: Vardah +7.7, Nivar -4.2, Michaung +1.1; dfi_off: -1.7/+1.9/+2.1) from noise.
+Jobs (account 1, T170, sb suite Nivar/Michaung/Vardah, 72 h, ~0.3 GPU-h each): tn-nz1/2/3-sb = base2 + SPPT 1e-3 (round-off-type
+perturbation, seeds 1-3); tn-vz1/2/3-sb = base2 + sl_vcubic + SPPT 1e-3 (same seeds).
+Reading (fixed now): spread per storm = max - min of 72 h pmin over {tn-s-rd-sb, nz1, nz2, nz3}.
+- spread <= 2 hPa in all 3 storms -> the gate is valid as designed; the 6 Nov vcubic failure STANDS (real effect) and the next step
+  is to find why cubic changes storm cores.
+- spread > 2 hPa in any storm -> single runs cannot resolve 2 hPa. The storm check is then applied to 3-member MEANS (same seeds):
+  |mean(vz) - mean(nz)| <= 2 hPa per storm - the SAME 2 hPa threshold, on a quantity with ~1/sqrt(3) of the noise (stricter, not
+  relaxed). This design is fixed now, before any vz result is seen, and applies to every later candidate. The old single-run vcubic
+  verdict is not re-judged; vcubic is judged only on the new vz-vs-nz means.
