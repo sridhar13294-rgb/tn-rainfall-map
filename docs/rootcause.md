@@ -1822,3 +1822,17 @@ Variants (cloud_parts.py, T42, start 1 Nov, 24/48 h; reference lcl = -0.8 / -1.1
   q925 -9..-12 %, q700 +24..+32 %, q500 +23..+33 %. => at 75 L the package + bl_lcl removes the mid-level moistening completely and
   most of the low-level error; residual +2..+4 % at 850-925 (positive in 10/12: small systematic) - slightly larger than at 32 L
   (+0.4 / +2.3 %). B at 75 L: 'mostly fixed'.
+- 17:00 RESULT rh_vs_era5.py (lcl candidate, T42, 3 Oct-Nov starts; ERA5 daily means; model RH w.r.t. IFS mixed-phase saturation):
+  TEMPERATURE vs ERA5 (d0 / d1 / d2): t850 globe -0.05 / -0.89 / -1.29 K, ocean 40S-40N -0.07 / -0.95 / -1.34, poleward 40 +0.07 / -0.51 / -0.70;
+  t700 globe -0.06 / -0.82 / -1.17. => the cold drift is NOT a near-surface problem: the whole 925-700 hPa layer cools ~0.6 K/day,
+  tropics included (850 hPa gate +-1.5 K will be exceeded within ~2.5 days).
+  RH change from d0 (model minus ERA5; d0 offsets at cold levels partly a definition difference - WB2 RH may be w.r.t. water):
+  tropical ocean 925/850/700/500: +0.04/+0.04/+0.04/+0.07 by d2; poleward of 40: +0.07/+0.07/+0.14/+0.27.
+  RH-cloud fraction (the scheme applied to model vs ERA5 RH at the level): largest excess poleward (500 hPa 0.50 vs 0.01, 700 0.36 vs 0.03,
+  850 0.36 vs 0.11, 925 0.44 vs 0.21 at d2); tropical ocean smaller (925 0.31 vs 0.22, 850 0.16 vs 0.09).
+  => A is mainly an extratropical / mid-level RH rise plus the low-level cooling; the scheme is NOT mis-mapping (at d0 the low-level
+  RH-cloud from model RH is <= ERA5's). The common driver of A and P1 is a lower-to-mid-tropospheric COOLING of ~0.6 K/day (global),
+  i.e. the atmospheric energy budget: candidates measured so far against references - radiation over-cools vs RRTMG (column
+  -3.4 W m-2 at h0, -8.6 at h24; 850-1000 hPa -0.3..-0.5 K/day), latent heat flux -12 W m-2 globally (-25 over the 40S-40N ocean)
+  vs ERA5 -> less latent heating aloft. Next: the same energy terms for base2 (was the evaporation deficit introduced by ck_z/sfc_sal
+  or by the package?) and the precipitation vs ERA5 (latent heating actually released).
