@@ -775,6 +775,10 @@ class Model:
                 Rr = jax.lax.cond(nstep % int(S['rad_every']) == 0, fresh, lambda: cr['rad'])
             else: Rr = cr['rad']                                                                     # inside the dynamics step: the cache
             rad = jnp.where(sig > S['rad_top'], Rr['heating'], -(Tn - cr['T0']) / S['tau_strat'])   # rad_top: computed radiation above this sigma only (default 0.12 = stratosphere held near its start)
+            if self.S.get('rad_low_add', 0.0) != 0.0:
+                # rad_low_add (12 Nov, DIAGNOSTIC sufficiency test only, never a fix): add this many K/day to the radiative heating of the
+                # 850-1000 hPa layer = the measured MEGAM-minus-RRTMG low-level heating difference (rad_allsky.py: -0.3 at h0, -0.5 at h24)
+                rad = rad + jnp.where(p >= 85000.0, float(self.S['rad_low_add']) / 86400.0, 0.0)
             sw_sfc, lw_dn = Rr['sw_net_sfc'], Rr['lw_dn_sfc']
         else:                                                                                        # old gray scheme, unchanged
             rhn = jnp.clip(qn / qsat(Tn, p), 0, 1); Rr = None

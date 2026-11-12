@@ -1796,3 +1796,14 @@ Variants (cloud_parts.py, T42, start 1 Nov, 24/48 h; reference lcl = -0.8 / -1.1
 - Next (running): low-level RADIATIVE heating vs RRTMG on the SAME forecast columns (rad_allsky.py now also reports the 850-1000 hPa
   mass-weighted LW/SW heating, all-sky and clear-sky, model vs RRTMG), hour 0 and hour 24. Registered: a model-minus-RRTMG difference
   of <= -0.3 K/day in that layer (model cools more) would be the initiator; within +-0.2 K/day clears radiation.
+- 15:20 RESULT radiation vs RRTMG (rad_allsky.py, lcl candidate, T42, start 1 Nov, 1664 columns; 850-1000 hPa mass-weighted, K/day):
+  | | LW all | SW all | LW clear | SW clear | total all-sky diff |
+  | h0  MEGAM / RRTMG | -2.3 / -2.1 | +0.6 / +0.7 | -2.1 / -1.9 | +0.6 / +0.7 | -0.3 |
+  | h24 MEGAM / RRTMG | -2.6 / -2.4 | +0.5 / +0.8 | -2.1 / -1.9 | +0.6 / +0.7 | -0.5 |
+  Column: SW absorbed in the atmosphere MEGAM 67.1 vs RRTMG 72.3 (h0), 68.7 vs 77.6 (h24) W m-2; clear-sky atmospheric total within
+  1 W m-2 at h0; OLR within 2. => per the registered rule (<= -0.3 K/day): radiation over-cools the low layer by 0.3 (h0) to 0.5 (h24)
+  K/day relative to RRTMG on the same columns: ~0.2 K/day clear-sky LW cooling too strong, ~0.1-0.3 K/day SW absorption too weak
+  (Lacis-Hansen water-vapour SW, no continuum; and less cloud SW absorption). Over 48 h that is ~0.6-1.0 K = the size of the t925 drift.
+  REGISTERED sufficiency test (rad_low_add = +0.4 K/day in 850-1000 hPa, the measured mean difference; diagnostic only): if t925 at 48 h
+  improves to >= -0.4 K and cover falls by >= 0.1, radiation is the initiator and the fix is in the low-level radiation (to be derived
+  from the reference, not by adding heat).
