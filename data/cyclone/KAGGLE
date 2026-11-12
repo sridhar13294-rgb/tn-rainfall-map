@@ -1,6 +1,6 @@
-tn-moist-pkg75
-libm_wx2020_fields.npz,wx_truth_moist_2020.npz
-NOCLOUD=1 NLEV=tp75 CANDS='{"pkgall_75":{"phys_ifs":1,"sfc_imp":1,"drag_imp":1,"ck_z":1.0,"sfc_sal":0.98,"rad_prm":{"lw_cnt":0.667,"qs_mix":1}}}' DT=20 XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore moist_vs_era5.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_moist_2020.npz T170 1,7,13,19,25,31,37,43,49,55,61,67 /kaggle/working/me_pkg_75.json > /kaggle/working/me_pkg_75.log 2>&1; grep -v WARNING /kaggle/working/me_pkg_75.log | tail -40
+tn-p5-lcl-ond
+libm_wx2020_fields.npz,wx_truth_2020.npz
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore p5_bias.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz /kaggle/working/p5.json 2020-10-02,2020-10-07,2020-10-12,2020-10-17,2020-10-22,2020-10-27,2020-11-01,2020-11-06,2020-11-11,2020-11-16,2020-11-21,2020-11-26,2020-12-01,2020-12-06,2020-12-11,2020-12-16,2020-12-21,2020-12-26 '{"cmt_mf": 1.0, "rd_si": 1.0, "phys_ifs": 1, "bl_lcl": 1, "ck_z": 1.0, "sfc_sal": 0.98, "rad_prm": {"lw_cnt": 0.667, "qs_mix": 1}, "grid": "T170"}' > /kaggle/working/p5.log 2>&1; tail -5 /kaggle/working/p5.log
 NvidiaTeslaT4
-4
-#humidity/cloud vs ERA5 T170 75 levels pkg_75 2026-11-12T07:38Z
+1
+#P5b re-measure on IFS package + bl_lcl (Bay u850, C-India MSLP, ridge) vs base1 tn-p5-b1-ond 2026-11-12T07:54Z
