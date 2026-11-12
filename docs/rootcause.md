@@ -1922,3 +1922,22 @@ CONFIRMED if t850 AND t700 d2 biases both improve by >= 0.3 K (from -1.21 / -1.1
   Next (registered): ALL measured contributors removed at once (rad_low_add +0.4, cld_fix, det_prec 1, no ck_z, bl_lcl kept) - the
   remaining t850 d2 bias IS the unassigned part (expected -0.3..-0.5 K if the contributors add linearly); its first-day process budget
   at 700-850 hPa then shows which term carries it.
+- 20:30 RESULT combined (all measured contributors removed): t850 d1/d2 -0.40 / -0.50 K (package -0.85 / -1.21), t700 -0.67 / -0.88 (-0.81 / -1.12).
+  => the measured contributors remove 0.7 K at 850 but only 0.24 K at 700: the unassigned part is -0.5 K at 850 and -0.9 K at 700 hPa.
+- 20:40 FOUND: COLUMN ENERGY BUDGET (init_tend profiles integrated cp/g * sum(dT/dt dp), globe, W m-2) vs the observed global energy
+  balance (Wild et al. 2013/2015: latent heat 84, sensible 20, solar absorbed in the atmosphere ~79 = 240 TOA - 161 surface, so
+  atmospheric radiative cooling ~ -104):
+  | run, window | total | radiation | latent (conv + lsc - evap) | BL/sensible | dynamics |
+  | package 0-6 h | -81 | -116 | +24 | +12 | -2 |
+  | package 6-24 h | -56 | -137 | +67 | +21 | -7 |
+  | base2 0-6 h | -78 | -120 | +35 | +10 | -3 |
+  | base2 6-24 h | -63 | -137 | +64 | +12 | -3 |
+  | all contributors removed 6-24 h | -34 | -120 | +72 | +19 | -6 |
+  => the atmosphere loses 55-80 W m-2 on day 1 in EVERY version (0.5-0.7 K/day mass-weighted = the A/P1 cooling). Two terms are off
+  against the observed balance: (1) LATENT HEATING SPIN-UP: +24 (0-6 h) and +67 (6-24 h) vs ~84 needed (rain reaches ERA5's 3.0 mm/day
+  only on day 2) - a first-day deficit of ~30-60 W m-2; (2) RADIATIVE COOLING too strong: -116 at the start vs ~-104 (solar absorbed in
+  the atmosphere 67 vs ~79; RRTMG on the same columns 72 - neither run has AEROSOLS, which absorb ~3-6 W m-2 globally) and it grows to
+  -137 as the cloud deck builds (the A feedback). Dynamics -2..-7 (small).
+  => the 'unexplained' part is (1) the convective spin-up on day 1 plus (2) the missing atmospheric solar absorption (aerosol + water
+  vapour), both constant-sign, both in all versions. Next: rain hours 0-24 vs ERA5 day 0 (size of the spin-up) and an aerosol
+  climatology for the radiation (IFS uses one; MEGAM has none).
