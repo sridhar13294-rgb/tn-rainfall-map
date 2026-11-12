@@ -481,12 +481,14 @@ def shortwave(T, q, p, dp, ps, sea, mu0, cl, xp=np, prm=None, o3=None, s0=None):
 
 # ------------------------------------------------------------------------------------------------ driver
 def radiation(T, q, p, dp, ps, Ts, sea, mu0, conv_mask=None, conv_rain=None, conv_src=None, ls_cond=None, xp=np, prm=None,
-              s0=None, clear_sky=False):
-    """Clouds + long-wave + short-wave for all columns. T, q, p, dp [L,X,Y]; ps, Ts, mu0 [X,Y]; sea bool [X,Y].
+              s0=None, clear_sky=False, cloud_Tq=None):
+    """cloud_Tq (12 Nov, diagnostic denial 'cld_fix'): (T, q) from which the RH cloud is diagnosed instead of the current state.
+    Clouds + long-wave + short-wave for all columns. T, q, p, dp [L,X,Y]; ps, Ts, mu0 [X,Y]; sea bool [X,Y].
     Returns heating (K/s, lw + sw), lw_heating, sw_heating, olr, lw_dn_sfc, lw_up_sfc, sw_dn_sfc, sw_net_sfc, sw_toa_up,
     cloud (fraction per layer), cover (total, max-random), lwp/iwp (grid-mean column paths, kg m-2); with clear_sky also
     clear-sky OLR, surface downward LW and LW heating."""
-    cl = clouds(T, q, p, dp, ps, sea, conv_mask, conv_rain, conv_src, ls_cond, xp, prm)
+    Tc_, qc_ = (T, q) if cloud_Tq is None else cloud_Tq
+    cl = clouds(Tc_, qc_, p, dp, ps, sea, conv_mask, conv_rain, conv_src, ls_cond, xp, prm)
     o3 = ozone_layer_mass(p, dp, xp)
     lw = longwave(T, q, p, dp, ps, Ts, cl, xp, prm, o3, clear_sky)
     sw = shortwave(T, q, p, dp, ps, sea, mu0, cl, xp, prm, o3, s0)

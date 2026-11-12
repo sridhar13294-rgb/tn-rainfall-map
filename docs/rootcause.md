@@ -1747,3 +1747,16 @@ IFS convecting column, incl. shallow); if the RH part alone rises to >= 0.85, th
   Nivar 992.4, Michaung 999.6. vcubic judged on mean(vz1-3) vs these (vz1/vz2 running, vz3 queued).
   Consequence for earlier verdicts made on single storm runs (dfi_off failed by 0.1 hPa on Michaung, the spread there is 0.9 -> that
   failure stands as measured; vcubic 6 Nov Vardah +7.7 exceeds even the 5.2 spread). Not re-judged; noted.
+
+## 12 Nov 12:30 IST - A + P1: initiator vs amplifier (Sridhar 11:50 "first fix A and P1") - REGISTERED before running
+Reference checked and set aside: the GFS v16 SCM BOMEX run (tn-scm-ref) is NOT usable as a heating reference - GFS fires deep
+convection in BOMEX and its column warms +5..+7 K/day in the cloud layer (BOMEX LES is steady). The reference used instead is ERA5
+itself: t925 / q925 / total cloud at 24 and 48 h (ERA5 t925 day0->1 change ~0).
+New diagnostic switch cld_fix (radiation's RH cloud diagnosed from the START T/q, convective cloud live; default off; base2 6-h run
+bit-identical: mslp 100809.609375, rain 0.43390631675720215).
+Variants (cloud_parts.py, T42, start 1 Nov, 24/48 h; reference lcl = -0.8 / -1.1 K t925, cover 0.90 / 0.93):
+ (a) lcl + cld_fix  - if the cloud-radiation feedback is the AMPLIFIER, t925 error shrinks to <= half (>= -0.5 K at 48 h);
+                      if it stays <= -0.9 K the cooling does not need the cloud (initiator elsewhere).
+ (b) package without bl_lcl - if bl_lcl's cap removes heat transport above cloud base, t925 is warmer by >= 0.4 K (but q925 wetter).
+ (c) lcl + edmf (IFS 3.42-3.43 dry mass flux: heat/moisture carried from the surface layer to cloud base) - if the missing piece is the
+     non-local BL heat transport, t925 warms by >= 0.4 K with q925 not wetter than +3 %.

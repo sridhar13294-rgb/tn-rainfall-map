@@ -197,6 +197,7 @@ class Model:
         carry = dict(sst=jnp.asarray(sst, jnp.float32), tl=jnp.asarray(tl0, jnp.float32), w=jnp.asarray(w0, jnp.float32),
                      rain=jnp.zeros(zs.shape, jnp.float32), t=jnp.float32(0.0), sst0=jnp.asarray(sst, jnp.float32), T0=jnp.asarray(sg['t'], jnp.float32),
                      prm=self.params())
+        if self.S.get('cld_fix', 0): carry['q0'] = jnp.asarray(sg['q'], jnp.float32)                # cld_fix: start humidity for the frozen RH cloud
         if self.S.get('soil_fr', 0):                                                                # force-restore deep soil temperature (5 Nov)
             carry['tl2'] = jnp.asarray(landinit.land_start(N, sg['t'][-1], land, self.S['bucket'], None, soil_t, None)[0], jnp.float32)
         if ocean is not None:                                                                       # 1-D ocean column under every sea point (ocean.py)
@@ -759,7 +760,8 @@ class Model:
                 if self.S.get('cld_pdf', 0): rprm['pdf'] = 1.0                                       # D1: one sub-grid water PDF for cloud fraction and water
                 if self.S.get('rad_dbg', 0): self._rad_in = dict(T=Tn, q=qn, p=p, dp=dp, ps=ps, Ts=Ts, sea=sea, mu0=mu0, cm=cm, Psrc=Pconv_src, cond=cond, s0=1361.0 * ecc, prm=rprm)   # diagnostics only (eager calls)
                 Rr = radcloud.radiation(Tn, qn, p, dp, ps, Ts, sea, mu0, conv_mask=cm, conv_rain=Pconv_src.sum(0), conv_src=Pconv_src,
-                                        ls_cond=cond, xp=jnp, s0=1361.0 * ecc, prm=rprm, clear_sky=ent_on)
+                                        ls_cond=cond, xp=jnp, s0=1361.0 * ecc, prm=rprm, clear_sky=ent_on,
+                                        cloud_Tq=((cr['T0'], cr['q0']) if self.S.get('cld_fix', 0) else None))   # cld_fix (12 Nov): RH cloud frozen at the start state (feedback denial)
                 o = {k: Rr[k] for k in RADKEYS}
                 if ent_on: o.update(lw_cld=Rr['lw_heating'] - Rr['lw_heating_clr'], cloud=Rr['cloud'])
                 return o
