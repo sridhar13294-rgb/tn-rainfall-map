@@ -1906,3 +1906,6 @@ Variants (cloud_parts.py, T42, start 1 Nov, 24/48 h; reference lcl = -0.8 / -1.1
   Tally at d2 (850 hPa, -1.2 K): radiation vs RRTMG ~0.3, cloud feedback ~0.3, bl_lcl ~0.3 (925), detrained condensate <= 0.2,
   evaporation ~0.1 - several small contributors, each confirmed against a reference, none dominant; ~0.3-0.5 K still unassigned.
   Caveat: all these are T42 local runs; the T170 exam quarter (tn-lcl-wx0, queued) gives the real-resolution P1 numbers.
+- 18:45 P3 first member on the package (tn-lz1-sb): 72 h pmin Vardah 995.4 / Nivar 1004.6 / Michaung 1005.8 vs base2 nz means 990.2 / 992.4 /
+  999.6 and ERA5-at-T170 targets 995.2 / 994.1 / 992.0. 1 of 3 members (lz2 running, lz3 queued) - no verdict yet; first sign: the
+  package weakens Nivar (+12 hPa) and Michaung (+6) well beyond the noise spread.
