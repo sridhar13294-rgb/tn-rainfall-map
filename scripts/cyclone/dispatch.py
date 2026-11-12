@@ -68,7 +68,7 @@ while True:
     busy = running(); left = []; newdone = []
     for j in q:
         down = set(open('data/cyclone/accounts_down.txt').read().split()) if os.path.exists('data/cyclone/accounts_down.txt') else set()   # 5 Nov 20:10: API auth lost
-        accts = [a for a in ([str(j['account'])] if j.get('account') else [str(a) for a in range(1, 15)]) if a not in down]
+        accts = [a for a in ([str(j['account'])] if j.get('account') else ['1', '4']) if a not in down and a in ('1', '4')]   # 12 Nov: ONLY Sridhar's account 1 and the partner's account 4 (standing rule) - a re-queued job without an account must never fall to other accounts
         amax = dict(l.split() for l in open('data/cyclone/accounts_max.txt').read().split('\n') if l.strip()) if os.path.exists('data/cyclone/accounts_max.txt') else {}   # per-account cap (partner account 4: 1 job at a time)
         free = [a for a in accts if len(busy.get(a, [])) < int(amax.get(a, MAXPER))]
         if not free: left.append(j); continue
