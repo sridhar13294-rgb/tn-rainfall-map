@@ -1678,3 +1678,16 @@ Reading (fixed now): spread per storm = max - min of 72 h pmin over {tn-s-rd-sb,
   Pacific ERA5 +8.1 (jet strengthening) vs cubic +4.8 / Eulerian +6.5; Atlantic ERA5 -3.4 vs cubic -5.8 / Eulerian -5.3.
   => the ~2 m/s/day left even in the Eulerian core is common to both cores: candidates T42 resolution (eddy forcing of the jet), no
   physics. Running T85 (sigma / SL cubic / Eulerian) to see if it shrinks with resolution.
+
+## 12 Nov 10:15 IST - cycle: pipeline fault found; T85 jet check; first noise twin
+- PIPELINE: tn-moist-lcl75b and tn-moist-b275 (11 Nov 20:42) NEVER RAN: their GitHub workflow runs sat 'queued' for 8 h and cannot be
+  cancelled (409) or deleted (403). The dispatcher counted them as busy, blocking one slot on account 1 and the only slot on account 4
+  all night (pkg75 waited behind it). Fix: dispatch.running() ignores runs still queued > 2 h after creation (they never reached
+  Kaggle; the push happens inside the run). Re-queued: lcl75b launched on account 4 (10:12), b275 queued on account 1.
+- Noise twin 1 (tn-nz1-sb, base2 + SPPT 1e-3 seed 1) vs base2 (tn-s-rd-sb), 72 h pmin: Vardah 992.2 vs 990.5 (+1.7), Nivar 992.7 vs
+  993.8 (-1.1), Michaung 999.3 vs 999.9 (-0.6). (vcubic single run 6 Nov: +7.7 / -4.2 / +1.1.) Twins 2-3 running; no reading yet.
+- T85 jet check (same 3 starts, physics off; day-1 error Asia/Pacific/Atlantic): SL linear -8.1/-4.1/-4.2 (T42 -8.6/-5.9/-4.5);
+  Eulerian -4.5/-1.8/-2.7 (T42 -4.7/-2.7/-3.5). Start representation Asia at T85 53.1 vs ERA5 54.8 (-1.7; T42 -2.5).
+  => doubling resolution barely changes the Asian loss in either core: the ~2 m/s/day common loss is NOT grid resolution. Left:
+  no physics in this test (but physics on/off gave the same jet error on 10 Nov) and the START STATE itself (ERA5 interpolated from
+  pressure levels; jet core between the 250 and 200 hPa analysis levels). SL cubic at T85 re-running (first attempt timed out).
