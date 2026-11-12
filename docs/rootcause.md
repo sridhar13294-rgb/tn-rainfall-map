@@ -1857,3 +1857,11 @@ Variants (cloud_parts.py, T42, start 1 Nov, 24/48 h; reference lcl = -0.8 / -1.1
   Tally for the 925-700 hPa cooling (~0.6 K/day): radiation vs RRTMG (low layer) ~0.15 K/day, cloud-radiation feedback ~0.15, bl_lcl
   ~0.2 at 925 only; evaporation ~0.04. Rain (column latent heating) right. Next: RRTMG comparison for the 700-850 hPa layer and the
   heating profile split by process vs a reference profile; SW water-vapour coefficient fit (rad_fit.py).
+- 20:40 RESULT radiation vs RRTMG, 700-850 hPa (same columns): LW all-sky -1.8 vs -2.0 (h0), -2.1 vs -2.2 (h24); SW +0.6/+0.5 vs +0.7;
+  clear-sky within 0.1 => radiation is RIGHT in the 700-850 hPa layer (the over-cooling vs RRTMG is confined to 850-1000 hPa).
+  SW water-vapour fit (rad_fit.py, 790 training columns Oct, 847 validation Jan/Jul, clear-sky day side): before, column absorption
+  145 vs 152 (train) / 153 vs 154 (val), 850-1000 hPa heating 1.31 vs 1.49 K/day; fitted K = [0.00016, 0.061, 0.55, 2.36, 22.5]
+  (cm2/g) fixes the low layer (1.51 vs 1.49) but OVERSHOOTS the column (158 vs 152 train, 167 vs 154 validation) and the profile rms
+  improves only 0.55 -> 0.50. => NOT adopted: one k-set cannot match both; the deficit is small (~0.1 K/day diurnal mean) - leave.
+  => the unexplained ~0.3 K/day at 700-850 hPa is NOT radiation and NOT evaporation. Next: which process changed between base2
+  (850 hPa warm) and the package (850 hPa cold): first-hours T budget by process, base2 vs package, same starts.
