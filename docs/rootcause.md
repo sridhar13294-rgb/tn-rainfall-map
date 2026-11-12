@@ -1966,3 +1966,9 @@ D1 - WHY cubic changes the storms (from the 6 storm runs already done, nz1-3 vs 
   storms. The storm-intensity gate as defined ("same as base within 2 hPa") cannot separate an environment/track change from a
   defect; on tracks, cubic is slightly better overall (237 vs 250 km) and much better for Vardah. Decision on the gate definition is
   Sridhar's (asked 13:45); until then cubic stays rejected under the registered rule.
+S3 - hour-0 central-India MSLP (s3_check.py: T170 INITIAL STATE, no DFI, no time step, model's own IFS reduction vs ERA5 msl, 4 Oct starts):
+  box bias +0.02 / +0.08 / +0.04 / +0.06 hPa (mean +0.05); where |dz| < 30 m +0.08; mean dz (model - ERA5 terrain) -9 m (|dz| 33 m);
+  corr(bias, dz) 0.64 but the amplitude is tiny. => at T170 the initial state and the reduction are RIGHT (the 6 Nov +0.55 hPa
+  residual was a T42 effect: coarser terrain smoothing). The T170 hour-0 value of +0.8 hPa (P5 runs) therefore comes from the DFI
+  (S2: it removes part of the real thermal tide, +0.4 hPa measured 6 Nov, plus its other changes). S3 is CLOSED as a separate item and
+  merges into S2.
