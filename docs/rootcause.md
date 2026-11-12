@@ -1639,3 +1639,15 @@ Global means, model vs ERA5, per start (h24 / h48):
   -10 m/s/day). DFI did not change it (01:40). => the dominant piece is a fast start-up loss in the first hours, not a steady damping
   (JW: no damping). Next (10:00 cycle): where in the first 6 h - level-by-level and jet-core-relative u tendency in the first steps
   (vertical: the jet core sharpness on 32 levels vs the SL departure-point interpolation; horizontal: T42 vs T170 same start).
+
+## 12 Nov 09:10 IST - jet: EULERIAN vs SEMI-LAGRANGIAN core, same start/levels/diffusion (hyb_jet.py core 'euler'; Sridhar 08:45 "why not different dynamics")
+Physics off, T42, 3 Oct-Nov starts, no DFI; day-1 jet-peak error vs ERA5 (m/s):
+| core | Asia | Pacific | Atlantic |
+| semi-Lagrangian (MEGAM), 20 min | -8.6 | -5.9 | -4.5 |
+| semi-Lagrangian, 10 min | -8.7 | -6.0 | -4.5 |
+| Eulerian spectral (Dinosaur PrimitiveEquationsSigma, IMEX RK3, 10 min) | -4.7 | -2.7 | -3.5 |
+At 6 h: Asia SL 52.3 -> 48.7, Eulerian 52.3 -> 50.3.
+=> The semi-Lagrangian TRANSPORT costs ~3-4 m/s/day of jet speed in Asia and the Pacific (~1 in the Atlantic); not the step length
+(10 vs 20 min identical). The remaining ~-3..-5 m/s with the Eulerian core = start state / T42 / no physics (to separate later).
+Candidate fix: Eulerian dynamics (same library, same physics coupling, same levels). Costs: shorter step (GPU time x2-3), stability with
+full physics and at 75 levels unknown, storm intensity/track effects unknown -> registered screen needed before adoption.

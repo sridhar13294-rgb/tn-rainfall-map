@@ -27,6 +27,15 @@ interp = vertical_interpolation.vectorize_vertical_interpolation(vertical_interp
 res = hor.latitude_nodes / 128; tau = M.ps.nondimensionalize(8.6 / (2.4 ** np.log2(res)) * units.hours)
 nday = int(round(float(os.environ.get("HRS", 24)) * 3600.0 / M.dt_s))   # HRS: run length (h); ERA5 still day 1
 def make(core):
+    if core == 'euler':                                                     # Eulerian spectral core (same sigma levels), IMEX RK3, 10-min step
+        coords = M.coords
+        eq = primitive_equations.PrimitiveEquationsSigma(M.ref_t, M.oro, coords, M.ps, humidity_key='specific_humidity')
+        pc = lambda ps: M.sig[:, None, None] * ps
+        dte = M.dt / 2; n = 2 * nday
+        filt = time_integration.horizontal_diffusion_step_filter(hor, dt=dte, tau=tau, order=2)
+        step = time_integration.step_with_filters(time_integration.imex_rk_sil3(eq, dte), [filt])
+        run = jax.jit(lambda s: jax.lax.fori_loop(0, n, lambda i, x: step(x), s))
+        return coords, pc, run
     if core == 'sigma':
         coords = M.coords
         eq = primitive_equations.SemiLagrangianPrimitiveEquations(M.ref_t, M.oro, coords, M.ps, humidity_key='specific_humidity', monotone_tracers=True,
@@ -63,6 +72,7 @@ for k in KS:
         if c not in CORE: CORE[c] = make(c)          # needs M.oro from the first init (same terrain every start)
         coords, pc, run = CORE[c]
         if c == 'sigma': st = st_s
+        elif c == 'euler': st = st_s.replace(tracers={'specific_humidity': hor.to_modal(st_s.tracers['specific_humidity'])})   # Eulerian core: modal tracer
         else:
             want = jnp.asarray(pc(ps_mod)); f = {n: np.asarray(interp(want, levs, x)) for n, x in (('t', T3), ('q', np.maximum(Q3, 0)), ('u', U3), ('v', V3_))}
             vor, div = spherical_harmonic.uv_nodal_to_vor_div_modal(hor, f['u'] * M.MPS, f['v'] * M.MPS)
