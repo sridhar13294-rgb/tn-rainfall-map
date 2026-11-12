@@ -14,10 +14,14 @@ def running():
     (one Kaggle kernel)."""
     busy = {}
     for stt in ('in_progress', 'queued', 'waiting', 'pending', 'requested'):
-        r = sh(f"gh api 'repos/sridhar13294-rgb/tn-rainfall-map/actions/workflows/cyclone-kaggle.yml/runs?status={stt}&per_page=100' --jq '.workflow_runs[] | (.display_title + \"|\" + .head_sha)'").stdout
+        r = sh(f"gh api 'repos/sridhar13294-rgb/tn-rainfall-map/actions/workflows/cyclone-kaggle.yml/runs?status={stt}&per_page=100' --jq '.workflow_runs[] | (.display_title + \"|\" + .head_sha + \"|\" + .run_started_at)'").stdout
         for l in r.split('\n'):
-            if '|' not in l: continue
-            slug, sha = l.replace('Cyclone study: Kaggle job ', '').strip().split('|')
+            if l.count('|') < 2: continue
+            slug, sha, t0 = l.replace('Cyclone study: Kaggle job ', '').strip().split('|')
+            # 12 Nov: GitHub left two runs (tn-moist-lcl75b / -b275, 11 Nov 20:42) 'queued' for 8 h without ever starting; they
+            # cannot be cancelled (409) or deleted (403). A run still queued 2 h after creation never reached Kaggle (the push
+            # happens inside the run), so it holds no Kaggle slot and is not counted.
+            if stt != 'in_progress' and time.time() - time.mktime(time.strptime(t0, '%Y-%m-%dT%H:%M:%SZ')) + time.timezone > 7200: continue
             k = sh(f"git show {sha}:data/cyclone/KAGGLE").stdout.split('\n')
             if len(k) >= 5 and k[4].strip():
                 b_ = busy.setdefault(k[4].strip(), [])
