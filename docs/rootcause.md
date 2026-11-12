@@ -1917,3 +1917,8 @@ Candidate from the dynamics work (D1): with PHYSICS OFF the linear vertical semi
 tests could see it.
 Test (rh_vs_era5.py, same 3 starts, T42): package (phys_ifs + bl_lcl + sfc_sal + continuum + qs_mix) + sl_vcubic.
 CONFIRMED if t850 AND t700 d2 biases both improve by >= 0.3 K (from -1.21 / -1.12); rejected if < 0.15 K.
+- 19:45 RESULT package + sl_vcubic: t850 d1/d2 -0.82 / -1.16 K (was -0.85 / -1.21), t700 -0.73 / -1.01 (was -0.81 / -1.12) -> +0.05 / +0.11 K:
+  REJECTED (< 0.15): D1 is not the unassigned remainder of the A/P1 cooling.
+  Next (registered): ALL measured contributors removed at once (rad_low_add +0.4, cld_fix, det_prec 1, no ck_z, bl_lcl kept) - the
+  remaining t850 d2 bias IS the unassigned part (expected -0.3..-0.5 K if the contributors add linearly); its first-day process budget
+  at 700-850 hPa then shows which term carries it.
