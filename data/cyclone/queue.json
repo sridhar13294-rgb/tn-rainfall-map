@@ -1,13 +1,5 @@
 [
  {
-  "slug": "tn-lz3-sb",
-  "inputs": "libm_fields.npz",
-  "note": "P3 baseline: package+bl_lcl storm member 3 (vs nz means)",
-  "account": "4",
-  "at": "2026-11-12T08:24Z",
-  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/suite_lz3_sb.json /kaggle/working/sb.json > /kaggle/working/sb.log 2>&1; tail -20 /kaggle/working/sb.log"
- },
- {
   "slug": "tn-r24-lcl-a",
   "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
   "note": "P2/P4 baseline: TN rain 24-start, package+bl_lcl",
