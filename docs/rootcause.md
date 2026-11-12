@@ -1947,3 +1947,8 @@ CONFIRMED if t850 AND t700 d2 biases both improve by >= 0.3 K (from -1.21 / -1.1
   5-Why candidate: the digital filter (DFI) at the start removes the analysed divergent (convectively driven) circulation - large-scale
   ascent restarts from ~0 and convection must spin it up again (classic reason for diabatic initialisation). Links to S2 (DFI removes
   the tide). REGISTERED: no-DFI start, same runs: DFI is the spin-up cause if day-0 rain rises by >= 0.4 mm/day globally; < 0.15 rejects.
+- 21:55 RESULT no-DFI start: day-0 rain globe 2.0 vs 2.9 (unchanged, +0.0..+0.1), ocean 2.5 vs 3.6 => REJECTED: the filter is not the
+  spin-up cause. IMPORTANT CAVEAT: at T170 the old base had TOO MUCH tropical rain by day 5 (+1.14 mm/day, 5 Nov), so part of this T42
+  day-0 deficit may be resolution (T42 smooths the humid convective columns). The T170 exam quarter (tn-lcl-wx0, queued) decides
+  whether the spin-up exists at the real resolution before any fix is built for it. The atmospheric solar-absorption deficit
+  (67 vs ~79 W m-2; no aerosols) is resolution-independent -> next fix to build (aerosol climatology as in IFS).
