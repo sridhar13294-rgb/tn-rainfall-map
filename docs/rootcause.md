@@ -1941,3 +1941,9 @@ CONFIRMED if t850 AND t700 d2 biases both improve by >= 0.3 K (from -1.21 / -1.1
   => the 'unexplained' part is (1) the convective spin-up on day 1 plus (2) the missing atmospheric solar absorption (aerosol + water
   vapour), both constant-sign, both in all versions. Next: rain hours 0-24 vs ERA5 day 0 (size of the spin-up) and an aerosol
   climatology for the radiation (IFS uses one; MEGAM has none).
+- 21:20 SPIN-UP measured (flux_vs_era5.py DAY=0, package, 3 starts, hours 0-24 vs ERA5 day 0): rain globe 2.0 vs 2.9 mm/day (-31 %),
+  ocean 40S-40N 2.4 vs 3.6 (-33 %), land 1.4 vs 2.0; day 1 rain 3.0 vs 3.0 (right). => latent heating deficit on day 0 ~ 27 W m-2
+  (0.95 mm/day x 29 W m-2 per mm/day) - confirmed as a main A/P1 driver. (Also: land evaporation day 0 -58 vs -37 W m-2, too strong.)
+  5-Why candidate: the digital filter (DFI) at the start removes the analysed divergent (convectively driven) circulation - large-scale
+  ascent restarts from ~0 and convection must spin it up again (classic reason for diabatic initialisation). Links to S2 (DFI removes
+  the tide). REGISTERED: no-DFI start, same runs: DFI is the spin-up cause if day-0 rain rises by >= 0.4 mm/day globally; < 0.15 rejects.

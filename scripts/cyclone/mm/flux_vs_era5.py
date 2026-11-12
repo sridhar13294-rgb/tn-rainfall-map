@@ -19,7 +19,7 @@ for nm, ex in CANDS.items():
         t0 = dt.datetime.strptime(TT[k], '%Y-%m-%dT%H'); f2 = Z['f2'][k]; f3 = {v: np.array(Z['f3'][k, V3.index(v)]) for v in V3}
         st, cr = M.init(f3, Z['levs'], Z['lats'], Z['lons'], f2[V2.index('surface_pressure')], f2[V2.index('geopotential_at_surface')] / 9.80616,
                         f2[V2.index('sea_surface_temperature')], f2[V2.index('land_sea_mask')], when=t0, **landinit.land_kwargs(f2, V2))
-        M.build(t0); st = M.dfi(st); DAY = int(os.environ.get('DAY', 1))
+        M.build(t0); st = st if os.environ.get('NODFI') else M.dfi(st); DAY = int(os.environ.get('DAY', 1))
         if DAY == 1: st, cr = mm2.integrate(M, st, cr, 24)          # day 1 = hours 24-48 (ERA5 day index 1); DAY=0: hours 0-24 (spin-up)
         S = {}
         for h in range(24):
