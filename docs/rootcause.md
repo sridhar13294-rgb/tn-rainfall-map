@@ -2056,3 +2056,13 @@ Noise (mean base2 member spread) 1.5 hPa. Rule 2 (not worse than base2 by more t
   read before adoption; combination with cubic untested (FMEA #2).
 - P3 package: 6.12 vs 2.60 (+3.5 > 1.5) -> FAILS: it under-deepens Nivar and Michaung by ~9 hPa at peak. Cause hunt continues
   (slow storm-core rain at the start, cold/dry low levels).
+- ~20:45 S2 / D1 existing diagnostics read (7 Nov / 6 Nov runs, single members, T170):
+  exam quarter 0 (19 starts) no-DFI vs base2, global RMSE diffs: z500 d1/d3/d5/d10 +0.23 / +0.12 / -0.08 / +0.44 m, t850 <= 0.02 K,
+  mslp d5 -2 Pa, rain24 d10 -0.33 mm, winds <= 0.2 m/s -> NEUTRAL (no exam-level change).
+  quick-6 tracks, 72 h error (km): base2 Sidr 319 / Giri 993 / Phailin 388 / Titli 139 / Nivar 197 / Hamoon 472 (mean 418);
+  no-DFI 341 / 563 / 396 / 128 / 230 / 500 (360); cubic 352 / - (lost) / 460 / 354 / 100 / 1072 (mean of 5: 468).
+  => single-member track errors move by hundreds of km between versions (Giri 993 vs 563, Hamoon 472 vs 1072): the track
+  check needs the same treatment as storms (3-member means) before any verdict. Cubic's 6-storm tracks look WORSE on single
+  members (Titli, Hamoon) while its 3-storm sb tracks were better (237 vs 250) - not resolved; registered next: quick-6 with
+  3 members each for base2 and cubic (seeds 4-6), judged on the mean 72 h error (not worse than base2 by more than the base2
+  member spread). Cubic adoption waits for this AND its exam quarter (running next).
