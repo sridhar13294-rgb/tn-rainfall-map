@@ -2164,3 +2164,13 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   control is the 13-level subset of the SAME file, so only the vertical sampling differs): start-data cause CONFIRMED as the main
   driver if, at T42 h0, deep columns rise from ~2.4 % to >= 12 % AND h0 convective rain to >= 1.0 mm/day; PARTIAL if 5-12 % /
   0.3-1.0; REJECTED if < 5 % (then: entrainment/closure vs ERA5 equilibrium). Then the forecast test (t850 d1-d2, rain, LHF).
+- 00:05 (14 Nov) RESULT l37 test (registered 23:54): start from all 29 ERA5 levels vs the 13-level subset of the same file, T42 h0:
+  deep columns 1.9/2.1/2.1 % -> 2.4/2.4/2.6 %; conv rain 0.15/0.15/0.17 -> 0.16/0.15/0.19 mm/day (3 dates). => REJECTED (< 5 %).
+  The 13-level start is NOT the main cause; the mean-sounding CAPE (33 vs 2 J/kg) was an artefact of averaging trade-wind columns.
+  My 23:54 message called this "cause found" - that was premature and is withdrawn. (Side fix kept: init extrapolates up to 4 level
+  spacings, needed for any all-level start; 13-level starts bit-identical.)
+  WHAT STANDS: the IFS deep trigger fires in ~2.5 % of columns on ERA5 starts (any level set, T42 or T85); the model then cools the
+  lower troposphere ~1 K (radiation not offset by convective heating) until it fires (28 %). Plume thermodynamics verified (MetPy).
+  Measured part: 6.10 condensate loading (doc says none) 2.4 -> 5.5 %.
+  NEXT: a real reference for how often deep convection should be on at the start - ERA5's own convective precipitation in the first
+  hour (fraction of tropical columns with cp > 0, and its total) - then compare our trigger column by column against it.
