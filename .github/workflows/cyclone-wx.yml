@@ -48,7 +48,11 @@ jobs:
           mkdir -p /tmp/cyc_out
           RH_MODE=1 python scripts/cyclone/cyc_flux.py || true
           [ -f /tmp/cyc_out/rh_truth_2020.npz ] && gh release upload era5-cases /tmp/cyc_out/rh_truth_2020.npz --clobber || true
-      - if: ${{ !contains(github.event.head_commit.message, 'ECMWF scores only') && !contains(github.event.head_commit.message, 'land library') && !contains(github.event.head_commit.message, 'moist truth') && !contains(github.event.head_commit.message, 'flux truth') && !contains(github.event.head_commit.message, 'rh truth') }}
+      - if: contains(github.event.head_commit.message, 'peak truth')
+        run: |
+          # 13 Nov: ERA5 0-72 h peak-intensity targets for every library storm (Stage-1 intensity rule 1)
+          python scripts/cyclone/cyc_peak.py || true
+      - if: ${{ !contains(github.event.head_commit.message, 'ECMWF scores only') && !contains(github.event.head_commit.message, 'land library') && !contains(github.event.head_commit.message, 'moist truth') && !contains(github.event.head_commit.message, 'flux truth') && !contains(github.event.head_commit.message, 'rh truth') && !contains(github.event.head_commit.message, 'peak truth') }}
         run: |
           mkdir -p /tmp/cyc_out
           LIBM_TIMES=2020-01-01T00/2020-12-26T00/120 LIBM_NAME=wx2020 python scripts/cyclone/cyc_libm.py > /tmp/libm_wx.out 2>&1 &

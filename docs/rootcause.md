@@ -2034,3 +2034,6 @@ re-judged on old runs: they are re-run and judged under rule 2.
   the queue. Judged on the 3-storm sb set: mean over storms of |3-member-mean 72-h PEAK intensity - ERA5-at-T170 target| vs base2's, noise =
   max-min of the base2 member means. Rule 1 (41 storms) needs ERA5 peak-intensity targets for all 41 storms - building them next
   (ERA5 msl along the best tracks, GitHub job).
+- 12:05 Rule-1 targets: cyc_peak.py (GitHub 'peak truth'): for every library storm, ERA5 0.25-deg msl minimum and 850-hPa wind maximum
+  within 2.5 deg of the best-track position, 0-72 h every 6 h, at hind2's start time; peak = min msl over 0-72 h ->
+  data/cyclone/wx/peak_targets.json (same definition as era5_p3_targets.json msl_min).
