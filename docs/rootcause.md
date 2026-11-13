@@ -2010,3 +2010,10 @@ D3 - hybrid vertical coordinate: SCOPE (mm2.py touch points, grep): coordinate s
   diagnostics): the storm library itself is too large for this machine. Storm tests stay on Kaggle. One hour-0 observation from the
   attempt (same start): core rain package 24 vs base2 41 mm/day (inner/outer 24.1/13.2 vs 41.3/37.6) - the package starts the storm
   with far less convective rain (the A/P1 spin-up seen at storm scale) -> first P3 suspect to test on Kaggle.
+- 09:10 (13 Nov) D3 T170 SCREEN (tn-p5-dyn-hyb, base2 + hyb, 12 Oct-Nov starts) vs base2 (tn-p5-dyn), subtropical jet core speed bias d1/d2/d3:
+  Asia -6.5 / -8.4 / -10.0 (base2 -6.2 / -8.7 / -10.3: mean +0.1), Pacific -2.3 / -2.6 / -2.9 (-2.4 / -2.9 / -3.7: +0.4), Atlantic -2.0 / -3.8 / -3.7
+  (-2.0 / -4.0 / -4.0: +0.2); Atlantic jet latitude d1-d3 -0.5 / -1.4 / -1.4 deg (base2 -2.4 / -1.8 / -2.2: better).
+  => registered T170 criterion (Asia d1-d3 better by >= 0.5 m/s) NOT met: the +0.9 m/s seen at T42 does not appear at T170 - the sigma
+  slope over Tibet matters less at higher resolution (steeper but better-resolved terrain is not the jet's problem). D3 NOT adopted;
+  kept as an option (small gains elsewhere: Pacific speed, Atlantic latitude). The Asian jet speed error at T170 is therefore D1
+  (linear vertical interpolation) plus something not yet identified (~-6 m/s at day 1 remains in both).
