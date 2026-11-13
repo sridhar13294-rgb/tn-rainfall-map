@@ -2109,3 +2109,9 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   not recomputed in v2: one-step advective change, negligible).
   REGISTERED (T42, 3 Oct-Nov starts): fix CONFIRMED if day-0 (0-24 h) global rain rises from 1.8 to >= 2.4 mm/day and rain at h0-h6
   >= 1.5 mm/day, AND t850 d2 bias improves by >= 0.2 K (from -1.21), with day-1 rain not above ERA5 (3.0) by > 10 %.
+- 23:30 RESULT (registered 23:15): 6.21 + QCV do NOT fix the spin-up -> hypothesis REJECTED. Global rain h0..h45 (3-hourly, T42, 3 starts):
+  package 0.15 0.78 1.29 1.88 2.08 3.05 ... ; with q_adv+QCV 0.15 0.74 1.33 1.85 2.09 2.85 ... (unchanged within noise). Reason: QCV is
+  ~Lv tau/(gH) x 0.8 x int(q/qs dq/dt_adv dp) ~ a few J/kg in the global mean vs PCAPE tens - a storm-scale term, not a global one; and at
+  h0 the advective tendency is zero by construction. Options kept (default off) for the storm test (P3) where convergence is large.
+  NEXT (running): swap test - convection on the h0 state with each h24 input (surface fluxes, BL+radiation tendency, T, q) to find
+  which input carries the missing instability at the start.
