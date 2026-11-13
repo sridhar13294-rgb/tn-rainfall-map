@@ -2222,3 +2222,14 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   version since base2 - root cause still open (radiation at 700-850 hPa matches RRTMG, so the suspect is missing convective heating
   at 700 hPa in base2 conv_mf: its heating profile vs ERA5/IFS). Next: column heating budget at 700 hPa (radiation, convection,
   large-scale condensation, dynamics) base2 vs ERA5's implied heating, T42, same starts.
+- 01:20 700 hPa HEATING BY PROCESS (T42, 1 Nov, +24 h, K/day at sigma 0.81 / 0.70 / 0.62; physics only):
+                       deep          shallow            large-scale cond   rain evaporation   radiation          physics total
+    parts globe        +0.89/1.07/1.17  -1.23/-0.74/-0.78  +2.51/0.94/0.94    -0.98/-0.69/-0.55  -2.14/-1.01/-1.03  -0.88/-0.42/-0.25
+    parts tropics      +1.17/2.16/2.80  +0.05/-1.58/-1.31  +0.86/1.36/1.07    -1.93/-1.40/-1.24  -0.99/-0.63/-0.74  -0.82/-0.09/+0.58
+    package globe      +0.47/0.46/0.48   0 (in deep)       +0.46/0.31/0.33    -0.10/-0.10/-0.08  -1.67/-1.16/-1.04  -0.79/-0.41/-0.19
+  Physics totals at 700 hPa are similar (-0.42 vs -0.41 globe), so the budget alone does not show the 700 hPa deficit (needs the
+  dynamics term / a reference). Two base2 processes stand out against the doc-faithful IFS scheme at 700 hPa: the shallow (MSE-mixing)
+  scheme cools 700 hPa by -0.74 K/day globally (-1.6 tropics) - mixing that reaches above the trade inversion - and rain evaporation is
+  -0.69 (-1.4 tropics) vs -0.10 in the IFS scheme. SUSPECTS for the 700 hPa piece, in order: (1) base2 shallow-mixing depth;
+  (2) base2 rain-evaporation rate. Reference needed before any change: observed / IFS Q1 and evaporative-cooling profiles at 700 hPa
+  (literature, e.g. Yanai-type budgets, IFS diagnostics). Next session.
