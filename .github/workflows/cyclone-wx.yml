@@ -56,7 +56,13 @@ jobs:
         run: |
           # 14 Nov: 13-level start data vs ERA5 37 levels in the tropical boundary layer (A/P1 spin-up)
           python scripts/cyclone/cyc_bl.py || true
-      - if: ${{ !contains(github.event.head_commit.message, 'bl truth') && !contains(github.event.head_commit.message, 'ECMWF scores only') && !contains(github.event.head_commit.message, 'land library') && !contains(github.event.head_commit.message, 'moist truth') && !contains(github.event.head_commit.message, 'flux truth') && !contains(github.event.head_commit.message, 'rh truth') && !contains(github.event.head_commit.message, 'peak truth') }}
+      - if: contains(github.event.head_commit.message, 'l37 fields')
+        run: |
+          # 14 Nov: start fields on all 29 ERA5 levels >= 50 hPa (A/P1: the 13-level start removes the tropical instability)
+          mkdir -p /tmp/cyc_out
+          LIBM_L37=1 LIBM_TIMES=2020-10-27T00/2020-11-06T00/120 LIBM_NAME=l37 python scripts/cyclone/cyc_libm.py || true
+          [ -f /tmp/cyc_out/libm_l37_fields.npz ] && gh release upload era5-cases /tmp/cyc_out/libm_l37_fields.npz --clobber || true
+      - if: ${{ !contains(github.event.head_commit.message, 'l37 fields') && !contains(github.event.head_commit.message, 'bl truth') && !contains(github.event.head_commit.message, 'ECMWF scores only') && !contains(github.event.head_commit.message, 'land library') && !contains(github.event.head_commit.message, 'moist truth') && !contains(github.event.head_commit.message, 'flux truth') && !contains(github.event.head_commit.message, 'rh truth') && !contains(github.event.head_commit.message, 'peak truth') }}
         run: |
           mkdir -p /tmp/cyc_out
           LIBM_TIMES=2020-01-01T00/2020-12-26T00/120 LIBM_NAME=wx2020 python scripts/cyclone/cyc_libm.py > /tmp/libm_wx.out 2>&1 &

@@ -13,6 +13,8 @@ V3 = ['temperature', 'specific_humidity', 'u_component_of_wind', 'v_component_of
 LAND = ['volumetric_soil_water_layer_1', 'soil_temperature_level_1', 'skin_temperature', 'snow_depth']
 V2 = ['surface_pressure', 'sea_surface_temperature', 'land_sea_mask', 'geopotential_at_surface'] + LAND   # old order kept, land appended
 LEVS = [50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000]
+L37 = os.environ.get('LIBM_L37') == '1'                                                          # 14 Nov: all ERA5 levels >= 50 hPa from ARCO, 7x7 box mean (~1.75 deg) -> 1.5 deg
+if L37: LEVS = [50, 70, 100, 125, 150, 175, 200, 225, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 775, 800, 825, 850, 875, 900, 925, 950, 975, 1000]
 LATS = np.arange(-90, 90.1, 1.5); LONS = np.arange(0, 360, 1.5)
 os.makedirs('data/cyclone', exist_ok=True); LEAD = int(os.environ.get('LIBM_LEAD', '0')); NAME = 'libm%s_fields.npz' % (LEAD or '')
 if os.environ.get('LIBM_NAME'): NAME = 'libm_%s_fields.npz' % os.environ['LIBM_NAME']
@@ -32,6 +34,14 @@ if os.environ.get('LIBM_TIMES'):                                                
 times = sorted(times); log(len(times), 'times')
 def grab(ds, var, T, lev):
     x = ds[var]
+    if L37:                                                                                       # box mean on the 0.25 deg grid, then the 1.5 deg points
+        from scipy.ndimage import uniform_filter
+        if 'time' in x.dims: x = x.sel(time=T)
+        if lev: x = x.sel(level=LEVS)
+        la = x.latitude.values; lo = x.longitude.values; v = x.values.astype(np.float32)
+        ax = v.ndim; v = uniform_filter(v, size=[1] * (ax - 2) + [7, 7], mode=['nearest'] * (ax - 1) + ['wrap'])
+        il = np.abs(la[:, None] - LATS[None]).argmin(0); io = np.abs(lo[:, None] - LONS[None]).argmin(0)
+        return v[..., il, :][..., io]
     if 'time' in x.dims: x = x.sel(time=T)
     if lev: x = x.sel(level=LEVS)
     x = x.sel(latitude=LATS, longitude=LONS, method='nearest')
@@ -44,7 +54,7 @@ F3 = np.full((len(times), len(V3), len(LEVS), len(LATS), len(LONS)), np.nan, np.
 F2 = np.full((len(times), len(V2), len(LATS), len(LONS)), np.nan, np.float32)
 for i, t in enumerate(times):
     T = np.datetime64(dt.datetime.strptime(t, '%Y-%m-%dT%H'))
-    for src in (('W', W) if T < np.datetime64('2023-01-09T00') else (None, None), ('A', None)):
+    for src in (('W', W) if (T < np.datetime64('2023-01-09T00') and not L37) else (None, None), ('A', None)):
         if src[0] is None: continue
         try:
             ds = src[1]
