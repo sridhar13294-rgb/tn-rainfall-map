@@ -38,3 +38,5 @@ Updated 13 Nov 11:40 IST. New storm rules registered 13 Nov 11:40 (docs/rootcaus
 | Your F2 condition (6 items) | Item 1 rejected | Item 5 (BL formula alone) after. |
 | Global health (rain, OLR, drift) | Diagnosing | Atmosphere cools ~20 W/m2; day-1 drift -7 m (tropics) / -14 m (globe) on top of the hour-0 offset. |
 | GPU pipeline | Fixed 5 Nov 18:00 | Push-only launches + collector; GitHub's 20-runner cap removed; duplicate-launch bug fixed. |
+
+- 14 Nov 00:52 (Sridhar): Stage 1 uses option (a) = base2 convection + package non-convection parts; full IFS convection deferred to Stage 3.

@@ -2206,3 +2206,6 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   T42, 3 starts (27 Oct / 1 Nov / 6 Nov), vs ERA5 (rh_truth / flux_truth): viable if t850 AND t700 global d2 |bias| <= 0.6 K
   (package -1.14 / -1.04) and day-1 rain and LHF within 15 % of ERA5; then storms (rule 2, seeds 4-6) and the T170 screen.
   base2 and the package are rerun on the same starts as controls.
+- 00:52 SRIDHAR DECISION: option (a) for Stage 1 - base2 convection + the package's non-convection parts (bl_lcl, sfc_sal, rad_prm),
+  subject to the registered (a) test. The full IFS convection (phys_ifs, with ke_noload / 29-level start / q_adv+QCV options kept,
+  default off) is PARKED for Stage 3, where it is to be adopted completely.
