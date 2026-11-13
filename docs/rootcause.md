@@ -2006,3 +2006,7 @@ D3 - hybrid vertical coordinate: SCOPE (mm2.py touch points, grep): coordinate s
   (A/P1 energy deficit, larger over warm-core inflow), the IFS deep closure (PCAPE removed over tau 720-10800 s: too strong venting
   of the storm core instability), weaker surface enthalpy flux (package LHF -8..-11 % vs ERA5).
   Kaggle: tn-p5-dyn-hyb (D3 T170 screen) launched on account 4 at 04:00; 4 waiting (TN rain x2, tracks, exam quarter).
+- 03:20 (13 Nov) local storm runs (storm library downloaded, Nivar, T85) are killed by memory (6.1 GB of the 7 GB, even without the radial
+  diagnostics): the storm library itself is too large for this machine. Storm tests stay on Kaggle. One hour-0 observation from the
+  attempt (same start): core rain package 24 vs base2 41 mm/day (inner/outer 24.1/13.2 vs 41.3/37.6) - the package starts the storm
+  with far less convective rain (the A/P1 spin-up seen at storm scale) -> first P3 suspect to test on Kaggle.
