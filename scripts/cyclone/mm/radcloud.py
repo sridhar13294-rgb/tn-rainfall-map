@@ -281,6 +281,9 @@ SW_KH2O = np.array([0.0, 0.0, 0.0006, 0.035, 0.377, 1.95, 30.0]) * 0.1          
 SW_KO3 = np.array([150.0, 4.7, 0.0, 0.0, 0.0, 0.0, 0.0])                          # m2/kg ozone
 SW_TAUR = np.array([0.80, 0.13, 0.02, 0.005, 0.002, 0.001, 0.001])               # Rayleigh optical depth of a 1013 hPa column
 SW_COALB = np.array([0.0, 0.0, 5e-5, 1e-3, 1e-2, 4e-2, 0.15])                     # cloud co-albedo (liquid, r_e = 10 um)
+# aerosol (13 Nov, A/P1: MEGAM had no aerosol; the atmosphere absorbed 67 W m-2 of sunlight vs ~79 observed). Band extinction
+# relative to 550 nm with an Angstrom exponent 1.3 at band-centre wavelengths 0.30/0.55/0.80/1.0/1.4/1.9/2.7 um.
+SW_AER_REL = (np.array([0.30, 0.55, 0.80, 1.0, 1.4, 1.9, 2.7]) / 0.55) ** -1.3
 NG_SW = len(SW_NAMES)
 
 def _c(a): return np.asarray(a, np.float32).reshape(-1, 1, 1)
@@ -440,17 +443,26 @@ def shortwave(T, q, p, dp, ps, sea, mu0, cl, xp=np, prm=None, o3=None, s0=None):
     adif = xp.where(sea, P['alb_sea_dif'], P['alb_land']).astype(mu.dtype)
     Sin = _c(SW_W) * (s0 * mu)                                                  # [G,X,Y]
     KH, KO, TR, CO = _c(SW_KH2O), _c(SW_KO3), _c(SW_TAUR), _c(SW_COALB)
-    def layer(ah, ao, ar, tl, ti, ca):
-        """per-term layer optics [G,X,Y]; tl, ti: cloud optical depths (liquid, ice), ca: co-albedo weight."""
-        tau_c = tl + ti; tau_r = TR * ar
+    # aerosol (13 Nov; option aer = 1): 550-nm optical depth aer_tau_sea / aer_tau_land, single-scattering albedo aer_ssa, asymmetry
+    # aer_g, extinction profile exp(-z / aer_H) (per pressure layer: (p/ps)^(Hs/aer_H) dp/p, normalised). Default off -> unchanged.
+    aer_on = bool(P.get('aer', 0))
+    if aer_on:
+        n_ = 8000.0 / float(P.get('aer_H', 2000.0)); wgt = (p / ps[None]) ** n_ * dp / p; wgt = wgt / xp.sum(wgt, axis=0, keepdims=True)
+        tau550 = xp.where(sea, float(P.get('aer_tau_sea', 0.10)), float(P.get('aer_tau_land', 0.20)))[None] * wgt     # [L,X,Y]
+    else:
+        tau550 = xp.zeros_like(p)
+    AREL = _c(SW_AER_REL); ssa_a = float(P.get('aer_ssa', 0.93)); g_a = float(P.get('aer_g', 0.70))
+    def layer(ah, ao, ar, tl, ti, ca, ta):
+        """per-term layer optics [G,X,Y]; tl, ti: cloud optical depths (liquid, ice), ca: co-albedo weight, ta: aerosol 550-nm optical depth."""
+        tau_c = tl + ti; tau_r = TR * ar; tau_a = AREL * ta
         sc = xp.clip(tau_c - CO * ca, 0.0, tau_c)                                 # cloud scattering optical depth
-        tau = KH * ah + KO * ao + tau_r + tau_c
-        w = (tau_r + sc) / xp.maximum(tau, 1e-12)
-        g = (P['g_liq'] * tl + P['g_ice'] * ti) * (sc / xp.maximum(tau_c, 1e-12)) / xp.maximum(tau_r + sc, 1e-12)
+        tau = KH * ah + KO * ao + tau_r + tau_c + tau_a
+        w = (tau_r + sc + ssa_a * tau_a) / xp.maximum(tau, 1e-12)
+        g = ((P['g_liq'] * tl + P['g_ice'] * ti) * (sc / xp.maximum(tau_c, 1e-12)) + g_a * ssa_a * tau_a) / xp.maximum(tau_r + sc + ssa_a * tau_a, 1e-12)
         return _delta_eddington(tau, xp.minimum(w, 1.0 - 1e-6), g, mue, xp)
     def column(tl, ti):
         ca = tl * cl['re_l'] / 10e-6 + ti * cl['re_i'] / 20e-6                   # co-albedo weight: absorption grows with r_e
-        xs = (a_h2o, o3, a_r, tl, ti, ca)
+        xs = (a_h2o, o3, a_r, tl, ti, ca, tau550)
         def fup(carry, x):
             Rb, Rbd = carry; rdr, tdr, rdf, tdf, e_ = layer(*x)
             den = 1.0 / (1.0 - rdf * Rbd)

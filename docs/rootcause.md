@@ -2075,3 +2075,9 @@ Noise (mean base2 member spread) 1.5 hPa. Rule 2 (not worse than base2 by more t
    mean 72 h track error vs best track; PASS if not worse than base by more than the base member spread (mean over storms of
    max-min). Stage-1 track check unchanged (72 h <= 280 km plus the trend/turn rule).
 E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until then Kaggle only.
+- 21:40 A/P1 fix 1 BUILT: aerosol in the short-wave (radcloud option aer; default off, base2 6-h run bit-identical). Literature-typical
+  values, NOT fitted: 550-nm AOD 0.10 sea / 0.20 land (global mean ~0.13; MODIS/MISR/AeroCom range 0.12-0.15), single-scattering
+  albedo 0.93, asymmetry 0.70, Angstrom exponent 1.3 across the 7 bands, exponential profile with 2 km scale height.
+  REGISTERED (rad_allsky.py, same 1 Nov columns, h0): all-sky atmospheric SW absorption rises by 3-7 W m-2 (67.1 -> 70-74; observed
+  ~79) and the 850-1000 hPa heating gap vs RRTMG+obs shrinks; then the forecast test (rh_vs_era5.py, 3 starts): t850 d2 bias better by
+  >= 0.2 K (from -1.21) with rain and cloud not worse vs ERA5.
