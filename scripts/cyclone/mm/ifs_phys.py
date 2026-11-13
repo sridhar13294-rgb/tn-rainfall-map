@@ -8,6 +8,7 @@ import jax, jax.numpy as jnp
 G, RD, RV, CP, LV, LF = 9.80616, 287.04, 461.5, 1004.6, 2.5e6, 3.34e5
 T0, TICE, TBF = 273.16, 235.16, 268.16
 EPS_UP, DELTA_DEEP = 1.75e-3, 0.75e-4            # (6.7), (6.8)
+TEST_LOAD = True                                  # 14 Nov diagnostic: False = test-parcel K equation without condensate loading (6.10 text)
 BCD, F1G = 1.949, 3.0                             # (1 + beta Cd), f (1 + gamma)   (6.10)
 C00, LCRIT = 1.4e-3, 5e-4                         # (6.44)
 EPS_DD = 2e-4                                     # (6.15)
@@ -80,6 +81,7 @@ def plume(env, k0, h0, qt0, K0, mode, qs_ref, land, frac_keep=1.0, f_eps=1.0, mi
             prc = jnp.where(src, 0.0, lkeep - lafter); lkeep = lafter; qt1 = qt1 - prc
         Tvu = Tu * (1.0 + 0.608 * qv - lkeep)
         b = (Tvu - Tve) / Tve
+        if mode == 1 and not TEST_LOAD: b = (Tu * (1.0 + 0.608 * qv) - Tve) / Tve                  # (6.10) as written: no condensate loading in the K equation
         mu_ = jnp.where(eps > 0, eps, dlt)
         K1 = jnp.where(src, K0, (K + dz * G * b / F1G) / (1.0 + dz * mu_ * 2.0 * BCD))
         satn = lnew_tot > 0; cb1 = cb | (satn & ~src)
