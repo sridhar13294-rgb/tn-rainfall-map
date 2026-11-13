@@ -302,6 +302,6 @@ def convection(T, q, p, mass, zc, ps, H, E, ust, rho, land, dt, dx, dT_bl, dq_bl
     mask = (incl | on_d) & active[None]
     return dict(dT=dT, dq=dqt, prc=jnp.where(active[None], prod, 0.0), P_sfc=jnp.where(active, Pr_s + Ps_s, 0.0), mask=mask,
                 deep=is_deep, shallow=is_sh, M=jnp.where(active[None], Mu, 0.0), Mb=Mb, e_sub=e_sub, e_down=e_down,
-                dbg=dict(pcape=pcape, qcv=qcv, pcape_bl=pcape_bl, den=den, tau=tau, hdiff=hdiff, Fbl=Fbl, lim=lim, Hc=Hc, ncl=incl.sum(0),
+                dbg=dict(bprof=jnp.where(incl, (Tvu - Tv), jnp.nan), lprof=jnp.where(incl, lu, jnp.nan), deepm=is_deep, pcape=pcape, qcv=qcv, pcape_bl=pcape_bl, den=den, tau=tau, hdiff=hdiff, Fbl=Fbl, lim=lim, Hc=Hc, ncl=incl.sum(0),
                          kcb_s=kcb_s, Kcb_s=K_cb_s, pcb_s=p_cb_s, ptop_s=p_top_s, wst=wst, dTx=dTx, nact_s=a_s.sum(0)))
 

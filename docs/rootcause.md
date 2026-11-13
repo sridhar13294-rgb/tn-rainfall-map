@@ -2184,3 +2184,21 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   REGISTERED (T42 spin test, 3 starts, package + ke_noload): CONFIRMED as a main driver if h0-h6 global rain >= 1.5 mm/day (now
   0.15-1.3) AND 0-24 h global rain >= 2.4 mm/day (now 1.8), with day-1 not above ERA5 (3.0) by > 10 %; then the forecast test
   (t850/t700 d1-d2 vs ERA5, rain, LHF) must improve t850 d2 by >= 0.2 K. PARTIAL if h0-h6 0.6-1.5.
+- 00:20 RESULT ke_noload spin test (registered 00:10): rain h0..h12 0.17 0.76 1.19 1.81 2.12 (package 0.15 0.78 1.29 1.88 2.08)
+  -> REJECTED as a driver (trigger fires more, rain unchanged). Kept as an option (doc-faithful, default off).
+  FULL-UPDRAUGHT PROFILE in triggered columns (T42, 1 Nov, ke_noload): h0 Tv_up - Tv only +0.1..+0.36 K from 860 to 300 hPa while
+  condensate loading costs 0.15..0.6 K -> PCAPE median -44 Pa (> 0 in 11 % of triggered columns) -> closure mass flux ~0.
+  h24: Tv excess +0.4..+1.15 K, PCAPE > 0 in 69 %. Condensate 2 g/kg at 500 hPa; precipitation conversion (6.44-6.46) checked line by
+  line against Cy50r1 - identical (the IFS text itself says updraught condensate is "probably still overestimated").
+  CONCLUSION OF THE NIGHT (4 hypotheses tested, all against references): MEGAM's IFS convection is faithful to the documentation,
+  but at our resolution / start data the ERA5 atmosphere is only marginally unstable for its entraining, water-loaded plume (+0.1-0.3 K),
+  so it barely rains for ~12-15 h and radiation cools the lower troposphere ~1 K until the scheme's own equilibrium is reached.
+  ERA5 (produced by the same scheme at 31 km / 137 levels) rains 1.3 mm/day convectively from hour 1. The difference is the
+  resolution at which the scheme sees the atmosphere (T42/T85 tested; T170 evidence: P3 core rain at h0 24 vs 41 mm/day).
+  Rejected tonight: 6.21+QCV, 13-level start data (as the main cause), grid T42->T85, plume thermodynamics (MetPy-verified),
+  6.10 loading. Partial real effects kept as default-off options: 13->29-level start (+0.5 % deep), 6.10 loading (2.4 -> 5.5 % deep).
+  DECISION NEEDED (Sridhar, 07:00 report): the package convection cannot be "fixed" without tuning (closure/entrainment constants),
+  which our rules forbid. Options: (a) keep base2 convection (rains from step 1) and adopt only the non-convection package parts
+  (bl_lcl, sfc_sal, rad lw_cnt/qs_mix) - test registered next; (b) ask the expert whether IFS uses resolution-dependent constants
+  for its convection at ~100 km (the 6.27 tau factor is the only one documented); (c) accept the day-1 spin-up and judge the package
+  on days 2-5 only.
