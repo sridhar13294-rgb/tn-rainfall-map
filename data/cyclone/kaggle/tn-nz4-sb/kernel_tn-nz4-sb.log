@@ -1,0 +1,84 @@
+[{"stream_name":"stdout","time":1.829871048,"data":"+ nvidia-smi || true\n"}
+,{"stream_name":"stdout","time":1.86192376,"data":"Fri Nov 13 06:12:56 2026       \n"}
+,{"stream_name":"stdout","time":1.861947376,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.8619531280000001,"data":"| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":1.8619730780000001,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.8619792080000002,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":1.8619834119999998,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":1.861987918,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":1.861992557,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":1.957082384,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":1.9571032929999999,"data":"| N/A   37C    P8              9W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":1.9571254900000001,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":1.957132216,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.9571375720000002,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":1.9571429,"data":"| N/A   38C    P8              9W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":1.957148191,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":1.9571536539999999,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.957842437,"data":"\n"}
+,{"stream_name":"stdout","time":1.9578530170000001,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.9578574930000001,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":1.957862783,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":1.9578680880000001,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":1.957873295,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":1.9595302060000002,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":1.959545555,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":2.287623912,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":2.292977046,"data":"accelerator asked NvidiaTeslaT4 -\u003e jax for cuda12\n"}
+,{"stream_name":"stdout","time":2.2929922,"data":"+ pip uninstall -y -q jax-cuda13-plugin jax-cuda13-pjrt 2\u003e/dev/null; pip install -q \"jax[cuda12]==0.12.0.1\"\n"}
+,{"stream_name":"stderr","time":42.652098223,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":42.652161309,"data":"bigframes 2.51.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":42.652172797,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stderr","time":42.652176505,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":42.652179538,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":42.652182885,"data":"ydf 0.15.0 requires protobuf\u003c7.0.0,\u003e=5.29.1, but you have protobuf 7.36.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":42.65218636,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.4 which is incompatible.\n"}
+,{"stream_name":"stderr","time":42.652189459,"data":"gradio 6.30.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
+,{"stream_name":"stdout","time":42.901425975,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":78.425364343,"data":"[CudaDevice(id=0), CudaDevice(id=1)] 0.12.0.1\n"}
+,{"stream_name":"stdout","time":78.425415067,"data":" \n"}
+,{"stream_name":"stdout","time":78.425423793,"data":"+ free -g; nproc\n"}
+,{"stream_name":"stdout","time":78.465975739,"data":"               total        used        free      shared  buff/cache   available\n"}
+,{"stream_name":"stdout","time":78.466008774,"data":"Mem:              31           1          20           0           9          30\n"}
+,{"stream_name":"stdout","time":78.466017543,"data":"Swap:              0           0           0\n"}
+,{"stream_name":"stdout","time":78.475884282,"data":"4\n"}
+,{"stream_name":"stdout","time":78.476305438,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":78.476322065,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
+,{"stream_name":"stdout","time":89.280572908,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":89.280616985,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
+,{"stream_name":"stdout","time":103.1082593,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":103.108297691,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o libm_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_fields.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" libm_fields.npz || { echo BAD_DOWNLOAD libm_fields.npz; rm -f libm_fields.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o libm_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_fields.npz; }\n"}
+,{"stream_name":"stdout","time":120.890161554,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":120.890192431,"data":"setup s 119\n"}
+,{"stream_name":"stdout","time":120.890274503,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/suite_nz4_sb.json /kaggle/working/sb.json \u003e /kaggle/working/sb.log 2\u003e\u00261; tail -20 /kaggle/working/sb.log 2\u003e\u00261 | tee job.log\n"}
+,{"stream_name":"stdout","time":1025.153941326,"data":"Michaung T170_nz4 +15h p 1004.2 v850 16.1 wc300 0.6 wc500 0.52 flux 211.7/294.7 deep 0.0/0.578 rain 56.6/55.0 rh700 1.036/0.983\n"}
+,{"stream_name":"stdout","time":1025.153985189,"data":"Michaung T170_nz4 +18h p 1003.8 v850 17.4 wc300 0.74 wc500 0.82 flux 215.3/294.5 deep 0.4/0.666 rain 89.5/63.5 rh700 1.057/0.98\n"}
+,{"stream_name":"stdout","time":1025.153989267,"data":"Michaung T170_nz4 +21h p 1002.6 v850 19.1 wc300 0.83 wc500 1.0 flux 256.6/310.5 deep 0.6/0.8 rain 99.0/65.9 rh700 1.051/0.984\n"}
+,{"stream_name":"stdout","time":1025.153992582,"data":"Michaung T170_nz4 +24h p 1002.8 v850 21.8 wc300 1.19 wc500 1.14 flux 263.5/323.3 deep 1.0/0.733 rain 115.1/80.4 rh700 1.048/0.973\n"}
+,{"stream_name":"stdout","time":1025.153995837,"data":"Michaung T170_nz4 +27h p 1003.0 v850 23.5 wc300 1.54 wc500 0.95 flux 197.2/306.2 deep 0.8/0.732 rain 140.9/82.8 rh700 1.066/0.964\n"}
+,{"stream_name":"stdout","time":1025.153998854,"data":"Michaung T170_nz4 +30h p 1000.2 v850 23.0 wc300 1.67 wc500 1.24 flux 269.0/347.0 deep 1.0/0.756 rain 168.2/101.1 rh700 1.08/0.962\n"}
+,{"stream_name":"stdout","time":1025.154002082,"data":"Michaung T170_nz4 +33h p 998.6 v850 23.8 wc300 2.08 wc500 1.6 flux 239.1/330.1 deep 1.0/0.644 rain 146.8/88.5 rh700 1.063/0.965\n"}
+,{"stream_name":"stdout","time":1025.154005096,"data":"Michaung T170_nz4 +36h p 998.4 v850 24.7 wc300 2.3 wc500 1.64 flux 239.1/339.5 deep 1.0/0.688 rain 160.0/95.4 rh700 1.071/0.948\n"}
+,{"stream_name":"stdout","time":1025.154008184,"data":"Michaung T170_nz4 +39h p 997.3 v850 25.4 wc300 2.64 wc500 1.64 flux 289.9/304.6 deep 1.0/0.777 rain 187.3/94.1 rh700 1.07/0.92\n"}
+,{"stream_name":"stdout","time":1025.154011149,"data":"Michaung T170_nz4 +42h p 995.9 v850 26.3 wc300 3.16 wc500 1.67 flux 300.2/319.1 deep 1.0/0.844 rain 166.6/101.2 rh700 1.067/0.906\n"}
+,{"stream_name":"stdout","time":1025.154014187,"data":"Michaung T170_nz4 +45h p 994.9 v850 29.3 wc300 3.44 wc500 1.67 flux 300.7/319.8 deep 1.0/0.688 rain 183.2/91.7 rh700 1.08/0.884\n"}
+,{"stream_name":"stdout","time":1025.154017467,"data":"Michaung T170_nz4 +48h p 994.6 v850 30.9 wc300 3.82 wc500 1.58 flux 346.0/287.3 deep 1.0/0.644 rain 179.3/90.4 rh700 1.085/0.846\n"}
+,{"stream_name":"stdout","time":1025.154020519,"data":"Michaung T170_nz4 +51h p 995.7 v850 31.1 wc300 4.34 wc500 1.34 flux 234.5/190.6 deep 1.0/0.555 rain 219.8/87.8 rh700 1.096/0.794\n"}
+,{"stream_name":"stdout","time":1025.154023468,"data":"Michaung T170_nz4 +54h p 994.9 v850 31.4 wc300 4.3 wc500 1.73 flux 242.0/214.3 deep 1.0/0.466 rain 223.0/83.5 rh700 1.096/0.798\n"}
+,{"stream_name":"stdout","time":1025.154026457,"data":"Michaung T170_nz4 +57h p 993.3 v850 30.1 wc300 4.56 wc500 2.33 flux 191.1/181.2 deep 1.0/0.467 rain 200.1/92.5 rh700 1.095/0.801\n"}
+,{"stream_name":"stdout","time":1025.1540305,"data":"Michaung T170_nz4 +60h p 994.7 v850 29.1 wc300 4.36 wc500 2.16 flux 265.8/165.5 deep 0.799/0.377 rain 181.3/73.8 rh700 1.038/0.796\n"}
+,{"stream_name":"stdout","time":1025.154033585,"data":"Michaung T170_nz4 +63h p 997.1 v850 28.9 wc300 4.39 wc500 1.97 flux 197.9/139.6 deep 0.8/0.333 rain 145.7/69.1 rh700 1.083/0.808\n"}
+,{"stream_name":"stdout","time":1025.154036584,"data":"Michaung T170_nz4 +66h p 998.5 v850 27.5 wc300 4.08 wc500 1.53 flux 29.6/101.3 deep 0.599/0.288 rain 130.7/59.0 rh700 1.035/0.803\n"}
+,{"stream_name":"stdout","time":1025.15403962,"data":"Michaung T170_nz4 +69h p 999.2 v850 27.3 wc300 4.1 wc500 1.25 flux 118.1/85.7 deep 0.6/0.221 rain 150.0/59.1 rh700 1.066/0.845\n"}
+,{"stream_name":"stdout","time":1025.154042622,"data":"Michaung T170_nz4 +72h p 1000.7 v850 27.0 wc300 3.88 wc500 0.73 flux 159.1/83.4 deep 0.399/0.177 rain 109.9/48.2 rh700 1.011/0.839\n"}
+,{"stream_name":"stdout","time":1025.154421384,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1025.154434791,"data":"+ rm -rf repo libm_fields.npz\n"}
+,{"stream_name":"stdout","time":1025.42851167,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1025.428541626,"data":"total s 1024\n"}
+,{"stream_name":"stderr","time":1028.209642212,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":1028.209701961,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":1028.675283009,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":1028.675308149,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":1029.645769288,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":1031.149548968,"data":"[NbConvertApp] Writing 284318 bytes to __results__.html\n"}
+]
