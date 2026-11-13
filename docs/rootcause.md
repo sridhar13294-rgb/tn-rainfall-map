@@ -2089,3 +2089,11 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   (absorption toward observations) but too small to matter for A/P1 (~3 W m-2 = ~0.03 K/day column). Kept as option, not adopted.
   => the main A/P1 driver left is the day-1 latent-heating spin-up (T42: day-0 rain -31 %). Before building a fix: the T170 exam quarter on
   the package (tn-lcl-wx0) gives day-1 rain vs ERA5 at the real resolution.
+- 23:15 SPIN-UP SHAPE (spin.py, T42, 3 Oct-Nov starts, global rain mm/day every 3 h):
+  package h0..h45: 0.15 0.78 1.29 1.88 2.08 3.05 2.52 2.76 2.77 2.72 2.81 2.98 3.00 3.39 3.27 3.20
+  base2   h0..h45: 2.03 2.09 2.30 2.61 2.75 2.96 3.00 2.92 2.96 3.06 3.14 3.32 3.27 3.37 3.23 3.14
+  => the slow first-day rain is a PACKAGE-SPECIFIC spin-up: the IFS convection starts from ~0 rain and needs ~15 h to reach ~2.8 mm/day;
+  the old scheme rains 2 mm/day from the first step. Day-0 mean 1.8 vs 2.6 (base2) vs ERA5 2.9. This is where the package loses its
+  day-1 latent heating (A/P1) and very likely why it starts storms with half the core rain (P3, 24 vs 41 mm/day at hour 0).
+  Next: which input of the IFS convection is missing at the start (trigger excess from surface fluxes, BL tendency in the closure,
+  radiation cache, or the start profile itself) - per-hour convection diagnostics at h0 / h3 / h12.
