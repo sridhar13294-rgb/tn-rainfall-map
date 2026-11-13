@@ -2081,3 +2081,6 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   REGISTERED (rad_allsky.py, same 1 Nov columns, h0): all-sky atmospheric SW absorption rises by 3-7 W m-2 (67.1 -> 70-74; observed
   ~79) and the 850-1000 hPa heating gap vs RRTMG+obs shrinks; then the forecast test (rh_vs_era5.py, 3 starts): t850 d2 bias better by
   >= 0.2 K (from -1.21) with rain and cloud not worse vs ERA5.
+- 22:05 RESULT aerosol on (same 1 Nov columns, h0): atmospheric SW absorption 67.2 -> 70.6 W m-2 (+3.4, inside the registered 3-7;
+  observed ~79), surface SW 194.2 -> 188.7, whole-atmosphere radiative cooling -120.2 -> -116.9, 850-1000 hPa SW heating +0.1 K/day.
+  Step 1 met. Forecast test running (rh_vs_era5 + flux_vs_era5, 3 starts).
