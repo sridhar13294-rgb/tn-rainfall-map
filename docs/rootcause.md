@@ -2084,3 +2084,8 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
 - 22:05 RESULT aerosol on (same 1 Nov columns, h0): atmospheric SW absorption 67.2 -> 70.6 W m-2 (+3.4, inside the registered 3-7;
   observed ~79), surface SW 194.2 -> 188.7, whole-atmosphere radiative cooling -120.2 -> -116.9, 850-1000 hPa SW heating +0.1 K/day.
   Step 1 met. Forecast test running (rh_vs_era5 + flux_vs_era5, 3 starts).
+- 22:50 RESULT aerosol forecast test (3 starts): t850 d1/d2 -0.80 / -1.14 K (was -0.85 / -1.21), t700 -0.76 / -1.04 (was -0.81 / -1.12); RH,
+  rain (3.0 vs 3.0) unchanged; LHF -78 vs -85. => +0.07 K at d2: registered criterion (>= 0.2 K) NOT met. Aerosol is physically right
+  (absorption toward observations) but too small to matter for A/P1 (~3 W m-2 = ~0.03 K/day column). Kept as option, not adopted.
+  => the main A/P1 driver left is the day-1 latent-heating spin-up (T42: day-0 rain -31 %). Before building a fix: the T170 exam quarter on
+  the package (tn-lcl-wx0) gives day-1 rain vs ERA5 at the real resolution.
