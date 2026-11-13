@@ -2115,3 +2115,13 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   h0 the advective tendency is zero by construction. Options kept (default off) for the storm test (P3) where convergence is large.
   NEXT (running): swap test - convection on the h0 state with each h24 input (surface fluxes, BL+radiation tendency, T, q) to find
   which input carries the missing instability at the start.
+- 23:55 SWAP TEST (T42, 1 Nov, global means; convection called on the h0 state with h24 inputs swapped in):
+  h0 as is: deep 0.024, PCAPE 0.0, conv rain 0.04 mm/day | h24 as is: deep 0.283, PCAPE 22, 1.91
+  h0 + h24 surface fluxes / BL+rad tendency / all inputs: deep 0.022-0.024, rain 0.04-0.07 -> the INPUTS are NOT the cause
+  h0 + h24 T: deep 0.19, rain 1.99 | h0 + h24 q: deep 0.21, 1.56 | h0 + h24 T and q: deep 0.29, 1.66 -> the STATE is the cause.
+  Tropics (20S-20N) h24 - h0: T -0.7..-1.1 K from 990 to 790 hPa; q +1.1..+1.2 g/kg at 990-950 hPa, ~0 above 900.
+  => The IFS deep-trigger test (6.4/6.21) fires in only 2.4 % of columns on the ERA5 start; the model then cools the lower troposphere
+  ~1 K and moistens the sub-cloud layer until the trigger fires (28 %). THIS IS the A/P1 cold bias: the convection scheme's own
+  equilibrium is ~1 K colder than ERA5. The real IFS rains from step 1 on ERA5 (ERA5 is IFS's own equilibrium), so our trigger /
+  test parcel is stricter than the documented one. NEXT (running): which trigger condition fails on tropical ocean at h0 (cloud base
+  not found / parcel dies before 200 hPa depth / source level).
