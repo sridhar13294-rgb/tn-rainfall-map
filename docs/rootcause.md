@@ -2209,3 +2209,16 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
 - 00:52 SRIDHAR DECISION: option (a) for Stage 1 - base2 convection + the package's non-convection parts (bl_lcl, sfc_sal, rad_prm),
   subject to the registered (a) test. The full IFS convection (phys_ifs, with ke_noload / 29-level start / q_adv+QCV options kept,
   default off) is PARKED for Stage 3, where it is to be adopted completely.
+- 01:15 RESULT option (a) test (registered 00:25; NOTE the starts actually run were 7 Oct / 1 Nov / 26 Nov - the script's indices
+  56,61,66 map to these dates in rh_truth, not 27 Oct / 6 Nov as I wrote; same starts for all three candidates, so the comparison holds):
+               t850 d1/d2        t700 d1/d2        rh850 d2   day-1 rain (ERA5 3.0)   LHF (ERA5 -84.9)
+    base2      +0.18 / +0.05     -1.34 / -1.55     +0.049     3.2                     -105.4 (+24 %)
+    parts (a)  +0.47 / +0.55     -1.23 / -1.31     +0.001     3.0                     -97.1 (+14 %)
+    package    -0.85 / -1.21     -0.81 / -1.12     +0.082     (2.6-3.0 earlier)       (-77.9 earlier)
+  VERDICT by the registered rule: option (a) FAILS - t850 d2 +0.55 OK, rain OK, LHF +14 % OK, but t700 d2 -1.31 K (limit 0.6).
+  Not adopted. The 700 hPa cold bias belongs to base2 itself (-1.55) and is only slightly reduced by the parts; the package's
+  convection is the only version that is better at 700 hPa (-1.12) but it is worse at 850.
+  => A/P1 has TWO separate pieces: (i) 850 hPa: package-convection spin-up (fixed by (a): +0.55); (ii) 700 hPa: ~-1.3 K in every
+  version since base2 - root cause still open (radiation at 700-850 hPa matches RRTMG, so the suspect is missing convective heating
+  at 700 hPa in base2 conv_mf: its heating profile vs ERA5/IFS). Next: column heating budget at 700 hPa (radiation, convection,
+  large-scale condensation, dynamics) base2 vs ERA5's implied heating, T42, same starts.
