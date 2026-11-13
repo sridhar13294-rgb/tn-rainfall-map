@@ -1,29 +1,28 @@
 # Stage 1 status table (kept current every cycle; Sridhar 4 Nov 23:17: "Keep on updating this table")
 Last update: 10 Nov 20:40 IST (see docs/rootcause.md 10 Nov and the status PDF). Standing rule 10 Nov: every candidate also screened at 75 L. Earlier: 5 Nov 22:15 IST. Target 15 Nov no longer reachable (GPU: own account + partner account only); realistic ~2 weeks. Stage 3 paused until Stage 1 is done.
 
-## One-word status (Sridhar 12 Nov 09:53: include this in EVERY report; update each cycle)
-Updated 12 Nov 16:00 IST.
-| Problem | Status |
-|---|---|
-| A Cloud | Fixing - half explained (rad vs RRTMG 850-1000, cloud feedback, bl_lcl); rest = long-standing 700-850 hPa heat deficit |
-| B Low-level moisture | Fixed (32 L, 48 h); mostly (75 L: q850 +2 %, q925 +3.6 %) |
-| P1 Low-level T/q | Fixing - same driver as A (t850 -1.2 K at d2 on package; base2 had it hidden by shallow overheating) |
-| P2 TN rain / 75 L | Measuring (queued, account 4) |
-| P3 Storm intensity | Measuring (queued) |
-| P4 Dry-season rain | Measuring (queued) |
-| P5a Jets | Narrowing (linear vertical SL = D1; sigma/Tibet ~1 m/s) |
-| P5b Bay steering | Measured on package: NOT fixed (u850 d3 -4.07, C-India MSLP d3 +2.3) |
-| Tracks | Measuring (queued) |
-| D1 Linear vertical SL | Gate fails (cubic weakens Vardah 6.4 hPa on 3-run means) |
-| D2 SL-Eulerian gap | Closed (T85: cubic SL = Eulerian) |
-| D3 Sigma over Tibet | Deferred |
-| D4 250 K T_ref | Closed |
-| S1 First-6-h jet loss | Explained (= D1) |
-| S2 DFI removes tide | Waiting |
-| S3 Hour-0 C-India MSLP | Open |
-| S4 Lowest-level start cooling | Not a bug (physical, both cores) |
-| 75 L stability | Fixed |
-Kaggle: account 1 at its weekly 30-h GPU limit (marked down until reset); account 4 runs the queue one job at a time.
+## One-word status (Sridhar 12 Nov 09:53: include in EVERY report; every row has a reason/suspect - no bare Open/Rejected)
+Updated 13 Nov 11:40 IST. New storm rules registered 13 Nov 11:40 (docs/rootcause.md).
+| Problem | Status | Reason / suspects |
+|---|---|---|
+| A Cloud | Cause found; fixing | Day-1 energy loss: slow first-day rain, no aerosols, cloud-radiation feedback |
+| B Low-level moisture | Fixed | bl_lcl, 32 and 75 L |
+| P1 Low-level T/q | Cause found; fixing | Same as A + bl_lcl and low-level radiation |
+| P2 TN rain / 75 L | Measuring | Moisture excess fixed by B; convection at 75 L |
+| P3 Storm intensity | Re-judge (new rule) | Needs 41-storm peak-intensity run; suspects: slow storm-core rain at start, cold/dry low levels |
+| P4 Dry-season rain | Measuring | False rain from moist low levels (fixed by B) |
+| P5a Jets | Narrowing | D1 + unexplained ~-6 m/s day 1 Asia at T170 |
+| P5b Bay steering | Suspects identified | Cold land low levels raise C-India high; SE-Tibet terrain pressure error |
+| Tracks | Measuring | Steering winds (P5b) |
+| D1 Linear vertical SL | Re-test (new rule) | Cubic fixes jets/S1; re-run storms under rule 2 |
+| D2 SL-Eulerian gap | Closed | Gone at T85 with cubic |
+| D3 Sigma over Tibet | Not adopted | T170 Asia gain +0.1 only; option kept |
+| D4 250 K T_ref | Closed | No jet effect |
+| S1 First-6-h jet loss | Explained | = D1 |
+| S2 DFI removes tide | Re-test (new rule) | dfi_off failed old rule by 0.1 hPa |
+| S3 Hour-0 C-India MSLP | Closed | T170 start right; rest = S2 |
+| S4 Lowest-level start cooling | Not a bug | Physical, both cores |
+| 75 L stability | Fixed | 19/19 |
 
 | Item | Stage | Where it stands |
 |---|---|---|

@@ -2017,3 +2017,15 @@ D3 - hybrid vertical coordinate: SCOPE (mm2.py touch points, grep): coordinate s
   slope over Tibet matters less at higher resolution (steeper but better-resolved terrain is not the jet's problem). D3 NOT adopted;
   kept as an option (small gains elsewhere: Pacific speed, Atlantic latitude). The Asian jet speed error at T170 is therefore D1
   (linear vertical interpolation) plus something not yet identified (~-6 m/s at day 1 remains in both).
+
+## 13 Nov 11:40 IST - NEW STORM RULES (Sridhar 11:37 "Ok with this new rules"), registered BEFORE any further storm result
+Reason: 3 storms judged one by one at 72 h mix track error into intensity (5 Nov: Michaung decayed in cooler air on a wrong track,
+Vardah over-deepened while stalled) and a 0.1 % perturbation moves one storm by up to 5.2 hPa - single-storm 2-hPa checks cannot
+separate better from worse (cubic moved Vardah TOWARD its target and was rejected).
+1. STAGE-1 INTENSITY CHECK (accuracy): the 41-storm library (lib84 set), PEAK intensity over 0-72 h (min pmin) vs ERA5-at-T170 peak
+   over the same window; PASS if >= 80 % of storms are within +-5 hPa.
+2. SCREENING CHECK for every candidate change (non-regression): mean |peak-intensity error vs ERA5| over the storm set not worse than the
+   base by more than the measured noise (3-member spread; for the 3-storm sb set: 3-member means, noise = max-min of base members);
+   reported together with the per-storm values.
+Applied identically to every candidate from now on. Earlier verdicts under the old single-storm rule (sl_vcubic, dfi_off) are NOT
+re-judged on old runs: they are re-run and judged under rule 2.
