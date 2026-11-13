@@ -112,7 +112,7 @@ def implicit_transport(phi, mass, A, Mnet, Fx, S, use_imp, dt):
     return (pn - phi) / dt
 
 
-def convection(T, q, p, mass, zc, ps, H, E, ust, rho, land, dt, dx, dT_bl, dq_bl, u_bl, use_pbl=True, det_prec=0.0):
+def convection(T, q, p, mass, zc, ps, H, E, ust, rho, land, dt, dx, dT_bl, dq_bl, u_bl, use_pbl=True, det_prec=0.0, q_adv=None, a_qcv=0.0):
     """IFS convection, one call. dT_bl, dq_bl: non-convective tendencies (BL diffusion + radiation) for the closures.
     Returns dict(dT, dq, prc (convective precipitation production per layer, kg m-2 s-1, for the cloud scheme), P_sfc (convective
     precipitation at the ground), mask (cloud layers), deep, shallow, M (updraught mass flux per layer, for momentum transport))."""
@@ -143,6 +143,9 @@ def convection(T, q, p, mass, zc, ps, H, E, ust, rho, land, dt, dx, dT_bl, dq_bl
         hk = jnp.where(in_ml, h_av, jnp.take(h, kd, axis=0)); qk = jnp.where(in_ml, q_av, jnp.take(q, kd, axis=0))
         first = kd == L - 2
         ddT = jnp.where(first, dTx, 0.2); ddq = jnp.where(first, dqx, 1e-4)
+        if q_adv is not None:                                                                      # (6.21): + min(3e-4, dq/dt|adv * 600 s) below 700 hPa
+            qa_k = jnp.take(q_adv, kd, axis=0)
+            ddq = jnp.where(first | (pk < 70000.0), ddq, 1e-4 + jnp.minimum(3e-4, jnp.maximum(qa_k, 0.0) * 600.0))
         kk = jnp.full(ps.shape, kd)
         a_d, hu_d, qtu_d, Tu_d, lu_d, b_d, K_d, _, _, _, sat_d = plume(env, kk, hk + CP * ddT + LV * ddq, qk + ddq, 0.5, 1, qs[-1], land, frac_keep=0.5)
         kcb = jnp.max(jnp.where(sat_d, ii, -1), axis=0); kcb_ = jnp.maximum(kcb, 0)
@@ -188,7 +191,16 @@ def convection(T, q, p, mass, zc, ps, H, E, ust, rho, land, dt, dx, dT_bl, dq_bl
     # tendency available in the column call), which leaves PCAPE_bl biased high (BL heating not offset by advection) -> use_pbl=False
     # gives the pre-40r1 IFS closure (PCAPE_bl = 0, Gregory et al. 2000) until the advective tendency is passed in.
     if not use_pbl: pcape_bl = jnp.zeros_like(pcape_bl)
-    Mb_deep = jnp.maximum(pcape - pcape_bl, 0.0) / (tau * jnp.maximum(den, 1e-6))
+    qcv = jnp.zeros_like(pcape)
+    if q_adv is not None and a_qcv:
+        # (6.29, 6.32) Cy47r3 moisture-convergence term: QCV = -a_qcv Lv tau_c / (g H) int_{psurf}^{psurf-60 hPa} (q/qsat) dq/dt|adv dp;
+        # not applied where the column saturation fraction (surface to cloud top) exceeds 0.94 (resolved-convection limit, TC cores)
+        low60 = (ps[None] - p <= 6000.0) & (p <= ps[None])
+        qcv = a_qcv * LV * tau_c / (G * Hc) * ((q / jnp.maximum(qs, 1e-9)) * q_adv * dp * low60).sum(0)
+        top_ = ii >= ktop[None]
+        satf = ((q * mass) * top_).sum(0) / jnp.maximum((qs * mass * top_).sum(0), 1e-9)
+        qcv = jnp.where(satf > 0.94, 0.0, qcv)
+    Mb_deep = jnp.maximum(pcape + qcv - pcape_bl, 0.0) / (tau * jnp.maximum(den, 1e-6))
     hdiff = tk(hu, kcb) - tk(h, kcb)
     Fbl = ((CP * dT_bl + LV * dq_bl) * mass * subc).sum(0)                                         # (6.35) rhs: non-convective sub-cloud MSE tendency
     lim = jnp.minimum(jnp.min(jnp.where(eta > 0, 3.0 * mass / (dt * jnp.maximum(eta, 1e-6)), 1e9), axis=0), 2.0)   # (6.70) CFL 3, abs 2 kg m-2 s-1
@@ -287,6 +299,6 @@ def convection(T, q, p, mass, zc, ps, H, E, ust, rho, land, dt, dx, dT_bl, dq_bl
     mask = (incl | on_d) & active[None]
     return dict(dT=dT, dq=dqt, prc=jnp.where(active[None], prod, 0.0), P_sfc=jnp.where(active, Pr_s + Ps_s, 0.0), mask=mask,
                 deep=is_deep, shallow=is_sh, M=jnp.where(active[None], Mu, 0.0), Mb=Mb, e_sub=e_sub, e_down=e_down,
-                dbg=dict(pcape=pcape, pcape_bl=pcape_bl, den=den, tau=tau, hdiff=hdiff, Fbl=Fbl, lim=lim, Hc=Hc, ncl=incl.sum(0),
+                dbg=dict(pcape=pcape, qcv=qcv, pcape_bl=pcape_bl, den=den, tau=tau, hdiff=hdiff, Fbl=Fbl, lim=lim, Hc=Hc, ncl=incl.sum(0),
                          kcb_s=kcb_s, Kcb_s=K_cb_s, pcb_s=p_cb_s, ptop_s=p_top_s, wst=wst, dTx=dTx, nact_s=a_s.sum(0)))
 

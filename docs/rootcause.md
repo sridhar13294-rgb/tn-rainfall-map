@@ -2097,3 +2097,15 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   day-1 latent heating (A/P1) and very likely why it starts storms with half the core rain (P3, 24 vs 41 mm/day at hour 0).
   Next: which input of the IFS convection is missing at the start (trigger excess from surface fluxes, BL tendency in the closure,
   radiation cache, or the start profile itself) - per-hour convection diagnostics at h0 / h3 / h12.
+- 23:40 CAUSE of the package spin-up (spin_dbg.py, T42, 1 Nov): at hour 0 the IFS plume finds almost NO instability in the ERA5 start
+  state (PCAPE 0.0 -> 0.8 / 4 / 9.5 / 18 / 22 at h1 / 3 / 6 / 12 / 24; deep-convection columns 2.4 % -> 28 %; rain 0.16 -> 2.9 mm/day):
+  the model waits ~15 h to build its own instability before it rains. The real IFS does not, because two terms of the documented scheme
+  respond to LARGE-SCALE MOISTURE CONVERGENCE immediately - and MEGAM's v1 left both out ('needs the advective tendency, v2'):
+  (6.21) deep-trigger humidity excess + min(3e-4, dq/dt|adv x 600 s) below 700 hPa, and (6.29-6.32, Cy47r3) the QCV term in the
+  closure, QCV = -0.8 Lv tau_c/(g H) int_lowest 60 hPa (q/qsat) dq/dt|adv dp (off where the column saturation fraction > 0.94).
+  Storms are convergence-driven -> this is also the leading P3 suspect (package storms start with half the core rain).
+  BUILT (default off; base2 6-h run bit-identical): carry q_adv = (q_now - q_last)/dt - physics tendency (the dynamics-only moisture
+  tendency of the previous step, from surface()); ifs_phys.convection(q_adv=..., a_qcv=0.8) adds 6.21 and QCV (PCAPE'' of 6.30-6.31
+  not recomputed in v2: one-step advective change, negligible).
+  REGISTERED (T42, 3 Oct-Nov starts): fix CONFIRMED if day-0 (0-24 h) global rain rises from 1.8 to >= 2.4 mm/day and rain at h0-h6
+  >= 1.5 mm/day, AND t850 d2 bias improves by >= 0.2 K (from -1.21), with day-1 rain not above ERA5 (3.0) by > 10 %.

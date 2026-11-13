@@ -215,7 +215,9 @@ class Model:
         carry = dict(sst=jnp.asarray(sst, jnp.float32), tl=jnp.asarray(tl0, jnp.float32), w=jnp.asarray(w0, jnp.float32),
                      rain=jnp.zeros(zs.shape, jnp.float32), t=jnp.float32(0.0), sst0=jnp.asarray(sst, jnp.float32), T0=jnp.asarray(sg['t'], jnp.float32),
                      prm=self.params())
-        if self.S.get('cld_fix', 0): carry['q0'] = jnp.asarray(sg['q'], jnp.float32)                # cld_fix: start humidity for the frozen RH cloud
+        if self.S.get('cld_fix', 0): carry['q0'] = jnp.asarray(sg['q'], jnp.float32)
+        if self.S.get('q_adv', 0):                                                                  # (13 Nov) advective moisture tendency for the IFS trigger (6.21) / QCV (6.32)
+            carry['q_adv'] = jnp.zeros_like(jnp.asarray(sg['q'], jnp.float32)); carry['q_last'] = jnp.asarray(sg['q'], jnp.float32); carry['dqp'] = jnp.zeros_like(carry['q_adv'])                # cld_fix: start humidity for the frozen RH cloud
         if self.S.get('soil_fr', 0):                                                                # force-restore deep soil temperature (5 Nov)
             carry['tl2'] = jnp.asarray(landinit.land_start(N, sg['t'][-1], land, self.S['bucket'], None, soil_t, None)[0], jnp.float32)
         if ocean is not None:                                                                       # 1-D ocean column under every sea point (ocean.py)
@@ -704,7 +706,8 @@ class Model:
             radh = cr['rad']['heating'] if (S['rad'] == 'radcloud' and 'rad' in cr) else 0.0
             if self.S.get('rad_dbg', 0): self._ifs_in = (Tn, qn, p * jnp.ones_like(Tn), mass, zc, ps, H, E, ust, rho, ~sea, dt, 111.2e3 * 180.0 / len(self.lat), dTbl + radh, dqbl, V1)
             Cv = ifs_phys.convection(Tn, qn, p * jnp.ones_like(Tn), mass, zc, ps, H, E, ust, rho, ~sea, dt, 111.2e3 * 180.0 / len(self.lat),
-                                     dTbl + radh, dqbl, V1, use_pbl=self.S.get('ifs_pbl', 1.0) > 0, det_prec=float(self.S.get('det_prec', 0.0)))
+                                     dTbl + radh, dqbl, V1, use_pbl=self.S.get('ifs_pbl', 1.0) > 0, det_prec=float(self.S.get('det_prec', 0.0)),
+                                     q_adv=(cr['q_adv'] if (self.S.get('q_adv', 0) and 'q_adv' in cr) else None), a_qcv=float(self.S.get('a_qcv', 0.0)))
             dTc, dqc, Pmf = Cv['dT'], Cv['dq'], Cv['prc']; reg = Cv['mask']; okmf = Cv['deep'] | Cv['shallow']; ok = okmf
             dTs = jnp.zeros_like(dTc); dqs = jnp.zeros_like(dqc)
             on_dp = Cv['deep'].astype(jnp.float32); on_sh = Cv['shallow'].astype(jnp.float32)
@@ -931,7 +934,7 @@ class Model:
         aux = primitive_equations.compute_diagnostic_state_sigma(state.replace(tracers={}), self.coords)
         T = (aux.temperature_variation + self.ref_t[:, None, None]) / self.K; q = state.tracers['specific_humidity']
         u = aux.cos_lat_u[0] / cl / self.MPS; v = aux.cos_lat_u[1] / cl / self.MPS; ps = jnp.exp(hor.to_nodal(state.log_surface_pressure))[0] / self.PA
-        _, d = self.column(T, q, u, v, ps, cr, rad_fresh=True, div=hor.to_nodal(state.divergence) * self.SEC); dt = self.dt_s; sea = (~self.land) & (cr['sst'] > 0)
+        tnd, d = self.column(T, q, u, v, ps, cr, rad_fresh=True, div=hor.to_nodal(state.divergence) * self.SEC); dt = self.dt_s; sea = (~self.land) & (cr['sst'] > 0)
         # mixed layer: strong winds stir up cooler water (about ent K/day at 25 m/s), recovering slowly toward the start
         if 'ocean' in cr:                                                                           # ocean column: heat, wind stirring, cold wake
             p1 = self.pres(ps)[0][-1]; rho1 = p1 / (RD * T[-1] * (1 + 0.61 * q[-1]))
@@ -972,6 +975,10 @@ class Model:
         if 'ocean' in cr: out['ocean'] = ocn
         if 'rgo' in cr: out['rgo'] = rg
         if 'rad' in cr: out['rad'] = d['rad']
+        if 'q_adv' in cr:
+            # q_adv: dynamics-only moisture tendency of the last step = total change - physics tendency (evaluated at the previous end state)
+            out['q_adv'] = jnp.asarray((q - cr['q_last']) / dt - cr['dqp'], jnp.float32)
+            out['q_last'] = jnp.asarray(q, jnp.float32); out['dqp'] = jnp.asarray(tnd['q'], jnp.float32)
         return out
     def run(self, state, carry, hours, every_h=6, box=(40.0, 120.0, -10.0, 45.0)):
         """returns per-output dict of cropped fields (lon/lat box): mslp, vo850, vo700, z850, z700, u/v lowest level, rain total."""
