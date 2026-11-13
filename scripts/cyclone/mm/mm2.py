@@ -1,3 +1,4 @@
+import functools
 """MEGAM - Multi-scale Engine for Global Atmospheric Modelling (Sridhar & Adhitya). Core atmosphere model."""
 """Our moist multi-level global model, version 2.
 Dynamics: Dinosaur (Google Research's open-source spectral core): hydrostatic primitive equations on 32 terrain-following
@@ -117,6 +118,11 @@ RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
 DYN = ('rh_deep', 'tau_deep', 'tau_shallow', 'ck', 'k_evap', 'ent', 'sppt', 'entr', 'mf_kick_t', 'mf_kick_q', 'mf_org', 'mf_wup', 'mf_dd', 'sh_top', 'bmj_dt', 'bmj_ice', 'ck_z', 'mf_ice', 'sh_taper', 'pbl_tm', 'sh_trig', 'sh_clos', 'ev_frac', 'mf_wke', 'rad_top', 'mf_capdp', 'sp_quad', 'sp_top', 'sponge', 'tau_strat', 'src_dp', 'mf_dmin', 'sh_dtop', 'sh_cap', 'sh_mflux', 'sfc_imp', 'bl_lcl', 'sfc_sal', 'drag_imp', 'land_rs', 'sh_depth')
 NWAVE = 8
+# 14 Nov: extrapolate up to 4 level spacings beyond the top / bottom input level (Dinosaur default 1). With 13 levels (50/100, 925/1000)
+# one spacing already reached 0 / 1075 hPa; with all ERA5 levels (975/1000) it stopped at 1025 hPa -> NaN under high surface pressure.
+# Inside the old range nothing changes (13-level starts bit-identical).
+_ITP4 = vertical_interpolation.vectorize_vertical_interpolation(functools.partial(vertical_interpolation._linear_interp_with_safe_extrap, n=4))
+
 class Model:
     def __init__(self, grid='T170', layers=32, dt_min=None, set_=None):
         self.S = dict(DEFAULTS); self.S.update(set_ or {})
@@ -201,7 +207,7 @@ class Model:
             itp = vertical_interpolation.vectorize_vertical_interpolation(vertical_interpolation._linear_interp_with_safe_extrap)
             sg = {k_: np.asarray(itp(want, levs, x_)) for k_, x_ in (('t', T3), ('q', np.maximum(Q3, 0)), ('u', U3), ('v', V3))}
         else:
-            sg = vertical_interpolation.interp_pressure_to_sigma({'t': T3, 'q': np.maximum(Q3, 0), 'u': U3, 'v': V3}, pc, self.coords.vertical, ps[None] / 100.0)
+            sg = vertical_interpolation.interp_pressure_to_sigma({'t': T3, 'q': np.maximum(Q3, 0), 'u': U3, 'v': V3}, pc, self.coords.vertical, ps[None] / 100.0, _ITP4)
         sg = {k: np.asarray(v, np.float32) for k, v in sg.items()}
         vor, div = spherical_harmonic.uv_nodal_to_vor_div_modal(hor, sg['u'] * self.MPS, sg['v'] * self.MPS)
         st = primitive_equations.State(vorticity=vor, divergence=div, temperature_variation=hor.to_modal(sg['t'] * self.K - self.ref_t[:, None, None]),
