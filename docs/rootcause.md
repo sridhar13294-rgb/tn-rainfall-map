@@ -2037,3 +2037,7 @@ re-judged on old runs: they are re-run and judged under rule 2.
 - 12:05 Rule-1 targets: cyc_peak.py (GitHub 'peak truth'): for every library storm, ERA5 0.25-deg msl minimum and 850-hPa wind maximum
   within 2.5 deg of the best-track position, 0-72 h every 6 h, at hind2's start time; peak = min msl over 0-72 h ->
   data/cyclone/wx/peak_targets.json (same definition as era5_p3_targets.json msl_min).
+- 16:20 (13 Nov) Rule-1 targets READY: data/cyclone/wx/peak_targets.json, 83 library storms, ERA5 0.25-deg 0-72 h peak msl 985-1010 hPa.
+  Check against the old 3-storm targets (independent earlier extraction): 72 h msl Vardah 995.24 (old 995.2), Nivar 994.07 (994.1),
+  Michaung 992.03 (992.0) -> identical. Rule-2 members so far (seed 4): base2 Vardah 991.4 / Nivar 993.4 / Michaung 1000.7; cubic 995.8 /
+  991.8 / 1001.9; no-DFI 991.0 / 993.8 / 1001.2 (72-h values; peak values computed when all members are in).
