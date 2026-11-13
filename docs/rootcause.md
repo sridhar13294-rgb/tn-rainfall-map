@@ -2097,7 +2097,7 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   day-1 latent heating (A/P1) and very likely why it starts storms with half the core rain (P3, 24 vs 41 mm/day at hour 0).
   Next: which input of the IFS convection is missing at the start (trigger excess from surface fluxes, BL tendency in the closure,
   radiation cache, or the start profile itself) - per-hour convection diagnostics at h0 / h3 / h12.
-- 23:40 CAUSE of the package spin-up (spin_dbg.py, T42, 1 Nov): at hour 0 the IFS plume finds almost NO instability in the ERA5 start
+- 23:15 CAUSE of the package spin-up (spin_dbg.py, T42, 1 Nov): at hour 0 the IFS plume finds almost NO instability in the ERA5 start
   state (PCAPE 0.0 -> 0.8 / 4 / 9.5 / 18 / 22 at h1 / 3 / 6 / 12 / 24; deep-convection columns 2.4 % -> 28 %; rain 0.16 -> 2.9 mm/day):
   the model waits ~15 h to build its own instability before it rains. The real IFS does not, because two terms of the documented scheme
   respond to LARGE-SCALE MOISTURE CONVERGENCE immediately - and MEGAM's v1 left both out ('needs the advective tendency, v2'):
