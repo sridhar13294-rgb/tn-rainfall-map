@@ -2144,3 +2144,10 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   (1) resolution - the trigger is nonlinear and T42 / 1.5 deg start fields remove the moist, warm extremes where it would fire
       (test: same diagnosis at T85/T170 on the same date); (2) the test parcel's 50 %-condensate loading or the 6.10 kinetic-energy
       factors (check against the text line by line); (3) our lowest model level (sig 0.99, ~80 m) vs the IFS 2nd level (~30 m).
+- 00:00 (14 Nov) TEST-PARCEL CHECK vs IFS text: (6.10) - the kinetic-energy equation that ends the test parcel - uses Tv,up WITHOUT
+  condensate loading; only PCAPE (6.22) subtracts l_up. MEGAM's plume subtracts it in both. Diagnostic switch TEST_LOAD (default =
+  old behaviour). h0 T42 global: deep columns 2.4 % (as is) -> 5.5 % (no loading in 6.10) -> 11.0 % (+ corrected BL start); h24 34 %.
+  BUT h0 convective rain only 0.04 -> 0.30 mm/day: the triggered FULL updraughts still find PCAPE ~ 0 on the ERA5 start.
+  => on ERA5 soundings MEGAM's entraining plumes are generally not buoyant; the model has to cool the lower troposphere ~1 K first.
+  Running: (a) 13-level interpolation error over the whole 1000-300 hPa column (850-700 hPa is also interpolated: if the environment
+  there is too warm, every plume loses buoyancy); (b) same h0 diagnosis at T85 / T170 (resolution / smoothing of the extremes).
