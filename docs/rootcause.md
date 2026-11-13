@@ -2029,3 +2029,8 @@ separate better from worse (cubic moved Vardah TOWARD its target and was rejecte
    reported together with the per-storm values.
 Applied identically to every candidate from now on. Earlier verdicts under the old single-storm rule (sl_vcubic, dfi_off) are NOT
 re-judged on old runs: they are re-run and judged under rule 2.
+- 11:50 REJUDGE PLAN under rule 2 (Sridhar 11:38 "first rejudge"): the old members are deterministic (same seeds -> identical result), so
+  'rerun' = NEW members, seeds 4-6, for base2 (nz), cubic (vz), no-DFI (dz) and the package (lz): 12 jobs x ~0.3 GPU-h, account 4, ahead of
+  the queue. Judged on the 3-storm sb set: mean over storms of |3-member-mean 72-h PEAK intensity - ERA5-at-T170 target| vs base2's, noise =
+  max-min of the base2 member means. Rule 1 (41 storms) needs ERA5 peak-intensity targets for all 41 storms - building them next
+  (ERA5 msl along the best tracks, GitHub job).
