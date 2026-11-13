@@ -1,6 +1,8 @@
 # Stage 1 status table (kept current every cycle; Sridhar 4 Nov 23:17: "Keep on updating this table")
 Last update: 10 Nov 20:40 IST (see docs/rootcause.md 10 Nov and the status PDF). Standing rule 10 Nov: every candidate also screened at 75 L. Earlier: 5 Nov 22:15 IST. Target 15 Nov no longer reachable (GPU: own account + partner account only); realistic ~2 weeks. Stage 3 paused until Stage 1 is done.
 
+## Decisions 13 Nov 20:57 IST: critical path only; adopt on all registered checks passing; track rule = 3-member means. Target: first week of Dec (Claude's estimate ~25-40 %; 70 % 10 Jan; 90 % end Feb).
+
 ## One-word status (Sridhar 12 Nov 09:53: include in EVERY report; every row has a reason/suspect - no bare Open/Rejected)
 Updated 13 Nov 11:40 IST. New storm rules registered 13 Nov 11:40 (docs/rootcause.md).
 | Problem | Status | Reason / suspects |

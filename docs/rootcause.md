@@ -2066,3 +2066,12 @@ Noise (mean base2 member spread) 1.5 hPa. Rule 2 (not worse than base2 by more t
   members (Titli, Hamoon) while its 3-storm sb tracks were better (237 vs 250) - not resolved; registered next: quick-6 with
   3 members each for base2 and cubic (seeds 4-6), judged on the mean 72 h error (not worse than base2 by more than the base2
   member spread). Cubic adoption waits for this AND its exam quarter (running next).
+
+## 13 Nov 20:57 IST - SRIDHAR DECISIONS (target: Stage 1 first week of December)
+1. FOCUS (yes): critical path only - energy-balance fixes (A/P1, probably P3) -> sl_vcubic + dfi_off adoption -> full exam. Parked
+   until after the exam: D3, the P5b deep-dive, T42 side studies.
+2. ADOPTION (confirmed): a candidate passing ALL its registered checks is adopted into the base without asking; Sridhar is told after.
+3. TRACK RULE (approved), registered now before any of the new track runs is read: screening = 3 members per version (seeds 4-6),
+   mean 72 h track error vs best track; PASS if not worse than base by more than the base member spread (mean over storms of
+   max-min). Stage-1 track check unchanged (72 h <= 280 km plus the trend/turn rule).
+E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until then Kaggle only.
