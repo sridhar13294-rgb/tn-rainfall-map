@@ -2174,3 +2174,13 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   Measured part: 6.10 condensate loading (doc says none) 2.4 -> 5.5 %.
   NEXT: a real reference for how often deep convection should be on at the start - ERA5's own convective precipitation in the first
   hour (fraction of tropical columns with cp > 0, and its total) - then compare our trigger column by column against it.
+- 00:20 REFERENCE (ERA5 hour 0-1, 3 starts, cp_start.npz): convective precip 1.27-1.39 mm/day global (total 2.7-2.9); 13-16 % of
+  native tropical points with cp > 0.1 mm/h. MEGAM package at h0: 0.15 mm/day, deep trigger ~4 % of tropical columns -> 9x too little.
+  COLUMN BY COLUMN (1 Nov, T42): where ERA5 rains convectively (cp > 0.1 mm/h, 21 % of tropical columns) our test parcel's median
+  max in-cloud buoyancy is -0.5 K: MARGINAL. Trigger hit rate there 10.8 % with condensate loading in the K equation (current code)
+  vs 27.8 % without it (6.10 as written); false alarms where ERA5 is dry 0.1 % / 0.8 %. (cp > 0.5 mm/h: 16 % vs 35 %.)
+  The same (6.10) also governs the FULL updraught's kinetic energy - with loading it dies early -> PCAPE ~0 even when triggered.
+  BUILT option ke_noload (6.10 without loading for test parcels AND the full updraught; PCAPE 6.22 keeps loading; default off).
+  REGISTERED (T42 spin test, 3 starts, package + ke_noload): CONFIRMED as a main driver if h0-h6 global rain >= 1.5 mm/day (now
+  0.15-1.3) AND 0-24 h global rain >= 2.4 mm/day (now 1.8), with day-1 not above ERA5 (3.0) by > 10 %; then the forecast test
+  (t850/t700 d1-d2 vs ERA5, rain, LHF) must improve t850 d2 by >= 0.2 K. PARTIAL if h0-h6 0.6-1.5.

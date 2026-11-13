@@ -8,7 +8,7 @@ import jax, jax.numpy as jnp
 G, RD, RV, CP, LV, LF = 9.80616, 287.04, 461.5, 1004.6, 2.5e6, 3.34e5
 T0, TICE, TBF = 273.16, 235.16, 268.16
 EPS_UP, DELTA_DEEP = 1.75e-3, 0.75e-4            # (6.7), (6.8)
-TEST_LOAD = True                                  # 14 Nov diagnostic: False = test-parcel K equation without condensate loading (6.10 text)
+TEST_LOAD = True                                  # 14 Nov diagnostic only (overrides ke_load for the test parcel when False)
 BCD, F1G = 1.949, 3.0                             # (1 + beta Cd), f (1 + gamma)   (6.10)
 C00, LCRIT = 1.4e-3, 5e-4                         # (6.44)
 EPS_DD = 2e-4                                     # (6.15)
@@ -36,7 +36,7 @@ def alpha_liq(T):                                 # (6.43): liquid share of cond
     return jnp.where(T >= T0, 1.0, jnp.where(T <= TICE, 0.0, ((T - TICE) / (T0 - TICE)) ** 2))
 
 
-def plume(env, k0, h0, qt0, K0, mode, qs_ref, land, frac_keep=1.0, f_eps=1.0, micro=False, deep=True):
+def plume(env, k0, h0, qt0, K0, mode, qs_ref, land, frac_keep=1.0, f_eps=1.0, micro=False, deep=True, ke_load=True):
     """One bulk ascent from layer k0 upward (scan bottom -> top). mode 0: shallow test parcel eps = 0.8/z + 3e-4 (6.18);
     mode 1: deep test parcel eps = 0.4 x 1.75e-3 f_scale (6.4); mode 2: full updraught eps = 1.75e-3 f_eps (1.3 - RH) f_scale (6.7)
     with detrainment (6.8 deep / 6.9 shallow) and organised detrainment from the decrease of K (6.12). Kinetic energy (6.10).
@@ -81,9 +81,10 @@ def plume(env, k0, h0, qt0, K0, mode, qs_ref, land, frac_keep=1.0, f_eps=1.0, mi
             prc = jnp.where(src, 0.0, lkeep - lafter); lkeep = lafter; qt1 = qt1 - prc
         Tvu = Tu * (1.0 + 0.608 * qv - lkeep)
         b = (Tvu - Tve) / Tve
-        if mode == 1 and not TEST_LOAD: b = (Tu * (1.0 + 0.608 * qv) - Tve) / Tve                  # (6.10) as written: no condensate loading in the K equation
+        # ke_load=False (14 Nov): the kinetic-energy equation (6.10) as written uses Tv,up without condensate loading; PCAPE (6.22) keeps it
+        bK = (Tu * (1.0 + 0.608 * qv) - Tve) / Tve if ((not ke_load) or (mode == 1 and not TEST_LOAD)) else b
         mu_ = jnp.where(eps > 0, eps, dlt)
-        K1 = jnp.where(src, K0, (K + dz * G * b / F1G) / (1.0 + dz * mu_ * 2.0 * BCD))
+        K1 = jnp.where(src, K0, (K + dz * G * bK / F1G) / (1.0 + dz * mu_ * 2.0 * BCD))
         satn = lnew_tot > 0; cb1 = cb | (satn & ~src)
         if mode == 1: K1 = jnp.where(cb1 & ~cb, K0, jnp.where(cb1, K1, K0))                   # deep test: dry lift to the LCL, w = 1 m/s from cloud base (6.4)
         alive1 = jnp.where(src, True, above & (K1 > 0) & (pe > 5000.0))
@@ -114,7 +115,7 @@ def implicit_transport(phi, mass, A, Mnet, Fx, S, use_imp, dt):
     return (pn - phi) / dt
 
 
-def convection(T, q, p, mass, zc, ps, H, E, ust, rho, land, dt, dx, dT_bl, dq_bl, u_bl, use_pbl=True, det_prec=0.0, q_adv=None, a_qcv=0.0):
+def convection(T, q, p, mass, zc, ps, H, E, ust, rho, land, dt, dx, dT_bl, dq_bl, u_bl, use_pbl=True, det_prec=0.0, q_adv=None, a_qcv=0.0, ke_load=True):
     """IFS convection, one call. dT_bl, dq_bl: non-convective tendencies (BL diffusion + radiation) for the closures.
     Returns dict(dT, dq, prc (convective precipitation production per layer, kg m-2 s-1, for the cloud scheme), P_sfc (convective
     precipitation at the ground), mask (cloud layers), deep, shallow, M (updraught mass flux per layer, for momentum transport))."""
@@ -128,7 +129,7 @@ def convection(T, q, p, mass, zc, ps, H, E, ust, rho, land, dt, dx, dT_bl, dq_bl
     wst = jnp.maximum(jnp.cbrt(1.2 * jnp.maximum(ust, 0.1) ** 3 + 1.5 * 0.4 * zc[-1] * jnp.maximum(bflux, 0.0)), 0.1)
     dTx = jnp.clip(1.5 * H / (rho * CP * wst), 0.2, 1.0); dqx = jnp.clip(1.5 * E / (rho * wst), 1e-4, 5e-4)
     h_s0 = h[-1] + CP * dTx + LV * dqx; qt_s0 = q[-1] + dqx
-    a_s, hu_s, qtu_s, Tu_s, lu_s, b_s, K_s, _, _, _, sat_s = plume(env, kL, h_s0, qt_s0, 0.5 * wst ** 2, 0, qs[-1], land)
+    a_s, hu_s, qtu_s, Tu_s, lu_s, b_s, K_s, _, _, _, sat_s = plume(env, kL, h_s0, qt_s0, 0.5 * wst ** 2, 0, qs[-1], land, ke_load=ke_load)
     kcb_s = jnp.max(jnp.where(sat_s, ii, -1), axis=0)                                            # lowest saturated active layer = cloud base
     p_cb_s = jnp.take_along_axis(p, jnp.maximum(kcb_s, 0)[None], 0)[0]
     p_top_s = jnp.min(jnp.where(a_s, p, 1e7), axis=0)
@@ -149,7 +150,7 @@ def convection(T, q, p, mass, zc, ps, H, E, ust, rho, land, dt, dx, dT_bl, dq_bl
             qa_k = jnp.take(q_adv, kd, axis=0)
             ddq = jnp.where(first | (pk < 70000.0), ddq, 1e-4 + jnp.minimum(3e-4, jnp.maximum(qa_k, 0.0) * 600.0))
         kk = jnp.full(ps.shape, kd)
-        a_d, hu_d, qtu_d, Tu_d, lu_d, b_d, K_d, _, _, _, sat_d = plume(env, kk, hk + CP * ddT + LV * ddq, qk + ddq, 0.5, 1, qs[-1], land, frac_keep=0.5)
+        a_d, hu_d, qtu_d, Tu_d, lu_d, b_d, K_d, _, _, _, sat_d = plume(env, kk, hk + CP * ddT + LV * ddq, qk + ddq, 0.5, 1, qs[-1], land, frac_keep=0.5, ke_load=ke_load)
         kcb = jnp.max(jnp.where(sat_d, ii, -1), axis=0); kcb_ = jnp.maximum(kcb, 0)
         pcb = jnp.take_along_axis(p, kcb_[None], 0)[0]; ptop = jnp.min(jnp.where(a_d, p, 1e7), axis=0)
         ok = (kcb >= 0) & (pcb - ptop > 20000.0) & (pk >= 35000.0)
@@ -169,7 +170,7 @@ def convection(T, q, p, mass, zc, ps, H, E, ust, rho, land, dt, dx, dT_bl, dq_bl
     K_cb = jnp.maximum(jnp.where(is_deep, Kcb_d, tk(K_s, kcb)), 0.5)                               # w at cloud base >= 1 m/s (6.10 text)
     qs_cb = tk(qs, kcb)
     a_u, hu, qtu, Tu, lu, bu, Ku, eta, prc, frz, _ = plume(env, kcb, h_cb, qt_cb, K_cb, 2, qs_cb, land, f_eps=jnp.where(is_deep, 1.0, 2.0),
-                                                        micro=True, deep=is_deep)
+                                                        micro=True, deep=is_deep, ke_load=ke_load)
     incl = a_u & active[None]
     eta = jnp.where(incl, eta, 0.0); prc = jnp.where(incl, prc, 0.0); frz = jnp.where(incl, frz, 0.0)
     ktop = jnp.min(jnp.where(incl, ii, L), axis=0)
