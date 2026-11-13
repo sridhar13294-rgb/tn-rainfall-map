@@ -4,8 +4,12 @@ as hind2) and every 6 h to +72 h, the ERA5 0.25-deg mean-sea-level pressure mini
 best-track position (same definition as data/cyclone/era5_p3_targets.json 'msl_min'). Peak = min over 0-72 h.
 Output: data/cyclone/wx/peak_targets.json. Runs on GitHub Actions (cyclone-wx.yml, commit message 'peak truth')."""
 import json, os, sys, datetime as dt, numpy as np, xarray as xr
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'analysis'))
-import ourens as O
+class O:                                                                                          # same definitions as analysis/ourens.py (which needs matplotlib)
+    LIBL = json.load(open('data/cyclone/lib_list.json'))
+    path_of = staticmethod(lambda s: [(dt.datetime.fromisoformat(p[0]), p[1], p[2], p[3]) for p in s['path'] if p[1] is not None])
+    @staticmethod
+    def gen_time(s):
+        t0 = dt.datetime.strptime(s['t0'], '%Y-%m-%dT%H'); return t0.replace(hour=t0.hour // 6 * 6)
 ARCO = 'gs://gcp-public-data-arco-era5/ar/full_37-1h-0p25deg-chunk-1.zarr-v3'
 os.makedirs('data/cyclone/wx', exist_ok=True); LOG = open('data/cyclone/wx/peak_log.txt', 'w')
 def log(*a): print(*a, flush=True); print(*a, file=LOG, flush=True)
