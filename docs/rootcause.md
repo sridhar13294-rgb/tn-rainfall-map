@@ -2202,3 +2202,7 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   (bl_lcl, sfc_sal, rad lw_cnt/qs_mix) - test registered next; (b) ask the expert whether IFS uses resolution-dependent constants
   for its convection at ~100 km (the 6.27 tau factor is the only one documented); (c) accept the day-1 spin-up and judge the package
   on days 2-5 only.
+- 00:25 REGISTERED option (a) "parts" = base2 convection + bl_lcl 1, sfc_sal 0.98, rad_prm {lw_cnt 0.667, qs_mix 1} (no phys_ifs).
+  T42, 3 starts (27 Oct / 1 Nov / 6 Nov), vs ERA5 (rh_truth / flux_truth): viable if t850 AND t700 global d2 |bias| <= 0.6 K
+  (package -1.14 / -1.04) and day-1 rain and LHF within 15 % of ERA5; then storms (rule 2, seeds 4-6) and the T170 screen.
+  base2 and the package are rerun on the same starts as controls.
