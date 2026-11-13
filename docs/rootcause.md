@@ -2125,3 +2125,12 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   equilibrium is ~1 K colder than ERA5. The real IFS rains from step 1 on ERA5 (ERA5 is IFS's own equilibrium), so our trigger /
   test parcel is stricter than the documented one. NEXT (running): which trigger condition fails on tropical ocean at h0 (cloud base
   not found / parcel dies before 200 hPa depth / source level).
+- 23:50 DEEP-TRIGGER DIAGNOSIS (tropical ocean 20S-20N, h0 vs h24, test parcel +0.2 K / +0.1 g/kg as in 6.21):
+  departure sig 0.971: cloud base found 100 % both times (911 / 937 hPa) but max in-cloud buoyancy -0.65 K at h0 vs +2.07 K at h24;
+  parcel top 886 vs 557 hPa; deep test passes 3 % vs 51 %. Source RH 0.80 (h0) vs 0.88 (h24). -> the parcel is too cold/dry at the start.
+  SUSPECT (start data, not physics): MEGAM starts from WB2 ERA5 on 13 levels - nothing between 1000, 925 and 850 hPa. The 975/950 hPa
+  (sub-cloud) humidity is interpolated straight across the top of the mixed layer -> too dry by about the +1.1..1.2 g/kg the model then
+  adds at 990-950 hPa in day 1; ~1 g/kg in the parcel = ~2.5 K of moist static energy = the -0.65 -> +2 K buoyancy gap.
+  REGISTERED (check running on GitHub, ERA5 37 levels, 3 starts, tropical ocean): start-data cause CONFIRMED if the 13-level
+  interpolation is too dry at 975 AND 950 hPa by >= 0.5 g/kg; REJECTED if |error| < 0.3 g/kg (then the plume itself is too strict).
+  If confirmed, fix = build start fields with the extra ERA5 levels 975/950/900/875/825/800 (ARCO), no physics change.
