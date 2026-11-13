@@ -2151,3 +2151,16 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   => on ERA5 soundings MEGAM's entraining plumes are generally not buoyant; the model has to cool the lower troposphere ~1 K first.
   Running: (a) 13-level interpolation error over the whole 1000-300 hPa column (850-700 hPa is also interpolated: if the environment
   there is too warm, every plume loses buoyancy); (b) same h0 diagnosis at T85 / T170 (resolution / smoothing of the extremes).
+- 23:54 THREE CHECKS:
+  (1) RESOLUTION rejected: same h0 diagnosis at T85 - deep columns 2.0 %, conv rain 0.01 mm/day (T42: 2.4 %, 0.04).
+  (2) PLUME THERMODYNAMICS correct: MEGAM undiluted parcel (60 columns, 10S-10N ocean, h0) vs MetPy parcel_profile: same buoyancy
+      within 0.00-0.27 K at every level (MEGAM slightly cooler aloft, ice). Not the cause.
+  (3) START DATA, whole column (ERA5 37 levels vs 13-level interpolation, 20S-20N ocean, 1 Nov): 975/950 too dry -0.5 g/kg and
+      +0.45/+0.5 K warm; 900/875 +0.22 K; 825-750 hPa (trade inversion) -0.38..-0.48 K COLD and +0.34..+0.50 g/kg MOIST; above 650 small.
+      Undiluted parcel from 975 hPa on the MEAN sounding: CAPE 33 J/kg on 37 levels vs 2 J/kg on the 13-level interpolation; buoyancy
+      -0.5 K lower at 875-925 hPa and -0.4 K lower at 450-650 hPa. The interpolation errors vary with the inversion height, so a
+      mean correction (tested: deep 2.4 -> 5.8 %) is not the real test.
+  REGISTERED (running on GitHub: start fields from all 29 ERA5 levels >= 50 hPa, ARCO 0.25 deg box-mean to 1.5 deg, 3 dates; the
+  control is the 13-level subset of the SAME file, so only the vertical sampling differs): start-data cause CONFIRMED as the main
+  driver if, at T42 h0, deep columns rise from ~2.4 % to >= 12 % AND h0 convective rain to >= 1.0 mm/day; PARTIAL if 5-12 % /
+  0.3-1.0; REJECTED if < 5 % (then: entrainment/closure vs ERA5 equilibrium). Then the forecast test (t850 d1-d2, rain, LHF).
