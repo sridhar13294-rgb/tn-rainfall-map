@@ -1,13 +1,5 @@
 [
  {
-  "slug": "tn-dz4-sb",
-  "inputs": "libm_fields.npz",
-  "note": "rule-2 rejudge (13 Nov): dz member seed 4",
-  "account": "4",
-  "at": "2026-11-13T06:09Z",
-  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/suite_dz4_sb.json /kaggle/working/sb.json > /kaggle/working/sb.log 2>&1; tail -20 /kaggle/working/sb.log"
- },
- {
   "slug": "tn-lz4-sb",
   "inputs": "libm_fields.npz",
   "note": "rule-2 rejudge (13 Nov): lz member seed 4",
