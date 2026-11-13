@@ -2125,7 +2125,7 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   equilibrium is ~1 K colder than ERA5. The real IFS rains from step 1 on ERA5 (ERA5 is IFS's own equilibrium), so our trigger /
   test parcel is stricter than the documented one. NEXT (running): which trigger condition fails on tropical ocean at h0 (cloud base
   not found / parcel dies before 200 hPa depth / source level).
-- 23:50 DEEP-TRIGGER DIAGNOSIS (tropical ocean 20S-20N, h0 vs h24, test parcel +0.2 K / +0.1 g/kg as in 6.21):
+- 23:45 DEEP-TRIGGER DIAGNOSIS (tropical ocean 20S-20N, h0 vs h24, test parcel +0.2 K / +0.1 g/kg as in 6.21):
   departure sig 0.971: cloud base found 100 % both times (911 / 937 hPa) but max in-cloud buoyancy -0.65 K at h0 vs +2.07 K at h24;
   parcel top 886 vs 557 hPa; deep test passes 3 % vs 51 %. Source RH 0.80 (h0) vs 0.88 (h24). -> the parcel is too cold/dry at the start.
   SUSPECT (start data, not physics): MEGAM starts from WB2 ERA5 on 13 levels - nothing between 1000, 925 and 850 hPa. The 975/950 hPa
@@ -2134,3 +2134,13 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   REGISTERED (check running on GitHub, ERA5 37 levels, 3 starts, tropical ocean): start-data cause CONFIRMED if the 13-level
   interpolation is too dry at 975 AND 950 hPa by >= 0.5 g/kg; REJECTED if |error| < 0.3 g/kg (then the plume itself is too strict).
   If confirmed, fix = build start fields with the extra ERA5 levels 975/950/900/875/825/800 (ARCO), no physics change.
+- 23:50 RESULT bl truth (ERA5 37 levels vs the 13-level interpolation, tropical ocean 20S-20N, 3 starts, data/cyclone/wx/bl_levels.txt):
+  q error at 975 / 950 hPa -0.50..-0.55 / -0.54..-0.58 g/kg (too DRY), T +0.44..0.46 / +0.50..0.52 K (too WARM); 900/875 hPa T +0.06..0.32 K.
+  By the registered rule (>= 0.5 g/kg at both levels) the start-data cause is CONFIRMED - but only just (1 Nov 975 hPa = 0.50).
+  SIZE: applying the measured mean error to the h0 state (T42) raises global deep-trigger columns 2.4 % -> 5.8 % and h0 convective
+  rain 0.04 -> 0.30 mm/day (h24: 28 %, 1.9). => REAL but PARTIAL (~15 % of the spin-up). Fix (start fields with ERA5 975/950/900/875/
+  825/800 hPa) is worth doing and costs no physics change, but it does not close A/P1 alone.
+  REMAINING (open): even on corrected ERA5 the test parcel is negatively buoyant in ~94 % of columns. Suspects, in order:
+  (1) resolution - the trigger is nonlinear and T42 / 1.5 deg start fields remove the moist, warm extremes where it would fire
+      (test: same diagnosis at T85/T170 on the same date); (2) the test parcel's 50 %-condensate loading or the 6.10 kinetic-energy
+      factors (check against the text line by line); (3) our lowest model level (sig 0.99, ~80 m) vs the IFS 2nd level (~30 m).
