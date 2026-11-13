@@ -1,5 +1,13 @@
 [
  {
+  "slug": "tn-vc-wx0",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/suite_vc_wx.json 0 4 /kaggle/working/wx_0.json > /kaggle/working/wx_0.log 2>&1; tail -3 /kaggle/working/wx_0.log",
+  "note": "D1 adoption check: base2 + sl_vcubic exam quarter 0 (passed rule-2 storms 13 Nov)",
+  "account": "4",
+  "at": "2026-11-13T14:32Z"
+ },
+ {
   "slug": "tn-r24-lcl-b",
   "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
   "note": "P2/P4 baseline: TN rain 24-start, package+bl_lcl",

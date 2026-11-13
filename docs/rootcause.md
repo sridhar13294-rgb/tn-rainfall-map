@@ -2041,3 +2041,18 @@ re-judged on old runs: they are re-run and judged under rule 2.
   Check against the old 3-storm targets (independent earlier extraction): 72 h msl Vardah 995.24 (old 995.2), Nivar 994.07 (994.1),
   Michaung 992.03 (992.0) -> identical. Rule-2 members so far (seed 4): base2 Vardah 991.4 / Nivar 993.4 / Michaung 1000.7; cubic 995.8 /
   991.8 / 1001.9; no-DFI 991.0 / 993.8 / 1001.2 (72-h values; peak values computed when all members are in).
+
+## 13 Nov ~20:15 IST - RULE-2 VERDICTS (registered 11:40; 3 storms x 3 new members, seeds 4-6; PEAK pmin over 0-72 h vs ERA5 peak targets
+Vardah 994.8 / Nivar 994.1 / Michaung 992.0)
+| version | peak means V / N / M | member spread | |err| V / N / M | mean |err| |
+| base2 (nz) | 989.1 / 993.9 / 994.0 | 2.4 / 0.8 / 1.3 | 5.7 / 0.2 / 1.9 | 2.60 |
+| cubic, sl_vcubic (vz) | 994.0 / 992.9 / 992.2 | 1.6 / 2.5 / 0.1 | 0.8 / 1.2 / 0.1 | 0.70 |
+| no DFI (dz) | 989.1 / 993.5 / 994.8 | 0.5 / 0.3 / 1.1 | 5.7 / 0.6 / 2.8 | 3.02 |
+| package (lz) | 994.3 / 1003.0 / 1001.1 | 0.4 / 0.1 / 0.1 | 0.4 / 8.9 / 9.0 | 6.12 |
+Noise (mean base2 member spread) 1.5 hPa. Rule 2 (not worse than base2 by more than the noise):
+- D1 cubic: 0.70 vs 2.60 -> PASS (better on all three storms). Remaining registered check before adoption: the exam quarter
+  (z500 etc.; never run for cubic because the 6 Nov storm verdict stopped it) -> tn-vc-wx0 queued FIRST on account 4.
+- S2 no DFI: 3.02 vs 2.60 (+0.42 < 1.5) -> PASS storms. Its 7 Nov exam-quarter/track diagnostics exist (tn-s-nd-wx0 / -q6) - to be
+  read before adoption; combination with cubic untested (FMEA #2).
+- P3 package: 6.12 vs 2.60 (+3.5 > 1.5) -> FAILS: it under-deepens Nivar and Michaung by ~9 hPa at peak. Cause hunt continues
+  (slow storm-core rain at the start, cold/dry low levels).
