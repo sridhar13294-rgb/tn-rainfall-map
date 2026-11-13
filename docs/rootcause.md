@@ -2174,7 +2174,7 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   Measured part: 6.10 condensate loading (doc says none) 2.4 -> 5.5 %.
   NEXT: a real reference for how often deep convection should be on at the start - ERA5's own convective precipitation in the first
   hour (fraction of tropical columns with cp > 0, and its total) - then compare our trigger column by column against it.
-- 00:20 REFERENCE (ERA5 hour 0-1, 3 starts, cp_start.npz): convective precip 1.27-1.39 mm/day global (total 2.7-2.9); 13-16 % of
+- 00:10 REFERENCE (ERA5 hour 0-1, 3 starts, cp_start.npz): convective precip 1.27-1.39 mm/day global (total 2.7-2.9); 13-16 % of
   native tropical points with cp > 0.1 mm/h. MEGAM package at h0: 0.15 mm/day, deep trigger ~4 % of tropical columns -> 9x too little.
   COLUMN BY COLUMN (1 Nov, T42): where ERA5 rains convectively (cp > 0.1 mm/h, 21 % of tropical columns) our test parcel's median
   max in-cloud buoyancy is -0.5 K: MARGINAL. Trigger hit rate there 10.8 % with condensate loading in the K equation (current code)
