@@ -1486,5 +1486,13 @@
   "account": "4",
   "at": "2026-11-13T10:56Z",
   "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/suite_lz5_sb.json /kaggle/working/sb.json > /kaggle/working/sb.log 2>&1; tail -20 /kaggle/working/sb.log"
+ },
+ {
+  "slug": "tn-nz6-sb",
+  "inputs": "libm_fields.npz",
+  "note": "rule-2 rejudge (13 Nov): nz member seed 6",
+  "account": "4",
+  "at": "2026-11-13T11:31Z",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/suite_nz6_sb.json /kaggle/working/sb.json > /kaggle/working/sb.log 2>&1; tail -20 /kaggle/working/sb.log"
  }
 ]
