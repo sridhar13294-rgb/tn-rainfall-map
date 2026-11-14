@@ -2233,3 +2233,14 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   -0.69 (-1.4 tropics) vs -0.10 in the IFS scheme. SUSPECTS for the 700 hPa piece, in order: (1) base2 shallow-mixing depth;
   (2) base2 rain-evaporation rate. Reference needed before any change: observed / IFS Q1 and evaporative-cooling profiles at 700 hPa
   (literature, e.g. Yanai-type budgets, IFS diagnostics). Next session.
+- 11:15 (14 Nov) T170 EXAM QUARTER 0 (19 starts) - package tn-lcl-wx0 vs base2 tn-s-rd-wx0 vs base2+cubic tn-s-vc-wx0, bias d1/d2/d3/d5:
+    t850 globe    base2 +0.33/+0.06/-0.02/-0.10   package -0.73/-1.14/-1.37/-1.71   cubic +0.42/+0.17/+0.09/+0.02
+    t850 tropics  base2 +1.27/+1.05/+1.06/+1.05   package -1.17/-1.72/-2.04/-2.45   cubic +1.41/+1.21/+1.23/+1.24
+    rain24 globe  base2 +0.23/+0.81/+0.96/+1.13   package -0.62/+0.38/+0.49/+0.52   cubic +0.29/+0.79/+0.91/+1.02
+    z500 globe    base2 -10.3/-15.5/-19.5/-26.6   package -14.7/-21.8/-27.4/-36.2   cubic -7.3/-10.7/-13.6/-18.4
+  The package spin-up IS present at T170 (day-1 rain -0.62 mm/day, t850 cooling grows to -1.7 K by day 5) -> resolution (T170) does
+  not save the IFS convection; consistent with Sridhar's decision (a). Note base2 at T170 is WARM in the tropics at 850 hPa (+1.05..
+  +1.27 K) - the 850 hPa "fix" of option (a) (+0.55 K at T42) must be re-checked at T170 before adoption (risk: tropics too warm).
+  Cubic: z500 drift -27 -> -18 m by d5, u200 better; t850 ~same. Track rule (q6 3-member) not run: Kaggle accounts 1 AND 4 both at the
+  30-h weekly GPU limit (account 4 hit it overnight; refused pushes used no GPU). Next GPU: E2E after Monday top-up.
+  tn-r24-lcl-b (package TN rain) not scored - package not adopted for Stage 1.
