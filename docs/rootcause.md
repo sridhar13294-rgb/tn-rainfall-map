@@ -2244,3 +2244,6 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   Cubic: z500 drift -27 -> -18 m by d5, u200 better; t850 ~same. Track rule (q6 3-member) not run: Kaggle accounts 1 AND 4 both at the
   30-h weekly GPU limit (account 4 hit it overnight; refused pushes used no GPU). Next GPU: E2E after Monday top-up.
   tn-r24-lcl-b (package TN rain) not scored - package not adopted for Stage 1.
+- 10:05 (15 Nov) TRACK RULE partial (q6, 72 h error km, mean of 6 storms): base2 seed 4 = 371, seed 5 = 410; cubic seed 4 = 429.
+  Verdict waits for cubic seeds 5-6 and base2 seed 6 (rule: cubic mean not worse than base2 mean by more than the base2 member
+  spread). Account 1 and account 4 quotas reset 14/15 Nov; remaining jobs queued.
