@@ -2247,3 +2247,4 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
 - 10:05 (15 Nov) TRACK RULE partial (q6, 72 h error km, mean of 6 storms): base2 seed 4 = 371, seed 5 = 410; cubic seed 4 = 429.
   Verdict waits for cubic seeds 5-6 and base2 seed 6 (rule: cubic mean not worse than base2 mean by more than the base2 member
   spread). Account 1 and account 4 quotas reset 14/15 Nov; remaining jobs queued.
+- 16:05 (15 Nov) cubic seed 5 = 424 km (seed 4 429). Waiting: base2 seed 6 (running, account 4), cubic seed 6 (queued).
