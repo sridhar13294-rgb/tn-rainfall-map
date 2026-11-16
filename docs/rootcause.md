@@ -2262,3 +2262,11 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   PREDICTION: if the base2 shallow-mixing top is the main 700 hPa sink, sh_depth moves t700 d2 by >= +0.5 K (from -1.31);
   if rain evaporation is, k_evap 0 moves it by >= +0.5 K. If neither moves it >= 0.5 K, the 700 hPa cold is not physics-local
   (next: dynamics/vertical advection at 700 hPa).
+- 01:15 (17 Nov) RESULT 700 hPa attribution (registered 00:25), day-2 global bias t850 / t700:
+    parts (a)            +0.55 / -1.31
+    parts + sh_depth     -1.10 / -0.69   (t700 +0.62 -> shallow-mixing top CONFIRMED as a 700 hPa sink)
+    parts + k_evap 0     +1.79 / -0.60   (t700 +0.72 -> rain evaporation CONFIRMED as a column sink)
+  Reading: base2's tall "shallow" MSE mixing (to 300 hPa deep) moves heat from 700 down to 850 - it HIDES a cold 850 (with
+  sh_depth 850 is -1.1) and creates the cold 700. Rain evaporation (-0.69 K/day at 700 vs -0.10 in the IFS scheme) cools the column.
+  REGISTERED NEXT: parts + sh_depth + evap_ifs (IFS Kessler sub-cloud evaporation, existing option): viable if t850 AND t700
+  d2 |bias| <= 0.6 K, day-1 rain and LHF within 15 % of ERA5. Then storms (rule 2) and T170.
