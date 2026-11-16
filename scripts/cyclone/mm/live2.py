@@ -64,7 +64,7 @@ def run(LIVEM, LIVE, PART, NPART, OUT, CFG=None):
         try:
             t_a = time.time()
             mb = member(k); grid = C.get('control_grid', 'T85') if k == 0 else C.get('grid', 'T85')
-            if grid not in models: models[grid] = mm2.Model(grid, 32, 30.0, dict(sppt_on=True))           # one compiled model per grid, reused by every member
+            if grid not in models: models[grid] = mm2.Model(grid, 32, float(C.get('dt', 30.0)), dict(dict(sppt_on=True), **C.get('settings', {})))   # 17 Nov: config 'settings' = model options (default none)           # one compiled model per grid, reused by every member
             M = models[grid]
             if CN is not None: fk, psk = CS.member_start(CN, k, scale=0.5 + mb['h'][0])                    # k=0: the consensus mean
             else: fk = {v: f3[v] + (mb['alpha'] * D[v] if D is not None and v in D else 0.0) for v in V3}; psk = Z['f2'][0, V2.index('surface_pressure')]
