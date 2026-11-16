@@ -2251,3 +2251,9 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
 - 10:10 (16 Nov) base2 seed 6 = 355 km -> base2 mean 379 (371/410/355), member spread 55 km. Cubic so far 429/512 (mean 470).
   Pass limit for cubic mean = 379 + 55 = 434 km -> needs seed 6 <= 361 km. Cubic seed 6 running (account 4). The 22:00 and 04:00
   cycles of 15/16 Nov did not run (session idle); this pass done at 10:00 16 Nov.
+- 16:10 (16 Nov) TRACK RULE VERDICT, cubic (sl_vcubic) vs base2, q6 6 storms x 3 seeds, 72 h error km:
+    base2 371 / 410 / 355  mean 379, spread 55   | cubic 429 / 512 / 614  mean 518
+  Limit = 379 + 55 = 434 -> cubic FAILS by 84 km (worse in every seed; Giri/Hamoon worst: 672-1200 km). NOT ADOPTED.
+  Cubic improves z500 drift (-27 -> -18 m at d5, T170) but moves storms worse - consistent with the 6 Nov suspicion that cubic
+  vertical interpolation without a limiter shifts storm cores (overshoot near the warm core). Next for D1/D2: cubic with a
+  monotone limiter (SLMONO option exists in hyb_jet) - derive and T42-test before any GPU.
