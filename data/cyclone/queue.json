@@ -1,9 +1,1 @@
-[
- {
-  "slug": "tn-akvan-n75b",
-  "inputs": "live_GFSM_2026111612.npz,live_GFS_2026111612.npz,live_ECM_2026111612.npz",
-  "note": "Akvan control 12Z rerun, MEGAM-new tp75 T170 (fixed 75 L config)",
-  "cmd": "XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore live2.py run /kaggle/working/live_GFSM_2026111612.npz /kaggle/working/live_GFS_2026111612.npz 0 51 /kaggle/working/part_0.json ../../../data/cyclone/mm/live_config_new.json > /kaggle/working/part_0.log 2>&1; grep -v Warn /kaggle/working/part_0.log | tail -5 | tee job.log",
-  "account": "1"
- }
-]
+[]
