@@ -2290,3 +2290,8 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   colder than RRTMG at 850-1000 hPa). Together with rh850 +0.10 (moist) the leading suspect is the shallow scheme ventilating too
   little moisture out of the BL into the cloud layer at the right depth (moist 850 -> RH cloud -> extra LW cooling).
   Next (needs a reference): BOMEX/RICO single-column shallow heating and moistening profiles vs ours at 850-950 hPa.
+- 02:40 (17 Nov) AKVAN control tn-akvan-new75 (12Z) BLEW UP on Kaggle (member 0 'model blew up'). Cause = my config, not the model:
+  I set layers=75 (the plain 75-level spacing), dt 30 min, without sfc_imp / drag_imp. MEGAM's 75-level setup is 'tp75' + dt 20 min
+  + implicit surface exchange (sfc_imp) and drag (drag_imp) - the two numerical fixes that closed P2 (75 L stability 19/19, 10 Nov).
+  Fixed live_config_new.json (tp75, dt 20, sfc_imp 1, drag_imp 1) and live2.py (layers may be a 'tpNN' string). Local T42 check
+  running to completion this time before any GPU relaunch. GPU lost: ~40 min of account 1.

@@ -1,8 +1,8 @@
 {
  "grid": "T170",
  "control_grid": "T170",
- "dt": 30.0,
- "note": "17 Nov - 75 layers - 'MEGAM-new' control for Akvan (Sridhar): adopted base2 (cmt_mf, rd_si) + NOT-adopted candidates: full IFS convection package (phys_ifs, bl_lcl, sfc_sal, rad_prm), IFS 6.10 no loading (ke_noload), IFS 6.21+QCV moisture convergence (q_adv, a_qcv), cubic vertical SL (sl_vcubic), no DFI (dfi_off), hybrid levels (hyb). Experimental - several of these FAILED registered checks.",
+ "dt": 20.0,
+ "note": "17 Nov - 75 layers (tp75, dt 20 min, sfc_imp + drag_imp = the 75 L stability fixes, P2) - 'MEGAM-new' control for Akvan (Sridhar): adopted base2 (cmt_mf, rd_si) + NOT-adopted candidates: full IFS convection package (phys_ifs, bl_lcl, sfc_sal, rad_prm), IFS 6.10 no loading (ke_noload), IFS 6.21+QCV moisture convergence (q_adv, a_qcv), cubic vertical SL (sl_vcubic), no DFI (dfi_off), hybrid levels (hyb). Experimental - several of these FAILED registered checks.",
  "settings": {
   "cmt_mf": 1,
   "rd_si": 1,
@@ -18,7 +18,9 @@
   "a_qcv": 0.8,
   "sl_vcubic": 1,
   "dfi_off": 1,
-  "hyb": 1
+  "hyb": 1,
+  "sfc_imp": 1,
+  "drag_imp": 1
  },
- "layers": 75
+ "layers": "tp75"
 }
