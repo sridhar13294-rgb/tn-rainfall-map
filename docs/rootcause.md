@@ -2270,3 +2270,9 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   sh_depth 850 is -1.1) and creates the cold 700. Rain evaporation (-0.69 K/day at 700 vs -0.10 in the IFS scheme) cools the column.
   REGISTERED NEXT: parts + sh_depth + evap_ifs (IFS Kessler sub-cloud evaporation, existing option): viable if t850 AND t700
   d2 |bias| <= 0.6 K, day-1 rain and LHF within 15 % of ERA5. Then storms (rule 2) and T170.
+- 01:35 (17 Nov) D1/D2 cubic track failure - suspect "cubic vertical overshoot without limiter" REJECTED by code inspection:
+  MEGAM runs mono=True -> Dinosaur monotone_dynamics -> semi_lagrangian.interpolate_3d(limiter='quasi_monotone') clips the cubic
+  result to the 2x2x2 bracketing cell, whose vertical extent is always the two nodes around the departure sigma, regardless of
+  vertical_order (semi_lagrangian.py docstring + code). So the cubic is already limited. Remaining suspect: cubic makes storms
+  STRONGER (rule 2: 0.70 vs 2.60 hPa) -> deeper vortex feels base2's mid-level steering error more. Base2's own 72 h track error
+  (379 km vs 280 target) - leading suspect is P5's Bay u850 easterly bias (-4 m/s by day 3), which steers storms west.
