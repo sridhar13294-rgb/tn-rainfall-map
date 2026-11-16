@@ -2282,3 +2282,11 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   package's -1.2) together with a too-moist 850 hPa (+0.10 RH). Suspects (from earlier measurements): radiation at 850-1000 hPa
   vs RRTMG -0.3..-0.5 K/day; RH-cloud feedback (moist 850 -> more low cloud -> more cooling). Next: heating by process for this
   version at sigma 0.85 vs option (a) and the package.
+- 02:15 (17 Nov) 850 hPa heating by process, parts + sh_depth + evap_ifs (T42, 1 Nov, +24 h, K/day at sigma 0.86 / 0.70 / 0.62, globe):
+    deep +0.85/1.02/0.94 | shallow -1.64/-0.05/-0.01 | large-scale cond +2.27/0.32/0.27 | rain evap -0.09/-0.09/-0.12 |
+    radiation -1.68/-1.18/-1.02 | physics total -0.25/+0.03/+0.07   (extratropics 850: shallow -1.81, lsc +2.49, rad -1.47)
+  Rain evaporation is now IFS-sized (-0.09 vs -0.69). At 850 the remaining sinks are the shallow scheme's cloud-top cooling (-1.6;
+  physically right sign - BOMEX-type inversion cooling - size unverified) and radiation (-1.7; earlier measured 0.3-0.5 K/day
+  colder than RRTMG at 850-1000 hPa). Together with rh850 +0.10 (moist) the leading suspect is the shallow scheme ventilating too
+  little moisture out of the BL into the cloud layer at the right depth (moist 850 -> RH cloud -> extra LW cooling).
+  Next (needs a reference): BOMEX/RICO single-column shallow heating and moistening profiles vs ours at 850-950 hPa.
