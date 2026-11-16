@@ -2257,3 +2257,8 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   Cubic improves z500 drift (-27 -> -18 m at d5, T170) but moves storms worse - consistent with the 6 Nov suspicion that cubic
   vertical interpolation without a limiter shifts storm cores (overshoot near the warm core). Next for D1/D2: cubic with a
   monotone limiter (SLMONO option exists in hyb_jet) - derive and T42-test before any GPU.
+- 00:25 (17 Nov) 700 hPa ATTRIBUTION (diagnostic denial, not adoption), T42, starts 7 Oct / 1 Nov / 26 Nov vs ERA5 rh_truth:
+  parts (= option a) vs parts + sh_depth (shallow mixing only for clouds <= 200 hPa deep) vs parts + k_evap 0 (no rain evaporation).
+  PREDICTION: if the base2 shallow-mixing top is the main 700 hPa sink, sh_depth moves t700 d2 by >= +0.5 K (from -1.31);
+  if rain evaporation is, k_evap 0 moves it by >= +0.5 K. If neither moves it >= 0.5 K, the 700 hPa cold is not physics-local
+  (next: dynamics/vertical advection at 700 hPa).
