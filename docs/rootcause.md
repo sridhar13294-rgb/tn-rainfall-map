@@ -2276,3 +2276,9 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   vertical_order (semi_lagrangian.py docstring + code). So the cubic is already limited. Remaining suspect: cubic makes storms
   STRONGER (rule 2: 0.70 vs 2.60 hPa) -> deeper vortex feels base2's mid-level steering error more. Base2's own 72 h track error
   (379 km vs 280 target) - leading suspect is P5's Bay u850 easterly bias (-4 m/s by day 3), which steers storms west.
+- 01:55 (17 Nov) RESULT parts + sh_depth + evap_ifs (registered 01:15), T42 3 starts, day-2 global bias:
+  t850 -0.87 (FAIL, limit 0.6) | t700 -0.39 OK | day-1 rain 2.7 vs 3.0 (-10 %) OK | LHF -97.2 vs -84.9 (+14 %) OK | rh850 +0.10.
+  NOT adopted. Progress: worst level 1.31 K -> 0.87 K. With the tall mixing gone, a real 850 hPa cold appears (same sign as the
+  package's -1.2) together with a too-moist 850 hPa (+0.10 RH). Suspects (from earlier measurements): radiation at 850-1000 hPa
+  vs RRTMG -0.3..-0.5 K/day; RH-cloud feedback (moist 850 -> more low cloud -> more cooling). Next: heating by process for this
+  version at sigma 0.85 vs option (a) and the package.
