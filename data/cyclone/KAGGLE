@@ -1,6 +1,6 @@
-tn-vq6-q6
-libm_fields.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/suite_vq6_q6.json 0 1 /kaggle/working/q6.json > /kaggle/working/q6.log 2>&1; tail -8 /kaggle/working/q6.log
+tn-akvan-new75
+live_GFSM_2026111612.npz,live_GFS_2026111612.npz,live_ECM_2026111612.npz
+XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore live2.py run /kaggle/working/live_GFSM_2026111612.npz /kaggle/working/live_GFS_2026111612.npz 0 51 /kaggle/working/part_0.json ../../../data/cyclone/mm/live_config_new.json > /kaggle/working/part_0.log 2>&1; grep -v Warn /kaggle/working/part_0.log | tail -5 | tee job.log
 NvidiaTeslaT4
-4
-#track rejudge: vq seed 6 2026-11-16T04:27Z
+1
+#Akvan control, MEGAM-new 75L T170 (Sridhar 17 Nov) 2026-11-16T19:35Z
