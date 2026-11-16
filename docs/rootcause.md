@@ -2248,3 +2248,6 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   Verdict waits for cubic seeds 5-6 and base2 seed 6 (rule: cubic mean not worse than base2 mean by more than the base2 member
   spread). Account 1 and account 4 quotas reset 14/15 Nov; remaining jobs queued.
 - 16:05 (15 Nov) cubic seed 5 = 512 km (seed 4 429; corrected - first entry wrongly said 424). Waiting: base2 seed 6 (running, account 4), cubic seed 6 (queued).
+- 10:10 (16 Nov) base2 seed 6 = 355 km -> base2 mean 379 (371/410/355), member spread 55 km. Cubic so far 429/512 (mean 470).
+  Pass limit for cubic mean = 379 + 55 = 434 km -> needs seed 6 <= 361 km. Cubic seed 6 running (account 4). The 22:00 and 04:00
+  cycles of 15/16 Nov did not run (session idle); this pass done at 10:00 16 Nov.
