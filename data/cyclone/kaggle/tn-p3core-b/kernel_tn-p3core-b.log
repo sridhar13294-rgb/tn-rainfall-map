@@ -1,84 +1,84 @@
-[{"stream_name":"stdout","time":0.629449425,"data":"+ nvidia-smi || true\n"}
-,{"stream_name":"stdout","time":0.666020647,"data":"Tue Nov 17 12:48:46 2026       \n"}
-,{"stream_name":"stdout","time":0.666042945,"data":"+-----------------------------------------------------------------------------------------+\n"}
-,{"stream_name":"stdout","time":0.66604808,"data":"| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |\n"}
-,{"stream_name":"stdout","time":0.66605226,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
-,{"stream_name":"stdout","time":0.66605636,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
-,{"stream_name":"stdout","time":0.666060345,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
-,{"stream_name":"stdout","time":0.66606427,"data":"|                                         |                        |               MIG M. |\n"}
-,{"stream_name":"stdout","time":0.666068376,"data":"|=========================================+========================+======================|\n"}
-,{"stream_name":"stdout","time":0.71587234,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
-,{"stream_name":"stdout","time":0.715899861,"data":"| N/A   52C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
-,{"stream_name":"stdout","time":0.715903547,"data":"|                                         |                        |                  N/A |\n"}
-,{"stream_name":"stdout","time":0.715906008,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
-,{"stream_name":"stdout","time":0.715908571,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
-,{"stream_name":"stdout","time":0.715910929,"data":"| N/A   52C    P8              9W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
-,{"stream_name":"stdout","time":0.715913215,"data":"|                                         |                        |                  N/A |\n"}
-,{"stream_name":"stdout","time":0.715915562,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
-,{"stream_name":"stdout","time":0.716523342,"data":"\n"}
-,{"stream_name":"stdout","time":0.716533591,"data":"+-----------------------------------------------------------------------------------------+\n"}
-,{"stream_name":"stdout","time":0.716537338,"data":"| Processes:                                                                              |\n"}
-,{"stream_name":"stdout","time":0.716546047,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
-,{"stream_name":"stdout","time":0.716548842,"data":"|        ID   ID                                                               Usage      |\n"}
-,{"stream_name":"stdout","time":0.716551222,"data":"|=========================================================================================|\n"}
-,{"stream_name":"stdout","time":0.718018191,"data":"|  No running processes found                                                             |\n"}
-,{"stream_name":"stdout","time":0.718028778,"data":"+-----------------------------------------------------------------------------------------+\n"}
-,{"stream_name":"stdout","time":1.04594865,"data":"exit 0\n"}
-,{"stream_name":"stdout","time":1.050385209,"data":"accelerator asked NvidiaTeslaT4 -\u003e jax for cuda12\n"}
-,{"stream_name":"stdout","time":1.050407825,"data":"+ pip uninstall -y -q jax-cuda13-plugin jax-cuda13-pjrt 2\u003e/dev/null; pip install -q \"jax[cuda12]==0.12.0.1\"\n"}
-,{"stream_name":"stderr","time":34.047315139,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
-,{"stream_name":"stderr","time":34.047346596,"data":"bigframes 2.51.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
-,{"stream_name":"stderr","time":34.047351287,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.5 which is incompatible.\n"}
-,{"stream_name":"stderr","time":34.047354559,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
-,{"stream_name":"stderr","time":34.047357684,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
-,{"stream_name":"stderr","time":34.047360673,"data":"ydf 0.15.0 requires protobuf\u003c7.0.0,\u003e=5.29.1, but you have protobuf 7.36.2 which is incompatible.\n"}
-,{"stream_name":"stderr","time":34.047376639,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.5 which is incompatible.\n"}
-,{"stream_name":"stderr","time":34.047381869,"data":"gradio 6.30.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
-,{"stream_name":"stdout","time":34.302075222,"data":"exit 0\n"}
-,{"stream_name":"stdout","time":46.901381585,"data":"[CudaDevice(id=0), CudaDevice(id=1)] 0.12.0.1\n"}
-,{"stream_name":"stdout","time":46.901424797,"data":" \n"}
-,{"stream_name":"stdout","time":46.901430367,"data":"+ free -g; nproc\n"}
-,{"stream_name":"stdout","time":46.920422775,"data":"               total        used        free      shared  buff/cache   available\n"}
-,{"stream_name":"stdout","time":46.92044396,"data":"Mem:              31           1          21           0           9          30\n"}
-,{"stream_name":"stdout","time":46.920448878,"data":"Swap:              0           0           0\n"}
-,{"stream_name":"stdout","time":46.923364648,"data":"4\n"}
-,{"stream_name":"stdout","time":46.923696597,"data":"exit 0\n"}
-,{"stream_name":"stdout","time":46.923711139,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
-,{"stream_name":"stdout","time":55.415135393,"data":"exit 0\n"}
-,{"stream_name":"stdout","time":55.415200525,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
-,{"stream_name":"stdout","time":70.055624107,"data":"exit 0\n"}
-,{"stream_name":"stdout","time":70.055669289,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o libm_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_fields.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" libm_fields.npz || { echo BAD_DOWNLOAD libm_fields.npz; rm -f libm_fields.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o libm_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_fields.npz; }\n"}
-,{"stream_name":"stdout","time":72.594480223,"data":"exit 0\n"}
-,{"stream_name":"stdout","time":72.594528733,"data":"setup s 72\n"}
-,{"stream_name":"stdout","time":72.594536591,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/p3core_b.json /kaggle/working/sb.json \u003e /kaggle/working/sb.log 2\u003e\u00261; tail -20 /kaggle/working/sb.log 2\u003e\u00261 | tee job.log\n"}
-,{"stream_name":"stdout","time":1697.353213642,"data":"Michaung T170_b2 +42h p 995.2 v850 25.9 wc300 2.92 wc500 1.92 flux 258.9/299.1 deep 1.0/0.71 rain 174.4/89.0 rh700 1.064/0.913\n"}
-,{"stream_name":"stdout","time":1697.353268366,"data":"Michaung T170_b2 +48h p 994.0 v850 30.5 wc300 3.41 wc500 1.97 flux 340.6/296.5 deep 1.0/0.577 rain 199.1/88.9 rh700 1.098/0.895\n"}
-,{"stream_name":"stdout","time":1697.353274424,"data":"Michaung T170_b2 +54h p 994.3 v850 33.0 wc300 4.06 wc500 1.64 flux 227.9/227.7 deep 1.0/0.489 rain 252.1/91.7 rh700 1.099/0.826\n"}
-,{"stream_name":"stdout","time":1697.353278655,"data":"Michaung T170_b2 +60h p 993.3 v850 30.4 wc300 4.46 wc500 2.01 flux 194.2/182.8 deep 1.0/0.355 rain 209.7/75.8 rh700 1.079/0.779\n"}
-,{"stream_name":"stdout","time":1697.353282735,"data":"Michaung T170_b2 +66h p 997.1 v850 29.4 wc300 4.21 wc500 1.32 flux 241.0/154.5 deep 0.8/0.288 rain 160.0/64.0 rh700 1.061/0.803\n"}
-,{"stream_name":"stdout","time":1697.353286781,"data":"Michaung T170_b2 +72h p 999.3 v850 29.3 wc300 3.24 wc500 0.59 flux 102.1/118.9 deep 0.599/0.17 rain 224.0/64.5 rh700 1.137/0.823\n"}
-,{"stream_name":"stdout","time":1697.353290791,"data":"WARNING landinit: no soil water, soil temperature, skin temperature in the start file -\u003e land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)\n"}
-,{"stream_name":"stdout","time":1697.353369516,"data":"Montha T170_b2 + 0h p 1003.4 v850 18.5 wc300 0.24 wc500 0.74 flux 167.3/279.0 deep 1.0/1.0 rain 36.0/35.4 rh700 0.887/0.825\n"}
-,{"stream_name":"stdout","time":1697.353375832,"data":"Montha T170_b2 + 6h p 1004.4 v850 15.9 wc300 0.29 wc500 0.71 flux 194.0/257.0 deep 0.8/0.733 rain 38.2/46.4 rh700 0.956/0.954\n"}
-,{"stream_name":"stdout","time":1697.353381843,"data":"Montha T170_b2 +12h p 1002.6 v850 16.6 wc300 0.46 wc500 1.0 flux 211.6/227.1 deep 0.0/0.355 rain 58.8/37.4 rh700 0.972/0.982\n"}
-,{"stream_name":"stdout","time":1697.353387803,"data":"Montha T170_b2 +18h p 1001.6 v850 19.2 wc300 0.39 wc500 0.99 flux 147.8/249.6 deep 0.0/0.377 rain 16.4/36.3 rh700 0.961/0.95\n"}
-,{"stream_name":"stdout","time":1697.353400271,"data":"Montha T170_b2 +24h p 1002.5 v850 18.6 wc300 0.99 wc500 1.23 flux 162.3/269.3 deep 0.4/0.489 rain 24.1/48.4 rh700 0.899/0.945\n"}
-,{"stream_name":"stdout","time":1697.353404899,"data":"Montha T170_b2 +30h p 1001.3 v850 21.3 wc300 0.87 wc500 1.18 flux 206.3/309.7 deep 0.4/0.822 rain 32.4/68.8 rh700 0.91/0.936\n"}
-,{"stream_name":"stdout","time":1697.353408852,"data":"Montha T170_b2 +36h p 1000.3 v850 26.7 wc300 0.49 wc500 1.28 flux 280.1/351.5 deep 0.6/0.733 rain 32.8/54.5 rh700 0.895/0.96\n"}
-,{"stream_name":"stdout","time":1697.353412803,"data":"Montha T170_b2 +42h p 998.8 v850 26.0 wc300 1.09 wc500 1.62 flux 265.1/405.0 deep 0.6/0.487 rain 57.1/60.1 rh700 0.998/0.922\n"}
-,{"stream_name":"stdout","time":1697.353418413,"data":"Montha T170_b2 +48h p 997.2 v850 30.3 wc300 1.33 wc500 2.09 flux 283.2/429.5 deep 0.8/0.532 rain 63.5/83.1 rh700 0.923/0.896\n"}
-,{"stream_name":"stdout","time":1697.353422344,"data":"Montha T170_b2 +54h p 997.7 v850 33.2 wc300 1.74 wc500 2.3 flux 381.8/520.9 deep 1.0/0.578 rain 177.8/120.9 rh700 1.044/0.878\n"}
-,{"stream_name":"stdout","time":1697.353442551,"data":"Montha T170_b2 +60h p 996.9 v850 30.3 wc300 0.74 wc500 3.51 flux 385.3/451.8 deep 1.0/0.644 rain 72.8/107.1 rh700 0.979/0.919\n"}
-,{"stream_name":"stdout","time":1697.353449254,"data":"Montha T170_b2 +66h p 998.9 v850 28.7 wc300 1.06 wc500 3.02 flux 341.1/322.9 deep 0.401/0.355 rain 17.4/48.4 rh700 0.758/0.877\n"}
-,{"stream_name":"stdout","time":1697.353456082,"data":"Montha T170_b2 +72h p 1000.2 v850 28.3 wc300 0.59 wc500 1.97 flux 224.7/252.9 deep 0.2/0.133 rain 9.9/16.1 rh700 0.677/0.835\n"}
-,{"stream_name":"stdout","time":1697.353706579,"data":"exit 0\n"}
-,{"stream_name":"stdout","time":1697.353772239,"data":"+ rm -rf repo libm_fields.npz\n"}
-,{"stream_name":"stdout","time":1697.646921151,"data":"exit 0\n"}
-,{"stream_name":"stdout","time":1697.646951584,"data":"total s 1697\n"}
-,{"stream_name":"stderr","time":1699.67908704,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
-,{"stream_name":"stderr","time":1699.679110363,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
-,{"stream_name":"stderr","time":1699.914725582,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
-,{"stream_name":"stderr","time":1699.914751813,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
-,{"stream_name":"stderr","time":1700.687986226,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
-,{"stream_name":"stderr","time":1701.634324078,"data":"[NbConvertApp] Writing 284314 bytes to __results__.html\n"}
+[{"stream_name":"stdout","time":0.659781231,"data":"+ nvidia-smi || true\n"}
+,{"stream_name":"stdout","time":0.696811782,"data":"Tue Nov 17 15:02:21 2026       \n"}
+,{"stream_name":"stdout","time":0.6968346,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":0.696839666,"data":"| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":0.696853665,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.696858371,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":0.696862648,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":0.696867071,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":0.696871265,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":0.742526632,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":0.742553035,"data":"| N/A   59C    P8             11W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":0.742559126,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":0.742564792,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.742570472,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":0.742576311,"data":"| N/A   55C    P8             11W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":0.742582122,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":0.742587948,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.743321123,"data":"\n"}
+,{"stream_name":"stdout","time":0.743331927,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":0.743336909,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":0.7433424,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":0.743347899,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":0.743353286,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":0.744978582,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":0.744994451,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.073889987,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1.07567383,"data":"accelerator asked NvidiaTeslaT4 -\u003e jax for cuda12\n"}
+,{"stream_name":"stdout","time":1.075693282,"data":"+ pip uninstall -y -q jax-cuda13-plugin jax-cuda13-pjrt 2\u003e/dev/null; pip install -q \"jax[cuda12]==0.12.0.1\"\n"}
+,{"stream_name":"stderr","time":36.843459073,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":36.843480626,"data":"bigframes 2.51.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":36.843484923,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.5 which is incompatible.\n"}
+,{"stream_name":"stderr","time":36.843488277,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":36.84349125,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":36.843494162,"data":"ydf 0.15.0 requires protobuf\u003c7.0.0,\u003e=5.29.1, but you have protobuf 7.36.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":36.843497066,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.5 which is incompatible.\n"}
+,{"stream_name":"stderr","time":36.843500043,"data":"gradio 6.30.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
+,{"stream_name":"stdout","time":37.116454344,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":49.542619641,"data":"[CudaDevice(id=0), CudaDevice(id=1)] 0.12.0.1\n"}
+,{"stream_name":"stdout","time":49.542655759,"data":" \n"}
+,{"stream_name":"stdout","time":49.542661314,"data":"+ free -g; nproc\n"}
+,{"stream_name":"stdout","time":49.556319598,"data":"               total        used        free      shared  buff/cache   available\n"}
+,{"stream_name":"stdout","time":49.556342098,"data":"Mem:              31           1          21           0           9          30\n"}
+,{"stream_name":"stdout","time":49.556347482,"data":"Swap:              0           0           0\n"}
+,{"stream_name":"stdout","time":49.559683288,"data":"4\n"}
+,{"stream_name":"stdout","time":49.560063718,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":49.56007841,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
+,{"stream_name":"stdout","time":63.109511066,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":63.109549068,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
+,{"stream_name":"stdout","time":82.447363209,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":82.447397235,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o libm_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_fields.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" libm_fields.npz || { echo BAD_DOWNLOAD libm_fields.npz; rm -f libm_fields.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o libm_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_fields.npz; }\n"}
+,{"stream_name":"stdout","time":125.920465748,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":125.920497711,"data":"setup s 125\n"}
+,{"stream_name":"stdout","time":125.920504113,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/p3core_b.json /kaggle/working/sb.json \u003e /kaggle/working/sb.log 2\u003e\u00261; tail -20 /kaggle/working/sb.log 2\u003e\u00261 | tee job.log\n"}
+,{"stream_name":"stdout","time":1768.261801309,"data":"Michaung T170_b2 +42h p 995.2 v850 25.9 wc300 2.92 wc500 1.92 flux 258.9/299.1 deep 1.0/0.71 rain 174.4/89.0 rh700 1.064/0.913\n"}
+,{"stream_name":"stdout","time":1768.261848429,"data":"Michaung T170_b2 +48h p 994.0 v850 30.5 wc300 3.41 wc500 1.97 flux 340.6/296.5 deep 1.0/0.577 rain 199.1/88.9 rh700 1.098/0.895\n"}
+,{"stream_name":"stdout","time":1768.26185257,"data":"Michaung T170_b2 +54h p 994.3 v850 33.0 wc300 4.06 wc500 1.64 flux 227.9/227.7 deep 1.0/0.489 rain 252.1/91.7 rh700 1.099/0.826\n"}
+,{"stream_name":"stdout","time":1768.261855625,"data":"Michaung T170_b2 +60h p 993.3 v850 30.4 wc300 4.46 wc500 2.01 flux 194.2/182.8 deep 1.0/0.355 rain 209.7/75.8 rh700 1.079/0.779\n"}
+,{"stream_name":"stdout","time":1768.261858739,"data":"Michaung T170_b2 +66h p 997.1 v850 29.4 wc300 4.21 wc500 1.32 flux 241.0/154.5 deep 0.8/0.288 rain 160.0/64.0 rh700 1.061/0.803\n"}
+,{"stream_name":"stdout","time":1768.261861848,"data":"Michaung T170_b2 +72h p 999.3 v850 29.3 wc300 3.24 wc500 0.59 flux 102.1/118.9 deep 0.599/0.17 rain 224.0/64.5 rh700 1.137/0.823\n"}
+,{"stream_name":"stdout","time":1768.26186477,"data":"WARNING landinit: no soil water, soil temperature, skin temperature in the start file -\u003e land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)\n"}
+,{"stream_name":"stdout","time":1768.261870278,"data":"Montha T170_b2 + 0h p 1003.4 v850 18.5 wc300 0.24 wc500 0.74 flux 167.3/279.0 deep 1.0/1.0 rain 36.0/35.4 rh700 0.887/0.825\n"}
+,{"stream_name":"stdout","time":1768.261873784,"data":"Montha T170_b2 + 6h p 1004.4 v850 15.9 wc300 0.29 wc500 0.71 flux 194.0/257.0 deep 0.8/0.733 rain 38.2/46.4 rh700 0.956/0.954\n"}
+,{"stream_name":"stdout","time":1768.261876768,"data":"Montha T170_b2 +12h p 1002.6 v850 16.6 wc300 0.46 wc500 1.0 flux 211.6/227.1 deep 0.0/0.355 rain 58.8/37.4 rh700 0.972/0.982\n"}
+,{"stream_name":"stdout","time":1768.261879752,"data":"Montha T170_b2 +18h p 1001.6 v850 19.2 wc300 0.39 wc500 0.99 flux 147.8/249.6 deep 0.0/0.377 rain 16.4/36.3 rh700 0.961/0.95\n"}
+,{"stream_name":"stdout","time":1768.261882744,"data":"Montha T170_b2 +24h p 1002.5 v850 18.6 wc300 0.99 wc500 1.23 flux 162.3/269.3 deep 0.4/0.489 rain 24.1/48.4 rh700 0.899/0.945\n"}
+,{"stream_name":"stdout","time":1768.261885626,"data":"Montha T170_b2 +30h p 1001.3 v850 21.3 wc300 0.87 wc500 1.18 flux 206.3/309.7 deep 0.4/0.822 rain 32.4/68.8 rh700 0.91/0.936\n"}
+,{"stream_name":"stdout","time":1768.261888556,"data":"Montha T170_b2 +36h p 1000.3 v850 26.7 wc300 0.49 wc500 1.28 flux 280.1/351.5 deep 0.6/0.733 rain 32.8/54.5 rh700 0.895/0.96\n"}
+,{"stream_name":"stdout","time":1768.261891383,"data":"Montha T170_b2 +42h p 998.8 v850 26.0 wc300 1.09 wc500 1.62 flux 265.1/405.0 deep 0.6/0.487 rain 57.1/60.1 rh700 0.998/0.922\n"}
+,{"stream_name":"stdout","time":1768.26189553,"data":"Montha T170_b2 +48h p 997.2 v850 30.3 wc300 1.33 wc500 2.09 flux 283.2/429.5 deep 0.8/0.532 rain 63.5/83.1 rh700 0.923/0.896\n"}
+,{"stream_name":"stdout","time":1768.261898402,"data":"Montha T170_b2 +54h p 997.7 v850 33.2 wc300 1.74 wc500 2.3 flux 381.8/520.9 deep 1.0/0.578 rain 177.8/120.9 rh700 1.044/0.878\n"}
+,{"stream_name":"stdout","time":1768.261901304,"data":"Montha T170_b2 +60h p 996.9 v850 30.3 wc300 0.74 wc500 3.51 flux 385.3/451.8 deep 1.0/0.644 rain 72.8/107.1 rh700 0.979/0.919\n"}
+,{"stream_name":"stdout","time":1768.261904116,"data":"Montha T170_b2 +66h p 998.9 v850 28.7 wc300 1.06 wc500 3.02 flux 341.1/322.9 deep 0.401/0.355 rain 17.4/48.4 rh700 0.758/0.877\n"}
+,{"stream_name":"stdout","time":1768.261906949,"data":"Montha T170_b2 +72h p 1000.2 v850 28.3 wc300 0.59 wc500 1.97 flux 224.7/252.9 deep 0.2/0.133 rain 9.9/16.1 rh700 0.677/0.835\n"}
+,{"stream_name":"stdout","time":1768.262343855,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1768.262354583,"data":"+ rm -rf repo libm_fields.npz\n"}
+,{"stream_name":"stdout","time":1768.535315876,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1768.535345382,"data":"total s 1768\n"}
+,{"stream_name":"stderr","time":1770.530967905,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":1770.530999125,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":1770.751252221,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":1770.751298097,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":1771.532338757,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":1772.423357206,"data":"[NbConvertApp] Writing 284314 bytes to __results__.html\n"}
 ]
