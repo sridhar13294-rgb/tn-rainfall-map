@@ -1,7 +1,8 @@
 """17 Nov (P3 core budget reference): ERA5 rain around the storm centre, 0-72 h every 6 h, for the storms of tn-p3core-a/b.
 Centre = ERA5 msl minimum within 2.5 deg of the best track (own-centre, as the model budget). Rain = total and convective
 precipitation accumulated over the 6 h ending at h, as mm/day, mean within 100 km and within 300 km (fair at T170: compare 300 km).
-Output data/cyclone/wx/core_rain.json. GitHub 'core rain'."""
+Output data/cyclone/wx/core_rain.json. GitHub 'core rain'.
+18 Nov: also ERA5 inner-core size (radius of max 10-m wind, RMW) and 850-200 hPa shear (500 km box) at each h (rmw add-on)."""
 import json, os, datetime as dt, numpy as np, xarray as xr
 LIBL = json.load(open('data/cyclone/lib_list.json'))
 path_of = lambda s: [(dt.datetime.fromisoformat(p[0]), p[1], p[2], p[3]) for p in s['path'] if p[1] is not None]
@@ -29,6 +30,12 @@ for s in LIBL:
             for v in ('total_precipitation', 'convective_precipitation'):
                 acc = A[v].sel(time=slice(np.datetime64(t - dt.timedelta(hours=5)), np.datetime64(t))).sel(**box).values.sum(0) * 1000.0 * 4  # mm/6h -> mm/day
                 r[v[:4] + '_100'] = round(float(acc[d <= 100].mean()), 1); r[v[:4] + '_300'] = round(float(acc[d <= 300].mean()), 1)
+            ws = np.hypot(A['10m_u_component_of_wind'].sel(time=np.datetime64(t)).sel(**box).values, A['10m_v_component_of_wind'].sel(time=np.datetime64(t)).sel(**box).values)
+            r['vmax10'] = round(float(ws[d <= 300].max()), 1); r['rmw'] = round(float(d[d <= 300][np.argmax(ws[d <= 300])]), 0)
+            sh = {}
+            for lv in (850, 200):
+                for c in ('u', 'v'): sh[c + str(lv)] = float(A[c + '_component_of_wind'].sel(time=np.datetime64(t), level=lv).sel(**box).values[d <= 500].mean())
+            r['shear'] = round(float(np.hypot(sh['u200'] - sh['u850'], sh['v200'] - sh['v850'])), 1)
             rows[str(h)] = dict(r, lat=round(float(cy), 2), lon=round(float(cx), 2), msl=round(float(mv.flat[i]) / 100, 1))
         except Exception as e: print('fail', key, h, repr(e)[:120], flush=True)
     out[key] = rows; print(key, {h: (v['tota_300'], v['conv_300']) for h, v in rows.items()}, flush=True)

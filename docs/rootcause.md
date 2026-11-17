@@ -2535,3 +2535,16 @@ median ratio stays < 0.3.
 - PROCESS ERROR: tn-p3core-b was launched TWICE on account 1 (collected 14:59 UTC, relaunched 15:02 UTC) - my 18:25 queue commit
   re-added it after the dispatcher had removed it (concurrent edit of queue.json). ~1 GPU-h wasted; Kaggle kernels cannot be cancelled.
   Fix: never edit queue.json while a dispatcher pass may run; pull right before editing and dispatch in the same step.
+
+## 17 Nov 22:10 IST — P3 STORM-CORE BUDGET RESULT (registered 18:25): slow-heating cause REJECTED
+FAIL group (Madi, Sidr, Phailin, Hudhud, Giri, Sitrang, Nilam, Titli, Dana): model 300-km rain 0-24 h / ERA5 total = mean 1.01,
+median 1.00 (Phailin 0.48, Sidr 0.70 .. Titli 1.49); PASS group median 0.86. Deep share of core heating 0.38 vs 0.41.
+Rule: REJECTED if FAIL ratio >= 0.80 -> the AMOUNT of heating/rain is NOT why strong storms stay weak (base2).
+What differs (12-48 h means, FAIL vs PASS): warm core 300 hPa +0.86 vs +1.36 K, 500 hPa +0.74 vs +1.17 K (−37 %) with the SAME
+heating and the same inner-ring share (0.38); core surface enthalpy flux 180 vs 202 W m-2 (−11 %); 700-hPa core RH 0.95 vs 1.01.
+5-Why: storm too weak <- warm core too weak <- heat not retained in the core although produced <- (candidates) heating spread over a
+model core too wide for these storms (T170 ~78 km vs small inner cores / rapid intensifiers: Phailin, Hudhud, Sidr, Madi), shear
+ventilation, lower surface enthalpy flux (inflow-layer inputs: SST, wind, q).
+REGISTERED next (ERA5 add-on to cyc_corerain: RMW from 10-m wind, 850-200 hPa shear 500 km): RESOLUTION-LIMITED if ERA5 RMW of the
+FAIL group (12-48 h median) is <= 0.7 x the PASS group's or <= 60 km while PASS > 60 km; SHEAR if FAIL shear exceeds PASS by >= 3 m/s;
+neither -> inflow-layer inputs (enthalpy flux components vs ERA5 sshf/slhf).
