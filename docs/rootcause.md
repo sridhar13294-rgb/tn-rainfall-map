@@ -2529,3 +2529,9 @@ median ratio stays < 0.3.
   with each Mb input set to the IFS-doc value range (not tuned): entrainment per 6.7 checked line by line, tau per 6.27 at 31 km.
 - The double-loading fix itself is a doc-correct code fix (Tv,up per 6.22). It goes through the registered screens (storms rule 2,
   exam quarter, tracks) before adoption - not adopted on the column test alone.
+- 20:55 P3 core budget, PASS group collected (tn-p3core-b; scorer /tmp/claude-0/p3score.py): model 300-km rain 0-24 h vs ERA5 total
+  median ratio 0.86 (mean 1.02; Mandous 0.49 .. Michaung 1.72), deep-convective share of core heating 0.41. Verdict waits for the
+  FAIL group (tn-p3core-a, running, account 4).
+- PROCESS ERROR: tn-p3core-b was launched TWICE on account 1 (collected 14:59 UTC, relaunched 15:02 UTC) - my 18:25 queue commit
+  re-added it after the dispatcher had removed it (concurrent edit of queue.json). ~1 GPU-h wasted; Kaggle kernels cannot be cancelled.
+  Fix: never edit queue.json while a dispatcher pass may run; pull right before editing and dispatch in the same step.
