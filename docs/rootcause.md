@@ -2475,3 +2475,22 @@ Reference: ERA5 rain around the ERA5 centre (cyc_corerain.py, 'core rain', 100/3
   in FAIL than PASS.
 - REJECTED if FAIL-group 0-24 h rain ratio >= 80 % (heating amount not the limiter) -> next: heating location (radial profile / warm
   core height) and inflow-layer inputs (surface enthalpy flux, low-level q) per the FMEA.
+
+## 17 Nov 19:20 IST — P5b Bay u850 ERROR-TENDENCY BUDGET RESULT (registered 13:25; 8 starts T85 base2, 48 h)
+| m/s per day | Bay 10-22N 80-95E: model / ERA5 / error | E of Bay 12-24N 98-110E: model / ERA5 / error |
+| du/dt | −1.25 / −0.04 / −1.21 | −1.63 / +0.60 / −2.22 |
+| advection | +1.02 / +1.13 / −0.10 (8 %) | −1.97 / −1.29 / −0.67 |
+| Coriolis + pressure gradient | −5.19 / −4.96 / −0.23 (19 %) | −7.40 / −8.39 / +0.99 (opposite sign) |
+| residual (friction, CMT, vertical adv., diffusion) | +2.92 / +3.79 / −0.88 (73 %) | +7.74 / +10.28 / −2.54 (114 %) |
+VERDICT by the registered rule: carrier = RESIDUAL (73 % >= 50 %) -> physics/vertical. Pressure pattern (19 %) and import from the
+east (8 %) are minor. Check: ERA5 vertical advection −w du/dp at 850 is +0.15 (Bay) / −0.02 (E) m/s/day -> the residual is NOT
+vertical advection; it is sub-grid momentum transport (BL turbulence, convective momentum transport) [+ ERA5 analysis increments -
+caveat: ERA5's tendency includes assimilation increments]. Reading: the background 850 flow is easterly; ERA5's residual slows the
+easterlies (+3.8 / +10.3 m/s/day); ours does less (+2.9 / +7.7) -> our sub-grid momentum mixing at 850 is too WEAK, so easterlies grow.
+5-Why: easterly too strong <- too little deceleration at 850 <- sub-grid momentum transport too weak at 850 <- (candidates) BL mixing
+does not reach 850 (BL too shallow / K too small above the surface layer), CMT too weak or absent in shallow convection, deep CMT
+mass flux too small (links to A/P1: too little deep convection = too little CMT). FMEA top: shallow-convection CMT absent (S8 O7 D3),
+BL depth/K at 850 (S8 O6 D4), deep CMT via weak deep mass flux (S7 O7 D5 - shared with A/P1).
+NEXT (registered now): ubproc - model u_bl and u_cmt at 850 by box (same 8 starts, 12/24/36 h) + BL height vs ERA5 boundary_layer_height.
+The process whose 850 tendency would have to grow by >= 50 % of the 0.88 / 2.54 deficit to close it, and is physically allowed
+(e.g. BL top below 850 where ERA5's is above), is named the cause.
