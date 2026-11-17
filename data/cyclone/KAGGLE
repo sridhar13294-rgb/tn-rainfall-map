@@ -1,6 +1,6 @@
-tn-akvan-maps-18
-live_GFSM_2026111618.npz
-XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore maps_run.py /kaggle/working/live_GFSM_2026111618.npz 2026-11-16T18 /kaggle/working/akvan_new_2026111618.npz 168 '{"cmt_mf": 1, "rd_si": 1, "phys_ifs": 1, "bl_lcl": 1, "sfc_sal": 0.98, "rad_prm": {"lw_cnt": 0.667, "qs_mix": 1}, "ke_noload": 1, "q_adv": 1, "a_qcv": 0.8, "sl_vcubic": 1, "dfi_off": 1, "hyb": 1, "sfc_imp": 1, "drag_imp": 1, "grid": "T170", "layers": "tp75", "dt": 20.0}' > /kaggle/working/maps.log 2>&1; tail -3 /kaggle/working/maps.log
+tn-akvan-maps-12
+live_GFSM_2026111612.npz
+XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore maps_run.py /kaggle/working/live_GFSM_2026111612.npz 2026-11-16T12 /kaggle/working/akvan_new_2026111612.npz 168 '{"cmt_mf": 1, "rd_si": 1, "phys_ifs": 1, "bl_lcl": 1, "sfc_sal": 0.98, "rad_prm": {"lw_cnt": 0.667, "qs_mix": 1}, "ke_noload": 1, "q_adv": 1, "a_qcv": 0.8, "sl_vcubic": 1, "dfi_off": 1, "hyb": 1, "sfc_imp": 1, "drag_imp": 1, "grid": "T170", "layers": "tp75", "dt": 20.0}' > /kaggle/working/maps.log 2>&1; tail -3 /kaggle/working/maps.log
 NvidiaTeslaT4
-4
-#Akvan MEGAM-new maps for the viewer 2026-11-17T02:31Z
+1
+#Akvan MEGAM-new maps for the viewer 2026-11-17T02:33Z
