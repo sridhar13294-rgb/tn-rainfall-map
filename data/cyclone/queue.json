@@ -1,1 +1,16 @@
-[]
+[
+ {
+  "slug": "tn-r1-b2-1",
+  "inputs": "libm_fields.npz",
+  "note": "Rule 1 base2 baseline (41 storms)",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/lib84_b2r1.json 1 2 /kaggle/working/h1.json > /kaggle/working/h1.log 2>&1; tail -6 /kaggle/working/h1.log",
+  "account": "4"
+ },
+ {
+  "slug": "tn-r1-b2-0",
+  "inputs": "libm_fields.npz",
+  "note": "Rule 1 base2 baseline (41 storms)",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/lib84_b2r1.json 0 2 /kaggle/working/h0.json > /kaggle/working/h0.log 2>&1; tail -6 /kaggle/working/h0.log",
+  "account": "1"
+ }
+]
