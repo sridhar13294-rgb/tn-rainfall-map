@@ -2385,3 +2385,15 @@ Mean growth of the z850 bias, days 2-5:
   r([Arabian − Indochina] growth, Bay u850 growth) = −0.19 (|r| < 0.3). Neither ridge (west or east) explains the Bay 850 easterly bias in
   these 10 storms. Reading: the easterly is Bay-local or tied to the model's own storm (box contains the vortex; weaker/misplaced model
   storm changes box-mean u). Next: 850-hPa u tendency budget by process over the Bay (HANDOFF priority 3) with the vortex region masked.
+
+## 17 Nov 13:25 IST — P5b Bay 850-hPa u ERROR-TENDENCY budget (Sridhar 13:08 "Yes"), REGISTERED before results
+scripts/cyclone/ubudget.py: T85 base2 32 L, 8 NE-monsoon starts 2020 (2 Oct ... 11 Dec, as the ridge test), 48 h, no bogus (general
+starts -> no model-vortex contamination). On the ERA5 1° grid at 850 hPa, model and ERA5 alike: du/dt (12-h centred), horizontal
+advection, Coriolis + pressure gradient (f v − g dz/dx), residual (friction, vertical advection, convective momentum, diffusion).
+Error tendency = model − ERA5, mean over h = 12/24/36 and starts. Boxes: Bay 10-22N 80-95E; east of Bay 12-24N 98-110E
+(where the 13 Nov maps saw the error appear first); terrain > 1000 m masked. (Smoke test 1 start T42 only: code check, not judged.)
+- The term carrying >= 50 % of the Bay's easterly error tendency (same sign) is named the carrier:
+  corpgf -> pressure-pattern origin (continue with the NE-of-Bay high-MSLP growth, 13 Nov 15:40);
+  adv -> error imported from upstream (east) -> look at the E-of-Bay box first;
+  res -> physics/vertical (friction, CMT, vertical advection) -> process split with M.column u_bl/u_cmt next.
+- If no term reaches 50 %, report the shares; no carrier named.
