@@ -2519,3 +2519,13 @@ median ratio stays < 0.3.
   AFTER the mass flux is set -> next 5-Why level: column rain budget (condensation, updraught precipitation, evaporation in
   downdraught / sub-cloud, condensate detrained to the cloud scheme). Test-design caveat logged: the reference picks the
   strongest 0.25° ERA5 cells (point maxima) - fair only against a run at ERA5's ~31 km; at 78 km the grid-box mean is lower.
+- 20:45 column rain budget after the fix (strong triggered columns, L137): 78 km Mb 0.038-0.042, updraught precipitation 0.38-0.42,
+  downdraught evaporation 0.04-0.07, sub-cloud evaporation ~0, condensate detrained 0.13-0.24, surface 0.31-0.37 mm/h; at 31 km
+  (ERA5's own grid) Mb 0.053-0.058, surface 0.44-0.53 mm/h. Evaporation is NOT the sink. Fairer reference (post hoc, does not change
+  the registered verdict): ERA5 cp 175-km box mean at the same cells 1.61 mm/h (point maxima 4.38) -> we are still ~x3-5 low at 31 km.
+  Remaining limiter = the mass flux Mb itself: Mb = (PCAPE − PCAPE_bl)/(tau x den) with PCAPE ~65 Pa, tau 3200-4600 s, den ~0.29.
+  5-Why level 5 candidates (inputs to Mb): PCAPE too small (entrainment in the plume -> Tv,up), tau too long (Hc / w_bar, dx factor
+  6.27), den too large; and the one-call test lacks the step's large-scale forcing (quasi-equilibrium caveat). Next: the same columns
+  with each Mb input set to the IFS-doc value range (not tuned): entrainment per 6.7 checked line by line, tau per 6.27 at 31 km.
+- The double-loading fix itself is a doc-correct code fix (Tv,up per 6.22). It goes through the registered screens (storms rule 2,
+  exam quarter, tracks) before adoption - not adopted on the column test alone.
