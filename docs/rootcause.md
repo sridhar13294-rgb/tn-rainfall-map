@@ -2378,3 +2378,6 @@ Mean growth of the z850 bias, days 2-5:
 - Caveats: T42, 5+5 storms, tracks of these runs not saved (the model's own storm can enter the C/NW box late, e.g. Michaung).
 - Next suspect for the Bay easterly: the eastern side (Indochina/SCS/W-Pacific ridge too weak - the other half of Sridhar's 17 Nov idea)
   or a Bay-local cause (P5b: cold land low levels / SE-Tibet terrain pressure). Same script with Indochina + W-Pacific boxes next.
+- 12:05 REGISTERED follow-up (same 10 storms, same metric): east side box Indochina/SCS 12-25N 95-110E (days files end at 110E).
+  SUPPORTED (weak eastern ridge drives the Bay easterly) if its 10-storm mean z850 growth <= −5 m AND, across storms, the growth of
+  [Arabian − Indochina] correlates with Bay u850 growth at r <= −0.5. NOT SUPPORTED if growth > 0 or |r| < 0.3.
