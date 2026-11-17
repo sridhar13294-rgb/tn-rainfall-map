@@ -2295,3 +2295,11 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   + implicit surface exchange (sfc_imp) and drag (drag_imp) - the two numerical fixes that closed P2 (75 L stability 19/19, 10 Nov).
   Fixed live_config_new.json (tp75, dt 20, sfc_imp 1, drag_imp 1) and live2.py (layers may be a 'tpNN' string). Local T42 check
   running to completion this time before any GPU relaunch. GPU lost: ~40 min of account 1.
+- 08:35 (17 Nov) SRIDHAR: AKVAN control track "looks good" but intensity far too low (peak 32 kt / 1000 hPa) -> concentrate on
+  INTENSITY. Also hypothesis for the general WEST track bias: Arabian ridge too dominant, Indochina / Asian ridge too weak in MEGAM.
+  REGISTERED (T42 base2, 8 NE-monsoon starts 2 Oct - 7 Dec 2020, day 5 vs ERA5 = next library entry): hypothesis SUPPORTED if
+  z500 bias (Arabian box 15-28N 55-75E) minus (Indochina/SCS box 12-25N 95-115E) >= +10 m with the same sign in >= 6/8 starts,
+  and Bay u850 bias easterly (< -1 m/s). REJECTED if the difference is < +5 m or flips sign across starts.
+  (24 Oct steering check already found Bay u850 -3.0 / u200 +3.0 m/s at day 5 -> too much shear, overturning too strong.)
+  Map runs tn-akvan-maps-12/-18 launched 07:55 for the viewer; Sridhar 08:21 "not required now" - Kaggle kernels cannot be
+  cancelled; outputs kept for later.
