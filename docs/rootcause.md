@@ -2337,3 +2337,17 @@ REGISTERED before results (metric = north-TN 4 districts Chennai/Tiruvallur/Chen
 - SUPPORTED if north-TN mean rain >= 1.5x the package run (>= 7 mm/day) - whatever the central pressure does.
 - REJECTED if within ±25 % of the package run -> convection scheme is not the limiter; next suspect = moisture supply (onshore q flux, tcw vs GFS).
 - Intensity reported but not part of the verdict.
+
+## 17 Nov 11:15 IST — Sridhar's 850-hPa Arabian-high idea, sharpened (11:02): the model's high is too strong IN GENERAL; when the real one
+is also strong (Akvan, Vardah) the real storm goes W so our track looks right; when the real one weakens (Nivar, Michaung) ours stays
+strong and the storm goes W/SW instead of NW/N. Claude's refinement: maybe not a constant offset but a failure to WEAKEN the high
+(Michaung: ERA5 trough 63->76.5E, ours parked at 71-72E).
+Test (local CPU, T42 base2 32 L, hind2-identical init + bogus, 120 h, z850 vs ERA5 days_YYYY 1° 12-hourly, terrain > 800 m masked):
+westward group Vardah, Thane, Gaja, Mandous, Burevi; turning group Nivar, Michaung, Hamoon, Sidr, Phethai.
+Boxes: Arabian/NW-India 15-28N 55-75E (as before) and C/NW India 18-28N 70-85E (north of the Bay - geostrophically the one that sets
+Bay easterlies); also Bay u850 10-22N 80-95E. Metric = mean z850 bias days 2-5.
+REGISTERED before results:
+- STATE-DEPENDENT (Sridhar's idea as sharpened) if turning-group bias >= +10 m AND exceeds the westward group by >= 10 m (either box).
+- CONSTANT offset if both groups >= +5 m and differ by < 5 m.
+- NOT SUPPORTED if the turning-group bias < +5 m in both boxes.
+- Caveat fixed now: T42 (not T170), 5+5 storms -> a result here is a lead, confirmation needs T170.
