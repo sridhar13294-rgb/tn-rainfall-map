@@ -14,7 +14,7 @@ src = open(os.path.join(MM, 'mm2.py')).read()
 known = set(re.findall(r"S\[['\"](\w+)['\"]\]", src)) | set(re.findall(r"S\.get\(['\"](\w+)['\"]", src))
 m = re.search(r"^DEFAULTS = dict\((.*?)\)\n", src, re.S | re.M)
 known |= set(re.findall(r"(\w+)=", m.group(1))) if m else set()
-known |= {'grid', 'layers', 'dt_min', 'set', 'name', 'bogus', 'dfi', 'rad_prm'}                    # handled by the drivers
+known |= {'grid', 'layers', 'dt_min', 'dt', 'set', 'name', 'bogus', 'dfi', 'rad_prm'}                    # handled by the drivers
 DRIVER = {'_budget', '_win', '_months', '_chunk', '_split', '_ua'}
 RADP = {'lw_cnt', 'alb_land', 'pdf', 'rhc_low', 'rhc_up'}
 SETS = []
@@ -62,7 +62,7 @@ if '/kaggle/working/' not in cmd or not re.search(r"/kaggle/working/[\w.-]+\.jso
 try:
     sys.path.insert(0, MM); import mm2
     for where, d in SETS:
-        dd = {k: v for k, v in d.items() if k not in DRIVER and k not in ('grid', 'layers', 'dt_min', 'set', 'name', 'bogus', 'dfi')}
+        dd = {k: v for k, v in d.items() if k not in DRIVER and k not in ('grid', 'layers', 'dt_min', 'dt', 'set', 'name', 'bogus', 'dfi')}
         try:
             M = mm2.Model('T42', d.get('layers', 32) if not isinstance(d.get('layers'), dict) else 32, None, dd)
         except Exception as e:
