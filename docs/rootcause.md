@@ -2400,3 +2400,15 @@ Error tendency = model − ERA5, mean over h = 12/24/36 and starts. Boxes: Bay 1
 
 ## 17 Nov 14:25 IST — Sridhar: "Leave about Akvan. We will continue our work" -> AKVAN verification and map publishing DROPPED.
 Work order: P5b Bay u850 budget (running, T85 8 starts) -> P3 storm-core heating/moisture budget for the 20 strongest library storms.
+
+## 17 Nov 17:55 IST — status note + convection COLUMN TEST registered
+- Process slip: the Bay u-budget's 2nd half was killed again at the 2-h background limit after 2 of 4 starts (per-start saving kept
+  them: 6/8 done). Last 2 starts running now (ubC). I also sat idle waiting for an answer on test order instead of preparing - corrected.
+- INTERIM (6 of 8 starts, NOT judged): Bay error tendency −1.54 m/s/day = adv −0.22 + corpgf −0.53 + res −0.79 (res 51 %);
+  E of Bay −2.37 = adv −0.97 + corpgf +1.56 + res −2.96. Verdict only on 8 starts.
+- Column test (A/P1, corrects my 14:29 'resolution mismatch' claim: IFS runs this scheme at 36-125 km operationally):
+  cyc_mlcol.py (GitHub 'ml columns'): ERA5 137-level columns at 2020-11-01T00 / 11-11T00 - 40 strongest-cp cells (>= 1 mm/h hour 1),
+  20 weak (0.1-1), 20 dry. Feed each column (ERA5 T, q, u, v, ps, surface fluxes) to our ifs_phys convection on ERA5's 137 levels.
+  REGISTERED: SCHEME OK (problem = state we give it) if our cp on the 40 strong columns is within a factor 2 of ERA5's (median ratio
+  0.5-2) and >= 70 % of them trigger deep; IMPLEMENTATION if median ratio < 0.3 or < 40 % trigger deep; in between -> report both.
+  Dry columns: >= 80 % must give no deep convection (false-trigger check).
