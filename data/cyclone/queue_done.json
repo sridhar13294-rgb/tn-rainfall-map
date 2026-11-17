@@ -1670,5 +1670,21 @@
   "cmd": "XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore live2.py run /kaggle/working/live_GFSM_2026111618.npz /kaggle/working/live_GFS_2026111618.npz 0 51 /kaggle/working/part_0.json ../../../data/cyclone/mm/live_config_new_b2c.json > /kaggle/working/part_0.log 2>&1; grep -v Warn /kaggle/working/part_0.log | tail -5 | tee job.log",
   "account": "4",
   "at": "2026-11-17T05:21Z"
+ },
+ {
+  "slug": "tn-dq4-q6",
+  "inputs": "libm_fields.npz",
+  "note": "S2 no-DFI track rule seed 4 (target: close S2 by 22 Nov)",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/suite_dq4_q6.json 0 1 /kaggle/working/q6.json > /kaggle/working/q6.log 2>&1; tail -8 /kaggle/working/q6.log",
+  "account": "4",
+  "at": "2026-11-17T12:33Z"
+ },
+ {
+  "slug": "tn-dq5-q6",
+  "inputs": "libm_fields.npz",
+  "note": "S2 no-DFI track rule seed 5 (target: close S2 by 22 Nov)",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/suite_dq5_q6.json 0 1 /kaggle/working/q6.json > /kaggle/working/q6.log 2>&1; tail -8 /kaggle/working/q6.log",
+  "account": "1",
+  "at": "2026-11-17T12:34Z"
  }
 ]
