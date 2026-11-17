@@ -1,6 +1,6 @@
-tn-dq5-q6
+tn-p3core-b
 libm_fields.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/suite_dq5_q6.json 0 1 /kaggle/working/q6.json > /kaggle/working/q6.log 2>&1; tail -8 /kaggle/working/q6.log
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore storm_budget.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/p3core_b.json /kaggle/working/sb.json > /kaggle/working/sb.log 2>&1; tail -20 /kaggle/working/sb.log
 NvidiaTeslaT4
 1
-#S2 no-DFI track rule seed 5 (target: close S2 by 22 Nov) 2026-11-17T12:33Z
+#P3 storm-core budget (weekend target, hard items) 2026-11-17T12:48Z
