@@ -2311,3 +2311,17 @@ Test: T42 base2, 8 NE-monsoon starts 2 Oct–11 Dec 2020, day 5 vs ERA5 (WB2 1.5
 - 850 hPa: z850 Arabian +12.0 m vs Indochina −4.5, Bay −7.9 (difference +16.5 m; Tibet value is a below-ground artefact). u850: Bay −3.3 m/s (easterly), Indochina −3.0; v850 Arabian −1.9, Indochina +1.9.
 - Reading: the low-level Arabian/NW-India high is too strong relative to the east, consistent with the P5 Bay easterly bias. West push is a LOW-LEVEL (850) problem, not 500-hPa steering. Per-start z850 not saved → consistency of the +12 m unverified.
 - Next (P5): what builds the 850 Arabian high (radiative cooling / subsidence over the dry NW); recheck at T170 before calling it confirmed.
+
+## 17 Nov 10:45 IST — RULE 1 (intensity, registered 13 Nov 11:40) — BASE2 baseline at T170 32 L: FAIL
+Jobs tn-r1-b2-0 (42 storms) + tn-r1-b2-1 (41) = whole lib84 library, 83 storms (the rule text said "41-storm library"; the library is 83 -
+judged on all 83; halves alone give 83 % / 66 %, not used to pick a pass). Scorer scripts/cyclone/rule1_score.py: model min pmin over 0-72 h
+vs ERA5 0.25° peak msl (peak_targets.json).
+- Within ±5 hPa: 62/83 = 75 % (need 80 %, i.e. 67) -> FAIL. Mean error +0.28, mean |err| 3.62, 13 too weak (>+5), 8 too deep (<-5).
+- Pattern: intensity range is COMPRESSED. Regression slope model-vs-ERA5 peak 0.44, r 0.51. ERA5 peak < 995 hPa (20 strongest): mean +4.2 hPa
+  too weak, only 8/20 within ±5 (Madi +14.8, Sidr +10.6, Phailin +9.5, Helen +8.6, Giri +8.5, Sitrang +8.1, Hudhud +8.0, Nilam +7.9).
+  995-1001: +0.35, 25/31. >1001 (weak systems): −2.3 too deep, 29/32 (Fengal −12.2, Fanoos −8.3).
+- Reading: the failure is the strong storms not deepening (same symptom as AKVAN peaking at ~1001 hPa) plus weak lows over-deepening.
+  Rank of suspects for the strong-storm deficit (to test, not yet tested): storm-core convective heating too slow at start (A/P1: ERA5 cp
+  1.3 vs ours 0.15 mm/day at hour 1 with package; base2 not yet measured the same way), cold/dry low levels, T170 resolution
+  (ERA5 0.25° targets are themselves weak for Phailin/Hudhud, so resolution is a partial explanation only).
+- Next: storm-core heating/moisture budget for the 20 strongest, base2 vs ERA5 (registered predictions before running).

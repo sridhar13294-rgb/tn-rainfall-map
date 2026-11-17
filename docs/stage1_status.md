@@ -11,7 +11,7 @@ Updated 13 Nov 11:40 IST. New storm rules registered 13 Nov 11:40 (docs/rootcaus
 | B Low-level moisture | Fixed | bl_lcl, 32 and 75 L |
 | P1 Low-level T/q | Cause found; fixing | Same as A + bl_lcl and low-level radiation |
 | P2 TN rain / 75 L | Measuring | Moisture excess fixed by B; convection at 75 L |
-| P3 Storm intensity | Re-judge (new rule) | Needs 41-storm peak-intensity run; suspects: slow storm-core rain at start, cold/dry low levels |
+| P3 Storm intensity | Fail (Rule 1) | Base2 75 % within ±5 hPa (need 80 %); strong storms ~4 hPa too weak, weak lows too deep (slope 0.44); suspect slow storm-core heating |
 | P4 Dry-season rain | Measuring | False rain from moist low levels (fixed by B) |
 | P5a Jets | Narrowing | D1 + unexplained ~-6 m/s day 1 Asia at T170 |
 | P5b Bay steering | Suspects identified | Cold land low levels raise C-India high; SE-Tibet terrain pressure error |
