@@ -2499,3 +2499,17 @@ The process whose 850 tendency would have to grow by >= 50 % of the 0.88 / 2.54 
   not reach 850") is REJECTED as the cause - in ERA5 the extra 850 deceleration must come from convective momentum transport (or
   analysis increments). Lead now: CMT too weak (smoke: u_cmt = 0 in the E-of-Bay box) - shared with A/P1 (too little / wrong
   convection). T85 process split (one start per process after an OOM) running.
+
+## 17 Nov ~20:40 IST — A/P1 COLUMN TEST (a) RESULT + BUG FOUND IN A CLOSURE INPUT
+(a) Our IFS convection on ERA5's own columns (2020-11-01/11, 80 strong cp >= 1 mm/h, ERA5 cp mean 4.48 mm/h):
+- L137, dx 78 km: deep TRIGGERS in 70 % (passes the >= 70 % trigger rule) but rain 0.03 mm/h (median ratio 0.00); L32 0.06; dx 9 km
+  0.05/0.10. Dry columns: 0 % deep (no false trigger). => by the registered rule: IMPLEMENTATION (ratio < 0.3), not resolution/levels.
+- Why no rain although deep triggers: closure mass flux Mb = 0 because PCAPE <= 0 in 90 % of the triggered strong columns
+  (median −20 Pa) - i.e. the closure INPUT PCAPE is wrong while the trigger is fine.
+- Inputs of PCAPE (6.22) checked against the doc: PCAPE = −∫ ((Tv,up − Tv)/Tv − l_up) dp, where Tv,up is the updraught virtual
+  temperature (no condensate). Our code (ifs_phys.py line ~184): Tvu = Tu (1 + 0.608 (qt − l) − l) ALREADY subtracts l_up, and the
+  integrand subtracts l_up AGAIN -> condensate loading counted TWICE. With l_up 2-2.8 g/kg at 600-500 hPa (w_up 5-6 m/s), one
+  loading is ~0.5-0.75 K - the size of the whole buoyancy. 5-Why level 4 answered: the formula was right, its INPUT Tv,up was not.
+REGISTERED before the fix run: with single loading (Tvu = Tu (1 + 0.608 (qt − l))), on the same columns: CAUSE CONFIRMED if the strong
+columns' median rain ratio rises to >= 0.5 and >= 70 % get Mb > 0, with dry columns still >= 80 % no deep; NOT the (main) cause if the
+median ratio stays < 0.3.
