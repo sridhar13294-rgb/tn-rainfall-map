@@ -38,4 +38,21 @@ for t0 in ('2020-11-01T00', '2020-11-11T00'):
         out[f'{tag}_ml_{v}'] = f[..., Y, X] if f.ndim == 3 else f[Y, X]
     print(t0, 'columns', len(pick), 'cp1 strongest', np.round(cp[Y, X][:5], 2), flush=True)
 if 'hybrid' in B.coords: out['hybrid'] = B['hybrid'].values
+# L137 half-level coefficients (p = a + b ps): ECMWF table as distributed in EC-Earth's TM5 (const_ec_v__ml137.F90)
+import re, urllib.request
+try:
+    src = urllib.request.urlopen('https://gogs.elic.ucl.ac.be/pbarriat/ecearth3/raw/3.3.1/sources/tm5mp/levels/ml137/const_ec_v__ml137.F90', timeout=60).read().decode()
+    def arr(name):
+        m = re.search(name + r'\s*=\s*\(/(.*?)/\)', src, re.S)
+        return np.array([float(x.replace('d', 'e').replace('D', 'e')) for x in re.findall(r'[-+]?\d+\.\d*(?:[eEdD][-+]?\d+)?', re.sub(r'!.*', '', m.group(1)))])
+    a, b = arr('a_ec'), arr('b_ec'); print('L137 a/b', len(a), len(b), a[:3], a[-3:], b[-3:], flush=True)
+    if len(a) == 138 and len(b) == 138: out['a_half'], out['b_half'] = a, b
+except Exception as e: print('L137 table failed', e, flush=True)
+# cross-check: the same columns on the 37 pressure levels
+for t0 in ('2020-11-01T00', '2020-11-11T00'):
+    tag = t0[:10]; la_, lo_ = out[f'{tag}_lat'], out[f'{tag}_lon']
+    Y = np.abs(la[:, None] - la_[None]).argmin(0); X = np.abs(lo[:, None] - lo_[None]).argmin(0)
+    for v in ('temperature', 'specific_humidity', 'geopotential', 'u_component_of_wind', 'v_component_of_wind', 'vertical_velocity'):
+        out[f'{tag}_pl_{v}'] = A[v].sel(time=np.datetime64(t0)).values[:, Y, X]
+out['pl_levels'] = A['level'].values
 os.makedirs('/tmp/cyc_out', exist_ok=True); np.savez_compressed('/tmp/cyc_out/ml_columns.npz', **out); print('saved', len(out))
