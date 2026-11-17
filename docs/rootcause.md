@@ -2397,3 +2397,6 @@ Error tendency = model − ERA5, mean over h = 12/24/36 and starts. Boxes: Bay 1
   adv -> error imported from upstream (east) -> look at the E-of-Bay box first;
   res -> physics/vertical (friction, CMT, vertical advection) -> process split with M.column u_bl/u_cmt next.
 - If no term reaches 50 %, report the shares; no carrier named.
+
+## 17 Nov 14:25 IST — Sridhar: "Leave about Akvan. We will continue our work" -> AKVAN verification and map publishing DROPPED.
+Work order: P5b Bay u850 budget (running, T85 8 starts) -> P3 storm-core heating/moisture budget for the 20 strongest library storms.
