@@ -2381,3 +2381,7 @@ Mean growth of the z850 bias, days 2-5:
 - 12:05 REGISTERED follow-up (same 10 storms, same metric): east side box Indochina/SCS 12-25N 95-110E (days files end at 110E).
   SUPPORTED (weak eastern ridge drives the Bay easterly) if its 10-storm mean z850 growth <= −5 m AND, across storms, the growth of
   [Arabian − Indochina] correlates with Bay u850 growth at r <= −0.5. NOT SUPPORTED if growth > 0 or |r| < 0.3.
+- 12:40 Indochina follow-up RESULT: NOT SUPPORTED. 10-storm mean z850 growth over Indochina/SCS −0.6 m (needed <= −5; per storm −15.7..+12.6);
+  r([Arabian − Indochina] growth, Bay u850 growth) = −0.19 (|r| < 0.3). Neither ridge (west or east) explains the Bay 850 easterly bias in
+  these 10 storms. Reading: the easterly is Bay-local or tied to the model's own storm (box contains the vortex; weaker/misplaced model
+  storm changes box-mean u). Next: 850-hPa u tendency budget by process over the Bay (HANDOFF priority 3) with the vortex region masked.

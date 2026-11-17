@@ -5,7 +5,7 @@ import mm2, landinit, ourens as O
 NAMES = sys.argv[1].split(',')
 Z = dict(np.load('/tmp/claude-0/dl/libm_fields.npz')); TT = [str(t) for t in Z['times']]; V3 = [str(v) for v in Z['v3']]; V2 = [str(v) for v in Z['v2']]
 M = mm2.Model('T42', 32, 20.0, dict(cmt_mf=1, rd_si=1, map_out=True))
-BOX = {'Arab/NWInd 15-28N 55-75E': (15, 28, 55, 75), 'C/NW India 18-28N 70-85E': (18, 28, 70, 85)}
+BOX = {'Arab/NWInd 15-28N 55-75E': (15, 28, 55, 75), 'C/NW India 18-28N 70-85E': (18, 28, 70, 85), 'Indochina 12-25N 95-110E': (12, 25, 95, 110)}
 def unq(z, k): return z[k].astype(np.float64) * float(z[k + '__scale']) + float(z[k + '__off'])
 def truth(y, t, var):
     z = np.load(f'/tmp/claude-0/cases/days_{y}.npz'); T = [dt.datetime.strptime(s, '%Y%m%d%H') for s in z['times']]
