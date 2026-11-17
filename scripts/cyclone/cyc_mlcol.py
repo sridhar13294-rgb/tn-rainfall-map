@@ -43,7 +43,7 @@ import re, urllib.request
 try:
     src = urllib.request.urlopen('https://gogs.elic.ucl.ac.be/pbarriat/ecearth3/raw/3.3.1/sources/tm5mp/levels/ml137/const_ec_v__ml137.F90', timeout=60).read().decode()
     def arr(name):
-        m = re.search(name + r'\s*=\s*\(/(.*?)/\)', src, re.S)
+        m = re.search(name + r'[^=\n]*=\s*\(/(.*?)/\)', src, re.S); print(name, 'match', bool(m), '' if m else repr(src[src.find(name):src.find(name) + 400]), flush=True)
         return np.array([float(x.replace('d', 'e').replace('D', 'e')) for x in re.findall(r'[-+]?\d+\.\d*(?:[eEdD][-+]?\d+)?', re.sub(r'!.*', '', m.group(1)))])
     a, b = arr('a_ec'), arr('b_ec'); print('L137 a/b', len(a), len(b), a[:3], a[-3:], b[-3:], flush=True)
     if len(a) == 138 and len(b) == 138: out['a_half'], out['b_half'] = a, b
