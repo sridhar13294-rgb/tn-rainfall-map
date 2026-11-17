@@ -2448,3 +2448,15 @@ TEST PLAN (input swaps on the SAME columns, registered with the column test of 1
  b) scheme on OUR model state at the same points/hour (T42 & T170 runs at 2020-11-01/11 +1 h);
  c) swaps into b): ERA5 lowest 3 levels T,q only / ERA5 T profile above 850 only / ERA5 surface fluxes only / shallow off.
  The input whose swap restores >= 50 % of the a)-b) rain gap is named the cause. Registered now, before any column result.
+
+## 17 Nov 18:15 IST — WEEKEND TARGET (Sridhar 17:58): close 3 of the remaining problems by Sun 22 Nov.
+"Closed" = root cause shown AND either a fix adopted through ALL registered checks, or the item proven not-a-problem / definitively
+rejected with its cause. Plan (value x probability):
+1. S2 no-DFI - last check = 3-member track rule (registered 13 Nov): quick-6, seeds 4-6, mean 72-h error <= base2 mean 379 + spread 55
+   = 434 km -> PASS. Storms passed (3.02 vs 2.60, limit +1.5), exam quarter neutral. PASS -> adopt; FAIL -> rejected with cause.
+   Jobs tn-dq4/5/6-q6 queued now (accounts 4/1/4).
+2. P4 dry-season rain - measure the current base (base2 + bl_lcl, B fix) dry-season TN/India rain vs ERA5 on the exam starts;
+   close if inside the Stage-1 rain gate, else name the cause.
+3. A/P1 convective heating inputs (column/input-swap test, FMEA ranks 1-2) - cause by Thu, fix screen Fri-Sat. Fallback 3rd item:
+   P5b Bay steering (u-budget carrier this evening).
+Risk: Kaggle weekly quota (both accounts used ~this week); a fix may fail its gate - then 'closed' only if the cause is proven.
