@@ -2494,3 +2494,8 @@ BL depth/K at 850 (S8 O6 D4), deep CMT via weak deep mass flux (S7 O7 D5 - share
 NEXT (registered now): ubproc - model u_bl and u_cmt at 850 by box (same 8 starts, 12/24/36 h) + BL height vs ERA5 boundary_layer_height.
 The process whose 850 tendency would have to grow by >= 50 % of the 0.88 / 2.54 deficit to close it, and is physically allowed
 (e.g. BL top below 850 where ERA5's is above), is named the cause.
+- 19:10 ERA5 BL-height reference (cyc_blh.py, 8 starts x 12/24/36 h): Bay mean BLH 582 m, E of Bay 259 m, fraction > 1500 m ~0.
+  Model smoke (T42, 1 start): Bay hbl ~607 m, E of Bay ~1065 m. => ERA5's BL does NOT reach 850 hPa either: FMEA #1 ("our BL does
+  not reach 850") is REJECTED as the cause - in ERA5 the extra 850 deceleration must come from convective momentum transport (or
+  analysis increments). Lead now: CMT too weak (smoke: u_cmt = 0 in the E-of-Bay box) - shared with A/P1 (too little / wrong
+  convection). T85 process split (one start per process after an OOM) running.
