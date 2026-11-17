@@ -2303,3 +2303,11 @@ E2E: Sridhar tops up Rs 2,000 by Monday (balance check Rs 4,320 stays). Until th
   (24 Oct steering check already found Bay u850 -3.0 / u200 +3.0 m/s at day 5 -> too much shear, overturning too strong.)
   Map runs tn-akvan-maps-12/-18 launched 07:55 for the viewer; Sridhar 08:21 "not required now" - Kaggle kernels cannot be
   cancelled; outputs kept for later.
+
+## 17 Nov 10:05 IST — Sridhar's ridge hypothesis (west track bias = Arabian ridge too strong, Indochina/Asian ridge too weak)
+Registered rule (before results): SUPPORTED if z500 bias(Arabian 15-28N 55-75E) − bias(Indochina/SCS 12-25N 95-115E) ≥ +10 m with same sign in ≥ 6/8 starts AND Bay u850 bias < −1 m/s; REJECTED if difference < +5 m or sign flips.
+Test: T42 base2, 8 NE-monsoon starts 2 Oct–11 Dec 2020, day 5 vs ERA5 (WB2 1.5°), script /tmp/claude-0/ridge_bias.py.
+- z500 bias: Arabian −16.6 m (spread 20), Indochina −15.5 (14), Bay −16.5, Tibet/Asia −11.4. Per-start Arabian−Indochina: +7, +14.5, −26, +6.4, +5.3, +65.6, −42.8, −38.7 → mean ≈ −1 m, sign flips. **z500 hypothesis REJECTED** (uniform −16 m tropical drift, no E–W imbalance).
+- 850 hPa: z850 Arabian +12.0 m vs Indochina −4.5, Bay −7.9 (difference +16.5 m; Tibet value is a below-ground artefact). u850: Bay −3.3 m/s (easterly), Indochina −3.0; v850 Arabian −1.9, Indochina +1.9.
+- Reading: the low-level Arabian/NW-India high is too strong relative to the east, consistent with the P5 Bay easterly bias. West push is a LOW-LEVEL (850) problem, not 500-hPa steering. Per-start z850 not saved → consistency of the +12 m unverified.
+- Next (P5): what builds the 850 Arabian high (radiative cooling / subsidence over the dry NW); recheck at T170 before calling it confirmed.
