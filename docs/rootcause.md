@@ -2460,3 +2460,18 @@ rejected with its cause. Plan (value x probability):
 3. A/P1 convective heating inputs (column/input-swap test, FMEA ranks 1-2) - cause by Thu, fix screen Fri-Sat. Fallback 3rd item:
    P5b Bay steering (u-budget carrier this evening).
 Risk: Kaggle weekly quota (both accounts used ~this week); a fix may fail its gate - then 'closed' only if the cause is proven.
+
+## 17 Nov 18:25 IST — TARGET RE-SET (Sridhar 18:13: "Don't choose easy ones - harder and most important, the ones that take the model to
+## the next step"). The 3 to close by Sun 22 Nov: A/P1 CONVECTIVE HEATING, P3 INTENSITY, P5b BAY STEERING (tracks).
+S2 no-DFI and P4 are NOT counted; S2's remaining 3-member track runs continue at lowest priority (2 already launched, seed 6 queued last).
+Honest risk: these three are linked (A/P1 heating feeds P3; P5b interim budget points to the physics residual), so one cause may close
+two - or none of the three may have a passing fix by Sunday. Gates are not relaxed for the target.
+P3 STORM-CORE BUDGET, REGISTERED before results:
+Jobs tn-p3core-a (Rule-1 FAIL strong storms: Madi, Sidr, Phailin, Hudhud, Giri, Sitrang, Nilam, Titli, Dana) and tn-p3core-b (strong
+storms that PASS: Thane, Michaung, Mandous, Nivar, Vardah, Khai-Muk, Montha, Rashmi); storm_budget.py T170 base2, 72 h every 6 h, radial.
+Reference: ERA5 rain around the ERA5 centre (cyc_corerain.py, 'core rain', 100/300 km, total + convective).
+- SLOW-HEATING cause SUPPORTED if, in the FAIL group, model 300-km rain over 0-24 h is < 60 % of ERA5's AND this ratio is lower than in
+  the PASS group by >= 20 percentage points, AND deep-convective heating share of core heating (h_deep vs h_lsc+h_shal+h_bl) is lower
+  in FAIL than PASS.
+- REJECTED if FAIL-group 0-24 h rain ratio >= 80 % (heating amount not the limiter) -> next: heating location (radial profile / warm
+  core height) and inflow-layer inputs (surface enthalpy flux, low-level q) per the FMEA.
