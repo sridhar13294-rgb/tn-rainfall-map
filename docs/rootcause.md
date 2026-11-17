@@ -2412,3 +2412,39 @@ Work order: P5b Bay u850 budget (running, T85 8 starts) -> P3 storm-core heating
   REGISTERED: SCHEME OK (problem = state we give it) if our cp on the 40 strong columns is within a factor 2 of ERA5's (median ratio
   0.5-2) and >= 70 % of them trigger deep; IMPLEMENTATION if median ratio < 0.3 or < 40 % trigger deep; in between -> report both.
   Dry columns: >= 80 % must give no deep convection (false-trigger check).
+
+## 17 Nov 18:05 IST — CONVECTIVE HEATING: 5-Why + Fishbone + FMEA (Sridhar 17:54: I had stopped using them; and "physics looks correct
+## but still fails -> look at the INPUTS to the formula")
+Problem statement: IFS-package convection gives 0.15 mm/day convective rain at hour 1 vs ERA5 1.3 (x9 too little); deep columns 2-5 %;
+base2 gets its low-level heating from grid-scale condensation (+2.27 K/d) instead of convection; 20 strongest storms ~4 hPa too weak.
+5-WHY (IFS package):
+1 Why little convective rain? -> few columns trigger deep convection (2-5 %).
+2 Why few trigger? -> the test parcel has negative PCAPE: Tv excess +0.1..+0.36 K vs condensate loading 0.15..0.6 K.
+3 Why is the parcel excess so small? -> the parcel formula is verified (MetPy), so its INPUTS are suspect: parcel source T/q
+  (lowest levels / mixed layer), the environment Tv profile it rises through, the surface-flux excess term, the level spacing.
+4 Why would those inputs be wrong? -> known measured input errors: low levels warm/dry or cold/moist by region (P1, B), LHF +14 %,
+  start interpolation 13->29 levels (rejected as MAIN cause, real but small), no sub-grid/convective state in the ERA5 start.
+5 Why do the inputs differ from what IFS sees? -> OPEN: to be answered by the column test (ERA5's own 137-level state vs ours).
+FISHBONE (cause categories -> candidates):
+- Inputs/state: parcel source T,q; env Tv profile; surface SH/LH fluxes; ps; large-scale omega / moisture convergence (closure); cloud
+  condensate fed to loading; level count/spacing (32/75 vs 137).
+- Method/formula: trigger (6.21), PCAPE closure + time scale (resolution-scaled in IFS), entrainment/detrainment, loading (6.10).
+- Numerics: timestep / call frequency, order of physics calls (BL before/after convection), DFI removing developing convection.
+- Start/initialisation: no convective memory at hour 0, DFI, interpolation.
+- Coupling: BL scheme (bl_lcl) supplying the parcel; shallow scheme removing instability first; radiation cooling profile.
+- Reference/measurement: ERA5 cp is a model product (IFS's own scheme) - fair reference for 'does our copy behave like IFS'.
+FMEA (S severity, O occurrence, D detection difficulty; 1-10; RPN = SxOxD):
+| Failure mode | Effect | Cause candidate | S | O | D | RPN | Detection / test |
+| Parcel source too cool/dry | no trigger | our BL/lowest-level T,q vs ERA5 | 9 | 7 | 4 | 252 | column swap: ERA5 lowest levels into our column |
+| Env too warm aloft (stable) | PCAPE<0 | mid-level T bias / level interp | 8 | 5 | 4 | 160 | column swap: ERA5 T profile above 850 |
+| Shallow scheme eats instability first | deep never fires | call order / shallow closure | 8 | 6 | 5 | 240 | run with shallow off on same columns |
+| Closure time scale wrong for grid | heating too slow | tau not resolution-scaled as IFS | 7 | 5 | 3 | 105 | compare tau formula vs IFS doc 6.40-ish |
+| Surface-flux excess too small | weak trigger | SH/LH or formula input units | 6 | 4 | 3 | 72 | ERA5 fluxes into column |
+| Implementation departure | everything | code vs doc | 9 | 3 | 6 | 162 | ERA5-column test (scheme on ERA5 state) |
+| No convective memory at start | slow spin-up | init | 6 | 8 | 2 | 96 | cp vs time over first 24 h |
+Order by RPN: (1) parcel-source inputs, (2) shallow-before-deep, (3) implementation, (4) env T aloft.
+TEST PLAN (input swaps on the SAME columns, registered with the column test of 17:55):
+ a) scheme on ERA5 137-level columns (baseline, registered 17:55);
+ b) scheme on OUR model state at the same points/hour (T42 & T170 runs at 2020-11-01/11 +1 h);
+ c) swaps into b): ERA5 lowest 3 levels T,q only / ERA5 T profile above 850 only / ERA5 surface fluxes only / shallow off.
+ The input whose swap restores >= 50 % of the a)-b) rain gap is named the cause. Registered now, before any column result.
