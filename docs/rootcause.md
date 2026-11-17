@@ -2352,7 +2352,7 @@ REGISTERED before results:
 - NOT SUPPORTED if the turning-group bias < +5 m in both boxes.
 - Caveat fixed now: T42 (not T170), 5+5 storms -> a result here is a lead, confirmation needs T170.
 
-## 17 Nov 11:40 IST — AKVAN convection test RESULT (registered 10:55): NOT SUPPORTED
+## 17 Nov 11:20 IST — AKVAN convection test RESULT (registered 10:55): NOT SUPPORTED
 tn-akvan-b2c-18 (base2 convection, everything else = MEGAM-new, 18Z, tp75 T170; 623 s on account 4).
 - North-TN 4 districts, mean daily rain days 2-6: base2 conv 3.29 mm/day vs package 4.73 (−30 %). Registered: SUPPORTED needed >= 7;
   REJECTED band was ±25 %. Result is outside both, in the WRONG direction -> "package convection is the rain limiter" is NOT supported.
