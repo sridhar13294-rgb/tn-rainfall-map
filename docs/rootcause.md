@@ -2500,7 +2500,7 @@ The process whose 850 tendency would have to grow by >= 50 % of the 0.88 / 2.54 
   analysis increments). Lead now: CMT too weak (smoke: u_cmt = 0 in the E-of-Bay box) - shared with A/P1 (too little / wrong
   convection). T85 process split (one start per process after an OOM) running.
 
-## 17 Nov ~20:40 IST — A/P1 COLUMN TEST (a) RESULT + BUG FOUND IN A CLOSURE INPUT
+## 17 Nov 20:15 IST — A/P1 COLUMN TEST (a) RESULT + BUG FOUND IN A CLOSURE INPUT
 (a) Our IFS convection on ERA5's own columns (2020-11-01/11, 80 strong cp >= 1 mm/h, ERA5 cp mean 4.48 mm/h):
 - L137, dx 78 km: deep TRIGGERS in 70 % (passes the >= 70 % trigger rule) but rain 0.03 mm/h (median ratio 0.00); L32 0.06; dx 9 km
   0.05/0.10. Dry columns: 0 % deep (no false trigger). => by the registered rule: IMPLEMENTATION (ratio < 0.3), not resolution/levels.
@@ -2513,3 +2513,9 @@ The process whose 850 tendency would have to grow by >= 50 % of the 0.88 / 2.54 
 REGISTERED before the fix run: with single loading (Tvu = Tu (1 + 0.608 (qt − l))), on the same columns: CAUSE CONFIRMED if the strong
 columns' median rain ratio rises to >= 0.5 and >= 70 % get Mb > 0, with dry columns still >= 80 % no deep; NOT the (main) cause if the
 median ratio stays < 0.3.
+- 20:30 FIX RUN RESULT (single loading): strong-column rain 0.03 -> 0.24 mm/h (L137, 78 km; 9 km 0.42), median ratio 0.01-0.03 ->
+  by the registered rule NOT the main cause (< 0.3), although REAL: PCAPE now > 0 in 100 % of triggered strong columns (median
+  65 Pa, was −20), Mb median 0.019-0.034 kg m-2 s-1 (a normal cloud-base mass flux). So the closure now works; the rain is lost
+  AFTER the mass flux is set -> next 5-Why level: column rain budget (condensation, updraught precipitation, evaporation in
+  downdraught / sub-cloud, condensate detrained to the cloud scheme). Test-design caveat logged: the reference picks the
+  strongest 0.25° ERA5 cells (point maxima) - fair only against a run at ERA5's ~31 km; at 78 km the grid-box mean is lower.
