@@ -2325,3 +2325,15 @@ vs ERA5 0.25° peak msl (peak_targets.json).
   1.3 vs ours 0.15 mm/day at hour 1 with package; base2 not yet measured the same way), cold/dry low levels, T170 resolution
   (ERA5 0.25° targets are themselves weak for Phailin/Hudhud, so resolution is a partial explanation only).
 - Next: storm-core heating/moisture budget for the 20 strongest, base2 vs ERA5 (registered predictions before running).
+
+## 17 Nov 10:55 IST — AKVAN light TN rain: convection test (Sridhar 10:25: "rain quantum and intensity no much relation... Convection is problem")
+Correction to my 10:21 answer: I gave "weak storm" as reason 1. Sridhar is right that rain amount does not need a deep low (weak LPAs/depressions
+give very heavy TN rain, e.g. via onshore convergence bands). Weak central pressure and light rain are better read as two symptoms of one
+cause: convection that does not switch on (package IFS convection under-triggers on our start: ERA5 cp 1.3 vs ours 0.15 mm/day at hour 1).
+Test (one change): live_config_new_b2c.json = live_config_new.json minus phys_ifs/ke_noload/q_adv/a_qcv (convection back to base2), same 18Z
+GFS start, tp75 T170, account 4 after a local T42 7-day stability check.
+REGISTERED before results (metric = north-TN 4 districts Chennai/Tiruvallur/Chengalpattu/Kancheepuram, mean of daily rain, days 2-6, vs the
+18Z package run 4.7 mm/day; and model-domain convective share):
+- SUPPORTED if north-TN mean rain >= 1.5x the package run (>= 7 mm/day) - whatever the central pressure does.
+- REJECTED if within ±25 % of the package run -> convection scheme is not the limiter; next suspect = moisture supply (onshore q flux, tcw vs GFS).
+- Intensity reported but not part of the verdict.

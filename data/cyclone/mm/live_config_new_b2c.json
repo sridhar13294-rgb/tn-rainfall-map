@@ -1,0 +1,22 @@
+{
+ "grid": "T170",
+ "control_grid": "T170",
+ "dt": 20.0,
+ "note": "17 Nov 10:50 - AKVAN convection test (Sridhar 10:25 'Convection is problem'): identical to live_config_new.json EXCEPT convection = base2 (phys_ifs, ke_noload, q_adv, a_qcv removed; bl_lcl/sfc_sal/rad_prm/sl_vcubic/dfi_off/hyb/sfc_imp/drag_imp kept). One-change test.",
+ "settings": {
+  "cmt_mf": 1,
+  "rd_si": 1,
+  "bl_lcl": 1,
+  "sfc_sal": 0.98,
+  "rad_prm": {
+   "lw_cnt": 0.667,
+   "qs_mix": 1
+  },
+  "sl_vcubic": 1,
+  "dfi_off": 1,
+  "hyb": 1,
+  "sfc_imp": 1,
+  "drag_imp": 1
+ },
+ "layers": "tp75"
+}
