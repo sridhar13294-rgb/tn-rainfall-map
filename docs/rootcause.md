@@ -2351,3 +2351,16 @@ REGISTERED before results:
 - CONSTANT offset if both groups >= +5 m and differ by < 5 m.
 - NOT SUPPORTED if the turning-group bias < +5 m in both boxes.
 - Caveat fixed now: T42 (not T170), 5+5 storms -> a result here is a lead, confirmation needs T170.
+
+## 17 Nov 11:40 IST — AKVAN convection test RESULT (registered 10:55): NOT SUPPORTED
+tn-akvan-b2c-18 (base2 convection, everything else = MEGAM-new, 18Z, tp75 T170; 623 s on account 4).
+- North-TN 4 districts, mean daily rain days 2-6: base2 conv 3.29 mm/day vs package 4.73 (−30 %). Registered: SUPPORTED needed >= 7;
+  REJECTED band was ±25 %. Result is outside both, in the WRONG direction -> "package convection is the rain limiter" is NOT supported.
+- Confounder: the track changed. Base2-conv storm is weaker (min 1003.4 vs 1001.6 hPa) and goes further north (15.1N 81.6E at 72 h,
+  then NNE to 20-24N), so N-TN is further from the system. TN-mean 7-day rain is higher (29.1 vs 19.6 mm) but from days 6-7 (post-system).
+- Reading: neither convection scheme gives heavy N-TN rain from this system; switching scheme is not the lever. Sridhar's point stands
+  that rain amount is not set by central pressure; the next registered suspect is the moisture supply (onshore moisture flux into N-TN,
+  tcw vs GFS). Real reference: IMD/TN-SMART observed rain for 18-21 Nov once the event is over - verify both runs against it.
+- Arabian-high test amendment (before any group result; only Vardah seen): ERA5 start library (1.5°) and days_YYYY (1°) z850 differ by
+  ~+20 m over the Arabian box at the SAME time (1551 vs 1531 m: product/grid difference, not model error). Metric changed to bias GROWTH:
+  bias(day d) − bias(day 0), days 2-5. Thresholds unchanged.
