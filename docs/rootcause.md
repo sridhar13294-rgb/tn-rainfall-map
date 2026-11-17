@@ -2364,3 +2364,17 @@ tn-akvan-b2c-18 (base2 convection, everything else = MEGAM-new, 18Z, tp75 T170; 
 - Arabian-high test amendment (before any group result; only Vardah seen): ERA5 start library (1.5°) and days_YYYY (1°) z850 differ by
   ~+20 m over the Arabian box at the SAME time (1551 vs 1531 m: product/grid difference, not model error). Metric changed to bias GROWTH:
   bias(day d) − bias(day 0), days 2-5. Thresholds unchanged.
+
+## 17 Nov 12:00 IST — 850-hPa Arabian-high test RESULT (registered 11:15, metric amended 11:20 to growth since day 0): NOT SUPPORTED
+scripts/cyclone/ah850.py, data/cyclone/wx/ah850_t42.json (T42 base2, bogus, 120 h, vs ERA5 days_YYYY, terrain > 800 m masked).
+Mean growth of the z850 bias, days 2-5:
+| Box | Westward (Vardah, Thane, Gaja, Mandous, Burevi) | Turning (Nivar, Michaung, Hamoon, Sidr, Phethai) |
+| Arabian/NW India 15-28N 55-75E | +15.6 m (5.5..21.0) | +3.9 m (−7.4..+22.4) |
+| C/NW India 18-28N 70-85E | −1.7 m | −6.4 m |
+| Bay u850 10-22N 80-95E | −2.5 m/s | −2.2 m/s |
+- Rule: turning group < +5 m in both boxes -> NOT SUPPORTED. The high does grow too strong over Arabia in general (all-10 mean ~+10 m),
+  but MORE in the westward cases, not in the turning ones; Michaung and Hamoon have it too LOW over C/NW India by days 3-5.
+- Bay easterly bias grows the same in both groups (−2.5 vs −2.2 m/s) -> it is not explained by the Arabian/NW-India high.
+- Caveats: T42, 5+5 storms, tracks of these runs not saved (the model's own storm can enter the C/NW box late, e.g. Michaung).
+- Next suspect for the Bay easterly: the eastern side (Indochina/SCS/W-Pacific ridge too weak - the other half of Sridhar's 17 Nov idea)
+  or a Bay-local cause (P5b: cold land low levels / SE-Tibet terrain pressure). Same script with Indochina + W-Pacific boxes next.
