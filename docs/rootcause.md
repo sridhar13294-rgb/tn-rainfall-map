@@ -2476,7 +2476,7 @@ Reference: ERA5 rain around the ERA5 centre (cyc_corerain.py, 'core rain', 100/3
 - REJECTED if FAIL-group 0-24 h rain ratio >= 80 % (heating amount not the limiter) -> next: heating location (radial profile / warm
   core height) and inflow-layer inputs (surface enthalpy flux, low-level q) per the FMEA.
 
-## 17 Nov 19:20 IST — P5b Bay u850 ERROR-TENDENCY BUDGET RESULT (registered 13:25; 8 starts T85 base2, 48 h)
+## 17 Nov 18:55 IST — P5b Bay u850 ERROR-TENDENCY BUDGET RESULT (registered 13:25; 8 starts T85 base2, 48 h)
 | m/s per day | Bay 10-22N 80-95E: model / ERA5 / error | E of Bay 12-24N 98-110E: model / ERA5 / error |
 | du/dt | −1.25 / −0.04 / −1.21 | −1.63 / +0.60 / −2.22 |
 | advection | +1.02 / +1.13 / −0.10 (8 %) | −1.97 / −1.29 / −0.67 |
