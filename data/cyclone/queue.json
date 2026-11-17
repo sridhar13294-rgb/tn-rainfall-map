@@ -1,1 +1,16 @@
-[]
+[
+ {
+  "slug": "tn-akvan-maps-18",
+  "inputs": "live_GFSM_2026111618.npz",
+  "note": "Akvan MEGAM-new maps for the viewer",
+  "cmd": "XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore maps_run.py /kaggle/working/live_GFSM_2026111618.npz 2026-11-16T18 /kaggle/working/akvan_new_2026111618.npz 168 '{\"cmt_mf\": 1, \"rd_si\": 1, \"phys_ifs\": 1, \"bl_lcl\": 1, \"sfc_sal\": 0.98, \"rad_prm\": {\"lw_cnt\": 0.667, \"qs_mix\": 1}, \"ke_noload\": 1, \"q_adv\": 1, \"a_qcv\": 0.8, \"sl_vcubic\": 1, \"dfi_off\": 1, \"hyb\": 1, \"sfc_imp\": 1, \"drag_imp\": 1, \"grid\": \"T170\", \"layers\": \"tp75\", \"dt\": 20.0}' > /kaggle/working/maps.log 2>&1; tail -3 /kaggle/working/maps.log",
+  "account": "4"
+ },
+ {
+  "slug": "tn-akvan-maps-12",
+  "inputs": "live_GFSM_2026111612.npz",
+  "note": "Akvan MEGAM-new maps for the viewer",
+  "cmd": "XLA_FLAGS=--xla_disable_hlo_passes=constant_folding python -W ignore maps_run.py /kaggle/working/live_GFSM_2026111612.npz 2026-11-16T12 /kaggle/working/akvan_new_2026111612.npz 168 '{\"cmt_mf\": 1, \"rd_si\": 1, \"phys_ifs\": 1, \"bl_lcl\": 1, \"sfc_sal\": 0.98, \"rad_prm\": {\"lw_cnt\": 0.667, \"qs_mix\": 1}, \"ke_noload\": 1, \"q_adv\": 1, \"a_qcv\": 0.8, \"sl_vcubic\": 1, \"dfi_off\": 1, \"hyb\": 1, \"sfc_imp\": 1, \"drag_imp\": 1, \"grid\": \"T170\", \"layers\": \"tp75\", \"dt\": 20.0}' > /kaggle/working/maps.log 2>&1; tail -3 /kaggle/working/maps.log",
+  "account": "1"
+ }
+]
