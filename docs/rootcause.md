@@ -2760,3 +2760,15 @@ From now on every entry's time is taken from the clock tool at the moment of wri
   heating split clear-sky vs cloud (rad_allsky style) and cloud fraction at 850, base3 vs new; and the new-set column through RRTMG
   (rrtmg_climlab_reference.py) - the cloud part is named if it carries >= 50 % of the −0.97; the scheme if RRTMG on the same
   state cools >= 0.5 K/day less.
+- 11:44 (clock) RADIATION SPLIT RESULT (rad_allsky, T42, 2 starts, h36, 800-900 hPa layer, K/day; same clouds into RRTMG):
+    base3: LW all-sky −2.0 (RRTMG −1.9), LW clear −1.8 (−1.6); total cover 0.84
+    new  : LW all-sky −2.7 (RRTMG −2.7), LW clear −1.7/−1.8 (−1.8); total cover 0.93
+  => The extra 850 cooling (−0.7 K/day in this layer) is ALL in the CLOUD part (clear-sky unchanged), and RRTMG on the same clouds
+  gives the same number -> the radiation SCHEME is not the cause; the CLOUD AMOUNT is (cloud part >= 50 % -> named).
+  RH-cloud at 850 (scheme's cloud from model RH vs from ERA5 RH, day 2): base3 0.232 vs 0.091; new 0.289; at day 0 0.109 vs 0.091 ->
+  low cloud at 850 jumps x2 within day 1 although rh850 rises only +0.04 (base3) / +0.09 (new).
+  5-Why: 850 too cold <- too much LW cooling <- too much 850 cloud <- RH-cloud curve steep near its critical RH + small moist bias
+  -> positive feedback (cloud cools -> RH up -> more cloud) = problem A (cloud / day-1 energy loss). Caveat: ERA5 side uses daily-
+  mean RH (smoother -> less cloud through the nonlinear curve); the fair reference is ERA5's OWN cloud fraction at 850.
+  REGISTERED next: model 850 cloud fraction (radiation input) vs ERA5 'fraction_of_cloud_cover' at 850 hPa (ARCO, same times, h12-h48):
+  RH-cloud OVER-PRODUCTION confirmed if model >= 1.5x ERA5 (globe, 40S-40N ocean) while model RH is within 0.05 of ERA5.
