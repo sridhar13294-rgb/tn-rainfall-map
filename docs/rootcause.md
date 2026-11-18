@@ -3219,3 +3219,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
   < 0.7x ERA5's; CLEAR-SKY (aerosol/vapour) named if the ERA5 clear-sky/all-sky SW gap explains < 50% of our excess.
   (b) MASK: mean longitude of the land comparison points, ours (T42, own orography) vs ERA5: SAMPLING named if they differ by >= 5 deg.
   [reg: now | inputs: albedo checked (matches), SW down, LE now OK | fail-5why: SW-down excess + morning sampling/soil start - not the fixes]
+- 00:39 (clock) SW / MASK RESULT (land, ours/ERA5, h6-h10): cloud cover 0.32/0.36 (0.88x >= 0.7) -> CLOUD NOT named; SW down 589/552,
+  626/592, 451/409 (excess ~38 W m-2); ERA5 clear-sky 655/673/449, and at h10-h12 our ALL-sky SW (451, 169) exceeds ERA5's CLEAR-sky
+  (449, 145) -> our clear sky is too transparent. The 12% cloud deficit explains ~9 of the 38 W m-2 (~25%, < 50%) -> CLEAR-SKY named
+  (rule as registered was loosely worded; applied as: cloud-amount share < 50% of the excess). Mask mean longitude 73.4 vs 77.5
+  (4.1 deg < 5) -> SAMPLING NOT named (16 min of solar time - minor). The morning skin lag stays unexplained (next: soil start).
+  Input to the clear sky: BASE3 has NO aerosol (option aer built 13 Nov, judged on day-2 t850 only, +0.07 K < 0.2 -> re-marked HELD
+  under the 23:50 rule: its own effect is surface SW -5.5 W m-2 daily mean, the t850 test could not show it).
+  REGISTERED: land set + rad_prm aer 1 (13 Nov literature values: AOD 0.20 land, SSA 0.93, g 0.70; not tuned): SW-down excess h6-h10
+  <= 20 W m-2 (from 38) AND the land gate (h6 skin within 3 K, h12 H <= 30).
+  [reg: now | inputs: cloud cover, clear-sky SW, albedo, mask longitude | fail-5why: n/a (measurement step); aer re-marked HELD]
