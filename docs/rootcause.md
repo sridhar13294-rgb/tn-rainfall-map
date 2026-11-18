@@ -3311,3 +3311,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
   850 vs ERA5's apparent moisture sink Q2 (never compared; Q1 was). REGISTERED: ERA5 Q2 (37 levels, 20S-20N 50-110E ocean, h12/24/36)
   vs model physics Q2 (base3r, land_conv): the PROCESS named is the one whose 850-hPa moistening exceeds ERA5's Q2 balance by
   >= 50 % of land_conv's 850 Q2 error. [reg: now | inputs: RH-cloud split, region split | fail-5why: shared t700 (all); ocean 850 moistening (land_conv)]
+- 02:17 (clock) Q2 RESULT (20S-20N 50-110E ocean, day 1, g/kg/day, + = drying): ERA5 925 -2.25, 850 -0.81, 700 +0.32, 500 +0.40;
+  base3r -0.52 / -0.64 / -0.61 / +0.49; land_conv -0.58 / -0.91 / +0.08 / +0.15. land_conv's 850 Q2 error = -0.10 (small) -> NO process
+  named by the rule (the 850 physics moistening is right). Day-by-day (ocean 40S-40N): land_conv t850 -0.07 / -0.62 / -0.81 and rh850
+  +0.00 / +0.05 / +0.06 (base3r: t850 +0.81 / +0.77, rh850 -0.035 / -0.028). A 0.62 K cooling raises RH by ~0.04 (Clausius-Clapeyron)
+  -> the RH and RH-cloud excess are a CONSEQUENCE of the 850 cooling, not of moistening (correction of my 02:0x framing).
+  Base3r is the opposite: +0.8 K too WARM over the ocean at 850 on day 1 (the 'mse' shallow heating), ERA5 between the two.
+  Next (registered): WHERE the day-2 t850 error sits (maps base3r vs land_conv) - trade-cumulus / stratocumulus regions vs the deep
+  tropics; rule: a region type is named if it holds >= 50 % of the area-weighted ocean t850 error of land_conv.
+  Also noted: model 925 moistening -0.5 vs ERA5 -2.25 over the ocean (the BL's surface moisture input is 4x too small at 925 - or it is
+  vented higher) - a separate input to check. [reg: now | inputs: Q2 vs ERA5 | fail-5why: 850 cold is the cause, RH follows]

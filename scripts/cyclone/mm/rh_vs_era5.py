@@ -20,7 +20,7 @@ def c_of(rh, sig):
     rhc = P_['rhc_up'] + (P_['rhc_low'] - P_['rhc_up']) * np.exp(1.0 - np.maximum(sig, 0.05) ** (-P_['rhc_n']))
     return 1.0 - np.sqrt(np.clip((1.0 - np.clip(rh, 0, 1)) / (1.0 - rhc), 0.0, 1.0))
 for nm, ex in CANDS.items():
-    M = mm2.Model(GR, 32, float(os.environ.get('DT', 20)), dict(B2, **ex)); hor = M.coords.horizontal; acc = {}
+    M = mm2.Model(GR, 32, float(os.environ.get('DT', 20)), dict(B2, **ex)); hor = M.coords.horizontal; acc = {}; MP = {}
     for k in KS:
         t0 = dt.datetime.strptime(TT[k], '%Y-%m-%dT%H'); f2 = Z['f2'][k]; f3 = {v: np.array(Z['f3'][k, V3.index(v)]) for v in V3}
         st, cr = M.init(f3, Z['levs'], Z['lats'], Z['lons'], f2[V2.index('surface_pressure')], f2[V2.index('geopotential_at_surface')] / 9.80616,
@@ -41,6 +41,7 @@ for nm, ex in CANDS.items():
                 for key, X in fld.items():
                     Xg = WS.to_grid(X, M.lon, M.lat); Ob = FT['o_' + key][i, d].astype(float)
                     if key.startswith('rh') and np.nanmax(Ob) > 5: Ob = Ob / 100.0
+                    if os.environ.get('MAPS') and d == 2 and key in ('t850', 't700', 'rh850'): MP.setdefault(key, []).append(Xg - Ob)   # 19 Nov: day-2 error maps
                     land = WS.to_grid(np.asarray(M.land, float), M.lon, M.lat) > 0.5
                     for reg, m in (('globe', np.ones_like(land)), ('ocean 40S-40N', (~land) & (np.abs(TLA) <= 40)), ('poleward 40', np.abs(TLA) > 40)):
                         ok = m & np.isfinite(Xg) & np.isfinite(Ob); gg = lambda Y: float((np.where(ok, Y, 0.0) * TW).sum() / (TW * ok).sum())
@@ -49,6 +50,7 @@ for nm, ex in CANDS.items():
                             sg = P / 1013.0
                             acc.setdefault(('cRH' + key[2:], reg, d), []).append((gg(c_of(Xg, sg)), gg(c_of(Ob, sg))))
         print(nm, TT[k], 'done', flush=True)
+    if MP: np.savez(os.environ['MAPS'] + f'_{nm}.npz', **{k: np.nanmean(np.array(v), 0) for k, v in MP.items()})
     print(f'\n{nm}: model / ERA5 (day d; ERA5 = daily mean; cRHxxx = the scheme RH-cloud fraction at that level from model RH / from ERA5 RH)')
     for (a, reg, d), v in sorted(acc.items()):
         m_, o_ = np.mean(v, 0); print(f'  {a:7s} {reg:14s} d{d}  {m_:8.3f} / {o_:8.3f}   diff {m_ - o_:+7.3f}')
