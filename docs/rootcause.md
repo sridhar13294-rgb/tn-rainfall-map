@@ -3321,3 +3321,12 @@ running as a separate test) is NOT adopted on its own result unless this check p
   tropics; rule: a region type is named if it holds >= 50 % of the area-weighted ocean t850 error of land_conv.
   Also noted: model 925 moistening -0.5 vs ERA5 -2.25 over the ocean (the BL's surface moisture input is 4x too small at 925 - or it is
   vented higher) - a separate input to check. [reg: now | inputs: Q2 vs ERA5 | fail-5why: 850 cold is the cause, RH follows]
+- 02:36 (clock) ERROR-MAP RESULT (day-2 t850, ocean 40S-40N, area-weighted share / regional mean K):
+    land_conv (mean -0.81): SUBTROPICS 10-40 0.75 / -0.84; deep tropics |lat|<10 0.25 / -0.73; stratocumulus boxes ~0 / +0.10;
+              Indian Ocean 0.25 / -1.26, W Pacific 0.26 / -0.97, E Pacific 0.19 / -0.44, Atlantic 0.18 / -0.60
+    base3r    (mean +0.77): DEEP TROPICS 0.73 / +2.03; subtropics 0.27 / +0.29; Sc boxes ~0 / +0.23
+  -> rule (>= 50 %): land_conv's cold error is named in the SUBTROPICAL (trade-wind) OCEANS outside the stratocumulus decks;
+  base3r's warm error is named in the DEEP TROPICS (+2.0 K at 850 by day 2 - large; its own open item, not hidden by the globe +0.07).
+  REGISTERED: Q1 by process over the subtropical ocean (10-40 N/S), day 1: ERA5 Q1 (37 levels) vs model total physics heating and its
+  parts (bl, shallow, deep, lsc, evap, radiation) for base3r and land_conv: the PROCESS named is the one whose 850 difference
+  land_conv - base3r explains >= 50 % of land_conv's 850 Q1 error vs ERA5. [reg: now | inputs: maps | fail-5why: subtropical trade-wind cooling (land_conv)]
