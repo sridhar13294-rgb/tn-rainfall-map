@@ -3062,3 +3062,5 @@ FMEA (RPN): LW_dn too large from excess cloud/moisture 8x7x3=168 | C too large 6
 REGISTERED input check: model SW_sfc, LW_dn, V1 over the same land points/times vs ERA5 ssrd / strd / 10-m wind (W m-2, hourly):
 the input whose error, put through the equation, accounts for >= 50 % of the extra (H + net) is named; the land module (already
 running as a separate test) is NOT adopted on its own result unless this check points to the land equation/capacity.
+- 23:17 (clock) Land-module test (run before the 23:17 rule; recorded, NOT used to decide): land H 64.7 -> 24.2 W m-2 (rule <= 19: not
+  met), BL top 1099 -> 1045 m (rule <= 690: not met), LE 88 -> 58 W m-2. Not supported, and not adopted. The input check decides.
