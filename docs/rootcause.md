@@ -2701,3 +2701,7 @@ moisture advection added; BOMEX initial profiles) for 6 h, horizontally uniform 
   (flux-based: 1.5 w'theta'/w*, 1.5 w'q'/w*). Suspect ranking: (a) discretisation of the mixing on coarse layers (input = dz),
   then (b). Test (registered): same BOMEX with the mixing integrated exactly over each layer (hu -> he + (hu-he) exp(-eps dz),
   the analytic solution of 6.18, layer-thickness independent): trigger SUPPORTED as the cause if shallow is ON >= 4/6 h.
+- 16:30 RESULT exact mixing (new option mf_mix_exact, default off, regression bit-identical 100809.609375 / 0.43390631675720215 /
+  280.74951171875): BOMEX ifs_doc + mf_mix_exact: deep off 6/6, shallow ON 3/6 h (was 2/6) -> NOT supported (rule >= 4/6).
+  theta h3->h6 −0.09 / +0.14 K; cloud-top q −0.37 g/kg (shallow now moistens 1.4-2.0 km +4.3 g/kg/day but subsidence −6.3 wins).
+  Partial effect only. Next suspect (b): parcel excess - ours fixed 0.5 K / 5e-4 vs IFS 6.19 flux-based excess.
