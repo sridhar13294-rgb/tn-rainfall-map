@@ -3298,3 +3298,16 @@ running as a separate test) is NOT adopted on its own result unless this check p
   PREDICTION: land alone changes the GLOBE day-2 t850/t700 by < 0.3 K (land is ~30 % of the globe; the 20-40N land BL heating is the
   part it fixes) -> the land set alone FAILS the globe gate; its value shows in the land/subtropical split and as the input fix for
   the held convection candidate (land_conv). [reg: now | inputs: land inputs fixed per the land gate | fail-5why: to follow]
+- 02:00 (clock) A/P1 GLOBAL SCREEN RESULT (T42 dt 20, wx2020L2, 3 starts, day-2 globe bias; rule |t850|, |t700| <= 0.6 K):
+    base3r     t850 +0.07  t700 -1.54  rh850 +0.048 | t850 ocean 40S-40N +0.77, poleward -0.85
+    land       t850 +0.17  t700 -1.41  rh850 +0.037 | ocean +0.82, poleward -0.80
+    land_conv  t850 -0.76  t700 -0.89  rh850 +0.090 | ocean -0.81, poleward -0.23 | RH-cloud 850 tropical ocean 0.215 (ERA5-RH 0.092; base3r 0.105)
+  -> all three FAIL (t700 in all; t850 in land_conv). Prediction for the land set (globe change < 0.3 K) MET (t850 +0.10, t700 +0.13).
+  Land improved land_conv vs the 18 Nov candidate (t850 -0.91 -> -0.76, t700 -0.91 -> -0.89): small, as predicted.
+  Failure 5-Why: (1) t700 -1.4..-1.5 K in base3r and land = a cause SHARED by all, not the land set -> land set HELD (not rejected;
+  blocked by the shared t700 cold); (2) land_conv's t850 failure is over the TROPICAL OCEAN (-0.81; poleward improves to -0.23): its
+  850-hPa RH-cloud doubles (0.105 -> 0.215 vs ERA5-RH 0.092) -> more low cloud -> radiative cooling (the 18 Nov chain); the fix's
+  failure traces to its moistening at 850 over the ocean -> the INPUT to check: the candidate's moisture source/sink by process at
+  850 vs ERA5's apparent moisture sink Q2 (never compared; Q1 was). REGISTERED: ERA5 Q2 (37 levels, 20S-20N 50-110E ocean, h12/24/36)
+  vs model physics Q2 (base3r, land_conv): the PROCESS named is the one whose 850-hPa moistening exceeds ERA5's Q2 balance by
+  >= 50 % of land_conv's 850 Q2 error. [reg: now | inputs: RH-cloud split, region split | fail-5why: shared t700 (all); ocean 850 moistening (land_conv)]
