@@ -3162,3 +3162,12 @@ running as a separate test) is NOT adopted on its own result unless this check p
   the failure traces to the fix itself, otherwise "HELD - blocked by X". Re-opened under this rule: land module (sfc_imp+land_rs+soil_fr:
   H 65 -> 24, ERA5 10; failed on BL 1045 m, which the night wind 1.9x / late skin cycle can produce) -> HELD; gap closure (mf_dmin
   20000) and mf_wke -> HELD, re-test after the land fix; soil_fr / skin_ifs tonight judged with the same failure analysis.
+- 23:57 (clock) soil_fr TEST RESULT (hourly trace, land, skin K / H W m-2): h6 287.4/21 (base 289.5/8, ERA5 302.0/97); h12 295.9/54 (base 298.9/108, ERA5 296.5/15).
+  Gate (h6 skin within 3 K AND h12 H <= 30) -> FAIL on both checks. h12 H halved vs base (108 -> 54), evening skin within 0.6 K of ERA5.
+  Failure 5-Why: (1) why is the noon skin still 15 K cold? the morning skin is flat h0-h4 in BOTH base and soil_fr (285 K) -> a cause
+  SHARED by both runs; (2) why flat in both? both skins are slabs with capacity (2e5 / 1.17e5 J m-2 K-1), so ~25 W m-2 of morning
+  net heating gives < 1 K h-1, and our morning SW (2-h held radiation at T42) is 16% below ERA5 over h1-h5; (3) the IFS skin has
+  ZERO capacity (eq. 3.75), so it follows the same flux at once. -> part of the failure traces to soil_fr's own design (a slab skin),
+  part to the shared radiation timing. VERDICT: soil_fr is HELD (not rejected) as the deep-soil part; it cannot fix the noon skin by design.
+  [reg: 23:47 | inputs: SW/LW/H/LE h1-h4 checked 23:4x, radiation timing | fail-5why: slab-skin capacity (fix design) + 2-h radiation (shared)]
+  Next: skin_ifs (zero-capacity skin + 4-layer soil, IFS Cy38r1) on the same gate - running now.
