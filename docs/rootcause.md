@@ -3356,3 +3356,15 @@ running as a separate test) is NOT adopted on its own result unless this check p
   = physics + dynamics, from the model state every hour) and ERA5's dT/dt at the same points: the term (physics or dynamics) whose
   land_conv - base3r difference explains >= 50 % of the day-1 t850 difference is named.
   [reg: now | inputs: omega both regions vs ERA5 | fail-5why: shared weak subtropical descent; Hadley idea not supported; truth Q1 uncertain]
+- 04:19 (clock) 850 BUDGET CLOSURE (model, sigma 0.85, subtropical ocean 10-40 N/S, day 1, hourly, 3 starts): base3r dT +0.90 K = physics
+  -0.27 + dynamics +1.17; land_conv dT -0.63 = physics -0.99 + dynamics +0.36. ERA5 day-1 change ~0 (ocean 40S-40N t850 d0 -> d1
+  287.71 -> 287.72). Difference land_conv - base3r: dT -1.52 = physics -0.72 (47 %) + dynamics -0.81 (53 %).
+  Rule (>= 50 %): DYNAMICS named - by a hair (53/47); stated plainly: physics and dynamics share the difference about equally.
+  Side finding: base3r's HOURLY physics integral (-0.27 K/day) differs from its 00Z/12Z snapshot mean (-0.83) -> the earlier Q1
+  comparisons from h12/24/36 snapshots were biased by the diurnal cycle; budget numbers must come from hourly integrals.
+  ERA5 needs ~0: base3r is too warm (+0.90) through dynamics (+1.17 with physics -0.27), land_conv too cold (-0.63) through physics
+  (-0.99 with dynamics +0.36). The omega means explain only ~0.08 K/day of the dynamics difference (03:1x) -> the dynamics term is
+  NOT the area-mean subsidence; candidates: correlation of descent with stability (clear vs cloudy columns) and horizontal advection.
+  NEXT (registered): the same hourly closure split into physics-by-process (rad, shallow, deep, lsc, evap, bl) and dynamics into
+  vertical (omega x stability) and horizontal advection; the term explaining >= 50 % of each run's error vs ERA5's ~0 is named.
+  [reg: 03:16 | inputs: hourly budget both runs | fail-5why: split ~equal; snapshot Q1 bias found]
