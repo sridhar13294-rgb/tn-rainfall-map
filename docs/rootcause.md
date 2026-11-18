@@ -2897,3 +2897,13 @@ cloud-top height vs ERA5 cloud-base/top.
   Caveat: ERA5 Q1 from 6 pressure levels and 12-h differences (coarse); radiation included on both sides.
   5-Why next (registered): are our deep plumes too SHALLOW? Model OLR vs ERA5 top net thermal radiation (ttr, days file) over the
   same box: tops too low/warm named if model OLR >= 10 W m-2 above ERA5 where ERA5 OLR < 220 W m-2 (deep convective areas).
+- 18:47 (clock) OLR TEST RESULT (registered above; 0-20N 50-110E, h12/24/36, 3 starts; model OLR from the radiation carry vs ERA5 ttr):
+    where ERA5 OLR < 220: base3 144 / candidate 143 vs ERA5 174 W m-2 | all 0-20N: 208 / 209 vs 246 | area OLR < 220: 0.50 vs 0.30
+  Rule: 'plumes too shallow' needed model OLR >= 10 above ERA5 -> NOT supported. The OPPOSITE holds: OLR 30-38 W m-2 too LOW and
+  deep/cold-top cloud area 0.50 vs 0.30 -> too much cold high cloud (or too-high tops), in base3 and candidate alike.
+  Caveat: ERA5 ttr in days_YYYY may be a daily/hourly mean vs our instantaneous carry; a 38 W m-2 gap is far larger than that.
+  Updated reading of the 300-hPa heating deficit: with too much high cloud, LW cooling at the cloud tops (~300 hPa) offsets the
+  convective heating -> the net physics heating at 300 is short although deep heating is there. 5-Why next (registered): 300 hPa
+  heating split radiative vs convective (model), and model cloud fraction at 300/250 hPa vs ERA5 fraction_of_cloud_cover:
+  HIGH-CLOUD EXCESS named if model >= 1.5x ERA5 at 300 hPa and the radiative part at 300 is >= 0.5 K/day more negative than the
+  clear-sky part.
