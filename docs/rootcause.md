@@ -2638,3 +2638,17 @@ moisture advection added; BOMEX initial profiles) for 6 h, horizontally uniform 
   quasi-steady) while the 0.5-1.0 km layer is within ±0.3 K.
 - NOT the cause if the 1.4-2.0 km layer stays within ±0.3 K (then 850 cold comes from the lsc/radiation coupling - next).
 - Reported alongside (not judged): our surface fluxes vs BOMEX's prescribed 9.5 W m-2 sensible / ~150 W m-2 latent.
+- 13:10 BOMEX RESULT (registered 12:05). Setup note: above BOMEX's 3-km domain the column is blended (3-4 km) into the ERA5
+  sounding at the point (first try extended BOMEX's lapse rate to the tropopause -> unphysical CAPE; discarded).
+  theta change hours 3->6: base3 500-1000 m −0.56 K, 1400-2000 m −0.57 K | candidate (parts+sh_depth+evap_ifs) −0.17 / −0.14 K.
+  By the rule, candidate: cloud-top layer within ±0.3 K -> "shallow cloud-top cooling too strong" NOT the cause.
+  BUT the test exposes a different, bigger defect: in this textbook NON-precipitating trade-cumulus case the SHALLOW scheme never
+  acts (h_shal = 0) and base2's DEEP scheme fires (on_dp = 1, plume from 455 m to ~3.5 km, heating up to +48 K/day at 1.5 km,
+  −73 K/day in the lowest layer). LES: cloud top ~1.5-2 km under the inversion, no deep convection.
+  5-Why: deep fires <- the plume overshoots the BOMEX inversion and exceeds the 250 hPa depth threshold <- plume too buoyant
+  <- base2 entrainment entr = 1.5e-4 (1.3−RH) m-1 is ~12x below IFS Cy50r1 (6.7: 1.75e-3 (1.3−RH) f_scale) and ~10-20x below
+  BOMEX LES-derived values (Siebesma & Cuijpers 1995, Siebesma et al. 2003: ~1.5-2.5e-3 m-1). The formula is right; its INPUT
+  (the coefficient) is not the documented one. (docs/simplifications.md row 6 already lists this as HIGH.)
+  REGISTERED next (no tuning: the documented IFS value): base3 + entr 1.75e-3 + mf_org 1 (f_scale^3 as 6.7) in BOMEX ->
+  SUPPORTED if the deep scheme stays off (on_dp 0 after hour 1) and cloud-layer theta drifts within ±0.3 K over hours 3-6;
+  then the global screens (T42 3 starts t850/t700, rain, LHF) and storms before any adoption.
