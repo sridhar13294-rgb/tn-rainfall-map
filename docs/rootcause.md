@@ -3342,3 +3342,17 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED: 850/700 omega over the subtropical ocean (day 1-2) model vs ERA5: SUBSIDENCE named if land_conv's descent is >= 20 %
   weaker than ERA5's while base3r's is within 20 %; then the deep-tropical heating (Q1 0-10 N/S ocean vs ERA5) is the next input.
   [reg: now | inputs: Q1 by process vs ERA5 | fail-5why: not local physics -> dynamics/remote]
+- 03:17 (clock) SUBSIDENCE RESULT (ocean, day 1-2 mean, omega Pa/s, + = descent): subtropics 10-40 850/700: ERA5 0.0089/0.0094, base3r
+  0.0046/0.0061 (41 % weaker), land_conv 0.0032/0.0036 (63 % weaker); deep tropics |lat|<10 500 hPa ascent: ERA5 -0.0135, base3r -0.0131,
+  land_conv -0.0141 (both match). Rule: land_conv >= 20 % weaker MET, base3r within 20 % NOT met -> SUBSIDENCE NOT named as the
+  land_conv-specific cause (descent is too weak in BOTH; a shared deficit). Size check: the land_conv-vs-ERA5 descent deficit
+  (0.0058 Pa/s x static stability ~4e-4 K/Pa) ~ 0.2 K/day -> could give ~half of the day-2 -0.84; base3r-vs-land_conv difference only
+  ~0.07 K/day -> does NOT explain their 1.1 K difference. Deep-tropical ascent is right in both -> the "weaker Hadley" idea is NOT
+  supported (my 02:5x hypothesis withdrawn).
+  TRUTH-UNCERTAINTY found: ERA5 Q1 at 850 over the same subtropical ocean = -1.25 K/day from 37 levels (q1sub) but -0.60 from the
+  7-level gradient here -> the ERA5 Q1 estimate itself is uncertain by ~0.6 K/day at 850; Q1 comparisons smaller than that cannot
+  name a process. The 03:0x "no physics process named" stands only at that resolution.
+  NEXT (registered for the 04:00 cycle): close the model's own 850 temperature budget over the subtropical ocean, day 1 (total dT/dt
+  = physics + dynamics, from the model state every hour) and ERA5's dT/dt at the same points: the term (physics or dynamics) whose
+  land_conv - base3r difference explains >= 50 % of the day-1 t850 difference is named.
+  [reg: now | inputs: omega both regions vs ERA5 | fail-5why: shared weak subtropical descent; Hadley idea not supported; truth Q1 uncertain]
