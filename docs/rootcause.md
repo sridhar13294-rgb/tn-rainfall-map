@@ -3080,3 +3080,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
   input to fix. REGISTERED: same comparison at hour 0 (ERA5-initialised) and h6: if our wind is already >= 1.5x ERA5 at h0 -> the
   wind/drag input (roughness z0_land 0.1 m vs ERA5, initialisation) is first; if it is within 1.2x at h0 and grows by h6-h12 -> the
   skin/stability loop is first (then: what warms the skin in the first hours - SW absorbed +17 W m-2 is the remaining input).
+- 23:26 (clock) DRAG INPUT CHECK REGISTERED (before results; measure only). Fishbone for "near-surface wind 1.65x": (1) surface roughness
+  z0_land fixed 0.1 m vs ERA5 forecast_surface_roughness (includes vegetation/urban; ERA5 TOFD is separate); (2) turbulent stress
+  rho*ust^2 ours vs ERA5 mean turbulent surface stress; (3) missing orographic/gravity-wave surface stress (our gwd option is OFF in BASE3);
+  (4) stability (warm skin -> unstable -> strong downward momentum mixing). RULES at the same land ascent points, h12-36:
+  (1) named if ERA5 z0 >= 3x ours (>= 0.3 m); (2) named if our stress < 0.67x ERA5 turbulent stress while our wind is 1.65x
+  (i.e., our drag coefficient is too small); (3) named if ERA5 gw stress >= 50% of its turbulent stress there; (4) decided by the h0/h6 order test.
