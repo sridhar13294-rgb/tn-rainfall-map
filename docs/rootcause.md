@@ -2807,3 +2807,13 @@ From now on every entry's time is taken from the clock tool at the moment of wri
   steady <- column physics adds +0.47 g/kg/day at 850 (base3: shallow +0.74, BL +0.52, rain evap +0.50, lsc −0.95, deep −0.34).
   Registered: q850 split physics vs dynamics over day 1 (like dyn850.py, for q), base3; the side whose day-1 net exceeds ERA5's own
   change (~0) by >= 50 % of the model's q850 drift is named.
+- 12:12 (clock) P3 FLUX-SPLIT RESULT (tn-p3flux-a, 9 FAIL storms, 12-48 h, core 100 km; registered 18 Nov "11:45"):
+  Valid storms (Sidr, Giri, Titli, Sitrang, Dana) model/ERA5: flux 0.66/0.85/1.18/0.90/1.26, wind 0.73/0.83/0.87/1.08/1.20,
+  dk 1.12/1.38/1.40/1.13/1.20, Ck 0.79/0.75/0.93/0.53/0.82. INVALID: Nilam, Phailin, Madi, Hudhud - model dk near zero / negative
+  (my add-on's sea mask lets land / near-coast points in: a diagnostic bug, not model physics) -> excluded, stated.
+  Height mismatch (model lowest level ~85 m vs ERA5 10 m / 2 m) biases Ck low and dk high by construction; the height-robust
+  product Ck x dk = flux/(rho V): Sidr 0.88, Giri 1.04, Titli 1.30, Sitrang 0.60, Dana 0.98 (median 0.98).
+  => By the rule: the FAIL-group flux deficit is carried by WIND (most-deficient storms: Sidr 0.73, Giri 0.83), not by dk or Ck
+  -> the low flux is a CONSEQUENCE of the weak storm, not its cause (with the caveat of 5 valid storms). P3 5-Why returns to heat
+  RETENTION: same heating, 37 % weaker warm core. Next registered test: the radial and vertical heating structure vs where ERA5
+  puts its warm anomaly - is the model heating spread over a too-wide core (T170 grid ~78 km; ERA5 RMW FAIL 124 vs PASS 175 km)?
