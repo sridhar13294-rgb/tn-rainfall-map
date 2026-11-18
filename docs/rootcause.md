@@ -3011,3 +3011,7 @@ cloud-top height vs ERA5 cloud-base/top.
   not vent the sub-cloud layer the same way). Open for tomorrow: run BOMEX-like single-column checks on a representative 20-40N
   ascent column against ERA5's own state there (the ERA5-column method of 17 Nov), to see what IFS's scheme would do with ERA5's
   inputs vs ours.
+
+## 18 Nov 22:49 IST (clock) — 22:00 cycle: queue empty; next cycle 04:00 (silent). ERA5 subtropical columns (40 ascent + 20 subsidence,
+20-40N 50-110E, 2020-11-01/11 00Z, 137 levels) being fetched ('ml sub columns') for tomorrow's column test: our shallow scheme on
+ERA5's own subtropical columns vs on ours (same method as 17 Nov) - which input keeps the shallow trigger off.
