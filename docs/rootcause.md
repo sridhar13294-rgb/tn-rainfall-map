@@ -2795,3 +2795,15 @@ From now on every entry's time is taken from the clock tool at the moment of wri
   feedback) - verdict revised to 'RH-cloud is the carrier; cause = growth of the moist tail', not 'scheme over-produces'.
   REGISTERED next: fraction of 850-hPa area with RH > 0.74 (the scheme's critical RH there): ERA5 instantaneous (from T, q, 1.5°) vs
   model h0 and h24. Moist-tail growth is the cause if model h24 area >= 1.5x ERA5 while h0 is within 1.2x.
+- 12:10 (clock) A: 850 RH TAIL RESULT (same water saturation, instantaneous, globe; frac = area with RH > 0.74; ERA5 0.25° / 1.5° ~equal):
+    ERA5:  mean RH 0.63-0.65, frac 0.43-0.47 at h0/h24/h48 (steady)
+    base3: h0 0.640 / 0.42-0.44 | h24 0.720-0.737 / 0.55-0.56 | h48 0.741-0.764 / 0.58-0.61
+    new:   h0 0.634-0.639 / 0.40-0.43 | h24 0.723-0.739 / 0.61-0.63 | h48 0.756-0.781 / 0.66-0.71
+  Rule (h24 >= 1.5x ERA5 with h0 within 1.2x): base3 1.25x, new 1.4x -> NOT met at h24 (new reaches 1.5-1.6x at h48).
+  BUT a premise correction: with the same saturation formula and instantaneous ERA5, the model's MEAN rh850 bias is +0.09 at h24 and
+  +0.11..+0.14 at h48 (base3 too) - not the +0.04/+0.05 from rh_vs_era5 (that compared to ERA5 DAILY-MEAN RH with mixed-phase
+  saturation). So the 3x cloud by day 1 = a +0.1 RH moistening of 850 in day 1 pushed through the steep RH-cloud curve.
+  5-Why next: 850 moistens ~+0.1 RH/day (T nearly unbiased in base3 -> it is q) <- net moistening (physics + dynamics) where ERA5 is
+  steady <- column physics adds +0.47 g/kg/day at 850 (base3: shallow +0.74, BL +0.52, rain evap +0.50, lsc −0.95, deep −0.34).
+  Registered: q850 split physics vs dynamics over day 1 (like dyn850.py, for q), base3; the side whose day-1 net exceeds ERA5's own
+  change (~0) by >= 50 % of the model's q850 drift is named.
