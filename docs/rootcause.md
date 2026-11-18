@@ -2928,3 +2928,8 @@ cloud-top height vs ERA5 cloud-base/top.
   Open 5-Why: why does the subtropical 850 subsidence/dry import weaken with the candidate? Candidates: (1) cloud-radiative
   heating anomalies in the subtropics (the 3x low cloud itself feeding back on the circulation), (2) the BL now half ERA5's depth
   (bl_lcl) changing low-level divergence. Test (2) first: candidate WITHOUT bl_lcl in the same masked 20-40N budget.
+- 19:02 (clock) Candidate WITHOUT bl_lcl, masked 20-40N q850 dynamics: horizontal +0.02, vertical −0.04 (sum −0.02; candidate +0.13,
+  base3 −0.47, ERA5 −0.85). => bl_lcl is NOT the main cause (0.15 of the 0.60 loss vs base3). REGISTERED next: split the candidate's
+  convection change into (a) IFS deep entrainment only (entr 1.75e-3 + mf_org) and (b) IFS shallow set only (shallow mf + sh_trig +
+  sh_dmax + sh_eps + sh_det + sh_clos + mf_mix_exact + sh_ifs2), each on base3, same masked budget; the one that removes >= 50 % of
+  base3's 20-40N drying (−0.47) is named.
