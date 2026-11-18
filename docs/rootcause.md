@@ -2626,3 +2626,15 @@ are within 10 % of ERA5 and the deficit is all wind -> flux is a consequence (lo
 Ck is >= 15 % low in the FAIL group -> the flux INPUT is a cause (then 5-Why on that input: SST, lowest-level q, Ck formula).
 Needs: ERA5 core SST, t2m, d2m, 10-m wind (add-on) and the model's core wind / SST / lowest-level T,q (storm_budget add-on + rerun of
 the 9 FAIL storms on Kaggle, ~1 h GPU).
+
+## 18 Nov 12:05 IST — A/P1 (Stage 1, base2): BOMEX single-column test REGISTERED (external reference, not ERA5)
+Problem: limiting shallow depth (sh_depth) fixes 925/1000 hPa but 850 hPa goes −0.87..−2.26 K (budget at 850: shallow −1.64,
+lsc +2.27, radiation −1.68 K/day). 5-Why level 3: is the shallow scheme's cloud-top (850 hPa ~ 1.5 km) cooling physically right in
+SIZE? Reference: BOMEX LES intercomparison (Siebesma et al. 2003, JAS 60): trade-cumulus case with prescribed forcing in which the
+LES mean state is quasi-steady between hours 3 and 6 (cloud base ~500 m, top ~1.5-2 km, cloud-base mass flux ~0.02-0.03).
+Test: MEGAM column physics (base2 shallow + BL, BASE3; radiation replaced by BOMEX's prescribed −2 K/day; BOMEX subsidence and
+moisture advection added; BOMEX initial profiles) for 6 h, horizontally uniform T42 grid, one ocean column read.
+- Shallow cloud-top cooling TOO STRONG (cause of the 850 cold) if theta_l at 1.4-2.0 km drops by > 0.5 K over hours 3-6 (LES:
+  quasi-steady) while the 0.5-1.0 km layer is within ±0.3 K.
+- NOT the cause if the 1.4-2.0 km layer stays within ±0.3 K (then 850 cold comes from the lsc/radiation coupling - next).
+- Reported alongside (not judged): our surface fluxes vs BOMEX's prescribed 9.5 W m-2 sensible / ~150 W m-2 latent.
