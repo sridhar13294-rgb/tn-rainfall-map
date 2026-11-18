@@ -2772,3 +2772,16 @@ From now on every entry's time is taken from the clock tool at the moment of wri
   mean RH (smoother -> less cloud through the nonlinear curve); the fair reference is ERA5's OWN cloud fraction at 850.
   REGISTERED next: model 850 cloud fraction (radiation input) vs ERA5 'fraction_of_cloud_cover' at 850 hPa (ARCO, same times, h12-h48):
   RH-cloud OVER-PRODUCTION confirmed if model >= 1.5x ERA5 (globe, 40S-40N ocean) while model RH is within 0.05 of ERA5.
+- 11:57 (clock) A: MODEL vs ERA5 CLOUD FRACTION (cc_model.py: radcloud.clouds on the model state; ERA5 fraction_of_cloud_cover 1.5° box
+  means; T42, 3 starts, globe, model / ERA5):
+    850 hPa  h0 base3 0.186/0.124 new 0.150 | h24 base3 0.369/0.124 new 0.382 | h48 base3 0.381/0.123 new 0.436
+    925 hPa  h0 base3 0.245/0.133 new 0.218 | h24 base3 0.234 new 0.489 | h48 base3 0.205/0.126 new 0.498
+    700 hPa  h48 base3 0.297/0.068 new 0.270
+  RULE (registered 11:44): over-production confirmed if model >= 1.5x ERA5 while model RH within 0.05 of ERA5 -> base3 at 850:
+  3.1x ERA5 with rh850 +0.04..+0.05 -> CONFIRMED. (new set: 3.5x, rh850 +0.11 - RH not within 0.05, but the excess is the same kind.)
+  Already 1.5x at hour 0 (cloud diagnosed from the ERA5-started state) and 3x by day 1 -> the cloud SCHEME maps near-right humidity
+  to ~3x too much low/mid cloud. This is problem A's root (day-1 energy loss: more cloud -> more LW cooling at 850 + SW at surface).
+  5-Why next: inputs of the cloud diagnosis: (1) RH-cloud critical humidity (rhc_low/rhc_up/rhc_n) vs IFS/Sundqvist reference values,
+  (2) convective cloud (Slingo convective + anvil) share at 850-925 (the new set's 925 jump to 0.49 suggests the shallow-convective
+  cloud term). Registered: split cl['c'] into RH part and convective part at 850/925 at h24; the part carrying >= 50 % of the excess
+  over ERA5 is named.
