@@ -7,7 +7,7 @@ out = {}
 for s in ('2020-10-07', '2020-11-01', '2020-11-26'):
     for h in (0, 12, 24, 36, 48):
         t = np.datetime64(s + 'T00') + np.timedelta64(h, 'h')
-        for v, nm in (('fraction_of_cloud_cover', 'cc'), ('relative_humidity', 'rh')):
+        for v, nm in (('fraction_of_cloud_cover', 'cc'),):
             x = A[v].sel(time=t, level=[925, 850, 700]).values                     # [3, 721, 1440]
             x = x[:, :720, :].reshape(3, 120, 6, 240, 6).mean((2, 4))               # 1.5-deg boxes (0.25 x 6)
             out[f'{nm}_{s}_{h:02d}'] = x.astype(np.float32)
