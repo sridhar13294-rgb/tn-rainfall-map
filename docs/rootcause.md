@@ -3171,3 +3171,15 @@ running as a separate test) is NOT adopted on its own result unless this check p
   part to the shared radiation timing. VERDICT: soil_fr is HELD (not rejected) as the deep-soil part; it cannot fix the noon skin by design.
   [reg: 23:47 | inputs: SW/LW/H/LE h1-h4 checked 23:4x, radiation timing | fail-5why: slab-skin capacity (fix design) + 2-h radiation (shared)]
   Next: skin_ifs (zero-capacity skin + 4-layer soil, IFS Cy38r1) on the same gate - running now.
+- 00:02 (clock) skin_ifs TEST RESULT (land skin K / H W m-2): h6 293.5/17 (base 289.5/8, ERA5 302.0/97); h12 299.8/94 (ERA5 296.5/15) -> gate FAIL
+  on both checks; noon skin 4 K warmer than base (closer, still 8.5 K cold).
+  Failure 5-Why: (1) the hourly budget RINGS: h3 LE 220 / h5 LE 856, H 240, residual -944 W m-2, skin 287.5 -> 286.0 -> 297.1 -> 293.5;
+  (2) why? the zero-capacity skin is solved at the END of the step from the old fluxes, then the next step's H/LE see a jump in
+  skin-air difference at dt = 60 min -> overshoot. IFS solves the skin INSIDE the implicit vertical diffusion (same tridiagonal
+  system), which this first implementation does not -> the failure traces to MY IMPLEMENTATION (explicit coupling), not to the
+  IFS physics -> HELD; needs the implicit coupling (sfc_imp/diffuse_imp machinery) before it can be judged.
+  (3) Shared by base, soil_fr and skin_ifs: the morning skin stays ~285-287 K to h4 in all three -> a cause common to all runs.
+  Common to all: the T42 screen steps at 60 min and radiation runs every 2 steps = every 2 h (ours SW 69 at h3 vs ERA5 147 = the h2
+  value held). REGISTERED (base only, hourly trace): RADIATION INTERVAL named as the shared cause if rad_every 1 raises the h4 skin by
+  >= 3 K vs rad_every 2; TIME STEP named if dt 20 min + rad_every 1 raises it by a further >= 3 K. (Inputs of the test harness itself.)
+  [reg: now | inputs: SW/LW/H/LE hourly h0-h6 | fail-5why: explicit skin coupling (my implementation) + shared morning cause under test]
