@@ -2991,3 +2991,11 @@ cloud-top height vs ERA5 cloud-base/top.
   5-Why next (registered for tomorrow): ERA5 boundary_layer_height and LCL in the same regions/times: if ERA5's BL reaches the LCL
   (BLH >= 0.9 x LCL) where ours stops at ~0.6-0.75 x LCL -> our BL depth is the input error there (dry-convective BL too shallow);
   if ERA5's BL also stops well below the LCL -> the missing venting must come from the shallow trigger (parcel excess / LCL input).
+- 19:58 (clock) ERA5 BLH vs LCL (20-40N 50-110E low ground, 3 starts x 3 times): ascent regions BLH 528 m, LCL 1377 m, BL >= 0.9 LCL in
+  18 %; subsidence regions 426 / 1297 m, 15 %. Our model there: BL top 1099 m, LCL 1475-1896 m.
+  Rule: ERA5's BL ALSO stops well below the LCL -> our BL depth is NOT the input error (ours is even deeper); the missing 925
+  venting must come from the SHALLOW TRIGGER (ERA5's own IFS shallow scheme vents these regions: its 925 q is 0.69 g/kg lower).
+  Input to check: the test-parcel ascent rule. IFS lifts the test parcel with the kinetic-energy equation (6.10, w > 0 from the
+  surface excess + buoyancy); our test parcel instead survives below the LFC only within 0.2 sigma of its source (mf_wke = 0).
+  REGISTERED: shal set + mf_wke 1 (the existing IFS-KE option): SUPPORTED if shallow-on in 20-40N ascent regions >= 0.30 (from 0.11)
+  and 925 venting <= −0.52 g/kg/day.
