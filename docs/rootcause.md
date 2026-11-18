@@ -3129,3 +3129,25 @@ running as a separate test) is NOT adopted on its own result unless this check p
   EXPLICIT-STEP OVERSHOOT named if the median over land >= 1 at dt 3600 s (then the skin rings at T42; check the same at T170, dt 1200 s).
   If named, the T42 land results (H 65, BL 1100 m) are partly a time-step artifact of the SCREEN, and the input fix is the solver
   (implicit skin = sfc_imp, already in the code), not the physics.
+- 23:47 (clock) OSCILLATION RESULT: 62% of land points alternate sign in > 50% of steps (rule >= 30%) -> NUMERICAL OSCILLATION NAMED.
+  Stability number K*dt/C median 0.56 at dt 3600 s (0.19 at 1200 s; K = 31 W m-2 K-1) -> explicit-step overshoot NOT named (< 1).
+  So the ringing does not come from the skin solver. Its source is the radiation interval: rad_every 2 x dt 60 min = radiation
+  every 2 h at T42 (SW sfc pairs in the hourly trace: 8,8 / 78,72 / 280,277 / 457,460 / 489,482), a step forcing every 2 h -> 2-step
+  alternation. It adds noise; it cannot make a 10 K noon deficit (radiation over 0-6 h is 1.09x ERA5).
+  The noon deficit is still unexplained by the registered rules. Seen so far (stated openly: h6 values already seen): at h6 ours puts
+  +269 W m-2 into slab storage, while ERA5's residual (ground flux) is ~92. REGISTERED (h3-h8 mean, both from data already in hand,
+  ERA5 residual = SWnet + LWdn - sigma*Tskin^4 - H - LE, emissivity 1 for both): HEAT STORAGE named if ours >= 2x ERA5's.
+- 23:47 (clock) HEAT STORAGE RESULT: h3-h8 ours 95 vs ERA5 65 W m-2 = 1.47x (< 2) -> NOT named. Over h3-h8 our skin warms 10 K vs ERA5 12 K -
+  close. The 10 K noon gap opens EARLIER: h0-h4 ours cools 287.2 -> 285.2 while ERA5 warms 287.4 -> 295.7 (the box's east is already
+  in sunlight at 00Z). REGISTERED (data in hand, h1-h4, term-by-term flux difference ours - ERA5 into the skin, W m-2): the term
+  that explains >= 50% of the summed deficit is named; candidates SW net (2-h held radiation lags sunrise), LW down, H, LE.
+- 23:47 (clock) MORNING DECOMPOSITION RESULT (h1-h4, ours - ERA5, W m-2 into the skin): SW net -12.3, LW down -7.8, H +13.8 (ours loses
+  less), LE +13.2 (ours loses less); sum +7.0 -> ours RECEIVES slightly MORE energy, yet our skin cools 2 K while ERA5's warms 8 K.
+  -> no flux INPUT is named (all within 14 W m-2 and the sum has the wrong sign). The inputs are now checked (radiation, H, LE,
+  wind order); what remains is the RESPONSE to the same flux: how much the skin's temperature changes per W m-2 = the land
+  skin's heat capacity/formulation. Our skin is one slab with C = 2e5 J m-2 K-1 (~10 cm of wet soil) and no conduction to deeper soil;
+  the ERA5 (IFS) skin has no heat capacity of its own and is coupled to the top soil layer by a skin conductivity (IFS Cy47r3
+  Part IV, ch. 8.3). FORMULATION named (after the input check, per the method).
+  REGISTERED test, existing code only, no tuning: soil_fr 1 (force-restore, Deardorff 1978, C_eff 1.17e5, mu 1400 from the docs)
+  vs base3, hourly trace h0-12: PASS if noon (h6) skin within 3 K of ERA5's 302.0 AND evening (h12) H <= 2x ERA5's 15.
+  If it fails, the IFS skin-layer formulation (zero capacity + skin conductivity) is the next candidate - from the document, not tuned.
