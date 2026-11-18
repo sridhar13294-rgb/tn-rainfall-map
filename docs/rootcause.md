@@ -3002,3 +3002,12 @@ cloud-top height vs ERA5 cloud-base/top.
 - 20:03 (clock) RESULT shal set + mf_wke 1: shallow on 0.10 (needed >= 0.30), 925 venting −0.03 (needed <= −0.52) -> NOT SUPPORTED.
   The test-parcel ascent rule is not the limiter. Next: trace the shallow test parcel over the 20-40N ascent columns (eager call on a
   day-1 state): fraction reaching condensation, where it stops, parcel RH at its top - to find which input stops it.
+- 20:05 (clock) TEST-PARCEL TRACE (shal set, 1 Nov +24 h, 20-40N ascent columns, n = 22 at T42 - small sample): parcel reaches
+  condensation 56 %, LFC 77 %; of the cloudy half only 50 % are <= 200 hPa deep -> shallow active 28 % (snapshot; 10-11 % averaged
+  over 9 times); source sigma 0.938 (~600 m), parcel top sigma 0.74. sh_ifs2 does vent the WHOLE sub-cloud layer (code checked,
+  linear to the ground), so 925 is vented whenever shallow is active - the deficit is how OFTEN (and with what Mb) it is active.
+  Half the cloudy parcels are 200-250+ hPa deep: neither shallow (<= 200) nor, mostly, deep (base3 plume needs > 250 hPa and CAPE
+  > 50) - consistent with the gap logged at 19:39 even though closing it alone (mf_dmin) did not vent 925 (the deep scheme does
+  not vent the sub-cloud layer the same way). Open for tomorrow: run BOMEX-like single-column checks on a representative 20-40N
+  ascent column against ERA5's own state there (the ERA5-column method of 17 Nov), to see what IFS's scheme would do with ERA5's
+  inputs vs ours.
