@@ -2591,3 +2591,10 @@ from ~12 % to >= 50 % of ERA5; partly if 25-50 %; not if < 25 %.
   T170 −2.1 / −2.7 / −2.7. By the rule (within 3 points at T170): the T42 tests OVERSTATE A/P1 (horizontal smoothing); at T170 the
   start moisture is close to ERA5 -> the T170 deficit (package spin-up day-1 rain −0.62 mm/day) needs its own check: next = the same
   trigger/rain measurement on the T170 start state (package + single-loading fix).
+
+## 18 Nov 10:35 IST — P3 next test REGISTERED: inflow-layer surface enthalpy flux (core) vs ERA5
+cyc_corerain add-on: ERA5 sshf + slhf (W m-2 upward, 6-h mean) within 100 / 300 km of the ERA5 centre, 12-48 h.
+Model: sb flux_core (same radius as defined in storm_budget). Ratio model/ERA5 per storm, group medians.
+- INFLOW FLUX is the cause if FAIL median ratio <= 0.80 AND PASS median >= 0.90 (FAIL short of energy input while PASS is not).
+- NOT the cause if FAIL ratio >= 0.90 or within 0.05 of PASS -> next: heat retention (warm-core ventilation by the model's own
+  outflow / vertical heating profile vs ERA5 temperature anomaly profile).

@@ -31,6 +31,9 @@ for s in LIBL:
                 acc = A[v].sel(time=slice(np.datetime64(t - dt.timedelta(hours=5)), np.datetime64(t))).sel(**box).values.sum(0) * 1000.0 * 4  # mm/6h -> mm/day
                 r[v[:4] + '_100'] = round(float(acc[d <= 100].mean()), 1); r[v[:4] + '_300'] = round(float(acc[d <= 300].mean()), 1)
             ws = np.hypot(A['10m_u_component_of_wind'].sel(time=np.datetime64(t)).sel(**box).values, A['10m_v_component_of_wind'].sel(time=np.datetime64(t)).sel(**box).values)
+            for v, nm in (('surface_sensible_heat_flux', 'sshf'), ('surface_latent_heat_flux', 'slhf')):
+                acc = A[v].sel(time=slice(np.datetime64(t - dt.timedelta(hours=5)), np.datetime64(t))).sel(**box).values.mean(0) / -3600.0  # W m-2 upward
+                r[nm + '_100'] = round(float(acc[d <= 100].mean()), 1); r[nm + '_300'] = round(float(acc[d <= 300].mean()), 1)
             r['vmax10'] = round(float(ws[d <= 300].max()), 1); r['rmw'] = round(float(d[d <= 300][np.argmax(ws[d <= 300])]), 0)
             sh = {}
             for lv in (850, 200):
