@@ -2604,3 +2604,11 @@ Model: sb flux_core (same radius as defined in storm_budget). Ratio model/ERA5 p
   OUR start state although its RH is only 2-3 points drier. Remaining input candidates: start data from 13-level 1.5° WB2 (vertical
   structure of T/q lost between 13 levels), horizontal smoothing to ~78 km. Next: swap test at T170 at the 40 strong points
   (ERA5 L137 -> our 32 levels, by part: low / aloft, T / q), same rule as (c).
+- 11:05 T170 SWAP RESULT (40 strong points, single-loading fix): deep ours 35 % | ERA5 q aloft 52.5 % | whole ERA5 profile 60 % |
+  T aloft 32.5 % | lowest 3 levels 25 % | ERA5 fluxes 35 %. Rain 0.235 -> 0.36-0.41 mm/h (ERA5 point 4.38, 175-km mean ~1.6).
+  Decomposition of the IFS-package deficit at T170: double loading x~4 (fixed), start moisture aloft x~1.5 (2-3 RH points), the rest
+  (x3-5 vs box mean) in the single-call closure (quasi-equilibrium / Cy41r2-vs-Cy50r1) - only a forecast run can settle that part.
+- SCOPE CORRECTION (important): the double-loading bug is in ifs_phys (the IFS package = STAGE 3 per Sridhar 14 Nov). Stage-1
+  convection is base2 'mf' (conv_mf): checked - its CAPE uses buoyancy WITHOUT condensate (b = Tv excess only), single count -> the
+  bug does NOT affect Stage 1. A/P1 for Stage 1 = base2 shallow/deep heating split (850 hPa cold with sh_depth + evap_ifs; t700).
+  The package fix is recorded for Stage 3 (flag to add: pcape_1load), not adopted now.
