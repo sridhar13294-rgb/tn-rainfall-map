@@ -2570,3 +2570,9 @@ ERA5 used: ERA5 ran IFS Cy41r2 (no QCV term 6.29-6.32), and the column test lack
 TEST (b), REGISTERED before running: our own T42 start state (spin_I.npz, 2020-11-01, the state behind the 0.15 vs 1.3 mm/day
 finding), IFS convection hour 1, tropics 20S-20N, convective rain vs ERA5 cp (hour 1): fix explains the A/P1 deficit if ours rises
 from ~12 % to >= 50 % of ERA5; partly if 25-50 %; not if < 25 %.
+- 09:35 TEST (b) RESULT: our T42 start state, tropics 20S-20N, hour 1: convective rain original 0.02 / single-loading 0.11 mm/day vs
+  ERA5 cp 2.77 (ratio 0.01 -> 0.04); deep fraction 4.7 % in both. By the rule: the fix does NOT explain the A/P1 deficit (< 25 %).
+  KEY CONTRAST: on ERA5's own columns deep triggers in 70 % of strong cells; on our start state only 4.7 % of the tropics -> the
+  TRIGGER fails on our state but not on ERA5's. Same scheme, different inputs -> the start state we feed is the problem (FMEA #1,
+  "parcel source too cool/dry"). Next: swap test (c) at the same 60 points (2020-11-01): our column vs ERA5 column; swap ERA5's
+  lowest levels (T, q) into ours and see if the trigger returns.
