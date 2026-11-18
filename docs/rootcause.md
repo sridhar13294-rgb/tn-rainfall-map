@@ -2839,3 +2839,12 @@ cloud-top height vs ERA5 cloud-base/top.
   our BL top exceeds 1500 m over 3-4x ERA5's area and is ~400 m deeper on average - an input error in its own right.
   => base3 extratropical 850 moistening = tall shallow mixing (~60 %) + over-deep BL (~40 %). Next: the same split for the
   candidate (parts_conv_ifs: IFS shallow + bl_lcl) - does it remove the extratropical moistening or move it?
+- 18:01 (clock) Same split for the CANDIDATE (parts_conv_ifs): extratropics h12/h24/h36 q_bl +0.17/+0.13/+0.23, q_shal +1.01/+1.04/+1.03
+  g/kg/day at 850; BL top > 1500 m area 0.033/0.007/0.030 (ERA5 0.05-0.07); mean hbl 463/365/416 m (ERA5 700-770 m).
+  Day 1 q850: globe total +0.37 (physics +0.58, dyn −0.22), tropics +0.49, extratropics +0.30 (base3: +0.17 / −0.25 / +0.37).
+  Reading: bl_lcl removes the BL share but now makes the BL ~HALF ERA5's depth (new input error, opposite sign); the shallow scheme
+  keeps moistening 850 by ~+1 g/kg/day everywhere, and the large-scale drying is weaker (−0.22 vs −0.40) -> 850 still moistens,
+  now in the tropics too. In BOMEX the same shallow moistening was balanced by BOMEX's prescribed subsidence; globally it is not.
+  5-Why next (registered): is the shallow scheme active where the large scale is NOT subsiding? Split the day-1 850 shallow
+  moistening by the sign of large-scale omega at 700 hPa: MIS-TRIGGERING named if >= 50 % of it occurs where omega700 <= 0
+  (ascent/neutral), where trade-cumulus balance cannot hold.
