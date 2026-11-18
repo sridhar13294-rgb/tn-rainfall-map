@@ -2676,3 +2676,7 @@ moisture advection added; BOMEX initial profiles) for 6 h, horizontally uniform 
   re-evaporates where it detrains (no shallow precipitation; IFS converts with 6.44 x0.8/0.9), (2) shallow closure uses surface
   fluxes only (IFS adds sub-cloud radiation + advection, 6.35-6.37), (3) detrainment D = E (1.6-RH) shape. Next: BOMEX moisture
   budget by term for conv_doc (which of 1-3 makes the +0.5 g/kg), then the 850 column budget globally.
+- 15:05 BUG IN MY BOMEX HARNESS (found while reading the moisture budget): the subsidence term used d/d(−z), so BOMEX's large-scale
+  SUBSIDENCE was applied as ASCENT (cooling + moistening above ~1 km). ALL BOMEX numbers from 13:10-14:00 (base3, cand, ent_ifs,
+  ifs_doc) are INVALID and withdrawn, including "ifs_doc SUPPORTED". The global T42 screen (14:50) is unaffected (no harness).
+  The 'deep fires in BOMEX' observation was at hour 0 (before any forcing acted) and stands; everything after hour 0 is re-run now.
