@@ -867,7 +867,8 @@ class Model:
             # noise on convection, condensation and rain only: scaling the implicit boundary-layer mixing past 1 overshoots
             # and blows the run up (seen in 1 of 3 test runs)
             dT = dTbl + (dT - rad - dTbl) * fac + rad; dq = dqbl + (dq - dqbl) * fac
-        diag = dict(rain=Psurf + Pc * 0.0, H=H, E=E, ust=ust, V1=V1, sw_sfc=sw_sfc, lw_dn=lw_dn, Ts=Ts, chv=chv, beta=beta, dqsdT=qss * 17.67 * 243.5 / (Ts - 29.65) ** 2)
+        _Rr = locals().get('Rr'); _cov = _Rr['cover'] if isinstance(_Rr, dict) and 'cover' in _Rr else jnp.zeros_like(Ts)   # diagnostic only (19 Nov)
+        diag = dict(cover=_cov, rain=Psurf + Pc * 0.0, H=H, E=E, ust=ust, V1=V1, sw_sfc=sw_sfc, lw_dn=lw_dn, Ts=Ts, chv=chv, beta=beta, dqsdT=qss * 17.67 * 243.5 / (Ts - 29.65) ** 2)
         # P1 diagnostic (3 Nov): boundary-layer top vs lifting condensation level of the lowest-level air
         # (Bolton-type estimate z_lcl ~ 125 m per K of dew-point depression)
         diag.update(hbl=hbl, zlcl=zlcl)
