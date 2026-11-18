@@ -2848,3 +2848,11 @@ cloud-top height vs ERA5 cloud-base/top.
   5-Why next (registered): is the shallow scheme active where the large scale is NOT subsiding? Split the day-1 850 shallow
   moistening by the sign of large-scale omega at 700 hPa: MIS-TRIGGERING named if >= 50 % of it occurs where omega700 <= 0
   (ascent/neutral), where trade-cumulus balance cannot hold.
+- 18:09 (clock) RESULT omega split (candidate, extratropics): only 28-33 % of the 850 shallow moistening occurs where omega700 <= 0
+  (ascent area 43-45 %) -> MIS-TRIGGERING NOT the cause (shallow fires mostly under subsidence, as it should).
+  So the imbalance is shallow moistening vs large-scale drying. ERA5 reference (days_2020, region 0-40N 50-110E, 3 starts, h12-36,
+  resolved terms at 850): dynamics −0.45 g/kg/day (horizontal −0.23, vertical −0.23), actual dq/dt −0.03 -> implied physics +0.42.
+  Model (GLOBAL, not yet the same region): physics base3 +0.56 / candidate +0.58; dynamics base3 −0.40 / candidate −0.22.
+  First reading (to confirm on the same region, running): physics moistening ~0.15 above ERA5's implied value; the candidate's
+  large-scale drying is HALF of ERA5's -> the candidate weakens the subsidence drying at 850 (circulation response). Caveat: ERA5's
+  'implied physics' also contains analysis increments.
