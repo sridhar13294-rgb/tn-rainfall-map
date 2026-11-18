@@ -2933,3 +2933,11 @@ cloud-top height vs ERA5 cloud-base/top.
   convection change into (a) IFS deep entrainment only (entr 1.75e-3 + mf_org) and (b) IFS shallow set only (shallow mf + sh_trig +
   sh_dmax + sh_eps + sh_det + sh_clos + mf_mix_exact + sh_ifs2), each on base3, same masked budget; the one that removes >= 50 % of
   base3's 20-40N drying (−0.47) is named.
+- 19:07 (clock) RESULT deep vs shallow split (masked 20-40N q850 dynamics, sum; base3 −0.47):
+    entr_only (IFS deep entrainment on base3)  −0.36 (horizontal −0.08, vertical −0.28; omega850 +0.0151)
+    shal_only (IFS shallow set on base3)       −0.06 (horizontal −0.01, vertical −0.05; omega850 +0.0109)
+  => the SHALLOW set removes 0.41 of base3's 0.47 (87 %) -> named. Subsidence itself is still there (omega850 +0.011 vs base3
+  +0.0136) but its drying is gone -> the drying −omega dq/dp shrinks because dq/dp at 850 shrinks: the shallow scheme mixes
+  moisture through the subtropical inversion and flattens the vertical humidity gradient that subsidence acts on.
+  REGISTERED: dq/dp at 850 (q925 − q700 over 225 hPa) in 20-40N masked: model shal_only vs base3 vs ERA5 - 'shallow mixes through
+  the inversion' named if shal_only's gradient is <= 0.6x ERA5's while base3's is >= 0.8x.
