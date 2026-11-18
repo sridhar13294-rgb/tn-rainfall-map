@@ -2548,3 +2548,16 @@ ventilation, lower surface enthalpy flux (inflow-layer inputs: SST, wind, q).
 REGISTERED next (ERA5 add-on to cyc_corerain: RMW from 10-m wind, 850-200 hPa shear 500 km): RESOLUTION-LIMITED if ERA5 RMW of the
 FAIL group (12-48 h median) is <= 0.7 x the PASS group's or <= 60 km while PASS > 60 km; SHEAR if FAIL shear exceeds PASS by >= 3 m/s;
 neither -> inflow-layer inputs (enthalpy flux components vs ERA5 sshf/slhf).
+
+## 18 Nov 09:05 IST — S2 no-DFI: TRACK RULE PASSED -> ADOPTED (pre-approved rule: all registered checks pass)
+q6 72-h error (6 storms, scorer /tmp/claude-0/q6err.py reproduces base2 seed 4 = 371 and cubic seed 4 = 429): no-DFI seeds 4/5/6 =
+377 / 382 / 380 km, mean 380 <= limit 434 (base2 379 + spread 55). Storms (rule 2) and exam quarter passed earlier.
+BASE3 = {cmt_mf: 1, rd_si: 1, dfi_off: 1}. All later screens compare against BASE3.
+
+## 18 Nov 09:05 IST — P3 RMW / shear test RESULT (registered 17 Nov 22:10)
+ERA5 12-48 h medians: FAIL group RMW 124 km, shear 6.3 m/s; PASS group RMW 174.5 km, shear 6.8 m/s.
+- Resolution-limited rule: FAIL RMW <= 0.70 x PASS -> 124/174.5 = 0.71 -> NOT met (by 0.01); FAIL not <= 60 km -> NOT met.
+- Shear rule: FAIL exceeds PASS by >= 3 m/s -> FAIL is LOWER -> NOT met.
+=> by the rule: neither -> next = inflow-layer inputs (surface enthalpy flux components vs ERA5 sshf/slhf in the core).
+Caveat (honest): ERA5's own 0.25° RMWs (62-283 km) are far larger than real inner cores (~20-50 km), so ERA5 RMW is a weak proxy
+for true core size; the borderline 0.71 means a resolution part is NOT excluded - only not shown.

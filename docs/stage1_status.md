@@ -1,6 +1,7 @@
 # Stage 1 status table (kept current every cycle; Sridhar 4 Nov 23:17: "Keep on updating this table")
 Last update: 10 Nov 20:40 IST (see docs/rootcause.md 10 Nov and the status PDF). Standing rule 10 Nov: every candidate also screened at 75 L. Earlier: 5 Nov 22:15 IST. Target 15 Nov no longer reachable (GPU: own account + partner account only); realistic ~2 weeks. Stage 3 paused until Stage 1 is done.
 
+## 18 Nov 09:05 IST: S2 no-DFI ADOPTED (all registered checks passed: storms rule 2, exam quarter neutral, 3-member track rule 377/382/380 = mean 380 km <= 434). BASE3 = {cmt_mf: 1, rd_si: 1, dfi_off: 1}.
 ## Decisions 13 Nov 20:57 IST: critical path only; adopt on all registered checks passing; track rule = 3-member means. Target: first week of Dec (Claude's estimate ~25-40 %; 70 % 10 Jan; 90 % end Feb).
 
 ## One-word status (Sridhar 12 Nov 09:53: include in EVERY report; every row has a reason/suspect - no bare Open/Rejected)
