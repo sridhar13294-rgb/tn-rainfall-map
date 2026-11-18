@@ -3073,3 +3073,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED next: ERA5 100-m wind at the same points/times vs our lowest-level wind: NEAR-SURFACE WIND named if ours >= 1.5x ERA5's
   100-m wind; then 5-Why on its inputs (surface drag: z0_land 0.1 m vs ERA5 roughness incl. orographic form drag; drag_imp;
   momentum mixing from above) - measured, not changed.
+- 23:23 (clock) 100-m WIND RESULT: ERA5 land (20-40N ascent regions) 10-m 2.29, 100-m 3.56 m/s; ours (lowest level ~85 m) 5.88 m/s =
+  1.65x ERA5's 100-m wind -> rule (>= 1.5x) MET -> NEAR-SURFACE WIND named as the input behind the large land H.
+  ERA5's skin is colder than its 2-m air (stable surface layer, decoupled, weak near-surface wind); ours is warmer (unstable,
+  strong mixing brings momentum down) -> a possible loop: warm skin <-> strong mixing/wind <-> large H. Which comes FIRST decides the
+  input to fix. REGISTERED: same comparison at hour 0 (ERA5-initialised) and h6: if our wind is already >= 1.5x ERA5 at h0 -> the
+  wind/drag input (roughness z0_land 0.1 m vs ERA5, initialisation) is first; if it is within 1.2x at h0 and grows by h6-h12 -> the
+  skin/stability loop is first (then: what warms the skin in the first hours - SW absorbed +17 W m-2 is the remaining input).
