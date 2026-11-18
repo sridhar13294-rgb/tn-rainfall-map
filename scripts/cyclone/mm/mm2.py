@@ -112,7 +112,7 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='mf', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='radcloud', rad_every=2,
-                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
+                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
@@ -970,7 +970,10 @@ class Model:
             cool = -S['ent'] / 86400.0 * jnp.maximum(d['V1'] - 10.0, 0) ** 2 / 225.0 * (40.0 / S['h_ml'])
             warm = (cr['sst0'] - cr['sst']) / (5 * 86400.0)
             sst = jnp.where(sea, jnp.maximum(cr['sst'] + dt * (cool + warm), cr['sst0'] - 5.0), cr['sst'])
-        net = d['sw_sfc'] + d['lw_dn'] - SB * cr['tl'] ** 4 - d['H'] - LV * d['E']
+        # emis_land (19 Nov): land broadband emissivity; net LW = eps (LW_dn - sigma T^4) (Kirchhoff: reflects (1 - eps) LW_dn).
+        # ERA5-implied over 20-40N land 0.967 (str vs skin, 36 h); IFS Part IV Table 2.8 0.99 outside / 0.93-0.96 in the window. Default 1 = unchanged.
+        eml = S['emis_land']
+        net = d['sw_sfc'] + eml * (d['lw_dn'] - SB * cr['tl'] ** 4) - d['H'] - LV * d['E']
         # sfc_imp: land skin temperature implicit too - net flux linearised in tl (LW emission, sensible, latent)
         kk = 4 * SB * cr['tl'] ** 3 + CP * d['chv'] + LV * d['chv'] * d['beta'] * d['dqsdT']
         cap = S['cap_land'] + jnp.where(S['sfc_imp'] > 0, dt * kk, 0.0)
@@ -980,7 +983,7 @@ class Model:
             # solved implicitly (one Newton step, K = d(net)/dTsk as sfc_imp). Soil: 4 layers 0.07/0.21/0.72/1.89 m (Table 8.6),
             # (rho C) 2.19e6 J m-3 K-1 (8.5.1), lambda_T = Ke (lambda_sat - 0.19) + 0.19, Ke = log10(max(0.1, theta/theta_sat)) + 1 (8.57-8.59),
             # lambda_sat = 3.44^(1-0.472) 0.57^0.472 = 1.47 (8.58, theta_sat 0.472); zero flux at the bottom (8.55).
-            lam = self.S['skin_lam']; kk0 = 4 * SB * cr['tl'] ** 3 + CP * d['chv'] + LV * d['chv'] * d['beta'] * d['dqsdT']
+            lam = self.S['skin_lam']; kk0 = 4 * eml * SB * cr['tl'] ** 3 + CP * d['chv'] + LV * d['chv'] * d['beta'] * d['dqsdT']
             ts = cr['ts']; tsk = cr['tl'] + (net - lam * (cr['tl'] - ts[0])) / (kk0 + lam)
             tl = jnp.where(self.land, jnp.clip(tsk, 230.0, 340.0), cr['tl'])
             Dz = jnp.asarray([0.07, 0.21, 0.72, 1.89]); rc = 2.19e6

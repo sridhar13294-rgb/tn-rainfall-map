@@ -3252,3 +3252,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED: ERA5 net thermal (str) vs ours (lw_dn - sigma Tsk^4) h0-h12: EMISSIVITY named if ERA5's implied broadband emissivity
   (lw_dn - str = eps sigma Tsk^4 + (1 - eps) lw_dn) is <= 0.97 over this land.
   [reg: now | inputs: soil start fixed; SW, H, LE matched | fail-5why: not soil start (tiny effect); LW-up/emissivity under test]
+- 01:03 (clock) EMISSIVITY RESULT: ERA5-implied broadband emissivity over this land (lw_dn - str vs sigma x mid-hour skin^4, 36 h) = 0.967
+  (<= 0.97) -> EMISSIVITY NAMED (ours 1.0). (Single hours are noisy from accumulation timing, 0.83-1.08; the 36-h fit is the measure.)
+  Option emis_land added (default 1 = unchanged; net LW = eps (LW_dn - sigma T^4), also in the skin's K). Value 0.97 from ERA5 and IFS
+  Table 2.8 (0.99 outside / 0.93-0.96 in the window), not tuned. PREDICTION (registered before the run): +0.8 to +1.5 K at noon - NOT
+  enough alone for the 4.4 K gap; the same land gate applies, so a FAIL is expected and the failure 5-Why continues.
+  [reg: now | inputs: ERA5 str, skin | fail-5why: n/a (measurement); test running]
