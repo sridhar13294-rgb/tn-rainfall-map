@@ -3206,3 +3206,16 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED: skin_ifs 1 + sfc_imp 1 + rad_every 1 + land_rs 100 (existing option; 100 s m-1 = IFS r_s,min for crops / short grass,
   Table 8.1, not tuned): same gate (h6 skin within 3 K of 302.0 AND h12 H <= 30) AND h6 LE <= 1.5x ERA5 (192) AND max |LE| <= 400.
   [reg: now | inputs: beta from ERA5 swvl1 vs IFS f2; r_c missing | fail-5why: LE sink (missing surface resistance, not the skin fix)]
+- 00:32 (clock) skin_ifs + sfc_imp + rad_every 1 + land_rs 100 RESULT (land; skin K / H / LE W m-2, ours/ERA5): h6 297.9/302.0, H 91/97, LE 118/128;
+  h10 skin 302.2/302.2, H 140/71; h12 skin 299.4/296.5, H 60/15; max |LE| 140. Gate: LE <= 192 PASS, ringing PASS, h6 skin 4.1 K cold
+  (> 3) FAIL, h12 H 60 (> 30) FAIL. HBL (ascent) 995 m.
+  Failure 5-Why: (1) evening H 4x because our skin stays warm into the evening (h10-h12 +0-2.9 K) and our afternoon SW is +10%
+  (net 448/406 at h9; albedo matches: ERA5 effective 0.19-0.23 vs ours 0.20) -> SW DOWN is ~7-10% too high in the afternoon:
+  an INPUT to the skin (clouds or clear-sky aerosol/water vapour); (2) the morning skin still lags (h3 287.0/291.9) with SW, LE,
+  H now close -> candidates: ERA5's earlier-sunlit east weighted differently by the T42 land mask (comparison input), and the 4
+  soil layers all starting at ERA5 stl1 (no deeper-soil temperatures in the start file). Neither traces to the fixes ->
+  the land set {skin_ifs, sfc_imp, land_rs 100, rad_every 1} is HELD (blocked by SW-down excess + morning sampling/soil start), not rejected.
+  REGISTERED: (a) SW: ERA5 total cloud cover and clear-sky SW down vs ours (cover, SW down) at h6-h10: CLOUD named if our cover is
+  < 0.7x ERA5's; CLEAR-SKY (aerosol/vapour) named if the ERA5 clear-sky/all-sky SW gap explains < 50% of our excess.
+  (b) MASK: mean longitude of the land comparison points, ours (T42, own orography) vs ERA5: SAMPLING named if they differ by >= 5 deg.
+  [reg: now | inputs: albedo checked (matches), SW down, LE now OK | fail-5why: SW-down excess + morning sampling/soil start - not the fixes]
