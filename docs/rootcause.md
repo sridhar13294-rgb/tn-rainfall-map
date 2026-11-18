@@ -3033,3 +3033,10 @@ deepening diagnoses without producing that run. Launched now: the full BASE3 exa
 1/4) + Rule-1 intensity tn-r1-b3-0/1; tracks for BASE3 already exist (q6 seeds 4-6: 377/382/380 km). The scorecard is built as soon as
 quarters land, with this week's root causes on each failing row. Fix work (A/P1 etc.) continues in parallel; a passing fix triggers an
 exam re-run.
+- 23:09 (clock) SURFACE FLUX RESULT (20-40N 50-110E low ground, 850 ascent regions, h12/24/36 x 3 starts, same instants):
+    sensible H: base3 62.0, candidate 67.9 W m-2 vs ERA5 10.9 (5.7-6.2x) | latent LE: 88.2 / 87.3 vs 34.1 (2.6x) | BL top 1099 / 932 vs 528 m
+  Rule (H >= 1.3x ERA5 -> surface driving named): MET by a wide margin -> SURFACE FLUXES named as the input error behind the
+  over-deep BL and the 925/850 moistening in the subtropics (both configurations). Note the sample times (00/12 UTC = morning /
+  late evening over 50-110E): ERA5's H is small then; ours stays ~60 W m-2 -> suspect the land surface does not cool at night /
+  wrong diurnal phase of the land skin temperature, or the land exchange coefficient. Next (registered): model vs ERA5 skin
+  temperature and 2-m temperature at the same points/times, and H split land vs sea: land skin too warm at these hours -> named.
