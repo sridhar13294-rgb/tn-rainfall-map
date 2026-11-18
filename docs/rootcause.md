@@ -3264,3 +3264,15 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED: COUPLING named if our H / (Tsk - T_lowest) >= 1.5x ERA5's H / (skin - t2) at h4-h8 (ERA5 with t2 is conservative:
   the 2-m gradient is smaller than to ~85 m, which overstates ERA5's conductance).
   [reg: now | inputs: emissivity fixed, SW/LE/LW matched | fail-5why: skin-air coupling under test]
+- 01:20 (clock) COUPLING RESULT: conductance H/(Tsk - Tair) h4-h8 mean ours 56.9 vs ERA5 18.0 (3.2x) - BUT the mean is dominated by h4
+  where ours has Tsk - Tair = 0.1 K (198 W m-2 K-1); at h5-h9 ours 18-25 vs ERA5 18-22 (median ratio 1.2). The registered statistic
+  (mean of a ratio with a near-zero denominator) was ill-posed; reading it honestly -> COUPLING NOT named. (Rule fix for the future:
+  use the regression of H on the skin-air difference, not the mean of ratios.)
+  NEW, measured directly (soil layers traced; ERA5-like 290.6/295.1/297.8/300.1 at h0 - the soil start works): the "zero-capacity"
+  skin is NOT in energy balance in the morning: residual SW + LW - H - LE - Lambda (Tsk - T1) = +45 (h3), +89 (h4), +105 (h5), +84 (h6)
+  W m-2. Cause (implementation timing, not physics): the skin is solved in surface() AFTER the column with this step's radiation, and
+  is first seen by the NEXT step, whose sun is higher; at the T42 screen dt = 60 min the sun ramps ~115 W m-2 per hour, so the skin
+  runs ~1 h behind (~100 W m-2 / (K+Lambda ~ 50) ~ 2 K), and more when the 2-step radiation cache was on. IFS has the same order but at dt 7.5-15 min.
+  REGISTERED: TIME-STEP LAG named if the same land set at dt 20 min (the T170 step) raises the h6 skin by >= 2 K and cuts the morning
+  residual (h3-h6) by >= half.
+  [reg: now | inputs: soil layers traced (correct), coupling measured | fail-5why: skin solve lags the sun by one 60-min step]
