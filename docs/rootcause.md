@@ -2725,3 +2725,8 @@ From now on every entry's time is taken from the clock tool at the moment of wri
   The IFS-faithful option already exists (sh_ifs2, 11 Nov: closure at cloud base 6.35/6.37, whole sub-cloud layer vented linearly
   6.40-6.41, implicit transport 6.69). REGISTERED: BOMEX ifs_doc + mf_mix_exact + bl_lcl + sh_ifs2: SUPPORTED if shallow ON >= 4/6
   snapshot hours AND theta h3->h6 within ±0.3 K at 500-1000 / 1400-2000 m; also reported: % of steps on, cloud-top q drift.
+- 11:25 (clock) RESULT BOMEX ifs_doc + mf_mix_exact + bl_lcl + sh_ifs2: deep off 6/6; shallow ON 6/6 snapshot hours (78 % of steps);
+  theta h3->h6 −0.03 K (500-1000 m) / +0.11 K (1400-2000 m) -> SUPPORTED by the rule. Also: cloud-top q −0.06 g/kg (near steady),
+  500-1000 m q −0.29 g/kg; shallow heating +0.9 K/day low in the cloud layer, −1.7 K/day near the inversion; sub-cloud venting
+  q_shal −9.3 g/kg/day vs BL +7.6 (BOMEX-type balance). First Stage-1 convection configuration that behaves like the BOMEX LES
+  reference, all values from the IFS document (nothing tuned). Next (registered 13:10 rule): global T42 screen, then storms, T170.
