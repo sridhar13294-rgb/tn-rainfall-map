@@ -3183,3 +3183,14 @@ running as a separate test) is NOT adopted on its own result unless this check p
   value held). REGISTERED (base only, hourly trace): RADIATION INTERVAL named as the shared cause if rad_every 1 raises the h4 skin by
   >= 3 K vs rad_every 2; TIME STEP named if dt 20 min + rad_every 1 raises it by a further >= 3 K. (Inputs of the test harness itself.)
   [reg: now | inputs: SW/LW/H/LE hourly h0-h6 | fail-5why: explicit skin coupling (my implementation) + shared morning cause under test]
+- 00:15 (clock) HARNESS TEST RESULT (base, land h4 skin): rad_every 1 286.6 vs 285.2 (+1.4 K, rule >= 3) -> radiation interval NOT named;
+  dt 20 min + rad_every 1 287.5 (+0.9 K more) -> time step NOT named. With rad_every 1 our SW now matches ERA5 hour by hour
+  (h3 149/147, h5 371/365) yet the skin still stays ~286-287 K to h4 (ERA5 295.7). Evening H drops with both (108 -> 62 -> 48; ERA5 15).
+  Failure 5-Why of the harness hypothesis: correct SW does not warm our skin -> the cause is not the input timing; ERA5's skin warms
+  3 K h-1 at h3 with ~0 W m-2 into storage, ours would need 167 W m-2 at C = 2e5 -> skin heat capacity (formulation) stays named,
+  and skin_ifs's failure was its explicit coupling. Radiation every 2 h and the 60-min step are noted as harness contributors
+  (evening H), not the morning cause.
+  REGISTERED next (existing code only, both from IFS docs): skin_ifs 1 + sfc_imp 1 (implicit surface fluxes in the lowest layer),
+  same gate (h6 skin within 3 K of 302.0 AND h12 H <= 30), run with rad_every 2 and with rad_every 1. Ringing check: no hour with
+  |LE| > 400 W m-2 (ERA5 max 136).
+  [reg: now | inputs: SW hourly now matched (rad_every 1), LW/H/LE | fail-5why: harness hypothesis rejected because correct SW did not warm the skin (the hypothesis' own failure)]
