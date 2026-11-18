@@ -3086,3 +3086,19 @@ running as a separate test) is NOT adopted on its own result unless this check p
   (4) stability (warm skin -> unstable -> strong downward momentum mixing). RULES at the same land ascent points, h12-36:
   (1) named if ERA5 z0 >= 3x ours (>= 0.3 m); (2) named if our stress < 0.67x ERA5 turbulent stress while our wind is 1.65x
   (i.e., our drag coefficient is too small); (3) named if ERA5 gw stress >= 50% of its turbulent stress there; (4) decided by the h0/h6 order test.
+- 23:28 (clock) ORDER TEST RESULT (land ascent points, mean of 3 starts; 00Z ~ 05 local, 06Z ~ noon, 12Z ~ evening):
+  | h | wind ours (85 m) / ERA5 100 m | H ours / ERA5 | skin ours / ERA5 | SW sfc ours (net) / ERA5 down |
+  | 0 | 2.82 / 3.56 | 1.6 / -8.8 | 287.2 / 287.1 | 4 / 3 |
+  | 6 | 5.27 / 2.96 | 10.5 / 93.1 | 292.0 / 302.0 | 470 / 534 |
+  | 12 | 4.15 / 3.40 | 105.1 / 18.0 | 299.2 / 296.8 | 139 / 135 |
+  Verdict by the registered rule: wind at h0 is 0.79x ERA5 (within 1.2x) and grows by h6 -> the WIND/DRAG input is NOT first; the
+  SKIN/STABILITY side is first. CORRECTION of the earlier framing: our land H is not uniformly too big, it is PHASE-SHIFTED. At local
+  noon ours is 9x too SMALL (skin 10 K too cold); in the evening it is 6x too big (skin 2.4 K too warm while ERA5's skin is already
+  below the air). The day-1 mean (h12/24/36) hid this. Our near-surface wind is high at noon (5.3 vs 3.0), when our H is small, so the
+  wind does not cause the noon error. The registered drag rules (roughness/stress) still run, but they are now secondary.
+  New 5-Why: why does our skin warm 4.7 K by noon (ERA5 15 K) and stay warm into the evening? The inputs to C dTl/dt = net are
+  SW/LW (match at h0/h12; SW net 470 vs ERA5 down 534 -> plausible), the heat capacity C = cap_land 2e5 J m-2 K-1, and H/LE.
+  REGISTERED for the hourly trace (model and ERA5, all low-ground land, 0-24 h): (a) THERMAL INERTIA named if our skin's diurnal
+  range is < 0.6x ERA5's AND our maximum is >= 2 h after ERA5's; (b) an ENERGY-input error named if our time-integrated
+  (SW net + LW dn - LW up) from 0 to 6 h differs from ERA5's by more than 25%; (c) the SURFACE-FLUX partition (LE) is named if
+  our LE at local noon is < 0.5x ERA5's (ERA5 noon LE 128 W m-2) - the noon energy has to go somewhere.
