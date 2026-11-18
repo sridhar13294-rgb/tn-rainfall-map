@@ -2856,3 +2856,13 @@ cloud-top height vs ERA5 cloud-base/top.
   First reading (to confirm on the same region, running): physics moistening ~0.15 above ERA5's implied value; the candidate's
   large-scale drying is HALF of ERA5's -> the candidate weakens the subsidence drying at 850 (circulation response). Caveat: ERA5's
   'implied physics' also contains analysis increments.
+- 18:21 (clock) SAME-REGION RESULT (0-40N 50-110E, day 1, q850 g/kg/day, total / physics / dynamics):
+    ERA5       −0.03 / +0.42 (implied) / −0.45
+    base3      −0.17 / −0.20 / +0.03      (0-20N: physics −0.71, dyn +0.20; 20-40N: +0.38 / −0.17)
+    candidate  +0.46 / +0.58 / −0.12      (0-20N: +0.71 / −0.05; 20-40N: +0.44 / −0.21)
+  Candidate excess over ERA5's dq/dt: +0.49 = physics +0.16 (33 %) + MISSING large-scale drying +0.33 (67 %).
+  => The larger part of the 850 moistening is the WEAK LARGE-SCALE DRYING (model dynamics −0.12 vs ERA5 −0.45; base3 even +0.03),
+  not the physics. Same family as P5b (850 circulation errors over the Bay). 5-Why next (registered): split model dynamics at 850
+  into horizontal advection and vertical (−omega dq/dp) from model u, v, omega, q - as done for ERA5 (−0.23 / −0.23): the term with
+  the larger shortfall vs ERA5 is named; if vertical -> subsidence too weak (link to radiation / heating profile); if horizontal ->
+  the low-level flow (P5b easterlies, moisture import).
