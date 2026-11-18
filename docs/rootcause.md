@@ -2576,3 +2576,14 @@ from ~12 % to >= 50 % of ERA5; partly if 25-50 %; not if < 25 %.
   TRIGGER fails on our state but not on ERA5's. Same scheme, different inputs -> the start state we feed is the problem (FMEA #1,
   "parcel source too cool/dry"). Next: swap test (c) at the same 60 points (2020-11-01): our column vs ERA5 column; swap ERA5's
   lowest levels (T, q) into ours and see if the trigger returns.
+- 10:00 SWAP TEST (c) RESULT (our T42 start columns at the 40 strong 2020-11-01 ERA5 points, single-loading fix):
+  deep trigger: ours 12.5 % | ERA5 T,q lowest 3 levels 25 % | ERA5 T,q ABOVE the lowest 6 levels 52.5 % | whole ERA5 profile 60 % |
+  ERA5 surface fluxes only 17.5 % | BL tendencies 0: 12.5 %. Split aloft: q only 40 %, T only 30 %.
+  -> The input that kills the trigger is the FREE-TROPOSPHERE MOISTURE of our start state (largest single swap; T aloft second).
+  Profile (median at strong points): our RH lower than ERA5 by 5-9 points from 850 to 550 hPa (0.86/0.77 vs 0.91/0.86); T within
+  ±0.3 K there. Mechanism (doc 6.7): entrainment ∝ (1.3 − RH) -> 0.3+0.08 raises entrainment ~25-40 % -> plume dies.
+  5-Why: no trigger <- plume over-entrains <- environment RH too low at convective points <- our start state is ERA5 1.5° (WB2, 13
+  levels) smoothed to T42: averaging over ~280 km lowers RH at the moist convective maxima (sub-grid moisture variance lost).
+  Prediction to check next (registered now): the same columns from a T170 start state are within 3 RH points of ERA5 at 850-550 hPa
+  (then the T42 tests overstate A/P1 and the T170 deficit has another cause); if T170 is also >= 5 points dry -> the start-data
+  input (13-level 1.5° WB2) is the cause at all resolutions -> fix = start from 0.25° 37-level ERA5 (ARCO) fields.
