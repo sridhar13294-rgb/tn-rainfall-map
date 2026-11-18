@@ -2612,3 +2612,17 @@ Model: sb flux_core (same radius as defined in storm_budget). Ratio model/ERA5 p
   convection is base2 'mf' (conv_mf): checked - its CAPE uses buoyancy WITHOUT condensate (b = Tv excess only), single count -> the
   bug does NOT affect Stage 1. A/P1 for Stage 1 = base2 shallow/deep heating split (850 hPa cold with sh_depth + evap_ifs; t700).
   The package fix is recorded for Stage 3 (flag to add: pcape_1load), not adopted now.
+
+## 18 Nov 11:45 IST — P3 INFLOW-FLUX TEST RESULT (registered 10:35)
+Core (100 km) surface enthalpy flux, 12-48 h, model / ERA5: FAIL median 0.86 (Madi 0.64, Sidr 0.66, Hudhud 0.72, Giri 0.80 ..
+Dana 1.26); PASS median 1.07 (Khai-Muk 0.91 .. Michaung 1.82).
+Rule: cause needs FAIL <= 0.80 AND PASS >= 0.90 -> NOT met (0.86); not-cause needs FAIL >= 0.90 or within 0.05 of PASS -> NOT met
+(0.21 apart). => INDETERMINATE by the registered rule.
+Exploratory (NOT registered, reported as such): across the 17 storms r(flux ratio, Rule-1 peak error) = −0.56; the four most
+under-deepened (Madi +14.8, Sidr +10.6, Phailin +9.5, Giri +8.5 hPa) have ratios 0.64-0.86.
+Caveat - circularity: a weaker model storm has weaker core winds, so a low flux can be CONSEQUENCE as well as cause. 5-Why next:
+split flux = exchange coefficient x wind x air-sea disequilibrium (dk). REGISTERED: if model dk (SST vs lowest-level T,q) and Ck
+are within 10 % of ERA5 and the deficit is all wind -> flux is a consequence (look elsewhere: heat retention / core size); if dk or
+Ck is >= 15 % low in the FAIL group -> the flux INPUT is a cause (then 5-Why on that input: SST, lowest-level q, Ck formula).
+Needs: ERA5 core SST, t2m, d2m, 10-m wind (add-on) and the model's core wind / SST / lowest-level T,q (storm_budget add-on + rerun of
+the 9 FAIL storms on Kaggle, ~1 h GPU).
