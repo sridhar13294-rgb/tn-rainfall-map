@@ -3194,3 +3194,15 @@ running as a separate test) is NOT adopted on its own result unless this check p
   same gate (h6 skin within 3 K of 302.0 AND h12 H <= 30), run with rad_every 2 and with rad_every 1. Ringing check: no hour with
   |LE| > 400 W m-2 (ERA5 max 136).
   [reg: now | inputs: SW hourly now matched (rad_every 1), LW/H/LE | fail-5why: harness hypothesis rejected because correct SW did not warm the skin (the hypothesis' own failure)]
+- 00:26 (clock) skin_ifs + sfc_imp RESULT (land, skin K / H W m-2): rad_every 2: h6 293.9/18, h12 299.8/83, max |LE| 664 (still rings) -> FAIL;
+  rad_every 1: h6 297.4/89 (ERA5 302.0/97: noon H now MATCHES), h12 298.0/48 (ERA5 15), max |LE| 396 (< 400: ringing gone) -> gate FAIL
+  (noon skin 4.6 K cold > 3; evening H 48 > 30), large improvement on both.
+  Failure 5-Why (fix vs other cause): the hourly budget now shows the sink - LE ours/ERA5 h4 182/86, h6 396/128, h8 262/130, h12 82/20 =
+  2-3x all day -> the energy that should warm the skin evaporates. Not caused by the skin fix (base LE was low only because its
+  skin was cold). INPUT CHECK of the LE formula (E = rho ck V1 beta (qs - q1)): soil-water availability beta from ERA5 swvl1 in the box
+  = 0.52 (ours) vs IFS stress factor 0.38 (TESSEL loam pwp 0.171, cap 0.323) -> 1.4x, part of the 3x; the main missing input is the
+  surface (canopy/soil) resistance: IFS E = rho (qs - q)/(r_a + r_c), r_c = r_s,min/LAI x f(soil water) (Part IV ch. 8); ours r_c = 0
+  (land_rs 0 in BASE3) -> evaporates like a wet surface. -> skin_ifs + sfc_imp HELD (blocked by LE: no surface resistance).
+  REGISTERED: skin_ifs 1 + sfc_imp 1 + rad_every 1 + land_rs 100 (existing option; 100 s m-1 = IFS r_s,min for crops / short grass,
+  Table 8.1, not tuned): same gate (h6 skin within 3 K of 302.0 AND h12 H <= 30) AND h6 LE <= 1.5x ERA5 (192) AND max |LE| <= 400.
+  [reg: now | inputs: beta from ERA5 swvl1 vs IFS f2; r_c missing | fail-5why: LE sink (missing surface resistance, not the skin fix)]
