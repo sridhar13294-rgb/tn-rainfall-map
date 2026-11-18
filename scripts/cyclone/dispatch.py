@@ -22,6 +22,9 @@ def running():
             # cannot be cancelled (409) or deleted (403). A run still queued 2 h after creation never reached Kaggle (the push
             # happens inside the run), so it holds no Kaggle slot and is not counted.
             if stt != 'in_progress' and time.time() - time.mktime(time.strptime(t0, '%Y-%m-%dT%H:%M:%SZ')) + time.timezone > 7200: continue
+            # 19 Nov: the same two ghost runs flipped to 'in_progress' and blocked account 4's single slot. A GitHub-hosted job is
+            # killed after 6 h, so a run started > 7 h ago cannot be holding a Kaggle kernel open -> not counted.
+            if time.time() - time.mktime(time.strptime(t0, '%Y-%m-%dT%H:%M:%SZ')) + time.timezone > 7 * 3600: continue
             k = sh(f"git show {sha}:data/cyclone/KAGGLE").stdout.split('\n')
             if len(k) >= 5 and k[4].strip():
                 b_ = busy.setdefault(k[4].strip(), [])
