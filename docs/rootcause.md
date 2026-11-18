@@ -3276,3 +3276,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED: TIME-STEP LAG named if the same land set at dt 20 min (the T170 step) raises the h6 skin by >= 2 K and cuts the morning
   residual (h3-h6) by >= half.
   [reg: now | inputs: soil layers traced (correct), coupling measured | fail-5why: skin solve lags the sun by one 60-min step]
+- 01:24 (clock) TIME-STEP LAG RESULT (land set, dt 20 vs 60 min): h6 skin 299.4 vs 297.8 (+1.6 K; rule >= 2 K -> NOT met); morning residual
+  h3-h6 mean 25.5 vs 81 W m-2 (cut by 69%, rule >= half -> met). Both were required -> TIME-STEP LAG NOT named by the rule as written.
+  Stated plainly: the step explains most of the energy imbalance but only 1.6 K of the skin; at dt 20 the h6 skin is 2.6 K below ERA5
+  (inside the 3-K gate half). Failure 5-Why on the remaining 2.6 K and the h4 residual (41 W m-2 at dt 20): the skin is still solved
+  after the column with the step-start sun - the order of operations remains (implementation). The T170 exam runs at dt 20, so the
+  T42 screen at dt 60 handicaps the land; the land screen must run at the exam's step.
+  REGISTERED: full 0-12 h land gate at dt 20 (T42): h6 skin within 3 K of 302.0 AND h12 H <= 30.
+  [reg: now | inputs: residual measured both steps | fail-5why: skin-solve order (implementation) + screen step 60 min]
