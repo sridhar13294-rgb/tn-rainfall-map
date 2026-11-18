@@ -2968,3 +2968,12 @@ cloud-top height vs ERA5 cloud-base/top.
   So the IFS shallow set ventilates the sub-cloud layer too little in these regions (or the surface supplies too much - LHF +14 %
   measured 13 Nov). Next (registered): q925 physics budget in 20-40N ascent regions, base3 vs shal_only: surface evaporation into the
   layer, q_bl, q_shal (venting), q_evap; the term whose change explains >= 50 % of the +1.09 is named.
+- 19:39 (clock) 925 BUDGET RESULT (20-40N ascent regions, g/kg/day; base3 -> shal_only): shallow venting −1.04 -> −0.05 (+0.99),
+  BL +1.34 -> +1.54, rain evap +0.66 -> +0.21, deep −0.25 -> −0.47, lsc −0.04 -> −0.27; surface evaporation 3.05 -> 3.20 mm/day.
+  => the lost SHALLOW VENTING (+0.99) is the largest change -> named: with the IFS shallow set, convection barely vents 925 there.
+  5-Why, input check: classification thresholds. Shallow (IFS set) only if cloud depth <= sh_dmax = 20000 Pa; deep only if depth >
+  mf_dmin = 25000 Pa (mm2 default; its own comment says "ECMWF ~20000"). => clouds 200-250 hPa deep get NO convection at all -
+  a GAP between the two schemes that IFS does not have (IFS: deep if > 200 hPa, else shallow). Base3 had no gap (shallow 'mse'
+  had no depth limit). REGISTERED (no tuning: set mf_dmin to the IFS value 20000 so the classes meet): candidate + mf_dmin 20000 ->
+  SUPPORTED if (1) 925 venting in 20-40N ascent regions recovers >= 50 % of base3's (<= −0.52) and (2) masked 20-40N q850 dynamics
+  recovers >= 50 % of base3's drying (<= −0.24); then the global T42 screen.
