@@ -3040,3 +3040,11 @@ exam re-run.
   late evening over 50-110E): ERA5's H is small then; ours stays ~60 W m-2 -> suspect the land surface does not cool at night /
   wrong diurnal phase of the land skin temperature, or the land exchange coefficient. Next (registered): model vs ERA5 skin
   temperature and 2-m temperature at the same points/times, and H split land vs sea: land skin too warm at these hours -> named.
+- 23:13 (clock) LAND/SEA SPLIT RESULT (20-40N ascent regions, h12/24/36 = 05:30/17:30 local-ish over 50-110E):
+    model base3 land (91 % of the sample): H 64.7 W m-2, land skin 295.5 K | sea: H 33.1, SST 298.8
+    ERA5 land: H 9.6, LE 13.8, skin 293.6 K, 2-m T 295.1 K (skin COLDER than air: evening/morning surface inversion) | sea H 13.5, LE 164
+  => Over LAND our sensible flux is 6.8x ERA5 and the skin is ~1.9 K warmer, i.e. our land skin stays warmer than the air at
+  these hours where ERA5's is colder -> NAMED: land skin temperature / land surface energy balance (input to the bulk flux).
+  The land module already built 5 Nov (sfc_imp + land_rs 100 + soil_fr; ISBA-type, fixed central-India cold land) was never adopted.
+  REGISTERED: BASE3 + land module in the same diagnostic -> SUPPORTED if land H in 20-40N ascent regions <= 2x ERA5 (<= 19 W m-2)
+  AND BL top <= 1.3x ERA5 (<= 690 m); then global screen with the candidate convection.
