@@ -2947,3 +2947,12 @@ cloud-top height vs ERA5 cloud-base/top.
   CO-LOCATION of motion and gradient (ascent where the gradient is strong, e.g. where shallow convection now moistens), i.e. the
   covariance of omega and dq/dp, not the means. Next (registered): split the 20-40N vertical term into subsiding vs ascending
   points (omega850 > 0 / <= 0) for base3, shal_only and ERA5; the part with the larger change vs base3 is named.
+- 19:19 (clock) COVARIANCE SPLIT RESULT (20-40N masked, vertical term −omega dq/dp at 850, area-weighted contributions, g/kg/day):
+    subsiding points: base3 −0.81, shal_only −0.85, ERA5 −1.01 | ascending points: base3 +0.44, shal_only +0.80, ERA5 +0.56
+    subsiding area: base3 0.53, shal_only 0.53, ERA5 0.60
+  => By the rule the ASCENDING part changes most (+0.36 vs base3; subsiding −0.04) -> named: with the IFS shallow set, 20-40N
+  ASCENT regions moisten 850 much more (+0.80 vs ERA5 +0.56). Also (both configs): too little subsiding area (0.53 vs 0.60) and
+  weaker drying where it subsides (−0.81/−0.85 vs −1.01).
+  5-Why next (tomorrow): in the ascent regions, is it stronger ascent (omega) or a steeper gradient below 850 (shallow venting the
+  sub-cloud moisture upward into 925-850 where ascent lifts it)? Split the ascending contribution into mean omega x mean gradient
+  and their covariance for shal_only vs base3.
