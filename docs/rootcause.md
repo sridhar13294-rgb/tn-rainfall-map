@@ -2999,3 +2999,6 @@ cloud-top height vs ERA5 cloud-base/top.
   surface excess + buoyancy); our test parcel instead survives below the LFC only within 0.2 sigma of its source (mf_wke = 0).
   REGISTERED: shal set + mf_wke 1 (the existing IFS-KE option): SUPPORTED if shallow-on in 20-40N ascent regions >= 0.30 (from 0.11)
   and 925 venting <= −0.52 g/kg/day.
+- 20:03 (clock) RESULT shal set + mf_wke 1: shallow on 0.10 (needed >= 0.30), 925 venting −0.03 (needed <= −0.52) -> NOT SUPPORTED.
+  The test-parcel ascent rule is not the limiter. Next: trace the shallow test parcel over the 20-40N ascent columns (eager call on a
+  day-1 state): fraction reaching condensation, where it stops, parcel RH at its top - to find which input stops it.
