@@ -3292,3 +3292,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
   NEXT (registered from 17-18 Nov, unchanged): the A/P1 global screen - the land set at dt 20 vs BASE3 at dt 20 (same harness), with
   the 18 Nov screen gates (t850 / t700 / q850 day-1/2 biases vs ERA5, not relaxed).
   [reg: 23:47 / 01:24 | inputs: SW, LW, LE, H, soil start, emissivity, roughness noted | fail-5why: n/a (PASS)]
+- 01:32 (clock) REGISTERED A/P1 GLOBAL SCREEN with the land set (rule from 18 Nov 13:10, unchanged: 3 starts, day-2 globe |t850| AND |t700|
+  <= 0.6 K; day-1 rain and LHF within 15 % of ERA5), rh_vs_era5 at T42 dt 20, start file wx2020L2 for all:
+  base3r = BASE3 + rad_every 1; land = base3r + land set; land_conv = land + the IFS-document convection set (candidate, 18 Nov).
+  PREDICTION: land alone changes the GLOBE day-2 t850/t700 by < 0.3 K (land is ~30 % of the globe; the 20-40N land BL heating is the
+  part it fixes) -> the land set alone FAILS the globe gate; its value shows in the land/subtropical split and as the input fix for
+  the held convection candidate (land_conv). [reg: now | inputs: land inputs fixed per the land gate | fail-5why: to follow]
