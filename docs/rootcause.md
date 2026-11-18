@@ -3102,3 +3102,8 @@ running as a separate test) is NOT adopted on its own result unless this check p
   range is < 0.6x ERA5's AND our maximum is >= 2 h after ERA5's; (b) an ENERGY-input error named if our time-integrated
   (SW net + LW dn - LW up) from 0 to 6 h differs from ERA5's by more than 25%; (c) the SURFACE-FLUX partition (LE) is named if
   our LE at local noon is < 0.5x ERA5's (ERA5 noon LE 128 W m-2) - the noon energy has to go somewhere.
+- 23:34 (clock) DRAG TRUTH (ERA5, land ascent points, h12/24/36 mean): roughness z0 0.40 m (ours fixed 0.1) -> rule (1) MET: ROUGHNESS
+  named (ERA5 4x ours; ERA5 forecast_surface_roughness, no orographic part). Turbulent stress 0.088 N m-2, GW surface stress 0.032
+  = 36% of turbulent -> rule (3) NOT met (orographic drag not named). Rule (2) (our rho*ust^2) runs after the hourly trace.
+  Weight: secondary to the skin phase (order test). A 4x larger z0 also raises our heat exchange (Ck), so it cannot by itself fix the
+  noon deficit; it is noted as an input error to correct with the land fix, not alone.
