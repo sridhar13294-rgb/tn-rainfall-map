@@ -2561,3 +2561,12 @@ ERA5 12-48 h medians: FAIL group RMW 124 km, shear 6.3 m/s; PASS group RMW 174.5
 => by the rule: neither -> next = inflow-layer inputs (surface enthalpy flux components vs ERA5 sshf/slhf in the core).
 Caveat (honest): ERA5's own 0.25° RMWs (62-283 km) are far larger than real inner cores (~20-50 km), so ERA5 RMW is a weak proxy
 for true core size; the borderline 0.71 means a resolution part is NOT excluded - only not shown.
+
+## 18 Nov 09:25 IST — A/P1: doc check of the remaining Mb inputs + test (b) registered
+Line-by-line vs Cy50r1: entrainment (6.7: 1.75e-3 f_eps (1.3-RH) (qs/qs_base)^3, buoyant only), tau (6.26-6.27: H/w_up x (1+1.6 dx/125 km),
+720-10800 s) and the closure denominator (6.25: g/Tv M* (dTv/dz + g/cp) dz) MATCH the code. Two documented differences from what
+ERA5 used: ERA5 ran IFS Cy41r2 (no QCV term 6.29-6.32), and the column test lacks the step's large-scale forcing (quasi-equilibrium).
+-> The single-column test has reached its limit; the decisive check is in the model state itself.
+TEST (b), REGISTERED before running: our own T42 start state (spin_I.npz, 2020-11-01, the state behind the 0.15 vs 1.3 mm/day
+finding), IFS convection hour 1, tropics 20S-20N, convective rain vs ERA5 cp (hour 1): fix explains the A/P1 deficit if ours rises
+from ~12 % to >= 50 % of ERA5; partly if 25-50 %; not if < 25 %.
