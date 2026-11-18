@@ -2750,3 +2750,13 @@ From now on every entry's time is taken from the clock tool at the moment of wri
   (adiabatic cooling by stronger large-scale ascent / advection). Next 5-Why test (registered): total dT/dt at 850 from consecutive
   states minus physics = dynamics, base3 vs new, days 0-2, tropics/extratropics; the larger of (dynamics change, radiation change)
   over days 1-2 is named.
+- 11:37 (clock) 850 T TENDENCY SPLIT RESULT (dyn850.py, T42, 3 starts, day-2 mean, sigma 0.86, K/day, base3 -> new set):
+    globe:     total −0.08 -> −0.33 | physics −0.42 -> −0.17 | radiation −1.22 -> −2.19 | dynamics +0.34 -> −0.17
+    tropics:   total −0.20 -> −0.52 | physics −0.60 -> −0.28 | radiation −1.33 -> −2.58 | dynamics +0.40 -> −0.25
+  Change new − base3 (globe): radiation −0.97, dynamics −0.51, physics without radiation +1.22. By the rule the larger is RADIATION
+  -> named: the new convection set makes 850 hPa radiate ~1 K/day more (~2x). 5-Why next: more LW cooling at 850 <- more low
+  cloud at/above 850 (moist 850, RH +0.11 -> RH-cloud) and/or cloud-top cooling of the now-active shallow cloud layer; the
+  radiation scheme itself was measured 0.3-0.5 K/day colder than RRTMG at 850-1000 hPa. Registered test: same states, 850 radiative
+  heating split clear-sky vs cloud (rad_allsky style) and cloud fraction at 850, base3 vs new; and the new-set column through RRTMG
+  (rrtmg_climlab_reference.py) - the cloud part is named if it carries >= 50 % of the −0.97; the scheme if RRTMG on the same
+  state cools >= 0.5 K/day less.
