@@ -22,6 +22,13 @@ jobs:
         run: |
           mkdir -p /tmp/cyc_out; gh release download era5-cases -p wx_truth_2020.npz -D /tmp/cyc_out
           WX_HRES_ONLY=1 python scripts/cyclone/cyc_wx.py || true
+      - if: contains(github.event.head_commit.message, 'land2 library')
+        run: |
+          # 19 Nov: the same 73 exam starts with ERA5 soil temperature levels 2-4 added (skin_ifs soil start), NEW name wx2020L2
+          mkdir -p /tmp/cyc_out
+          LIBM_TIMES=2020-01-01T00/2020-12-26T00/120 LIBM_NAME=wx2020L2 python scripts/cyclone/cyc_libm.py > /tmp/libm_wxL2.out 2>&1 || true
+          tail -5 /tmp/libm_wxL2.out; grep -i "source\|soil" /tmp/libm_wxL2.out | head -12 || true
+          [ -f /tmp/cyc_out/libm_wx2020L2_fields.npz ] && gh release upload era5-cases /tmp/cyc_out/libm_wx2020L2_fields.npz --clobber || true
       - if: contains(github.event.head_commit.message, 'land library')
         run: |
           # 5 Nov: the same 73 exam starts WITH the ERA5 land state (soil water, soil/skin temperature, snow) under a NEW name;
@@ -100,7 +107,7 @@ jobs:
         run: |
           python scripts/cyclone/cyc_cp.py || true
           [ -f /tmp/cyc_out/cp_start.npz ] && gh release upload era5-cases /tmp/cyc_out/cp_start.npz --clobber || true
-      - if: ${{ !contains(github.event.head_commit.message, 'cp truth') && !contains(github.event.head_commit.message, 'ml columns') && !contains(github.event.head_commit.message, 'core rain') && !contains(github.event.head_commit.message, 'blh truth') && !contains(github.event.head_commit.message, 'cc truth') && !contains(github.event.head_commit.message, 'rh tail') && !contains(github.event.head_commit.message, 'blh global') && !contains(github.event.head_commit.message, 'cc hi truth') && !contains(github.event.head_commit.message, 'q1 truth') && !contains(github.event.head_commit.message, 'blh lcl') && !contains(github.event.head_commit.message, 'shf truth') && !contains(github.event.head_commit.message, 'shf hourly') && !contains(github.event.head_commit.message, 'stl truth') && !contains(github.event.head_commit.message, 'ml sub columns') && !contains(github.event.head_commit.message, 'l37 fields') && !contains(github.event.head_commit.message, 'bl truth') && !contains(github.event.head_commit.message, 'ECMWF scores only') && !contains(github.event.head_commit.message, 'land library') && !contains(github.event.head_commit.message, 'moist truth') && !contains(github.event.head_commit.message, 'flux truth') && !contains(github.event.head_commit.message, 'rh truth') && !contains(github.event.head_commit.message, 'peak truth') }}
+      - if: ${{ !contains(github.event.head_commit.message, 'cp truth') && !contains(github.event.head_commit.message, 'ml columns') && !contains(github.event.head_commit.message, 'core rain') && !contains(github.event.head_commit.message, 'blh truth') && !contains(github.event.head_commit.message, 'cc truth') && !contains(github.event.head_commit.message, 'rh tail') && !contains(github.event.head_commit.message, 'blh global') && !contains(github.event.head_commit.message, 'cc hi truth') && !contains(github.event.head_commit.message, 'q1 truth') && !contains(github.event.head_commit.message, 'blh lcl') && !contains(github.event.head_commit.message, 'shf truth') && !contains(github.event.head_commit.message, 'shf hourly') && !contains(github.event.head_commit.message, 'stl truth') && !contains(github.event.head_commit.message, 'ml sub columns') && !contains(github.event.head_commit.message, 'l37 fields') && !contains(github.event.head_commit.message, 'bl truth') && !contains(github.event.head_commit.message, 'ECMWF scores only') && !contains(github.event.head_commit.message, 'land library') && !contains(github.event.head_commit.message, 'land2 library') && !contains(github.event.head_commit.message, 'moist truth') && !contains(github.event.head_commit.message, 'flux truth') && !contains(github.event.head_commit.message, 'rh truth') && !contains(github.event.head_commit.message, 'peak truth') }}
         run: |
           mkdir -p /tmp/cyc_out
           LIBM_TIMES=2020-01-01T00/2020-12-26T00/120 LIBM_NAME=wx2020 python scripts/cyclone/cyc_libm.py > /tmp/libm_wx.out 2>&1 &

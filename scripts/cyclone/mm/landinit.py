@@ -9,7 +9,8 @@ Mapping (land nodes only; sea, sea ice and land nodes with no valid value nearby
   land tl   = skin temperature where valid, else top-soil temperature                                 [old: lowest model level]"""
 import numpy as np
 POROSITY = 0.45                                         # volumetric soil water at saturation (m3 m-3): a full bucket
-NAMES = dict(soil_vol='volumetric_soil_water_layer_1', soil_t='soil_temperature_level_1', skin_t='skin_temperature')
+NAMES = dict(soil_vol='volumetric_soil_water_layer_1', soil_t='soil_temperature_level_1', skin_t='skin_temperature',
+             soil_t2='soil_temperature_level_2', soil_t3='soil_temperature_level_3', soil_t4='soil_temperature_level_4')   # 2-4: 19 Nov, used by skin_ifs only
 
 def land_kwargs(f2, v2):
     """the optional Model.init keywords from one start's surface fields f2 [var, lat, lon] and their names v2 (a name that

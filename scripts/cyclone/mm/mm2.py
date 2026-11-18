@@ -178,7 +178,7 @@ class Model:
         ext = np.concatenate([a, a[..., :1]], -1); lo2 = np.concatenate([lons, [lons[0] + 360]]); pts = np.stack([self.LA.ravel(), self.LO.ravel()], -1)
         f = lambda x: RGI((la2, lo2), x, bounds_error=False, fill_value=None)(pts).reshape(self.LO.shape)
         return np.stack([f(x) for x in ext]) if ext.ndim == 3 else f(ext)
-    def init(self, f3, levs, lats, lons, ps_pa, zs_m, sst_k, lsm, storm=None, ocean=None, when=None, soil_vol=None, soil_t=None, skin_t=None):
+    def init(self, f3, levs, lats, lons, ps_pa, zs_m, sst_k, lsm, storm=None, ocean=None, when=None, soil_vol=None, soil_t=None, skin_t=None, soil_t2=None, soil_t3=None, soil_t4=None):
         """f3: temperature, specific_humidity, u/v_component_of_wind, geopotential -> [lev, lat, lon]. storm: dict(lat, lon,
         vmax_kt, rmw_km) to replace the analysis vortex with a balanced one. soil_vol (top-layer volumetric soil water, m3 m-3),
         soil_t / skin_t (K), [lat, lon] like sst_k: analysed land state for land points (landinit.py); None = the old guesses."""
@@ -226,7 +226,9 @@ class Model:
             carry['q_adv'] = jnp.zeros_like(jnp.asarray(sg['q'], jnp.float32)); carry['q_last'] = jnp.asarray(sg['q'], jnp.float32); carry['dqp'] = jnp.zeros_like(carry['q_adv'])                # cld_fix: start humidity for the frozen RH cloud
         if self.S.get('skin_ifs', 0):                                                               # (19 Nov) IFS skin layer over a 4-layer soil
             _ts = jnp.asarray(landinit.land_start(N, sg['t'][-1], land, self.S['bucket'], None, soil_t, None)[0], jnp.float32)
-            carry['ts'] = jnp.stack([_ts] * 4)
+            # ERA5 soil temperature levels 2-4 when the start file has them (19 Nov, libraries built after that date); else level 1 for all
+            _lv = [_ts] + [jnp.asarray(landinit.land_start(N, sg['t'][-1], land, self.S['bucket'], None, x, None)[0], jnp.float32) if x is not None else _ts for x in (soil_t2, soil_t3, soil_t4)]
+            carry['ts'] = jnp.stack(_lv)
         if self.S.get('soil_fr', 0):                                                                # force-restore deep soil temperature (5 Nov)
             carry['tl2'] = jnp.asarray(landinit.land_start(N, sg['t'][-1], land, self.S['bucket'], None, soil_t, None)[0], jnp.float32)
         if ocean is not None:                                                                       # 1-D ocean column under every sea point (ocean.py)

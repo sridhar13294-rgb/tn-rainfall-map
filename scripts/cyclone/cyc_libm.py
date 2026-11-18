@@ -10,7 +10,7 @@ import json, os, datetime as dt, numpy as np, xarray as xr
 WB2 = 'gs://weatherbench2/datasets/era5/1959-2023_01_10-6h-240x121_equiangular_with_poles_conservative.zarr'
 ARCO = 'gs://gcp-public-data-arco-era5/ar/full_37-1h-0p25deg-chunk-1.zarr-v3'
 V3 = ['temperature', 'specific_humidity', 'u_component_of_wind', 'v_component_of_wind', 'geopotential']
-LAND = ['volumetric_soil_water_layer_1', 'soil_temperature_level_1', 'skin_temperature', 'snow_depth']
+LAND = ['volumetric_soil_water_layer_1', 'soil_temperature_level_1', 'skin_temperature', 'snow_depth', 'soil_temperature_level_2', 'soil_temperature_level_3', 'soil_temperature_level_4']   # 2-4 appended 19 Nov (skin_ifs soil start)
 V2 = ['surface_pressure', 'sea_surface_temperature', 'land_sea_mask', 'geopotential_at_surface'] + LAND   # old order kept, land appended
 LEVS = [50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000]
 L37 = os.environ.get('LIBM_L37') == '1'                                                          # 14 Nov: all ERA5 levels >= 50 hPa from ARCO, 7x7 box mean (~1.75 deg) -> 1.5 deg

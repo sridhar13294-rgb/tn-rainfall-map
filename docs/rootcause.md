@@ -3232,3 +3232,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - 00:40 (clock) REGISTERED (morning lag, soil start input): ERA5 soil temperature levels 1-4 at the 3 starts vs ours (all 4 layers start
   at ERA5 stl1). SOIL START named if ERA5's stl2-stl4 mean differs from stl1 by >= 2 K (then our soil column starts with the wrong
   heat content and the zero-flux bottom). [reg: now | inputs: soil start | fail-5why: n/a (measurement)]
+- 00:46 (clock) AEROSOL RESULT (land set + aer 1): SW-down excess h6-h10 36.9 -> 14.3 W m-2 (rule <= 20) -> PASS on SW; land gate: h6 skin
+  297.4 (4.6 K cold), h12 H 52 -> FAIL. SOIL START RESULT (ERA5, 3 starts, box land): stl1 295.8/290.7/286.3, stl2-4 mean 300.6/298.2/294.9
+  -> deeper soil is 4.8-8.6 K WARMER than level 1 (rule >= 2 K) -> SOIL START NAMED: our 4 layers all start at stl1, i.e. 5-9 K too
+  cold below 7 cm, so the soil keeps drawing heat out of the skin by day (and less heat comes up at night).
+  Failure 5-Why for the aerosol run's land gate: the remaining skin deficit is the named soil start (an input), not aerosol
+  -> aer + land set HELD (blocked by soil start). FIX of the INPUT (not physics): soil_temperature_level_2-4 added to the start library
+  (cyc_libm LAND appended, landinit NAMES, Model.init -> skin_ifs soil layers; old libraries unchanged -> fall back to stl1).
+  New library wx2020L2 building on GitHub ('land2 library'). REGISTERED: the land set + aer on wx2020L2, same gate (h6 skin within
+  3 K of 302.0 AND h12 H <= 30) AND SW excess <= 20 AND max |LE| <= 400.
+  [reg: now | inputs: SW (aer), soil start (ERA5 stl1-4) | fail-5why: soil start input (named), not the fixes]
