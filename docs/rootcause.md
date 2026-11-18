@@ -2652,3 +2652,11 @@ moisture advection added; BOMEX initial profiles) for 6 h, horizontally uniform 
   REGISTERED next (no tuning: the documented IFS value): base3 + entr 1.75e-3 + mf_org 1 (f_scale^3 as 6.7) in BOMEX ->
   SUPPORTED if the deep scheme stays off (on_dp 0 after hour 1) and cloud-layer theta drifts within ±0.3 K over hours 3-6;
   then the global screens (T42 3 starts t850/t700, rain, LHF) and storms before any adoption.
+- 13:35 BOMEX with IFS deep entrainment (entr 1.75e-3 + mf_org 1): deep stays OFF all 6 h (criterion 1 met) BUT the shallow scheme
+  never switches on either (base2 shallow 'mse'), so the cloud layer 1.4-2.0 km cools −0.69 K over hours 3-6 (−1.36 over 6 h) and
+  moistens +0.55 g/kg: the prescribed −2 K/day is not balanced -> criterion 2 FAILS. Not supported alone.
+  5-Why continues: no shallow convection in BOMEX <- base2 'mse' shallow test (positive buoyancy and CAPE > 0) "almost never passed"
+  (mm2 comment; known) <- the IFS-document shallow set exists (shallow 'mf', sh_trig 1, sh_dmax 20000, sh_eps 3.5e-3, sh_det 1,
+  sh_clos 1; registered 10 Nov) but was only ever tested with base2's 12x-too-small DEEP entrainment.
+  REGISTERED (same rule): BOMEX with IFS deep entrainment + IFS-document shallow set: SUPPORTED if deep stays off, shallow is on
+  in >= 4 of 6 hours, and cloud-layer theta 3->6 h within ±0.3 K at 500-1000 and 1400-2000 m.
