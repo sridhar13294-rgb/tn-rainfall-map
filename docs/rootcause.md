@@ -2982,3 +2982,12 @@ cloud-top height vs ERA5 cloud-base/top.
   the Stage-1 config) but it is not why 925 is not vented. Next: where is the shallow scheme active in those regions and where is
   its cloud base - if 925 sits ABOVE the shallow cloud base, the IFS scheme moistens it (in-cloud detrainment) instead of venting it,
   while base3's 'mse' scheme vented from the lowest level up. Diagnostic: on_sh fraction and source / cloud-base sigma, 20-40N ascent.
+- 19:56 (clock) DIAGNOSTIC (20-40N ascent regions, area fractions / heights): base3: shallow-'mf' on 0.00 (its −1.04 venting is the old
+  'mse' mixing, which acts without any cloud trigger), deep on 0.21, LCL 1896 m, BL top 1099 m | shal_only: shallow on 0.11, deep on
+  0.33, LCL 1475 m, BL top 1099 m.
+  => In these (largely dry, land-heavy) subtropical regions the LCL (1.5-1.9 km) sits ABOVE the BL top (1.1 km): the IFS shallow
+  test parcel rarely reaches its LCL -> shallow on in only 11 %. Base3 vented 925 with 'mse' mixing that ignores the cloud trigger
+  (acting like dry-convective mixing). With the IFS set nothing mixes the layer between the BL top and the LCL -> 925 stays moist.
+  5-Why next (registered for tomorrow): ERA5 boundary_layer_height and LCL in the same regions/times: if ERA5's BL reaches the LCL
+  (BLH >= 0.9 x LCL) where ours stops at ~0.6-0.75 x LCL -> our BL depth is the input error there (dry-convective BL too shallow);
+  if ERA5's BL also stops well below the LCL -> the missing venting must come from the shallow trigger (parcel excess / LCL input).
