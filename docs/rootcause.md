@@ -2705,3 +2705,12 @@ moisture advection added; BOMEX initial profiles) for 6 h, horizontally uniform 
   280.74951171875): BOMEX ifs_doc + mf_mix_exact: deep off 6/6, shallow ON 3/6 h (was 2/6) -> NOT supported (rule >= 4/6).
   theta h3->h6 −0.09 / +0.14 K; cloud-top q −0.37 g/kg (shallow now moistens 1.4-2.0 km +4.3 g/kg/day but subsidence −6.3 wins).
   Partial effect only. Next suspect (b): parcel excess - ours fixed 0.5 K / 5e-4 vs IFS 6.19 flux-based excess.
+- 16:50 (b) parcel excess checked against IFS 6.19: IFS excess = max(0.2 K, 1.5 Js/(rho cp w*)) <= 1 K and max(1e-4, 1.5 Jq/(rho L w*))
+  <= 5e-4; for BOMEX fluxes that is ~0.2 K / 1.3e-4 - SMALLER than our fixed 0.5 K / 5e-4 -> (b) is not why the parcel fails.
+  Note: the exact integral of 6.18 from 85 to 260 m (1-(85/260)^0.8 = 0.59) dilutes as much as our explicit step -> in IFS too the
+  test parcel is mostly environment by 260 m; it reaches the LCL because IFS's sub-cloud layer is well mixed up to cloud base.
+  BOMEX ifs_doc + mf_mix_exact + bl_lcl (BL capped at the LCL, option (a) part): BL no longer reaches into the cloud layer (q_bl 0
+  above 500 m), shallow ventilates (q_shal −9.1 sub-cloud, +0.9/+4.8/+5.5 g/kg/day in the cloud layer = BOMEX-like structure),
+  theta h3->h6 −0.06 / +0.14 K, cloud-top q −0.37 g/kg. Shallow ON 3/6 snapshot hours -> NOT supported by the rule. Not judged:
+  ON in 39 % of all steps, intermittent (101001110001000100) - LES trade cumulus is continuous. Next 5-Why: why does the trigger
+  switch off every other step (sub-cloud q after a convective step vs the parcel's LCL) - closure (sh_clos) too strong per step?
