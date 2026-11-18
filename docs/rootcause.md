@@ -3123,3 +3123,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
   hourly snapshots then sample it. REGISTERED (per-step tl trace, 2020-11-01, 0-10 h): NUMERICAL OSCILLATION of the skin named if
   >= 30% of land points show a sign-alternating 2nd difference in > 50% of steps, OR the median |2nd difference| >= the median
   |1st difference| (noise as large as the signal). If named, the input to check is the coupling time step/implicitness, not the physics.
+- 23:44 (clock) INPUT FOUND for the oscillation test: the T42 screen steps at dt = 60 min (DT_MAX T42 60; T170 20). The explicit skin
+  update tl += dt*net/C is stable without overshoot only if K*dt/C < 1, where K = dnet/dTl = 4 sigma T^3 + cp*chv + Lv*chv*beta*dqs/dT
+  (the same K the sfc_imp option uses). REGISTERED: compute K*dt/C from the model's own diagnostics at land points (h6, local noon);
+  EXPLICIT-STEP OVERSHOOT named if the median over land >= 1 at dt 3600 s (then the skin rings at T42; check the same at T170, dt 1200 s).
+  If named, the T42 land results (H 65, BL 1100 m) are partly a time-step artifact of the SCREEN, and the input fix is the solver
+  (implicit skin = sfc_imp, already in the code), not the physics.
