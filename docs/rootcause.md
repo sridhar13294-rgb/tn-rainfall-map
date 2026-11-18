@@ -2977,3 +2977,8 @@ cloud-top height vs ERA5 cloud-base/top.
   had no depth limit). REGISTERED (no tuning: set mf_dmin to the IFS value 20000 so the classes meet): candidate + mf_dmin 20000 ->
   SUPPORTED if (1) 925 venting in 20-40N ascent regions recovers >= 50 % of base3's (<= −0.52) and (2) masked 20-40N q850 dynamics
   recovers >= 50 % of base3's drying (<= −0.24); then the global T42 screen.
+- 19:47 (clock) GAP TEST RESULT (candidate + mf_dmin 20000): 925 venting in 20-40N ascent regions q_shal +0.11 (needed <= −0.52), deep
+  −0.19; masked 20-40N q850 dynamics +0.15 (needed <= −0.24) -> NOT SUPPORTED. The 200-250 hPa gap is real in the code (logged for
+  the Stage-1 config) but it is not why 925 is not vented. Next: where is the shallow scheme active in those regions and where is
+  its cloud base - if 925 sits ABOVE the shallow cloud base, the IFS scheme moistens it (in-cloud detrainment) instead of venting it,
+  while base3's 'mse' scheme vented from the lowest level up. Diagnostic: on_sh fraction and source / cloud-base sigma, 20-40N ascent.
