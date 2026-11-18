@@ -2875,3 +2875,14 @@ cloud-top height vs ERA5 cloud-base/top.
   computation). In the clean 0-20N band the vertical term matches ERA5 (−0.07..−0.09 vs −0.10). => verdict NOT trusted until the
   terrain is masked; also the residual 'dynamics' (total − physics) and this direct split differ (0-20N: −0.05 vs −0.25) - the
   residual carries numerical/diffusion terms. Next: recompute both with surface pressure > 900 hPa only (ERA5: z850 vs orography).
+- 18:33 (clock) TERRAIN-MASKED RESULT (surface pressure > 900 hPa in both; q850 dynamics, horizontal / vertical, g/kg/day):
+    ERA5       region −0.30 / −0.21 (−0.51) | 0-20N −0.26 / −0.10 | 20-40N −0.39 / −0.46 (−0.85)
+    base3      region −0.16 / −0.17 (−0.33) | 0-20N −0.19 / −0.09 | 20-40N −0.10 / −0.37 (−0.47)
+    candidate  region −0.11 / −0.04 (−0.14) | 0-20N −0.18 / −0.07 | 20-40N +0.08 / +0.05 (+0.13)
+  => 0-20N: both configurations match ERA5 within ~0.08. The drying deficit is in the SUBTROPICS 20-40N (low ground only):
+  base3 already −0.38 short (mostly horizontal), the candidate −0.98 short with BOTH terms gone (horizontal +0.47, vertical +0.51);
+  mean omega850 there: base3 +0.0136, candidate +0.0066 Pa/s (subsidence halved).
+  Reading: the candidate convection changes the large-scale circulation so that the subtropical 850 subsidence and dry-air import
+  weaken - a circulation response to where the convective heating now goes (deep heating at 850: +0.57 -> +1.02 K/day). 5-Why
+  next: compare the candidate's tropical convective heating PROFILE with a reference profile (TRMM/ERA5 Q1, or the IFS-doc
+  behaviour in its own SCM cases) - a heating peak too low would drive a shallow, weak overturning with weak subtropical subsidence.
