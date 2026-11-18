@@ -34,6 +34,17 @@ for s in LIBL:
             for v, nm in (('surface_sensible_heat_flux', 'sshf'), ('surface_latent_heat_flux', 'slhf')):
                 acc = A[v].sel(time=slice(np.datetime64(t - dt.timedelta(hours=5)), np.datetime64(t))).sel(**box).values.mean(0) / -3600.0  # W m-2 upward
                 r[nm + '_100'] = round(float(acc[d <= 100].mean()), 1); r[nm + '_300'] = round(float(acc[d <= 300].mean()), 1)
+            ws = np.hypot(A['10m_u_component_of_wind'].sel(time=np.datetime64(t)).sel(**box).values, A['10m_v_component_of_wind'].sel(time=np.datetime64(t)).sel(**box).values)
+            fx = {v: A[v].sel(time=np.datetime64(t)).sel(**box).values for v in ('sea_surface_temperature', '2m_temperature', '2m_dewpoint_temperature', 'surface_pressure')}
+            sea = np.isfinite(fx['sea_surface_temperature']) & (d <= 100)
+            e_ = lambda T_: 611.2 * np.exp(17.67 * (T_ - 273.15) / (T_ - 29.65))
+            q2 = 0.622 * e_(fx['2m_dewpoint_temperature']) / fx['surface_pressure']; qs = 0.622 * 0.98 * e_(fx['sea_surface_temperature']) / fx['surface_pressure']
+            dk = 1004.6 * (fx['sea_surface_temperature'] - fx['2m_temperature']) + 2.5e6 * (qs - q2)
+            rho = fx['surface_pressure'] / (287.04 * fx['2m_temperature'] * (1 + 0.61 * q2))
+            if sea.any():
+                F = r.get('sshf_100', 0) + r.get('slhf_100', 0)
+                r.update(fs_V10=round(float(ws[sea].mean()), 2), fs_sst=round(float(fx['sea_surface_temperature'][sea].mean()), 2),
+                         fs_dk=round(float(dk[sea].mean()), 0), fs_Ck=round(float(F / max((rho * ws * dk)[sea].mean(), 1e-6)), 5))
             r['vmax10'] = round(float(ws[d <= 300].max()), 1); r['rmw'] = round(float(d[d <= 300][np.argmax(ws[d <= 300])]), 0)
             sh = {}
             for lv in (850, 200):
