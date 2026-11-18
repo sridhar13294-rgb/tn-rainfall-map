@@ -2961,3 +2961,10 @@ cloud-top height vs ERA5 cloud-base/top.
   Next: which end - q below 850 (925 moister: sub-cloud/BL moisture not ventilated by the BL, since shal_only has no BL change) or
   above (700 drier)? Compare q925 / q850 / q700 in the ascent regions with ERA5 (registered: the level whose bias vs ERA5 changes
   most from base3 to shal_only is named).
+- 19:31 (clock) LEVEL RESULT (20-40N ascent regions, g/kg; bias vs ERA5 925 / 850 / 700):
+    ERA5 7.21 / 6.28 / 3.64 | base3 6.81 / 5.89 / 4.16 (−0.40 / −0.39 / +0.52) | shal_only 7.90 / 6.36 / 3.87 (+0.69 / +0.08 / +0.23)
+  Change base3 -> shal_only: 925 +1.09, 850 +0.47, 700 −0.29 -> 925 named: with the IFS shallow set the lowest levels in subtropical
+  ascent regions are TOO MOIST (+0.69); base3 was the opposite (its tall 'mse' shallow mixed 925 moisture up to 700: 700 +0.52).
+  So the IFS shallow set ventilates the sub-cloud layer too little in these regions (or the surface supplies too much - LHF +14 %
+  measured 13 Nov). Next (registered): q925 physics budget in 20-40N ascent regions, base3 vs shal_only: surface evaporation into the
+  layer, q_bl, q_shal (venting), q_evap; the term whose change explains >= 50 % of the +1.09 is named.
