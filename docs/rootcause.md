@@ -3048,3 +3048,17 @@ exam re-run.
   The land module already built 5 Nov (sfc_imp + land_rs 100 + soil_fr; ISBA-type, fixed central-India cold land) was never adopted.
   REGISTERED: BASE3 + land module in the same diagnostic -> SUPPORTED if land H in 20-40N ascent regions <= 2x ERA5 (<= 19 W m-2)
   AND BL top <= 1.3x ERA5 (<= 690 m); then global screen with the candidate convection.
+
+## 18 Nov 23:17 IST (clock) — Sridhar 23:17: work with the rules (FMEA, 5-Why, Fishbone; when an equation/implementation is suspect,
+## CHECK ITS INPUTS first - do not blindly change physics or implementation). Applied to the land-skin finding BEFORE any land change:
+Problem: over subtropical land at 00/12 UTC our skin stays 1.9 K warm, sensible flux 64.7 vs ERA5 9.6 W m-2.
+Equation: C dTl/dt = SW_sfc + LW_dn − sigma Tl^4 − H − LE  (cap_land 2e5 J m-2 K-1); H = rho cp Ck V1 (Tl − theta1).
+5-Why: H too large <- (Tl − theta1) too large and/or Ck V1 too large <- Tl too warm <- net surface energy too positive at night:
+  LW_dn too large? (our 850 is too moist and low cloud is 3x ERA5 -> more downward LW) / SW_sfc too large (cloud too thin?) /
+  C too large (slow cooling) <- inputs to be MEASURED, not changed.
+Fishbone: Inputs (LW_dn, SW_sfc, V1, theta1, Ck), Equation (slab vs force-restore), Parameter (cap_land), State (cloud, q850),
+  Coupling (cloud -> LW_dn -> Tl -> H -> BL -> q850 -> cloud = possible LOOP with problem A).
+FMEA (RPN): LW_dn too large from excess cloud/moisture 8x7x3=168 | C too large 6x5x3=90 | V1/Ck too large 6x4x3=72 | SW_sfc 5x3x3=45.
+REGISTERED input check: model SW_sfc, LW_dn, V1 over the same land points/times vs ERA5 ssrd / strd / 10-m wind (W m-2, hourly):
+the input whose error, put through the equation, accounts for >= 50 % of the extra (H + net) is named; the land module (already
+running as a separate test) is NOT adopted on its own result unless this check points to the land equation/capacity.
