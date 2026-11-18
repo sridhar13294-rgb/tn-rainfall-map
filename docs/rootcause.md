@@ -2956,3 +2956,8 @@ cloud-top height vs ERA5 cloud-base/top.
   5-Why next (tomorrow): in the ascent regions, is it stronger ascent (omega) or a steeper gradient below 850 (shallow venting the
   sub-cloud moisture upward into 925-850 where ascent lifts it)? Split the ascending contribution into mean omega x mean gradient
   and their covariance for shal_only vs base3.
+- 19:25 (clock) ASCENT-REGION SPLIT (20-40N masked): base3 ascent omega −0.093 Pa/s, dq/dp 0.124 | shal_only −0.087, dq/dp 0.219 (+77 %);
+  subsidence regions: dq/dp 0.176 -> 0.236. => Ascent is NOT stronger; the vertical humidity GRADIENT near 850 is steeper -> named.
+  Next: which end - q below 850 (925 moister: sub-cloud/BL moisture not ventilated by the BL, since shal_only has no BL change) or
+  above (700 drier)? Compare q925 / q850 / q700 in the ascent regions with ERA5 (registered: the level whose bias vs ERA5 changes
+  most from base3 to shal_only is named).
