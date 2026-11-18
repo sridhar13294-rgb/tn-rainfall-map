@@ -3151,3 +3151,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED test, existing code only, no tuning: soil_fr 1 (force-restore, Deardorff 1978, C_eff 1.17e5, mu 1400 from the docs)
   vs base3, hourly trace h0-12: PASS if noon (h6) skin within 3 K of ERA5's 302.0 AND evening (h12) H <= 2x ERA5's 15.
   If it fails, the IFS skin-layer formulation (zero capacity + skin conductivity) is the next candidate - from the document, not tuned.
+- 23:48 (clock) REFERENCE (IFS Cy38r1 Part IV, eq. 3.75, Table 8.2, Table 8.6, sec. 8.5.1): the skin layer "has no heat capacity and
+  therefore responds instantaneously": R_SW + R_LW + H + L Jq = Lambda_sk (T_sk - T_1). Lambda_sk: low vegetation 10, bare ground 15,
+  high vegetation 20 (unstable) / 15 (stable) W m-2 K-1. Top soil layer 0.07 m, volumetric heat capacity 2.19e6 J m-3 K-1
+  (-> 1.53e5 J m-2 K-1 for layer 1), four layers 0.07/0.21/0.72/1.89 m. Ours: one slab C = 2e5 that IS the skin -> with G ~ 90 W m-2
+  at noon the IFS skin runs (90/10..15) = 6-9 K above its top soil layer; ours cannot. This is the documented formulation to
+  implement as an OPTION if the force-restore test fails (Lambda 10 low veg / 15 bare, from Table 8.2; nothing tuned).
