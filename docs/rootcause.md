@@ -2666,3 +2666,13 @@ moisture advection added; BOMEX initial profiles) for 6 h, horizontally uniform 
   +0.5-0.6 g/kg over hours 3-6 (LES ~steady) and surface fluxes H 7-8 / LE 164-184 W m-2 (BOMEX 9.5 / ~153).
   This is the first Stage-1 convection set that behaves like the LES reference in BOMEX. Next (registered 13:10): global T42 screen
   (3 starts: t850 AND t700 day-2 |bias| <= 0.6 K, day-1 rain and LHF within 15 % of ERA5), then storms (rule 2) and T170.
+- 14:50 GLOBAL T42 SCREEN (rh_vs_era5, starts 7 Oct / 1 Nov / 26 Nov, day-2 globe bias; rule |t850|, |t700| <= 0.6 K):
+    base3            t850 +0.04  t700 −1.55  rh850 +0.050
+    conv_doc         t850 −1.34  t700 −1.06  rh850 +0.171
+    parts_conv_doc   t850 −0.73  t700 −1.05  rh850 +0.087
+  => FAIL (both). NOT adopted. Progress at 700 (−1.55 -> −1.05), but 850 turns cold AND moist (+0.17 RH) - the same signature
+  BOMEX showed (+0.5 g/kg cloud-layer moistening while LES is steady). 5-Why: 850 cold <- too moist 850 -> more RH cloud -> LW cooling
+  <- shallow moistening of the cloud layer too large <- candidates (stated differences from IFS, 10 Nov): (1) ALL shallow condensate
+  re-evaporates where it detrains (no shallow precipitation; IFS converts with 6.44 x0.8/0.9), (2) shallow closure uses surface
+  fluxes only (IFS adds sub-cloud radiation + advection, 6.35-6.37), (3) detrainment D = E (1.6-RH) shape. Next: BOMEX moisture
+  budget by term for conv_doc (which of 1-3 makes the +0.5 g/kg), then the 850 column budget globally.
