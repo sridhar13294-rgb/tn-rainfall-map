@@ -2693,3 +2693,11 @@ moisture advection added; BOMEX initial profiles) for 6 h, horizontally uniform 
      (2) neither shallow option switches on reliably in BOMEX, so moisture is not ventilated from the sub-cloud to the cloud layer
          (BL scheme over-reaches instead). Next: why the sh_trig test parcel fails in BOMEX (cloud base 455 m, depth ok): print
          the test-parcel path at hour 1-3 (LCL, buoyancy, depth vs sh_dmax).
+- 16:05 Why the IFS-doc shallow trigger fails in BOMEX (eager trace at hour 3, test parcel of make_plume(test=True)):
+  parcel from sigma 0.99 (85 m) rises to sigma 0.929 (~640 m) and dies; it NEVER condenses (cond 0 at all levels) -> cloud False ->
+  shallow off. Inputs to the parcel: (a) mixing eps = 0.8/z + 3e-4 (IFS 6.18) applied EXPLICITLY per layer: eps dz = 0.60 entering
+  260 m, 0.39 at 445 m, 0.31 at 640 m -> the parcel is ~60 % environment after one layer (IFS integrates on 137 levels, ~20-50 m
+  thick near the surface, where eps dz << 1); (b) the parcel excess is our fixed kick (0.5 K / 5e-4) instead of IFS 6.19
+  (flux-based: 1.5 w'theta'/w*, 1.5 w'q'/w*). Suspect ranking: (a) discretisation of the mixing on coarse layers (input = dz),
+  then (b). Test (registered): same BOMEX with the mixing integrated exactly over each layer (hu -> he + (hu-he) exp(-eps dz),
+  the analytic solution of 6.18, layer-thickness independent): trigger SUPPORTED as the cause if shallow is ON >= 4/6 h.
