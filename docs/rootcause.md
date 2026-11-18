@@ -3107,3 +3107,12 @@ running as a separate test) is NOT adopted on its own result unless this check p
   = 36% of turbulent -> rule (3) NOT met (orographic drag not named). Rule (2) (our rho*ust^2) runs after the hourly trace.
   Weight: secondary to the skin phase (order test). A 4x larger z0 also raises our heat exchange (Ck), so it cannot by itself fix the
   noon deficit; it is noted as an input error to correct with the land fix, not alone.
+- 23:37 (clock) HOURLY LAND TRACE (all low-ground land 20-40N 50-110E, 3 starts, ours vs ERA5): skin ours/ERA5 h2 285.1/289.0, h4 285.2/295.7,
+  h6 289.5/302.0, h8 295.5/304.3 (ERA5 max), h10 299.1/302.2 (our max), h12 298.9/296.5, h24 285.7/287.3.
+  Rule (a) THERMAL INERTIA: our range 14.0 K = 0.82x ERA5's 17.0 (needed < 0.6) -> NOT met (max lag 2 h met, range not).
+  Rule (b) ENERGY INPUT: radiative net 0-6 h ours 1.09x ERA5 -> NOT met (radiation is not short).
+  Rule (c) LE at noon: our E was rounded to 0 in this run (kg m-2 s-1 at 2 decimals) -> re-running h0-12 with LE in W m-2; pending.
+  Two new observations, not yet rules: (i) our skin does NOT warm for 4 h after sunrise (h2-h4 flat at 285 K while ERA5 warms 7 K,
+  with our radiation 1.09x ERA5) -> the energy goes to a sink we have not measured yet (LE or the near-surface air) - the LE rerun
+  decides; (ii) at NIGHT our near-surface wind keeps growing (h24 7.6 vs ERA5 100-m 3.9, 1.9x) while H is -16 vs -10: the stable
+  night layer does not decouple, so momentum keeps mixing down. This is where the day-mean 1.65x wind excess comes from.
