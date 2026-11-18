@@ -3258,3 +3258,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
   Table 2.8 (0.99 outside / 0.93-0.96 in the window), not tuned. PREDICTION (registered before the run): +0.8 to +1.5 K at noon - NOT
   enough alone for the 4.4 K gap; the same land gate applies, so a FAIL is expected and the failure 5-Why continues.
   [reg: now | inputs: ERA5 str, skin | fail-5why: n/a (measurement); test running]
+- 01:09 (clock) EMISSIVITY TEST RESULT: h6 297.8 (+0.2 K vs 297.6; predicted +0.8..1.5 - smaller than predicted), h12 H 56 -> gate FAIL (as
+  predicted). emis_land kept (input correct per ERA5/IFS), not the driver. Failure 5-Why: with SW, LE and LW now matched, ours has
+  H 90 at noon from a skin 4.2 K colder -> our skin-air coupling is stronger (morning near-surface wind 4.9 vs ERA5 100-m 3.4).
+  REGISTERED: COUPLING named if our H / (Tsk - T_lowest) >= 1.5x ERA5's H / (skin - t2) at h4-h8 (ERA5 with t2 is conservative:
+  the 2-m gradient is smaller than to ~85 m, which overstates ERA5's conductance).
+  [reg: now | inputs: emissivity fixed, SW/LE/LW matched | fail-5why: skin-air coupling under test]
