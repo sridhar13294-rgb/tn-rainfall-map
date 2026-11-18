@@ -3026,3 +3026,10 @@ ERA5's own subtropical columns vs on ours (same method as 17 Nov) - which input 
   REGISTERED next: our BL depth growth over subtropical low ground: model sensible heat flux H and BL top at h12/24 vs ERA5 sshf and
   BLH (same regions/times). INPUT ERROR named if our H is >= 1.3x ERA5's (surface driving too strong) - else the BL scheme's depth
   formula (given right H) is named.
+
+## 18 Nov 23:03 IST (clock) — Sridhar 23:03 "You are not trying to close stage 1". Course correction:
+The Stage-1 deliverable is a FULL EXAM RUN + SCORECARD with the cause of each failing check (not every check passing). I had been
+deepening diagnoses without producing that run. Launched now: the full BASE3 exam on Kaggle - exam quarters tn-b3-wx0..3 (accounts
+1/4) + Rule-1 intensity tn-r1-b3-0/1; tracks for BASE3 already exist (q6 seeds 4-6: 377/382/380 km). The scorecard is built as soon as
+quarters land, with this week's root causes on each failing row. Fix work (A/P1 etc.) continues in parallel; a passing fix triggers an
+exam re-run.
