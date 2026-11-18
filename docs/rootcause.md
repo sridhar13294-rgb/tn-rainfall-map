@@ -2825,3 +2825,10 @@ From now on every entry's time is taken from the clock tool at the moment of wri
   day-1 850 moistening is EXTRATROPICAL and carried by shallow + BL mixing (+1.83 g/kg/day), which dynamics removes only in part;
   the tropics dry slightly. Next: map the extratropical shallow+BL moistening at 850 (oceans behind cold fronts / stratocumulus
   vs land) and check the BL top there vs ERA5 boundary_layer_height (BL mixing reaching 850 where ERA5's BL is lower = input error).
+
+## 18 Nov 17:47 IST (clock) — 16:00 cycle: dispatcher queue empty. A: extratropical 850 moistening test REGISTERED
+(1) split shallow vs BL at 850 in the extratropics (day 1, base3, 3 starts) and the model BL height there;
+(2) ERA5 boundary_layer_height, same times, extratropics (GitHub 'blh global').
+INPUT ERROR named if the process carrying >= 50 % of the +1.83 g/kg/day is BL mixing AND the model's BL top exceeds 1500 m in
+>= 1.5x the area ERA5's does (BL reaching 850 where ERA5's does not). If the carrier is shallow convection, the next check is its
+cloud-top height vs ERA5 cloud-base/top.
