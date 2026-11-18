@@ -2714,3 +2714,9 @@ moisture advection added; BOMEX initial profiles) for 6 h, horizontally uniform 
   theta h3->h6 −0.06 / +0.14 K, cloud-top q −0.37 g/kg. Shallow ON 3/6 snapshot hours -> NOT supported by the rule. Not judged:
   ON in 39 % of all steps, intermittent (101001110001000100) - LES trade cumulus is continuous. Next 5-Why: why does the trigger
   switch off every other step (sub-cloud q after a convective step vs the parcel's LCL) - closure (sh_clos) too strong per step?
+
+## 18 Nov 11:10 IST — TIME-LABEL CORRECTION (checked the clock now: 11:08 IST)
+The 18 Nov entries labelled 10:20, 10:35, 10:50, 11:05, 11:45, 12:05, 13:10, 13:35, 13:55, 14:50, 15:05, 15:40, 16:05, 16:30 and 16:50 IST
+were all written between ~09:15 and 11:08 IST - the labels ran ahead of the real clock (my error, again). Their ORDER is right; the
+clock times are not. Registrations were still made before each result (order preserved in this file and in git history timestamps).
+From now on every entry's time is taken from the clock tool at the moment of writing.
