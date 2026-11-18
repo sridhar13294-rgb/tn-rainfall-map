@@ -3330,3 +3330,15 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED: Q1 by process over the subtropical ocean (10-40 N/S), day 1: ERA5 Q1 (37 levels) vs model total physics heating and its
   parts (bl, shallow, deep, lsc, evap, radiation) for base3r and land_conv: the PROCESS named is the one whose 850 difference
   land_conv - base3r explains >= 50 % of land_conv's 850 Q1 error vs ERA5. [reg: now | inputs: maps | fail-5why: subtropical trade-wind cooling (land_conv)]
+- 02:54 (clock) Q1 BY PROCESS RESULT (subtropical ocean 10-40 N/S, day 1, K/day): ERA5 Q1 925 +0.27, 850 -1.25, 700 -0.58;
+  base3r total 925 +1.52, 850 -0.87, 700 -0.89 (shallow +6.2 at 925, evap -3.4); land_conv 925 +0.21, 850 -0.89, 700 -0.31
+  (850 parts: deep +1.29, lsc +1.23, rad -2.87, evap -0.43). -> land_conv's 850 PHYSICS heating is 0.36 K/day WARMER than ERA5's, not
+  colder -> NO physics process explains its 850 cold (rule: none named). At 925 land_conv matches ERA5 (+0.21 vs +0.27) while base3r is
+  +1.25 too warm there (its 'mse' shallow heating).
+  CORRECTION: the 850 cold of land_conv over the subtropical oceans is NOT local physics. With 850 physics equal in base3r and land_conv
+  (-0.87 / -0.89) the 1.1 K day-2 difference must come from the DYNAMICS - adiabatic (subsidence) warming. The deep tropics differ
+  strongly (base3r +2.0 K warm, land_conv -0.7 K at 850 by day 2): weaker tropical heating -> weaker Hadley descent -> less
+  subsidence warming in the subtropics (a remote cause).
+  REGISTERED: 850/700 omega over the subtropical ocean (day 1-2) model vs ERA5: SUBSIDENCE named if land_conv's descent is >= 20 %
+  weaker than ERA5's while base3r's is within 20 %; then the deep-tropical heating (Q1 0-10 N/S ocean vs ERA5) is the next input.
+  [reg: now | inputs: Q1 by process vs ERA5 | fail-5why: not local physics -> dynamics/remote]
