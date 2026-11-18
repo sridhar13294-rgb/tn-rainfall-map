@@ -2817,3 +2817,11 @@ From now on every entry's time is taken from the clock tool at the moment of wri
   -> the low flux is a CONSEQUENCE of the weak storm, not its cause (with the caveat of 5 valid storms). P3 5-Why returns to heat
   RETENTION: same heating, 37 % weaker warm core. Next registered test: the radial and vertical heating structure vs where ERA5
   puts its warm anomaly - is the model heating spread over a too-wide core (T170 grid ~78 km; ERA5 RMW FAIL 124 vs PASS 175 km)?
+- 12:17 (clock) A: q850 SPLIT (dynq850.py, base3, T42, 3 starts, g/kg/day at sigma 0.86):
+    day 1  globe total +0.17 = physics +0.56 (shallow+BL +1.32) + dynamics −0.40
+           tropics total −0.25 (physics +0.11, dyn −0.36) | EXTRATROPICS total +0.37 (physics +0.79, shallow+BL +1.83, dyn −0.42)
+    day 2  globe total +0.04 (physics +0.45, dyn −0.41)
+  Reading (the registered rule needs ERA5 per-term values that do not exist; stated, so this is a lead, not a verdict): the
+  day-1 850 moistening is EXTRATROPICAL and carried by shallow + BL mixing (+1.83 g/kg/day), which dynamics removes only in part;
+  the tropics dry slightly. Next: map the extratropical shallow+BL moistening at 850 (oceans behind cold fronts / stratocumulus
+  vs land) and check the BL top there vs ERA5 boundary_layer_height (BL mixing reaching 850 where ERA5's BL is lower = input error).
