@@ -2680,3 +2680,16 @@ moisture advection added; BOMEX initial profiles) for 6 h, horizontally uniform 
   SUBSIDENCE was applied as ASCENT (cooling + moistening above ~1 km). ALL BOMEX numbers from 13:10-14:00 (base3, cand, ent_ifs,
   ifs_doc) are INVALID and withdrawn, including "ifs_doc SUPPORTED". The global T42 screen (14:50) is unaffected (no harness).
   The 'deep fires in BOMEX' observation was at hour 0 (before any forcing acted) and stands; everything after hour 0 is re-run now.
+- 15:40 BOMEX RE-RUN with the corrected subsidence (results replace 13:10-14:00):
+    base3    : deep ON at hour 0 (off after), shallow never; theta h0->h6 +3.36 (500-1000 m) / +3.53 K (1400-2000 m) - the hour-0
+               deep burst heats the trade-cumulus layer by >3 K (LES steady) -> base2/3 misclassifies trade cumulus as deep: STANDS.
+               h3->h6 −0.40 / +0.10 K.
+    ent_ifs  : deep off, shallow never; theta h3->h6 +0.11 / +0.24 (inside ±0.3 -> passes the theta rule) BUT nothing convects:
+               the BL scheme mixes up to ~1.4 km (q_bl +2.4..+4.6 g/kg/day) and subsidence dries the cloud top unopposed
+               (q 1400-2000 m −0.49 g/kg in 3 h; LES steady). Passing theta here is not physical success - stated plainly.
+    ifs_doc  : deep off; shallow ON only 2/6 hours -> FAILS "shallow on >= 4/6"; theta h3->h6 −0.08 / +0.18; cloud-top q −0.33 g/kg.
+  => Corrected verdict: the IFS-document set is NOT supported in BOMEX (shallow trigger intermittent). Two confirmed defects:
+     (1) base2's deep plume fires in trade cumulus (entrainment 12x below IFS/LES) and heats the layer >3 K;
+     (2) neither shallow option switches on reliably in BOMEX, so moisture is not ventilated from the sub-cloud to the cloud layer
+         (BL scheme over-reaches instead). Next: why the sh_trig test parcel fails in BOMEX (cloud base 455 m, depth ok): print
+         the test-parcel path at hour 1-3 (LCL, buoyancy, depth vs sh_dmax).
