@@ -52,7 +52,7 @@ if os.environ.get('FORCE') != '1':
         if len(k) > 4 and k[4].strip() == str(acct):
             st = os.path.join(ROOT, 'data/cyclone/kaggle', k[0].strip(), 'status.txt')
             last = open(st).read().strip().split('\n')[-1] if os.path.exists(st) else ''
-            if not re.search(r'COMPLETE|ERROR|CANCEL|refused', last, re.I) and k[0].strip() != slug:
+            if not re.search(r'COMPLETE|ERROR|CANCEL|refused|collected', last, re.I) and k[0].strip() != slug:
                 bad.append(f'account {acct} still busy with {k[0].strip()} (last status: "{last[-60:]}") - use FORCE=1 to override')
             break
 # 5: full results saved?

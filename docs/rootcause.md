@@ -3368,3 +3368,8 @@ running as a separate test) is NOT adopted on its own result unless this check p
   NEXT (registered): the same hourly closure split into physics-by-process (rad, shallow, deep, lsc, evap, bl) and dynamics into
   vertical (omega x stability) and horizontal advection; the term explaining >= 50 % of each run's error vs ERA5's ~0 is named.
   [reg: 03:16 | inputs: hourly budget both runs | fail-5why: split ~equal; snapshot Q1 bias found]
+- 04:25 (clock) PRE-LAUNCH CHECK caught my error: the emis_land edit (01:0x) changed the CONTROL model by 3e-5 K in the land temperature
+  (default 1.0 multiplied in -> different float rounding); the precheck refused the last exam job (tn-r1-b3-1). Bisected
+  (b6e7a135, d842e219, d3a397d3 all bit-identical; 5ff7fa7f not). Fixed with a static branch (default = original expression);
+  regression now bit-identical. emis_land 0.97 results are unchanged (that path is untouched). Also fixed: precheck treated a
+  "collected" job as still running; dispatch counted 7-day-old GitHub ghost runs as holding a Kaggle slot.

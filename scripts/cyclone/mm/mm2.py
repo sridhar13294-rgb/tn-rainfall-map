@@ -973,7 +973,8 @@ class Model:
         # emis_land (19 Nov): land broadband emissivity; net LW = eps (LW_dn - sigma T^4) (Kirchhoff: reflects (1 - eps) LW_dn).
         # ERA5-implied over 20-40N land 0.967 (str vs skin, 36 h); IFS Part IV Table 2.8 0.99 outside / 0.93-0.96 in the window. Default 1 = unchanged.
         eml = S['emis_land']
-        net = d['sw_sfc'] + eml * (d['lw_dn'] - SB * cr['tl'] ** 4) - d['H'] - LV * d['E']
+        if float(self.S.get('emis_land', 1.0)) != 1.0: net = d['sw_sfc'] + eml * (d['lw_dn'] - SB * cr['tl'] ** 4) - d['H'] - LV * d['E']
+        else: net = d['sw_sfc'] + d['lw_dn'] - SB * cr['tl'] ** 4 - d['H'] - LV * d['E']                 # default: the original expression (bit-identical control)
         # sfc_imp: land skin temperature implicit too - net flux linearised in tl (LW emission, sensible, latent)
         kk = 4 * SB * cr['tl'] ** 3 + CP * d['chv'] + LV * d['chv'] * d['beta'] * d['dqsdT']
         cap = S['cap_land'] + jnp.where(S['sfc_imp'] > 0, dt * kk, 0.0)
