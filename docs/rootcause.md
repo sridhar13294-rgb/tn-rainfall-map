@@ -3242,3 +3242,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
   New library wx2020L2 building on GitHub ('land2 library'). REGISTERED: the land set + aer on wx2020L2, same gate (h6 skin within
   3 K of 302.0 AND h12 H <= 30) AND SW excess <= 20 AND max |LE| <= 400.
   [reg: now | inputs: SW (aer), soil start (ERA5 stl1-4) | fail-5why: soil start input (named), not the fixes]
+- 01:00 (clock) SOIL-START RESULT (land set + aer on wx2020L2, ERA5 stl1-4): h3 287.1 (was 286.8), h6 297.6/H 85 (was 297.4/81), h12 299.2/H 55
+  (was 298.9/52) -> gate FAIL (noon 4.4 K cold; evening H 55). The soil start was a real input error (named), but correcting it moves
+  the skin < 0.3 K: deeper layers barely reach the skin within 12 h. CORRECTION: soil start is NOT the driver of the remaining deficit.
+  Kept (input now right). Failure 5-Why on the remaining morning gap (h3 skin -4.8 K with SW, H, LE all within 7 W m-2 of ERA5):
+  the zero-capacity skin settles where net = Lambda (Tsk - T1); the remaining term is LONG-WAVE UP: ours = sigma Tsk^4 (emissivity 1);
+  IFS uses emissivity 0.99 outside / 0.93-0.96 inside the 8-12 um window (Part IV Table 2.8), i.e. ~0.97 broadband, and ERA5's
+  skin is defined consistently with it. Emitting 3% more at the same T costs ~12 W m-2 -> ~1 K at Lambda+K ~ 40 W m-2 K-1;
+  REGISTERED: ERA5 net thermal (str) vs ours (lw_dn - sigma Tsk^4) h0-h12: EMISSIVITY named if ERA5's implied broadband emissivity
+  (lw_dn - str = eps sigma Tsk^4 + (1 - eps) lw_dn) is <= 0.97 over this land.
+  [reg: now | inputs: soil start fixed; SW, H, LE matched | fail-5why: not soil start (tiny effect); LW-up/emissivity under test]
