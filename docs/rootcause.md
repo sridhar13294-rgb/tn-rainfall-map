@@ -2587,3 +2587,7 @@ from ~12 % to >= 50 % of ERA5; partly if 25-50 %; not if < 25 %.
   Prediction to check next (registered now): the same columns from a T170 start state are within 3 RH points of ERA5 at 850-550 hPa
   (then the T42 tests overstate A/P1 and the T170 deficit has another cause); if T170 is also >= 5 points dry -> the start-data
   input (13-level 1.5° WB2) is the cause at all resolutions -> fix = start from 0.25° 37-level ERA5 (ARCO) fields.
+- 10:20 RH check RESULT (start state at the 40 strong points vs ERA5 L137): T42 diff −3.3 / −5.4 / −6.7 RH points at 850/700/550 hPa;
+  T170 −2.1 / −2.7 / −2.7. By the rule (within 3 points at T170): the T42 tests OVERSTATE A/P1 (horizontal smoothing); at T170 the
+  start moisture is close to ERA5 -> the T170 deficit (package spin-up day-1 rain −0.62 mm/day) needs its own check: next = the same
+  trigger/rain measurement on the T170 start state (package + single-loading fix).
