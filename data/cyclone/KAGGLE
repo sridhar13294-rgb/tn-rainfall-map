@@ -1,6 +1,6 @@
-tn-b3-wx2
+tn-b3-wx3
 libm_wx2020_fields.npz,wx_truth_2020.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/suite_b3_wx.json 2 4 /kaggle/working/wx_2.json > /kaggle/working/wx_2.log 2>&1; tail -3 /kaggle/working/wx_2.log
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore wx2.py /kaggle/working/libm_wx2020_fields.npz ../../../data/cyclone/kaggle_cfg/suite_b3_wx.json 3 4 /kaggle/working/wx_3.json > /kaggle/working/wx_3.log 2>&1; tail -3 /kaggle/working/wx_3.log
 NvidiaTeslaT4
-1
-#STAGE 1 EXAM, BASE3 (Sridhar 18 Nov 23:03: close Stage 1) 2026-11-18T17:38Z
+4
+#STAGE 1 EXAM, BASE3 (Sridhar 18 Nov 23:03: close Stage 1) 2026-11-18T19:20Z
