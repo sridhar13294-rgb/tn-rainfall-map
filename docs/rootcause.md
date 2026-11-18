@@ -3015,3 +3015,14 @@ cloud-top height vs ERA5 cloud-base/top.
 ## 18 Nov 22:49 IST (clock) — 22:00 cycle: queue empty; next cycle 04:00 (silent). ERA5 subtropical columns (40 ascent + 20 subsidence,
 20-40N 50-110E, 2020-11-01/11 00Z, 137 levels) being fetched ('ml sub columns') for tomorrow's column test: our shallow scheme on
 ERA5's own subtropical columns vs on ours (same method as 17 Nov) - which input keeps the shallow trigger off.
+- 23:01 (clock) SUBTROPICAL COLUMN TEST (IFS shallow set; ERA5 137-level columns inserted vs our start state, same points, h0):
+    1 Nov ascent: ours shallow on 0.12, q_shal@925 −1.12 | ERA5 columns 0.15, −0.12 | RH925 0.45 both | LCL 1625 / 1741 m, BL 400 m
+    11 Nov ascent: ours 0.10 | ERA5 0.15 | RH925 0.43 / 0.44 ; subsidence points: shallow ~0-0.05 in both.
+  => With ERA5's OWN inputs the shallow scheme also fires in only ~15 % of these dry (RH925 ~0.45) subtropical ascent columns ->
+  the trigger is NOT failing because of our state; these regions genuinely have little shallow convection at the start.
+  So what moistens 925 during day 1 (+1.09 g/kg vs base3, ERA5 drier by 0.69)? The 925 budget: BL mixing +1.34..+1.81 g/kg/day is
+  the largest source, and OUR BL GROWS from ~400 m at h0 to ~1100 m by day 1 while ERA5's is 528 m (2.1x). Base3 hid this with
+  'mse' mixing that vented 925 upward regardless of clouds.
+  REGISTERED next: our BL depth growth over subtropical low ground: model sensible heat flux H and BL top at h12/24 vs ERA5 sshf and
+  BLH (same regions/times). INPUT ERROR named if our H is >= 1.3x ERA5's (surface driving too strong) - else the BL scheme's depth
+  formula (given right H) is named.
