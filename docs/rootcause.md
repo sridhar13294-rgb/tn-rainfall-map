@@ -3284,3 +3284,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   T42 screen at dt 60 handicaps the land; the land screen must run at the exam's step.
   REGISTERED: full 0-12 h land gate at dt 20 (T42): h6 skin within 3 K of 302.0 AND h12 H <= 30.
   [reg: now | inputs: residual measured both steps | fail-5why: skin-solve order (implementation) + screen step 60 min]
+- 01:31 (clock) LAND GATE RESULT (T42 at dt 20 = exam step; land set = skin_ifs + sfc_imp + land_rs 100 + aer + emis_land 0.97 + rad_every 1,
+  start file wx2020L2 with ERA5 soil levels 1-4): h6 skin 299.4 vs ERA5 302.0 (2.6 K <= 3) PASS; h12 H 24 vs ERA5 15 (<= 30) PASS ->
+  LAND GATE PASS. LE matches hour by hour (h6 128/128, h8 135/130); night skin within 1.8 K.
+  Remaining, recorded (not part of the gate): afternoon H 1.3-1.4x ERA5 (h7-h10: 144/112, 151/113, 138/97, 110/71) with the
+  afternoon skin 0.4-2.3 K low and our lowest-level air 1.5-2.2 K below ERA5 t2 -> the BL is still deep (ascent HBL 1133 m vs ERA5 ~530-700).
+  NEXT (registered from 17-18 Nov, unchanged): the A/P1 global screen - the land set at dt 20 vs BASE3 at dt 20 (same harness), with
+  the 18 Nov screen gates (t850 / t700 / q850 day-1/2 biases vs ERA5, not relaxed).
+  [reg: 23:47 / 01:24 | inputs: SW, LW, LE, H, soil start, emissivity, roughness noted | fail-5why: n/a (PASS)]
