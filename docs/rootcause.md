@@ -2730,3 +2730,13 @@ From now on every entry's time is taken from the clock tool at the moment of wri
   500-1000 m q −0.29 g/kg; shallow heating +0.9 K/day low in the cloud layer, −1.7 K/day near the inversion; sub-cloud venting
   q_shal −9.3 g/kg/day vs BL +7.6 (BOMEX-type balance). First Stage-1 convection configuration that behaves like the BOMEX LES
   reference, all values from the IFS document (nothing tuned). Next (registered 13:10 rule): global T42 screen, then storms, T170.
+- 11:22 (clock) GLOBAL T42 SCREEN of the BOMEX-supported set (starts 7 Oct / 1 Nov / 26 Nov, day-2 globe; rule |t850|,|t700| <= 0.6 K):
+    conv_ifs        t850 −1.01  t700 −0.99  rh850 +0.116
+    parts_conv_ifs  t850 −0.91  t700 −0.91  rh850 +0.109   (ocean 40S-40N: −0.84 / −0.67 / +0.077)
+    (base3 for reference: t850 +0.04, t700 −1.55, rh850 +0.050)
+  => FAIL. NOT adopted. Locally right in BOMEX, globally the 850 hPa layer still ends up cold and moist (+0.11 RH) - so the
+  remaining 850 defect is NOT the shallow trade-cumulus process. 5-Why next, by FMEA rank: (1) where the extra 850 moisture comes
+  from with the new entrainment (deep plumes now detrain lower: 850-700 moistening by deep detrainment / rain evaporation), (2) the
+  moist-850 -> RH-cloud -> LW cooling chain (radiation measured 0.3-0.5 K/day colder than RRTMG at 850-1000 hPa). Test: 850 hPa
+  heat AND moisture budget by process, conv_ifs vs base3, tropics/extratropics, +24 h (heat700.py style), registered before running:
+  the process whose 850 moistening grows most vs base3 (>= 50 % of the rh850 change) is named.
