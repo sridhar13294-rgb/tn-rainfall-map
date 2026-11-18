@@ -3116,3 +3116,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   with our radiation 1.09x ERA5) -> the energy goes to a sink we have not measured yet (LE or the near-surface air) - the LE rerun
   decides; (ii) at NIGHT our near-surface wind keeps growing (h24 7.6 vs ERA5 100-m 3.9, 1.9x) while H is -16 vs -10: the stable
   night layer does not decouple, so momentum keeps mixing down. This is where the day-mean 1.65x wind excess comes from.
+- 23:43 (clock) LE RERUN (h0-12, land): LE ours/ERA5 h6 114/128 (0.89x) -> rule (c) NOT met. All three registered land rules (a)(b)(c) are NOT met.
+  The hourly surface budget of ours alternates hour to hour (slab heating residual h4..h9: +190, +9, +269, -1, +140, -15 W m-2; LE
+  43, 183, 114, 272, 149, 212), while ERA5's is smooth. Fishbone: methods/implementation - the land skin is stepped EXPLICITLY
+  (sfc_imp 0 in BASE3) with large exchange coefficients at noon (unstable), so an oscillation between steps is possible; the
+  hourly snapshots then sample it. REGISTERED (per-step tl trace, 2020-11-01, 0-10 h): NUMERICAL OSCILLATION of the skin named if
+  >= 30% of land points show a sign-alternating 2nd difference in > 50% of steps, OR the median |2nd difference| >= the median
+  |1st difference| (noise as large as the signal). If named, the input to check is the coupling time step/implicitness, not the physics.
