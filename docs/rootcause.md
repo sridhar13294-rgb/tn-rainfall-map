@@ -2740,3 +2740,13 @@ From now on every entry's time is taken from the clock tool at the moment of wri
   moist-850 -> RH-cloud -> LW cooling chain (radiation measured 0.3-0.5 K/day colder than RRTMG at 850-1000 hPa). Test: 850 hPa
   heat AND moisture budget by process, conv_ifs vs base3, tropics/extratropics, +24 h (heat700.py style), registered before running:
   the process whose 850 moistening grows most vs base3 (>= 50 % of the rh850 change) is named.
+- 11:25 (clock) 850 hPa HEAT + MOISTURE BUDGET (T42, 1 Nov, +24 h, sigma 0.86, globe; base3 -> parts_conv_ifs):
+    moistening g/kg/day: total +0.47 -> +0.50 | shallow +0.74 -> +1.16 | BL +0.52 -> +0.08 | lsc −0.95 -> −0.59 | evap +0.50 -> +0.18 | deep −0.34 -> −0.34
+    heating K/day:       total −0.79 -> −0.38 | rad −1.63 -> −2.25 | lsc +2.36 -> +1.46 | evap −1.25 -> −0.45 | deep +0.57 -> +1.02 | BL −0.53 -> −0.01 | shal −0.31 -> −0.15
+  By the registered rule: NO moistening process carries the rh850 rise (physics moistening changes by only +0.03 g/kg/day; the
+  shallow +0.42 is cancelled by BL −0.44 and evap −0.32). And the physics HEATS 850 more in the new set (−0.79 -> −0.38 K/day), yet
+  day-2 t850 is ~1 K colder -> the extra 850 cold is NOT from column physics at +24 h; it must come from (a) radiation changes later
+  (rad is the one physics term that cools more: −0.62 K/day, consistent with more RH cloud), or (b) the DYNAMICAL response
+  (adiabatic cooling by stronger large-scale ascent / advection). Next 5-Why test (registered): total dT/dt at 850 from consecutive
+  states minus physics = dynamics, base3 vs new, days 0-2, tropics/extratropics; the larger of (dynamics change, radiation change)
+  over days 1-2 is named.
