@@ -2941,3 +2941,9 @@ cloud-top height vs ERA5 cloud-base/top.
   moisture through the subtropical inversion and flattens the vertical humidity gradient that subsidence acts on.
   REGISTERED: dq/dp at 850 (q925 − q700 over 225 hPa) in 20-40N masked: model shal_only vs base3 vs ERA5 - 'shallow mixes through
   the inversion' named if shal_only's gradient is <= 0.6x ERA5's while base3's is >= 0.8x.
+- 19:13 (clock) GRADIENT RESULT (20-40N masked, dq/dp between sigma 0.79 and 0.91, g/kg per 1000 Pa): base3 0.147, shal_only 0.215,
+  ERA5 (925-700) 0.172. Rule needed shal_only <= 0.6x ERA5 -> it is 1.25x -> 'shallow mixes through the inversion / flattens the
+  gradient' REJECTED. The mean gradient is even LARGER, and mean subsidence similar - so the lost vertical drying comes from the
+  CO-LOCATION of motion and gradient (ascent where the gradient is strong, e.g. where shallow convection now moistens), i.e. the
+  covariance of omega and dq/dp, not the means. Next (registered): split the 20-40N vertical term into subsiding vs ascending
+  points (omega850 > 0 / <= 0) for base3, shal_only and ERA5; the part with the larger change vs base3 is named.
