@@ -2886,3 +2886,14 @@ cloud-top height vs ERA5 cloud-base/top.
   weaken - a circulation response to where the convective heating now goes (deep heating at 850: +0.57 -> +1.02 K/day). 5-Why
   next: compare the candidate's tropical convective heating PROFILE with a reference profile (TRMM/ERA5 Q1, or the IFS-doc
   behaviour in its own SCM cases) - a heating peak too low would drive a shallow, weak overturning with weak subtropical subsidence.
+- 18:41 (clock) TROPICAL HEATING PROFILE (0-20N 50-110E, low ground, day 1, 3 starts; K/day at 850 / 700 / 500 / 300 hPa):
+    ERA5 Q1/cp (budget residual, 6 levels)   −0.08 / +0.29 / +0.93 / +1.21
+    base3 physics heating (incl. radiation)  −0.58 / −0.65 / +1.02 / +0.40   (deep part +1.05 / +2.19 / +2.49 / +0.71)
+    candidate                                −0.79 / −0.22 / +0.93 / −0.13   (deep part +2.19 / +2.40 / +2.13 / +0.64)
+  => The model's tropical heating is BOTTOM-HEAVY: upper-tropospheric (300 hPa) heating short by −0.81 (base3) / −1.34 (candidate)
+  K/day vs ERA5, which peaks at 300. The candidate moves deep heating further DOWN (850 +1.05 -> +2.19). A low heating peak drives a
+  shallow, weak overturning -> weak subtropical subsidence (the 20-40N drying deficit) -> moist 850 -> 3x low cloud -> cold 850.
+  The same missing upper heating fits P3 (300-hPa warm core 37 % weaker in the failing storms) and the known cold upper troposphere.
+  Caveat: ERA5 Q1 from 6 pressure levels and 12-h differences (coarse); radiation included on both sides.
+  5-Why next (registered): are our deep plumes too SHALLOW? Model OLR vs ERA5 top net thermal radiation (ttr, days file) over the
+  same box: tops too low/warm named if model OLR >= 10 W m-2 above ERA5 where ERA5 OLR < 220 W m-2 (deep convective areas).
