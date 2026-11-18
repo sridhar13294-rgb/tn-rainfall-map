@@ -2832,3 +2832,10 @@ From now on every entry's time is taken from the clock tool at the moment of wri
 INPUT ERROR named if the process carrying >= 50 % of the +1.83 g/kg/day is BL mixing AND the model's BL top exceeds 1500 m in
 >= 1.5x the area ERA5's does (BL reaching 850 where ERA5's does not). If the carrier is shallow convection, the next check is its
 cloud-top height vs ERA5 cloud-base/top.
+- 17:54 (clock) RESULT extratropical 850 moistening (base3, 3 starts) vs ERA5 BLH (blh_global.json):
+    h12 q_bl +0.89, q_shal +1.22 | h24 +0.65 / +1.01 | h36 +0.69 / +0.74 g/kg/day at 850
+    model BL top > 1500 m: 0.21 / 0.20 / 0.25 of the extratropics (mean hbl 1070-1180 m); ERA5: 0.066 / 0.048 / 0.064 (mean 700-770 m)
+  Rule: carrier >= 50 % -> SHALLOW (58-61 % at h12/h24) -> named; BL carries ~40 % (rule's BL branch not met). Measured besides:
+  our BL top exceeds 1500 m over 3-4x ERA5's area and is ~400 m deeper on average - an input error in its own right.
+  => base3 extratropical 850 moistening = tall shallow mixing (~60 %) + over-deep BL (~40 %). Next: the same split for the
+  candidate (parts_conv_ifs: IFS shallow + bl_lcl) - does it remove the extratropical moistening or move it?
