@@ -2785,3 +2785,13 @@ From now on every entry's time is taken from the clock tool at the moment of wri
   (2) convective cloud (Slingo convective + anvil) share at 850-925 (the new set's 925 jump to 0.49 suggests the shallow-convective
   cloud term). Registered: split cl['c'] into RH part and convective part at 850/925 at h24; the part carrying >= 50 % of the excess
   over ERA5 is named.
+- 12:00 (clock) A: CLOUD SPLIT (1 Nov, globe, 850 hPa): base3 h0 c 0.181 = RH-part 0.144 + tower 0.044; h24 c 0.357 = RH 0.326 + tower 0.051;
+  new h24 c 0.371 = RH 0.338 + tower 0.061; 925 new h24 0.469 (RH 0.439). Anvil 0. => the RH (Sundqvist) part carries >= 90 % of
+  the excess -> RH-cloud named.
+  CORRECTION to the 11:57 wording "scheme over-production confirmed": at HOUR 0 the same scheme on the ERA5-started state gives
+  RH-cloud 0.144 vs ERA5's cloud 0.124 at 850 (1.2x) - roughly consistent. The 3x appears during day 1 while the GLOBAL-MEAN rh850
+  rises only +0.04: the rule's "RH within 0.05" test used the global mean, which hides changes in the moist tail (the columns above
+  the critical RH ~0.74 at 850). So: scheme ~OK on ERA5-like humidity; the model's moist TAIL grows in day 1 (cloud-radiation-RH
+  feedback) - verdict revised to 'RH-cloud is the carrier; cause = growth of the moist tail', not 'scheme over-produces'.
+  REGISTERED next: fraction of 850-hPa area with RH > 0.74 (the scheme's critical RH there): ERA5 instantaneous (from T, q, 1.5°) vs
+  model h0 and h24. Moist-tail growth is the cause if model h24 area >= 1.5x ERA5 while h0 is within 1.2x.
