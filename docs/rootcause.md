@@ -3229,3 +3229,6 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED: land set + rad_prm aer 1 (13 Nov literature values: AOD 0.20 land, SSA 0.93, g 0.70; not tuned): SW-down excess h6-h10
   <= 20 W m-2 (from 38) AND the land gate (h6 skin within 3 K, h12 H <= 30).
   [reg: now | inputs: cloud cover, clear-sky SW, albedo, mask longitude | fail-5why: n/a (measurement step); aer re-marked HELD]
+- 00:40 (clock) REGISTERED (morning lag, soil start input): ERA5 soil temperature levels 1-4 at the 3 starts vs ours (all 4 layers start
+  at ERA5 stl1). SOIL START named if ERA5's stl2-stl4 mean differs from stl1 by >= 2 K (then our soil column starts with the wrong
+  heat content and the zero-flux bottom). [reg: now | inputs: soil start | fail-5why: n/a (measurement)]
