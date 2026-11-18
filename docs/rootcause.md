@@ -3064,3 +3064,12 @@ the input whose error, put through the equation, accounts for >= 50 % of the ext
 running as a separate test) is NOT adopted on its own result unless this check points to the land equation/capacity.
 - 23:17 (clock) Land-module test (run before the 23:17 rule; recorded, NOT used to decide): land H 64.7 -> 24.2 W m-2 (rule <= 19: not
   met), BL top 1099 -> 1045 m (rule <= 690: not met), LE 88 -> 58 W m-2. Not supported, and not adopted. The input check decides.
+- 23:21 (clock) LAND-SKIN INPUT CHECK RESULT (20-40N ascent regions, land, h12/24/36, base3 vs ERA5):
+    LW_dn 354.9 vs 349.4 W m-2 (+5.5) | SW: ours 91.7 (absorbed) vs ERA5 93.9 downward (~75 absorbed at albedo 0.2: ~+17)
+    wind: our lowest level (~85 m) 5.88 m/s vs ERA5 10-m 2.29 m/s (2.6x) | H 64.7 vs 9.6; skin 295.5 vs 293.6 (ERA5 skin < 2-m air)
+  => FMEA #1 (LW_dn from excess cloud) REJECTED: only +5.5 W m-2. SW +~17 is a minor term. The largest input difference is the
+  near-surface WIND (2.6x), entering H linearly (and the turbulent exchange that keeps the skin coupled to warm air above).
+  Height caveat: ~85 m vs 10 m; typical u85/u10 is 1.3 (neutral) to 2 (stable), so 2.6x exceeds what height alone explains.
+  REGISTERED next: ERA5 100-m wind at the same points/times vs our lowest-level wind: NEAR-SURFACE WIND named if ours >= 1.5x ERA5's
+  100-m wind; then 5-Why on its inputs (surface drag: z0_land 0.1 m vs ERA5 roughness incl. orographic form drag; drag_imp;
+  momentum mixing from above) - measured, not changed.
