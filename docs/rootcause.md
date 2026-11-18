@@ -2866,3 +2866,12 @@ cloud-top height vs ERA5 cloud-base/top.
   into horizontal advection and vertical (−omega dq/dp) from model u, v, omega, q - as done for ERA5 (−0.23 / −0.23): the term with
   the larger shortfall vs ERA5 is named; if vertical -> subsidence too weak (link to radiation / heating profile); if horizontal ->
   the low-level flow (P5b easterlies, moisture import).
+- 18:28 (clock) DYNAMICS SPLIT RESULT (model u, v, omega, q at 850, same method as ERA5; g/kg/day horizontal / vertical):
+    ERA5       region −0.23 / −0.23 | 0-20N −0.26 / −0.10 | 20-40N −0.19 / −0.37
+    base3      region −0.20 / −0.04 | 0-20N −0.19 / −0.09 | 20-40N −0.22 / +0.03
+    candidate  region −0.22 / +0.18 | 0-20N −0.18 / −0.07 | 20-40N −0.26 / +0.48
+  Horizontal transport matches ERA5; the VERTICAL term carries the shortfall (named by the rule) - but it sits in 20-40N, where the
+  box includes Tibet / Iran / Afghanistan with 850 hPa BELOW GROUND (both ERA5 and model extrapolate there; no terrain mask in either
+  computation). In the clean 0-20N band the vertical term matches ERA5 (−0.07..−0.09 vs −0.10). => verdict NOT trusted until the
+  terrain is masked; also the residual 'dynamics' (total − physics) and this direct split differ (0-20N: −0.05 vs −0.25) - the
+  residual carries numerical/diffusion terms. Next: recompute both with surface pressure > 900 hPa only (ERA5: z850 vs orography).
