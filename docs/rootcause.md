@@ -2918,3 +2918,13 @@ cloud-top height vs ERA5 cloud-base/top.
   Status of the chain: bottom-heavy NET heating vs ERA5 Q1 (coarse 6-level estimate) remains measured; its cause at 300 is not
   radiation. Remaining candidates for the 300 deficit: the convective (latent) heating aloft and the reliability of the coarse Q1.
   Also seen: SW cloud absorption in the atmosphere 6-7 W m-2 below RRTMG (swCRE_atm) - logged, not chased now.
+- 18:59 (clock) FINE ERA5 Q1 (cyc_q1.py: 37 levels, 0.25°, 1-h centred differences, same box/starts/hours, low ground):
+    925 −1.13 | 850 −0.81 | 700 −0.24 | 600 −0.17 | 500 +0.84 | 400 +0.89 | 300 +0.11 | 250 −0.54 | 200 −0.86 K/day
+  vs model 850 / 700 / 500 / 300: base3 −0.58 / −0.65 / +1.02 / +0.40 ; candidate −0.79 / −0.22 / +0.93 / −0.13
+  => CORRECTION: the coarse 6-level estimate (+1.21 at 300) was WRONG; ERA5's heating peaks at 400-500 hPa. Against the fine
+  reference the CANDIDATE's tropical heating profile matches within 0.02-0.24 K/day at all four levels (base3 is off by −0.41 at
+  700 and +0.29 at 300). The "bottom-heavy heating" chain (18:41) is WITHDRAWN. The candidate's convection is right in BOMEX AND
+  in the tropical heating profile; what fails is the subtropical (20-40N) 850 drying and the cloud response (low 3x, high 2-5x).
+  Open 5-Why: why does the subtropical 850 subsidence/dry import weaken with the candidate? Candidates: (1) cloud-radiative
+  heating anomalies in the subtropics (the 3x low cloud itself feeding back on the circulation), (2) the BL now half ERA5's depth
+  (bl_lcl) changing low-level divergence. Test (2) first: candidate WITHOUT bl_lcl in the same masked 20-40N budget.
