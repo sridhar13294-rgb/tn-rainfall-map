@@ -3157,3 +3157,8 @@ running as a separate test) is NOT adopted on its own result unless this check p
   (-> 1.53e5 J m-2 K-1 for layer 1), four layers 0.07/0.21/0.72/1.89 m. Ours: one slab C = 2e5 that IS the skin -> with G ~ 90 W m-2
   at noon the IFS skin runs (90/10..15) = 6-9 K above its top soil layer; ours cannot. This is the documented formulation to
   implement as an OPTION if the force-restore test fails (Lambda 10 low veg / 15 bare, from Table 8.2; nothing tuned).
+- 23:51 (clock) METHOD RULE (Sridhar 23:50): a fix that fails a gate is NOT rejected directly - another cause may produce the failure.
+  Each failed gate gets a failure 5-Why (which check failed, which mechanism/input drives that check); the fix is "rejected" only if
+  the failure traces to the fix itself, otherwise "HELD - blocked by X". Re-opened under this rule: land module (sfc_imp+land_rs+soil_fr:
+  H 65 -> 24, ERA5 10; failed on BL 1045 m, which the night wind 1.9x / late skin cycle can produce) -> HELD; gap closure (mf_dmin
+  20000) and mf_wke -> HELD, re-test after the land fix; soil_fr / skin_ifs tonight judged with the same failure analysis.

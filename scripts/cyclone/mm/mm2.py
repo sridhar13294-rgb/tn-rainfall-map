@@ -112,7 +112,7 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='mf', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='radcloud', rad_every=2,
-                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
+                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
@@ -224,6 +224,9 @@ class Model:
         if self.S.get('cld_fix', 0): carry['q0'] = jnp.asarray(sg['q'], jnp.float32)
         if self.S.get('q_adv', 0):                                                                  # (13 Nov) advective moisture tendency for the IFS trigger (6.21) / QCV (6.32)
             carry['q_adv'] = jnp.zeros_like(jnp.asarray(sg['q'], jnp.float32)); carry['q_last'] = jnp.asarray(sg['q'], jnp.float32); carry['dqp'] = jnp.zeros_like(carry['q_adv'])                # cld_fix: start humidity for the frozen RH cloud
+        if self.S.get('skin_ifs', 0):                                                               # (19 Nov) IFS skin layer over a 4-layer soil
+            _ts = jnp.asarray(landinit.land_start(N, sg['t'][-1], land, self.S['bucket'], None, soil_t, None)[0], jnp.float32)
+            carry['ts'] = jnp.stack([_ts] * 4)
         if self.S.get('soil_fr', 0):                                                                # force-restore deep soil temperature (5 Nov)
             carry['tl2'] = jnp.asarray(landinit.land_start(N, sg['t'][-1], land, self.S['bucket'], None, soil_t, None)[0], jnp.float32)
         if ocean is not None:                                                                       # 1-D ocean column under every sea point (ocean.py)
@@ -968,7 +971,22 @@ class Model:
         # sfc_imp: land skin temperature implicit too - net flux linearised in tl (LW emission, sensible, latent)
         kk = 4 * SB * cr['tl'] ** 3 + CP * d['chv'] + LV * d['chv'] * d['beta'] * d['dqsdT']
         cap = S['cap_land'] + jnp.where(S['sfc_imp'] > 0, dt * kk, 0.0)
-        if self.S.get('soil_fr', 0):
+        if self.S.get('skin_ifs', 0):
+            # skin_ifs (A/P1 land root cause, 19 Nov): IFS Cy38r1 Part IV eq. 3.75 - the skin has NO heat capacity:
+            #   SW + LW + H + LE (into the surface) = Lambda_sk (Tsk - T1), Lambda_sk 10 W m-2 K-1 (low vegetation, Table 8.2; 15 bare);
+            # solved implicitly (one Newton step, K = d(net)/dTsk as sfc_imp). Soil: 4 layers 0.07/0.21/0.72/1.89 m (Table 8.6),
+            # (rho C) 2.19e6 J m-3 K-1 (8.5.1), lambda_T = Ke (lambda_sat - 0.19) + 0.19, Ke = log10(max(0.1, theta/theta_sat)) + 1 (8.57-8.59),
+            # lambda_sat = 3.44^(1-0.472) 0.57^0.472 = 1.47 (8.58, theta_sat 0.472); zero flux at the bottom (8.55).
+            lam = self.S['skin_lam']; kk0 = 4 * SB * cr['tl'] ** 3 + CP * d['chv'] + LV * d['chv'] * d['beta'] * d['dqsdT']
+            ts = cr['ts']; tsk = cr['tl'] + (net - lam * (cr['tl'] - ts[0])) / (kk0 + lam)
+            tl = jnp.where(self.land, jnp.clip(tsk, 230.0, 340.0), cr['tl'])
+            Dz = jnp.asarray([0.07, 0.21, 0.72, 1.89]); rc = 2.19e6
+            ke = jnp.log10(jnp.maximum(0.1, jnp.clip(cr['w'] / (S['bucket'] * 1000), 0, 1))) + 1.0; lt = ke * (1.47 - 0.19) + 0.19
+            g0 = lam * (tl - ts[0]); gi = [lt * (ts[k] - ts[k + 1]) / (0.5 * (Dz[k] + Dz[k + 1])) for k in range(3)]
+            fin = [g0] + gi; fout = gi + [jnp.zeros_like(g0)]
+            ts2 = jnp.stack([ts[k] + dt * (fin[k] - fout[k]) / (rc * Dz[k]) for k in range(4)])
+            ts_new = jnp.where(self.land[None], ts2, ts)
+        elif self.S.get('soil_fr', 0):
             # soil_fr (track root cause, 5 Nov): force-restore soil (Deardorff 1978, JGR 83; Noilhan & Planton 1989 ISBA):
             #   dTs/dt = G / C_eff - (2 pi / tau) (Ts - T2),   dT2/dt = (Ts - T2) / tau,   tau = 1 day,
             #   C_eff = mu sqrt(tau) / (2 sqrt(pi)) (mu = soil thermal inertia, J m-2 K-1 s-1/2; 1400 -> 1.17e5 J m-2 K-1).
@@ -983,6 +1001,7 @@ class Model:
         w = jnp.where(self.land, jnp.clip(cr['w'] + dt * (d['rain'] - d['E']), 0.0, S['bucket'] * 1000), cr['w'])
         out = dict(cr, sst=sst, tl=tl, w=w, rain=cr['rain'] + dt * d['rain'], t=cr['t'] + dt)
         if self.S.get('soil_fr', 0): out['tl2'] = tl2
+        if self.S.get('skin_ifs', 0): out['ts'] = ts_new
         if 'ocean' in cr: out['ocean'] = ocn
         if 'rgo' in cr: out['rgo'] = rg
         if 'rad' in cr: out['rad'] = d['rad']
