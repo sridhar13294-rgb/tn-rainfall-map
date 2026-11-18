@@ -2720,3 +2720,8 @@ The 18 Nov entries labelled 10:20, 10:35, 10:50, 11:05, 11:45, 12:05, 13:10, 13:
 were all written between ~09:15 and 11:08 IST - the labels ran ahead of the real clock (my error, again). Their ORDER is right; the
 clock times are not. Registrations were still made before each result (order preserved in this file and in git history timestamps).
 From now on every entry's time is taken from the clock tool at the moment of writing.
+- 11:15 (clock) Intermittency 5-Why: sh_clos 1 vents ONLY the source layer explicitly (Mb from the surface MSE flux over (h_u-h_e)
+  one level above the source) -> the lowest layer dries, next step the parcel cannot condense -> off; next step moist again -> on.
+  The IFS-faithful option already exists (sh_ifs2, 11 Nov: closure at cloud base 6.35/6.37, whole sub-cloud layer vented linearly
+  6.40-6.41, implicit transport 6.69). REGISTERED: BOMEX ifs_doc + mf_mix_exact + bl_lcl + sh_ifs2: SUPPORTED if shallow ON >= 4/6
+  snapshot hours AND theta h3->h6 within ±0.3 K at 500-1000 / 1400-2000 m; also reported: % of steps on, cloud-top q drift.
