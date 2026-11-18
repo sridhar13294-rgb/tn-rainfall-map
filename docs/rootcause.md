@@ -2907,3 +2907,14 @@ cloud-top height vs ERA5 cloud-base/top.
   heating split radiative vs convective (model), and model cloud fraction at 300/250 hPa vs ERA5 fraction_of_cloud_cover:
   HIGH-CLOUD EXCESS named if model >= 1.5x ERA5 at 300 hPa and the radiative part at 300 is >= 0.5 K/day more negative than the
   clear-sky part.
+- 18:55 (clock) HIGH-CLOUD RESULT (base3, T42, 3 starts; model radcloud cloud vs ERA5 fraction_of_cloud_cover, 1.5°):
+    globe 300 hPa: h0 0.031/0.106, h24 0.238/0.104, h48 0.284/0.102 | 20S-20N 300: h24 0.305/0.064, h48 0.371/0.067;
+    20S-20N 200: h0 0.014/0.167, h24 0.330/0.178, h48 0.442/0.182
+  Radiation 250-350 hPa layer (h36, 2 starts): LW all-sky −1.7/−1.8 vs clear −1.9 K/day; SW +0.5 both; OLR 210.8 = RRTMG 209.9 on
+  the same clouds.
+  Rule: part 1 (model >= 1.5x ERA5 at 300) MET (2.3-4.8x); part 2 (cloud part >= 0.5 K/day more negative than clear sky at 300)
+  NOT met - the cloud part slightly WARMS that layer (+0.2). => High-cloud excess is real (it explains the OLR −38 W m-2), but it
+  is NOT why the 300-hPa net heating is short. Notable: high cloud starts TOO LOW at h0 (0.03 vs 0.10) and grows to 2-5x by day 1-2.
+  Status of the chain: bottom-heavy NET heating vs ERA5 Q1 (coarse 6-level estimate) remains measured; its cause at 300 is not
+  radiation. Remaining candidates for the 300 deficit: the convective (latent) heating aloft and the reliability of the coarse Q1.
+  Also seen: SW cloud absorption in the atmosphere 6-7 W m-2 below RRTMG (swCRE_atm) - logged, not chased now.
