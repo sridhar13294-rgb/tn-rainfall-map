@@ -2660,3 +2660,9 @@ moisture advection added; BOMEX initial profiles) for 6 h, horizontally uniform 
   sh_clos 1; registered 10 Nov) but was only ever tested with base2's 12x-too-small DEEP entrainment.
   REGISTERED (same rule): BOMEX with IFS deep entrainment + IFS-document shallow set: SUPPORTED if deep stays off, shallow is on
   in >= 4 of 6 hours, and cloud-layer theta 3->6 h within ±0.3 K at 500-1000 and 1400-2000 m.
+- 13:55 BOMEX RESULT, IFS deep entrainment + IFS-document shallow set (registered 13:35): deep OFF 6/6 h, shallow ON 5/6 h,
+  theta h3->h6: 500-1000 m −0.15 K, 1400-2000 m −0.05 K (both within ±0.3) -> SUPPORTED by the rule. Shallow heating +4.2 K/day
+  in the cloud layer and −13.3 K/day at the cloud top (BOMEX-type structure). Not judged but reported: cloud layer moistens
+  +0.5-0.6 g/kg over hours 3-6 (LES ~steady) and surface fluxes H 7-8 / LE 164-184 W m-2 (BOMEX 9.5 / ~153).
+  This is the first Stage-1 convection set that behaves like the LES reference in BOMEX. Next (registered 13:10): global T42 screen
+  (3 starts: t850 AND t700 day-2 |bias| <= 0.6 K, day-1 rain and LHF within 15 % of ERA5), then storms (rule 2) and T170.
