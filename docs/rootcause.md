@@ -2598,3 +2598,9 @@ Model: sb flux_core (same radius as defined in storm_budget). Ratio model/ERA5 p
 - INFLOW FLUX is the cause if FAIL median ratio <= 0.80 AND PASS median >= 0.90 (FAIL short of energy input while PASS is not).
 - NOT the cause if FAIL ratio >= 0.90 or within 0.05 of PASS -> next: heat retention (warm-core ventilation by the model's own
   outflow / vertical heating profile vs ERA5 temperature anomaly profile).
+- 10:50 T170 START-STATE RESULT (package settings + BASE3, one column call at hour 0, tropics 20S-20N): convective rain original 0.08,
+  single-loading fix 0.30 mm/day vs ERA5 cp 2.68 (3 % -> 11 %); deep fraction 5.7 %; where ERA5 rains (cp > 0.1 mm/h) deep fires
+  in only 22 % (ERA5's own L137 columns: 70 %; the same ERA5 columns on our 32 levels: 57 %). So at T170 the trigger still fails on
+  OUR start state although its RH is only 2-3 points drier. Remaining input candidates: start data from 13-level 1.5° WB2 (vertical
+  structure of T/q lost between 13 levels), horizontal smoothing to ~78 km. Next: swap test at T170 at the 40 strong points
+  (ERA5 L137 -> our 32 levels, by part: low / aloft, T / q), same rule as (c).
