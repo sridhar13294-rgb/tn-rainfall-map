@@ -66,6 +66,13 @@ for i_s, s in enumerate(storms):
                          rh700_core=round(mean2(rh[k700], core), 3), rh700_ring=round(mean2(rh[k700], ring), 3),
                          on_dp_core=round(mean2(dd.get('on_dp', np.zeros_like(ps)), core), 3), on_dp_300=round(mean2(dd.get('on_dp', np.zeros_like(ps)), wide), 3),
                          rain_core=round(mean2(dd['rain'], core) * 86400, 1), rain_300=round(mean2(dd['rain'], wide) * 86400, 1))
+                if C.get('fluxsplit'):
+                    # 18 Nov P3 (registered rootcause 11:45): core flux = Ck x wind x air-sea enthalpy disequilibrium dk
+                    sst = np.asarray(cr['sst']); V1 = np.hypot(uu[-1], vv[-1]); ss = core & (sst > 0)
+                    qs_s = 0.622 * 611.2 * np.exp(17.67 * (sst - 273.15) / (sst - 29.65)) / ps
+                    dk = np.where(ss, 1004.6 * (sst - T[-1]) + LV * (0.98 * qs_s - q[-1]), 0.0); rho = ps / (RD * T[-1] * (1 + 0.61 * q[-1]))
+                    e.update(fs_V1=round(mean2(V1, ss), 2), fs_sst=round(mean2(sst, ss), 2), fs_T1=round(mean2(T[-1], ss), 2), fs_q1=round(mean2(q[-1], ss) * 1e3, 2),
+                             fs_dk=round(mean2(dk, ss), 0), fs_flux=round(mean2(H + E, ss), 1), fs_Ck=round(mean2(H + E, ss) / max(mean2(rho * V1 * dk, ss), 1e-6), 5))
                 for kk in ('h_bl', 'h_deep', 'h_shal', 'h_lsc', 'h_evap'):
                     if kk in dd: e[kk + '_core'] = prof(dd[kk], core); e[kk + '_ann'] = prof(dd[kk], inner)
                 if 'rad' in dd: e['rad_core'] = prof(dd['rad']['heating'], core)
