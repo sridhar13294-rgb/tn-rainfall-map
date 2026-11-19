@@ -3418,3 +3418,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   RH-based cloud (about +0.1 cloud per +0.026 RH at 925). [reg: 11:3x | inputs: RH pressure-matched, components | fail-5why: 925 RH drift drives the cloud]
   REGISTERED next: split the 925 RH drift into temperature (Clausius-Clapeyron) vs moisture: T-DRIVEN named if the 925 cooling explains
   >= 50 % of the RH rise (dRH_T = -RH x 0.065 dT); otherwise MOISTURE named -> then the 925 moisture budget by process vs ERA5 Q2 (hourly).
+- 12:03 (clock) T-vs-q SPLIT (land_conv, sigma 0.925, subtropical ocean, day 1): dT -0.82 K, dq +0.26 g/kg, dRH +0.066 = temperature part +0.041
+  (62 %) + moisture part +0.019 (29 %; remainder nonlinearity) -> T-DRIVEN NAMED (rule >= 50 %): the low-level COOLING raises RH,
+  RH-based cloud grows, cloud cools radiatively -> a feedback loop; the loop's starting point is the cooling, present from the first
+  hours (sigma 0.85 physics -0.6..-1.0 K/day at h0-h2 while low cloud was still BELOW ERA5's, 0.24 vs 0.365).
+  REGISTERED: hourly sigma-0.925 heat budget by process (land_conv and base3r, day 1, subtropical ocean), with the first 6 h separated:
+  the process giving >= 50 % of land_conv's 0-6 h cooling is named (that is the loop's trigger). ERA5 day-1 change at 850 ~0 is used as
+  the reference (925 assumed similar - to be checked with ERA5 t925). [reg: now | inputs: T, q, RH hourly | fail-5why: cooling-cloud loop]
