@@ -3477,3 +3477,15 @@ running as a separate test) is NOT adopted on its own result unless this check p
   18 Nov found our OLR 208 vs ERA5 246 W m-2 with high cloud 2-5x -> less longwave cooling -> slower descent. REGISTERED: OLR over the
   subtropical ocean, day 1, model (land_conv no cap, base3r) vs ERA5: COLUMN COOLING named as the descent's input if our OLR is lower
   than ERA5's by >= 15 W m-2. [reg: now | inputs: hbl, LCL, H vs ERA5 | fail-5why: remaining cooling is the shared weak descent]
+- 14:52 (clock) OLR RESULT (subtropical ocean 10-40 N/S, day 1 hourly): ERA5 261.3 W m-2; land_conv no cap 251.0 (-10.3); base3r 248.0
+  (-13.3). Rule: >= 15 W m-2 lower -> COLUMN COOLING NOT named (the sign is the expected one, the size is below the registered bar;
+  18 Nov's 208-vs-246 was a different region and state). Input note: the "no soil water, skin temperature" landinit warning in these
+  logs is spurious (helper calls that remap soil_t pass None); the main land start gets all fields (checked: all finite at the 3 starts).
+  5-Why continues on the weak descent: omega ~ Q_rad / S, and the cooling side is not named, so the other input is the static
+  stability S. Our lower troposphere is cold (t850 -0.76, t700 -0.89 in land_conv), which raises S above it and slows the descent
+  for the same cooling (a loop: weaker descent -> less adiabatic warming -> colder).
+  REGISTERED: static stability S = -(T/theta) dtheta/dp at 850/700/500 hPa, subtropical ocean, +12/24 h, 3 starts, model (land_conv
+  no cap, base3r; sigma -> pressure in log p) vs ERA5: STABILITY named as the descent's input if ours exceeds ERA5's by >= 15 % at
+  700 or 500 hPa (where the descent is measured). If neither cooling nor stability is named, the descent measurement itself
+  (our omega from divergence vs ERA5 omega) is the next input to check.
+  [reg: now | inputs: OLR vs ERA5 (not named) | fail-5why: n/a (diagnostic step)]
