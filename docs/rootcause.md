@@ -3467,3 +3467,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
   hbl is within 0.7-1.3x ERA5 (575-1067 m) AND the sigma-0.925 day-1 temperature change moves toward ERA5's ~0 by >= half (from -0.82)
   AND land ascent-region HBL (20-40N) is not deeper than with the cap; then the global screen.
   [reg: now | inputs: LCL t2/d2 checked (right) | fail-5why: bl_lcl cap (formulation) traps the ocean BL]
+- 13:19 (clock) bl_lcl 0 RESULT (land_conv without the cap, subtropical ocean, day 1): hbl 1036 m (ERA5 821; 1.26x, inside 0.7-1.3) PASS; LCL 647
+  (ERA5 549); H 11.2 (ERA5 12.7, closer than 16.5); sigma-0.925 day-1 change -0.54 K (from -0.82: 33 % of the way to ~0; rule >= 50 %)
+  FAIL; land HBL check not yet run -> gate FAIL.
+  Failure 5-Why: the 925 PHYSICS now heats +0.08 K/day (was -0.36; ERA5 Q1 ~+0.27 from snapshots) - the fix does its own job; the
+  remaining -0.54 K is DYNAMICS (-0.62), i.e. the weak subtropical descent shared by every run (03:1x: 41-63 % weaker than ERA5) ->
+  the failure traces to another cause -> bl_lcl 0 HELD (blocked by the weak descent), not rejected.
+  5-Why on the weak descent: in the subtropics the descent rate is set by the free troposphere's radiative cooling (omega ~ Q_rad / S).
+  18 Nov found our OLR 208 vs ERA5 246 W m-2 with high cloud 2-5x -> less longwave cooling -> slower descent. REGISTERED: OLR over the
+  subtropical ocean, day 1, model (land_conv no cap, base3r) vs ERA5: COLUMN COOLING named as the descent's input if our OLR is lower
+  than ERA5's by >= 15 W m-2. [reg: now | inputs: hbl, LCL, H vs ERA5 | fail-5why: remaining cooling is the shared weak descent]
