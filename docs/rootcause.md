@@ -3489,3 +3489,24 @@ running as a separate test) is NOT adopted on its own result unless this check p
   700 or 500 hPa (where the descent is measured). If neither cooling nor stability is named, the descent measurement itself
   (our omega from divergence vs ERA5 omega) is the next input to check.
   [reg: now | inputs: OLR vs ERA5 (not named) | fail-5why: n/a (diagnostic step)]
+- 15:27 (clock) STABILITY RESULT (subtropical ocean, +12/24 h, 3 starts; K per 100 hPa): ERA5 S850/S700/S500 = 6.36 / 5.47 / 5.41;
+  land_conv no cap 6.03 / 5.81 (+6 %) / 4.97 (-8 %); base3r 4.43 / 4.92 (-10 %) / 5.39 (0 %). Rule >= 15 % above ERA5 at 700 or 500 ->
+  STABILITY NOT named. (Side finding, not the registered level: base3r S850 is 30 % below ERA5 - its 'mse' shallow heating warms 925/850
+  (+2.1 / +0.5 K) and cools 700 (-1.5 K): the deep-tropics-warm / 700-cold pattern of base3r.)
+  Neither omega ~ Q_rad / S input is named -> per the 14:52 registration the next input is the descent MEASUREMENT itself.
+  INPUT CHECK of omsub.py: our omega was -cumsum(D ps dsigma) at the half level below the nearest sigma, i.e. the PRESSURE-coordinate
+  formula. In sigma coordinates omega/p = v.grad(ln ps) - (1/dsigma)(alpha_n sum G[:n] dsigma + alpha_n-1 sum G[:n-1] dsigma),
+  G = D + v.grad(ln ps) (Durran 8.124, Dinosaur's own _t_omega_over_sigma_sp). The dropped v.grad(ps) term is ~7 m/s x 10 hPa/1000 km
+  ~ 0.007 Pa/s - the same size as the ERA5 descent (0.009) -> the 41-63 % "weak descent" may be a diagnostic error.
+  REGISTERED: model omega recomputed with Dinosaur's scheme, full levels -> 850/700/500 hPa in log p, same samples (+12/24/36/48 h, 3
+  starts, subtropical ocean) vs ERA5 (0.0089 / 0.0094 / 0.0090 Pa/s): MEASUREMENT named (weak descent withdrawn) if both runs' corrected
+  descent at 850 and 700 is within 0.8-1.2x ERA5; if still < 0.8x the weak descent STANDS and the 5-Why goes to the dynamics.
+  [reg: now | inputs: S vs ERA5 (not named); omega formula checked (suspect) | fail-5why: n/a (diagnostic step)]
+- 15:27 (clock) LAND HBL RESULT for bl_lcl 0 (20-40 N land, day 1 hourly, land_conv): cap mean 843 / daily max 1875 m; no cap 984 / 2211 m
+  (+17 / +18 %). Registered rule "not deeper than with the cap" -> FAIL.
+  Failure 5-Why (not a rejection): the rule's reference was the capped model, not ERA5. The cap was added 18 Nov when the land BL was
+  1100 vs ERA5 528 m because of the 6x sensible heat - fixed since by the land set. Whether 984 m is too deep is a question for ERA5 on the
+  same domain/sampling (the 528 m was 50-110E ascent regions at 00/12Z only - not comparable).
+  REGISTERED: ERA5 BLH over 20-40 N land, all longitudes, day 1 hourly (cyc_blhland.py): the land failure TRACES TO bl_lcl 0 if no-cap mean
+  > 1.3x ERA5 while cap is within 0.7-1.3x; if no cap is within 0.7-1.3x (mean and daily max) the failure was the reference, not the fix.
+  bl_lcl 0 stays HELD until then. [reg: now | inputs: land H fixed (land gate) | fail-5why: rule reference = capped model, not ERA5]
