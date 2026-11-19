@@ -3562,3 +3562,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED: ERA5 day-1 temperature change at ~937 hPa (cyc_dt937.py) -> ERA5 hourly Q1 = dT - (-0.70). PHYSICS DEFICIT named at 925
   if ERA5 Q1 - our +0.08 >= 0.27 K/day; else 925 is consistent and land_conv's 925 error is ERA5-dT-limited (reported as such).
   [reg: now | inputs: ERA5 hadv/vertical (dynamics matches) | fail-5why: bl_lcl 0 blocker re-labelled to 925 physics]
+- 23:41 (clock) ERA5 dT RESULT (~937 hPa, subtropical ocean, day 1): +0.07 / +0.18 / -0.02 -> mean +0.08 K. ERA5 hourly Q1 = +0.08 - (-0.70)
+  = +0.78 K/day; ours +0.08 -> deficit 0.70 >= 0.27 -> 925 PHYSICS DEFICIT NAMED. It accounts for the whole land_conv 925 error
+  (model dT -0.54 vs ERA5 +0.08 = -0.62; dynamics within 0.08 of ERA5). The snapshot ERA5 Q1 (+0.12) was the diurnally biased one.
+  Consequence for bl_lcl 0: blocker = 925 physics deficit (named). Is it the fix? With the cap the 925 physics was -0.36 (deficit 1.14),
+  without +0.08 (deficit 0.70): the fix REDUCES the deficit by 40 % -> the failure does not trace to the fix; HELD stands.
+  NEXT (registered now, with a stated caveat: the 925 process parts were already seen at 23:38): process ranges from the trade-cumulus
+  LES intercomparisons (Siebesma et al. 2003 BOMEX; vanZanten et al. 2011 RICO) will be read from the papers FIRST and written here
+  before any comparison; a process outside its LES range at ~650 m is named. Suspects as seen: radiation -0.08 (LES/RICO forcing about
+  -2 to -2.5 K/day), BL turbulence -0.24 inside a 1036 m mixed layer (should heat), deep convection +0.67 with rain evaporation -0.68.
+  [reg: now (caveat: parts seen) | inputs: ERA5 dT, hadv, vertical | fail-5why: deficit smaller without the cap -> not the fix]
