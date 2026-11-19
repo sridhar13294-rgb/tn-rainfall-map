@@ -3459,3 +3459,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   An apples-to-apples check is added (registered before its result): ERA5 LCL from 2-m temperature and dewpoint (125 m per K of dewpoint
   depression) vs ours; the LCL input verdict STANDS only if ours is also < 0.7x that; otherwise the cloud-base comparison was the
   wrong quantity and the bl_lcl cap is the suspect. [reg: now | inputs: cbh (biased high), t2-d2 to come | fail-5why: n/a]
+- 13:06 (clock) LCL APPLES-TO-APPLES: ERA5 LCL from t2/d2 = 549 m vs ours 497 m (0.90x, rule < 0.7x) -> LCL INPUT NOT named; the 996-m cloud-base
+  comparison was the wrong quantity (as cautioned) and is withdrawn. So the input (cloud-base level) is right and the BL depth
+  deficit (455 vs ERA5 821 m) comes from the bl_lcl CAP itself: ERA5's BL top sits ~270 m above its LCL (into the cumulus layer),
+  ours is held at the LCL. bl_lcl entered the candidate on 18 Nov to curb the land BL (1100 vs 528 m) - before the land fix.
+  REGISTERED: land_conv with bl_lcl 0 (the cap removed; no other change, nothing tuned): SUPPORTED if, over the subtropical ocean, day-1
+  hbl is within 0.7-1.3x ERA5 (575-1067 m) AND the sigma-0.925 day-1 temperature change moves toward ERA5's ~0 by >= half (from -0.82)
+  AND land ascent-region HBL (20-40N) is not deeper than with the cap; then the global screen.
+  [reg: now | inputs: LCL t2/d2 checked (right) | fail-5why: bl_lcl cap (formulation) traps the ocean BL]
