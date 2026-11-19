@@ -507,6 +507,7 @@ def radiation(T, q, p, dp, ps, Ts, sea, mu0, conv_mask=None, conv_rain=None, con
     out = dict(heating=lw['heating'] + sw['heating'], lw_heating=lw['heating'], sw_heating=sw['heating'], olr=lw['olr'],
                lw_dn_sfc=lw['dn_sfc'], lw_up_sfc=lw['up_sfc'], sw_dn_sfc=sw['dn_sfc'], sw_net_sfc=sw['net_sfc'], sw_toa_up=sw['toa_up'],
                sw_toa_dn=sw['toa_dn'], sw_net_sfc_clr=sw['net_sfc_clr'], sw_toa_up_clr=sw['toa_up_clr'], sw_heating_clr=sw['heating_clr'],
-               cloud=cl['c'], cover=cl['cover'], lwp=xp.sum(cl['lwp'] * cl['c'], axis=0), iwp=xp.sum(cl['iwp'] * cl['c'], axis=0))
+               cloud=cl['c'], cover=cl['cover'], lwp=xp.sum(cl['lwp'] * cl['c'], axis=0), iwp=xp.sum(cl['iwp'] * cl['c'], axis=0),
+               c_ls=cl['c_ls'], c_tow=cl['c_tow'], c_anv=cl['c_anv'])   # components: diagnostics only (19 Nov)
     if clear_sky: out.update(olr_clr=lw['olr_clr'], lw_dn_sfc_clr=lw['dn_sfc_clr'], lw_heating_clr=lw['heating_clr'])
     return out

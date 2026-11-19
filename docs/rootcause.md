@@ -3400,3 +3400,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED: LOW-CLOUD AMOUNT named if the model's low cloud (sigma >= 0.68; maximum overlap = lower bound) is >= 1.3x ERA5 low cloud
   cover (0.365) over the subtropical ocean, day 1; then the cloud scheme's INPUTS (RH at those levels vs ERA5, critical RH) before any
   scheme change. [reg: now | inputs: on_sh, cover vs ERA5 tcc/lcc | fail-5why: trigger fine; cloud amount next]
+- 11:37 (clock) LOW-CLOUD RESULT (subtropical ocean 10-40, day-1 hourly, model low cloud sigma >= 0.68): land_conv max-overlap 0.546
+  (random 0.763), base3r 0.498 (0.603); ERA5 low cloud cover 0.365 -> land_conv 1.50x, base3r 1.36x (rule >= 1.3x) -> LOW-CLOUD AMOUNT
+  NAMED in BOTH (shared; larger in the candidate). Per the method, the cloud scheme's INPUTS before the scheme.
+  REGISTERED (land_conv, same region/day): ERA5 day-1 RH 925 0.808, 850 0.610 (rh_truth, mixed-phase saturation = liquid at these T).
+  RH INPUT named if the model's RH at sigma 0.925 or 0.85 exceeds ERA5's by >= 0.05; otherwise the cloud COMPONENT (RH-based c_ls,
+  convective tower c_tow, anvil c_anv) holding >= 50 % of the low-cloud excess is named. Cloud components exposed as diagnostics
+  (radcloud/mm2; control bit-identical, regress OK). [reg: now | inputs: ERA5 lcc, RH truth | fail-5why: cloud excess shared]

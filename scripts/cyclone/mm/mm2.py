@@ -807,7 +807,7 @@ class Model:
                                         cloud_Tq=((cr['T0'], cr['q0']) if self.S.get('cld_fix', 0) else None))   # cld_fix (12 Nov): RH cloud frozen at the start state (feedback denial)
                 o = {k: Rr[k] for k in RADKEYS}
                 if ent_on: o.update(lw_cld=Rr['lw_heating'] - Rr['lw_heating_clr'], cloud=Rr['cloud'])
-                elif S['rad_every'] <= 1 and 'cloud' in Rr: o['cloud'] = Rr['cloud']                         # 19 Nov: cloud profile as a diagnostic when no cache (no effect on results)
+                elif S['rad_every'] <= 1 and 'cloud' in Rr: o.update({k: Rr[k] for k in ('cloud', 'c_ls', 'c_tow', 'c_anv') if k in Rr})                         # 19 Nov: cloud profile as a diagnostic when no cache (no effect on results)
                 return o
             if S['rad_every'] <= 1: Rr = fresh()                                                     # every call
             elif rad_fresh:                                                                          # surface(): once per step, every rad_every steps
@@ -886,7 +886,8 @@ class Model:
         diag['rad_app'] = rad                                                                       # the heating actually applied (relaxation above rad_top)                                   # momentum tendencies by process (m/s/s)        # heating by process (K/s), for budget diagnostics
         diag.update(q_bl=dqbl, q_deep=dqc, q_shal=dqs, q_lsc=-cond, q_evap=evap)                            # moistening by process (kg/kg/s), 850-925 moisture budget (peer 3 Nov)
         if Rr is not None: diag['rad'] = Rr
-        if Rr is not None and 'cloud' in Rr: diag['cld'] = Rr['cloud']                                     # cloud fraction (only on fresh radiation calls)
+        if Rr is not None and 'cloud' in Rr: diag['cld'] = Rr['cloud']
+        if Rr is not None and 'c_ls' in Rr: diag.update(c_ls=Rr['c_ls'], c_tow=Rr['c_tow'], c_anv=Rr['c_anv'])                                     # cloud fraction (only on fresh radiation calls)
         if h_ent is not None: diag['h_ent'] = h_ent
         return dict(T=dT, q=dq, u=du, v=dv), diag
     # ------------------------------------------------------------------------------------------------ dynamics + time loop
