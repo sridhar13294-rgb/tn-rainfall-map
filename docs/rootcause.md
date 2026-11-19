@@ -3587,3 +3587,18 @@ running as a separate test) is NOT adopted on its own result unless this check p
   sigma 0.98-0.70 plus the fraction of columns with hbl above the sigma-0.925 height (blprof.py): (a) named if h_bl at 0.925 is >= 0
   in columns where 0.925 is inside the BL and the negative mean comes from above-top columns; otherwise (b)/(c) next.
   [reg: now | inputs: LES references read first | fail-5why: n/a (diagnostic step)]
+- 23:57 (clock) BL PROFILE RESULT (blprof.py, land_conv no cap, subtropical ocean, day 1 hourly, K/day): sigma 0.925 is inside the BL in
+  90 % of columns and h_bl there is still -0.19 (above-top columns -0.45) -> (a) NOT the explanation.
+  Profile (sigma: h_bl / deep / rain evap / shallow / rad): 0.990: +7.4 / -4.4 / -1.2 / +0.2 / -0.1; 0.971: +1.8 / +0.2 / -1.1; 0.951:
+  +0.7 / +0.5 / -0.9; 0.929: -0.2 / +0.7 / -0.7; 0.908: -0.7 / +0.9 / -0.5; 0.885-0.862: -1.1 / +1.2 / -0.35 (rad -2.7..-3.1, lsc +1.5..+1.9).
+  Reading (arithmetic, ~20 hPa layers ~ 204 kg m-2): the bottom layer gains 7.4 K/day ~ 17 W m-2 from the BL scheme - MORE than the
+  surface sensible flux (~11) - so the BL heat flux turns DOWNWARD above ~200 m: the BL is mixing heat down into a bottom layer that
+  deep downdrafts (-4.4) and rain evaporation (-1.2) are cooling. Over sigma 0.99-0.93 deep convection removes ~7 W m-2 and rain
+  evaporation ~9 W m-2 - together more than the surface sensible heat. In BOMEX/RICO the subcloud layer is heated by the surface flux
+  with an upward, linearly falling flux; RICO puts rain evaporation in the cloud layer. So the 925 BL cooling is a RESPONSE; the
+  upstream suspects are (d) deep convection with downdrafts active in the trade-wind regime and (e) subcloud rain evaporation.
+  REGISTERED for the 04:00 cycle: day-1 deep-convective rain over the subtropical ocean vs ERA5 convective precipitation (same region,
+  hourly): DEEP CONVECTION named if ours >= 1.5x ERA5; and our surface rain vs ERA5 total precipitation: RAIN EVAPORATION named if
+  the evaporated fraction below cloud base exceeds half of the rain falling through cloud base while our surface rain is within
+  0.7-1.3x ERA5 (i.e. the right rain, evaporating in the wrong place).
+  [reg: now | inputs: column split inside/above BL (not named) | fail-5why: n/a (diagnostic step)]
