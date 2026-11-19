@@ -3388,3 +3388,8 @@ running as a separate test) is NOT adopted on its own result unless this check p
   trigger frequency (on_sh) and low-cloud cover over the subtropical ocean, model vs ERA5 low cloud cover: SHALLOW TRIGGER named if
   land_conv's on_sh < 0.3 where ERA5 low cloud >= 0.3 (trade-cumulus regime, observed shallow-cumulus occurrence ~50-80 %).
   [reg: now | inputs: hourly process budget | fail-5why: candidate physics (shallow ~0 at 850 + radiative cooling); base dynamics]
+- 11:03 (clock) P3 RULE-1 BREAKDOWN (BASE3, 83 storms, by ERA5 minimum pressure): 995-1010 hPa (weak lows) n=63, mean err -5.3 hPa, 26 too deep,
+  57 % within +-5; 985-995 n=19, +2.8, 8 too weak, 47 % within; 970-985 n=1, +15.1. -> the model COMPRESSES the intensity range:
+  weak lows deepen too much, stronger systems stay too weak (the 10 Nov "slope 0.44" pattern, now with weak lows dominating the
+  sample of 83). Not a new cause yet - registered next after A: why weak lows over-deepen (candidates: CMT/cmt_mf spin-up of weak
+  vortices, convective heating triggered too easily in weak lows, surface flux at low winds). [reg: now | inputs: Rule-1 rows | fail-5why: n/a (measurement)]
