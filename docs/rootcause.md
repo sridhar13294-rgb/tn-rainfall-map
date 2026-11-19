@@ -3531,3 +3531,19 @@ running as a separate test) is NOT adopted on its own result unless this check p
   VERDICT bl_lcl 0: ocean PASS, land daily max FAIL traced to the fix -> NOT adoptable as a global switch; HELD. The cap is a non-IFS
   device (IFS has no LCL cap), so the clean route is the land BL fault itself (night depth), not a land/ocean split of the cap.
   [reg: 14:52/15:27 | inputs: ERA5 BLH same domain + sampling | fail-5why: daily max -> fix; mean -> pre-existing land night BL]
+- 23:28 (clock; the session was paused ~16:00-23:20, so the 16:00 cycle ran late) DYNAMICS SPLIT RESULT (dynsplit.py, subtropical ocean,
+  day 1 hourly, K/day; vertical term with the corrected Dinosaur omega / sigma-dot):
+  land_conv no cap, sigma 0.925: dT -0.54 = phys +0.08 + dyn -0.62 [hadv -0.69 | vadv -0.46, adiabatic +0.30 -> vertical -0.16 | residual +0.23]
+  land_conv no cap, sigma 0.85 : dT -1.21 = phys -1.77 + dyn +0.56 [hadv -0.44 | vertical +0.67 | residual +0.33]
+  base3r,          sigma 0.925: dT +2.24 = phys +2.76 + dyn -0.52 [hadv -1.41 | vertical +0.04 | residual +0.86]
+  base3r,          sigma 0.85 : dT +0.89 = phys -0.22 + dyn +1.11 [hadv -0.38 | vertical +1.02 | residual +0.47]
+  Rule (>= 60 % of land_conv's -0.62 at 925): HORIZONTAL ADVECTION carries 110 % -> named as the term; the vertical term is only -0.16.
+  Caveat stated before reading more into it: equatorward trade flow brings cooler air, so cold advection is EXPECTED in the subtropics -
+  "named as the term" is not yet "named as the error". The error question needs ERA5's own terms. Also: a numerics residual of
+  +0.2..+0.9 K/day (semi-Lagrangian/diffusion, not in either explicit term) is as large as the signal - reported, not yet explained.
+  Self-correction: the 13:19 entry called the -0.62 "the weak descent"; the split shows it is mostly horizontal advection, the
+  vertical term being small at 925. The weak-descent link is therefore weaker than stated at 13:19.
+  REGISTERED: ERA5 -V.grad T and -omega (dT/dp - kappa T/p) at ~937 hPa (925/950 mean), same region, day 1 3-hourly (cyc_advsub.py):
+  a term is NAMED AS AN ERROR if |model - ERA5| >= 0.27 K/day (half of land_conv's -0.54 day-1 error at 925); if neither is, the
+  physics/residual split is the next input (ERA5 Q1 uncertainty +-0.6 noted).
+  [reg: now | inputs: corrected omega/sigma-dot | fail-5why: n/a (diagnostic step)]
