@@ -3615,7 +3615,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   IFS value first, then our downdraft-to-updraft base mass-flux ratio over the subtropical ocean; DOWNDRAFT named if ours exceeds
   the IFS fraction by >= 50 %, or if our downdraft deposits >= 2x more cooling in the lowest layer than an IFS-form detrainment would.
   [reg: 23:57 | inputs: ERA5 tp/cp, model rain budget | fail-5why: n/a (diagnostic step)]
-- 04:21 (clock, 20 Nov) DOWNDRAFT REFERENCE (read first, IFS Cy38r1 Part IV sec. 6.3.2): initial downdraft flux at the LFS = -eta x
+- 04:03 (clock, 20 Nov) DOWNDRAFT REFERENCE (read first, IFS Cy38r1 Part IV sec. 6.3.2): initial downdraft flux at the LFS = -eta x
   cloud-base updraft flux, eta = 0.35 (eq. 6.13, after Johnson 1976/80); a downdraft negatively buoyant down to the surface has its
   mass flux "decreased linearly over the lowest 60 hPa". OURS (mm2.py mf): eta = mf_dd = 0.5 (its comment says "ECMWF ~0.3"), and the
   downdraft keeps its full flux to the ground and detrains ALL its air into the bottom level (19.4 hPa thick).
