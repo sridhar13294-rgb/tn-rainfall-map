@@ -875,6 +875,7 @@ class Model:
         # P1 diagnostic (3 Nov): boundary-layer top vs lifting condensation level of the lowest-level air
         # (Bolton-type estimate z_lcl ~ 125 m per K of dew-point depression)
         diag.update(hbl=hbl, zlcl=zlcl)
+        diag.update(rain_csrc=jnp.sum(Pconv_src, 0), rain_lsrc=jnp.sum(src, 0), ev_prof=ev)   # diagnostic only (20 Nov): rain produced by convection / grid-scale, evaporation per layer
         if S['conv'] == 'mf': diag.update(on_dp=on_dp, on_sh=on_sh, on_bmjsh=(shallow & ~okmf).astype(jnp.float32))
         if S['conv'] == 'mf':
             # D3 diagnostic (B-C1): 'orphan' columns = the undiluted parcel test says deep (so no shallow mixing) but the entraining
