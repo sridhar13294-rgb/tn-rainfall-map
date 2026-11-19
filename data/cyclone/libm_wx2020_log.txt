@@ -1,5 +1,6 @@
 73 times
-WB2 vars []
+WB2 vars ['soil_temperature_level_1', 'skin_temperature', 'soil_temperature_level_2', 'soil_temperature_level_3', 'soil_temperature_level_4']
+land fields from (W = WeatherBench2 1.5 deg conservative, A = ARCO-ERA5 0.25 deg nearest point; times from 2023-01-09: A) {'volumetric_soil_water_layer_1': 'W', 'soil_temperature_level_1': 'A', 'skin_temperature': 'A', 'snow_depth': 'W', 'soil_temperature_level_2': 'A', 'soil_temperature_level_3': 'A', 'soil_temperature_level_4': 'A'}
 0 2020-01-01T00 ok
 1 2020-01-06T00 ok
 2 2020-01-11T00 ok
@@ -73,4 +74,4 @@ WB2 vars []
 70 2020-12-16T00 ok
 71 2020-12-21T00 ok
 72 2020-12-26T00 ok
-saved libm_wx2020_fields.npz 490175540
+saved libm_wx2020_fields.npz 524033585
