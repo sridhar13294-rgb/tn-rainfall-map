@@ -3602,3 +3602,16 @@ running as a separate test) is NOT adopted on its own result unless this check p
   the evaporated fraction below cloud base exceeds half of the rain falling through cloud base while our surface rain is within
   0.7-1.3x ERA5 (i.e. the right rain, evaporating in the wrong place).
   [reg: now | inputs: column split inside/above BL (not named) | fail-5why: n/a (diagnostic step)]
+- 00:32 (clock, 20 Nov) RAIN BUDGET RESULT (rainchk.py, subtropical ocean 10-40 N/S, day 1 hourly, mm/day; ERA5 cpsub_truth: total 2.99,
+  convective 1.73): land_conv no cap: surface rain 2.06 (0.69x), convective at surface ~1.42 (0.82x ERA5 cp), deep active 12 % of the
+  time; evaporation below cloud base 0.29 = 12 % of the rain through cloud base. base3r: rain 2.84 (0.95x), convective ~0.72 (0.42x),
+  deep 6 %; below-base evaporation 1.62 = 36 %.
+  Rules (registered 23:57): DEEP CONVECTION named if ours >= 1.5x ERA5 cp -> 0.82x, NOT named. RAIN EVAPORATION named if below-base
+  evaporation > half of the rain through cloud base -> 12 %, NOT named. Neither upstream suspect is named by rain amount.
+  5-Why continues: the bottom-layer cooling in land_conv (deep -4.4 K/day at sigma 0.99) comes with the RIGHT amount of convective
+  rain, so the input to check is how the deep scheme distributes its cooling - the DOWNDRAFT (mass flux and where it detrains its
+  cold air). Reference to read first: IFS Cy38r1 Part IV ch. 6 (downdraft initial mass flux at the level of free sinking as a
+  fraction of the updraft base mass flux, and downdraft detrainment in the lowest layers). REGISTERED for the 04:00 cycle: read the
+  IFS value first, then our downdraft-to-updraft base mass-flux ratio over the subtropical ocean; DOWNDRAFT named if ours exceeds
+  the IFS fraction by >= 50 %, or if our downdraft deposits >= 2x more cooling in the lowest layer than an IFS-form detrainment would.
+  [reg: 23:57 | inputs: ERA5 tp/cp, model rain budget | fail-5why: n/a (diagnostic step)]
