@@ -3425,3 +3425,16 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED: hourly sigma-0.925 heat budget by process (land_conv and base3r, day 1, subtropical ocean), with the first 6 h separated:
   the process giving >= 50 % of land_conv's 0-6 h cooling is named (that is the loop's trigger). ERA5 day-1 change at 850 ~0 is used as
   the reference (925 assumed similar - to be checked with ERA5 t925). [reg: now | inputs: T, q, RH hourly | fail-5why: cooling-cloud loop]
+- 12:26 (clock) 925 BUDGET BY PROCESS (sigma 0.925, subtropical ocean, hourly integral, K):
+    land_conv 0-6 h: dT -0.44 = physics -0.24 (rad -0.24, evap -0.06, deep +0.07, bl -0.02, shallow +0.01, lsc +0.01) + dynamics -0.20
+    land_conv 0-24 h: dT -0.82 = physics -0.36 (rad -1.26, evap -0.51, deep +0.55, bl +0.33, lsc +0.28, shallow +0.25) + dynamics -0.46
+    base3r    0-6 h: dT +1.19 = physics +1.30 (shallow +2.01 = 8 K/day!, evap -0.44, bl -0.20, rad -0.20); 0-24 h: dT +2.24 (shallow +6.72)
+  Rule (process >= 50 % of land_conv's 0-6 h cooling): RADIATION -0.24 of -0.44 = 55 % -> RADIATION named (dynamics -0.20 = 46 %, close).
+  5-Why on that: the radiative cooling itself (~ -1 K/day at 925 in the first 6 h, with low cloud still below ERA5's) is a normal clear-
+  sky boundary-layer value, and RRTMG matched our radiation on the same clouds (18 Nov) -> radiation is not wrong as an input; what is
+  missing is the HEATING that balances it: in the first 6 h the candidate's boundary-layer mixing (-0.02) and shallow plume (+0.01) put
+  ~nothing into 925, where trade-wind boundary layers are heated by the surface sensible flux (mixed up) and shallow cumulus.
+  Base3r is the opposite fault: its 'mse' shallow scheme heats 925 by ~8 K/day in the first 6 h (+2.2 K in day 1) - far too much.
+  REGISTERED: the INPUT to boundary-layer heating - the surface sensible and latent heat flux over the subtropical ocean, model (land_conv,
+  base3r) vs ERA5, day 1 hourly: SURFACE FLUX named if the model's sensible flux is < 0.7x ERA5's; otherwise the BL mixing depth/flux
+  profile (how much of the flux reaches 925) is next. [reg: now | inputs: radiation checked (RRTMG 18 Nov) | fail-5why: missing BL/shallow heating at 925]
