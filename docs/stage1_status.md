@@ -41,3 +41,12 @@ Updated 13 Nov 11:40 IST. New storm rules registered 13 Nov 11:40 (docs/rootcaus
 | GPU pipeline | Fixed 5 Nov 18:00 | Push-only launches + collector; GitHub's 20-runner cap removed; duplicate-launch bug fixed. |
 
 - 14 Nov 00:52 (Sridhar): Stage 1 uses option (a) = base2 convection + package non-convection parts; full IFS convection deferred to Stage 3.
+
+## 19 Nov 09:08 IST: BASE3 BASELINE SCORECARD (full exam, all jobs collected)
+| Check | BASE3 | Earlier controls (ctl2 / base1 / lnd) | Gate | Verdict |
+|---|---|---|---|---|
+| Exam starts complete | 73/73, 0 failed | 73/73 | all | PASS |
+| z500 RMSE d1/d5/d10 (m) | 18.0 / 71.8 / 117.7 | 20.2/73.3/119.7, 20.0/73.1/119.2, 19.1/70.8/119.5 | not worse than control | best d1 and d10; d5 2nd (lnd 70.8) |
+| Oct-Dec TN u850 day-5 bias (m/s) | -1.91 | -3.03 / -2.41 / -3.47 | smaller than control | best so far, still easterly |
+| Rule 1 intensity (83 storms, +-5 hPa) | 54 % within; mean err -3.2 hPa; 28 too deep, 10 too weak | base2 75 % on the earlier 41-storm set (not comparable) | >= 80 % | FAIL |
+Note: the held land module exam (tn-s-lnd) has the best day-5 z500 (70.8) - re-test with the new land set.
