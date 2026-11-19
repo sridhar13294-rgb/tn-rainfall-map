@@ -3373,3 +3373,18 @@ running as a separate test) is NOT adopted on its own result unless this check p
   (b6e7a135, d842e219, d3a397d3 all bit-identical; 5ff7fa7f not). Fixed with a static branch (default = original expression);
   regression now bit-identical. emis_land 0.97 results are unchanged (that path is untouched). Also fixed: precheck treated a
   "collected" job as still running; dispatch counted 7-day-old GitHub ghost runs as holding a Kaggle slot.
+- 09:07 (clock) 850 BUDGET BY PROCESS (sigma 0.85, subtropical ocean 10-40, day 1 hourly integral, K/day; sums close exactly):
+                 bl     shallow  deep   lsc    evap   rad    | physics  dynamics  dT
+    base3r     -0.71   +2.06   +0.53  +1.64  -1.96  -1.79   |  -0.22   +1.11    +0.89
+    land_conv  -0.02   -0.12   +1.02  +0.68  -0.34  -2.21   |  -0.99   +0.36    -0.63      (ERA5 dT ~0)
+  land_conv - base3r: shallow -2.19, lsc -0.96, rad -0.42, evap +1.61, bl +0.69, deep +0.49 -> physics -0.76.
+  Reading: in the candidate the shallow scheme gives ~NO heating at 850 over the trade-wind oceans (-0.12 vs base +2.06), and the
+  cloud layer then cools by radiation (-2.21, the largest term). ERA5 has no process split, so the rule (term >= 50 % of each run's
+  error vs ERA5) is applied to the totals only: land_conv's error (-0.63) is PHYSICS (-0.99 vs dynamics +0.36) -> PHYSICS named;
+  base3r's error (+0.89) is DYNAMICS (+1.11) -> DYNAMICS named. Within the candidate's physics no single process can be named
+  against ERA5 without a reference split.
+  Hypothesis for the next input check (not a verdict): trade cumulus should heat the cloud layer (BOMEX-type); the candidate's
+  shallow plume may trigger too rarely over these oceans (the 200-250 hPa classification gap and sh_trig). REGISTERED: shallow
+  trigger frequency (on_sh) and low-cloud cover over the subtropical ocean, model vs ERA5 low cloud cover: SHALLOW TRIGGER named if
+  land_conv's on_sh < 0.3 where ERA5 low cloud >= 0.3 (trade-cumulus regime, observed shallow-cumulus occurrence ~50-80 %).
+  [reg: now | inputs: hourly process budget | fail-5why: candidate physics (shallow ~0 at 850 + radiative cooling); base dynamics]
