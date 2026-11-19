@@ -3510,3 +3510,24 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED: ERA5 BLH over 20-40 N land, all longitudes, day 1 hourly (cyc_blhland.py): the land failure TRACES TO bl_lcl 0 if no-cap mean
   > 1.3x ERA5 while cap is within 0.7-1.3x; if no cap is within 0.7-1.3x (mean and daily max) the failure was the reference, not the fix.
   bl_lcl 0 stays HELD until then. [reg: now | inputs: land H fixed (land gate) | fail-5why: rule reference = capped model, not ERA5]
+- 15:50 (clock) OMEGA MEASUREMENT RESULT (subtropical ocean, +12/24/36/48 h, 3 starts, Pa/s, + = descent; ERA5 0.0089/0.0094/0.0090 at
+  850/700/500): old pressure-formula diagnostic reproduces 03:17 (base3r 0.0044/0.0060). Dinosaur's sigma scheme: base3r 0.0073/0.0075/
+  0.0060 (0.82x / 0.80x / 0.66x); land_conv no cap 0.0063/0.0055/0.0048 (0.71x / 0.58x / 0.54x). Rule (both runs 0.8-1.2x at 850 and 700)
+  NOT met -> weak descent NOT withdrawn: it STANDS for land_conv. But the old diagnostic WAS wrong (dropped v.grad ps): it overstated the
+  deficit by ~25-30 points. Consequences, stated plainly:
+  (1) the 03:17 verdict "shared deficit" is re-opened - with the right formula base3r is at the 0.8x edge (0.815 / 0.799) and the deficit
+      is mainly land_conv's (29 % / 42 % weaker), i.e. it comes with the candidate convection;
+  (2) the 03:17 deep-tropics ascent (old formula) must be re-measured before it is used again;
+  (3) size: land_conv's 700 deficit 0.0039 Pa/s x S 5.8e-4 K/Pa ~ 0.2 K/day - real, but not the whole -0.62 K/day at 925.
+  REGISTERED: decompose the sigma-0.925 and 0.85 day-1 DYNAMICS of land_conv no cap and base3r (subtropical ocean, hourly) into
+  horizontal advection -V.grad T and the vertical/adiabatic term omega (kappa T / p) - sigma_dot dT/dsigma (corrected omega): the part
+  carrying >= 60 % of land_conv's -0.62 K/day at 925 is NAMED as the input; if neither does, the two cancel and both are reported.
+  [reg: now | inputs: omega formula fixed (was wrong) | fail-5why: n/a (diagnostic step)]
+- 15:50 (clock) LAND HBL vs ERA5 (20-40 N land, day 1 hourly, cyc_blhland): ERA5 mean 497 / daily max 1507 m. Cap 843 (1.70x) / 1875
+  (1.24x); no cap 984 (1.98x) / 2211 (1.47x). Rule (14:52+15:27): no cap > 1.3x while cap within 0.7-1.3x -> on the DAILY MAX this is met
+  (1.47x vs 1.24x): removing the cap does push the land afternoon BL too deep - this part of the failure TRACES TO THE FIX. On the MEAN
+  neither is within (cap 1.70x): the land BL is too deep at night with or without the cap - a separate, pre-existing land fault
+  (fits the night wind 1.9x ERA5 named 18 Nov; z0 0.1 vs ERA5 0.40 and no gravity-wave drag named as suspects).
+  VERDICT bl_lcl 0: ocean PASS, land daily max FAIL traced to the fix -> NOT adoptable as a global switch; HELD. The cap is a non-IFS
+  device (IFS has no LCL cap), so the clean route is the land BL fault itself (night depth), not a land/ocean split of the cap.
+  [reg: 14:52/15:27 | inputs: ERA5 BLH same domain + sampling | fail-5why: daily max -> fix; mean -> pre-existing land night BL]
