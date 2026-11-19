@@ -3453,3 +3453,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
   < 0.7x ERA5's cloud base height over the subtropical ocean (then near-surface humidity/temperature are the inputs to check); if the
   LCL is right, the bl_lcl cap (a formulation choice: IFS's dry BL ends at cloud base but its cloud layer is mixed by the shallow mass
   flux) is the next suspect, judged against ERA5's 821 m. [reg: now | inputs: hbl, zlcl vs ERA5 BLH | fail-5why: shallow BL traps the surface heat]
+- 13:03 (clock) LCL vs ERA5 CLOUD BASE: ERA5 cloud-base height (where defined, 95 % of the subtropical ocean) mean 996 m; our LCL 497 m -> 0.50x
+  (rule < 0.7x) -> LCL INPUT named by the rule as registered. CAVEAT stated now: ERA5 'cloud_base_height' is the base of the LOWEST cloud
+  of any type, so where no cumulus exists it is a mid-level base - this biases ERA5 high (observed trade-cumulus bases ~500-700 m).
+  An apples-to-apples check is added (registered before its result): ERA5 LCL from 2-m temperature and dewpoint (125 m per K of dewpoint
+  depression) vs ours; the LCL input verdict STANDS only if ours is also < 0.7x that; otherwise the cloud-base comparison was the
+  wrong quantity and the bl_lcl cap is the suspect. [reg: now | inputs: cbh (biased high), t2-d2 to come | fail-5why: n/a]
