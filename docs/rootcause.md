@@ -3446,3 +3446,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED: boundary-layer height over the subtropical ocean, land_conv vs ERA5 BLH, day 1: BL DEPTH named if ours < 0.7x ERA5's (the
   surface heat then stays below 925); if not, the shallow plume's heat-flux profile 950-850 is next (where the shallow scheme is on).
   [reg: now | inputs: H, LE, wind vs ERA5 | fail-5why: input fine; vertical distribution next]
+- 13:01 (clock) BL DEPTH RESULT (subtropical ocean, day 1): land_conv hbl 455 m (first 6 h 503), LCL 497 m; ERA5 BLH 821 m -> 0.55x (rule < 0.7x)
+  -> BL DEPTH NAMED: the candidate's ocean boundary layer is too shallow, so the surface heat (H right, 16.5 vs 12.7) stays below
+  ~450 m and 925 (~750 m) gets little of it. The candidate includes bl_lcl 1, which ties the BL top to the LCL (hbl ~= zlcl here).
+  Per the method, the INPUT to that cap first: our LCL (497 m) vs ERA5 cloud-base height. REGISTERED: LCL INPUT named if our LCL is
+  < 0.7x ERA5's cloud base height over the subtropical ocean (then near-surface humidity/temperature are the inputs to check); if the
+  LCL is right, the bl_lcl cap (a formulation choice: IFS's dry BL ends at cloud base but its cloud layer is mixed by the shallow mass
+  flux) is the next suspect, judged against ERA5's 821 m. [reg: now | inputs: hbl, zlcl vs ERA5 BLH | fail-5why: shallow BL traps the surface heat]
