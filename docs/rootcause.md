@@ -3615,3 +3615,17 @@ running as a separate test) is NOT adopted on its own result unless this check p
   IFS value first, then our downdraft-to-updraft base mass-flux ratio over the subtropical ocean; DOWNDRAFT named if ours exceeds
   the IFS fraction by >= 50 %, or if our downdraft deposits >= 2x more cooling in the lowest layer than an IFS-form detrainment would.
   [reg: 23:57 | inputs: ERA5 tp/cp, model rain budget | fail-5why: n/a (diagnostic step)]
+- 04:21 (clock, 20 Nov) DOWNDRAFT REFERENCE (read first, IFS Cy38r1 Part IV sec. 6.3.2): initial downdraft flux at the LFS = -eta x
+  cloud-base updraft flux, eta = 0.35 (eq. 6.13, after Johnson 1976/80); a downdraft negatively buoyant down to the surface has its
+  mass flux "decreased linearly over the lowest 60 hPa". OURS (mm2.py mf): eta = mf_dd = 0.5 (its comment says "ECMWF ~0.3"), and the
+  downdraft keeps its full flux to the ground and detrains ALL its air into the bottom level (19.4 hPa thick).
+  Rule (00:32): (a) eta >= 1.5x IFS -> 0.5 / 0.35 = 1.43x, NOT named by (a); (b) lowest-layer deposit >= 2x the IFS form -> IFS puts
+  ~19.4/60 = 0.32 of the downdraft air in the bottom level, we put 1.0 = 3.1x -> DOWNDRAFT DETRAINMENT NAMED. (mf_dd 0.5 is also not a
+  referenced value - the IFS value is 0.35; it goes with the documented fix rather than being "named".)
+  [reg: 00:32 | inputs: IFS doc read before comparing; layer thicknesses | fail-5why: n/a (named)]
+  FIX (documented, rule 6 fix-first): option dd_ifs = 1 -> eta 0.35 and linear flux decrease over the lowest 60 hPa (flux form: the
+  downdraft's excess h/q flux at each interface scaled by min(1, (ps - p_int)/60 hPa); evaporation into it scaled the same way).
+  Default off; regress: control bit-identical, dd_ifs changes 7 fields.
+  REGISTERED PREDICTION (land_conv no cap + dd_ifs, same diagnostics): (1) the sigma-0.99 deep cooling falls by >= 50 % (from -4.4) and
+  h_bl at sigma 0.929 becomes >= 0 (mechanism); (2) GATE: sigma-0.925 day-1 dT closes >= 50 % of the gap to ERA5 (from -0.54 to >= -0.23
+  against ERA5 +0.08); then (3) the global day-2 screen |t850|, |t700| <= 0.6. If (2) fails, failure 5-Why before any verdict on dd_ifs.
