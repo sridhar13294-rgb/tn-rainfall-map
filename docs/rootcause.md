@@ -3572,3 +3572,18 @@ running as a separate test) is NOT adopted on its own result unless this check p
   before any comparison; a process outside its LES range at ~650 m is named. Suspects as seen: radiation -0.08 (LES/RICO forcing about
   -2 to -2.5 K/day), BL turbulence -0.24 inside a 1036 m mixed layer (should heat), deep convection +0.67 with rain evaporation -0.68.
   [reg: now (caveat: parts seen) | inputs: ERA5 dT, hadv, vertical | fail-5why: deficit smaller without the cap -> not the fix]
+- 23:52 (clock) LES REFERENCE RANGES (read before the comparison, as registered 23:41):
+  BOMEX (Siebesma et al. 2003): surface w'theta' 8e-3 K m/s, flux falls linearly to -0.2 x surface at cloud base (~500 m) -> subcloud
+  turbulent heating = (8e-3 + 1.6e-3) / 500 m = +1.7 K/day (my arithmetic from their stated profile); clear-sky radiative forcing about
+  -2 K/day through the trade layer (cloud radiative effects neglected); cloud base ~500 m, inversion ~1500 m.
+  RICO (vanZanten et al. 2011): radiative forcing ~-2 K/day near the surface to ~-1 aloft; surface rain just under 1 mm/day (radar
+  ~21 W m-2); evaporation of rain "concentrated in the cloud layer itself" - no subcloud magnitude given.
+  COMPARISON at ~650 m (sigma 0.925, inside our 1036 m BL), land_conv no cap: BL turbulence -0.24 vs LES subcloud/mixed-layer +1.7
+  (wrong SIGN) -> NAMED. Radiation -0.08 vs clear-sky -2: outside, but all-sky vs clear-sky are not the same quantity and the error
+  would WARM us -> not named as the cold's cause (noted). Rain evaporation -0.68: RICO gives no number -> not named (no range), suspect.
+  5-Why on the BL cooling inside a positive-H mixed layer: inputs first - (a) where sigma 0.925 sits relative to each column's hbl
+  (above-top columns see entrainment cooling), (b) whether h_bl includes evaporation of BL cloud water (moist-conserved mixing in a
+  cloudy top), (c) the flux profile shape vs BOMEX's linear one. REGISTERED: day-1 h_bl / h_evap / h_shal / rad profile over
+  sigma 0.98-0.70 plus the fraction of columns with hbl above the sigma-0.925 height (blprof.py): (a) named if h_bl at 0.925 is >= 0
+  in columns where 0.925 is inside the BL and the negative mean comes from above-top columns; otherwise (b)/(c) next.
+  [reg: now | inputs: LES references read first | fail-5why: n/a (diagnostic step)]
