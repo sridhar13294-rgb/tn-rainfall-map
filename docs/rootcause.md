@@ -3572,7 +3572,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   before any comparison; a process outside its LES range at ~650 m is named. Suspects as seen: radiation -0.08 (LES/RICO forcing about
   -2 to -2.5 K/day), BL turbulence -0.24 inside a 1036 m mixed layer (should heat), deep convection +0.67 with rain evaporation -0.68.
   [reg: now (caveat: parts seen) | inputs: ERA5 dT, hadv, vertical | fail-5why: deficit smaller without the cap -> not the fix]
-- 23:52 (clock) LES REFERENCE RANGES (read before the comparison, as registered 23:41):
+- 23:41 (clock) LES REFERENCE RANGES (read before the comparison, as registered 23:41):
   BOMEX (Siebesma et al. 2003): surface w'theta' 8e-3 K m/s, flux falls linearly to -0.2 x surface at cloud base (~500 m) -> subcloud
   turbulent heating = (8e-3 + 1.6e-3) / 500 m = +1.7 K/day (my arithmetic from their stated profile); clear-sky radiative forcing about
   -2 K/day through the trade layer (cloud radiative effects neglected); cloud base ~500 m, inversion ~1500 m.
