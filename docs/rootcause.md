@@ -3531,7 +3531,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   VERDICT bl_lcl 0: ocean PASS, land daily max FAIL traced to the fix -> NOT adoptable as a global switch; HELD. The cap is a non-IFS
   device (IFS has no LCL cap), so the clean route is the land BL fault itself (night depth), not a land/ocean split of the cap.
   [reg: 14:52/15:27 | inputs: ERA5 BLH same domain + sampling | fail-5why: daily max -> fix; mean -> pre-existing land night BL]
-- 23:28 (clock; the session was paused ~16:00-23:20, so the 16:00 cycle ran late) DYNAMICS SPLIT RESULT (dynsplit.py, subtropical ocean,
+- 23:27 (clock; the session was paused ~16:00-23:20, so the 16:00 cycle ran late) DYNAMICS SPLIT RESULT (dynsplit.py, subtropical ocean,
   day 1 hourly, K/day; vertical term with the corrected Dinosaur omega / sigma-dot):
   land_conv no cap, sigma 0.925: dT -0.54 = phys +0.08 + dyn -0.62 [hadv -0.69 | vadv -0.46, adiabatic +0.30 -> vertical -0.16 | residual +0.23]
   land_conv no cap, sigma 0.85 : dT -1.21 = phys -1.77 + dyn +0.56 [hadv -0.44 | vertical +0.67 | residual +0.33]
@@ -3547,3 +3547,18 @@ running as a separate test) is NOT adopted on its own result unless this check p
   a term is NAMED AS AN ERROR if |model - ERA5| >= 0.27 K/day (half of land_conv's -0.54 day-1 error at 925); if neither is, the
   physics/residual split is the next input (ERA5 Q1 uncertainty +-0.6 noted).
   [reg: now | inputs: corrected omega/sigma-dot | fail-5why: n/a (diagnostic step)]
+- 23:38 (clock) ERA5 ADVECTION RESULT (~937 hPa, subtropical ocean, day 1 3-hourly, K/day): ERA5 hadv -0.74, vertical +0.04 (omega
+  0.0063 Pa/s). land_conv no cap: hadv -0.69 (diff +0.05), vertical -0.16 (diff -0.20) -> NEITHER named (rule >= 0.27). base3r: hadv
+  -1.41 (diff -0.67, NAMED for base3r - its warm-tropics state gives a stronger cold advection), vertical +0.04 (matches).
+  So land_conv's 925 DYNAMICS is right within the bar (explicit terms -0.85 vs ERA5 -0.70; numerics residual +0.23 on top -> -0.62).
+  SELF-CORRECTION of 13:19: "the remaining -0.54 K is dynamics / the weak descent" is NOT supported - at 925 the dynamics matches ERA5.
+  Then by the budget the -0.54 day-1 error at 925 must sit in the PHYSICS (ours +0.08 K/day) or in ERA5's own day-1 change (taken as
+  ~0 from the RH-drift check, never measured as T). ERA5 Q1 at 925 is uncertain: snapshot +0.12 vs budget-implied +0.70 (if dT = 0).
+  bl_lcl 0 stays HELD, but the blocker is re-labelled: "925 physics deficit (unconfirmed)", not "weak descent".
+  Physics parts at 925 (land_conv no cap): BL -0.24, shallow +0.27, deep +0.67, large-scale cloud +0.14, rain evaporation -0.68,
+  radiation -0.08 (with the cap: -1.26). Two items look off against the BOMEX/LES trade-cumulus reference (Siebesma et al. 2003:
+  clear-sky radiative cooling ~-2 K/day through the trade layer; little rain evaporation): radiation -0.08 is small, and deep
+  convection + rain evaporation (+0.67 / -0.68) are both large where LES has neither - noted as suspects, not yet named.
+  REGISTERED: ERA5 day-1 temperature change at ~937 hPa (cyc_dt937.py) -> ERA5 hourly Q1 = dT - (-0.70). PHYSICS DEFICIT named at 925
+  if ERA5 Q1 - our +0.08 >= 0.27 K/day; else 925 is consistent and land_conv's 925 error is ERA5-dT-limited (reported as such).
+  [reg: now | inputs: ERA5 hadv/vertical (dynamics matches) | fail-5why: bl_lcl 0 blocker re-labelled to 925 physics]
