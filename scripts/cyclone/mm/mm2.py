@@ -807,6 +807,7 @@ class Model:
                                         cloud_Tq=((cr['T0'], cr['q0']) if self.S.get('cld_fix', 0) else None))   # cld_fix (12 Nov): RH cloud frozen at the start state (feedback denial)
                 o = {k: Rr[k] for k in RADKEYS}
                 if ent_on: o.update(lw_cld=Rr['lw_heating'] - Rr['lw_heating_clr'], cloud=Rr['cloud'])
+                elif S['rad_every'] <= 1 and 'cloud' in Rr: o['cloud'] = Rr['cloud']                         # 19 Nov: cloud profile as a diagnostic when no cache (no effect on results)
                 return o
             if S['rad_every'] <= 1: Rr = fresh()                                                     # every call
             elif rad_fresh:                                                                          # surface(): once per step, every rad_every steps

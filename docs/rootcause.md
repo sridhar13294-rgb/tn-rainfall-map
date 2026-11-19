@@ -3393,3 +3393,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   weak lows deepen too much, stronger systems stay too weak (the 10 Nov "slope 0.44" pattern, now with weak lows dominating the
   sample of 83). Not a new cause yet - registered next after A: why weak lows over-deepen (candidates: CMT/cmt_mf spin-up of weak
   vortices, convective heating triggered too easily in weak lows, surface flux at low winds). [reg: now | inputs: Rule-1 rows | fail-5why: n/a (measurement)]
+- 11:14 (clock) SHALLOW TRIGGER RESULT (land_conv, subtropical ocean, day-1 hourly mean): on_sh 0.337 (rule: named if < 0.3) -> SHALLOW
+  TRIGGER NOT named (fires in a third of the columns; ERA5 low cloud >= 0.3 over 46 % of this ocean). The shallow plume fires but
+  nets ~0 at sigma 0.85 (cloud-top detrainment/evaporation there - BOMEX-like structure, not a fault by itself). Model total cloud
+  cover 0.78 vs ERA5 0.60 (1.3x) with radiation the largest 850 cooling (-2.21 K/day).
+  REGISTERED: LOW-CLOUD AMOUNT named if the model's low cloud (sigma >= 0.68; maximum overlap = lower bound) is >= 1.3x ERA5 low cloud
+  cover (0.365) over the subtropical ocean, day 1; then the cloud scheme's INPUTS (RH at those levels vs ERA5, critical RH) before any
+  scheme change. [reg: now | inputs: on_sh, cover vs ERA5 tcc/lcc | fail-5why: trigger fine; cloud amount next]
