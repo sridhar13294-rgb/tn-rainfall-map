@@ -3407,3 +3407,14 @@ running as a separate test) is NOT adopted on its own result unless this check p
   RH INPUT named if the model's RH at sigma 0.925 or 0.85 exceeds ERA5's by >= 0.05; otherwise the cloud COMPONENT (RH-based c_ls,
   convective tower c_tow, anvil c_anv) holding >= 50 % of the low-cloud excess is named. Cloud components exposed as diagnostics
   (radcloud/mm2; control bit-identical, regress OK). [reg: now | inputs: ERA5 lcc, RH truth | fail-5why: cloud excess shared]
+- 11:50 (clock) CLOUD-INPUT RESULT (land_conv, subtropical ocean, day 1): low cloud by component (max over sigma >= 0.68): RH-based c_ls 0.531,
+  convective c_tow 0.032, anvil 0.000 -> c_ls holds 97 % of the low cloud. RH: model sigma 0.925 0.826 / sigma 0.85 0.697 vs ERA5
+  925 hPa 0.808 / 850 hPa 0.610 - but sigma 0.85 sits ~863 hPa over the ocean (level mismatch, biases ours high); pressure-matched
+  (rh_vs_era5, ocean 40S-40N, d1): 925 +0.026, 850 +0.050. Rule (RH input >= 0.05): met only at 850, exactly at the threshold.
+  Stated plainly - the 850 RH excess is not the driver: hourly, c_ls doubles in the first 6 h (0.24 -> 0.47) while RH at sigma 0.85
+  stays flat (0.675) and RH at sigma 0.925 rises 0.777 -> 0.812; over the day RH 925 rises +0.066 and c_ls follows (0.24 -> 0.65).
+  Pressure-matched day-0 -> day-1 drift at 925 hPa (ocean 40S-40N): model 0.807 -> 0.853 (+0.046), ERA5 0.824 -> 0.827 (+0.003).
+  -> NAMED (as the driver, by the hourly order): the model's 925 hPa RH DRIFT over day 1 (+0.046 vs ERA5 +0.003), amplified by the
+  RH-based cloud (about +0.1 cloud per +0.026 RH at 925). [reg: 11:3x | inputs: RH pressure-matched, components | fail-5why: 925 RH drift drives the cloud]
+  REGISTERED next: split the 925 RH drift into temperature (Clausius-Clapeyron) vs moisture: T-DRIVEN named if the 925 cooling explains
+  >= 50 % of the RH rise (dRH_T = -RH x 0.065 dT); otherwise MOISTURE named -> then the 925 moisture budget by process vs ERA5 Q2 (hourly).
