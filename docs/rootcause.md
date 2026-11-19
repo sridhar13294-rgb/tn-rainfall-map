@@ -3438,3 +3438,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED: the INPUT to boundary-layer heating - the surface sensible and latent heat flux over the subtropical ocean, model (land_conv,
   base3r) vs ERA5, day 1 hourly: SURFACE FLUX named if the model's sensible flux is < 0.7x ERA5's; otherwise the BL mixing depth/flux
   profile (how much of the flux reaches 925) is next. [reg: now | inputs: radiation checked (RRTMG 18 Nov) | fail-5why: missing BL/shallow heating at 925]
+- 12:48 (clock) SURFACE FLUX RESULT (subtropical ocean, day 1): sensible H land_conv 16.5 W m-2 (first 6 h 13.0), base3r -0.2 (4.1), ERA5 12.7;
+  latent LE land_conv 114, base3r 145, ERA5 134; wind at the lowest level land_conv 7.2, base3r 8.0 vs ERA5 10-m 6.9.
+  Rule (H < 0.7x ERA5): land_conv 1.3x -> SURFACE FLUX NOT named (the input is right). base3r's H ~0 = a consequence of its 8 K/day shallow
+  heating (the air above the sea is too warm). Failure 5-Why: the surface heat arrives, but little of it heats 925 in the first hours ->
+  the vertical DISTRIBUTION (BL mixing depth and the shallow plume's flux profile) is next.
+  REGISTERED: boundary-layer height over the subtropical ocean, land_conv vs ERA5 BLH, day 1: BL DEPTH named if ours < 0.7x ERA5's (the
+  surface heat then stays below 925); if not, the shallow plume's heat-flux profile 950-850 is next (where the shallow scheme is on).
+  [reg: now | inputs: H, LE, wind vs ERA5 | fail-5why: input fine; vertical distribution next]
