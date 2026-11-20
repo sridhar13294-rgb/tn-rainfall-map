@@ -3810,3 +3810,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED: radiation at sigma 0.70 poleward split clear-sky vs cloud (rad_allsky style) for lc_mix: CLOUD RADIATIVE COOLING named if
   the cloud part is >= 0.43 K/day (half the -0.85 day-1 error); and in the same run the shallow-transport cooling (-0.6) is checked
   against the IFS shallow-top reference (Part IV ch. 6, read first).
+- 13:19 (clock) RADIATION SPLIT RESULT (rad_allsky.py, lc_mix, 650-750 hPa, |lat| >= 40, h24, 3 starts, K/day; same clouds into RRTMG):
+  LW all-sky -1.5/-1.5/-1.6 (RRTMG -1.6/-1.5/-1.6), LW clear -1.3 (RRTMG -1.4); SW all-sky +0.3/+0.4/+0.4, clear +0.4.
+  Cloud radiative part = (all - clear) ~ -0.3 K/day (< 0.43) -> CLOUD RADIATIVE COOLING NOT named, despite cloud 1.5-2.2x ERA5;
+  radiation is right for the state (RRTMG within 0.1) and mostly clear-sky (-0.9 net).
+  [reg: 13:14 | inputs: same clouds through RRTMG | fail-5why: n/a (not named)]
+  Where that leaves the poleward 700 cold (shared, ~-0.9 K/day): dynamics matches ERA5 (T and q); radiation right for the state;
+  latent heating short by an amount ERA5 cannot pin (its q residual mixes condensation with convective/turbulent moistening);
+  the remaining named non-latent item is the SHALLOW scheme's transport cooling at 700 (-0.47 base3r / -0.60 lc_full), present in both
+  shallow schemes. NEXT: read IFS Cy38r1 Part IV ch. 6 on shallow convection (cloud top, detrainment, where its cooling sits) before any
+  comparison; then a profile of the shallow T/q tendency vs height poleward (where its top is) against that reference.
