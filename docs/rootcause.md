@@ -4021,3 +4021,16 @@ running as a separate test) is NOT adopted on its own result unless this check p
   NEXT (information, NOT a gate change): the same screen at T170 = the exam's resolution (Kaggle tn-res-t170), to measure how much of
   the poleward cold is a T42-screen artefact. Prediction stated now: if resolution is the supply limit, T170 poleward masked t700 d2
   is >= 40 % smaller than T42 (-1.129 -> >= -0.677).
+- 21:09 (clock) T170 SCREEN RESULT (tn-res-t170, lc_mix, same starts/harness/mask; information run registered 20:1x):
+  masked poleward t700 d2: T42 -1.129 / T85 -0.882 / T170 -0.819 -> -27 % at T170; my prediction (>= 40 %, >= -0.677) FAILED.
+  The gain SATURATES between T85 and T170 -> ~0.8 K of the poleward cold is resolution-INDEPENDENT. So "resolution is the common
+  thread" (20:15 message) was wrong as stated: resolution is a ~25 % contributor, not the main cause. Self-correction made to Sridhar.
+  Side numbers (information, gate unchanged at T42): masked global t700 d2 T170 -0.576, t850 -0.33; poleward rh700 d1 +0.108.
+  Fishbone item NOT yet measured and resolution-independent: (b) dynamics numerics. Known fault D1 (5 Nov): LINEAR vertical semi-
+  Lagrangian interpolation cools sigma 0.42-0.49 by -0.27..-0.29 K/day with physics OFF; fix sl_vcubic exists, was not adopted
+  under the OLD single-storm rule (verdicts under that rule declared invalid, 'D1 re-test' open). lc_mix does NOT use sl_vcubic.
+  REGISTERED (before run): lc_mix + sl_vcubic, local T42 screen, same starts/mask: D1 named as a P-pole contributor >= 25 % if
+  poleward masked t700 d2 improves by >= 0.28 K (-1.129 -> >= -0.849); NAMED as the main cause if >= 50 % (>= -0.565).
+  Also reported: global gate, tropical no-harm (t700/t850 trop not worse by > 0.1 K). Storm gate re-test (new multi-storm rule)
+  follows only if named. [reg: now | inputs: D1 physics-off numbers 5 Nov; lc_mix set checked: no sl_vcubic | fail-5why: T170
+  prediction failed - gain saturates]
