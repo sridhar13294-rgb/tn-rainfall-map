@@ -3943,7 +3943,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - 19:16 (clock) TIME CORRECTION (rule: check the clock before writing a time): the two entries above stamped '19:10' and '19:25' were
   written without checking the clock; real times about 19:08 and 19:12. The registration still came before any code or run
   (code written after it; first run started after the code). Option midlev committed now (default off).
-- 19:58 (clock) midlev RESULT (registered 19:12; local T42, starts 56/61/66, masked, maps_lc_mid vs maps_lc_mix):
+- 19:32 (clock) midlev RESULT (registered 19:12; local T42, starts 56/61/66, masked, maps_lc_mid vs maps_lc_mix):
   (1) poleward masked t700 d2 -1.129 -> -1.143 FAIL (needed >= -0.847); (2) poleward rh700 d1 +0.140 -> +0.141 FAIL (no fall);
   (3) gate: global masked t850 -0.523 -> -0.384, t700 -0.753 -> -0.789 (unmasked -0.73) FAIL on t700 (as expected, not the test);
   (4) tropical-ocean t700 d2 -0.505, global t850 better -> no harm on t850.
