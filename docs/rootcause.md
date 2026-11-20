@@ -3902,3 +3902,12 @@ running as a separate test) is NOT adopted on its own result unless this check p
   RH 0.8-1.0 where our scheme waits for grid saturation; ERA5 poleward cp 0.64 vs ours 0.31 mm/day (half) is consistent.
   REGISTERED (midlev.py, lc_mix, sigma 0.70, 40-80 N/S, day 1): MID-LEVEL CONVECTION named if the eq. 6.31 condensation heating in
   trigger columns (ascent, RH_mix in [0.8, 1), no active deep convection) is >= 0.43 K/day area mean (half the day-1 700 error -0.85).
+- 16:58 (clock) MID-LEVEL CONVECTION RESULT (midlev.py, lc_mix, sigma 0.70, 40-80 N/S, day 1, 3 starts): trigger columns (ascent,
+  RH_mix in [0.8, 1), no deep) 10.9 % of the area; eq. 6.31 condensation heating there 0.25 K/day area mean (incl. already-saturated
+  ascent 0.71, which our grid-scale scheme already condenses: h_lsc +0.5). Rule (16:4x): 0.25 < 0.43 -> MID-LEVEL CONVECTION NOT named
+  as the main cause; it is a CONTRIBUTOR (~30 % of the day-1 -0.85; also an upper bound - grid-scale condensation catches part of it
+  later). [reg: 16:4x | inputs: model omega (sigma scheme), RH_mix, on_dp | fail-5why: n/a (not named)]
+  P-pole tally at sigma 0.70 (day-1 error -0.85 K/day): sub-saturated latent / mid-level ~0.25, shallow ~25 % of the d2 cold (denial),
+  rest (~0.4) not yet attributed -> resolution (Kaggle T85, registered rule) stays the lead branch; no single named cause yet, so no
+  physics change is made (rule 1). Note for the fix: mid-level convection is a documented IFS part we lack (6.4.3) and a fair contributor
+  - to be built as an option (needs a correct omega inside the column physics) after the T85 verdict, with its own registered test.
