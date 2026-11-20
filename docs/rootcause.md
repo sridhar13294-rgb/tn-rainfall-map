@@ -3874,3 +3874,17 @@ running as a separate test) is NOT adopted on its own result unless this check p
   smaller at T85). [reg: 13:29 | inputs: day-2 error map by region | fail-5why: n/a (localisation)]
   Library: libm_cycL2_fields.npz built (84 storm starts, land incl. soil 1-4; sources logged: soil T and skin from ARCO, soil water
   and snow from WB2); the 2 Rule-1 jobs moved to the queue (waiting for a free account slot).
+- 16:02 (clock) REGISTERED (Antarctica +3.77 warm at 700, input/diagnostic check first, rule 2): ERA5 700 hPa is extrapolated below ground
+  where ERA5 surface pressure < 700 hPa, while the screen keeps a point when the MODEL's (T42-smoothed, lower) ice sheet has ps > 700.
+  DIAGNOSTIC ARTIFACT named if >= 70 % of the Antarctic (<= -60) area-weighted warm error at 700 (lc_mix day-2 map) sits where ERA5
+  surface pressure (wx2020L2 starts 56/61/66) < 750 hPa (700 + 50 hPa margin for the near-surface layer); otherwise it is a model fault.
+- 16:03 (clock) ANTARCTICA WARM = DIAGNOSTIC ARTIFACT (named): 86 % of the Antarctic (<= -60) warm error at 700 (lc_mix d2) sits on 9 % of
+  the area where ERA5 surface pressure < 750 hPa (mean error there +9.3 K; ERA5 700 below ground or in its surface inversion, model
+  T42 ice sheet lower); the rest of Antarctica is +0.15. Rule (16:0x) met -> not a model fault; closed as a problem.
+  [reg: this cycle, before the split | inputs: ERA5 surface pressure at the 3 starts vs the day-2 map | fail-5why: n/a]
+  CORRECTION of my own numbers (stated openly): the artifact was HIDING cold. With points where ERA5 ps < 750 hPa removed, t700 d2:
+  lc_mix global -0.689 -> -0.753, poleward -0.94 -> -1.129; land_conv -0.889 -> -0.949 / -1.076 -> -1.253; BASE3 -1.536 -> -1.613 /
+  -1.013 -> -1.212. A's gap to the gate is 0.15, not 0.09. Same mask applied to every version, so the ranking is unchanged.
+- 16:03 (clock) AMENDMENT to the 13:29 resolution rule, BEFORE any T85 result (job still queued): both resolutions measured with the same
+  ERA5-ps >= 750 hPa mask (T85 job now saves maps and prints MASKED t700). RESOLUTION named if masked poleward t700 d2 at T85 is
+  >= 50 % smaller than masked T42 (-1.129 -> >= -0.565). Unmasked rule (-0.96 -> -0.48) reported alongside, unchanged.
