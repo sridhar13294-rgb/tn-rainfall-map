@@ -3925,7 +3925,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   resolution ~20 % -> no single named root cause; no >= 50 % branch left in the fishbone. Next: build IFS mid-level convection
   (Cy38r1 Part IV 6.4.3, eq. 6.31) as an option (with column omega) and test whether the contributors ADD (combined registered test).
   [reg: 16:03 | inputs: same mask both resolutions, same starts/harness | fail-5why: n/a (rule not met, contributor sized)]
-- 19:25 (clock) REGISTERED (before any code/run): option midlev=1 = IFS Cy50r1 Part IV 6.4.3 mid-level convection (the local p4.txt is
+- 19:12 (clock; first written as 19:25, see 19:16) REGISTERED (before any code/run): option midlev=1 = IFS Cy50r1 Part IV 6.4.3 mid-level convection (the local p4.txt is
   Cy50r1; same scheme as the Cy38r1 text cited at 16:2x, equation now numbered 6.38): in columns with NO deep and NO shallow plume, the
   lowest level with 0 < z < 10 km, large-scale ascent (omega < 0) and RH > 0.8 is the cloud base; updraught starts from environmental
   T/q there (doc silent on the base values; CUBASMCN code uses environmental values - flagged as from the code, not the text);
@@ -3940,3 +3940,6 @@ running as a separate test) is NOT adopted on its own result unless this check p
   (4) no harm: global t850 d2 and tropical-ocean t700 d2 not worse by > 0.1 K.
   If (1) fails: 5-Why on the plume (does it fire where the 16:4x diagnostic found trigger columns? 10.9 % of area).
   [reg: 19:25 | inputs: omega formula as midlev.py (checked 16:4x); IFS 6.4.3 text read | fail-5why: n/a (registration)]
+- 19:16 (clock) TIME CORRECTION (rule: check the clock before writing a time): the two entries above stamped '19:10' and '19:25' were
+  written without checking the clock; real times about 19:08 and 19:12. The registration still came before any code or run
+  (code written after it; first run started after the code). Option midlev committed now (default off).

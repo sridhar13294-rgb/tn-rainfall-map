@@ -112,7 +112,7 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='mf', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='radcloud', rad_every=2,
-                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
+                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, midlev=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
@@ -300,7 +300,7 @@ class Model:
         ps = ps + rho * np.interp(r, rr, ph1)                                                   # pressure deficit at the surface
         return T3, Q3, U3, V3, ps
     # ------------------------------------------------------------------------------------------------ column physics
-    def conv_mf(self, Tn, qn, p, mass, zc, sig, dsig, ps, ksrc, S, dt, div=None, E=None, shallow=False, Hs=None):
+    def conv_mf(self, Tn, qn, p, mass, zc, sig, dsig, ps, ksrc, S, dt, div=None, E=None, shallow=False, Hs=None, mid=None, om_b=None):
         """Bulk mass-flux deep convection (Tiedtke/Bechtold type). One entraining updraft per column rises from the most
         unstable low level; entrainment grows in dry air (eps = entr x (1.3 - RH)), so convection needs a moist column -
         the moistening feedback that lets a weak low organise. Condensate rains out (re-evaporating below in the rain
@@ -317,6 +317,8 @@ class Model:
         # ECMWF's trigger test; organised entrainment (mf_org > 0): mixing falls off with height as (qsat / qsat at the
         # source)^(3 mf_org) (Bechtold et al. 2008), so a deep moist plume can reach the upper troposphere
         h_kick = CP * S['mf_kick_t'] + LV * S['mf_kick_q']
+        q_kick = S['mf_kick_q']
+        if mid is not None: h_kick = 0.0; q_kick = 0.0                                              # midlev: updraught starts from the environment at the base (IFS CUBASMCN)
         def make_plume(test):
           def plume(c, x):
             hu, qu, alive, lfc, started, zp, Kw = c; Te, qe, he, pk, zk, sk, rk, k = x
@@ -325,11 +327,12 @@ class Model:
             if shallow:                                                                                 # sh_eps > 0 (10 Nov, IFS Cy50r1 eq. 6.7): shallow entrainment
                 eps = jnp.where(S['sh_eps'] > 0, S['sh_eps'] * (1.3 - rk) * jnp.power(jnp.clip(qsat(Te, pk) / qs_src, 1e-3, 1.0), 3.0), eps)   # = 2 x 1.75e-3 (1.3 - RH) f_scale
                 if test: eps = 0.8 / jnp.maximum(zk, 10.0) + 3e-4                                      # IFS eq. 6.18: weakly entraining TEST parcel decides if shallow convection exists
+            if mid is not None: eps = 2.0 * eps                                                       # midlev: f_eps = 2 for shallow / mid-level (IFS Cy50r1 eq. 6.7)
             # mf_mix_exact > 0 (18 Nov, A/P1 BOMEX): integrate the entrainment mixing d(phi_u)/dz = -eps (phi_u - phi_e) exactly over the
             # layer (phi_e + (phi_u - phi_e) exp(-eps dz)) instead of one explicit step, so the result does not depend on layer thickness
             # (explicit eps dz reached 0.6 in the lowest layers: the shallow test parcel was ~60 % environment after one layer)
             fmix = jnp.where(S['mf_mix_exact'] > 0, 1.0 - jnp.exp(-eps * dz), eps * dz)
-            hu1 = jnp.where(src, he + h_kick, hu + fmix * (he - hu)); qu1 = jnp.where(src, qe + S['mf_kick_q'], qu + fmix * (qe - qu))
+            hu1 = jnp.where(src, he + h_kick, hu + fmix * (he - hu)); qu1 = jnp.where(src, qe + q_kick, qu + fmix * (qe - qu))
             Td = (hu1 - G * zk - LV * qu1) / CP; sat = qu1 > qsat(Td, pk); Tu = Te
             for _ in range(4):
                 qs_ = qsat(Tu, pk); f_ = CP * Tu + G * zk + LV * qs_ - hu1; df = CP + LV * qs_ * 17.67 * 243.5 / (Tu - 29.65) ** 2
@@ -350,7 +353,7 @@ class Model:
             # freezing (mf_ice = share of the new condensate that freezes in the updraft): above 0 C its latent heat of fusion
             # warms the plume, as in the old scheme's bmj_ice; without it the tropical upper troposphere runs 3-5 K cold
             hu1 = hu1 + S['mf_ice'] * 3.34e5 * jnp.clip((273.15 - Tu) / 20.0, 0.0, 1.0) * cond
-            nh = jnp.where(act, jnp.where(src, he + h_kick, hu1), hu); nq = jnp.where(act, jnp.where(src, qe + S['mf_kick_q'], qv), qu)
+            nh = jnp.where(act, jnp.where(src, he + h_kick, hu1), hu); nq = jnp.where(act, jnp.where(src, qe + q_kick, qv), qu)
             return (nh, nq, alv2, lfc2, st2, jnp.where(act | ~st2, zk, zp), Kw2), (act, jnp.where(run & act, b, 0.0), jnp.where(run & act, cond, 0.0), nh, nq, eps)
           return plume
         z0 = jnp.zeros_like(ps); f0 = jnp.zeros(ps.shape, bool)
@@ -359,7 +362,7 @@ class Model:
         # plume do not change when layers get thinner (50/75 levels)
         win = (jnp.abs(sig - sig_src[None]) * ps[None] <= 0.5 * S['src_dp']) | (ii == ksrc[None])
         wm = mass * win; h_avg = (h_e * wm).sum(0) / wm.sum(0); q_avg = (qn * wm).sum(0) / wm.sum(0)
-        use = (S['src_dp'] > 0) & (ii == ksrc[None])
+        use = (S['src_dp'] > 0) & (ii == ksrc[None]) & (mid is None)
         h_in = jnp.where(use, h_avg[None], h_e); q_in = jnp.where(use, q_avg[None], qn)
         xs = tuple(a[::-1] for a in (Tn, q_in, h_in, p * jnp.ones_like(Tn), zc, sig * jnp.ones_like(Tn), rh_e, ii * jnp.ones(Tn.shape, jnp.int32)))
         (_, _, _, lfc, _, _, _), (inc, b, cond, hu, qu, eps_l) = jax.lax.scan(make_plume(False), (z0, z0, f0, f0, f0, z0 - 1.0, z0 + 0.5), xs)
@@ -372,6 +375,7 @@ class Model:
         sig_top = jnp.min(jnp.where(inc, sig, 1.0), axis=0); cape = (RD * jnp.maximum(b, 0) * dsig / sig * inc).sum(0)
         deep = lfc & ((sig_src - sig_top) * ps > S['mf_dmin']) & (cape > 50.0)   # mf_dmin: minimum cloud depth (Pa) for deep convection (ECMWF ~20000)
         if shallow: deep = lfc & ((sig_src - sig_top) * ps <= 25000.0) & (cape > 0.0) & (sig_src > 0.8)      # 'deep' = this plume is active
+        if mid is not None: deep = mid & (cond > 0).any(0) & (inc & (ii < ksrc[None])).any(0)            # midlev: active where the plume makes cloud and rises
         if shallow:
             # sh_trig > 0 (ECMWF-type trigger): shallow cumulus wherever the boundary-layer parcel reaches its condensation level
             # (the plume makes cloud) and the cloud stays under 300 hPa deep - it need not become buoyant first. The old test
@@ -468,8 +472,12 @@ class Model:
             kb = jnp.maximum(ksrc - 1, 0); Tb = jnp.take_along_axis(Tn, kb[None], 0)[0]; qb = jnp.take_along_axis(qn, kb[None], 0)[0]
             pb = jnp.take_along_axis(p * jnp.ones_like(Tn), kb[None], 0)[0]
             Mb = jnp.maximum(Mb, conv_q / jnp.maximum(qsat(Tb, pb) - qb, 5e-4))
+        if mid is not None:
+            # midlev closure, IFS Cy50r1 eq. 6.38: M_base = max(-omega_base / g, (Js + Jq) / (g z_base)) >= 1e-6
+            zb = jnp.maximum(jnp.take_along_axis(zc, ksrc[None], 0)[0], 1.0)
+            Mb = jnp.maximum(jnp.maximum(-om_b / G, jnp.maximum(Hs + LV * E, 0.0) / (G * zb)), 1e-6)
         Mb = jnp.clip(Mb, 0.0, jnp.minimum(S['mf_cap'] * mmin / dt, 1.0)) * deep
-        if not shallow: self._cmt_M = eta * Mb[None]                                               # updraft mass flux per layer (kg m-2 s-1), for mass-flux momentum transport
+        if not shallow and mid is None: self._cmt_M = eta * Mb[None]                                               # updraft mass flux per layer (kg m-2 s-1), for mass-flux momentum transport
         # downdraft (mf_dd = its mass flux as a share of the updraft's, ECMWF ~0.3): air from the level of free sink (lower
         # third of the cloud) is cooled to saturation by evaporating rain and sinks moist-adiabatically (moist static energy of
         # that level kept) to the ground, where it spreads out: cools and moistens the lowest layers, takes rain back up.
@@ -501,7 +509,7 @@ class Model:
         dT_dd = (dh_dd - LV * dq_dd) / CP
         if shallow: return dT1 * Mb, dq1 * Mb, jnp.zeros_like(P1), inc & deep[None], deep
         return dT1 * Mb + dT_dd, dq1 * Mb + dq_dd, P1 * Mb * Pscale, inc & deep[None], deep
-    def column(self, T, q, u, v, ps, cr, want_diag=False, rad_fresh=False, div=None):
+    def column(self, T, q, u, v, ps, cr, want_diag=False, rad_fresh=False, div=None, om=None):
         """All arrays nodal: T, q, u, v [L, X, Y] (SI); ps [X, Y] Pa; cr = surface carry. Returns tendencies (per second)
         and diagnostics (surface rain, surface fluxes)."""
         S = dict(self.S); S.update(cr['prm']); dt = self.dt_s; sig = jnp.asarray(self.sig)[:, None, None]; dsig = jnp.asarray(self.dsig)[:, None, None]
@@ -745,6 +753,21 @@ class Model:
                 on_sh = (oks & ~okmf).astype(jnp.float32)
             dTs = jnp.where(okmf[None], 0.0, dTs); dqs = jnp.where(okmf[None], 0.0, dqs)
             if self.S.get('sh_off', 0): dTs = jnp.zeros_like(dTs); dqs = jnp.zeros_like(dqs)   # 20 Nov: DIAGNOSTIC DENIAL only (shallow scheme off), never a fix
+            if self.S.get('midlev', 0) and om is not None:
+                # midlev (20 Nov, P-pole; IFS Cy50r1 Part IV 6.4.3): where neither deep nor shallow convection exists, elevated convection
+                # starts at the lowest level with 0 < z < 10 km, large-scale ascent (omega < 0) and RH > 0.8 (mixed-phase saturation, as
+                # the IFS); closure eq. 6.38 (large-scale vertical mass flux). Not in v1: sub-cloud m = 2 (6.40), autoconversion factors.
+                es_w = 611.21 * jnp.exp(17.502 * (Tn - 273.16) / (Tn - 32.19)); es_i = 611.21 * jnp.exp(22.587 * (Tn - 273.16) / (Tn + 0.7))
+                al_ = jnp.clip((Tn - 250.16) / 23.0, 0.0, 1.0) ** 2; es_m = al_ * es_w + (1.0 - al_) * es_i
+                rh_m = qn / (0.622 * es_m / jnp.maximum(p - 0.378 * es_m, 1.0))
+                iiL = jnp.arange(L)[:, None, None] * jnp.ones(Tn.shape, jnp.int32)
+                cand = (om < 0) & (rh_m > 0.8) & (zc > 0) & (zc < 1.0e4)
+                kmid = jnp.max(jnp.where(cand, iiL, -1), axis=0)
+                noconv = ~okmf & (~oks if S['shallow'] == 'mf' else True)
+                has = (kmid >= 0) & noconv; ksm = jnp.maximum(kmid, 0)
+                om_b = jnp.take_along_axis(om, ksm[None], 0)[0]
+                dTm, dqm, Pm, regm, okm = self.conv_mf(Tn, qn, p, mass, zc, sig, dsig, ps, ksm, S, dt, E=E, Hs=H, mid=has, om_b=om_b)
+                dTc = dTc + dTm; dqc = dqc + dqm; Pmf = Pmf + Pm; on_mid = okm.astype(jnp.float32)
         cm = reg & ok[None]
         mu = ((u * mass) * cm).sum(0) / jnp.maximum((mass * cm).sum(0), 1.0); mv = ((v * mass) * cm).sum(0) / jnp.maximum((mass * cm).sum(0), 1.0)
         dT = dT + dTc + dTs; dq = dq + dqc + dqs
@@ -895,6 +918,7 @@ class Model:
         diag.update(hbl=hbl, zlcl=zlcl)
         diag.update(rain_csrc=jnp.sum(Pconv_src, 0), rain_lsrc=jnp.sum(src, 0), ev_prof=ev)   # diagnostic only (20 Nov): rain produced by convection / grid-scale, evaporation per layer
         if S['conv'] == 'mf': diag.update(on_dp=on_dp, on_sh=on_sh, on_bmjsh=(shallow & ~okmf).astype(jnp.float32))
+        if 'on_mid' in locals(): diag.update(on_mid=on_mid)
         if S['conv'] == 'mf':
             # D3 diagnostic (B-C1): 'orphan' columns = the undiluted parcel test says deep (so no shallow mixing) but the entraining
             # mass-flux plume is not deep (no deep convection) -> neither scheme acts; only grid-scale condensation is left
@@ -928,7 +952,7 @@ class Model:
                 T = (aux.temperature_variation + M.ref_t[:, None, None]) / M.K; q = state.tracers['specific_humidity']
                 u = aux.cos_lat_u[0] / cl / M.MPS; v = aux.cos_lat_u[1] / cl / M.MPS
                 ps = jnp.exp(hor.to_nodal(state.log_surface_pressure))[0] / M.PA
-                tend, _ = M.column(T, q, u, v, ps, M._carry, div=hor.to_nodal(state.divergence) * M.SEC)
+                tend, _ = M.column(T, q, u, v, ps, M._carry, div=hor.to_nodal(state.divergence) * M.SEC, om=M.omega_nodal(state) if M.S.get('midlev', 0) else None)
                 if M.S.get('phys_off'): tend = jax.tree_util.tree_map(jnp.zeros_like, tend)        # dynamics only (energy checks)
                 vt = hor.to_modal(jax.tree_util.tree_map(lambda x: x * M.MPS / M.SEC / cl, (tend['u'], tend['v'])))
                 return primitive_equations.State(vorticity=hor.curl_cos_lat(vt), divergence=hor.div_cos_lat(vt),
@@ -966,13 +990,25 @@ class Model:
         f = self._jit['dfi'] = jax.jit(time_integration.digital_filter_initialization(equation=self.eq, ode_solver=functools.partial(time_integration.semi_lagrangian_crank_nicolson_rk2, warm_start_corrector=True, off_centering=0.05),
                                                                   filters=[self.filt], time_span=self.ps.nondimensionalize(float(self.S.get('dfi_span', 6.0)) * units.hour), cutoff_period=self.ps.nondimensionalize(6 * units.hour), dt=self.dt))
         return f(state)
+    def omega_nodal(self, state):
+        """large-scale omega (Pa/s, nodal [L, X, Y]) from Dinosaur's sigma-coordinate vertical velocity (for midlev)."""
+        assert not self.hyb, 'midlev: omega_nodal is sigma-coordinate only'
+        hor = self.coords.horizontal; vert = self.coords.vertical
+        alpha = primitive_equations.get_sigma_ratios(vert)[:, None, None]; dsg = jnp.asarray(vert.layer_thickness)[:, None, None]; sgc = jnp.asarray(vert.centers)[:, None, None]
+        cu = [hor.to_nodal(x) for x in spherical_harmonic.get_cos_lat_vector(state.vorticity, state.divergence, hor, clip=False)]
+        cg = [hor.to_nodal(x) for x in hor.cos_lat_grad(state.log_surface_pressure, clip=False)]
+        udg = sum(a * b * hor.sec2_lat for a, b in zip(cu, cg))
+        F = sigma_coordinates.cumulative_sigma_integral(hor.to_nodal(state.divergence) + udg, vert)
+        aF = alpha * F; gpart = (aF + jnp.pad(aF, [(1, 0), (0, 0), (0, 0)])[:-1]) / dsg
+        ps = jnp.exp(hor.to_nodal(state.log_surface_pressure))[0] / self.PA
+        return (udg - gpart) * sgc * ps[None] * self.SEC
     def surface(self, state, cr):
         """after each step: ocean mixed layer, land temperature and soil moisture, rain total."""
         hor = self.coords.horizontal; cl = hor.cos_lat; S = dict(self.S); S.update(cr['prm'])
         aux = primitive_equations.compute_diagnostic_state_sigma(state.replace(tracers={}), self.coords)
         T = (aux.temperature_variation + self.ref_t[:, None, None]) / self.K; q = state.tracers['specific_humidity']
         u = aux.cos_lat_u[0] / cl / self.MPS; v = aux.cos_lat_u[1] / cl / self.MPS; ps = jnp.exp(hor.to_nodal(state.log_surface_pressure))[0] / self.PA
-        tnd, d = self.column(T, q, u, v, ps, cr, rad_fresh=True, div=hor.to_nodal(state.divergence) * self.SEC); dt = self.dt_s; sea = (~self.land) & (cr['sst'] > 0)
+        tnd, d = self.column(T, q, u, v, ps, cr, rad_fresh=True, div=hor.to_nodal(state.divergence) * self.SEC, om=self.omega_nodal(state) if self.S.get('midlev', 0) else None); dt = self.dt_s; sea = (~self.land) & (cr['sst'] > 0)
         # mixed layer: strong winds stir up cooler water (about ent K/day at 25 m/s), recovering slowly toward the start
         if 'ocean' in cr:                                                                           # ocean column: heat, wind stirring, cold wake
             p1 = self.pres(ps)[0][-1]; rho1 = p1 / (RD * T[-1] * (1 + 0.61 * q[-1]))
