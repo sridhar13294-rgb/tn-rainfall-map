@@ -4086,3 +4086,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
   Open question for P5b / Tracks: which lc_mix item drives the 850 easterly over TN (next: item-group denial on the exam starts
   with the largest bias, registered before running). Adoption of lc_mix / vcs is NOT possible while this stands unexplained.
   [reg: 13:54 (exam plan) | inputs: same starts per part, land confound measured | fail-5why: lc_mix physics -> TN 850 easterly]
+- 04:01 (clock) REGISTERED (P5b/Tracks steering, before any run): lc_mix ITEM-GROUP DENIAL on exam part 3 (18 starts, T170,
+  5 days, wx2020L2 land library): no_land (drop skin_ifs, sfc_imp, land_rs, emis_land), no_conv (drop the IFS convection set incl.
+  rad_prm), no_late (drop bl_lcl, dd_ifs, evap_ifs, lsc_mix). A group is NAMED as the driver of the extra TN 850 easterly if dropping
+  it restores >= 50 % of the lc_mix - b3L gap on part 3 (TN u850 d5 bias -4.31 vs b3L -0.97 -> >= -2.64 m/s). Denial = measurement,
+  never a fix. Jobs tn-p5b-no-land (acct 4), tn-p5b-no-conv, tn-p5b-no-late (acct 1), after the P3 denials.
+  [reg: now | inputs: same starts/library as tn-lcm-wx3 and tn-b3L-wx3 | fail-5why: n/a (registration)]
