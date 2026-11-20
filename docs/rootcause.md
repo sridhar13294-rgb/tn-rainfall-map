@@ -3925,3 +3925,18 @@ running as a separate test) is NOT adopted on its own result unless this check p
   resolution ~20 % -> no single named root cause; no >= 50 % branch left in the fishbone. Next: build IFS mid-level convection
   (Cy38r1 Part IV 6.4.3, eq. 6.31) as an option (with column omega) and test whether the contributors ADD (combined registered test).
   [reg: 16:03 | inputs: same mask both resolutions, same starts/harness | fail-5why: n/a (rule not met, contributor sized)]
+- 19:25 (clock) REGISTERED (before any code/run): option midlev=1 = IFS Cy50r1 Part IV 6.4.3 mid-level convection (the local p4.txt is
+  Cy50r1; same scheme as the Cy38r1 text cited at 16:2x, equation now numbered 6.38): in columns with NO deep and NO shallow plume, the
+  lowest level with 0 < z < 10 km, large-scale ascent (omega < 0) and RH > 0.8 is the cloud base; updraught starts from environmental
+  T/q there (doc silent on the base values; CUBASMCN code uses environmental values - flagged as from the code, not the text);
+  entrainment x f_eps = 2 (as shallow, 6.7); closure M_base = max(-omega_base/g, (Js + Jq)/(g z_base)) >= 1e-6 (6.38); rains like deep.
+  Not in v1: sub-cloud flux reduction m = 2 (6.40-6.41), autoconversion factor 0.8/0.9. Omega = Dinosaur sigma-coordinate omega
+  (as midlev.py), computed in the step and passed to the column physics. Default off -> regression bit-identical.
+  TEST (local T42, rh_vs_era5 harness, starts 56/61/66, ERA5-ps >= 750 hPa mask, lc_mix vs lc_mix + midlev):
+  (1) poleward masked t700 d2 cold falls >= 25 % (-1.129 -> >= -0.847) [the 16:4x diagnostic sized mid-level at ~30 %];
+  (2) poleward rh700 d1 excess falls (any amount; convection rains out the excess);
+  (3) GATE (unchanged): global d2 |t850| <= 0.6 and |t700| <= 0.6 - expected to FAIL on t700 alone (A needs ~0.15 more); a fail
+      there with (1)+(2) met is HELD, not rejected (fail-5why first);
+  (4) no harm: global t850 d2 and tropical-ocean t700 d2 not worse by > 0.1 K.
+  If (1) fails: 5-Why on the plume (does it fire where the 16:4x diagnostic found trigger columns? 10.9 % of area).
+  [reg: 19:25 | inputs: omega formula as midlev.py (checked 16:4x); IFS 6.4.3 text read | fail-5why: n/a (registration)]
