@@ -3838,3 +3838,8 @@ running as a separate test) is NOT adopted on its own result unless this check p
   the grid-scale scheme), (b) dynamics residual (numerics: -0.33 K/day at sigma 0.50 in both runs), (c) T42 resolution of mid-latitude
   ascent (ERA5 at 0.25 deg). NEXT: poleward precipitation of lc_mix (does lsc_mix raise it toward ERA5?) and the residual's size at
   T85 vs T42 (resolution test) - registered rules to be written before each run.
+- 13:30 (clock) REGISTERED (two parallel input checks on the poleward 700 cold, lc_mix):
+  (a) poleward day-1 precipitation (rainchk REG=pole): LATENT confirmed as the main remaining input if lsc_mix raised poleward rain
+      by < 0.2 mm/day and it is still <= 0.7x ERA5 (2.44) - i.e. the grid-scale scheme's precipitation, not its saturation, is short;
+  (b) resolution: the same global screen at T85 (dt 20): RESOLUTION named if poleward t700 d2 at T85 is >= 50 % smaller than at T42
+      (-0.96 -> >= -0.48).
