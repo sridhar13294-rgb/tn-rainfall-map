@@ -5,5 +5,33 @@
   "account": "4",
   "note": "STAGE 1 RE-MEASURE (plan 21-23 Nov), lc_mix measured candidate (A held), Rule 1 intensity",
   "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore hind2.py /kaggle/working/libm_cycL2_fields.npz ../../../data/cyclone/kaggle_cfg/lib84_lcmixr1.json 1 2 /kaggle/working/h1.json > /kaggle/working/h1.log 2>&1; tail -6 /kaggle/working/h1.log"
+ },
+ {
+  "inputs": "libm_wx2020L2_fields.npz,wx_truth_2020.npz",
+  "note": "FAIR BASELINE: BASE3 on the land library wx2020L2 (to separate lc_mix physics from the better start, 20 Nov)",
+  "slug": "tn-b3L-wx0",
+  "account": "1",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/suite_b3_wx.json 0 4 /kaggle/working/wx_0.json > /kaggle/working/wx_0.log 2>&1; tail -3 /kaggle/working/wx_0.log"
+ },
+ {
+  "inputs": "libm_wx2020L2_fields.npz,wx_truth_2020.npz",
+  "note": "FAIR BASELINE: BASE3 on the land library wx2020L2 (to separate lc_mix physics from the better start, 20 Nov)",
+  "slug": "tn-b3L-wx1",
+  "account": "4",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/suite_b3_wx.json 1 4 /kaggle/working/wx_1.json > /kaggle/working/wx_1.log 2>&1; tail -3 /kaggle/working/wx_1.log"
+ },
+ {
+  "inputs": "libm_wx2020L2_fields.npz,wx_truth_2020.npz",
+  "note": "FAIR BASELINE: BASE3 on the land library wx2020L2 (to separate lc_mix physics from the better start, 20 Nov)",
+  "slug": "tn-b3L-wx2",
+  "account": "1",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/suite_b3_wx.json 2 4 /kaggle/working/wx_2.json > /kaggle/working/wx_2.log 2>&1; tail -3 /kaggle/working/wx_2.log"
+ },
+ {
+  "inputs": "libm_wx2020L2_fields.npz,wx_truth_2020.npz",
+  "note": "FAIR BASELINE: BASE3 on the land library wx2020L2 (to separate lc_mix physics from the better start, 20 Nov)",
+  "slug": "tn-b3L-wx3",
+  "account": "4",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/suite_b3_wx.json 3 4 /kaggle/working/wx_3.json > /kaggle/working/wx_3.log 2>&1; tail -3 /kaggle/working/wx_3.log"
  }
 ]
