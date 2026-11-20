@@ -3843,3 +3843,6 @@ running as a separate test) is NOT adopted on its own result unless this check p
       by < 0.2 mm/day and it is still <= 0.7x ERA5 (2.44) - i.e. the grid-scale scheme's precipitation, not its saturation, is short;
   (b) resolution: the same global screen at T85 (dt 20): RESOLUTION named if poleward t700 d2 at T85 is >= 50 % smaller than at T42
       (-0.96 -> >= -0.48).
+- 13:41 (clock) POLEWARD RAIN of lc_mix (rainchk REG=pole): 1.76 mm/day (lc_full 1.50; ERA5 2.44) = 0.72x; cloud 700 0.27 (from 0.31).
+  Rule (a) 13:29: lsc_mix raised rain by 0.26 (>= 0.2) and the ratio is 0.72 (> 0.7) -> NOT met: the grid-scale precipitation is not
+  named as the main remaining input; the saturation fix moved rain the right way. [reg: 13:29 | inputs: ERA5 tp | fail-5why: n/a]
