@@ -4059,3 +4059,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   Not a fix verdict (no fix tested). FAIL-5WHY start: which BASE2 -> BASE3 item deepens weak lows (registered next cycle, per-item
   denial on the 25 over-deep storms); P3 plan item 'convective rain in over-deep weak lows vs ERA5 cp' runs on the same storms.
   [reg: 13 Nov 11:40 | inputs: same 83 storms, ERA5 peak targets; land-library confound noted | fail-5why: over-deepening of weak lows]
+- 23:03 (clock) REGISTERED (P3 fail-5why, before any run): per-item DENIAL of the BASE2 -> BASE3 items on lc_mix, on the 26
+  over-deep storms of tn-r1-lcm (error < -5 hPa; list kaggle_cfg/overdeep26_list.json), T170 72 h, same scorer (rule1_score.py):
+  variants lcm_no_cmt (cmt_mf 0), lcm_no_rdsi (rd_si 0), lcm_dfi_on (dfi_off 0). An item is NAMED as the over-deepening cause if
+  denying it brings >= 50 % of the 26 (>= 13) within +-5 hPa AND raises their mean error by >= +2.5 hPa (lc_mix mean on the 26
+  computed by the same scorer). If none is named: the over-deepening came with the lc_mix additions or the land library, and the next
+  denial is the land start (cycL2 vs no-land library). Denial = measurement only, never a fix. Jobs tn-p3-deny-0/1 (account 1).
+  [reg: now | inputs: same storms and targets; variants differ by one item each | fail-5why: n/a (registration)]
