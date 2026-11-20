@@ -4066,3 +4066,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   computed by the same scorer). If none is named: the over-deepening came with the lc_mix additions or the land library, and the next
   denial is the land start (cycL2 vs no-land library). Denial = measurement only, never a fix. Jobs tn-p3-deny-0/1 (account 1).
   [reg: now | inputs: same storms and targets; variants differ by one item each | fail-5why: n/a (registration)]
+- 01:52 (clock) RULE 1 for the A candidate vcs (lc_mix + sl_vcubic + lsc_sub; tn-r1-vcs-0/1, T170, 83 storms, cycL2):
+  within +-5 hPa 47/83 = 57 % -> Rule 1 gate (80 %) FAIL, identical to lc_mix (47/83; mean |err| 6.15 vs 6.08, mean -3.47 vs -3.11;
+  bands <995 +3.45 / 995-1001 -5.38 / >1001 -5.95 vs +3.92 / -5.03 / -5.65). -> sl_vcubic + lsc_sub do NO HARM to storm intensity
+  (D1 storm re-test under the multi-storm rule: no degradation; D1's old single-storm rejection does not reproduce).
+  The Rule 1 failure is the P3 over-deepening shared by BASE3, lc_mix and vcs (P3 denial jobs tn-p3-deny-0/1 launched 01:46).
+  A: screen gate PASS (21:2x) + no storm harm; still waiting for the exam (tn-vcs-wx0..3 queued). Whether A may close while Rule 1
+  fails for a reason owned by P3 is stated to Sridhar at 10:00, not decided here.
+  [reg: 21:2x | inputs: same 83 storms/targets/library as tn-r1-lcm | fail-5why: P3 over-deepening (pre-existing since BASE3), not vcs]
