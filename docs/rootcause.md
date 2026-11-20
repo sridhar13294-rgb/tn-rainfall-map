@@ -3644,3 +3644,25 @@ running as a separate test) is NOT adopted on its own result unless this check p
   +2.9 %) - judged ALONE, before rule 4 and before P4 (dry-season moist low levels) was named; that verdict is re-opened under rule 4.
   REGISTERED PREDICTION (land_conv no cap + dd_ifs + evap_ifs): (1) h_evap at sigma 0.95-0.99 falls >= 50 % and h_bl at 0.929 >= 0;
   (2) GATE sigma-0.925 dT >= -0.23 K/day; (3) surface rain stays 0.7-1.3x ERA5 (2.99 mm/day); then the global screen and TN rain.
+- 08:50 (clock) dd_ifs + evap_ifs RESULT (land_conv no cap + both, subtropical ocean, day 1 hourly):
+  (1) mechanism: rain evaporation at sigma 0.95-0.99 -3.96 -> -3.63 K/day summed (-8 %, needed -50 %) FAIL - the IFS form moved the
+      evaporation down to sigma 0.99 (-1.5 -> -1.9) instead of removing it; h_bl at 0.929 -0.32 (still < 0) FAIL.
+  (2) GATE sigma-0.925 dT -0.47 -> -0.36 (needed >= -0.23; with dd_ifs 29 % of the gap closed from -0.54) FAIL.
+  (3) rain: surface 2.36 mm/day (0.79x ERA5, inside 0.7-1.3) PASS; convective 1.74 vs ERA5 cp 1.73 (1.00x); re-evaporated 13 % of
+      production (was 35 %).
+  Failure 5-Why: in ALL four versions (cap, no cap, +dd_ifs, +evap_ifs) h_bl at sigma 0.929 is negative and the BL scheme carries heat
+  DOWN: here it cools sigma 0.93-0.84 (-0.3, -0.9, -1.2, -1.2, -0.65) and heats 0.97/0.95 (+3.0, +1.4) by matching amounts. A downward
+  turbulent heat flux inside a BL with positive surface H means the K-diffusion is acting on a STABLE theta gradient in the upper part
+  of our 1036-m BL - i.e. it is mixing the CUMULUS CLOUD LAYER as if it were the dry mixed layer. IFS input: for a cumulus-topped BL the
+  dry K-diffusion stops at cloud base (test-parcel LCL) and the cloud layer is mixed by the moist updraft / shallow mass flux. BOMEX
+  (Siebesma 2003): theta well mixed to ~520 m, then +~4 K/km through the cloud layer.
+  Self-correction (rule 5): this partly reverses the 13:19 / 18 Nov reading of bl_lcl. The cap (BL top = LCL) is the IFS cumulus-regime
+  behaviour; "hbl 455 vs ERA5 BLH 821" compared our K-profile top with ERA5's bulk-Richardson BLH, which in moist cumulus layers sits
+  inside the cloud layer - not the same quantity. bl_lcl's verdicts are re-opened; nothing is adopted or rejected on this alone.
+  dd_ifs and evap_ifs: both HELD (blocked by the BL scheme mixing the cloud layer); each moved the 925 error the right way and evap_ifs
+  brought rain re-evaporation and convective rain to ERA5.
+  [reg: 08:17 | inputs: deep/evap/BL profiles, ERA5 tp/cp | fail-5why: K-diffusion mixing the cloud layer down-gradient]
+  REGISTERED INPUT CHECK (no code change): with the full set (+dd_ifs +evap_ifs, no cap), per column hourly: hbl vs LCL and the theta
+  gradient between them, and ERA5's theta profile 1000-850 hPa over the same region. BL-IN-CLOUD-LAYER named if hbl > LCL + 300 m in
+  >= 50 % of columns AND our mean dtheta/dz between LCL and hbl >= 2 K/km (stable, so K-mixing moves heat down) AND ERA5's gradient over
+  the same heights is also >= 2 K/km (i.e. the layer really is a cloud layer, not a mixed layer).
