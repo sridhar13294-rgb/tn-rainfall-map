@@ -4034,3 +4034,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
   Also reported: global gate, tropical no-harm (t700/t850 trop not worse by > 0.1 K). Storm gate re-test (new multi-storm rule)
   follows only if named. [reg: now | inputs: D1 physics-off numbers 5 Nov; lc_mix set checked: no sl_vcubic | fail-5why: T170
   prediction failed - gain saturates]
+- 21:22 (clock) D1 (sl_vcubic) RESULT on lc_mix (registered 21:1x; local T42, same starts, masked): poleward t700 d2 -1.129 ->
+  -0.960 (+0.17 K, 15 %; rule >= 0.28 K) -> NOT named as a >= 25 % contributor; a ~15 % contributor. Tropics IMPROVE (t700 -0.547 ->
+  -0.441, t850 -0.782 -> -0.717) -> no harm. GATE: masked global t700 -0.753 -> -0.624 (FAIL by 0.024), t850 -0.471 PASS.
+  Unmasked (the 18 Nov wording): t700 -0.567, t850 -0.473 -> both inside 0.6. I keep the MASKED number as the verdict (decided 16:03:
+  the unmasked one is flattered by the Antarctic below-ground warm artefact) -> A still FAIL, by 0.024. Both shown to Sridhar.
+  [reg: 21:1x | inputs: same mask both runs | fail-5why: n/a (contributor sized, rule not met)]
+  REGISTERED (before run): COMBINED reference-based fixes, no new values: lc_mix + sl_vcubic (D1, Dinosaur cubic) + lsc_sub (IFS 7.16-
+  7.22). Prediction if additive: masked global t700 ~ -0.624 + 0.036 = -0.59. Verdict on the GATE as written (masked, |t850|,|t700|
+  <= 0.6 day-2 globe) + no-harm (tropical t700/t850 not worse than lc_mix by > 0.1 K). PASS here is a screen pass only: adoption still
+  needs the storm gate (multi-storm rule) for sl_vcubic and the exam. [reg: now | inputs: both parts measured separately | fail-5why: n/a]
