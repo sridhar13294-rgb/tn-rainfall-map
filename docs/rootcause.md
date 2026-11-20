@@ -3965,3 +3965,18 @@ running as a separate test) is NOT adopted on its own result unless this check p
   humidity is >= 0.3 K/day warmer (all-sky; clear-sky reported to split vapour vs cloud). If named, the root is upstream (what
   moistens 500-700: shallow top named for 700 at 12:40; 500 not yet budgeted).
   [reg: now | inputs: RH by level from the same harness | fail-5why: n/a (registration)]
+- 19:38 (clock) RADIATION INPUT RESULT (radq.py, lc_mix, start 56, day 1 6-hourly, sigma 0.70, 40-80 N/S, K/day):
+  all-sky model q -1.371 vs ERA5-matched q -1.371 (difference 0.000); clear-sky LW -1.334 vs -1.476; cloud700 0.283 vs 0.044.
+  Drier air cools MORE in clear sky, but loses the 700 cloud; the two cancel exactly -> VAPOUR/CLOUD INPUT NOT named (0 % of the gap).
+  Radiation at 700 is insensitive to the moisture excess and matched RRTMG on the same state (18 Nov) -> radiation branch CLOSED.
+  ATTRIBUTION SUM (P-pole, masked d2 cold -1.13 K; physics gap at sigma 0.70 ~1.2 K/day vs ERA5-implied):
+   latent deficit: poleward rain 0.72x ERA5 (1.76 vs 2.44 mm/day) -> 0.68 mm/day ~ 20 W/m2 ~ 0.47 K/day over 500-850 hPa (~40 %);
+   shallow top 0.23 K (denial, ~20-25 %); resolution 0.25 K (T85, ~20 %, overlaps with latent: under-resolved ascent rains less);
+   mid-level convection ~2 %; radiation 0. Sum ~80-85 % -> the cold is MULTI-CAUSAL; the largest single branch is the LATENT DEFICIT.
+  5-Why on the latent deficit: the air is TOO MOIST (rh700 +0.14) yet rains 0.72x -> condensation starts too late. IFS forms
+  stratiform condensate inside the cloudy part of the box at RH < 1 (Cy50r1 ch. 7, condensation in existing cloud, eq. C1 = a dqs/dt);
+  MEGAM condenses only at grid saturation (no prognostic cloud). 13:05 estimate of that term: 0.17 g/kg/day = the missing drying
+  (0.17-0.20). Its column-share rule was judged with WATER-only RH (21 % < 30 %) - INPUT FAULT in my own 13:05 check (the same
+  formula I then fixed in lsc_mix). REGISTERED re-check with mixed-phase RH (rhpole.py, lc_mix): SUBGRID CONDENSATION named if
+  >= 30 % of poleward 700 columns have mixed-phase RH in [0.8, 1) and C1 >= 0.15 g/kg/day.
+  [reg: 19:38 (rad: 19:33) | inputs: same states, q swapped only | fail-5why: n/a (not named)]
