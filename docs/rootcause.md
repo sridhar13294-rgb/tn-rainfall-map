@@ -3679,7 +3679,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   is that behaviour; it failed on 19 Nov only in combination with the downdraft and evaporation faults, now fixed (dd_ifs, evap_ifs).
   REGISTERED PREDICTION (land_conv + dd_ifs + evap_ifs + bl_lcl 1): (1) h_bl at sigma 0.929 >= 0; (2) GATE sigma-0.925 day-1 dT >= -0.23
   K/day (ERA5 +0.08); (3) surface rain 0.7-1.3x ERA5; then (4) the global day-2 screen |t850|, |t700| <= 0.6 K.
-- 09:45 (clock) bl_lcl 1 + dd_ifs + evap_ifs RESULT (land_conv base, subtropical ocean, day 1 hourly, K/day):
+- 09:37 (clock) bl_lcl 1 + dd_ifs + evap_ifs RESULT (land_conv base, subtropical ocean, day 1 hourly, K/day):
   (1) h_bl at sigma 0.929 = +0.27 (inside-BL columns +1.10) PASS - the down-gradient mixing of the cloud layer is gone.
   (2) GATE sigma-0.925 dT -0.63 (needed >= -0.23) FAIL. BUT sigma-0.85 dT -0.47 (no-cap version -1.16; land_conv first screen -1.21).
   925 physics -0.21 = BL +0.27, shallow +0.26, deep +0.53, large-scale +0.26, evaporation -0.05, RADIATION -1.47 (no cap: -0.06).
