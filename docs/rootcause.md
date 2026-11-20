@@ -3980,3 +3980,12 @@ running as a separate test) is NOT adopted on its own result unless this check p
   formula I then fixed in lsc_mix). REGISTERED re-check with mixed-phase RH (rhpole.py, lc_mix): SUBGRID CONDENSATION named if
   >= 30 % of poleward 700 columns have mixed-phase RH in [0.8, 1) and C1 >= 0.15 g/kg/day.
   [reg: 19:38 (rad: 19:33) | inputs: same states, q swapped only | fail-5why: n/a (not named)]
+- 19:54 (clock) SUBGRID-CONDENSATION RE-CHECK (rhpole_mix.py, lc_mix, mixed-phase RH, 3 starts, sigma 0.70, 40-80 N/S, day 1):
+  RH in [0.8, 1): 25.4 % of columns (water-only check 13:05: 21 %); RH >= 1: 9.3 %; mean RH 0.63; C1 = 0.152 g/kg/day.
+  Rule (registered 19:4x): >= 30 % AND C1 >= 0.15 -> 25.4 % < 30 % -> NOT NAMED (size met, share not). The input fault in my 13:05
+  check moved the share 21 -> 25 %, not across the line. Not re-cut after the result.
+  P-POLE STATUS: every fishbone branch measured; none >= 50 %; sizes add to ~80-85 % (latent deficit ~40 %, shallow top ~20-25 %,
+  resolution ~20 % overlapping latent, mid-level ~2 %, radiation 0). Unmeasured: dynamics numerics residual (-0.33 K/day at sigma
+  0.50, both runs, 13:29 list item b). Conclusion: no single root cause exists to fix; closing P-pole needs either several
+  reference-based fixes together or a decision on scope - stated to Sridhar, not decided by me.
+  [reg: 19:4x | inputs: mixed-phase RH (corrected input) | fail-5why: n/a (not named)]
