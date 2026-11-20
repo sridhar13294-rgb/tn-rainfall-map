@@ -3690,3 +3690,19 @@ running as a separate test) is NOT adopted on its own result unless this check p
   therefore weaker than the global screen's (direct ERA5 temperatures). Per the 09:14 registration the global day-2 screen (4) is
   now being run to measure the combination; no verdict on bl_lcl / dd_ifs / evap_ifs until it is in.
   [reg: 09:14 | inputs: process profiles; ERA5 Q1 residual caveat | fail-5why: radiation uncovered, heating short vs a residual reference]
+- 09:57 (clock) GLOBAL SCREEN of the combination "lc_full" = land set + IFS-document convection set + bl_lcl 1 + dd_ifs + evap_ifs
+  (rh_vs_era5, T42 dt 20, wx2020L2, 3 starts, truth era5f/rh_truth_2020.npz; gate day-2 globe |t850|, |t700| <= 0.6 K, from 18 Nov):
+  t850 globe d2 -0.52 PASS; t700 globe d2 -0.70 FAIL (by 0.10). Split d2: t700 ocean 40S-40N -0.43, poleward 40 -1.03; t850 ocean -0.53,
+  poleward -0.10. rh850 globe d2 +0.06. Comparison (day-2 globe t850 / t700): base3r +0.07 / -1.54, land +0.17 / -1.41, land_conv
+  -0.76 / -0.89, lc_full -0.52 / -0.70 (best on both together). Tropical-ocean t700: base3r -1.94, land_conv -0.68, lc_full -0.43.
+  Subtropical rain (rainchk): lc_full 1.86 mm/day = 0.62x ERA5 (FAIL vs 0.7-1.3; was 0.79x without the cap); convective 0.73x ERA5 cp.
+  Failure 5-Why (t700): poleward-40 t700 d2 is -1.03 (lc_full), -1.03 (base3r), -1.04 (land), -1.09 (land_conv), -1.01/-1.39/-1.44
+  (convdoc variants) - the SAME in every version; the convection/BL fixes do not touch it. The global t700 failure traces to this
+  shared EXTRATROPICAL mid-level cold, not to the fixes -> lc_full HELD (blocked by the poleward t700 cold), not rejected; the
+  tropical part of A is inside the gate (t700 ocean -0.43, t850 ocean -0.53).
+  Rain: lc_full is too dry over the subtropical ocean (0.62x) - recorded as a second blocker for the A verdict; the 18 Nov gate's
+  "day-1 rain and LHF within 15 % of ERA5" (global) has not been measured for lc_full yet.
+  [reg: 18 Nov 13:10 gate; 09:14 sequence | inputs: per-region split; shared across all versions | fail-5why: poleward t700 shared]
+  REGISTERED NEXT: (a) the poleward t700 cold, day 1 (-0.85) - inputs first: hourly 700-hPa budget poleward of 40 (radiation by part,
+  cloud, dynamics) vs ERA5 temperatures, naming the term carrying >= 50 % of the day-1 -0.85; (b) global day-1 rain and LHF of lc_full
+  vs ERA5 (the 18 Nov gate's second half).
