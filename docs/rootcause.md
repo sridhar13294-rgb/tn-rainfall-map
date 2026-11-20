@@ -3706,3 +3706,8 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED NEXT: (a) the poleward t700 cold, day 1 (-0.85) - inputs first: hourly 700-hPa budget poleward of 40 (radiation by part,
   cloud, dynamics) vs ERA5 temperatures, naming the term carrying >= 50 % of the day-1 -0.85; (b) global day-1 rain and LHF of lc_full
   vs ERA5 (the 18 Nov gate's second half).
+- 10:05 (clock) REGISTERED (poleward t700 cold, inputs first): hourly day-1 budget at sigma 0.70 and 0.50, 40-80 N/S all surfaces,
+  lc_full (dyn700.py: dT = physics by part + horizontal advection + vertical + residual) and ERA5 at 700 hPa (cyc_adv700.py: hadv,
+  vertical term, day-1 T change). A term is NAMED AS THE ERROR if |model - ERA5| >= 0.43 K/day (half of the -0.85 day-1 t700 error);
+  for physics (no ERA5 parts) the implied ERA5 Q1 = dT - hadv - vert is compared with our total physics, and the largest part is then
+  checked against its reference. [reg: now | inputs: to measure | fail-5why: n/a]
