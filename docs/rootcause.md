@@ -3862,7 +3862,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   air temperature and 60 % soil water) - a land-set exam on it would be unfair. -> building libm_cycL2_fields.npz (same storm list,
   land incl. soil levels 2-4) by the 'cycl2 library' workflow step; the 2 jobs are parked in kaggle_cfg/queue_lcmix_pending.json and
   go to the queue once the library is on the release. No GPU minutes spent on wrong inputs.
-- 14:05 (clock) LAUNCHED (re-measure per plan, lc_mix as measured candidate, A held): general-weather exam tn-lcm-wx0..3 (T170, 10 days,
+- 14:00 (clock) LAUNCHED (re-measure per plan, lc_mix as measured candidate, A held): general-weather exam tn-lcm-wx0..3 (T170, 10 days,
   suite_lcmix_wx.json) on the LAND library wx2020L2 (accounts 1 and 4; wx3 waiting for account 4). Comparability note stated now: the
   BASE3 exam used libm_wx2020 (no land fields); lc_mix's numbers carry both the physics and the better land start - a BASE3 run on
   wx2020L2 is needed to separate them before any adoption verdict.
