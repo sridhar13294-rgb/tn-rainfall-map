@@ -3779,3 +3779,19 @@ running as a separate test) is NOT adopted on its own result unless this check p
   CONDENSATION named if >= 30 % of columns are there and the ERA5-implied missing drying (0.17-0.20 g/kg/day) is within what those
   columns would condense under the IFS form.
   [reg: 12:40 | inputs: ERA5 q advection and dq | fail-5why: n/a (named)]
+- 13:05 (clock) SUBGRID-CONDENSATION RESULT (rhpole.py, lc_full, sigma 0.70, 40-80 N/S, day 1): RH (model water-only q_s) in
+  [0.8, 1): 21 % of columns (>= 1: 6 %); mean RH 0.58; IFS eq. 7.18 condensation-in-cloud estimate C1 = a max(-dqs/dt, 0) = 0.17
+  g/kg/day (the missing drying is 0.17-0.20). Rule (12:51) needs BOTH >= 30 % of columns AND the size -> 21 % < 30 % -> NOT named.
+  [reg: 12:51 | inputs: RH distribution, c_ls, hourly qs | fail-5why: n/a (not named)]
+  INPUT CHECK found on the way (rule 2): the saturation our grid-scale condensation uses. mm2 qsat = Bolton over WATER at every T.
+  IFS Cy38r1 ch. 7 uses MIXED-PHASE saturation for stratiform condensation (e_s = a e_w + (1 - a) e_i, a = ((T - 250.16)/23)^2) - the
+  same blend ERA5's RH uses. At 700 poleward (T ~ 261 K) q_s,mix / q_s,water = 0.91 -> our air holds ~9 % more vapour before it
+  condenses = ~+0.09 RH (mixed) of headroom, the size of the +0.11 RH excess grown in day 1. The mean RH 0.58 above is against
+  water saturation, which is why only 21 % of columns look "near saturation". -> SATURATION FORMULA (water-only below 0 C) NAMED as
+  the input of the condensation deficit (documented IFS form differs; the size matches).
+  [reg: now (input check under rule 2, size arithmetic stated) | inputs: qsat formula vs IFS ch. 7 | fail-5why: n/a (named)]
+  FIX (documented): option lsc_mix = 1 - IFS mixed-phase q_s in the grid-scale condensation and in the rain-evaporation RH; latent heat
+  kept at LV (no ice phase in this model). Default off; regress: control bit-identical, lsc_mix changes 7 fields.
+  REGISTERED PREDICTION (lc_full + lsc_mix, global screen, same harness): (1) poleward rh700 d1 excess falls >= 50 % beyond the d0
+  offset (+0.18 -> <= +0.13); (2) poleward t700 d2 cold falls >= 50 % (-1.03 -> >= -0.52); (3) GATE day-2 globe |t850|, |t700| <= 0.6;
+  (4) poleward precipitation rises toward ERA5 (from 0.62x). If (3) fails, failure 5-Why first.
