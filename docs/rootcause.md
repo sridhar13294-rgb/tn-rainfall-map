@@ -3849,7 +3849,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - 13:51 (clock) AMENDMENT to the 13:29 resolution test, before any result: the T85 screen was killed by the 7 GB memory limit (OOM,
   6.1 GB RSS) - not runnable here. Replaced by T63 (same rule: RESOLUTION named if poleward t700 d2 at T63 is >= 50 % smaller than at
   T42, -0.96 -> >= -0.48; a smaller step than T85, so a FAIL here is weaker evidence against resolution - stated now).
-- 13:56 (clock) RESOLUTION TEST NOT RUN: Dinosaur has no T63 grid (only TL63, which keeps the T42 physics grid - not a resolution test
+- 13:52 (clock) RESOLUTION TEST NOT RUN: Dinosaur has no T63 grid (only TL63, which keeps the T42 physics grid - not a resolution test
   of the physics), and T85 is OOM here (7 GB). Deferred to a Kaggle T85/T170 screen job (needs a small harness: rh_vs_era5 with CANDS)
   - no verdict on (b) until then. [reg: 13:29/13:51 | inputs: grid availability | fail-5why: tooling, not physics]
   Plan note: the poleward 700 cold is shared by EVERY version (incl. the BASE3 that scored best on the exam) and sits poleward of 40;
