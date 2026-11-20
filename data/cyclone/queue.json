@@ -5,5 +5,26 @@
   "account": "1",
   "note": "A screen PASS candidate lc_mix+sl_vcubic+lsc_sub (registered 21:2x): general-weather exam",
   "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/suite_vcs_wx.json 2 4 /kaggle/working/wx_2.json > /kaggle/working/wx_2.log 2>&1; tail -3 /kaggle/working/wx_2.log"
+ },
+ {
+  "slug": "tn-p3-lcm-no-cmt",
+  "inputs": "libm_cycL2_fields.npz",
+  "account": "4",
+  "note": "P3 fail-5why denial, one variant per job (3-variant job was OOM-killed 02:0x)",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore hind2.py /kaggle/working/libm_cycL2_fields.npz ../../../data/cyclone/kaggle_cfg/p3_deny_lcm_no_cmt.json 0 1 /kaggle/working/h0.json > /kaggle/working/h0.log 2>&1; tail -6 /kaggle/working/h0.log"
+ },
+ {
+  "slug": "tn-p3-lcm-no-rdsi",
+  "inputs": "libm_cycL2_fields.npz",
+  "account": "1",
+  "note": "P3 fail-5why denial, one variant per job (3-variant job was OOM-killed 02:0x)",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore hind2.py /kaggle/working/libm_cycL2_fields.npz ../../../data/cyclone/kaggle_cfg/p3_deny_lcm_no_rdsi.json 0 1 /kaggle/working/h0.json > /kaggle/working/h0.log 2>&1; tail -6 /kaggle/working/h0.log"
+ },
+ {
+  "slug": "tn-p3-lcm-dfi-on",
+  "inputs": "libm_cycL2_fields.npz",
+  "account": "1",
+  "note": "P3 fail-5why denial, one variant per job (3-variant job was OOM-killed 02:0x)",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore hind2.py /kaggle/working/libm_cycL2_fields.npz ../../../data/cyclone/kaggle_cfg/p3_deny_lcm_dfi_on.json 0 1 /kaggle/working/h0.json > /kaggle/working/h0.log 2>&1; tail -6 /kaggle/working/h0.log"
  }
 ]

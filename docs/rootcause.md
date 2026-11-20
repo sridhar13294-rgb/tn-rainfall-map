@@ -4074,3 +4074,8 @@ running as a separate test) is NOT adopted on its own result unless this check p
   A: screen gate PASS (21:2x) + no storm harm; still waiting for the exam (tn-vcs-wx0..3 queued). Whether A may close while Rule 1
   fails for a reason owned by P3 is stated to Sridhar at 10:00, not decided here.
   [reg: 21:2x | inputs: same 83 storms/targets/library as tn-r1-lcm | fail-5why: P3 over-deepening (pre-existing since BASE3), not vcs]
+- 03:52 (clock) P3 DENIAL JOBS FAILED (tn-p3-deny-0/1): 'Killed' after the first storm's DFI - out of memory. 5-Why: my config
+  put 3 variants in one job -> 3 compiled T170 models + the full cycL2 library in one process (every earlier Rule 1 job had 1
+  variant). Fault in MY job design, not in the physics; ~15 GPU min lost. Re-queued as one variant per job (tn-p3-lcm-no-cmt acct 4,
+  tn-p3-lcm-no-rdsi / tn-p3-lcm-dfi-on acct 1), same storms, same registered rule (23:1x).
+  [reg: 23:1x | inputs: kernel log 'Killed' after 'dfi done' | fail-5why: 3-variant job OOM (my design)]
