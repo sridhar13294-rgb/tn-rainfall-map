@@ -4079,3 +4079,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   variant). Fault in MY job design, not in the physics; ~15 GPU min lost. Re-queued as one variant per job (tn-p3-lcm-no-cmt acct 4,
   tn-p3-lcm-no-rdsi / tn-p3-lcm-dfi-on acct 1), same storms, same registered rule (23:1x).
   [reg: 23:1x | inputs: kernel log 'Killed' after 'dfi done' | fail-5why: 3-variant job OOM (my design)]
+- 03:52 (clock) STEERING SPLIT (exam, T170; b3L = BASE3 on the land library, all 4 parts now in): TN u850 d5 bias by exam part
+  (BASE3 / b3L / lc_mix): q0 -3.31/-3.49/-3.54, q1 -2.26/-1.93/-4.43, q2 -2.74/-2.93/-4.42, q3 -1.24/-0.97/-4.31 m/s.
+  The land start changes it by <= 0.35 m/s; lc_mix PHYSICS adds ~ -2 to -3 m/s easterly bias in parts 1-3 -> the steering
+  degradation is CAUSED BY THE lc_mix PHYSICS, not the land start (z500 gain: land ~1.5-2 m, physics ~4-5 m per part).
+  Open question for P5b / Tracks: which lc_mix item drives the 850 easterly over TN (next: item-group denial on the exam starts
+  with the largest bias, registered before running). Adoption of lc_mix / vcs is NOT possible while this stands unexplained.
+  [reg: 13:54 (exam plan) | inputs: same starts per part, land confound measured | fail-5why: lc_mix physics -> TN 850 easterly]
