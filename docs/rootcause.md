@@ -3911,3 +3911,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   rest (~0.4) not yet attributed -> resolution (Kaggle T85, registered rule) stays the lead branch; no single named cause yet, so no
   physics change is made (rule 1). Note for the fix: mid-level convection is a documented IFS part we lack (6.4.3) and a fair contributor
   - to be built as an option (needs a correct omega inside the column physics) after the T85 verdict, with its own registered test.
+- 16:59 (clock) EXAM PARTIAL (no verdict - 3 of 4 parts; tn-lcm-wx3 and tn-res-t85 launched 16:51): z500 RMSE on the same 55 starts,
+  d1/d5/d10: BASE3 18.0 / 71.6 / 118.1, lc_mix 15.3 / 65.4 / 110.1; lc_mix better at d5 in 51 of 55 starts. Caveat stated now: lc_mix ran
+  on the land library wx2020L2, BASE3 on wx2020 (no land); the d1 gap (2.7 m) shows part of the gain is the start. A BASE3 run on
+  wx2020L2 is needed before any adoption verdict (queued next when a slot frees).
