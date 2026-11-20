@@ -3726,3 +3726,21 @@ running as a separate test) is NOT adopted on its own result unless this check p
   LATENT HEATING DEFICIT named if ours <= 0.7x ERA5; (ii) 700-hPa cloud fraction ours vs ERA5 fraction_of_cloud_cover: CLOUD named if
   ours >= 1.3x ERA5 (more mid-level cloud -> more LW cooling). Both for lc_full and base3r (cyc_cppole.py; rainchk.py REG=pole).
   [reg: now | inputs: radiation scheme vs RRTMG (18 Nov) | fail-5why: n/a]
+- 12:18 (clock) POLEWARD INPUT RESULTS (40-80 N/S, all surfaces, day 1; ERA5 cppole_truth: precip 2.44 mm/day, conv 0.64, cc700 0.142):
+  lc_full : rain 1.50 (0.62x) - production 1.62 (large-scale 1.26), 7 % re-evaporated; cloud 700 0.309 (2.2x).
+  base3r  : rain 2.07 (0.85x) - production 3.29 (large-scale 2.87), 37 % re-evaporated; cloud 700 0.214 (1.5x).
+  Rules (11:45): (i) LATENT DEFICIT named for lc_full (0.62x <= 0.7), NOT for base3r (0.85x); (ii) CLOUD named for both (2.2x, 1.5x).
+  Base3r poleward budget (sigma 0.70): dT -0.93 = physics -0.77 [rad -1.42, large-scale +0.94, shallow -0.47, deep +0.36, evap -0.15]
+  + dyn -0.16; lc_full: physics -1.25 [rad -1.32, large-scale +0.50, shallow -0.60, deep +0.22]. Shared-cause rule (11:44): parts present
+  in both at >= 0.43 beyond the ERA5-implied Q1 (-0.05) and unchanged by the convection set: radiation (-1.3/-1.4) and SHALLOW-TOP
+  cooling (-0.5/-0.6, both shallow schemes). Radiation was matched by RRTMG on the same clouds (18 Nov) and sits in the usual
+  mid-latitude range, so its input (cloud, 1.5-2.2x ERA5 at 700) is the radiation-side suspect; shallow cooling at 700 averaged over the
+  whole 40-80 belt is the other. What really differs from ERA5 is the latent side: ERA5 needs ~+1.3 K/day of condensation heating at
+  700 to balance the same radiation; we have +0.07 (lc_full) / +0.68 (base3r).
+  Note on lc_full's rain deficit: its large-scale rain production poleward is less than half of base3r's (1.26 vs 2.87 mm/day) - which
+  item of the set does that (sfc_sal, qs_mix, evap_ifs, convection changes) is unknown -> to be split.
+  [reg: 11:44 / 11:45 | inputs: ERA5 precip and cloud; RRTMG check of 18 Nov | fail-5why: n/a (named)]
+  REGISTERED NEXT: (1) poleward 700 cloud: our cloud scheme's RH threshold vs IFS (Tiedtke/ Sundqvist critical RH in the mid
+  troposphere, read first) and our RH at 700 vs ERA5 r700 - CLOUD-SCHEME named if our RH is within 0.05 of ERA5 while cloud is >= 1.3x;
+  RH named if ours is >= 0.05 above ERA5. (2) lc_full poleward large-scale rain: one-item-out runs (each set item removed) - the item
+  whose removal restores >= 50 % of the 1.6 mm/day production gap is named.
