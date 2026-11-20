@@ -4044,3 +4044,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   7.22). Prediction if additive: masked global t700 ~ -0.624 + 0.036 = -0.59. Verdict on the GATE as written (masked, |t850|,|t700|
   <= 0.6 day-2 globe) + no-harm (tropical t700/t850 not worse than lc_mix by > 0.1 K). PASS here is a screen pass only: adoption still
   needs the storm gate (multi-storm rule) for sl_vcubic and the exam. [reg: now | inputs: both parts measured separately | fail-5why: n/a]
+- 21:35 (clock) COMBINED RESULT (lc_mix + sl_vcubic + lsc_sub, registered 21:2x; local T42, starts 56/61/66, masked):
+  global d2 t700 -0.591, t850 -0.455 -> GATE (masked, as written) PASS, margin 0.009 K on t700 (prediction -0.59 matched: effects add).
+  No harm: tropics t700 -0.547 -> -0.405, t850 -0.782 -> -0.686 (both better). Poleward t700 -1.129 -> -0.933 (P-pole still cold;
+  P-pole carries the global gate per the 16:4x split, so its gate passes on the screen too).
+  HONEST CAVEAT: 0.009 K on 3 starts is inside start-to-start noise -> SCREEN PASS ONLY, not a closure. Closure of A needs:
+  (i) Rule 1 storm intensity (multi-storm rule) with sl_vcubic + lsc_sub (tn-r1-vcs-0/1 queued), (ii) the exam (tn-vcs-wx0..3 queued).
+  [reg: 21:2x | inputs: same mask/starts as every candidate | fail-5why: n/a (pass)]

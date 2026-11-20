@@ -1,5 +1,12 @@
 [
  {
+  "slug": "tn-r1-vcs-0",
+  "inputs": "libm_cycL2_fields.npz",
+  "account": "1",
+  "note": "A screen PASS candidate lc_mix+sl_vcubic+lsc_sub (registered 21:2x): Rule 1 intensity",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore hind2.py /kaggle/working/libm_cycL2_fields.npz ../../../data/cyclone/kaggle_cfg/lib84_vcsr1.json 0 2 /kaggle/working/h0.json > /kaggle/working/h0.log 2>&1; tail -6 /kaggle/working/h0.log"
+ },
+ {
   "inputs": "libm_wx2020L2_fields.npz,wx_truth_2020.npz",
   "note": "FAIR BASELINE: BASE3 on the land library wx2020L2 (to separate lc_mix physics from the better start, 20 Nov)",
   "slug": "tn-b3L-wx1",
@@ -12,5 +19,40 @@
   "slug": "tn-b3L-wx3",
   "account": "4",
   "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/suite_b3_wx.json 3 4 /kaggle/working/wx_3.json > /kaggle/working/wx_3.log 2>&1; tail -3 /kaggle/working/wx_3.log"
+ },
+ {
+  "slug": "tn-r1-vcs-1",
+  "inputs": "libm_cycL2_fields.npz",
+  "account": "4",
+  "note": "A screen PASS candidate lc_mix+sl_vcubic+lsc_sub (registered 21:2x): Rule 1 intensity",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore hind2.py /kaggle/working/libm_cycL2_fields.npz ../../../data/cyclone/kaggle_cfg/lib84_vcsr1.json 1 2 /kaggle/working/h1.json > /kaggle/working/h1.log 2>&1; tail -6 /kaggle/working/h1.log"
+ },
+ {
+  "slug": "tn-vcs-wx0",
+  "inputs": "libm_wx2020L2_fields.npz,wx_truth_2020.npz",
+  "account": "1",
+  "note": "A screen PASS candidate lc_mix+sl_vcubic+lsc_sub (registered 21:2x): general-weather exam",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/suite_vcs_wx.json 0 4 /kaggle/working/wx_0.json > /kaggle/working/wx_0.log 2>&1; tail -3 /kaggle/working/wx_0.log"
+ },
+ {
+  "slug": "tn-vcs-wx1",
+  "inputs": "libm_wx2020L2_fields.npz,wx_truth_2020.npz",
+  "account": "4",
+  "note": "A screen PASS candidate lc_mix+sl_vcubic+lsc_sub (registered 21:2x): general-weather exam",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/suite_vcs_wx.json 1 4 /kaggle/working/wx_1.json > /kaggle/working/wx_1.log 2>&1; tail -3 /kaggle/working/wx_1.log"
+ },
+ {
+  "slug": "tn-vcs-wx2",
+  "inputs": "libm_wx2020L2_fields.npz,wx_truth_2020.npz",
+  "account": "1",
+  "note": "A screen PASS candidate lc_mix+sl_vcubic+lsc_sub (registered 21:2x): general-weather exam",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/suite_vcs_wx.json 2 4 /kaggle/working/wx_2.json > /kaggle/working/wx_2.log 2>&1; tail -3 /kaggle/working/wx_2.log"
+ },
+ {
+  "slug": "tn-vcs-wx3",
+  "inputs": "libm_wx2020L2_fields.npz,wx_truth_2020.npz",
+  "account": "4",
+  "note": "A screen PASS candidate lc_mix+sl_vcubic+lsc_sub (registered 21:2x): general-weather exam",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/suite_vcs_wx.json 3 4 /kaggle/working/wx_3.json > /kaggle/working/wx_3.log 2>&1; tail -3 /kaggle/working/wx_3.log"
  }
 ]
