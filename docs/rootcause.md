@@ -4006,3 +4006,18 @@ running as a separate test) is NOT adopted on its own result unless this check p
   (-1.129 -> >= -0.847); (2) poleward rh700 d1 <= +0.120 (excess beyond d0 offset -30 %); (3) poleward rain rises (> 1.76 mm/day);
   (4) gate global |t850|, |t700| <= 0.6 (fail -> fail-5why, HELD not rejected if (1)-(3) met); (5) no harm: tropical-ocean t700/t850 d2
   not worse by > 0.1 K. [reg: now | inputs: omega formula (midlev), IFS 7.16-7.22 read | fail-5why: n/a (registration)]
+- 20:12 (clock) lsc_sub RESULT (registered 20:0x; local T42, starts 56/61/66, masked): (1) poleward t700 d2 -1.129 -> -1.098
+  (-3 %, needed >= -0.847) FAIL; (2) poleward rh700 d1 +0.135 (needed <= +0.120) FAIL; (5) tropical-ocean t700 d2 -0.505 -> -0.413,
+  t850 -0.529 (lc_mix -0.53 area) no harm; (4) gate global masked t700 -0.717, t850 -0.51 -> t700 FAIL.
+  FAIL-5WHY (subfire.py, same states, on vs off, sigma 0.70, 40-80, day 1): 1 Does it act? YES: +0.147 K/day, drying 0.044 g/kg/day,
+  +0.27 mm/day rain (toward ERA5). 2 Why only 0.03 K warmer at day 2 when it heats 0.15 K/day? The condensation it adds happens EARLIER
+  than the saturation adjustment would have done it later - the moisture supply is the same, so total condensation barely changes
+  (timing, not amount). 3 Why is the instant term 1/4 of the 13:05 estimate (0.15)? IFS RH_crit 0.8 gives a smaller cover than
+  radcloud's 0.7, and eq. 7.16 excludes horizontal advection that the Eulerian 13:05 estimate included. 4 So the latent deficit is
+  not a condensation-threshold fault: the poleward column does not get enough moisture LIFTED (ascent), which is the resolution
+  branch (T85 -20 %). 5 Root of the failure: the branch was a SYMPTOM of under-resolved ascent, not an independent cause.
+  lsc_sub: faithful IFS form, small effect -> HELD (blocked by: under-resolved ascent), default off. [reg: 20:0x | inputs: same
+  states; term magnitude measured | fail-5why: timing vs amount; ascent supply]
+  NEXT (information, NOT a gate change): the same screen at T170 = the exam's resolution (Kaggle tn-res-t170), to measure how much of
+  the poleward cold is a T42-screen artefact. Prediction stated now: if resolution is the supply limit, T170 poleward masked t700 d2
+  is >= 40 % smaller than T42 (-1.129 -> >= -0.677).
