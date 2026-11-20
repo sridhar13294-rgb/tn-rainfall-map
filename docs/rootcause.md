@@ -3666,3 +3666,16 @@ running as a separate test) is NOT adopted on its own result unless this check p
   gradient between them, and ERA5's theta profile 1000-850 hPa over the same region. BL-IN-CLOUD-LAYER named if hbl > LCL + 300 m in
   >= 50 % of columns AND our mean dtheta/dz between LCL and hbl >= 2 K/km (stable, so K-mixing moves heat down) AND ERA5's gradient over
   the same heights is also >= 2 K/km (i.e. the layer really is a cloud layer, not a mixed layer).
+- 09:14 (clock) BL-IN-CLOUD-LAYER RESULT (bllcl.py, full set no cap, subtropical ocean, day 1 hourly; ERA5 thsub_truth 3-hourly):
+  ours: hbl 1075 m, LCL 675 m; hbl > LCL + 300 m in 72 % of columns; mean dtheta/dz between LCL and hbl 4.1 K/km.
+  ERA5 theta(z): 147 m 293.70 | 365 m 293.87 | 588 m 294.40 | 815 m 295.37 | 1048 m 296.67 -> 0.8 K/km below ~400 m (mixed layer), then
+  2.3 / 4.3 / 5.6 K/km - over our LCL-hbl band (675-1075 m) ERA5 is 4.3-5.6 K/km: a real cloud layer.
+  Rule (08:50): all three met (72 % >= 50 %; 4.1 >= 2; ERA5 >= 2) -> BL-IN-CLOUD-LAYER NAMED: with bl_lcl 0 our dry K-diffusion mixes
+  the cumulus layer down-gradient, cooling ~650-1300 m and heating the subcloud layer. Our own theta there is less stable than ERA5
+  (2.7 / 4.2 vs 4.3 / 5.6 K/km) - the mixing has eroded it.
+  [reg: 08:50 | inputs: hbl, LCL, theta(z) vs ERA5 | fail-5why: n/a (named)]
+  Documented behaviour (IFS Cy38r1 Part IV ch. 3, cumulus-topped regime): dry K-diffusion and the dry EDMF updraft stop at cloud base;
+  the cloud layer is mixed by the moist updraft / shallow convection. Our bl_lcl = 1 (BL top = cloud base when below the K-profile top)
+  is that behaviour; it failed on 19 Nov only in combination with the downdraft and evaporation faults, now fixed (dd_ifs, evap_ifs).
+  REGISTERED PREDICTION (land_conv + dd_ifs + evap_ifs + bl_lcl 1): (1) h_bl at sigma 0.929 >= 0; (2) GATE sigma-0.925 day-1 dT >= -0.23
+  K/day (ERA5 +0.08); (3) surface rain 0.7-1.3x ERA5; then (4) the global day-2 screen |t850|, |t700| <= 0.6 K.
