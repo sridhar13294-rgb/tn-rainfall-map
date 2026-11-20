@@ -3820,3 +3820,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   the remaining named non-latent item is the SHALLOW scheme's transport cooling at 700 (-0.47 base3r / -0.60 lc_full), present in both
   shallow schemes. NEXT: read IFS Cy38r1 Part IV ch. 6 on shallow convection (cloud top, detrainment, where its cooling sits) before any
   comparison; then a profile of the shallow T/q tendency vs height poleward (where its top is) against that reference.
+- 13:20 (clock) IFS SHALLOW REFERENCE (read first, Cy38r1 Part IV sec. 6.4): shallow only if cloud thickness < 200 hPa (we use sh_dmax
+  20000 Pa - matches); mass flux constant with height then reduced at cloud top by organised detrainment (kinetic-energy budget, eqs.
+  6.10-6.12); detrained condensate goes to the prognostic cloud scheme (eq. 6.47) - it is not evaporated on the spot; shallow
+  "predominantly occurs in undisturbed flow". No number for shallow-top cooling is given -> no quantitative range to compare with.
+  So instead of naming by reference, a DIAGNOSTIC DENIAL (measurement only, never a fix): option sh_off = 1 zeroes the shallow
+  tendencies (regress: control bit-identical; sh_off changes 7 fields).
+  REGISTERED: lc_mix + sh_off, global screen: SHALLOW named as the cause of the poleward 700 cold if poleward t700 d2 falls by >= 50 %
+  (-0.96 -> >= -0.48); if not, the shallow scheme is cleared for this fault. [reg: now | inputs: IFS shallow ref read | fail-5why: n/a]
