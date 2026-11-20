@@ -1,6 +1,6 @@
-tn-p3-lcm-dfi-on
-libm_cycL2_fields.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore hind2.py /kaggle/working/libm_cycL2_fields.npz ../../../data/cyclone/kaggle_cfg/p3_deny_lcm_dfi_on.json 0 1 /kaggle/working/h0.json > /kaggle/working/h0.log 2>&1; tail -6 /kaggle/working/h0.log
+tn-p5b-no-conv
+libm_wx2020L2_fields.npz,wx_truth_2020.npz
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/p5b_no_conv.json 3 4 /kaggle/working/wx_3.json > /kaggle/working/wx_3.log 2>&1; tail -3 /kaggle/working/wx_3.log
 NvidiaTeslaT4
 1
-#P3 fail-5why denial, one variant per job (3-variant job was OOM-killed 02:0x) 2026-11-20T23:49Z
+#P5b steering: lc_mix item-group denial on exam part 3 (registered 04:0x) 2026-11-20T23:50Z
