@@ -112,7 +112,7 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='mf', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='radcloud', rad_every=2,
-                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, midlev=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
+                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, midlev=0.0, lsc_sub=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
@@ -807,6 +807,29 @@ class Model:
             al = jnp.clip((Tn - 250.16) / 23.0, 0.0, 1.0) ** 2; es_m = al * es_w + (1.0 - al) * es_i
             qs = 0.622 * es_m / jnp.maximum(p - 0.378 * es_m, 1.0)
         gam = 1 + LV ** 2 * qs / (CP * RV * Tn ** 2); cond = jnp.maximum(qn - qs, 0) / gam / dt
+        if self.S.get('lsc_sub', 0) and om is not None:
+            # lsc_sub (20 Nov, P-pole latent deficit; IFS Cy50r1 Part IV ch. 7 eqs. 7.16-7.22): stratiform condensation inside the cloudy
+            # part of a SUB-SATURATED box (saturated boxes keep the adjustment above -> no double count). dqs/dt (7.16) = (dqs/dp)_ma
+            # (omega + g M_cu) + (dqs/dT) (dT/dt)_diab, diab = cached radiation + boundary-layer tendency. a = Sundqvist diagnostic cover
+            # with IFS RH_crit (7.19: RHc 0.8, sigma1 0.8) - MEGAM has no prognostic cloud; C1 = -a dqs/dt (7.18); C2 = -0.5 da dqs/dt,
+            # da = dt (1 - a)^2 / 2 / (qs - q) (-dqs/dt) (7.21), <= 1 - a. Condensate rains at once (MEGAM has no cloud-water store).
+            def qs_m(T_, p_):
+                ew = 611.21 * jnp.exp(17.502 * (T_ - 273.16) / (T_ - 32.19)); ei = 611.21 * jnp.exp(22.587 * (T_ - 273.16) / (T_ + 0.7))
+                a_ = jnp.clip((T_ - 250.16) / 23.0, 0.0, 1.0) ** 2; e_ = a_ * ew + (1.0 - a_) * ei; return 0.622 * e_ / jnp.maximum(p_ - 0.378 * e_, 1.0)
+            qsm = qs_m(Tn, p); rhm = qn / qsm
+            gma = (RD * Tn / (CP * p)) * (1 + LV * qsm / (RD * Tn)) / (1 + LV ** 2 * qsm / (CP * RV * Tn ** 2))        # dT/dp along the moist adiabat
+            dqs_dp = (qs_m(Tn + gma * 100.0, p + 100.0) - qsm) / 100.0
+            dqs_dT = (qs_m(Tn + 0.05, p) - qs_m(Tn - 0.05, p)) / 0.1
+            Mcu = self._cmt_M if (getattr(self, '_cmt_M', None) is not None and S['conv'] == 'mf') else 0.0
+            diab = dTbl + (cr['rad']['heating'] if (S['rad'] == 'radcloud' and 'rad' in cr) else 0.0)
+            dqsdt = dqs_dp * (om + G * Mcu) + dqs_dT * diab
+            rhc = jnp.where(sig > 0.8, 0.8 + 0.2 * ((sig - 0.8) / 0.2) ** 2, 0.8)
+            a_c = jnp.where(rhm > rhc, 1.0 - jnp.sqrt(jnp.clip((1.0 - jnp.clip(rhm, 0.0, 1.0)) / jnp.maximum(1.0 - rhc, 1e-3), 0.0, 1.0)), 0.0)
+            down = jnp.maximum(-dqsdt, 0.0)
+            da = jnp.minimum(dt * (1.0 - a_c) ** 2 / 2.0 / jnp.maximum(qsm - qn, 1e-7) * down, 1.0 - a_c) * (rhm > rhc)
+            csub = jnp.where(rhm < 1.0, (a_c + 0.5 * da) * down, 0.0)
+            csub = jnp.minimum(csub, 0.5 * qn / dt)
+            cond = cond + csub
         src = cond * mass + jnp.where(reg & ok, -dqc * mass, 0.0) * 0.0                              # large-scale rain source per layer
         rh = jnp.clip(qn / qs, 0, 1)
         af = jnp.where(S['ev_frac'] > 0, S['ev_frac'], 1.0)
@@ -952,7 +975,7 @@ class Model:
                 T = (aux.temperature_variation + M.ref_t[:, None, None]) / M.K; q = state.tracers['specific_humidity']
                 u = aux.cos_lat_u[0] / cl / M.MPS; v = aux.cos_lat_u[1] / cl / M.MPS
                 ps = jnp.exp(hor.to_nodal(state.log_surface_pressure))[0] / M.PA
-                tend, _ = M.column(T, q, u, v, ps, M._carry, div=hor.to_nodal(state.divergence) * M.SEC, om=M.omega_nodal(state) if M.S.get('midlev', 0) else None)
+                tend, _ = M.column(T, q, u, v, ps, M._carry, div=hor.to_nodal(state.divergence) * M.SEC, om=M.omega_nodal(state) if (M.S.get('midlev', 0) or M.S.get('lsc_sub', 0)) else None)
                 if M.S.get('phys_off'): tend = jax.tree_util.tree_map(jnp.zeros_like, tend)        # dynamics only (energy checks)
                 vt = hor.to_modal(jax.tree_util.tree_map(lambda x: x * M.MPS / M.SEC / cl, (tend['u'], tend['v'])))
                 return primitive_equations.State(vorticity=hor.curl_cos_lat(vt), divergence=hor.div_cos_lat(vt),
@@ -1008,7 +1031,7 @@ class Model:
         aux = primitive_equations.compute_diagnostic_state_sigma(state.replace(tracers={}), self.coords)
         T = (aux.temperature_variation + self.ref_t[:, None, None]) / self.K; q = state.tracers['specific_humidity']
         u = aux.cos_lat_u[0] / cl / self.MPS; v = aux.cos_lat_u[1] / cl / self.MPS; ps = jnp.exp(hor.to_nodal(state.log_surface_pressure))[0] / self.PA
-        tnd, d = self.column(T, q, u, v, ps, cr, rad_fresh=True, div=hor.to_nodal(state.divergence) * self.SEC, om=self.omega_nodal(state) if self.S.get('midlev', 0) else None); dt = self.dt_s; sea = (~self.land) & (cr['sst'] > 0)
+        tnd, d = self.column(T, q, u, v, ps, cr, rad_fresh=True, div=hor.to_nodal(state.divergence) * self.SEC, om=self.omega_nodal(state) if (self.S.get('midlev', 0) or self.S.get('lsc_sub', 0)) else None); dt = self.dt_s; sea = (~self.land) & (cr['sst'] > 0)
         # mixed layer: strong winds stir up cooler water (about ent K/day at 25 m/s), recovering slowly toward the start
         if 'ocean' in cr:                                                                           # ocean column: heat, wind stirring, cold wake
             p1 = self.pres(ps)[0][-1]; rho1 = p1 / (RD * T[-1] * (1 + 0.61 * q[-1]))
