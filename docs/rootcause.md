@@ -3846,6 +3846,6 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - 13:41 (clock) POLEWARD RAIN of lc_mix (rainchk REG=pole): 1.76 mm/day (lc_full 1.50; ERA5 2.44) = 0.72x; cloud 700 0.27 (from 0.31).
   Rule (a) 13:29: lsc_mix raised rain by 0.26 (>= 0.2) and the ratio is 0.72 (> 0.7) -> NOT met: the grid-scale precipitation is not
   named as the main remaining input; the saturation fix moved rain the right way. [reg: 13:29 | inputs: ERA5 tp | fail-5why: n/a]
-- 13:52 (clock) AMENDMENT to the 13:29 resolution test, before any result: the T85 screen was killed by the 7 GB memory limit (OOM,
+- 13:51 (clock) AMENDMENT to the 13:29 resolution test, before any result: the T85 screen was killed by the 7 GB memory limit (OOM,
   6.1 GB RSS) - not runnable here. Replaced by T63 (same rule: RESOLUTION named if poleward t700 d2 at T63 is >= 50 % smaller than at
   T42, -0.96 -> >= -0.48; a smaller step than T85, so a FAIL here is weaker evidence against resolution - stated now).
