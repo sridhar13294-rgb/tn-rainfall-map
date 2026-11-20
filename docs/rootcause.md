@@ -3744,3 +3744,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
   troposphere, read first) and our RH at 700 vs ERA5 r700 - CLOUD-SCHEME named if our RH is within 0.05 of ERA5 while cloud is >= 1.3x;
   RH named if ours is >= 0.05 above ERA5. (2) lc_full poleward large-scale rain: one-item-out runs (each set item removed) - the item
   whose removal restores >= 50 % of the 1.6 mm/day production gap is named.
+- 12:19 (clock) RH CHECK RESULT (registered 12:17, rule (1)): poleward rh700 (rh_vs_era5, same saturation blend both sides) lc_full
+  d0 +0.07 / d1 +0.18 / d2 +0.22; base3r d1 +0.20 / d2 +0.25 -> our RH is >= 0.05 above ERA5 (also after removing the d0 offset: +0.11
+  in day 1) -> RH NAMED (shared by both versions) as the input to the excess 700 cloud. Cloud-scheme branch not named (RH not within 0.05).
+  5-Why on the moistening: the shared shallow-top cooling (-0.5/-0.6 K/day at sigma 0.70) is evaporation of detrained condensate, i.e.
+  moistening of ~0.22 g/kg/day; at qs(261 K, 700 hPa) ~2.6 g/kg that alone is ~+0.085 RH/day, plus ~+0.035 from the -0.85 K cooling ->
+  ~0.12, the size of the +0.11 growth. Arithmetic on already-seen numbers -> stated as a HYPOTHESIS, not a verdict.
+  REGISTERED: direct moisture budget at sigma 0.70, 40-80 N/S, day 1 (qpole.py; lc_full and base3r): SHALLOW-TOP MOISTENING named if
+  the shallow scheme's q tendency there is >= 50 % of the net physics+dynamics moistening, in both runs. If named, the reference to read
+  next is the IFS shallow-convection top/detrainment in mid-latitude cold-air regimes (Cy38r1 Part IV ch. 6) before any change.
+  [reg: 12:17 | inputs: RH vs ERA5 with matched saturation; d0 offset removed | fail-5why: n/a (named)]
