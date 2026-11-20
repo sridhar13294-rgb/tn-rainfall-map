@@ -4051,3 +4051,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   HONEST CAVEAT: 0.009 K on 3 starts is inside start-to-start noise -> SCREEN PASS ONLY, not a closure. Closure of A needs:
   (i) Rule 1 storm intensity (multi-storm rule) with sl_vcubic + lsc_sub (tn-r1-vcs-0/1 queued), (ii) the exam (tn-vcs-wx0..3 queued).
   [reg: 21:2x | inputs: same mask/starts as every candidate | fail-5why: n/a (pass)]
+- 23:02 (clock) P3 RE-MEASURE (Rule 1, registered 13 Nov; lc_mix tn-r1-lcm-0/1, T170, 83 storms, cycL2 land library):
+  within +-5 hPa 47/83 = 57 % (gate 80 %) -> FAIL. BASE3 (tn-r1-b3, no-land library) 45/83 = 54 %; BASE2 75 % (17 Nov).
+  Pattern identical in both: ERA5 peak < 995 (20): +3.9 too weak (9 weak); 995-1001 (31): -5.0 (13 too deep); > 1001 (32): -5.7
+  (12 too deep) -> the dominant failure is OVER-DEEPENING of weak/moderate lows (25 of 63), shared with BASE3 and absent in BASE2
+  (BASE2 weak systems -2.3) -> it arrived with the BASE3 set {cmt_mf, rd_si, dfi_off} or later, not with the lc_mix additions.
+  Not a fix verdict (no fix tested). FAIL-5WHY start: which BASE2 -> BASE3 item deepens weak lows (registered next cycle, per-item
+  denial on the 25 over-deep storms); P3 plan item 'convective rain in over-deep weak lows vs ERA5 cp' runs on the same storms.
+  [reg: 13 Nov 11:40 | inputs: same 83 storms, ERA5 peak targets; land-library confound noted | fail-5why: over-deepening of weak lows]
