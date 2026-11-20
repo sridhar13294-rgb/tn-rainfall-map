@@ -3989,3 +3989,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   0.50, both runs, 13:29 list item b). Conclusion: no single root cause exists to fix; closing P-pole needs either several
   reference-based fixes together or a decision on scope - stated to Sridhar, not decided by me.
   [reg: 19:4x | inputs: mixed-phase RH (corrected input) | fail-5why: n/a (not named)]
+- 19:55 (clock) EXAM (all 4 parts, T170, 73 starts, 0 failed): lc_mix z500 d1/d5/d10 15.3/65.5/111.1 vs BASE3 18.0/71.8/117.7;
+  lc_mix better at d5 in 67 of 73. Land-start share (quarter 0, 19 starts, b3L = BASE3 on the land library): z500 d5 BASE3 71.6 ->
+  b3L 70.0 -> lc_mix 65.9 -> ~1.6 m from the land start, ~4 m from the lc_mix physics.
+  WARNING (criterion 7, steering): TN u850 d5 bias Oct-Dec lc_mix -5.75 vs BASE3 -1.91 m/s (worse). Quarter 0 shows no such gap
+  (-3.54 vs -3.31 / b3L -3.49) -> it sits in the Oct-Dec starts; land-start vs physics split needs b3L-wx3 (queued, account 4).
+  Not a verdict: no adoption decision until b3L is complete and P3/P5b/Tracks are scored. [reg: 14:00 | inputs: same 73 starts;
+  land-start confound measured on q0 | fail-5why: pending b3L-wx3]
