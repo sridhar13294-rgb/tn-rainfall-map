@@ -3958,3 +3958,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   midlev: faithful to IFS 6.4.3 (v1), negligible effect -> not adopted, not rejected (stays an option, default off).
   P-pole attribution now: shallow-top ~25 %, resolution ~20 %, mid-level ~2 %, ~0.45-0.5 K/day UNATTRIBUTED.
   [reg: 19:12 | inputs: trigger fraction 12.9 % vs 10.9 % diag; omega same formula as diag | fail-5why: my sizing upper bound]
+- 19:33 (clock) REGISTERED (radiation INPUT check, P-pole): poleward model air is too moist through the column at day 1
+  (rh500 +0.22, rh700 +0.14, rh850 +0.06; lc_mid run). Offline, same lc_mix day-1 states (start 56, 6-hourly), radcloud called twice:
+  model q vs q scaled per level to ERA5's poleward RH (ratio 0.66 at 500, 0.78 at 700, 0.92 at 850, 0.96 at 925, linear in sigma,
+  |lat| >= 40 only). VAPOUR/CLOUD INPUT named as a contributor >= 25 % if the sigma-0.70 poleward radiative heating with ERA5-matched
+  humidity is >= 0.3 K/day warmer (all-sky; clear-sky reported to split vapour vs cloud). If named, the root is upstream (what
+  moistens 500-700: shallow top named for 700 at 12:40; 500 not yet budgeted).
+  [reg: now | inputs: RH by level from the same harness | fail-5why: n/a (registration)]
