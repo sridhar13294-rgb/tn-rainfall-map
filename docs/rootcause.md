@@ -3856,3 +3856,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
   the Bay-of-Bengal problems (P3, P5b, Tracks) live in the tropics, where lc_mix is inside the gate. Per the 18 Nov plan (21-23 Nov
   re-measure P3/P5b/P2), the exam re-measurement with lc_mix as the MEASURED candidate runs in parallel with the poleward 5-Why;
   no gate is relaxed and A stays HELD.
+- 13:54 (clock) EXAM RE-MEASURE PREPARED (plan 21-23 Nov; lc_mix as the MEASURED candidate, A stays held): Rule 1 intensity, T170, 2 jobs
+  (tn-r1-lcm-0 acct 1, tn-r1-lcm-1 acct 4; cfg kaggle_cfg/lib84_lcmixr1.json; precheck OK, regress bit-identical).
+  INPUT CHECK first (rule 2): the storm-start library libm_fields.npz has NO land fields (known since 5 Nov: landinit falls back to
+  air temperature and 60 % soil water) - a land-set exam on it would be unfair. -> building libm_cycL2_fields.npz (same storm list,
+  land incl. soil levels 2-4) by the 'cycl2 library' workflow step; the 2 jobs are parked in kaggle_cfg/queue_lcmix_pending.json and
+  go to the queue once the library is on the release. No GPU minutes spent on wrong inputs.
