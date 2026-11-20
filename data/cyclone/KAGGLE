@@ -1,6 +1,6 @@
-tn-p3-deny-1
-libm_cycL2_fields.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore hind2.py /kaggle/working/libm_cycL2_fields.npz ../../../data/cyclone/kaggle_cfg/p3_deny.json 1 2 /kaggle/working/h1.json > /kaggle/working/h1.log 2>&1; tail -6 /kaggle/working/h1.log
+tn-b3L-wx3
+libm_wx2020L2_fields.npz,wx_truth_2020.npz
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/suite_b3_wx.json 3 4 /kaggle/working/wx_3.json > /kaggle/working/wx_3.log 2>&1; tail -3 /kaggle/working/wx_3.log
 NvidiaTeslaT4
-1
-#P3 fail-5why: denial of BASE3 items on 26 over-deep storms (registered 23:1x) 2026-11-20T20:19Z
+4
+#FAIR BASELINE: BASE3 on the land library wx2020L2 (to separate lc_mix physics from the better start, 20 Nov) 2026-11-20T20:21Z
