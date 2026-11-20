@@ -78,6 +78,7 @@ for key in STARTS:
             a.update(lwlow=float((rlw * wdp).sum() / wsum), swlow=float((rsw * wdp).sum() / wsum), lwlow_clr=float((rlwc * wdp).sum() / wsum), swlow_clr=float((rswc * wdp).sum() / wsum))
             m_.update(lwlow=float((lw['heating'][:, i, j] * 86400 * wdp).sum() / wsum), swlow=float((sw['heating'][:, i, j] * 86400 * wdp).sum() / wsum),
                       lwlow_clr=float((lw['heating_clr'][:, i, j] * 86400 * wdp).sum() / wsum), swlow_clr=float((sw['heating_clr'][:, i, j] * 86400 * wdp).sum() / wsum))
+            if abs(float(LA[i, j])) < float(os.environ.get('LATMIN', 0)): continue   # 20 Nov: region filter (poleward)
             rows.append(dict(lat=float(LA[i, j]), w=float(W[i, j]), cz=cz, cover=float(cl['cover'][i, j]), m=m_, r=a))
     def wm(f, sel=lambda r: True):
         R_ = [r for r in rows if sel(r)]; w_ = np.array([r['w'] for r in R_]); return float((np.array([f(r) for r in R_]) * w_).sum() / w_.sum())

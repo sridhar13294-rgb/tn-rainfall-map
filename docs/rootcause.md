@@ -3828,7 +3828,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   tendencies (regress: control bit-identical; sh_off changes 7 fields).
   REGISTERED: lc_mix + sh_off, global screen: SHALLOW named as the cause of the poleward 700 cold if poleward t700 d2 falls by >= 50 %
   (-0.96 -> >= -0.48); if not, the shallow scheme is cleared for this fault. [reg: now | inputs: IFS shallow ref read | fail-5why: n/a]
-- 13:30 (clock) SHALLOW DENIAL RESULT (lc_mix + sh_off, measurement only): poleward t700 d2 -0.96 -> -0.73 (-24 %, needed -50 %) ->
+- 13:29 (clock) SHALLOW DENIAL RESULT (lc_mix + sh_off, measurement only): poleward t700 d2 -0.96 -> -0.73 (-24 %, needed -50 %) ->
   SHALLOW NOT named as the cause of the poleward cold; it contributes ~0.23 K of it. (Side numbers, not a verdict on anything: with the
   shallow scheme denied, globe d2 t850 -0.26, t700 -0.56, tropical t850 +0.11 - the shallow scheme also cools the tropical 700/850.)
   [reg: 13:20 | inputs: denial run | fail-5why: n/a (not named)]
