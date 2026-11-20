@@ -3629,7 +3629,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED PREDICTION (land_conv no cap + dd_ifs, same diagnostics): (1) the sigma-0.99 deep cooling falls by >= 50 % (from -4.4) and
   h_bl at sigma 0.929 becomes >= 0 (mechanism); (2) GATE: sigma-0.925 day-1 dT closes >= 50 % of the gap to ERA5 (from -0.54 to >= -0.23
   against ERA5 +0.08); then (3) the global day-2 screen |t850|, |t700| <= 0.6. If (2) fails, failure 5-Why before any verdict on dd_ifs.
-- 08:18 (clock; session paused ~04:10-08:15) dd_ifs RESULT (land_conv no cap + dd_ifs, subtropical ocean, day 1 hourly):
+- 08:17 (clock; session paused ~04:10-08:15) dd_ifs RESULT (land_conv no cap + dd_ifs, subtropical ocean, day 1 hourly):
   (1) mechanism: sigma-0.99 deep cooling -4.4 -> -2.1 K/day (-53 %) PASS; h_bl at sigma 0.929 -0.21 -> -0.15 (still < 0) FAIL.
   (2) GATE sigma-0.925 dT -0.54 -> -0.47 (needed >= -0.23; 11 % of the gap closed) FAIL. Physics +0.08 -> +0.22; dynamics -0.62 -> -0.69.
   Failure 5-Why: the fix did what the IFS form does (bottom-level downdraft cooling halved), but RAIN EVAPORATION in the environment rose
