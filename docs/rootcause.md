@@ -3711,7 +3711,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   vertical term, day-1 T change). A term is NAMED AS THE ERROR if |model - ERA5| >= 0.43 K/day (half of the -0.85 day-1 t700 error);
   for physics (no ERA5 parts) the implied ERA5 Q1 = dT - hadv - vert is compared with our total physics, and the largest part is then
   checked against its reference. [reg: now | inputs: to measure | fail-5why: n/a]
-- 11:45 (clock; session paused ~10:10-11:40) POLEWARD 700 RESULT (dyn700.py, lc_full, 40-80 N/S all surfaces, sigma 0.70, day 1 hourly,
+- 11:44 (clock; session paused ~10:10-11:40) POLEWARD 700 RESULT (dyn700.py, lc_full, 40-80 N/S all surfaces, sigma 0.70, day 1 hourly,
   K/day; ERA5 adv700_truth at 700 hPa): model dT -1.05 vs ERA5 -0.17 (error -0.88). hadv model -0.01 vs ERA5 -0.36 (diff +0.35, < 0.43,
   NOT named); vertical +0.18 vs +0.24 (diff -0.06, NOT named). Physics: ERA5-implied Q1 = -0.17 - (-0.36 + 0.24) = -0.05; ours -1.25 ->
   diff -1.20 >= 0.43 -> PHYSICS NAMED (residual caveat as at 09:37 applies). Parts at sigma 0.70: radiation -1.32, shallow -0.60,
