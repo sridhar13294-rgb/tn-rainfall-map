@@ -3996,3 +3996,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
   (-3.54 vs -3.31 / b3L -3.49) -> it sits in the Oct-Dec starts; land-start vs physics split needs b3L-wx3 (queued, account 4).
   Not a verdict: no adoption decision until b3L is complete and P3/P5b/Tracks are scored. [reg: 14:00 | inputs: same 73 starts;
   land-start confound measured on q0 | fail-5why: pending b3L-wx3]
+- 19:56 (clock) REGISTERED (before code/run), fix for the largest P-pole branch (latent deficit): option lsc_sub = 1, IFS Cy50r1
+  Part IV ch. 7 stratiform condensation in a SUB-SATURATED box (grid RH < 1; saturated boxes keep the existing adjustment, so no double
+  count): dqs/dt from eq. 7.16 = (dqs/dp)_ma (omega + g M_cu) + (dqs/dT)(dT/dt)_diab [diab = cached radiation + BL tendency];
+  cloud fraction a = diagnostic Sundqvist form with IFS RH_crit eq. 7.19 (RHc 0.8, sigma1 0.8; mixed-phase RH) since MEGAM has no
+  prognostic cloud; C1 = -a dqs/dt (7.18), C2 = -0.5 da dqs/dt with da from 7.21 (limit (1 - a)/dt); condensate rains at once (as
+  MEGAM's large-scale scheme; no cloud water store - stated deviation). Default off.
+  TEST (local T42, same harness/starts/mask as lc_mix, lc_mix + lsc_sub): (1) poleward masked t700 d2 cold falls >= 25 %
+  (-1.129 -> >= -0.847); (2) poleward rh700 d1 <= +0.120 (excess beyond d0 offset -30 %); (3) poleward rain rises (> 1.76 mm/day);
+  (4) gate global |t850|, |t700| <= 0.6 (fail -> fail-5why, HELD not rejected if (1)-(3) met); (5) no harm: tropical-ocean t700/t850 d2
+  not worse by > 0.1 K. [reg: now | inputs: omega formula (midlev), IFS 7.16-7.22 read | fail-5why: n/a (registration)]
