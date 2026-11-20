@@ -6,7 +6,7 @@ box = dict(latitude=slice(40, -40)); LV = [1000, 975, 950, 925, 900, 875, 850]; 
 for s in ('2020-10-07', '2020-11-01', '2020-11-26'):
     for h in range(3, 25, 3):
         t = np.datetime64(s + 'T00') + np.timedelta64(h, 'h'); T = A['temperature'].sel(time=t, level=LV, **box); la = T.latitude.values
-        Zg = A['geopotential'].sel(time=t, level=LV, **box).values / 9.80665; zs = A['geopotential_at_surface'].sel(**box).values / 9.80665 if 'geopotential_at_surface' in A else 0.0
+        Zg = A['geopotential'].sel(time=t, level=LV, **box).values / 9.80665; zs = A['geopotential_at_surface'].sel(time=t, **box).values / 9.80665
         m = (A['land_sea_mask'].sel(time=t, **box).values < 0.5) & (np.abs(la) >= 10)[:, None]; W = np.cos(np.radians(la))[:, None] * np.ones(m.shape)
         f = lambda X: float((np.where(m, X, 0) * W).sum() / (W * m).sum())
         TH = T.values * (1000.0 / np.array(LV, float))[:, None, None] ** 0.2857
