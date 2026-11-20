@@ -3888,3 +3888,17 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - 16:03 (clock) AMENDMENT to the 13:29 resolution rule, BEFORE any T85 result (job still queued): both resolutions measured with the same
   ERA5-ps >= 750 hPa mask (T85 job now saves maps and prints MASKED t700). RESOLUTION named if masked poleward t700 d2 at T85 is
   >= 50 % smaller than masked T42 (-1.129 -> >= -0.565). Unmasked rule (-0.96 -> -0.48) reported alongside, unchanged.
+- 16:50 (clock) DECISION (Sridhar 16:44: split or combine is my call, fix the poleward cold now): SPLIT. A/P1 = tropical + subtropical
+  convective heating (its gates there; plus its own open check, subtropical rain 0.62x ERA5). NEW PROBLEM "P-pole" = poleward-40
+  700 hPa cold, pre-existing in every version (masked T42: BASE3 -1.21, lc_mix -1.13), carries the unchanged global t700 gate (0.6)
+  into the final exam. No gate removed or weakened.
+  Local T85 retried with a 3-start library: OOM again (5.4 GB RSS, cgroup kill) -> resolution only on Kaggle (job queued).
+  Input check on the way: the 'no soil water, skin temperature' warnings in every screen log come from mm2's own soil-level calls
+  (lines 228-233 pass None on purpose); the main land start (line 220) gets all fields (finite 100 %) -> not an input fault.
+  FISHBONE (P-pole, physics gap ~1.2 K/day at 700; dynamics match ERA5): latent ~0.4-0.5 (size of the missing drying), shallow ~25 %,
+  radiation matched by RRTMG, resolution (Kaggle). CODE FACT: mm2 convection starts plumes only at sigma >= 0.87 (line 670) - there is
+  NO mid-level convection. IFS Cy38r1 Part IV 6.4.3: mid-level convection for 500 m < z < 10 km when there is large-scale ascent and
+  RH > 80 %; closure eq. 6.31: cloud-base mass flux = large-scale vertical mass flux. In storm-track frontal ascent this condenses at
+  RH 0.8-1.0 where our scheme waits for grid saturation; ERA5 poleward cp 0.64 vs ours 0.31 mm/day (half) is consistent.
+  REGISTERED (midlev.py, lc_mix, sigma 0.70, 40-80 N/S, day 1): MID-LEVEL CONVECTION named if the eq. 6.31 condensation heating in
+  trigger columns (ascent, RH_mix in [0.8, 1), no active deep convection) is >= 0.43 K/day area mean (half the day-1 700 error -0.85).
