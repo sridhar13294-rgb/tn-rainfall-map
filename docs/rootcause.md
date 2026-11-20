@@ -3943,3 +3943,18 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - 19:16 (clock) TIME CORRECTION (rule: check the clock before writing a time): the two entries above stamped '19:10' and '19:25' were
   written without checking the clock; real times about 19:08 and 19:12. The registration still came before any code or run
   (code written after it; first run started after the code). Option midlev committed now (default off).
+- 19:58 (clock) midlev RESULT (registered 19:12; local T42, starts 56/61/66, masked, maps_lc_mid vs maps_lc_mix):
+  (1) poleward masked t700 d2 -1.129 -> -1.143 FAIL (needed >= -0.847); (2) poleward rh700 d1 +0.140 -> +0.141 FAIL (no fall);
+  (3) gate: global masked t850 -0.523 -> -0.384, t700 -0.753 -> -0.789 (unmasked -0.73) FAIL on t700 (as expected, not the test);
+  (4) tropical-ocean t700 d2 -0.505, global t850 better -> no harm on t850.
+  FAIL-5WHY (midfire.py: same states, column with midlev on vs off, poleward 40-80, day 1, 6-hourly):
+   1 Does it fire? YES, 12.9 % of the area (16:4x trigger diagnostic: 10.9 %) -> trigger implemented as registered.
+   2 Heating at sigma 0.70: +0.019 K/day (sized at 16:4x: 0.25) -> 1/13 of the size; extra rain 0.05 mm/day.
+   3 Why so small? With the IFS closure M_base = -omega/g the latent heat released = L x rain: 0.05 mm/day ~ 1.5 W/m2 -> ~0.02 K/day
+     over the layer. The 0.25 K/day needs ~0.3 mm/day.
+   4 Why did the 16:4x diagnostic say 0.25? It took Q = L/cp (-omega) dqs/dp, i.e. sub-saturated (RH 0.8-1) air condensing at
+     the SATURATED moist-adiabatic rate with all latent heat kept: an UPPER BOUND, not the IFS scheme's heating.
+   5 Root of the failure: MY SIZING (16:4x), not the option. SELF-CORRECTION: mid-level convection is a ~2 % contributor, not ~30 %.
+  midlev: faithful to IFS 6.4.3 (v1), negligible effect -> not adopted, not rejected (stays an option, default off).
+  P-pole attribution now: shallow-top ~25 %, resolution ~20 %, mid-level ~2 %, ~0.45-0.5 K/day UNATTRIBUTED.
+  [reg: 19:12 | inputs: trigger fraction 12.9 % vs 10.9 % diag; omega same formula as diag | fail-5why: my sizing upper bound]
