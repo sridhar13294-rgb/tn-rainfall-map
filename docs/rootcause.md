@@ -3629,3 +3629,18 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED PREDICTION (land_conv no cap + dd_ifs, same diagnostics): (1) the sigma-0.99 deep cooling falls by >= 50 % (from -4.4) and
   h_bl at sigma 0.929 becomes >= 0 (mechanism); (2) GATE: sigma-0.925 day-1 dT closes >= 50 % of the gap to ERA5 (from -0.54 to >= -0.23
   against ERA5 +0.08); then (3) the global day-2 screen |t850|, |t700| <= 0.6. If (2) fails, failure 5-Why before any verdict on dd_ifs.
+- 08:18 (clock; session paused ~04:10-08:15) dd_ifs RESULT (land_conv no cap + dd_ifs, subtropical ocean, day 1 hourly):
+  (1) mechanism: sigma-0.99 deep cooling -4.4 -> -2.1 K/day (-53 %) PASS; h_bl at sigma 0.929 -0.21 -> -0.15 (still < 0) FAIL.
+  (2) GATE sigma-0.925 dT -0.54 -> -0.47 (needed >= -0.23; 11 % of the gap closed) FAIL. Physics +0.08 -> +0.22; dynamics -0.62 -> -0.69.
+  Failure 5-Why: the fix did what the IFS form does (bottom-level downdraft cooling halved), but RAIN EVAPORATION in the environment rose
+  (sigma 0.99 -1.2 -> -1.5, 0.97 -1.1 -> -1.3, 0.95 -0.9 -> -1.1, 0.93 -0.7 -> -0.8): with eta 0.35 the downdraft takes up less rain, so
+  more falls into the environment and evaporates there. Sub-cloud cooling by deep + evaporation summed over sigma 0.93-0.99: -7.0 before,
+  -6.4 after - conserved, only moved. Column: 35 % of the rain produced re-evaporates (1.13 of 3.19 mm/day) with surface rain 0.69x ERA5.
+  The failure traces to the rain-evaporation formula, not to dd_ifs -> dd_ifs HELD (blocked by rain evaporation in the lowest 100 hPa).
+  [reg: 04:03 | inputs: deep/evap/BL profiles | fail-5why: evaporation took over the cooling the downdraft gave up]
+  INPUT CHECK of the evaporation formula: ours (default) = k_evap (1 - RH) sqrt(P af) mass - it evaporates at any RH < 1, so it keeps
+  cooling a moist trade BL (RH 0.8-0.9). IFS (Cy50r1, our option evap_ifs, evapifs.py): evaporation only below a critical RH (0.85 sea
+  for convective rain, ~0.8 grid-scale) - the documented form. evap_ifs was "not adopted" on 13 Nov (TN rain 1.83 vs gate 1.43, exam
+  +2.9 %) - judged ALONE, before rule 4 and before P4 (dry-season moist low levels) was named; that verdict is re-opened under rule 4.
+  REGISTERED PREDICTION (land_conv no cap + dd_ifs + evap_ifs): (1) h_evap at sigma 0.95-0.99 falls >= 50 % and h_bl at 0.929 >= 0;
+  (2) GATE sigma-0.925 dT >= -0.23 K/day; (3) surface rain stays 0.7-1.3x ERA5 (2.99 mm/day); then the global screen and TN rain.
