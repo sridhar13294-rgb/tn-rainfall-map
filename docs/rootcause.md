@@ -3726,7 +3726,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   LATENT HEATING DEFICIT named if ours <= 0.7x ERA5; (ii) 700-hPa cloud fraction ours vs ERA5 fraction_of_cloud_cover: CLOUD named if
   ours >= 1.3x ERA5 (more mid-level cloud -> more LW cooling). Both for lc_full and base3r (cyc_cppole.py; rainchk.py REG=pole).
   [reg: now | inputs: radiation scheme vs RRTMG (18 Nov) | fail-5why: n/a]
-- 12:18 (clock) POLEWARD INPUT RESULTS (40-80 N/S, all surfaces, day 1; ERA5 cppole_truth: precip 2.44 mm/day, conv 0.64, cc700 0.142):
+- 12:17 (clock) POLEWARD INPUT RESULTS (40-80 N/S, all surfaces, day 1; ERA5 cppole_truth: precip 2.44 mm/day, conv 0.64, cc700 0.142):
   lc_full : rain 1.50 (0.62x) - production 1.62 (large-scale 1.26), 7 % re-evaporated; cloud 700 0.309 (2.2x).
   base3r  : rain 2.07 (0.85x) - production 3.29 (large-scale 2.87), 37 % re-evaporated; cloud 700 0.214 (1.5x).
   Rules (11:45): (i) LATENT DEFICIT named for lc_full (0.62x <= 0.7), NOT for base3r (0.85x); (ii) CLOUD named for both (2.2x, 1.5x).
