@@ -1,6 +1,6 @@
-tn-r1-b3-1
-libm_fields.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore hind2.py /kaggle/working/libm_fields.npz ../../../data/cyclone/kaggle_cfg/lib84_b3r1.json 1 2 /kaggle/working/h1.json > /kaggle/working/h1.log 2>&1; tail -6 /kaggle/working/h1.log
+tn-lcm-wx0
+libm_wx2020L2_fields.npz,wx_truth_2020.npz
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/suite_lcmix_wx.json 0 4 /kaggle/working/wx_0.json > /kaggle/working/wx_0.log 2>&1; tail -3 /kaggle/working/wx_0.log
 NvidiaTeslaT4
-4
-#STAGE 1 EXAM, BASE3 Rule 1 intensity 2026-11-18T22:56Z
+1
+#STAGE 1 RE-MEASURE (plan 21-23 Nov), lc_mix measured candidate (A held), general weather 2026-11-20T08:26Z
