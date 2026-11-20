@@ -3721,3 +3721,8 @@ running as a separate test) is NOT adopted on its own result unless this check p
   same budget for base3r; the part that is (a) present in both runs at >= 0.43 K/day beyond the ERA5-implied Q1 and (b) not changed by
   the convection set is named as the shared input, then checked against its reference (for radiation: an offline clear-sky check or a
   published mid-latitude cooling profile, read first). [reg: 09:58 | inputs: ERA5 hadv/vert/dT | fail-5why: n/a (named)]
+- 11:45 (clock) INPUT CHECK REGISTERED for the poleward 700 physics (radiation already matched RRTMG on the same clouds, 18 Nov 11:44 ->
+  the scheme is not the suspect; its INPUTS are): (i) poleward day-1 precipitation (latent heating) ours vs ERA5 total precip:
+  LATENT HEATING DEFICIT named if ours <= 0.7x ERA5; (ii) 700-hPa cloud fraction ours vs ERA5 fraction_of_cloud_cover: CLOUD named if
+  ours >= 1.3x ERA5 (more mid-level cloud -> more LW cooling). Both for lc_full and base3r (cyc_cppole.py; rainchk.py REG=pole).
+  [reg: now | inputs: radiation scheme vs RRTMG (18 Nov) | fail-5why: n/a]
