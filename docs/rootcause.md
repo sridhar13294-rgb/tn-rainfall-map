@@ -3766,3 +3766,16 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED: ERA5 700-hPa moisture advection poleward (cyc_qadv700.py, horizontal + vertical) -> ERA5-implied physics drying =
   dq_ERA5 - dyn_ERA5. CONDENSATION DEFICIT named if ours (-0.13 / -0.10) is short of the ERA5-implied drying by >= 0.1 g/kg/day;
   DYNAMICS MOISTENING named if our dyn exceeds ERA5's by >= 0.1. Shallow (named) waits for the IFS shallow-top reference.
+- 12:51 (clock) ERA5 700 MOISTURE RESULT (qadv700_truth, 40-80 N/S, day 1, g/kg/day): hadv +0.066, vertical +0.196 -> dyn +0.262;
+  dq -0.036 -> ERA5-implied physics drying -0.298. Ours: physics lc_full -0.131 (short by 0.167), base3r -0.096 (short by 0.20) ->
+  CONDENSATION (physics drying) DEFICIT NAMED in both (>= 0.1). Dynamics: ours +0.218 / +0.226 vs ERA5 +0.262 -> NOT named (ours is
+  slightly LESS moistening).
+  Chain (poleward 700, shared by every version): physics removes too little vapour (-0.10/-0.13 vs -0.30) -> RH +0.11/day beyond d0 ->
+  cloud 1.5-2.2x ERA5 and too little condensation heating -> with radiation -1.3 K/day (RRTMG-matched) the layer cools ~0.9 K/day.
+  Inputs of the condensation: our grid-scale scheme condenses only at grid saturation (saturation adjustment) - the IFS scheme
+  (Tiedtke 1993; Cy38r1 Part IV ch. 7) condenses in the cloudy part of a box once RH exceeds the critical value, so a mean RH of
+  0.7-0.9 already rains. NEXT (registered): read IFS ch. 7 (condensation in the cloudy part / cloud formation term, RH_crit), then
+  measure what fraction of our poleward 700 columns sit between RH_crit and 1 (where IFS condenses and we do not); SUBGRID
+  CONDENSATION named if >= 30 % of columns are there and the ERA5-implied missing drying (0.17-0.20 g/kg/day) is within what those
+  columns would condense under the IFS form.
+  [reg: 12:40 | inputs: ERA5 q advection and dq | fail-5why: n/a (named)]
