@@ -3754,3 +3754,15 @@ running as a separate test) is NOT adopted on its own result unless this check p
   the shallow scheme's q tendency there is >= 50 % of the net physics+dynamics moistening, in both runs. If named, the reference to read
   next is the IFS shallow-convection top/detrainment in mid-latitude cold-air regimes (Cy38r1 Part IV ch. 6) before any change.
   [reg: 12:17 | inputs: RH vs ERA5 with matched saturation; d0 offset removed | fail-5why: n/a (named)]
+- 12:40 (clock) POLEWARD MOISTURE BUDGET RESULT (qpole.py, sigma 0.70, 40-80 N/S, day 1, g/kg; q0 1.34):
+  lc_full: dq +0.087 = physics -0.131 [shallow +0.054, large-scale condensation -0.201, evap +0.019, BL +0.004, deep -0.007] + dyn +0.218
+  base3r : dq +0.130 = physics -0.096 [shallow +0.219, condensation -0.378, evap +0.060, BL +0.015, deep -0.012] + dyn +0.226
+  Rule (12:19): shallow >= 50 % of the net moistening in both -> lc_full 62 %, base3r 168 % -> SHALLOW-TOP MOISTENING NAMED (per rule).
+  Honest qualifiers: (1) my 12:19 arithmetic was wrong for lc_full - its -0.60 K/day shallow cooling at 700 is mostly mass-flux
+  transport, not evaporation (only +0.054 g/kg); (2) in both runs the larger moistening is DYNAMICS (+0.22), and the condensation sink
+  is weak (-0.20 / -0.38) - with grid-scale condensation only at saturation (saturation adjustment), moisture can pile up below 100 %
+  RH where IFS (Tiedtke, cloud fraction from RH_crit) already condenses. Whether dyn +0.22 is right needs ERA5's own moisture
+  advection. [reg: 12:19 | inputs: q budget by part | fail-5why: n/a (named; qualifiers stated)]
+  REGISTERED: ERA5 700-hPa moisture advection poleward (cyc_qadv700.py, horizontal + vertical) -> ERA5-implied physics drying =
+  dq_ERA5 - dyn_ERA5. CONDENSATION DEFICIT named if ours (-0.13 / -0.10) is short of the ERA5-implied drying by >= 0.1 g/kg/day;
+  DYNAMICS MOISTENING named if our dyn exceeds ERA5's by >= 0.1. Shallow (named) waits for the IFS shallow-top reference.
