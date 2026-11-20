@@ -3915,3 +3915,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
   d1/d5/d10: BASE3 18.0 / 71.6 / 118.1, lc_mix 15.3 / 65.4 / 110.1; lc_mix better at d5 in 51 of 55 starts. Caveat stated now: lc_mix ran
   on the land library wx2020L2, BASE3 on wx2020 (no land); the d1 gap (2.7 m) shows part of the gain is the start. A BASE3 run on
   wx2020L2 is needed before any adoption verdict (queued next when a slot frees).
+- 19:10 (clock) T85 RESOLUTION RESULT (tn-res-t85, lc_mix, starts 56/61/66, same harness, rule amended 16:03 before the result):
+  masked poleward t700 d2 T42 -1.129 -> T85 -0.882 (-22 %, rule needs >= 50 %, i.e. >= -0.565) -> RESOLUTION NOT NAMED.
+  Unmasked (reported alongside): -0.96 -> -0.768 (-20 %, needed -0.48) - same answer. Resolution is a CONTRIBUTOR of ~20 %.
+  Poleward rh700 excess barely moves (d1 +0.14 T42 -> +0.122 T85; d2 +0.128) -> the moist/cold 700 layer is not a grid-scale effect.
+  Note, not a closure: T85 global masked t700 d2 = -0.593 (unmasked -0.553), just inside 0.6. The gate is measured at the screen
+  resolution (T42); counting a T85 number after seeing it would be relaxing the gate, so A's gate status is unchanged.
+  Contributors so far to the ~0.85 K/day poleward 700 cooling excess: mid-level (missing) convection ~30 %, shallow-top cooling ~25 %,
+  resolution ~20 % -> no single named root cause; no >= 50 % branch left in the fishbone. Next: build IFS mid-level convection
+  (Cy38r1 Part IV 6.4.3, eq. 6.31) as an option (with column omega) and test whether the contributors ADD (combined registered test).
+  [reg: 16:03 | inputs: same mask both resolutions, same starts/harness | fail-5why: n/a (rule not met, contributor sized)]
