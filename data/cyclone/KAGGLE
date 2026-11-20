@@ -1,6 +1,6 @@
-tn-r1-vcs-1
-libm_cycL2_fields.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore hind2.py /kaggle/working/libm_cycL2_fields.npz ../../../data/cyclone/kaggle_cfg/lib84_vcsr1.json 1 2 /kaggle/working/h1.json > /kaggle/working/h1.log 2>&1; tail -6 /kaggle/working/h1.log
+tn-b3L-wx1
+libm_wx2020L2_fields.npz,wx_truth_2020.npz
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/suite_b3_wx.json 1 4 /kaggle/working/wx_1.json > /kaggle/working/wx_1.log 2>&1; tail -3 /kaggle/working/wx_1.log
 NvidiaTeslaT4
-1
-#A screen PASS candidate lc_mix+sl_vcubic+lsc_sub (registered 21:2x): Rule 1 intensity 2026-11-20T16:09Z
+4
+#FAIR BASELINE: BASE3 on the land library wx2020L2 (to separate lc_mix physics from the better start, 20 Nov) 2026-11-20T16:20Z
