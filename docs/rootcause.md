@@ -3795,3 +3795,18 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED PREDICTION (lc_full + lsc_mix, global screen, same harness): (1) poleward rh700 d1 excess falls >= 50 % beyond the d0
   offset (+0.18 -> <= +0.13); (2) poleward t700 d2 cold falls >= 50 % (-1.03 -> >= -0.52); (3) GATE day-2 globe |t850|, |t700| <= 0.6;
   (4) poleward precipitation rises toward ERA5 (from 0.62x). If (3) fails, failure 5-Why first.
+- 13:14 (clock) lsc_mix RESULT (lc_full + lsc_mix, global screen, same harness):
+  (1) poleward rh700 d1 +0.184 -> +0.140 (needed <= +0.13) FAIL - beyond the d0 offset the excess fell 0.112 -> 0.068 (-39 %);
+  (2) poleward t700 d2 -1.03 -> -0.96 (-7 %, needed -50 %) FAIL; (3) globe d2 t850 -0.53 PASS, t700 -0.69 FAIL (by 0.09).
+  Failure 5-Why (and a self-correction, rule 5): I did not check the SIZE of the latent link before calling the chain at 12:51. The
+  ERA5-implied missing drying (0.17-0.20 g/kg/day) is worth only L/cp x 0.2 g/kg ~ 0.5 K/day of condensation heating, while the
+  700 physics gap is 1.2 K/day (ours -1.25 vs ERA5-implied -0.05). So the latent deficit can explain at most ~40 % of the cold; lsc_mix
+  removes part of it (RH -39 %) and the temperature barely moves - consistent. The failure does not trace to lsc_mix (it did what the
+  IFS form does to RH); it traces to the NON-LATENT ~0.7 K/day: radiation (-1.3) and the shallow scheme's transport cooling (-0.6).
+  lsc_mix HELD (blocked by the non-latent 700 cooling). [reg: 13:05 | inputs: RH/T split; size arithmetic | fail-5why: non-latent part]
+  INPUT CHECK (radiation side): RRTMG matched our radiation on the SAME clouds (18 Nov), so the clouds are the input. Our large-scale
+  cloud (radcloud c_ls) starts at RH_crit = rhc_up 0.70 + 0.10 exp(1 - sigma^-4) = 0.70 at sigma 0.70; IFS Cy38r1 eq. 7.19 uses
+  RH_crit = 0.8 for sigma < 0.8 - our cloud forms at 0.10 lower RH aloft, on top of the +0.14..0.18 RH excess -> 700 cloud 1.5-2.2x ERA5.
+  REGISTERED: radiation at sigma 0.70 poleward split clear-sky vs cloud (rad_allsky style) for lc_mix: CLOUD RADIATIVE COOLING named if
+  the cloud part is >= 0.43 K/day (half the -0.85 day-1 error); and in the same run the shallow-transport cooling (-0.6) is checked
+  against the IFS shallow-top reference (Part IV ch. 6, read first).
