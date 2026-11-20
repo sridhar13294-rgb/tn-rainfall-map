@@ -3866,3 +3866,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   suite_lcmix_wx.json) on the LAND library wx2020L2 (accounts 1 and 4; wx3 waiting for account 4). Comparability note stated now: the
   BASE3 exam used libm_wx2020 (no land fields); lc_mix's numbers carry both the physics and the better land start - a BASE3 run on
   wx2020L2 is needed to separate them before any adoption verdict.
+- 14:11 (clock) WHERE is the poleward t700 cold (lc_mix day-2 error map, T42, 3 starts): NH >= 40: -1.11 (land -0.97, ocean -1.27);
+  SH <= -40: -0.76 = Southern Ocean -1.37 (40-60 S: -1.74) offset by Antarctica +3.77 (high ice sheet, 700 hPa near the surface).
+  -> the cold sits over the mid-latitude OCEAN storm tracks, strongest over the Southern Ocean; Antarctica is a separate warm fault.
+  Storm-track latent heating at fronts is under-resolved at T42 -> raises the resolution branch (b) of the 13:29 fishbone; the T85 test
+  goes to Kaggle (rh_vs_era5 harness; inputs libm_wx2020L2 + rh_truth_2020, both on the release) - same registered rule (>= 50 %
+  smaller at T85). [reg: 13:29 | inputs: day-2 error map by region | fail-5why: n/a (localisation)]
+  Library: libm_cycL2_fields.npz built (84 storm starts, land incl. soil 1-4; sources logged: soil T and skin from ARCO, soil water
+  and snow from WB2); the 2 Rule-1 jobs moved to the queue (waiting for a free account slot).
