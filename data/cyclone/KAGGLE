@@ -1,6 +1,6 @@
-tn-lcm-wx2
-libm_wx2020L2_fields.npz,wx_truth_2020.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/suite_lcmix_wx.json 2 4 /kaggle/working/wx_2.json > /kaggle/working/wx_2.log 2>&1; tail -3 /kaggle/working/wx_2.log
+tn-res-t85
+libm_wx2020L2_fields.npz,rh_truth_2020.npz
+MAPS=/kaggle/working/m85 CANDS='{"lc_mix_t85":{"cmt_mf":1.0,"rd_si":1.0,"dfi_off":1.0,"rad_every":1,"skin_ifs":1,"sfc_imp":1,"land_rs":100,"emis_land":0.97,"entr":0.00175,"mf_org":1,"shallow":"mf","sh_trig":1,"sh_dmax":20000,"sh_eps":0.0035,"sh_det":1,"sh_clos":1,"mf_mix_exact":1,"sh_ifs2":1,"sfc_sal":0.98,"bl_lcl":1,"dd_ifs":1,"evap_ifs":1,"lsc_mix":1,"rad_prm":{"aer":1,"lw_cnt":0.667,"qs_mix":1}}}' DT=20 python -W ignore rh_vs_era5.py /kaggle/working/libm_wx2020L2_fields.npz /kaggle/working/rh_truth_2020.npz T85 56,61,66 > /kaggle/working/r85.log 2>&1; python -c "import numpy as np; L=np.load('/kaggle/working/libm_wx2020L2_fields.npz',mmap_mode='r'); v=[str(a) for a in L['v2']]; ps=np.mean([L['f2'][k][v.index('surface_pressure')] for k in (56,61,66)],0); e=np.load('/kaggle/working/m85_lc_mix_t85.npz')['t700']; la=np.linspace(-90,90,121); W=np.cos(np.radians(la))[:,None]*np.ones((1,240)); f=np.isfinite(e); ok=f&(ps>=75000); P=np.abs(la[:,None])>=40; m=lambda k: float(np.nansum(np.where(k,e*W,0))/(W*k).sum()); print('MASKED t700 d2 global',round(m(ok),3),'poleward',round(m(ok&P),3))"; grep -E 't850|t700|rh700' /kaggle/working/r85.log | tail -40
 NvidiaTeslaT4
 1
-#STAGE 1 RE-MEASURE (plan 21-23 Nov), lc_mix measured candidate (A held), general weather 2026-11-20T08:29Z
+#A poleward t700: resolution test T85 vs T42 (registered 13:29/14:11) 2026-11-20T11:18Z
