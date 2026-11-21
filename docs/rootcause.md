@@ -4105,3 +4105,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
   sl_vcubic NAMED as the steering fix if part-1 TN u850 d5 >= -3.21 (keeps >= 50 % of the vcs gain over lc_mix -4.43 -> -1.99).
   P5b denial no_late (part 3): TN u850 -4.00 (needed >= -2.64) -> NOT named [reg: 04:01 | inputs: same 18 starts as tn-lcm-wx3 |
   fail-5why: n/a (not named)]. [reg: now | inputs: same starts/library | fail-5why: two-item candidate -> split]
+- 12:39 (clock) RE-MEASURE from the exam (73 starts, T170; information, no new rule):
+  P5a jets - u200 d1 bias India (m/s): BASE3 -2.46, b3L -2.44, lc_mix -1.72, vcs -1.12 (NH extratropics -1.59/-1.59/-1.28/-0.59);
+   vcs halves the day-1 India jet deficit (D1 cubic, as the 13 Nov S1 = D1 finding said); d5 India vcs +1.41 (overshoots; BASE3 -0.90).
+  P2/P4 TN rain - rain24 TN bias d1/d3/d5 (mm/day): BASE3 +0.96/+2.04/+3.45 (wet), lc_mix -1.52/-1.77/-2.06 (dry), vcs -1.34/-1.26/
+   -1.65 -> lc_mix flips TN from too wet to too dry; the P2/P4 gate (5-day ratio within +-25 %) needs the TN truth mean -> computed
+   next with the exam truth file before any verdict. [reg: n/a (measurement) | inputs: same 73 starts all versions | fail-5why: n/a]
