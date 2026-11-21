@@ -4277,3 +4277,16 @@ running as a separate test) is NOT adopted on its own result unless this check p
   soil/skin fields: land starts at air temperature + 60 % soil water), while the lc_mix exams ran on libm_wx2020L2 (ERA5 soil water,
   soil T 1-4, skin). The atmosphere is identical, so the z500 hour-0 floor and the 13-vs-29-level result stand; the land cooling and
   the scale split do NOT stand until rerun on wx2020L2 (running now, same start). No verdict from the land numbers above.
+- 01:10 RERUN on wx2020L2 (exam library, same start): scale split unchanged (z500 d1 n1-9 68 %, t850 60 %) -> the 00:55 scale verdict
+  STANDS: day-1 error is LARGE-SCALE. Summer-land cooling is roughly halved with real soil fields (SH land -1.98 -> -1.14 K d1,
+  Africa -1.85 -> -1.11) but not gone; ocean -0.36 K d1. [reg: 22 Nov 00:04 | inputs: rerun on the exam's own library after my
+  library mistake | fail-5why: n/a (diagnosis)]
+- 01:10 INPUT/SIZE CHECK of the drift (exam lc_mix, 73 starts, vs ERA5 and HRES): day-1 rain globe 2.32 vs ERA5 2.94 mm/day (0.79;
+  HRES 1.00), tropics 2.83 vs 4.15 (0.68); day 2 0.99 / 0.88; day 5 1.05 / 0.97 (extratropics then 10-13 % too wet). Size: 0.62
+  mm/day = 18 W/m2 less latent heating = ~0.15 K/day column cooling = ~3 m/day z500 - about HALF the measured global z500 fall
+  (-5.6 m/day); in the tropics more than enough (1.32 mm/day -> ~6.6 m/day vs -3.8 m d1 bias). => The day-1 gap to HRES is mostly
+  the known CONVECTIVE SPIN-UP deficit (14-15 Nov A/P1 work: deep trigger fires in ~2.5 % of columns at the start, lower troposphere
+  cools until it fires), plus a radiative/land cooling remainder. Day-10 skill and A/P1 share this root. Not a verdict on d10 ACC.
+  REGISTERED next (before any run): 'Day-10 skill is driven by the day-1 spin-up' is CONFIRMED if, in the 73 exam starts, the
+  per-start day-1 global rain deficit correlates with the day-5 NH z500 ACC deficit vs HRES with r <= -0.4 (more deficit -> less
+  skill); REJECTED if |r| < 0.2 (then the d1 drift and d10 skill are separate problems). Local, from existing scores.
