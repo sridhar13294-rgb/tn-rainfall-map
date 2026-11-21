@@ -4290,3 +4290,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED next (before any run): 'Day-10 skill is driven by the day-1 spin-up' is CONFIRMED if, in the 73 exam starts, the
   per-start day-1 global rain deficit correlates with the day-5 NH z500 ACC deficit vs HRES with r <= -0.4 (more deficit -> less
   skill); REJECTED if |r| < 0.2 (then the d1 drift and d10 skill are separate problems). Local, from existing scores.
+- 01:10 RESULT link test (registered 01:10): 73 starts, deficit = -(d1 rain bias / ERA5): r(deficit, d5 NH z500 ACC ours-HRES) =
+  -0.13, d10 +0.04 -> |r| < 0.2 -> REJECTED as registered. [reg: 01:10 | inputs: same 73 starts, lc_mix exam + HRES scores |
+  fail-5why: the DIAGNOSTIC was weak - the d1 rain deficit barely varies between starts (0.21 +- 0.03), so a per-start correlation
+  cannot see a systematic effect; my registration error, stated openly. The rejection stands as written: no per-start evidence links
+  d1 spin-up to d10 skill. The size check (spin-up ~half of the d1 large-scale drift) still stands.]
+  NEXT (direct, not correlational): the d1 error is large-scale, so separate the planetary-scale error at d5 by source: zonal-mean
+  z500 error (drift/heating) vs eddy error - from saved fields once the exam writes sf/so (4e20490e), and locally on 1-2 starts.
