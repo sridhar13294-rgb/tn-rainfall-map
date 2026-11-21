@@ -4111,3 +4111,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   P2/P4 TN rain - rain24 TN bias d1/d3/d5 (mm/day): BASE3 +0.96/+2.04/+3.45 (wet), lc_mix -1.52/-1.77/-2.06 (dry), vcs -1.34/-1.26/
    -1.65 -> lc_mix flips TN from too wet to too dry; the P2/P4 gate (5-day ratio within +-25 %) needs the TN truth mean -> computed
    next with the exam truth file before any verdict. [reg: n/a (measurement) | inputs: same 73 starts all versions | fail-5why: n/a]
+- 14:38 (clock) RE-MEASURE P2/P4 TN rain 5-day ratio from the exam vs ERA5 rain24 (wx_truth_2020, TN box 8-14N 76-81E, cos-weighted,
+  days 1-5 of every start; proxy for criterion 6, whose official job tn-s-*-tnr is vs the tnr truth):
+   all 73 starts (ERA5 TN mean 3.77 mm/day): BASE3 1.56, lc_mix 0.56, vcs 0.66.
+   Oct-Dec 18 starts (ERA5 6.31 mm/day):     BASE3 1.24, lc_mix 0.50, vcs 0.54.
+  -> gate |ratio-1| <= 0.25: BASE3 passes only in Oct-Dec (1.24); lc_mix and vcs FAIL both (about half the observed TN rain).
+  P2/P4 stays OPEN and is now a lc_mix REGRESSION (dry by ~45-50 %), not a BASE3 wet bias. Next (5-why first, no code change yet):
+  is the deficit convective or large-scale rain, and does it track the steering error (lc_mix easterly -> less onshore NE flow)?
+  [reg: n/a (measurement) | inputs: same 73 starts and truth file for all versions | fail-5why: n/a]
