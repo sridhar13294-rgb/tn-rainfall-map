@@ -4347,3 +4347,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
   1000-500 hPa cooling (model-minus-ERA5 change of T from h0 to h24) is named the cooling layer; virtual-temperature (q) part
   reported separately. Near-surface (1000-850) -> boundary layer/land/radiation at the surface; 700-500 -> convection/radiation
   aloft (spin-up). Diagnosis only.
+- 05:01 RESULT cooling profile (registered 04:4x; Jan start, T85, model-minus-ERA5 change h0->h24, above-ground points; hour-0 offsets
+  <= 0.2 K at every level so the start is fine): globe 1000 -0.30, 925 -0.38, 850 -0.24, 700 -0.38, 600 -0.22, 500 -0.49, 400 -0.79,
+  300 -0.82, 250 -0.83, 200 -0.68 K. 1000-500 pressure-weighted mean -0.32 K; share 1000-850 44 %, 700-500 56 % -> by the rule the
+  cooling layer is 700-500 hPa (aloft), marginally. The clearest signal is ABOVE that: tropics 300 -1.39, 250 -1.77, 200 -1.64 K/day,
+  with tropical moisture piling up at 1000 hPa (+0.19 g/kg) and missing at 700 (-0.23). That is the signature of too little deep
+  convection: latent heat is not released aloft and moisture is not carried up. Size: the tropical day-1 rain deficit 1.32 mm/day =
+  38 W/m2 spread over 500-200 hPa = ~1.1 K/day, the measured order. NH (winter) cooling 700-400 hPa -0.7 K is separate (not tropical
+  convection). [reg: 04:4x | inputs: ERA5 act6h same 13 levels and times, below-ground masked, h0 offsets checked | fail-5why: n/a
+  (diagnosis)] Verdict: the tropical/summer part of the day-1 gap is the CONVECTIVE SPIN-UP deficit (same root as A/P1 spin-up);
+  the NH winter mid-troposphere cooling is an open second cause (suspect: radiation/clouds aloft). One start -> repeat on Jul start.
