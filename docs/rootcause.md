@@ -4336,3 +4336,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
   SUSPECT: a mass (surface-pressure) loss, not heating. REGISTERED (before the run): global-mean mslp model vs ERA5 at d0/d1/d2
   (Jul start, T85). Mass loss CONFIRMED if the model's global-mean mslp falls >= 0.5 hPa/day more than ERA5's; then the next check
   is the dry-mass budget of the dynamical core (spectral ps, semi-Lagrangian, mass fixer). REJECTED if < 0.2 hPa/day.
+- 04:39 RESULT mass-loss test (registered 04:25; Jul start, T85): global-mean mslp model 1011.83 -> 1011.96 -> 1011.96 hPa, ERA5
+  1011.50 -> 1011.54 -> 1011.55: model minus ERA5 change +0.09 hPa/day then -0.01 -> < 0.2 hPa/day -> MASS LOSS REJECTED. The core
+  keeps mass. [reg: 04:25 | inputs: same start, model and ERA5 global means on one 1.5 deg grid | fail-5why: n/a (diagnosis)]
+  Global-mean z500 model 5698.9 -> 5695.0 -> 5692.5 m vs ERA5 5700.4 -> 5701.4 -> 5701.4: the column below 500 hPa cools ~0.25 K/day
+  in the mean while t850 barely moves -> the cooling sits in other layers (near-surface 1000-925 and/or 700-500 hPa).
+  NEXT: model T profile (1000/925/700/500 hPa) vs ERA5 at d1 by region - needs T on more levels from run_wx (local, daytime).
