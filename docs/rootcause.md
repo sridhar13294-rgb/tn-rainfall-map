@@ -4214,3 +4214,15 @@ running as a separate test) is NOT adopted on its own result unless this check p
   within +-5 hPa AND |mean(h0 - ERA5 h0)| <= 1 hPa; otherwise HELD (fail-5why next on strong-storm under-intensification).
   WASTE NOTE: tn-r1-reloc-1 (other half, buggy code) is still QUEUED on account 1; I cannot cancel a Kaggle kernel from here.
   [reg: now | inputs: same library and storm list as tn-r1-lcm | fail-5why: n/a (registration)]
+
+## 21 Nov 21:45 IST - cycle: nothing landed; day-10 activity check (indirect)
+- Kaggle queue: tn-p5b-no-radev (acct 1) and tn-p5b-no-land-conv (acct 4) QUEUED on Kaggle since 17:56 IST (3.5 h, Kaggle-side
+  wait); tn-r1-reloc-1 (old buggy relocate) RUNNING on acct 1 since 20:18 IST - cannot cancel from here; its result will NOT be
+  scored (code superseded by 66a6cb7f). tn-r1-reloc2-0/1 still waiting in our queue behind them.
+- Day-10 / cubic suspect, indirect check from existing part-1 scores (18 starts, no fields saved): implied d10 z500 forecast
+  anomaly std / obs std (obs std from d1 via MSE=2so^2(1-acc), assumes sf=so at d1): NH lc_mix 1.07 vs vc 1.22; SH 0.90 vs 1.04.
+  ACC also drops (NH 0.26->0.22, SH 0.17->0.11). Reading: cubic makes the flow ~15% more active AND loses some pattern skill,
+  so it is NOT a pure double penalty. Estimate is fragile (1-acc at d1 ~0.01). Not a verdict.
+- Independent of cubic: lc_mix itself has z500 ACC 0.50 at d7 and 0.20 at d10 (globe). That, not cubic, is the main day-10 problem.
+- Input fix to the diagnostic: wxscore.scores now writes sf/so (forecast and ERA5 anomaly std) per region (4e20490e), so every
+  future exam gives activity directly at no extra GPU cost.
