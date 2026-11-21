@@ -4133,3 +4133,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
   Neither group alone carries either error. no_land (acct 4) pending. If no_land is also NOT named, the cause is an interaction
   across groups (no single-group denial carries it) -> next registration would be pairwise denial, not a fix.
   [reg: 04:01 / 14:44 | inputs: same 18 part-3 starts as tn-lcm-wx3 / tn-b3L-wx3 | fail-5why: n/a (attribution, not named)]
+- 14:55 (clock) P3 DENIAL RESULT lcm_no_rdsi (tn-p3-lcm-no-rdsi, 26 over-deep storms, T170 72 h, rule1_score.py; registered 23:03):
+  within +-5: 1/26 (needed >= 13); mean error -12.14 vs lc_mix -12.14 on the same 26 (needed >= +2.5 change) -> rd_si NOT named.
+  Per-storm min-pressure change vs lc_mix: 0.0 on 23 storms, max |0.3| hPa. Inputs/size check: the variant file sets rd_si 0 and
+  mm2.py reads it (line 134); rd_si only makes the dynamics gas constant equal to the physics one (286.86 -> 287.05, 0.07 %), so it
+  cannot deliver a 7-12 hPa deepening -> expected null, now measured. Remaining denials: no_cmt (queued acct 4), dfi_on (running).
+  [reg: 23:03 | inputs: same 26 storms/targets, one-item variant, verified the key is read | fail-5why: n/a (not named)]
