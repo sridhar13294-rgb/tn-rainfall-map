@@ -4250,3 +4250,17 @@ running as a separate test) is NOT adopted on its own result unless this check p
   (b) ACTIVITY LOSS confirmed if mean R(24-48 h) is >= 15 % below mean R(0-24 h) for z500 or u850.
   If neither: the day-1 error is a placement/phase error, not shock or damping -> next check = day-1 error by scale (planetary
   vs synoptic) against HRES.
+
+## 22 Nov 00:12 IST - results
+- P5b denial tn-p5b-no-radev (lc_mix with rad_every 2, part 3, 18 starts, 0 failed; scorer reproduces b3L -0.97/1.264 and lc_mix
+  -4.31/0.422 exactly): TN u850 d5 -4.25 (needed >= -2.64) -> NOT named for steering; TN rain ratio 0.440 (needed >= 0.843) -> NOT
+  named for rain. rad_every carries neither. [reg: 21 Nov (P5b 04:01 follow-up) | inputs: same 18 starts as tn-lcm-wx3, references
+  reproduced | fail-5why: n/a (attribution, not named)]. Remaining single test: no_land_conv (running, acct 4). If not named ->
+  pairwise denials.
+- First-day check (registered 21 Nov 22:31) vs ERA5 6-hourly (act6h, same 48 h): R = model/ERA5 6-h rms change
+  t850 1.22 0.82 0.96 0.92 | 0.97 0.86 0.96 0.90 ; z500 1.00 0.96 1.02 1.04 | 1.01 0.92 0.89 0.81 ; u850 0.98 0.91 0.92 0.89 | 0.89
+  0.86 0.84 0.84. (a) t850 R(0-6) 1.22 < 1.3 -> SHOCK NOT confirmed. (b) day-2 vs day-1 mean R drop: z500 9.7 %, u850 7.5 %
+  (< 15 %) -> ACTIVITY LOSS NOT confirmed. [reg: 21 Nov 22:31 | inputs: ERA5 6-hourly from the same cyc_libm pipeline, same start
+  | fail-5why: n/a (diagnosis)]. Notes (not verdicts, one start only): u850 activity already 8-14 % below ERA5 on day 1, z500 R
+  falls steadily to 0.81 at 48 h; global-mean drift model z500 -11 m / t850 -0.5 K in 48 h vs ERA5 -1 m / -0.1 K (bias, not ACC).
+  Per the rule -> next: day-1 error by spatial scale (planetary / synoptic / small), local T85.
