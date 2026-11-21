@@ -25,6 +25,7 @@ def scores(f, o, c=None):
         if c is not None:
             fa = np.nan_to_num(f - c); oa = np.nan_to_num(o - c); fa = fa - (w * fa).sum() / sw; oa = oa - (w * oa).sum() / sw
             den = np.sqrt((w * fa ** 2).sum() * (w * oa ** 2).sum()); r['acc'] = float((w * fa * oa).sum() / den) if den > 0 else None
+            r['sf'] = float(np.sqrt((w * fa ** 2).sum() / sw)); r['so'] = float(np.sqrt((w * oa ** 2).sum() / sw))   # anomaly activity (21 Nov)
         out[name] = r
     return out
 def to_grid(field, lon, lat):
