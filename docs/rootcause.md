@@ -4127,3 +4127,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
   A lc_mix item group (no_land / no_conv / no_late) is NAMED as a TN dry-bias cause if its part-3 ratio >= 0.843 (restores >= 50 %
   of the gap). no_late's result file was already on disk (landed for P5b) but its rain had not been read when this was written.
   [reg: now | inputs: same 18 part-3 starts as tn-b3L-wx3 / tn-lcm-wx3 | fail-5why: n/a (attribution)]
+- 14:50 (clock) P5b + TN-rain denial results (part 3, 18 starts; rules registered 04:01 and 14:44):
+   no_conv: TN u850 d5 -3.92 (needed >= -2.64) -> NOT named for steering; TN rain ratio 0.594 (needed >= 0.843) -> NOT named for rain.
+   no_late: rain ratio 0.407 -> NOT named for rain (steering already NOT named, -4.00).
+  Neither group alone carries either error. no_land (acct 4) pending. If no_land is also NOT named, the cause is an interaction
+  across groups (no single-group denial carries it) -> next registration would be pairwise denial, not a fix.
+  [reg: 04:01 / 14:44 | inputs: same 18 part-3 starts as tn-lcm-wx3 / tn-b3L-wx3 | fail-5why: n/a (attribution, not named)]
