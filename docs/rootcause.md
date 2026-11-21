@@ -4264,7 +4264,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   | fail-5why: n/a (diagnosis)]. Notes (not verdicts, one start only): u850 activity already 8-14 % below ERA5 on day 1, z500 R
   falls steadily to 0.81 at 48 h; global-mean drift model z500 -11 m / t850 -0.5 K in 48 h vs ERA5 -1 m / -0.1 K (bias, not ACC).
   Per the rule -> next: day-1 error by spatial scale (planetary / synoptic / small), local T85.
-- 00:09 REGISTERED (before the run): day-1 error by scale (T85 lc_mix, 2020-01-06T00, error vs ERA5 split by total wavenumber n,
+- 00:04 REGISTERED (before the run): day-1 error by scale (T85 lc_mix, 2020-01-06T00, error vs ERA5 split by total wavenumber n,
   shares of error variance for n=1-59): if n 10-39 (synoptic) carries >= 50 % of the day-1 z500 error -> systems misplaced/
   mistimed (dynamics: phase speed, steering, diffusion) and the next check is phase speed of troughs vs ERA5; if n 1-9 carries
   >= 50 % -> large-scale forcing/drift (heating, mountains, tropics) and the next check is the day-1 mean tendency vs ERA5 by
