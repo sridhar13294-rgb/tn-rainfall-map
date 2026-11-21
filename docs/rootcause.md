@@ -4092,3 +4092,16 @@ running as a separate test) is NOT adopted on its own result unless this check p
   it restores >= 50 % of the lc_mix - b3L gap on part 3 (TN u850 d5 bias -4.31 vs b3L -0.97 -> >= -2.64 m/s). Denial = measurement,
   never a fix. Jobs tn-p5b-no-land (acct 4), tn-p5b-no-conv, tn-p5b-no-late (acct 1), after the P3 denials.
   [reg: now | inputs: same starts/library as tn-lcm-wx3 and tn-b3L-wx3 | fail-5why: n/a (registration)]
+- 12:37 (clock) (session was paused 04:05-12:30; cycles 10:00 missed - stated to Sridhar) ACCOUNT 1 hit the 30 h weekly GPU
+  quota 05:09-05:33 (refused pushes, no GPU used); it accepted pushes again at 12:36 (weekly reset). No workaround used.
+  A EXAM RESULT (vcs = lc_mix + sl_vcubic + lsc_sub, 73 starts, T170, 0 failed; criteria from score_suite.py vs BASE3):
+   crit 1 z500 d5/d10: vcs 65.94/117.74 vs BASE3 71.76/117.70 -> d5 PASS, d10 FAIL by 0.04 m -> criterion 1 FAIL.
+     lc_mix 65.54/111.09 -> PASS. vcs d10 is ~6 m worse than lc_mix in EVERY exam part (q0..q3: +6.6, +8.5, +4.6, +6.9 m).
+   crit 7 steering Oct-Dec TN u850 d5: vcs -3.50 vs BASE3 -1.91 -> FAIL (lc_mix -5.75, also FAIL). By part vcs/b3L: q0 -2.05/-3.49,
+     q1 -1.99/-1.93, q2 -2.94/-2.93, q3 -3.16/-0.97 -> vcs REMOVES most of lc_mix's extra easterly in q0-q2.
+   crit 8a stability PASS. -> A NOT closed. FAIL-5WHY: two new items; which one costs d10 and which one fixes steering?
+  REGISTERED (before run): tn-vc-wx1 = lc_mix + sl_vcubic only (no lsc_sub), exam part 1 (18 starts). lsc_sub NAMED as the d10 cost if
+  part-1 d10 <= 112.75 (restores >= 50 % of the 8.5 m gap vcs 117.0 vs lc_mix 108.5); otherwise sl_vcubic carries it. Steering:
+  sl_vcubic NAMED as the steering fix if part-1 TN u850 d5 >= -3.21 (keeps >= 50 % of the vcs gain over lc_mix -4.43 -> -1.99).
+  P5b denial no_late (part 3): TN u850 -4.00 (needed >= -2.64) -> NOT named [reg: 04:01 | inputs: same 18 starts as tn-lcm-wx3 |
+  fail-5why: n/a (not named)]. [reg: now | inputs: same starts/library | fail-5why: two-item candidate -> split]
