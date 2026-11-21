@@ -2038,5 +2038,13 @@
   "note": "P5b + TN rain denial (registered 21 Nov)",
   "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/p5b_no_land_conv.json 3 4 /kaggle/working/wx_3.json > /kaggle/working/wx_3.log 2>&1; tail -3 /kaggle/working/wx_3.log",
   "at": "2026-11-21T12:26Z"
+ },
+ {
+  "slug": "tn-r1-reloc2-0",
+  "inputs": "libm_cycL2_fields.npz",
+  "account": "1",
+  "note": "P3 fix test v2 (registered 18:10 IST 21 Nov): lc_mix + FIXED relocate (SLP centre), Rule 1, all 83 storms",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore hind2.py /kaggle/working/libm_cycL2_fields.npz ../../../data/cyclone/kaggle_cfg/lib84_lcmreloc2.json 0 2 /kaggle/working/h0.json > /kaggle/working/h0.log 2>&1; tail -6 /kaggle/working/h0.log",
+  "at": "2026-11-21T16:47Z"
  }
 ]
