@@ -4168,3 +4168,17 @@ running as a separate test) is NOT adopted on its own result unless this check p
   fail-5why: n/a (registration)]
 - 15:42 (clock) tn-p3-lcm-no-cmt WITHDRAWN before launch: dfi_on is named and lc_mix/dfi_on are identical from h6 on, so no other
   item can carry the hour-0 deficit; running it would spend GPU for no information (rule 9).
+- 16:20 (clock) P5b + TN-rain denial result no_land (part 3, rules 04:01 / 14:39): TN u850 d5 -4.38 (needed >= -2.64; lc_mix -4.31)
+  -> land set NOT named for steering. TN rain ratio 0.760 (needed >= 0.843; lc_mix 0.422) -> NOT named, but the largest single
+  recovery (40 % of the gap; no_conv 20 %, no_late -2 %). [reg: 04:01 / 14:39 | inputs: same 18 part-3 starts, 0 failed |
+  fail-5why: n/a (not named)]
+  INPUTS CHECK OF THE DENIAL ITSELF (5-why on "no group named"): b3L (suite_b3_wx.json) runs rad_every 2 (mm2 default); lc_mix runs
+  rad_every 1; the 04:01 groups (land / conv / late) did NOT include rad_every, and all three denials kept it at 1. So one lc_mix item
+  was never denied - my registration gap, stated openly. Single-group effects on steering sum to +0.6 of the 3.34 m/s gap, so either
+  rad_every carries it or the groups interact.
+  REGISTERED (before any run), part 3, same scorers: (1) tn-p5b-no-radev = lc_mix with rad_every 2 (acct 1): NAMED for steering if
+  TN u850 d5 >= -2.64, for TN rain if ratio >= 0.843. (2) tn-p5b-no-land-conv = lc_mix minus land AND conv sets (keeps late set +
+  rad_every 1; acct 4 after tn-vc-wx1): same two rules; tests the land x conv interaction (the two largest single rain recoveries).
+  Denial = measurement only. If (1) is named for steering, rad_every 1 is a physics-accuracy item (hourly SW matches ERA5, 19 Nov), so
+  the answer is NOT to revert it but a 5-why on what hourly radiation changes over TN. [reg: now | inputs: b3L vs lc_mix configs
+  diffed key by key | fail-5why: n/a (registration)]
