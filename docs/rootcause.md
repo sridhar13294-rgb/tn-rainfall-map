@@ -4304,3 +4304,19 @@ running as a separate test) is NOT adopted on its own result unless this check p
   'large-scale' share is mainly the SH summer zonal-mean drift. In the NH, where the d5/d10 ACC gap is largest, the day-1 error
   is eddy (systems), not drift. One January start only -> direction, not verdict. Next (daytime): 4 starts across seasons, and
   exclude below-ground points from t850 scoring (mask where ERA5 ps < 850 hPa) before any further t850 conclusion.
+
+## 22 Nov 02:03 IST - P5b TN rain: land + convection denial RESULT, land split REGISTERED
+- tn-p5b-no-land-conv (lc_mix minus land AND conv sets, part 3, 18 starts, 0 failed; scorer reproduces lc_mix -4.31/0.422):
+  TN rain ratio 0.924 (needed >= 0.843) -> land+conv NAMED for the TN dry bias; TN u850 d5 -5.34 (needed >= -2.64) -> NOT named for
+  steering (worse). [reg: 21 Nov 12:3x (P5b follow-up, rules 04:01/14:39) | inputs: same 18 starts as tn-lcm-wx3, refs reproduced |
+  fail-5why: n/a (named / not named)]
+  Not an interaction: rain recovery vs lc_mix is no_land +0.338, no_conv +0.172, sum +0.510 vs pair +0.502 -> ADDITIVE. The land set
+  carries ~2/3 (0.760 alone: 40 % of the gap - under the 50 % line, so land alone stays NOT named, gate not relaxed), conv ~1/3.
+  Steering is separate from both (all four denials failed it) -> steering stays with A/P1 (sl_vcubic named 21 Nov 18:10).
+- Size/reference check of the land set's largest item: land_rs 100 s/m is used as the whole surface resistance; IFS uses a canopy
+  resistance r_c = (r_s,min / LAI) f1 f2 f3 (TESSEL/H-TESSEL) with r_s,min/LAI = 180/3 = 60 (crops), 225/3 = 75 (shrubs), 110/2 = 55
+  (short grass) before stress factors -> ours is ~1.3-1.8x the IFS unstressed value, so it plausibly dries land a little, not 3x.
+  REGISTERED (before any run), part 3, same scorer: (1) tn-p5b-no-landrs = lc_mix minus land_rs (acct 1); (2) tn-p5b-no-skinimp =
+  lc_mix minus skin_ifs and sfc_imp (acct 4). An item is NAMED for TN rain if its ratio >= 0.591 (restores >= 50 % of the land set's
+  own recovery 0.422 -> 0.760). If land_rs is named, the fix is the IFS form (r_s,min/LAI by vegetation type, ERA5 type/LAI fields),
+  not a tuned land_rs. [reg: now | inputs: lc_mix config key by key, single key removed per job | fail-5why: n/a (registration)]
