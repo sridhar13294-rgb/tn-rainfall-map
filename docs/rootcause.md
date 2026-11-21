@@ -4297,3 +4297,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   d1 spin-up to d10 skill. The size check (spin-up ~half of the d1 large-scale drift) still stands.]
   NEXT (direct, not correlational): the d1 error is large-scale, so separate the planetary-scale error at d5 by source: zonal-mean
   z500 error (drift/heating) vs eddy error - from saved fields once the exam writes sf/so (4e20490e), and locally on 1-2 starts.
+- 01:10 zonal-mean vs eddy split of the d1/d2 error (wx2020L2 start, T85; truth grid is south-first, labels checked): NH extratropics
+  (winter) z500 d1 error is 72 % EDDY (zonal-mean rms 10.2 m, eddy 16.1), t850 94 % eddy, u850 95 % eddy; SH extratropics (summer)
+  z500 48 % zonal-mean (13.5 m), t850 60 % zonal-mean (inflated by the Antarctic below-ground t850 artefact). CORRECTION of my 00:55
+  scale verdict: the t850 'planetary' share was inflated by Antarctica (verification artefact) -> t850 part WITHDRAWN; the z500
+  'large-scale' share is mainly the SH summer zonal-mean drift. In the NH, where the d5/d10 ACC gap is largest, the day-1 error
+  is eddy (systems), not drift. One January start only -> direction, not verdict. Next (daytime): 4 starts across seasons, and
+  exclude below-ground points from t850 scoring (mask where ERA5 ps < 850 hPa) before any further t850 conclusion.
