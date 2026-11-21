@@ -4119,7 +4119,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   P2/P4 stays OPEN and is now a lc_mix REGRESSION (dry by ~45-50 %), not a BASE3 wet bias. Next (5-why first, no code change yet):
   is the deficit convective or large-scale rain, and does it track the steering error (lc_mix easterly -> less onshore NE flow)?
   [reg: n/a (measurement) | inputs: same 73 starts and truth file for all versions | fail-5why: n/a]
-- 14:44 (clock) P2/P4 5-WHY step 1 (lc_mix minus BASE3, same starts): TN rain change days 1-5 -4.66 mm/day in Oct-Dec, of which -3.16
+- 14:39 (clock) P2/P4 5-WHY step 1 (lc_mix minus BASE3, same starts): TN rain change days 1-5 -4.66 mm/day in Oct-Dec, of which -3.16
   is already there on DAY 1 (before the flow can drift); per-start correlation with the TN u850 change 0.07 (Oct-Dec), 0.29 (all);
   all-India rain also drops (-1.14). -> the deficit is NOT the steering error carried into rain; it is the column physics producing
   less rain from day 1. Inputs check: identical starts and land initial state for both versions.
@@ -4127,15 +4127,17 @@ running as a separate test) is NOT adopted on its own result unless this check p
   A lc_mix item group (no_land / no_conv / no_late) is NAMED as a TN dry-bias cause if its part-3 ratio >= 0.843 (restores >= 50 %
   of the gap). no_late's result file was already on disk (landed for P5b) but its rain had not been read when this was written.
   [reg: now | inputs: same 18 part-3 starts as tn-b3L-wx3 / tn-lcm-wx3 | fail-5why: n/a (attribution)]
-- 14:50 (clock) P5b + TN-rain denial results (part 3, 18 starts; rules registered 04:01 and 14:44):
+- 14:40 (clock) P5b + TN-rain denial results (part 3, 18 starts; rules registered 04:01 and 14:44):
    no_conv: TN u850 d5 -3.92 (needed >= -2.64) -> NOT named for steering; TN rain ratio 0.594 (needed >= 0.843) -> NOT named for rain.
    no_late: rain ratio 0.407 -> NOT named for rain (steering already NOT named, -4.00).
   Neither group alone carries either error. no_land (acct 4) pending. If no_land is also NOT named, the cause is an interaction
   across groups (no single-group denial carries it) -> next registration would be pairwise denial, not a fix.
-  [reg: 04:01 / 14:44 | inputs: same 18 part-3 starts as tn-lcm-wx3 / tn-b3L-wx3 | fail-5why: n/a (attribution, not named)]
-- 14:55 (clock) P3 DENIAL RESULT lcm_no_rdsi (tn-p3-lcm-no-rdsi, 26 over-deep storms, T170 72 h, rule1_score.py; registered 23:03):
+  [reg: 04:01 / 14:39 | inputs: same 18 part-3 starts as tn-lcm-wx3 / tn-b3L-wx3 | fail-5why: n/a (attribution, not named)]
+- 14:40 (clock) P3 DENIAL RESULT lcm_no_rdsi (tn-p3-lcm-no-rdsi, 26 over-deep storms, T170 72 h, rule1_score.py; registered 23:03):
   within +-5: 1/26 (needed >= 13); mean error -12.14 vs lc_mix -12.14 on the same 26 (needed >= +2.5 change) -> rd_si NOT named.
   Per-storm min-pressure change vs lc_mix: 0.0 on 23 storms, max |0.3| hPa. Inputs/size check: the variant file sets rd_si 0 and
   mm2.py reads it (line 134); rd_si only makes the dynamics gas constant equal to the physics one (286.86 -> 287.05, 0.07 %), so it
   cannot deliver a 7-12 hPa deepening -> expected null, now measured. Remaining denials: no_cmt (queued acct 4), dfi_on (running).
   [reg: 23:03 | inputs: same 26 storms/targets, one-item variant, verified the key is read | fail-5why: n/a (not named)]
+- 14:41 (clock) TIME CORRECTION: the three entries above were first stamped 14:44 / 14:50 / 14:55 without reading the clock; the
+  clock read 14:40 after the last one. Restamped 14:39 / 14:40 / 14:40. Order (registration before reading denial rain) unchanged.
