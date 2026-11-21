@@ -4370,3 +4370,12 @@ running as a separate test) is NOT adopted on its own result unless this check p
   With physics on this was -0.72/-0.65/-0.77 K. PHYSICS cause if the physics-off value is >= +0.3 K warmer than physics-on at
   each of 700/600/500 (heating removed -> net cooling gone/reversed would mean physics was cooling); DYNAMICS cause if within
   +-0.2 K of the physics-on value (the cooling is made by the core: advection / vertical transport). In between -> both.
+- 05:15 RESULT physics-vs-dynamics (registered 05:1x): NH 700/600/500 (model - ERA5 change, 24 h): physics on -0.72/-0.65/-0.77 K,
+  physics OFF -0.05/-0.05/-0.13 K -> warmer by +0.67/+0.60/+0.64 (>= +0.3 at each) -> PHYSICS cause. The dynamical core alone
+  follows ERA5's mid-troposphere change within 0.13 K; our physics adds ~0.65 K/day of net cooling there that ERA5's physics
+  does not. Tropics 300/250: physics on -1.39/-1.77, off -0.78/-0.66 -> our physics also makes the tropical upper cooling WORSE
+  than no physics at all (radiative cooling not offset by convective heating) - consistent with (1). [reg: 05:1x | inputs: same
+  start/scoring, only phys_off changed | fail-5why: n/a (diagnosis)]
+  NEXT (fishbone, physics branch): radiation vs large-scale condensation vs convection in the NH winter mid-troposphere ->
+  per-process heating rates on this start (model tendencies by process), compared with the IFS/ERA5 typical values
+  (radiative cooling ~1-1.5 K/day mid-troposphere).
