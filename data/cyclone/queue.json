@@ -1,12 +1,5 @@
 [
  {
-  "slug": "tn-vc-wx1",
-  "inputs": "libm_wx2020L2_fields.npz,wx_truth_2020.npz",
-  "account": "4",
-  "note": "A exam fail-5why: lc_mix + sl_vcubic only (no lsc_sub), part 1",
-  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/suite_vc_wx.json 1 4 /kaggle/working/wx_1.json > /kaggle/working/wx_1.log 2>&1; tail -3 /kaggle/working/wx_1.log"
- },
- {
   "slug": "tn-p3-lcm-no-cmt",
   "inputs": "libm_cycL2_fields.npz",
   "account": "4",
