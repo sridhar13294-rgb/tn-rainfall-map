@@ -4357,3 +4357,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   convection). [reg: 04:4x | inputs: ERA5 act6h same 13 levels and times, below-ground masked, h0 offsets checked | fail-5why: n/a
   (diagnosis)] Verdict: the tropical/summer part of the day-1 gap is the CONVECTIVE SPIN-UP deficit (same root as A/P1 spin-up);
   the NH winter mid-troposphere cooling is an open second cause (suspect: radiation/clouds aloft). One start -> repeat on Jul start.
+- 05:09 REPEAT on the July start (ERA5 act6hjul): tropics 300 -1.59, 250 -1.92, 200 -1.56 K/day; NH (summer) 300-200 -1.0 to -1.3;
+  tropical moisture +0.33 g/kg at 1000 hPa, -0.19 at 700. SH (winter) cools at 700-500 (-0.7 to -1.0) and NOT aloft (+0.4/+0.8 at
+  250/200). Same two signatures as January with the hemispheres swapped -> CONFIRMED on 2 starts, opposite seasons:
+  (1) summer hemisphere + tropics: upper-troposphere cooling + boundary-layer moisture build-up = deep-convection spin-up deficit
+      (shared root with A/P1);
+  (2) winter hemisphere: 700-500 hPa cooling - separate, unexplained. Suspect list (fishbone, not yet tested): clear-sky/cloud
+      longwave aloft, large-scale cloud/precip evaporation, vertical advection (sl_vcubic off in lc_mix). [reg: 04:4x | inputs:
+      ERA5 6-hourly same times, below-ground masked, h0 offsets <= 0.25 K | fail-5why: n/a (diagnosis)]
