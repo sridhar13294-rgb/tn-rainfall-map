@@ -4251,7 +4251,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   If neither: the day-1 error is a placement/phase error, not shock or damping -> next check = day-1 error by scale (planetary
   vs synoptic) against HRES.
 
-## 22 Nov 00:12 IST - results
+## 22 Nov 00:04 IST - results
 - P5b denial tn-p5b-no-radev (lc_mix with rad_every 2, part 3, 18 starts, 0 failed; scorer reproduces b3L -0.97/1.264 and lc_mix
   -4.31/0.422 exactly): TN u850 d5 -4.25 (needed >= -2.64) -> NOT named for steering; TN rain ratio 0.440 (needed >= 0.843) -> NOT
   named for rain. rad_every carries neither. [reg: 21 Nov (P5b 04:01 follow-up) | inputs: same 18 starts as tn-lcm-wx3, references
