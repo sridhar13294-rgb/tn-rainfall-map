@@ -186,6 +186,7 @@ class Model:
         T3, Q3, U3, V3 = [N(f3[k]) for k in ('temperature', 'specific_humidity', 'u_component_of_wind', 'v_component_of_wind')]
         ps = N(ps_pa); zs = np.maximum(N(zs_m), 0.0); land = N(lsm) > 0.5
         sst = N(np.where(np.isfinite(sst_k), sst_k, 0.0)); sst = np.where(land | (sst < 260), 0.0, sst)
+        self._bogus_zs = zs
         if storm and storm.get('vmax_kt', 0) >= 15: T3, Q3, U3, V3, ps = self.bogus(T3, Q3, U3, V3, ps, levs, **storm)
         # the model's own terrain is the spectrally smoothed one (self.oro); the analysis' surface pressure belongs to the real
         # terrain. Move the surface pressure to the model terrain hypsometrically (temperature and humidity of the analysis at
@@ -259,15 +260,30 @@ class Model:
         if self.S.get('storm_mode', 'bogus') == 'relocate':
             # NCEP-style relocation: split each field into environment (vortex filled in from the ring 4-6 deg out) and the
             # analysis' own vortex, move the vortex to the observed centre, put it back. Keeps the analysed structure and size.
-            P = ndi.uniform_filter(ps, 3, mode='wrap'); near = d <= 350.0
+            # (21 Nov fix) find the analysis centre on SEA-LEVEL pressure: on raw ps the minimum within 350 km is the highest
+            # terrain (Ghats, Sri Lanka, Myanmar, Malaysia), so the 'vortex' cut out and moved was a mountain's pressure imprint
+            zs0 = getattr(self, '_bogus_zs', np.zeros_like(ps)); lv0 = np.asarray(levs, float)[:, None, None] * 100.0
+            T0 = np.take_along_axis(T3, np.clip((lv0 < ps[None]).sum(0) - 1, 0, len(levs) - 1)[None], 0)[0]
+            P = ndi.uniform_filter(ps * np.exp(G * zs0 / (RD * T0)), 3, mode='wrap'); near = d <= 350.0
             ja = np.unravel_index(np.argmin(np.where(near, P, np.inf)), P.shape)
             dlon = ((lon - self.LO[ja] + 180) % 360) - 180; dlat = lat - self.LA[ja]
             dx = float(np.mean(np.diff(self.lon))); dy = float(np.mean(np.diff(self.lat)))
             sh = (dlon / dx, dlat / dy)
             da = np.hypot(self.LA - self.LA[ja], ((self.LO - self.LO[ja] + 180) % 360 - 180) * cosl) * 111.2   # around the analysis' own centre
-            def move(X):
-                E_ = fill(X, dd=da); return E_ + ndi.shift(X - E_, ((0,) if X.ndim == 3 else ()) + sh, order=1, mode='nearest')
-            T3, Q3, U3, V3 = move(T3), np.maximum(move(Q3), 0.0), move(U3), move(V3); ps = move(ps[None])[0]
+            # (21 Nov fix) surface pressure carries the terrain (ps ~920 hPa over the Ghats/Myanmar hills inside the 4-deg disc):
+            # moving raw ps moved terrain imprints onto the sea (-56 hPa spot, Nivar 26 Nov 2020; h0 up to -54 hPa too deep in
+            # tn-r1-reloc-0). Move the vortex in sea-level pressure (ps exp(g zs / Rd T_low)) and scale ps by the slp ratio, so the
+            # terrain factor cancels; 3-D anomalies below ground (p > ps at the source) are set to zero before the shift.
+            zs_ = getattr(self, '_bogus_zs', np.zeros_like(ps)); lv = np.asarray(levs, float)[:, None, None] * 100.0
+            kl = np.clip((lv < ps[None]).sum(0) - 1, 0, len(levs) - 1); Tlow = np.take_along_axis(T3, kl[None], 0)[0]
+            below = lv > ps[None]
+            def move(X, ug=False):
+                E_ = fill(X, dd=da); A = X - E_
+                if ug: A = np.where(below, 0.0, A)
+                return E_ + ndi.shift(A, ((0,) if X.ndim == 3 else ()) + sh, order=1, mode='nearest')
+            slp = ps * np.exp(G * zs_ / (RD * Tlow))
+            T3, Q3, U3, V3 = move(T3, True), np.maximum(move(Q3, True), 0.0), move(U3, True), move(V3, True)
+            ps = ps * move(slp[None])[0] / slp
             return T3, Q3, U3, V3, ps
         U3, V3 = fill(U3), fill(V3)
         # remove the analysis' own low too (pressure and warm core, within 3 deg): otherwise its centre, often 50-100 km from

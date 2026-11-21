@@ -4182,3 +4182,35 @@ running as a separate test) is NOT adopted on its own result unless this check p
   Denial = measurement only. If (1) is named for steering, rad_every 1 is a physics-accuracy item (hourly SW matches ERA5, 19 Nov), so
   the answer is NOT to revert it but a 5-why on what hourly radiation changes over TN. [reg: now | inputs: b3L vs lc_mix configs
   diffed key by key | fail-5why: n/a (registration)]
+- 18:10 (clock) A/P1 SPLIT RESULT tn-vc-wx1 (lc_mix + sl_vcubic only, exam part 1, 18 starts, 0 failed; registered 12:37):
+  z500 d1/d5/d10: lc_mix 15.30/63.76/108.49 | vc 14.28/64.39/117.43 | vcs 14.12/64.09/117.02. TN u850 d5 (all 18): lc_mix -4.43,
+  vc -2.37, vcs -1.99.
+  -> d10: 117.43 > 112.75 -> lsc_sub NOT named; sl_vcubic carries the d10 cost (+8.9 m, worse in 14/18 starts, sd 9.8; vcs - vc
+  -0.4 m). Steering: -2.37 >= -3.21 -> sl_vcubic NAMED as the steering fix. One change both fixes steering and costs d10.
+  [reg: 12:37 | inputs: same 18 starts as tn-lcm-wx1/tn-vcs-wx1, both reproduced exactly | fail-5why: below]
+  FAIL-5WHY step 1 (d10 cost of cubic), information from the same files: cubic improves BIAS everywhere (z500 d10 global -32.7 ->
+  -25.9 m, tropics -26.6 -> -16.9; u200 d10 jet deficit -2.54 -> -1.23 m/s) and tropics RMSE (32.3 -> 25.4), but extratropical d10
+  RMSE grows (N +10.1, S +12.6 m). d10 ACC is near zero skill in both (globe 0.21 vs 0.15; N 0.26/0.23; S 0.17/0.11). At no skill,
+  RMSE grows with the model's own eddy amplitude (double penalty), so the leading suspect is: cubic is less damping than linear
+  vertical interpolation -> stronger extratropical eddies. NOT yet proven: needs d10 z500 eddy variance vs ERA5 (lc_mix vs vc).
+  Gate stays as written: A remains HELD (vcs fails d10 by 0.04 m). Note for the scorecard: d10 ACC ~0.2 is itself far below
+  operational skill - a separate open item, not hidden by the A verdict.
+- 18:10 (clock) P3 FIX TEST HALF RESULT tn-r1-reloc-0 (42 of 83 storms, lc_mix + storm_mode relocate; registered 15:41):
+  within +-5 hPa 18/42 (43 %; lc_mix same 42: 24/42, 57 %), mean err -12.15 (lc_mix -3.89), 21 too deep. h0 - ERA5 h0: mean -14.55,
+  median -6.86, 23 storms < -5 (lc_mix -5.75/-2.73/17). Worst: Unnamed 2025-10-01 942.7 vs ERA5 996.8 (-54), Nisha 2008 -48, Jal
+  2010 -46, Lehar 2013 -45, Jawad 2021 -44, Senyar 2025 -42 - all near coasts/hills. Even 41/41 in the other half gives 59 < 67 ->
+  the rule CANNOT pass: NOT CLOSED. [reg: 15:41 | inputs: same library/storms as tn-r1-lcm-0 | fail-5why: traced to the FIX]
+  FAIL-5WHY: why is the relocated start 40-54 hPa too deep when relocation should keep the ERA5 depth? -> local numpy check of the
+  relocate step at T170 on the 2020 library (Nivar 26 Nov 00Z, Burevi 1 Dec 00Z): Nivar sea-point SLP min within 600 km 1003.1 ->
+  951.1 hPa (-52, same size as Kaggle). ROOT CAUSE (implementation bug in my relocate code, 22 Oct): (1) the analysis centre was
+  searched on RAW surface pressure, whose minimum within 350 km is the highest terrain (Ghats/Sri Lanka/Myanmar/Malaysia), so a
+  mountain's pressure imprint was cut out as the "vortex" and moved onto the sea; (2) raw ps was moved, carrying terrain with it
+  (-56 hPa spot). The relocate IDEA is not tested yet - this run tested a bug.
+  FIX (mm2.bogus relocate branch): centre found on sea-level pressure ps exp(g zs / Rd T_low); the vortex is moved in SLP and ps
+  is scaled by the SLP ratio (terrain cancels); 3-D anomalies below ground set to 0 before the shift. Check (same numpy test):
+  Nivar SLP 1003.1 -> 1003.6, Burevi 1005.3 -> 1005.6, largest ps change -0.7 hPa (bug: -56). Bogus path untouched (it still deepens
+  Nivar 1003.1 -> 986.2, the original P3 input fault).
+  REGISTERED (before run): tn-r1-reloc2-0/1 = lc_mix + fixed relocate, all 83 storms, same rule as 15:41: P3 CLOSES if >= 67/83
+  within +-5 hPa AND |mean(h0 - ERA5 h0)| <= 1 hPa; otherwise HELD (fail-5why next on strong-storm under-intensification).
+  WASTE NOTE: tn-r1-reloc-1 (other half, buggy code) is still QUEUED on account 1; I cannot cancel a Kaggle kernel from here.
+  [reg: now | inputs: same library and storm list as tn-r1-lcm | fail-5why: n/a (registration)]
