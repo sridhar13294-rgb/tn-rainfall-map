@@ -1,10 +1,1 @@
-[
- {
-  "slug": "tn-r1-reloc-1",
-  "inputs": "libm_cycL2_fields.npz",
-  "account": "1",
-  "note": "P3 fix test (registered 15:42): lc_mix + storm_mode relocate (start keeps the ERA5 vortex), Rule 1, all 83 storms",
-  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore hind2.py /kaggle/working/libm_cycL2_fields.npz ../../../data/cyclone/kaggle_cfg/lib84_lcmreloc.json 1 2 /kaggle/working/h1.json > /kaggle/working/h1.log 2>&1; tail -6 /kaggle/working/h1.log",
-  "at": "2026-11-20T11:21Z"
- }
-]
+[]
