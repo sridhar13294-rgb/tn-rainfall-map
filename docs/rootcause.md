@@ -4328,3 +4328,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   tn-r1-reloc2-1 (running, acct 4). Half verdict only - NOT CLOSED yet. [reg: 21 Nov 18:10 | inputs: libm_cycL2, fixed relocate
   66a6cb7f, h0 checked vs ERA5 | fail-5why: n/a (half result)]. Residual: 7 too weak (Hudhud +12.4, Nisha +7.6) = strong storms
   under-deepening, the registered next 5-why if the full count fails.
+- 04:25 Day-10: 4 seasonal starts (T85, wx2020L2; t850 scored only where ERA5 ps > 870 hPa): z500 d1 error, zonal-mean share / bias:
+  NH Jan 28 % / -7.0 m, Apr 33 % / -6.6, Jul 62 % / -12.3, Oct 47 % / -10.4; SH Jan 48 % / -11.8, Apr 23 % / -5.6, Jul 47 % / -4.0,
+  Oct 43 % / -2.2; tropics bias -2.3 to -5.0 m. t850 (above ground) is mostly eddy (4-35 %), tropical bias -0.5 to -0.8 K.
+  Reading: z500 FALLS on day 1 in every start and hemisphere (largest in the summer NH), while t850 hardly cools outside the tropics.
+  A -12 m z500 fall needs ~0.6 K mean cooling below 500 hPa OR ~1.4 hPa less surface pressure. t850 shows only -0.2 K there ->
+  SUSPECT: a mass (surface-pressure) loss, not heating. REGISTERED (before the run): global-mean mslp model vs ERA5 at d0/d1/d2
+  (Jul start, T85). Mass loss CONFIRMED if the model's global-mean mslp falls >= 0.5 hPa/day more than ERA5's; then the next check
+  is the dry-mass budget of the dynamical core (spectral ps, semi-Lagrangian, mass fixer). REJECTED if < 0.2 hPa/day.
