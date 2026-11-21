@@ -4365,3 +4365,8 @@ running as a separate test) is NOT adopted on its own result unless this check p
   (2) winter hemisphere: 700-500 hPa cooling - separate, unexplained. Suspect list (fishbone, not yet tested): clear-sky/cloud
       longwave aloft, large-scale cloud/precip evaporation, vertical advection (sl_vcubic off in lc_mix). [reg: 04:4x | inputs:
       ERA5 6-hourly same times, below-ground masked, h0 offsets <= 0.25 K | fail-5why: n/a (diagnosis)]
+- 05:10 REGISTERED (before the run): winter-hemisphere 700-500 cooling, physics or dynamics? Jan start, T85, lc_mix with
+  phys_off=True (dynamics only, no heating at all), 24 h, same scoring, NH 20-90N 700/600/500 hPa mean of (model - ERA5) change.
+  With physics on this was -0.72/-0.65/-0.77 K. PHYSICS cause if the physics-off value is >= +0.3 K warmer than physics-on at
+  each of 700/600/500 (heating removed -> net cooling gone/reversed would mean physics was cooling); DYNAMICS cause if within
+  +-0.2 K of the physics-on value (the cooling is made by the core: advection / vertical transport). In between -> both.
