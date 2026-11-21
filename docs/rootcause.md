@@ -4119,3 +4119,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   P2/P4 stays OPEN and is now a lc_mix REGRESSION (dry by ~45-50 %), not a BASE3 wet bias. Next (5-why first, no code change yet):
   is the deficit convective or large-scale rain, and does it track the steering error (lc_mix easterly -> less onshore NE flow)?
   [reg: n/a (measurement) | inputs: same 73 starts and truth file for all versions | fail-5why: n/a]
+- 14:44 (clock) P2/P4 5-WHY step 1 (lc_mix minus BASE3, same starts): TN rain change days 1-5 -4.66 mm/day in Oct-Dec, of which -3.16
+  is already there on DAY 1 (before the flow can drift); per-start correlation with the TN u850 change 0.07 (Oct-Dec), 0.29 (all);
+  all-India rain also drops (-1.14). -> the deficit is NOT the steering error carried into rain; it is the column physics producing
+  less rain from day 1. Inputs check: identical starts and land initial state for both versions.
+  REGISTERED (before reading rain from any denial job): exam part 3 TN 5-day ratio vs ERA5 is BASE3 1.264, lc_mix 0.422 (gap 0.842).
+  A lc_mix item group (no_land / no_conv / no_late) is NAMED as a TN dry-bias cause if its part-3 ratio >= 0.843 (restores >= 50 %
+  of the gap). no_late's result file was already on disk (landed for P5b) but its rain had not been read when this was written.
+  [reg: now | inputs: same 18 part-3 starts as tn-b3L-wx3 / tn-lcm-wx3 | fail-5why: n/a (attribution)]
