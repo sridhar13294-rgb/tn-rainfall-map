@@ -4342,3 +4342,8 @@ running as a separate test) is NOT adopted on its own result unless this check p
   Global-mean z500 model 5698.9 -> 5695.0 -> 5692.5 m vs ERA5 5700.4 -> 5701.4 -> 5701.4: the column below 500 hPa cools ~0.25 K/day
   in the mean while t850 barely moves -> the cooling sits in other layers (near-surface 1000-925 and/or 700-500 hPa).
   NEXT: model T profile (1000/925/700/500 hPa) vs ERA5 at d1 by region - needs T on more levels from run_wx (local, daytime).
+- 04:40 REGISTERED (before the run): profile of the day-1 cooling (Jan start, T85, map_snd output vs ERA5 act6h on the 13 shared
+  levels, global and tropics/NH/SH, above-ground points only): the layer that carries >= 50 % of the pressure-weighted
+  1000-500 hPa cooling (model-minus-ERA5 change of T from h0 to h24) is named the cooling layer; virtual-temperature (q) part
+  reported separately. Near-surface (1000-850) -> boundary layer/land/radiation at the surface; 700-500 -> convection/radiation
+  aloft (spin-up). Diagnosis only.
