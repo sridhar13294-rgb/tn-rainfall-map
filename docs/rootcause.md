@@ -4166,5 +4166,5 @@ running as a separate test) is NOT adopted on its own result unless this check p
   If < 80 % with the start fixed: the remaining failure is strong-storm under-intensification -> HELD - blocked by that, which is
   the next 5-why (not a rejection of relocate). [reg: now | inputs: h0 vs ERA5 per storm checked; relocate code path smoke-tested |
   fail-5why: n/a (registration)]
-- 15:43 (clock) tn-p3-lcm-no-cmt WITHDRAWN before launch: dfi_on is named and lc_mix/dfi_on are identical from h6 on, so no other
+- 15:42 (clock) tn-p3-lcm-no-cmt WITHDRAWN before launch: dfi_on is named and lc_mix/dfi_on are identical from h6 on, so no other
   item can carry the hour-0 deficit; running it would spend GPU for no information (rule 9).
