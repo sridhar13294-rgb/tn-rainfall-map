@@ -4215,7 +4215,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   WASTE NOTE: tn-r1-reloc-1 (other half, buggy code) is still QUEUED on account 1; I cannot cancel a Kaggle kernel from here.
   [reg: now | inputs: same library and storm list as tn-r1-lcm | fail-5why: n/a (registration)]
 
-## 21 Nov 21:45 IST - cycle: nothing landed; day-10 activity check (indirect)
+## 21 Nov 21:41 IST - cycle: nothing landed; day-10 activity check (indirect)
 - Kaggle queue: tn-p5b-no-radev (acct 1) and tn-p5b-no-land-conv (acct 4) QUEUED on Kaggle since 17:56 IST (3.5 h, Kaggle-side
   wait); tn-r1-reloc-1 (old buggy relocate) RUNNING on acct 1 since 20:18 IST - cannot cancel from here; its result will NOT be
   scored (code superseded by 66a6cb7f). tn-r1-reloc2-0/1 still waiting in our queue behind them.
