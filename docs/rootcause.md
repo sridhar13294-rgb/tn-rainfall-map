@@ -4269,7 +4269,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   mistimed (dynamics: phase speed, steering, diffusion) and the next check is phase speed of troughs vs ERA5; if n 1-9 carries
   >= 50 % -> large-scale forcing/drift (heating, mountains, tropics) and the next check is the day-1 mean tendency vs ERA5 by
   region; if n >= 40 -> small-scale noise (low ACC impact), look elsewhere. One start only = direction, not verdict.
-- 01:00 RESULT day-1 scale split (registered 00:04): z500 d1 error variance n 1-9 68 %, n 10-39 29 %, n >= 40 3 %; t850 d1
+- 00:55 RESULT day-1 scale split (registered 00:04): z500 d1 error variance n 1-9 68 %, n 10-39 29 %, n >= 40 3 %; t850 d1
   65 / 29 / 6 % (planetary err/anom 0.78). By the rule -> LARGE-SCALE drift, not misplaced systems. Region split of t850 d1:
   Antarctica +9.6 K (t850 is underground there: below-ground extrapolation, verification artefact - not a forecast error),
   summer land cools fast: SH land 20-60S -2.0 K (d2 -3.1), tropical Africa -1.9 (d2 -3.4), S America -1.0, ocean -0.2 to -0.4.
