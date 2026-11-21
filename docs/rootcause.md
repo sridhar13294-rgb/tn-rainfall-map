@@ -4239,7 +4239,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - t850 is different: hour 0 rmse 0.32 K (tropics) / 0.60 K (NH), day 1 1.66 / 1.82 K (HRES day 1: 0.64 / 0.71). The start is
   close to ERA5 and the error appears DURING day 1. Suspect: first-day adjustment (physics spin-up / imbalance; dfi_off).
   Check running now (T85, 6-hourly rms change over 48 h): a shock shows as a large first 6 h change that settles.
-- 22:33 RESULT first-day check (T85, lc_mix, 2020-01-06T00, globe, rms 6-h change of the model's own field, 8 intervals):
+- 22:31 RESULT first-day check (T85, lc_mix, 2020-01-06T00, globe, rms 6-h change of the model's own field, 8 intervals):
   t850 1.87 1.37 1.40 1.31 1.38 1.27 1.35 1.25 K; z500 26.0 24.8 25.5 26.1 24.4 22.3 20.5 19.4 m; u850 3.13 ... 2.30 m/s;
   global mean t850 280.40 -> 279.90 K in 48 h (-0.25 K/day), z500 -5.6 m/day. Reading: only a mild first-6h jump in t850
   (+40 % over later intervals), no large shock; but 6-h activity in z500/mslp/u850 falls 25-30 % over 48 h. Without ERA5's own
