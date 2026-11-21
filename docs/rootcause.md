@@ -4226,3 +4226,16 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - Independent of cubic: lc_mix itself has z500 ACC 0.50 at d7 and 0.20 at d10 (globe). That, not cubic, is the main day-10 problem.
 - Input fix to the diagnostic: wxscore.scores now writes sf/so (forecast and ERA5 anomaly std) per region (4e20490e), so every
   future exam gives activity directly at no extra GPU cost.
+
+## 21 Nov 22:29 IST - Day-10 skill: where is the gap to HRES created? (local, no GPU)
+- lc_mix exam (73 starts) vs ECMWF HRES on the same starts, ACC ours/HRES: z500 NH d1 0.99/1.00, d3 0.91/0.99, d5 0.72/0.92,
+  d7 0.50/0.78, d10 0.26/0.49; t850 tropics d1 0.63/0.89. We trail HRES by ~2.5 days in NH z500, and the gap is visible from day 1.
+- Error growth d1->d3 (z500 NH random part): ours 14.3 -> 40.3 m (x2.8), HRES 4.9 -> 15.2 m (x3.1). Growth RATE is similar;
+  what differs is the day-1 error. => the first day is where the gap is made (initial state or first-day adjustment).
+- Day-0 check (T85, start 2020-01-06, lc_mix): z500 NH rmse 10.4 m at hour 0. Input check: integrating ERA5's own T,q from
+  (ps, zs) to 500 hPa gives 8.5 m vs ERA5 z500 on 13 levels and 7.4 m on 29 levels (3 dates, libm_l37). So ~8 m of the hour-0
+  z500 error is a diagnostic/verification floor (my integration + box-averaging), NOT model error; added in quadrature it is
+  negligible beyond day 2 (72 -> 72.4 m at d5). Vertical sampling 13 vs 29 levels: 1 m. => NOT the day-10 cause. Dropped.
+- t850 is different: hour 0 rmse 0.32 K (tropics) / 0.60 K (NH), day 1 1.66 / 1.82 K (HRES day 1: 0.64 / 0.71). The start is
+  close to ERA5 and the error appears DURING day 1. Suspect: first-day adjustment (physics spin-up / imbalance; dfi_off).
+  Check running now (T85, 6-hourly rms change over 48 h): a shock shows as a large first 6 h change that settles.
