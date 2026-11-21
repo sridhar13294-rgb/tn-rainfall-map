@@ -8,14 +8,6 @@
   "at": "2026-11-21T12:40Z"
  },
  {
-  "slug": "tn-p5b-no-landrs",
-  "inputs": "libm_wx2020L2_fields.npz,wx_truth_2020.npz",
-  "account": "1",
-  "note": "P5b TN rain: split of the land set (registered 22 Nov 02:1x IST)",
-  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/p5b_no_landrs.json 3 4 /kaggle/working/wx_3.json > /kaggle/working/wx_3.log 2>&1; tail -3 /kaggle/working/wx_3.log",
-  "at": "2026-11-21T20:45Z"
- },
- {
   "slug": "tn-p5b-no-skinimp",
   "inputs": "libm_wx2020L2_fields.npz,wx_truth_2020.npz",
   "account": "4",
