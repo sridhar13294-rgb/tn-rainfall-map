@@ -1,12 +1,5 @@
 [
  {
-  "slug": "tn-p3-lcm-no-cmt",
-  "inputs": "libm_cycL2_fields.npz",
-  "account": "4",
-  "note": "P3 fail-5why denial, one variant per job (3-variant job was OOM-killed 02:0x)",
-  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore hind2.py /kaggle/working/libm_cycL2_fields.npz ../../../data/cyclone/kaggle_cfg/p3_deny_lcm_no_cmt.json 0 1 /kaggle/working/h0.json > /kaggle/working/h0.log 2>&1; tail -6 /kaggle/working/h0.log"
- },
- {
   "slug": "tn-r1-reloc-0",
   "inputs": "libm_cycL2_fields.npz",
   "account": "1",
