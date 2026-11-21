@@ -12,12 +12,5 @@
   "account": "4",
   "note": "P5b steering: lc_mix item-group denial on exam part 3 (registered 04:0x)",
   "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/p5b_no_land.json 3 4 /kaggle/working/wx_3.json > /kaggle/working/wx_3.log 2>&1; tail -3 /kaggle/working/wx_3.log"
- },
- {
-  "slug": "tn-p5b-no-late",
-  "inputs": "libm_wx2020L2_fields.npz,wx_truth_2020.npz",
-  "account": "1",
-  "note": "P5b steering: lc_mix item-group denial on exam part 3 (registered 04:0x)",
-  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/p5b_no_late.json 3 4 /kaggle/working/wx_3.json > /kaggle/working/wx_3.log 2>&1; tail -3 /kaggle/working/wx_3.log"
  }
 ]
