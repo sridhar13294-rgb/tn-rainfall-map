@@ -4141,3 +4141,28 @@ running as a separate test) is NOT adopted on its own result unless this check p
   [reg: 23:03 | inputs: same 26 storms/targets, one-item variant, verified the key is read | fail-5why: n/a (not named)]
 - 14:41 (clock) TIME CORRECTION: the three entries above were first stamped 14:44 / 14:50 / 14:55 without reading the clock; the
   clock read 14:40 after the last one. Restamped 14:39 / 14:40 / 14:40. Order (registration before reading denial rain) unchanged.
+- 15:40 (clock) P3 DENIAL RESULT lcm_dfi_on (tn-p3-lcm-dfi-on, 26 over-deep storms; registered 20 Nov 23:03):
+  within +-5: 21/26 (needed >= 13); mean error -12.14 -> -1.43 (+10.71, needed >= +2.5) -> dfi_off is NAMED as the P3 cause.
+  5-WHY (inputs before physics) - WHY does dfi_off "deepen"? Mean model min pressure on the 26 by hour, lc_mix / dfi_on:
+   h0 991.1 / 1002.2, h6 1002.9 / 1003.2, h12 1004.0 / 1004.0, h24 1004.9 / 1004.9, h72 1004.9 / 1004.4 -> identical after 6 h.
+  -> the model does NOT over-deepen weak lows. The deficit exists only at HOUR 0: the bogus vortex (hind2.py, inserted from the
+  best-track vmax) starts too deep and, with no DFI since BASE3, is not filtered; it collapses within 6 h. rule1_score.py takes the
+  min over 0-72 h, so hour 0 is scored. All 83 lc_mix storms: the scored minimum is hour 0 in 36; model h0 minus ERA5 h0 = mean
+  -5.68 hPa (median -2.33), 31 storms > 5 hPa too deep at hour 0. BASE2 (DFI on) filtered the bogus -> 75 %.
+  ROOT CAUSE (P3): an INPUT fault - the bogus initial vortex is deeper than the ERA5 analysis it is added to - exposed by dfi_off.
+  It is not a physics fault, and BASE3/lc_mix/vcs P3 numbers measured the start, not the forecast.
+  NOT a fix verdict. The gate and scorer stay as they are (hour 0 is a model state and stays scored). Fix direction (next, registered
+  before any run): make the start match the reference - the bogus must not leave the hour-0 central pressure deeper than ERA5
+  (reference = ERA5 h0 msl_min per storm) - or no bogus where ERA5 already holds the low. DFI stays off (it removes the real tide).
+  [reg: 20 Nov 23:03 | inputs: same 26 storms; hour-by-hour pressure checked against ERA5 h0 | fail-5why: bogus start too deep at h0]
+- 15:42 (clock) P3 SIZE CHECK + REGISTRATION (before any run). Diagnostic only (not the gate): lc_mix Rule 1 scored on h >= 6 = 63/83
+  = 76 % (gate 80 %), mean +0.92; bands <995 +5.16 (15 storms too weak), 995-1001 +0.64, >1001 -1.47 (5 too deep). -> removing the
+  hour-0 artefact leaves P3 4 points short, and what remains is the OPPOSITE error: strong storms too weak (old Rule 1 pattern).
+  FIX TEST (documented option, fix-first after the input check): storm_mode 'relocate' (mm2.bogus, 22 Oct: NCEP-style relocation of
+  the ERA5 analysis' own vortex to the best-track centre -> hour-0 pressure = ERA5 by construction). "Tested worse" on 22 Oct was on
+  the DFI-on base, where the bogus was filtered anyway; re-test is valid under rule 4. Jobs tn-r1-reloc-0/1 (acct 1, after
+  no-land), lc_mix + relocate, 83 storms, same scorer/targets (min over 0-72 h, unchanged). Local T42 init smoke test passed.
+  RULE: P3 CLOSES if within +-5 >= 67/83 (80 %). Start check: |model h0 - ERA5 h0| mean <= 1 hPa (else the start is not fixed).
+  If < 80 % with the start fixed: the remaining failure is strong-storm under-intensification -> HELD - blocked by that, which is
+  the next 5-why (not a rejection of relocate). [reg: now | inputs: h0 vs ERA5 per storm checked; relocate code path smoke-tested |
+  fail-5why: n/a (registration)]
