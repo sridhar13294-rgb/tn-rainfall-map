@@ -4320,3 +4320,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   lc_mix minus skin_ifs and sfc_imp (acct 4). An item is NAMED for TN rain if its ratio >= 0.591 (restores >= 50 % of the land set's
   own recovery 0.422 -> 0.760). If land_rs is named, the fix is the IFS form (r_s,min/LAI by vegetation type, ERA5 type/LAI fields),
   not a tuned land_rs. [reg: now | inputs: lc_mix config key by key, single key removed per job | fail-5why: n/a (registration)]
+
+## 22 Nov 04:00 IST - P3 corrected relocate, first half (tn-r1-reloc2-0, 42 storms)
+- Rule 1: within +-5 hPa 34/42 (81 %; lc_mix same 42: 24/42; buggy relocate 18/42), mean err +1.56, mean|err| 2.64, 7 too weak,
+  1 too deep. Start check: model h0 - ERA5 h0 mean +0.71 hPa (sd 0.65, max 3.6) -> |mean| <= 1 PASSES (buggy run: -14.55).
+  The relocate fix works at the start. Closure needs the full 83: >= 67/83 -> the second half needs >= 33/41. Pending
+  tn-r1-reloc2-1 (running, acct 4). Half verdict only - NOT CLOSED yet. [reg: 21 Nov 18:10 | inputs: libm_cycL2, fixed relocate
+  66a6cb7f, h0 checked vs ERA5 | fail-5why: n/a (half result)]. Residual: 7 too weak (Hudhud +12.4, Nisha +7.6) = strong storms
+  under-deepening, the registered next 5-why if the full count fails.
