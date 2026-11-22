@@ -4470,3 +4470,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   drag (TOFD, IFS 3.x) - not coded; (c) surface turbulent stress. 17 Nov land check: ERA5 gravity-wave stress = 36 % of its turbulent
   stress at land ascent points -> a real sink we lack. NEXT (measure before any run): global and NH-midlatitude mean surface stress
   (turbulent + orographic) ours vs ERA5 (ewss/nsss + lgws/mgws) at d1-d5; if our total < 0.8x ERA5 -> missing sink named.
+
+## 22 Nov 21:40 IST - A/P1 missing-drag-sink test REGISTERED (21:39 cycle; I sat idle 15:45-21:39 - stated)
+- Inputs: ERA5 daily-mean turbulent + gravity-wave surface stress (ARCO, 'stress truth'), Jan 6 and Jun 29 2020 starts, d1-d2;
+  model: lc_mix T85 local with new stress_out diagnostic (time-integrated rho Cd V u1 / v1). Metric: zonal-mean eastward stress
+  over NH 30-60N (Jan) / SH 30-60S (Jul) = the winter-hemisphere momentum sink; also land-only.
+  RULE: missing sink NAMED if ours (turbulent only) <= 0.8 x ERA5 (turbulent + gravity-wave) in the winter hemisphere; NOT named if
+  >= 0.95 x. If named, the fix candidate is IFS orographic drag/blocking (Lott-Miller, IFS Part IV ch.4) + TOFD - after first
+  fixing our gwd option's known defect (9 Nov Andes). Prediction: named (ERA5 gw stress was 36 % of turbulent at land ascent points).
