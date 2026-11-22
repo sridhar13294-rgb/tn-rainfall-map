@@ -4395,3 +4395,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   bias (it alone restores 78 % of the land set's recovery); TN u850 d5 -3.88 (steering not the aim). [reg: 22 Nov 02:03 | inputs:
   same 18 starts, scorer reproduces lc_mix | fail-5why: n/a (named)]. Registered fix path: IFS canopy resistance r_s,min/LAI by
   vegetation type from ERA5 fields (type, cover, LAI) with the IFS stress factors - not a tuned land_rs. tn-p5b-no-skinimp running.
+- 06:31 P5b tn-p5b-no-skinimp (lc_mix minus skin_ifs and sfc_imp, part 3, 18 starts, 0 failed): TN rain ratio 0.399 < 0.591 -> NOT
+  named (slightly drier than lc_mix 0.422); TN u850 d5 -4.37. [reg: 22 Nov 02:03 | inputs: same 18 starts, refs reproduced |
+  fail-5why: n/a (not named)]. Land-set attribution complete: land_rs carries the land share of the TN dry bias (0.683 alone);
+  skin/implicit surface do not. Queue now empty; Kaggle idle -> next jobs must be fixes, not more denials.
