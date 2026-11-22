@@ -4379,3 +4379,19 @@ running as a separate test) is NOT adopted on its own result unless this check p
   NEXT (fishbone, physics branch): radiation vs large-scale condensation vs convection in the NH winter mid-troposphere ->
   per-process heating rates on this start (model tendencies by process), compared with the IFS/ERA5 typical values
   (radiative cooling ~1-1.5 K/day mid-troposphere).
+
+## 22 Nov 05:59 IST - P3 full result + P5b land_rs result
+- P3 (lc_mix + fixed relocate, 83 storms, 0 failed): within +-5 hPa 62/83 (75 %) < 67 -> NOT CLOSED, HELD. Start check passes:
+  h0 - ERA5 h0 mean +0.70 hPa (sd 0.77). Second half 28/41 (first 34/42). Misses: 20 too weak, 1 too deep. [reg: 21 Nov 18:10 |
+  inputs: libm_cycL2, fixed relocate 66a6cb7f, h0 vs ERA5 checked on all 83 | fail-5why below]
+  fail-5why: (1) why short? 20 storms too weak at their 0-72 h peak. (2) why too weak? The START is right (h0 +0.7) but the model
+  does not DEEPEN them: by ERA5 deepening h0->peak, shortfall 0.1 hPa (0-3 hPa class, n 30), 1.1 (3-8, n 29), 6.8 (8-30, n 24);
+  r(ERA5 deepening, model deficit) = -0.74. (3) why no deepening? Suspect: too little latent heating in the core - the same deep-
+  convection spin-up deficit found for day-10 (tropical day-1 rain 0.68 of ERA5, upper-level cooling ~1.6 K/day). Resolution is
+  NOT the reason at h0 (start matches the 0.25 deg truth to 0.7 hPa). The failure does not trace to the relocate fix -> relocate
+  stays (it took 24/42 -> 34/42 and 18 -> 62/83 overall) and P3 is HELD on the convective spin-up, now a shared root of P3, A/P1
+  spin-up and day-10. Gate unchanged (67/83).
+- P5b tn-p5b-no-landrs (lc_mix minus land_rs, part 3, 18 starts): TN rain ratio 0.683 >= 0.591 -> land_rs NAMED for the TN dry
+  bias (it alone restores 78 % of the land set's recovery); TN u850 d5 -3.88 (steering not the aim). [reg: 22 Nov 02:03 | inputs:
+  same 18 starts, scorer reproduces lc_mix | fail-5why: n/a (named)]. Registered fix path: IFS canopy resistance r_s,min/LAI by
+  vegetation type from ERA5 fields (type, cover, LAI) with the IFS stress factors - not a tuned land_rs. tn-p5b-no-skinimp running.
