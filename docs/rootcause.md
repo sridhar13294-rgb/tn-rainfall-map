@@ -4521,3 +4521,12 @@ running as a separate test) is NOT adopted on its own result unless this check p
   0.018; gustiness; unstable-side enhancement (IFS Monin-Obukhov vs our Louis: ours adds only 6.5 % on unstable points).
   REGISTERED next: ERA5 'charnock' field mean over the same points: WAVES named if >= 0.025 (Cd10 at 9.6 m/s then +~15 %);
   NOT named if <= 0.020 (then the unstable enhancement / gust carries it). [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 23:12 RESULT Charnock split (registered 22:56): ERA5 Charnock over the same ocean points Jan NH 0.0195, Jul SH 0.0173 (ours 0.018)
+  -> <= 0.020 -> WAVES NOT named. [reg: 22:56 | inputs: ERA5 'charnock' field, same points/day | fail-5why: n/a]. Remaining for the
+  1.28x Cd gap: the stability function on the UNSTABLE side (IFS Monin-Obukhov, Businger-Dyer; ours Louis 1979 adds only +6.5 % there)
+  and the free-convection gust (IFS adds (beta w*)^2 to |V|^2 in the surface fluxes, beta = 1.2; ours a fixed 1 m/s). Size: MO at
+  z/L ~ -0.5 gives ~+12 %, gust ~+2-5 % -> together plausibly most of 28 %, not certainly all.
+  FIX CANDIDATE (reference only, not tuned): 'sfc_mo' = IFS surface-layer formulation (Part IV ch.3: Monin-Obukhov with Businger-Dyer
+  unstable / Holtslag-De Bruin stable psi functions, z0M Charnock + 0.11 nu/u*, free-convection gust beta 1.2). To be coded and checked
+  locally (winter-ocean stress must reach >= 0.9x ERA5) BEFORE any GPU; then exam part 1 lc_mix+vcubic+sfc_mo against the ORIGINAL
+  A/P1 gates (d10 z500 <= 112.75, TN u850 d5 >= -3.21) and activity 0.95-1.05.
