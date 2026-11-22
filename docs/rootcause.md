@@ -4492,3 +4492,12 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - 22:13 REGISTERED (wind vs stability for the ocean drag deficit): winter-hemisphere ocean 30-60, day 1: ours |V1| (lowest level, ~80 m)
   vs ERA5 100-m wind speed (daily mean). WIND named if ours <= 0.85x ERA5 (drag ~ V^2 -> explains >= 0.72x stress); STABILITY named
   if ours >= 0.95x ERA5 (then the drag coefficient/stability function cuts the stress). [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 22:30 RESULT wind vs stability (registered 22:2x): winter-hemisphere ocean 30-60, day-1 mean wind speed ours (1000 hPa, 6-hourly) vs
+  ERA5 100 m (hourly): Jan NH 10.03 vs 10.43 (0.96), Jul SH 11.64 vs 12.35 (0.94). Rule: >= 0.95 -> STABILITY/drag coefficient named
+  for Jan; Jul 0.94 is in the gap (neither). With winds within 4-6 % of ERA5, a 0.72x stress means our drag COEFFICIENT is ~25 %
+  low. [reg: 22:2x | inputs: ERA5 hourly 100-m wind, model 1000 hPa (height ~100 m over open ocean), same days | fail-5why: n/a]
+  5-why next (reference check, no run): our stability function is Louis (1979): unstable 1 - 2b Ri/(1 + 3bc Cdn sqrt(z/z0 |Ri|))
+  with b = c = 5 (matches Louis), but STABLE uses 1/(1 + 10 Ri)^2, while Louis's momentum form is 1/(1 + 2b Ri / sqrt(1 + d Ri))
+  (d = 5) - ours cuts stable-side drag much harder. IFS uses Monin-Obukhov (Businger-Dyer unstable, Holtslag-De Bruin stable).
+  Measure first: share of winter-ocean points with Ri > 0 and the mean stability factor in our run; if stable points carry
+  >= half the stress deficit, the stable branch is the cause and the fix is the reference (Louis 1979 or IFS MO) form.
