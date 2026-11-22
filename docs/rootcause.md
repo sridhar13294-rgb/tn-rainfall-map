@@ -4399,3 +4399,14 @@ running as a separate test) is NOT adopted on its own result unless this check p
   named (slightly drier than lc_mix 0.422); TN u850 d5 -4.37. [reg: 22 Nov 02:03 | inputs: same 18 starts, refs reproduced |
   fail-5why: n/a (not named)]. Land-set attribution complete: land_rs carries the land share of the TN dry bias (0.683 alone);
   skin/implicit surface do not. Queue now empty; Kaggle idle -> next jobs must be fixes, not more denials.
+- 06:35 SIZE CHECK before any GPU (method rule): ERA5 vegetation fields fetched (veg_static.npz, ARCO 0.25 deg -> 1.5 deg). Tamil Nadu
+  (11N 78.5E): low veg = irrigated crops (type 10, cover 0.82), high = interrupted forest (type 19, 0.17); ERA5 monthly LAI low 1.85
+  (Nov), high 2.69. IFS canopy resistance there: r_s,min/LAI = 180/1.85 = 97 s/m (low), 175/2.69 = 65 (high), x f1 1.19 at midday
+  -> ~110 s/m before soil stress. lc_mix land_rs = 100 s/m. => over TN our land_rs is ALREADY about the IFS value. The IFS form
+  (land_rc, coded in mm2 22 Nov, not yet run) would change TN evaporation very little -> predicted NOT to fix the TN dry bias.
+  5-why consequence: removing land_rs restores TN rain by letting land evaporate like open water - a COMPENSATION for something
+  else (missing moisture supply or too little convective rain), not proof that land_rs is wrong. Candidates from the reference
+  diff: (a) the interception reservoir (wet-leaf evaporation with r = 0 after rain, IFS 8.73-8.75) is missing in our land - large in
+  a rainy NE-monsoon November; (b) the convective share (conv set named ~1/3). NEXT (input check before any fix run): model land
+  evaporation over TN vs ERA5 surface latent heat flux on part-3 dates, locally. If model LE >= ERA5 LE, land evaporation is not
+  the cause and land_rs is cleared.

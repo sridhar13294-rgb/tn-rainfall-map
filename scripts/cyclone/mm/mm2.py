@@ -49,6 +49,30 @@ def sigma_bounds(n=32):
         return np.interp(np.linspace(0, 1, m + 1), cum, s).astype(np.float32)
     e = np.linspace(0, 1, n + 1); return (0.6 * e + 0.4 * (1 - (1 - e) ** 2)).astype(np.float32)
 SND_LEVS = (1000, 975, 950, 925, 900, 850, 800, 750, 700, 650, 600, 550, 500, 450, 400, 350, 300, 250, 200, 150, 100)   # sounding levels (hPa) for the map viewer
+# IFS/TESSEL vegetation table (ECMWF IFS documentation Part IV Table 8.1; same values in the ERA5 vegetation-type table):
+# minimum stomatal resistance r_s,min (s/m) and g_D (hPa-1, high vegetation only) by ERA5 vegetation type 1..20
+VEG_RSMIN = {1: 180, 2: 110, 3: 500, 4: 500, 5: 175, 6: 240, 7: 100, 8: 250, 9: 80, 10: 180, 11: 150, 13: 240, 16: 225, 17: 225, 18: 250, 19: 175, 20: 150}
+VEG_GD = {3: 0.03, 4: 0.03, 5: 0.03, 6: 0.03, 18: 0.03, 19: 0.03}
+def load_veg(path, LA, LO, month):
+    """ERA5 vegetation (veg_static.npz from release era5-cases, built by cyc_veg.py): low/high vegetation type, cover and the
+    month's LAI to the model grid (nearest point) -> r_s,min / LAI per tile, g_D, covers (land_rc, 22 Nov)."""
+    cands = ([path] if path else []) + ['/kaggle/working/veg_static.npz', '/tmp/claude-0/in/veg_static.npz',
+                                        _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'data', 'veg_static.npz'), 'veg_static.npz']
+    fn = next((c for c in cands if c and _os.path.exists(c)), None)
+    if fn is None: raise FileNotFoundError('land_rc: veg_static.npz not found')
+    Z = np.load(fn); la, lo = np.asarray(Z['lats']), np.asarray(Z['lons']) % 360
+    i = np.clip(np.round((LA - la[0]) / (la[1] - la[0])).astype(int), 0, len(la) - 1)
+    j = np.clip(np.round((LO % 360 - lo[0]) / (lo[1] - lo[0])).astype(int), 0, len(lo) - 1)
+    m = int(month) - 1
+    tvl = np.asarray(Z['tvl'])[i, j].astype(int); tvh = np.asarray(Z['tvh'])[i, j].astype(int)
+    cvl = np.clip(np.nan_to_num(np.asarray(Z['cvl'])[i, j]), 0, 1); cvh = np.clip(np.nan_to_num(np.asarray(Z['cvh'])[i, j]), 0, 1)
+    tot = np.maximum(cvl + cvh, 1.0); cvl, cvh = cvl / tot, cvh / tot
+    lail = np.maximum(np.nan_to_num(np.asarray(Z['lail'])[m][i, j]), 0.1); laih = np.maximum(np.nan_to_num(np.asarray(Z['laih'])[m][i, j]), 0.1)
+    rsl = np.vectorize(lambda k: VEG_RSMIN.get(int(k), 150.0))(tvl); rsh = np.vectorize(lambda k: VEG_RSMIN.get(int(k), 250.0))(tvh)
+    gdh = np.vectorize(lambda k: VEG_GD.get(int(k), 0.0))(tvh)
+    print('land_rc: %s month %d  mean cover low %.2f high %.2f' % (fn, month, cvl.mean(), cvh.mean()), flush=True)
+    f = lambda x: jnp.asarray(x, jnp.float32)
+    return dict(rl=f(rsl / lail), rh=f(rsh / laih), gd=f(gdh), cvl=f(cvl), cvh=f(cvh))
 def load_gwd(path, LA, LO):
     """Sub-grid orography (ARCO ERA5, 0.5 deg: geo_gwd.npz from release era5-cases) to the model grid (nearest point):
     mu = std dev of filtered sub-grid orography (m), gam = anisotropy, the = angle of the principal axis (rad), slo = slope."""
@@ -215,6 +239,7 @@ class Model:
                                        log_surface_pressure=hor.to_modal(np.log(ps[None] * self.PA)), tracers={'specific_humidity': jnp.asarray(sg['q'])})
         self.zs = jnp.asarray(zs, jnp.float32); self.land = jnp.asarray(land); self.T0 = jnp.asarray(sg['t'])
         if self.S.get('gwd', 0) and getattr(self, 'gw', None) is None: self.gw = load_gwd(self.S.get('gwd_file'), np.asarray(self.LA), np.asarray(self.LO))
+        if self.S.get('land_rc', 0): self.veg = load_veg(self.S.get('veg_file'), np.asarray(self.LA), np.asarray(self.LO), when.month if when is not None else 1)
         sst = sst + self.S['sst_off'] * (sst > 0); self.sst0 = jnp.asarray(sst, jnp.float32)
         # land temperature and soil-moisture bucket: analysed values on land when given (bucket = soil water / porosity 0.45 x
         # capacity; skin, else soil temperature); otherwise, and at sea, the old start (lowest-level temperature, bucket 60 % full)
@@ -222,6 +247,7 @@ class Model:
         carry = dict(sst=jnp.asarray(sst, jnp.float32), tl=jnp.asarray(tl0, jnp.float32), w=jnp.asarray(w0, jnp.float32),
                      rain=jnp.zeros(zs.shape, jnp.float32), t=jnp.float32(0.0), sst0=jnp.asarray(sst, jnp.float32), T0=jnp.asarray(sg['t'], jnp.float32),
                      prm=self.params())
+        if self.S.get('land_rc', 0): carry['swd'] = jnp.zeros(zs.shape, jnp.float32)              # downward surface SW of the last step (canopy f1)
         if self.S.get('cld_fix', 0): carry['q0'] = jnp.asarray(sg['q'], jnp.float32)
         if self.S.get('q_adv', 0):                                                                  # (13 Nov) advective moisture tendency for the IFS trigger (6.21) / QCV (6.32)
             carry['q_adv'] = jnp.zeros_like(jnp.asarray(sg['q'], jnp.float32)); carry['q_last'] = jnp.asarray(sg['q'], jnp.float32); carry['dqp'] = jnp.zeros_like(carry['q_adv'])                # cld_fix: start humidity for the frozen RH cloud
@@ -563,6 +589,20 @@ class Model:
         # factor above). Without it the land evaporated like open water: April central India LE 470-620 W/m2 at midday,
         # H ~ 0 -> cold land, high pressure over central India, dry-season rain excess.
         beta = jnp.where((S['land_rs'] > 0) & ~sea, 1.0 / (1.0 + ck * V1 * S['land_rs'] / jnp.maximum(beta, 0.02)), beta)
+        if self.S.get('land_rc', 0):
+            # land_rc (P5b TN dry-bias root cause, 22 Nov: land_rs named): IFS/TESSEL tiles (Part IV 8.2.3, eqs 8.8-8.17, 8.21):
+            #   E_i = rho (q_sat - q_1) / (r_a + r_i), grid box E = sum C_i E_i over low vegetation, high vegetation, bare soil;
+            #   r_c = (r_s,min / LAI) f1(Rs) f2(theta) f3(D_a)   (8.9),  1/f1 = min[1, (b Rs + c) / (a (b Rs + 1))], a 0.81,
+            #   b 0.004 W-1 m2, c 0.05 (8.10);  f2 = 1 / (soil-water stress, here the bucket fraction as theta index) (8.11);
+            #   1/f3 = exp(-g_D D_a), D_a in hPa, g_D > 0 for high vegetation only (8.14);  bare soil r_soil = 50 f2 (8.15).
+            # Not included (stated): interception reservoir and snow tiles.
+            Vg = self.veg; bs = jnp.clip(cr['w'] / (0.75 * S['bucket'] * 1000), 0, 1); f2 = 1.0 / jnp.maximum(bs, 0.02)
+            bR = 0.004 * jnp.maximum(cr['swd'], 0.0); f1 = 1.0 / jnp.minimum(1.0, (bR + 0.05) / (0.81 * (bR + 1.0)))
+            e1 = q1 * p1 / (0.622 + 0.378 * q1); es1 = 611.2 * jnp.exp(17.67 * (T1 - 273.15) / (T1 - 29.65)); Da = jnp.maximum(es1 - e1, 0.0) / 100.0
+            gav = ck * V1                                                                           # 1 / r_a
+            b_l = 1.0 / (1.0 + gav * Vg['rl'] * f1 * f2); b_h = 1.0 / (1.0 + gav * Vg['rh'] * f1 * f2 * jnp.exp(Vg['gd'] * Da))
+            b_b = 1.0 / (1.0 + gav * 50.0 * f2)
+            beta = jnp.where(self.land, Vg['cvl'] * b_l + Vg['cvh'] * b_h + (1.0 - Vg['cvl'] - Vg['cvh']) * b_b, beta)
         # sfc_sal > 0 (P4, 5 Nov): saturation humidity over sea water is 2 % lower than over fresh water (salinity, as in COARE 3.5
         # and the IFS: q_s = 0.98 q_sat(SST)). Without it ocean evaporation is ~5 % too large (flux_check vs COARE).
         fsal = jnp.where(sea & (S['sfc_sal'] > 0), 0.98, 1.0)
@@ -1105,6 +1145,7 @@ class Model:
         out = dict(cr, sst=sst, tl=tl, w=w, rain=cr['rain'] + dt * d['rain'], t=cr['t'] + dt)
         if self.S.get('soil_fr', 0): out['tl2'] = tl2
         if self.S.get('skin_ifs', 0): out['ts'] = ts_new
+        if self.S.get('land_rc', 0): out['swd'] = d['sw_sfc'] / (1.0 - S['alb_land'])                # downward SW (land albedo) for the canopy f1
         if 'ocean' in cr: out['ocean'] = ocn
         if 'rgo' in cr: out['rgo'] = rg
         if 'rad' in cr: out['rad'] = d['rad']
