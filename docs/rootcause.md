@@ -4592,3 +4592,6 @@ running as a separate test) is NOT adopted on its own result unless this check p
   ERA5's. NEXT (measure, daytime): the stability INPUT - air-sea temperature difference (T at lowest level vs SST) and its share of
   unstable points, ours vs ERA5 (ERA5 2-m T, SST): if our air is warmer over the winter ocean (less unstable), the MO form cannot
   give ERA5's enhancement -> the cause sits in the low-level temperature (links to the winter 700-500 / boundary-layer findings).
+- 04:10 REGISTERED: air-sea contrast at day 1 (Jan 7 00Z), NH winter ocean 30-60N: dT = T(1000 hPa) - SST, ours (T85 fcsnd) vs ERA5
+  (act6h). STABILITY INPUT named if our mean dT is >= 0.5 K warmer (less unstable) than ERA5's or our unstable-point share is >= 0.10
+  lower; NOT named if within 0.2 K and 0.05. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
