@@ -1,0 +1,67 @@
+[{"stream_name":"stdout","time":1.152349404,"data":"+ nvidia-smi || true\n"}
+,{"stream_name":"stdout","time":1.182936963,"data":"Sun Nov 22 18:18:12 2026       \n"}
+,{"stream_name":"stdout","time":1.182956956,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.1829616299999999,"data":"| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":1.18296581,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.182969563,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":1.182973393,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":1.182977073,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":1.182981227,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":1.23633211,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":1.23635117,"data":"| N/A   53C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":1.236355594,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":1.236360817,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.2363662,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":1.236371598,"data":"| N/A   53C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":1.236376982,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":1.236382371,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.2371205459999999,"data":"\n"}
+,{"stream_name":"stdout","time":1.23713435,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.237138987,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":1.237144345,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":1.237149713,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":1.23715512,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":1.238650238,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":1.238665417,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.567686083,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1.568069626,"data":"accelerator asked NvidiaTeslaT4 -\u003e jax for cuda12\n"}
+,{"stream_name":"stdout","time":1.5680839020000001,"data":"+ pip uninstall -y -q jax-cuda13-plugin jax-cuda13-pjrt 2\u003e/dev/null; pip install -q \"jax[cuda12]==0.12.0.1\"\n"}
+,{"stream_name":"stderr","time":38.696209747,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":38.696257467,"data":"bigframes 2.51.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":38.696265377,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.5 which is incompatible.\n"}
+,{"stream_name":"stderr","time":38.696270981,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":38.696276033,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":38.696280635,"data":"ydf 0.15.0 requires protobuf\u003c7.0.0,\u003e=5.29.1, but you have protobuf 7.36.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":38.696285197,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.5 which is incompatible.\n"}
+,{"stream_name":"stderr","time":38.696289437,"data":"gradio 6.30.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
+,{"stream_name":"stdout","time":38.946994094,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":57.401338124,"data":"[CudaDevice(id=0), CudaDevice(id=1)] 0.12.0.1\n"}
+,{"stream_name":"stdout","time":57.401378044,"data":" \n"}
+,{"stream_name":"stdout","time":57.401384944,"data":"+ free -g; nproc\n"}
+,{"stream_name":"stdout","time":57.419603972,"data":"               total        used        free      shared  buff/cache   available\n"}
+,{"stream_name":"stdout","time":57.419646375,"data":"Mem:              31           1          20           0          10          30\n"}
+,{"stream_name":"stdout","time":57.419653248,"data":"Swap:              0           0           0\n"}
+,{"stream_name":"stdout","time":57.42439963,"data":"4\n"}
+,{"stream_name":"stdout","time":57.424785034,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":57.424803366,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
+,{"stream_name":"stdout","time":67.31911203,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":67.319151256,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
+,{"stream_name":"stdout","time":83.796327233,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":83.79635962,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o libm_wx2020L2_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020L2_fields.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" libm_wx2020L2_fields.npz || { echo BAD_DOWNLOAD libm_wx2020L2_fields.npz; rm -f libm_wx2020L2_fields.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o libm_wx2020L2_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020L2_fields.npz; }\n"}
+,{"stream_name":"stdout","time":89.593151717,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":89.593188053,"data":"setup s 88\n"}
+,{"stream_name":"stdout","time":89.593194827,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore stress_t170.py /kaggle/working/libm_wx2020L2_fields.npz base /kaggle/working/stress_base.npz \u003e /kaggle/working/stress.log 2\u003e\u00261; tail -3 /kaggle/working/stress.log 2\u003e\u00261 | tee job.log\n"}
+,{"stream_name":"stdout","time":201.406567693,"data":"WARNING landinit: no soil water, skin temperature in the start file -\u003e land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)\n"}
+,{"stream_name":"stdout","time":201.406619388,"data":"WARNING landinit: no soil water, skin temperature in the start file -\u003e land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)\n"}
+,{"stream_name":"stdout","time":201.40664864,"data":"saved /kaggle/working/stress_base.npz\n"}
+,{"stream_name":"stdout","time":201.406978906,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":201.406998352,"data":"+ rm -rf repo libm_wx2020L2_fields.npz\n"}
+,{"stream_name":"stdout","time":201.688385611,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":201.688412565,"data":"total s 201\n"}
+,{"stream_name":"stderr","time":203.848531445,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":203.848573439,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":204.117399636,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":204.11744298,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":204.902865762,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":205.943001327,"data":"[NbConvertApp] Writing 284313 bytes to __results__.html\n"}
+]
