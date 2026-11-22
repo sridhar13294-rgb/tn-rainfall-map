@@ -4563,3 +4563,12 @@ running as a separate test) is NOT adopted on its own result unless this check p
   and lc_mix + sfc_mo, Jan start, NH winter ocean 30-60N day-1 zonal stress vs ERA5 turbulent. sfc_mo goes to the exam (part 1, vs
   original A/P1 gates) if its ratio >= 0.85; if < 0.85 the remaining ~15 % gets its own 5-why (lowest-level height / sea-state drag)
   before any exam. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 00:01 RESULT T170 stress check (registered 23:5x; outputs from release model-maps): NH winter ocean day-1 zonal stress / ERA5: base 0.73,
+  sfc_mo 0.78 (land 0.59 / 0.62) - identical to T85 -> model resolution is not it either. 0.78 < 0.85 -> sfc_mo NOT to the exam;
+  stays HELD (reference-correct, +7 %). [reg: 23:5x | inputs: T170 Kaggle, same start/library, ERA5 hourly stress | fail-5why: the
+  shortfall does not trace to sfc_mo (it moves the right way); ~20 % remains]. Process note: the collector puts .npz in release
+  model-maps, not in the job folder (I looked in the wrong place first).
+  Remaining 5-why for the ~20 % (to test in daytime, measure first): (1) ZONAL component - we compared |V| (0.96), but the stress
+  compared is the zonal one: a more cross-isobaric / less zonal near-surface flow gives less zonal stress at the same speed ->
+  compare <|V|u> ours vs ERA5 at the lowest level; (2) the 80-m lowest level vs IFS's ~10-m surface layer in strongly unstable
+  cold-air outbreaks (stress weighted to them); (3) daily-mean sampling: ours 6-hourly speeds vs ERA5 hourly.
