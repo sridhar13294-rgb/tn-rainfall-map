@@ -4534,3 +4534,15 @@ running as a separate test) is NOT adopted on its own result unless this check p
   gate before any GPU (Jan start, T85, NH winter ocean 30-60N d1): sfc_mo stress >= 0.90x ERA5 turbulent -> go to exam; 0.80-0.90 ->
   partial (gust/MO not the whole gap, 5-why on the rest before GPU); < 0.80 -> the IFS form does not explain the gap -> re-open.
   [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 23:22 RESULT sfc_mo local gate (registered 23:1x): NH winter ocean d1 stress / ERA5: lc_mix 0.73 -> sfc_mo 0.78 (land 0.56 -> 0.59).
+  0.78 < 0.80 -> by the rule the IFS form does NOT explain the gap; NOT taken to GPU. [reg: 23:1x | inputs: same start, only sfc_mo
+  differs | fail-5why below]. fail-5why (does the failure trace to the fix or to the diagnostic?):
+  (1) MY 22:56 implied-Cd number is biased: ratio of zonal means of signed stress and signed |V|u, compared with Charnock Cd at the
+      MEAN wind - Cd rises with wind, so this overstates ERA5's Cd. The 1.28x is not reliable (my error, stated).
+  (2) INPUT/RESOLUTION: ERA5 stress is computed at 0.25 deg from 0.25-deg winds and then box-averaged to 1.5 deg; our T85 (~150 km)
+      winds lack the sub-grid wind variance, and stress ~ V^2 -> box-mean stress > stress of the box-mean wind even with identical
+      physics. The mean speeds matched (0.96), so a variance deficit could produce much of the 0.73.
+  => sfc_mo is HELD (reference-correct, small effect +7 %), and the 'missing sink' verdict of 22:20 needs this resolution check before
+  it stands: NEXT (registered): recompute ERA5's stress from its own 1.5-deg box-mean hourly winds with the same bulk law; if that
+  'coarse' ERA5 stress is <= 0.85x ERA5's real box-mean stress, the gap is largely RESOLUTION (not a missing physical sink) and the
+  A/P1 drag branch is re-examined at T170.
