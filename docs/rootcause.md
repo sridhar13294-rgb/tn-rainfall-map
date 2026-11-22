@@ -4435,3 +4435,8 @@ running as a separate test) is NOT adopted on its own result unless this check p
   activity, RMSE pays for it) if A(vc) - A(lc_mix) >= 0.10 AND A(vc) <= 1.10 AND ACC(vc) >= ACC(lc_mix) - 0.03; OVER-ACTIVE (cubic adds
   spurious activity) if A(vc) > 1.10 and A(vc) - A(lc_mix) >= 0.10; PATTERN LOSS if |A(vc) - A(lc_mix)| < 0.05 (then the cost is in
   the phase of systems). The 21 Nov indirect estimate (1.07 -> 1.22 NH) predicts OVER-ACTIVE.
+- 09:58 Stage-1 rain spin-up timescale (lc_mix, T85 local, Jan start, wx2020L2), 3-hourly mean rain globe / tropics mm/day:
+  h0-3 1.37/1.84, h3-6 1.65/2.05, h6-9 1.90/2.39, h9-12 2.29/3.02, h12-15 2.46/3.35, then flat 2.3-2.6 / 3.0-3.7 to h36.
+  ERA5 day-1 reference 2.94 / 4.15. Reading: starts at ~47 % (globe) / 44 % (tropics) and levels off after ~12 h at ~85 % - so
+  the day-1 deficit is two parts: an e-folding spin-up of ~6-9 h AND a plateau ~10-15 % low in the first 36 h (exam d2 0.99,
+  d5 1.05 later). Next: conv set closure and trigger at h0 vs h12 (which input changes: CAPE, trigger fraction, closure time).
