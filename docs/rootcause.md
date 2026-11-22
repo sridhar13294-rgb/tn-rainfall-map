@@ -4574,3 +4574,8 @@ running as a separate test) is NOT adopted on its own result unless this check p
   cold-air outbreaks (stress weighted to them); (3) daily-mean sampling: ours 6-hourly speeds vs ERA5 hourly.
 - 03:39 REGISTERED (zonal-component check, NH winter ocean 30-60N, Jan d1): Z = <|V| u> / <|V|>^2 (dimensionless 'zonality'), ours at
   1000 hPa (6-hourly, T85) vs ERA5 10 m (hourly). ZONAL named if Z(ours) <= 0.85 x Z(ERA5); NOT named if >= 0.95x. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 03:47 RESULT zonality (registered 03:39): Z ours 0.333 vs ERA5 0.339 -> 0.98 -> ZONAL NOT named. [reg: 03:39 | inputs: ours 1000 hPa
+  6-hourly T85, ERA5 10-m hourly, same ocean points | fail-5why: n/a]. Left for the ~20 %: lowest-level height in unstable outbreaks,
+  sampling. Since wind speed (0.96), direction (0.98), Charnock (ERA5 ~0.018), resolution (0.95) all match, the coefficient applied at
+  our ~80-m level is the remaining place: daytime check = IFS-style exchange computed at 10 m (z1 replaced by 10 m with the wind
+  brought down by the MO profile) vs ours, on the same run.
