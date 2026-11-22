@@ -248,6 +248,7 @@ class Model:
                      rain=jnp.zeros(zs.shape, jnp.float32), t=jnp.float32(0.0), sst0=jnp.asarray(sst, jnp.float32), T0=jnp.asarray(sg['t'], jnp.float32),
                      prm=self.params())
         if self.S.get('evap_out', 0): carry['evap'] = jnp.zeros(zs.shape, jnp.float32)
+        if self.S.get('sfc_mo', 0): carry['q0v'] = jnp.zeros(zs.shape, jnp.float32)              # kinematic virtual heat flux of the last step (w*)
         if self.S.get('stress_out', 0): carry['tx'] = jnp.zeros(zs.shape, jnp.float32); carry['ty'] = jnp.zeros(zs.shape, jnp.float32); carry.update({k: jnp.zeros(zs.shape, jnp.float32) for k in ('fsta', 'staba', 'txn')})
         if self.S.get('land_rc', 0): carry['swd'] = jnp.zeros(zs.shape, jnp.float32)              # downward surface SW of the last step (canopy f1)
         if self.S.get('cld_fix', 0): carry['q0'] = jnp.asarray(sg['q'], jnp.float32)
@@ -579,6 +580,34 @@ class Model:
         rib = G * z1 * (thv1 - thvs) / (thv1 * V1 ** 2)
         fst = jnp.where(rib > 0, 1.0 / (1 + 10 * rib) ** 2, 1 - 10 * rib / (1 + 75 * cdn * jnp.sqrt(z1 / z0 * jnp.abs(rib))))
         cd = cdn * fst
+        if self.S.get('sfc_mo', 0):
+            # sfc_mo (A/P1 drag-sink root cause, 22 Nov: ERA5 Cd10 1.28x ours, Charnock/height cleared): IFS CY47r1 Part IV ch.3
+            # surface layer for MOMENTUM: free-convection gust |U|^2 = u^2 + v^2 + w*^2, w* = (z_i g/T Q0v)^(1/3), z_i 1000 m (3.17-3.18);
+            # sea z0M = 0.11 nu/u* + 0.018 u*^2/g, z0H = 0.40 nu/u* (3.26); Monin-Obukhov with Dyer-Hicks unstable (3.19-3.20) and
+            # Holtslag-De Bruin stable (3.22, a 1, b 2/3, c 5, d 0.35) functions, zeta = z1/L from the bulk Richardson number by
+            # fixed-point iteration, |zeta| capped at 5 (sec 3.2). Heat/moisture exchange (ck) left as before (scope: momentum only).
+            nu = 1.5e-5
+            wst = (1000.0 * G / T1 * jnp.maximum(cr['q0v'], 0.0)) ** (1.0 / 3.0)
+            Vg = jnp.sqrt(u1 ** 2 + v1 ** 2 + wst ** 2 + 0.01)
+            usm = 0.04 * Vg
+            def psis(zt):
+                x = (1.0 - 16.0 * jnp.minimum(zt, 0.0)) ** 0.25
+                pm_u = jnp.pi / 2 - 2 * jnp.arctan(x) + jnp.log((1 + x) ** 2 * (1 + x ** 2) / 8.0); ph_u = 2 * jnp.log((1 + x ** 2) / 2.0)
+                zs_ = jnp.maximum(zt, 0.0); e = jnp.exp(-0.35 * zs_)
+                pm_s = -(2 / 3) * (zs_ - 5 / 0.35) * e - zs_ - (2 / 3) * 5 / 0.35
+                ph_s = -(2 / 3) * (zs_ - 5 / 0.35) * e - (1 + (2 / 3) * zs_) ** 1.5 - (2 / 3) * 5 / 0.35 + 1
+                return jnp.where(zt < 0, pm_u, pm_s), jnp.where(zt < 0, ph_u, ph_s)
+            z0m = jnp.where(sea, 0.11 * nu / usm + S['charnock'] * usm ** 2 / G, S['z0_land']); z0h = jnp.where(sea, 0.40 * nu / usm, S['z0_land'] / 10.0)
+            ribg = G * z1 * (thv1 - thvs) / (thv1 * Vg ** 2)
+            zt = jnp.zeros_like(Vg)
+            for _ in range(6):
+                pm, ph = psis(zt)
+                lm = jnp.log(z1 / z0m) - pm; lh = jnp.log(z1 / z0h) - ph
+                zt = jnp.clip(ribg * lm ** 2 / jnp.maximum(lh, 0.5), -5.0, 5.0)
+                usm = KARM * Vg / jnp.maximum(lm, 1.0)
+                z0m = jnp.where(sea, 0.11 * nu / jnp.maximum(usm, 0.01) + S['charnock'] * usm ** 2 / G, S['z0_land']); z0h = jnp.where(sea, 0.40 * nu / jnp.maximum(usm, 0.01), S['z0_land'] / 10.0)
+            pm, _ = psis(zt)
+            cd = (KARM / jnp.maximum(jnp.log(z1 / z0m) - pm, 1.0)) ** 2 * (Vg / V1) ** 2      # stress = rho cd V1 u1 with the gusty |U|
         # ck is a 10-m-height value (bulk formulas, COARE): brought to the lowest model level (~80 m) with the log law;
         # using it directly with the faster wind up there overstated sea evaporation by ~30% (ck_z=1 on, 0 off; off until tested)
         zfac = jnp.where(sea, (jnp.log(10.0 / z0) / jnp.log(z1 / z0)) ** 2, 1.0) ** S['ck_z']
@@ -1145,6 +1174,7 @@ class Model:
             tl = jnp.where(self.land, jnp.clip(cr['tl'] + dt * net / cap, 230.0, 330.0), cr['tl'])
         w = jnp.where(self.land, jnp.clip(cr['w'] + dt * (d['rain'] - d['E']), 0.0, S['bucket'] * 1000), cr['w'])
         out = dict(cr, sst=sst, tl=tl, w=w, rain=cr['rain'] + dt * d['rain'], t=cr['t'] + dt)
+        if 'q0v' in cr: out['q0v'] = d['H'] / (1.2 * CP) + 0.61 * 290.0 * d['E'] / 1.2          # Q0v = H/(rho cp) + 0.61 T E/rho (rho 1.2, T 290)
         if 'tx' in cr: out['tx'] = cr['tx'] + dt * d['tx']; out['ty'] = cr['ty'] + dt * d['ty']; out['fsta'] = cr['fsta'] + dt * d['fst']; out['staba'] = cr['staba'] + dt * d['stab']; out['txn'] = cr['txn'] + dt * d['txn']          # stress_out: time-integrated surface stress (N m-2 s)
         if 'evap' in cr: out['evap'] = cr['evap'] + dt * d['E']                                     # evap_out: total surface evaporation since start (kg m-2)
         if self.S.get('soil_fr', 0): out['tl2'] = tl2

@@ -4530,3 +4530,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   unstable / Holtslag-De Bruin stable psi functions, z0M Charnock + 0.11 nu/u*, free-convection gust beta 1.2). To be coded and checked
   locally (winter-ocean stress must reach >= 0.9x ERA5) BEFORE any GPU; then exam part 1 lc_mix+vcubic+sfc_mo against the ORIGINAL
   A/P1 gates (d10 z500 <= 112.75, TN u850 d5 >= -3.21) and activity 0.95-1.05.
+- 23:13 sfc_mo coded (mm2, from IFS CY47r1 Part IV 3.17-3.22, 3.26; momentum only; default OFF, other runs unchanged). REGISTERED local
+  gate before any GPU (Jan start, T85, NH winter ocean 30-60N d1): sfc_mo stress >= 0.90x ERA5 turbulent -> go to exam; 0.80-0.90 ->
+  partial (gust/MO not the whole gap, 5-why on the rest before GPU); < 0.80 -> the IFS form does not explain the gap -> re-open.
+  [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
