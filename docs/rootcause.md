@@ -4510,3 +4510,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   so a log-law Cd from 80 m understates the stress (same height issue already noted for ck, 'ck_z'); (b) Charnock constant 0.018 vs
   IFS wave-coupled Charnock (often 0.02-0.03 in young winter seas); (c) gustiness (IFS adds convective/free-convection gust).
   NEXT (measure): ERA5's implied Cd = stress / (rho V10^2) and V10/V100 over the same ocean points vs ours.
+- 22:56 REGISTERED (before computing): NH winter ocean 30-60N, 2020-01-07. Log law with our z0 (~2e-4 m) gives V10/V80 ~ 0.83.
+  (a) HEIGHT named if ERA5's own V10/V100 >= 0.90 (marine layer well mixed, so a log-law Cd taken from ~80 m understates stress);
+  (b/c) ROUGHNESS/GUST named if ERA5 V10/V100 <= 0.86 (log-like profile) AND ERA5 Cd10 = stress / (rho <|V10| u10>) >= 1.15x our
+  Charnock neutral Cd10 at the same V10. Between -> both partly. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
