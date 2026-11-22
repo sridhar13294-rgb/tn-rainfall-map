@@ -67,7 +67,10 @@ while True:
     if back: q = back + q
     q = list({j['slug']: j for j in reversed(q)}.values())[::-1]                # never two queue entries of one slug                                                       # in memory only: files are written + committed at the end
     refused = {j['slug'] for j in back}
-    if not q: print('queue empty'); break
+    if not q:                                                                   # 22 Nov: results sat uncollected 5.5 h because the loop
+        pend = [f for f in os.listdir('data/cyclone/pending') if f.endswith(('__1', '__4'))] if os.path.isdir('data/cyclone/pending') else []   # ended when the queue emptied
+        if pend and LOOP: print('queue empty;', len(pend), 'pending - keep collecting', flush=True); time.sleep(LOOP * 60); continue
+        print('queue empty'); break
     busy = running(); left = []; newdone = []
     for j in q:
         down = set(open('data/cyclone/accounts_down.txt').read().split()) if os.path.exists('data/cyclone/accounts_down.txt') else set()   # 5 Nov 20:10: API auth lost

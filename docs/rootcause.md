@@ -4440,3 +4440,16 @@ running as a separate test) is NOT adopted on its own result unless this check p
   ERA5 day-1 reference 2.94 / 4.15. Reading: starts at ~47 % (globe) / 44 % (tropics) and levels off after ~12 h at ~85 % - so
   the day-1 deficit is two parts: an e-folding spin-up of ~6-9 h AND a plateau ~10-15 % low in the first 36 h (exam d2 0.99,
   d5 1.05 later). Next: conv set closure and trigger at h0 vs h12 (which input changes: CAPE, trigger fraction, closure time).
+
+## 22 Nov 15:28 IST - A/P1 d10 activity RESULT (registered 09:40)
+- Reproducibility: both reruns reproduce their 21 Nov z500 RMSE exactly (max diff 0.0000 over 18 starts x d1/d5/d10) -> valid.
+- z500 activity sf/so (mean of 18 starts): NH d10 lc_mix 1.037, vc 1.201 (+0.163); SH d10 0.987 vs 1.121 (+0.134); d5 NH 1.025 vs
+  1.113, SH 0.974 vs 1.043. ACC d10 NH 0.260 vs 0.225, SH 0.169 vs 0.106.
+  Rule OVER-ACTIVE (A(vc) > 1.10 and diff >= 0.10): NH 1.201/+0.163 YES, SH 1.121/+0.134 YES -> OVER-ACTIVE CONFIRMED (the 21 Nov
+  indirect estimate predicted it). lc_mix keeps realistic activity (0.99-1.04); cubic vertical SL adds 12-20 % spurious eddy energy
+  by day 10 and also loses pattern skill. [reg: 09:40 | inputs: deterministic reruns reproduce, sf/so from the same scorer, only
+  sl_vcubic differs | fail-5why: n/a (diagnosis); for A/P1 the fix stays HELD: the steering gain is real, the d10 cost is excess
+  activity -> 5-why: why does cubic add energy? linear vertical interpolation damps; cubic does not, and nothing replaces that damping
+  (IFS pairs cubic SL with horizontal diffusion + its own vertical-filtering). Next: does our horizontal diffusion match IFS at T170?]
+- PROCESS FIX: results sat uncollected ~5.5 h (finished on Kaggle, collector only runs on pushes, dispatcher exited at 'queue empty').
+  dispatch.py now keeps looping (and requesting collection) while account-1/4 kernels are pending.
