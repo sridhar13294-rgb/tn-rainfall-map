@@ -4501,3 +4501,12 @@ running as a separate test) is NOT adopted on its own result unless this check p
   (d = 5) - ours cuts stable-side drag much harder. IFS uses Monin-Obukhov (Businger-Dyer unstable, Holtslag-De Bruin stable).
   Measure first: share of winter-ocean points with Ri > 0 and the mean stability factor in our run; if stable points carry
   >= half the stress deficit, the stable branch is the cause and the fix is the reference (Louis 1979 or IFS MO) form.
+- 22:38 RESULT stability share (Jan, NH winter ocean 30-60, d1, T85): stable fraction 0.32, mean stability factor 0.95; zonal stress
+  ours 0.0678, ours-if-NEUTRAL 0.0703, ERA5 0.0926 (0.73 / 0.76). Deficit split: stable-dominated points 27 %, UNSTABLE points 73 %
+  (there our factor already raises drag: 0.0442 vs neutral 0.0415, ERA5 0.0622). Rule (stable carries >= half) NOT met -> the
+  stable branch is NOT the cause; my 22:30 suspect CLEARED. [reg: 22:30 | inputs: same run, model diagnostics fst/stab/neutral
+  stress | fail-5why: n/a]. The NEUTRAL coefficient itself is ~25 % short. 5-why candidates (not tested): (a) the drag law is applied
+  at the lowest level (~80 m) via the log law - in convective (unstable) winter marine layers the wind is near-uniform above ~10 m,
+  so a log-law Cd from 80 m understates the stress (same height issue already noted for ck, 'ck_z'); (b) Charnock constant 0.018 vs
+  IFS wave-coupled Charnock (often 0.02-0.03 in young winter seas); (c) gustiness (IFS adds convective/free-convection gust).
+  NEXT (measure): ERA5's implied Cd = stress / (rho V10^2) and V10/V100 over the same ocean points vs ours.
