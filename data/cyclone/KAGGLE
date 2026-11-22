@@ -1,6 +1,6 @@
-tn-stress170-base
+tn-stress170-mo
 libm_wx2020L2_fields.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore stress_t170.py /kaggle/working/libm_wx2020L2_fields.npz base /kaggle/working/stress_base.npz > /kaggle/working/stress.log 2>&1; tail -3 /kaggle/working/stress.log
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore stress_t170.py /kaggle/working/libm_wx2020L2_fields.npz mo /kaggle/working/stress_mo.npz > /kaggle/working/stress.log 2>&1; tail -3 /kaggle/working/stress.log
 NvidiaTeslaT4
-1
-#A/P1 drag: T170 surface stress check (registered 22 Nov 23:5x) 2026-11-22T18:17Z
+4
+#A/P1 drag: T170 surface stress check (registered 22 Nov 23:5x) 2026-11-22T18:18Z
