@@ -98,5 +98,6 @@ while True:
         time.sleep(15)
     else: print('WARNING: queue commit not pushed', flush=True)
     print(len(left), 'waiting', flush=True)
-    if not left or not LOOP: break
+    if not LOOP: break
+    if not left and not [f for f in os.listdir('data/cyclone/pending') if f.endswith(('__1', '__4'))]: break   # 22 Nov: keep collecting while jobs run
     time.sleep(LOOP * 60)
