@@ -10,5 +10,9 @@ for tag, s in (('jan', '2020-01-06'), ('jul', '2020-06-29')):
     t0 = np.datetime64(s + 'T01'); sl = slice(t0, t0 + np.timedelta64(23, 'h'))
     u = A['100m_u_component_of_wind'].sel(time=sl).values; v = A['100m_v_component_of_wind'].sel(time=sl).values
     sp = np.sqrt(u ** 2 + v ** 2).mean(0)
-    out[tag + '_d1_ws100'] = uniform_filter(sp, size=[6, 6], mode=['nearest', 'wrap'])[il][:, io].astype(np.float32); print(tag, flush=True)
+    out[tag + '_d1_ws100'] = uniform_filter(sp, size=[6, 6], mode=['nearest', 'wrap'])[il][:, io].astype(np.float32)
+    u = A['10m_u_component_of_wind'].sel(time=sl).values; v = A['10m_v_component_of_wind'].sel(time=sl).values
+    out[tag + '_d1_ws10'] = uniform_filter(np.sqrt(u ** 2 + v ** 2).mean(0), size=[6, 6], mode=['nearest', 'wrap'])[il][:, io].astype(np.float32)
+    out[tag + '_d1_u10sq'] = uniform_filter((np.sqrt(u ** 2 + v ** 2) * u).mean(0), size=[6, 6], mode=['nearest', 'wrap'])[il][:, io].astype(np.float32)
+    print(tag, flush=True)
 np.savez_compressed('data/cyclone/wx/era5_wind100.npz', lats=LATS, lons=LONS, **out); print('saved')
