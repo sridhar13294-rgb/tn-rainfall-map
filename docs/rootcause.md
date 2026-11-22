@@ -4559,3 +4559,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   the windy unstable cases); (ii) ERA5's stress includes the wave-model sea-state drag in high winds; (iii) T85 vs T170 wind
   variance in the model itself (fewer strong-wind events). NEXT: rerun the stress comparison at T170 (the exam resolution) - if
   T170 reaches >= 0.85x with sfc_mo, sfc_mo goes to the exam. One local T170 24 h run may OOM; try, else a short Kaggle job.
+- 23:45 Local T170 OOM-killed (6.1 GB) as expected -> REGISTERED Kaggle check (2 short jobs, 24 h each, one variant per job): T170 lc_mix
+  and lc_mix + sfc_mo, Jan start, NH winter ocean 30-60N day-1 zonal stress vs ERA5 turbulent. sfc_mo goes to the exam (part 1, vs
+  original A/P1 gates) if its ratio >= 0.85; if < 0.85 the remaining ~15 % gets its own 5-why (lowest-level height / sea-state drag)
+  before any exam. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
