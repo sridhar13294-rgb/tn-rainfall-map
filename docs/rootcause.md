@@ -4475,7 +4475,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - Inputs: ERA5 daily-mean turbulent + gravity-wave surface stress (ARCO, 'stress truth'), Jan 6 and Jun 29 2020 starts, d1-d2;
   model: lc_mix T85 local with new stress_out diagnostic (time-integrated rho Cd V u1 / v1). Metric: zonal-mean eastward stress
   over NH 30-60N (Jan) / SH 30-60S (Jul) = the winter-hemisphere momentum sink; also land-only.
-  RULE: missing sink NAMED if ours (turbulent only) <= 0.8 x ERA5 (turbulent + gravity-wave) in the winter hemisphere; NOT named if
+  RULE: missing sink NAMED if ours (turbulent only) <= 0.8 x ERA5 (turbulent + gravity-wave) in the winter hemisphere; NOT named if [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
   >= 0.95 x. If named, the fix candidate is IFS orographic drag/blocking (Lott-Miller, IFS Part IV ch.4) + TOFD - after first
   fixing our gwd option's known defect (9 Nov Andes). Prediction: named (ERA5 gw stress was 36 % of turbulent at land ascent points).
 - 22:13 RESULT missing-drag test (registered 21:40): winter-hemisphere zonal-mean eastward surface stress, |ours| / |ERA5 turb + gw|
