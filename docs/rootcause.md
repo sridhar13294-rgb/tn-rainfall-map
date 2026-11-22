@@ -4489,3 +4489,6 @@ running as a separate test) is NOT adopted on its own result unless this check p
   Land: 0.46-0.51x, of which ERA5 gw is 18 % -> orographic drag explains part, the rest is the same turbulent shortfall.
   NEXT (measure): ocean lowest-level wind and stability (Ri_b) ours vs ERA5 at the same points; this decides wind vs stability.
   Note: a 25-40 % weaker surface momentum sink is the right SIZE to explain eddies 12-20 % too active once cubic stops damping them.
+- 22:13 REGISTERED (wind vs stability for the ocean drag deficit): winter-hemisphere ocean 30-60, day 1: ours |V1| (lowest level, ~80 m)
+  vs ERA5 100-m wind speed (daily mean). WIND named if ours <= 0.85x ERA5 (drag ~ V^2 -> explains >= 0.72x stress); STABILITY named
+  if ours >= 0.95x ERA5 (then the drag coefficient/stability function cuts the stress). [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
