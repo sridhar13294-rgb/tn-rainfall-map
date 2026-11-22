@@ -4546,3 +4546,6 @@ running as a separate test) is NOT adopted on its own result unless this check p
   it stands: NEXT (registered): recompute ERA5's stress from its own 1.5-deg box-mean hourly winds with the same bulk law; if that
   'coarse' ERA5 stress is <= 0.85x ERA5's real box-mean stress, the gap is largely RESOLUTION (not a missing physical sink) and the
   A/P1 drag branch is re-examined at T170.
+- 23:22 REGISTERED resolution test (N Pacific 30-60N 150-240E, 2020-01-07 hourly, same neutral Charnock law): ratio R = stress from 1.5-deg
+  box-mean winds / box-mean of 0.25-deg stress. RESOLUTION named (main part of the 0.73) if R <= 0.85; minor if R >= 0.95.
+  Note: this box is 1.5 deg; our T85 is ~1.4 deg - comparable; T170 (~0.7 deg) would sit between. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
