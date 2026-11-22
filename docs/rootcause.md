@@ -4595,3 +4595,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - 04:10 REGISTERED: air-sea contrast at day 1 (Jan 7 00Z), NH winter ocean 30-60N: dT = T(1000 hPa) - SST, ours (T85 fcsnd) vs ERA5
   (act6h). STABILITY INPUT named if our mean dT is >= 0.5 K warmer (less unstable) than ERA5's or our unstable-point share is >= 0.10
   lower; NOT named if within 0.2 K and 0.05. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 04:10 RESULT air-sea contrast (registered 04:1x): NH winter ocean d1, T(1000) - SST ours -4.44 K vs ERA5 -3.59 K; unstable share 0.90 vs
+  0.87 -> ours is MORE unstable -> STABILITY INPUT NOT named. [reg: 04:1x | inputs: ours fcsnd T85 d1, ERA5 act6h same time, NaN-masked,
+  n 1561 | fail-5why: n/a]. So with a more unstable surface layer, our formula still gives less drag than ERA5's: the response of the
+  exchange to instability is weaker in ours (Louis net 0.95; MO +7 %) than ERA5's effective +14 %. Candidates now inside the formula
+  path: w* gust from the PREVIOUS step's flux (sfc_mo) - check its size; the 80-m z1 makes zeta large and the Dyer-Hicks form saturates
+  - check zeta distribution. Branch status: missing drag is REAL (~25 %), explained ~3/4 by ledger; fix path = stability/gust response.
