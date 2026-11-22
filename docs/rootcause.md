@@ -4410,3 +4410,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   a rainy NE-monsoon November; (b) the convective share (conv set named ~1/3). NEXT (input check before any fix run): model land
   evaporation over TN vs ERA5 surface latent heat flux on part-3 dates, locally. If model LE >= ERA5 LE, land evaporation is not
   the cause and land_rs is cleared.
+- 07:22 RESULT P5b input check (registered 06:35; lc_mix, start 2020-11-11, T85 local, TN land 8-13.5N 76.5-80.5E, 9 points) vs ERA5
+  (ARCO hourly slhf/tp, same box): LE day 1 85 vs 83 W/m2, day 2 51 vs 74; rain day 1 0.51 vs 1.72, day 2 1.88 vs 5.93 mm/day.
+  Day-1 land evaporation matches ERA5 (85 >= 83) -> by the rule land evaporation is NOT the cause; land_rs CLEARED as root (its
+  'named' effect is compensation: open-water evaporation adds moisture the convection then rains out). Order of events: rain is
+  short FIRST (30 % of ERA5 on day 1), then LE falls on day 2 because the soil is not re-wetted - a consequence. [reg: 06:35 |
+  inputs: same start library as the exam, ERA5 hourly fluxes, one start at T85 - direction | fail-5why: n/a (diagnosis)]
+  => P5b TN dry bias, P3 under-deepening, A/P1 spin-up and day-10 all trace to ONE root: too little convective rain/heating in the
+  first day. Next: the convection spin-up fix (reference-based), the single highest-value job for stage 1.

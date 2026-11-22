@@ -247,6 +247,7 @@ class Model:
         carry = dict(sst=jnp.asarray(sst, jnp.float32), tl=jnp.asarray(tl0, jnp.float32), w=jnp.asarray(w0, jnp.float32),
                      rain=jnp.zeros(zs.shape, jnp.float32), t=jnp.float32(0.0), sst0=jnp.asarray(sst, jnp.float32), T0=jnp.asarray(sg['t'], jnp.float32),
                      prm=self.params())
+        if self.S.get('evap_out', 0): carry['evap'] = jnp.zeros(zs.shape, jnp.float32)
         if self.S.get('land_rc', 0): carry['swd'] = jnp.zeros(zs.shape, jnp.float32)              # downward surface SW of the last step (canopy f1)
         if self.S.get('cld_fix', 0): carry['q0'] = jnp.asarray(sg['q'], jnp.float32)
         if self.S.get('q_adv', 0):                                                                  # (13 Nov) advective moisture tendency for the IFS trigger (6.21) / QCV (6.32)
@@ -1143,6 +1144,7 @@ class Model:
             tl = jnp.where(self.land, jnp.clip(cr['tl'] + dt * net / cap, 230.0, 330.0), cr['tl'])
         w = jnp.where(self.land, jnp.clip(cr['w'] + dt * (d['rain'] - d['E']), 0.0, S['bucket'] * 1000), cr['w'])
         out = dict(cr, sst=sst, tl=tl, w=w, rain=cr['rain'] + dt * d['rain'], t=cr['t'] + dt)
+        if 'evap' in cr: out['evap'] = cr['evap'] + dt * d['E']                                     # evap_out: total surface evaporation since start (kg m-2)
         if self.S.get('soil_fr', 0): out['tl2'] = tl2
         if self.S.get('skin_ifs', 0): out['ts'] = ts_new
         if self.S.get('land_rc', 0): out['swd'] = d['sw_sfc'] / (1.0 - S['alb_land'])                # downward SW (land albedo) for the canopy f1
@@ -1213,7 +1215,8 @@ class Model:
             th1 = T[-1] + G / CP * z1; f = jnp.log(2.0 / z0) / jnp.log(jnp.maximum(z1, 3.0) / z0)
             t2 = Tsk + f * (th1 - Tsk) - G / CP * 2.0
             t850 = t_below(T, lp, 85000.0, to_p(T, lp, 85000.0))
-            return dict(z500=to_p(phi, lp, 50000.0) / G, t850=t850, mslp=mslp, rain=cr['rain'], t2=t2, t2_old=T[-1] + 0.0065 * (z1 - 2.0),
+            ex = dict(evap=cr['evap']) if 'evap' in cr else {}
+            return dict(**ex, z500=to_p(phi, lp, 50000.0) / G, t850=t850, mslp=mslp, rain=cr['rain'], t2=t2, t2_old=T[-1] + 0.0065 * (z1 - 2.0),
                         u850=to_p(u, lp, 85000.0), v850=to_p(v, lp, 85000.0), u200=to_p(u, lp, 20000.0), v200=to_p(v, lp, 20000.0),
                         **(self._map_extras(state, T, u, v, ps, lp, phi, to_p) if self.S.get('map_out') else {}))
         inner = int(round(every_h * 3600 / self.dt_s)); outer = int(hours // every_h)
