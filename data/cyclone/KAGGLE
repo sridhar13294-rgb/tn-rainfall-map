@@ -1,6 +1,6 @@
-tn-vc-wx1a
-libm_wx2020L2_fields.npz,wx_truth_2020.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/suite_vc_wx.json 1 4 /kaggle/working/wx_1.json > /kaggle/working/wx_1.log 2>&1; tail -3 /kaggle/working/wx_1.log
+tn-stress170-base
+libm_wx2020L2_fields.npz
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore stress_t170.py /kaggle/working/libm_wx2020L2_fields.npz base /kaggle/working/stress_base.npz > /kaggle/working/stress.log 2>&1; tail -3 /kaggle/working/stress.log
 NvidiaTeslaT4
-4
-#A/P1 d10 activity (sf/so) rerun, registered 22 Nov 09:4x 2026-11-22T04:14Z
+1
+#A/P1 drag: T170 surface stress check (registered 22 Nov 23:5x) 2026-11-22T18:17Z
