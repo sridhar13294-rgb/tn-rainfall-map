@@ -2070,5 +2070,21 @@
   "note": "P3 fix test v2 (registered 18:10 IST 21 Nov): lc_mix + FIXED relocate (SLP centre), Rule 1, all 83 storms",
   "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore hind2.py /kaggle/working/libm_cycL2_fields.npz ../../../data/cyclone/kaggle_cfg/lib84_lcmreloc2.json 1 2 /kaggle/working/h1.json > /kaggle/working/h1.log 2>&1; tail -6 /kaggle/working/h1.log",
   "at": "2026-11-22T01:01Z"
+ },
+ {
+  "slug": "tn-lcm-wx1a",
+  "inputs": "libm_wx2020L2_fields.npz,wx_truth_2020.npz",
+  "account": "1",
+  "note": "A/P1 d10 activity (sf/so) rerun, registered 22 Nov 09:4x",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/suite_lcmix_wx.json 1 4 /kaggle/working/wx_1.json > /kaggle/working/wx_1.log 2>&1; tail -3 /kaggle/working/wx_1.log",
+  "at": "2026-11-22T04:13Z"
+ },
+ {
+  "slug": "tn-vc-wx1a",
+  "inputs": "libm_wx2020L2_fields.npz,wx_truth_2020.npz",
+  "account": "4",
+  "note": "A/P1 d10 activity (sf/so) rerun, registered 22 Nov 09:4x",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/suite_vc_wx.json 1 4 /kaggle/working/wx_1.json > /kaggle/working/wx_1.log 2>&1; tail -3 /kaggle/working/wx_1.log",
+  "at": "2026-11-22T04:15Z"
  }
 ]
