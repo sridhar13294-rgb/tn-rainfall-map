@@ -4453,3 +4453,12 @@ running as a separate test) is NOT adopted on its own result unless this check p
   (IFS pairs cubic SL with horizontal diffusion + its own vertical-filtering). Next: does our horizontal diffusion match IFS at T170?]
 - PROCESS FIX: results sat uncollected ~5.5 h (finished on Kaggle, collector only runs on pushes, dispatcher exited at 'queue empty').
   dispatch.py now keeps looping (and requesting collection) while account-1/4 kernels are pending.
+- 15:40 A/P1 5-why step (does our horizontal diffusion fall short of IFS, so cubic's lost damping is not replaced?) - REFERENCE CHECK:
+  IFS Part III CY49r1 2.2.11(a): linear grid default del^4 (r = 2), K = tau^-1 (a^2/N(N+1))^2, tau = 6 dt (the IFS's own step);
+  cubic grid: spectral-viscosity form acting only above N/2. IFS steps at this resolution: TL159 3600 s, TL255 2700 s -> tau 4.5-6 h.
+  Ours (Dinosaur form): tau = 8.6 h / 2.4^log2(256/128) = 3.58 h at T170, del^4 -> our damping is already STRONGER than the IFS
+  reference at this resolution. => 'too little diffusion' is NOT the cause; raising it would be tuning against the reference -> not
+  done. Remaining fishbone branch for cubic's excess activity: the interpolation itself (IFS uses quasi-monotone cubic for some
+  fields and a vertical finite-element discretisation; Dinosaur cubic on sigma, monotone_dynamics on) - check what Dinosaur's
+  monotone limiter covers in the vertical before any run. [reg: n/a (reference check, no run) | inputs: IFS doc + our tau formula |
+  fail-5why: n/a]
