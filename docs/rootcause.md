@@ -4478,3 +4478,14 @@ running as a separate test) is NOT adopted on its own result unless this check p
   RULE: missing sink NAMED if ours (turbulent only) <= 0.8 x ERA5 (turbulent + gravity-wave) in the winter hemisphere; NOT named if
   >= 0.95 x. If named, the fix candidate is IFS orographic drag/blocking (Lott-Miller, IFS Part IV ch.4) + TOFD - after first
   fixing our gwd option's known defect (9 Nov Andes). Prediction: named (ERA5 gw stress was 36 % of turbulent at land ascent points).
+- 22:13 RESULT missing-drag test (registered 21:40): winter-hemisphere zonal-mean eastward surface stress, |ours| / |ERA5 turb + gw|
+  (sign conventions differ: ours = force on air, ERA5 = stress on surface; magnitudes compared), T85 local lc_mix:
+  Jan NH 30-60N d1 0.57 (land 0.46, ocean 0.73), d2 0.61 (0.51 / 0.71); Jul SH 30-60S d1 0.78 (ocean 0.76), d2 0.73 (0.72).
+  ERA5 gravity-wave share of the NH Jan total: land 18 %, ocean ~0. Rule: <= 0.8x -> MISSING SINK NAMED in both seasons.
+  [reg: 21:40 | inputs: ERA5 hourly stresses same days, model stress_out on the exam's start library, T85 (exam is T170) |
+  fail-5why: n/a (named)]. 5-why: the deficit is NOT only orographic - over OCEAN (no orography, no gw stress) ours is 0.71-0.76x.
+  Ocean drag formula checked: Charnock 0.018 (IFS value) + 1.5e-5 m, cd_cap 2.4e-3 not binding at normal winds -> the formula is
+  standard; so either our near-surface winds are weaker than ERA5's at the same height, or the stability factor cuts drag too much.
+  Land: 0.46-0.51x, of which ERA5 gw is 18 % -> orographic drag explains part, the rest is the same turbulent shortfall.
+  NEXT (measure): ocean lowest-level wind and stability (Ri_b) ours vs ERA5 at the same points; this decides wind vs stability.
+  Note: a 25-40 % weaker surface momentum sink is the right SIZE to explain eddies 12-20 % too active once cubic stops damping them.
