@@ -10,6 +10,7 @@ def cd(V):
         z0 = 0.018 * us ** 2 / 9.80665 + 1.5e-5; c = (0.4 / np.log(10 / z0)) ** 2; us = np.sqrt(c) * V
     return c
 fine = coarse = real = 0.0; n = 0
+TX = A['eastward_turbulent_surface_stress']; TY = A['northward_turbulent_surface_stress']
 for h in range(1, 25):
     t = np.datetime64('2020-01-06T00') + np.timedelta64(h, 'h')
     u = A['10m_u_component_of_wind'].sel(time=t, **sel).values; v = A['10m_v_component_of_wind'].sel(time=t, **sel).values
@@ -18,6 +19,8 @@ for h in range(1, 25):
     ny, nx = (u.shape[0] // 6) * 6, (u.shape[1] // 6) * 6
     B = lambda X: X[:ny, :nx].reshape(ny // 6, 6, nx // 6, 6).mean((1, 3))
     ub, vb = B(u), B(v); Vb = np.sqrt(ub ** 2 + vb ** 2); m = B(lsm.astype(float)) > 0.99
+    tx = TX.sel(time=t, **sel).values / 3600.0; ty = TY.sel(time=t, **sel).values / 3600.0; rho = 1.25
+    real += B(np.sqrt(tx ** 2 + ty ** 2) / rho)[m].mean()
     fine += B(sf)[m].mean(); coarse += (cd(Vb) * Vb ** 2)[m].mean(); n += 1
-r = dict(fine=float(fine / n), coarse=float(coarse / n), ratio=float(coarse / fine)); print(r)
+r = dict(fine=float(fine / n), coarse=float(coarse / n), ratio=float(coarse / fine), real=float(real / n), real_over_law=float(real / fine)); print(r)
 json.dump(r, open('data/cyclone/wx/stress_res.json', 'w'))

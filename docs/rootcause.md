@@ -4579,3 +4579,8 @@ running as a separate test) is NOT adopted on its own result unless this check p
   sampling. Since wind speed (0.96), direction (0.98), Charnock (ERA5 ~0.018), resolution (0.95) all match, the coefficient applied at
   our ~80-m level is the remaining place: daytime check = IFS-style exchange computed at 10 m (z1 replaced by 10 m with the wind
   brought down by the MO profile) vs ours, on the same run.
+- 03:48 REGISTERED: ERA5's real |stress|/rho (hourly accumulations /3600) vs the neutral Charnock law on its own 0.25-deg 10-m winds,
+  N Pacific 30-60N, Jan 7. E = real / law. If E >= 1.20 -> ERA5's stress carries a large enhancement over neutral Charnock (stability
+  /sea state) that our MO (+7 %) does not reproduce -> compare stability inputs (air-sea T difference) ours vs ERA5 next. If E <= 1.08
+  -> ERA5 is close to neutral Charnock, so our 0.73 must come from our own wind/coefficient pairing -> re-check our cd path for a defect.
+  [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
