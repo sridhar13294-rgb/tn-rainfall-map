@@ -4462,3 +4462,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   fields and a vertical finite-element discretisation; Dinosaur cubic on sigma, monotone_dynamics on) - check what Dinosaur's
   monotone limiter covers in the vertical before any run. [reg: n/a (reference check, no run) | inputs: IFS doc + our tau formula |
   fail-5why: n/a]
+- 15:41 A/P1 fishbone, interpolation branch: Dinosaur's monotone_dynamics applies the Bermejo-Staniforth quasi-monotone limiter to
+  the 3-D (incl. vertical) wind interpolation - as IFS does for momentum. So both reference items are already in place (cubic +
+  quasi-monotone, diffusion >= IFS). => the excess activity is probably NOT a numerics defect of cubic itself: linear interpolation
+  was damping eddies and HIDING a missing physical sink. Fishbone sinks of eddy energy vs IFS: (a) sub-grid orographic drag +
+  blocking (Lott-Miller) - OFF in lc_mix (our gwd option has its own known defect, 9 Nov Andes test); (b) turbulent orographic form
+  drag (TOFD, IFS 3.x) - not coded; (c) surface turbulent stress. 17 Nov land check: ERA5 gravity-wave stress = 36 % of its turbulent
+  stress at land ascent points -> a real sink we lack. NEXT (measure before any run): global and NH-midlatitude mean surface stress
+  (turbulent + orographic) ours vs ERA5 (ewss/nsss + lgws/mgws) at d1-d5; if our total < 0.8x ERA5 -> missing sink named.
