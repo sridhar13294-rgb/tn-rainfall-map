@@ -4572,3 +4572,5 @@ running as a separate test) is NOT adopted on its own result unless this check p
   compared is the zonal one: a more cross-isobaric / less zonal near-surface flow gives less zonal stress at the same speed ->
   compare <|V|u> ours vs ERA5 at the lowest level; (2) the 80-m lowest level vs IFS's ~10-m surface layer in strongly unstable
   cold-air outbreaks (stress weighted to them); (3) daily-mean sampling: ours 6-hourly speeds vs ERA5 hourly.
+- 03:39 REGISTERED (zonal-component check, NH winter ocean 30-60N, Jan d1): Z = <|V| u> / <|V|>^2 (dimensionless 'zonality'), ours at
+  1000 hPa (6-hourly, T85) vs ERA5 10 m (hourly). ZONAL named if Z(ours) <= 0.85 x Z(ERA5); NOT named if >= 0.95x. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
