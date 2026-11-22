@@ -4584,3 +4584,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   /sea state) that our MO (+7 %) does not reproduce -> compare stability inputs (air-sea T difference) ours vs ERA5 next. If E <= 1.08
   -> ERA5 is close to neutral Charnock, so our 0.73 must come from our own wind/coefficient pairing -> re-check our cd path for a defect.
   [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 04:10 RESULT ERA5 enhancement (registered 03:4x): ERA5 real |stress| / neutral-Charnock law on its own 0.25-deg 10-m winds, N Pacific
+  Jan 7: E = 1.14 -> between 1.08 and 1.20 -> neither branch by the rule. [reg: 03:4x | inputs: ERA5 hourly stress and 10-m winds,
+  same box/hours | fail-5why: n/a]. LEDGER (multiplicative, NH winter ocean): ours/ERA5 0.73 ~= our stability factor 0.95 (Louis, net)
+  x resolution 0.954 / ERA5 enhancement 1.14 = 0.795 -> ~8 % left (sampling, rho, profile). So most of the gap = ERA5's surface layer
+  ENHANCES drag over winter ocean by ~14 % while ours REDUCES it by ~5 %; sfc_mo moves ours to ~+2 % net (0.78) - still ~12 % short of
+  ERA5's. NEXT (measure, daytime): the stability INPUT - air-sea temperature difference (T at lowest level vs SST) and its share of
+  unstable points, ours vs ERA5 (ERA5 2-m T, SST): if our air is warmer over the winter ocean (less unstable), the MO form cannot
+  give ERA5's enhancement -> the cause sits in the low-level temperature (links to the winter 700-500 / boundary-layer findings).
