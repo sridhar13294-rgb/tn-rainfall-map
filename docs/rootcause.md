@@ -4424,3 +4424,14 @@ running as a separate test) is NOT adopted on its own result unless this check p
   (core enthalpy flux 0.86 of ERA5, possibly a consequence). So P3's open root is heat RETENTION / core flux, not spin-up - unless
   lc_mix behaves differently from base2 (not measured). Shared spin-up root stands for A/P1, day-10 and (by today's TN check) P5b
   rain; NOT for P3. Next for P3: the registered 18 Nov dk/Ck split of the core flux (where it stopped).
+
+## 22 Nov 09:40 IST - 09:39 cycle: Kaggle idle since ~06:00 -> A/P1 d10 activity test REGISTERED and queued
+- Note: P3's registered next test is the radial/vertical heating structure vs ERA5's warm anomaly (18 Nov, not yet built) - my 07:22
+  note said 'dk/Ck split' but that was done 18 Nov (flux deficit = wind, a consequence). Corrected here.
+- A/P1 (sl_vcubic d10 cost +8.9 m): rerun lc_mix and vc part 1 with wxscore sf/so (4e20490e; scoring only, model code unchanged
+  except the evap/land_rc options which are OFF). Reproducibility check first: both reruns must reproduce their 21 Nov z500 d1/d5/d10
+  exactly (deterministic XLA) - else the comparison is void.
+  REGISTERED: d10 NH+SH z500 activity ratio A = sf/so per start, mean over 18 starts. DOUBLE PENALTY (cubic keeps more real-looking
+  activity, RMSE pays for it) if A(vc) - A(lc_mix) >= 0.10 AND A(vc) <= 1.10 AND ACC(vc) >= ACC(lc_mix) - 0.03; OVER-ACTIVE (cubic adds
+  spurious activity) if A(vc) > 1.10 and A(vc) - A(lc_mix) >= 0.10; PATTERN LOSS if |A(vc) - A(lc_mix)| < 0.05 (then the cost is in
+  the phase of systems). The 21 Nov indirect estimate (1.07 -> 1.22 NH) predicts OVER-ACTIVE.
