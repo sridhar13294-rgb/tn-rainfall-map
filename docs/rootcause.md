@@ -4514,3 +4514,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   (a) HEIGHT named if ERA5's own V10/V100 >= 0.90 (marine layer well mixed, so a log-law Cd taken from ~80 m understates stress);
   (b/c) ROUGHNESS/GUST named if ERA5 V10/V100 <= 0.86 (log-like profile) AND ERA5 Cd10 = stress / (rho <|V10| u10>) >= 1.15x our
   Charnock neutral Cd10 at the same V10. Between -> both partly. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 22:56 RESULT implied Cd (registered 22:5x): ERA5 V10/V100 0.824 (log-like, not well mixed) -> (a) HEIGHT NOT named; ERA5 implied
+  Cd10 1.84e-3 vs our Charnock neutral Cd10 1.43e-3 at the same V10 (9.6 m/s) -> ratio 1.28 >= 1.15 -> (b/c) NAMED: ERA5's
+  surface is rougher / its drag enhanced beyond our neutral Charnock. [reg: 22:5x | inputs: ERA5 hourly 10/100-m wind and turbulent
+  stress, same points and day | fail-5why: n/a]. Remaining split, inside (b/c)+(d): ERA5 Charnock from the wave model vs our fixed
+  0.018; gustiness; unstable-side enhancement (IFS Monin-Obukhov vs our Louis: ours adds only 6.5 % on unstable points).
+  REGISTERED next: ERA5 'charnock' field mean over the same points: WAVES named if >= 0.025 (Cd10 at 9.6 m/s then +~15 %);
+  NOT named if <= 0.020 (then the unstable enhancement / gust carries it). [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
