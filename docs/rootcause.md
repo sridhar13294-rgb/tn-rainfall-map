@@ -4418,3 +4418,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
   inputs: same start library as the exam, ERA5 hourly fluxes, one start at T85 - direction | fail-5why: n/a (diagnosis)]
   => P5b TN dry bias, P3 under-deepening, A/P1 spin-up and day-10 all trace to ONE root: too little convective rain/heating in the
   first day. Next: the convection spin-up fix (reference-based), the single highest-value job for stage 1.
+- 07:22 CORRECTION (my own claim at 05:59 and in the 07:06 report): I linked P3's under-deepening to the day-1 convective spin-up. The
+  17 Nov storm-core budget (registered, base2) REJECTED that: the strong (FAIL) storms make the SAME core rain as ERA5 (0-24 h ratio
+  median 1.00) but keep less of the heat (warm core 500 hPa -37 %); RMW/shear rules not met; inflow-flux test indeterminate
+  (core enthalpy flux 0.86 of ERA5, possibly a consequence). So P3's open root is heat RETENTION / core flux, not spin-up - unless
+  lc_mix behaves differently from base2 (not measured). Shared spin-up root stands for A/P1, day-10 and (by today's TN check) P5b
+  rain; NOT for P3. Next for P3: the registered 18 Nov dk/Ck split of the core flux (where it stopped).
