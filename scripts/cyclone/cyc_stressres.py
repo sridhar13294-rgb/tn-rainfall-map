@@ -19,5 +19,5 @@ for h in range(1, 25):
     B = lambda X: X[:ny, :nx].reshape(ny // 6, 6, nx // 6, 6).mean((1, 3))
     ub, vb = B(u), B(v); Vb = np.sqrt(ub ** 2 + vb ** 2); m = B(lsm.astype(float)) > 0.99
     fine += B(sf)[m].mean(); coarse += (cd(Vb) * Vb ** 2)[m].mean(); n += 1
-r = dict(fine=fine / n, coarse=coarse / n, ratio=coarse / fine); print(r)
+r = dict(fine=float(fine / n), coarse=float(coarse / n), ratio=float(coarse / fine)); print(r)
 json.dump(r, open('data/cyclone/wx/stress_res.json', 'w'))

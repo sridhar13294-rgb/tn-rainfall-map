@@ -4549,3 +4549,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - 23:22 REGISTERED resolution test (N Pacific 30-60N 150-240E, 2020-01-07 hourly, same neutral Charnock law): ratio R = stress from 1.5-deg
   box-mean winds / box-mean of 0.25-deg stress. RESOLUTION named (main part of the 0.73) if R <= 0.85; minor if R >= 0.95.
   Note: this box is 1.5 deg; our T85 is ~1.4 deg - comparable; T170 (~0.7 deg) would sit between. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 23:44 RESULT resolution test (registered 23:3x; value from the workflow log - the json write failed on float32, script fixed): R = 0.954
+  (coarse-wind stress / box-mean of fine stress, N Pacific, 24 hourly fields) -> >= 0.95 -> RESOLUTION MINOR (~5 %). My 23:30 worry
+  that the gap is mostly a comparison artefact is NOT supported. [reg: 23:3x | inputs: ERA5 hourly 0.25-deg 10-m winds, same law
+  both ways | fail-5why: n/a]. Ledger for the winter-ocean stress gap (ours 0.73 of ERA5): resolution ~+5 %, IFS MO + gust +7 %
+  (sfc_mo) -> ~0.82 explained at best; ~0.18 still unexplained. The 22:20 'missing sink' verdict STANDS (a real ~25 % shortfall).
+  Open candidates for the rest: (i) our lowest level ~80 m vs IFS ~10 m with heat/momentum exchange there (profile shape not
+  log above the surface layer in winter cold-air outbreaks - V10/V100 0.824 says log-like on average, but the stress is weighted to
+  the windy unstable cases); (ii) ERA5's stress includes the wave-model sea-state drag in high winds; (iii) T85 vs T170 wind
+  variance in the model itself (fewer strong-wind events). NEXT: rerun the stress comparison at T170 (the exam resolution) - if
+  T170 reaches >= 0.85x with sfc_mo, sfc_mo goes to the exam. One local T170 24 h run may OOM; try, else a short Kaggle job.
