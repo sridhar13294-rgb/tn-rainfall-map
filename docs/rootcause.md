@@ -4656,3 +4656,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - 19:40 Combined check half 1 (tn-p3-vcreloc-0, lc_mix + sl_vcubic + relocate, 42 storms, 0 failed): within +-5 hPa 35/42 (linear version
   34/42), h0 - ERA5 h0 +0.71. Cubic does not hurt storm starts/intensity. P3 stays CLOSED (tol) if half 2 gives >= 24/41 (total >= 59).
   Half 2 queued on Kaggle (account 4) since ~17:30. [reg: 23 Nov 15:4x | inputs: same storms/library, only sl_vcubic added | fail-5why: n/a (half result)]
+
+## 24 Nov 01:46 IST - Combined check RESULT (registered 23 Nov 15:4x): lc_mix + sl_vcubic + fixed relocate, 83 storms, 0 failed
+- Within +-5 hPa 64/83 (linear version 62/83); SE sqrt(83 x 0.771 x 0.229) = 3.8 -> 64 >= 59 (and >= 67 - 2 x 3.8 = 59.3) -> PASS (tol).
+  h0 - ERA5 h0 +0.70 (SE 0.08) <= 1 -> PASS. => P3 stays CLOSED (tol) on the Stage-1 candidate; cubic does not hurt storms (+2).
+  [reg: 23 Nov 15:4x | inputs: same storms/library as tn-r1-reloc2, only sl_vcubic added | fail-5why: n/a (pass)]
+  Residual for Stage 2: 18 too weak (strong-storm under-deepening).
