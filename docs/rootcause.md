@@ -4613,3 +4613,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   if > 200 hPa). REGISTERED (before the run, T85 local, Jan start, 3-hourly rain as 22 Nov 10:0x): lc_mix with mf_dmin 20000 (IFS):
   GAP named for the slow start if tropical h0-3 rain rises >= 20 % (1.84 -> >= 2.21 mm/day) AND h0-12 mean rises >= 10 %; not named
   if < 5 %. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 09:52 RESULT (registered 09:40): mf_dmin 20000: tropical rain h0-3 1.85 (was 1.84), h0-12 mean 2.33 (was 2.33) -> < 5 % -> GAP NOT named
+  for the slow start (it was also not the 925-venting cause on 25 Nov). [reg: 09:40 | inputs: same start/run, one key changed |
+  fail-5why: n/a (not named)]. Next: which part of the trigger fails at h0 - share of tropical columns with an LFC, with CAPE > 50,
+  and passing depth, at h0 vs h12 (diagnostic flags from conv_mf).
