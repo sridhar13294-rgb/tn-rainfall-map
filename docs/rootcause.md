@@ -4630,3 +4630,17 @@ running as a separate test) is NOT adopted on its own result unless this check p
   model's convective balance; the trigger fires in 64 % of its later columns at h0 and the model needs ~12 h to build its own
   instability (moister boundary layer, cooler upper air). IFS has no such spin-up on ERA5 because ERA5 is its own state. A
   reference-based remedy is an initialisation step (e.g. diabatic / incremental initialisation), not a physics constant. Kept OPEN.
+
+## 23 Nov 15:42 IST - RE-SCORE of closure gates under method rule 10 (2-SE tolerance, user decision 15:42)
+- P3 (lc_mix + fixed relocate, 83 storms): within +-5 hPa 62/83; SE = sqrt(83 x 0.747 x 0.253) = 4.0 -> limit 67 - 2 x 4.0 = 59.0;
+  62 >= 59 -> PASS (tol). Start check: h0 - ERA5 h0 mean +0.70 (SE 0.08) <= 1 -> PASS. => P3 CLOSED (tol). Remaining real cost for
+  Stage 2: strong storms under-deepen (6.8 hPa short when ERA5 deepens >= 8 hPa; core heat retention). [reg: 21 Nov 18:10 + rule 10 |
+  inputs: 83 storms, h0 checked vs ERA5 | fail-5why: n/a (pass)]
+- A/P1 (lc_mix + sl_vcubic, part 1, 18 starts): d10 z500 117.43, sd 10.9, SE 2.57 -> limit 112.75 + 2 x 2.57 = 117.89; 117.43 <= 117.89
+  -> PASS (tol). Steering TN u850 d5 -2.37 >= -3.21 -> PASS. => A/P1 CLOSED (tol) with sl_vcubic. Remaining real cost for Stage 2:
+  vs lc_mix the cubic d10 cost is +8.9 m (paired SE 2.3, worse in 14/18) = eddies 12-20 % too active, traced to a ~25 % weak surface
+  drag over winter oceans (sfc_mo held). [reg: 21 Nov 18:10 (gates) + rule 10 | inputs: deterministic reruns reproduce | fail-5why: n/a (pass)]
+- NOT YET MEASURED TOGETHER: P3 was scored on lc_mix (linear vertical) and A/P1 on lc_mix + sl_vcubic. The Stage-1 candidate is
+  lc_mix + sl_vcubic + fixed relocate; the final exam measures them together - neither closure is final until that run agrees.
+- P5b: TN rain ratio lc_mix 0.422 vs gate 0.843 - not within any tolerance (no fix exists; slow start) -> stays OPEN.
+- Attribution ('named') verdicts made before rule 10 are left as recorded; rule 10 applies to them from now on.
