@@ -4606,3 +4606,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   stable tail (+0.58 -> Holtslag-De Bruin ~-30 %) and wind weighting pull the mean to +4 %. The MO code behaves as the reference
   says; the remaining shortfall vs ERA5's +14 % is not a coding defect visible here (diagnosis, no verdict). [reg: n/a (diagnosis) |
   inputs: same run | fail-5why: n/a]. Drag branch parked pending the user's freeze decision (07:05 message).
+
+## 23 Nov 09:40 IST - slow-start (A/P1 + Day-10 + P5b shared root): reference check of the Stage-1 deep trigger
+- conv_mf deep needs cloud depth > mf_dmin = 25000 Pa (code comment itself says 'ECMWF ~20000'); the shallow plume (sh_trig, sh_dmax
+  20000 = IFS) covers depth <= 20000 Pa. Clouds 200-250 hPa deep therefore get NEITHER scheme - a gap that does not exist in IFS (deep
+  if > 200 hPa). REGISTERED (before the run, T85 local, Jan start, 3-hourly rain as 22 Nov 10:0x): lc_mix with mf_dmin 20000 (IFS):
+  GAP named for the slow start if tropical h0-3 rain rises >= 20 % (1.84 -> >= 2.21 mm/day) AND h0-12 mean rises >= 10 %; not named
+  if < 5 %. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
