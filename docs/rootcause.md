@@ -4653,3 +4653,6 @@ running as a separate test) is NOT adopted on its own result unless this check p
   P-pole: gate = masked global d2 t700 bias within -0.6 K; last measured on the T42 screen with vcs (-0.591, 3 starts, screen only) ->
   not measured on the exam config -> stays TESTING, decided in the final exam. Tracks / P2-P4: re-scored when the combined storm run
   (tn-p3-vcreloc) lands - P2/P4 TN 5-day rain within +-25 % is 0.42 on lc_mix -> FAIL, tied to the slow start.
+- 19:40 Combined check half 1 (tn-p3-vcreloc-0, lc_mix + sl_vcubic + relocate, 42 storms, 0 failed): within +-5 hPa 35/42 (linear version
+  34/42), h0 - ERA5 h0 +0.71. Cubic does not hurt storm starts/intensity. P3 stays CLOSED (tol) if half 2 gives >= 24/41 (total >= 59).
+  Half 2 queued on Kaggle (account 4) since ~17:30. [reg: 23 Nov 15:4x | inputs: same storms/library, only sl_vcubic added | fail-5why: n/a (half result)]
