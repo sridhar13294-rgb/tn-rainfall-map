@@ -4644,3 +4644,6 @@ running as a separate test) is NOT adopted on its own result unless this check p
   lc_mix + sl_vcubic + fixed relocate; the final exam measures them together - neither closure is final until that run agrees.
 - P5b: TN rain ratio lc_mix 0.422 vs gate 0.843 - not within any tolerance (no fix exists; slow start) -> stays OPEN.
 - Attribution ('named') verdicts made before rule 10 are left as recorded; rule 10 applies to them from now on.
+- 15:43 REGISTERED combined check (Stage-1 candidate = lc_mix + sl_vcubic + fixed relocate) on the 83 storms (tn-p3-vcreloc-0/1): P3 stays
+  CLOSED if >= 59/83 within +-5 hPa (rule 10) and |h0 - ERA5 h0| mean <= 1; else P3 re-opens with cubic as the suspect.
+  [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
