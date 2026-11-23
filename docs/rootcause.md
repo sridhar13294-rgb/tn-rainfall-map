@@ -4647,3 +4647,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - 15:43 REGISTERED combined check (Stage-1 candidate = lc_mix + sl_vcubic + fixed relocate) on the 83 storms (tn-p3-vcreloc-0/1): P3 stays
   CLOSED if >= 59/83 within +-5 hPa (rule 10) and |h0 - ERA5 h0| mean <= 1; else P3 re-opens with cubic as the suspect.
   [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 17:41 Re-score of dependents (rule 10): D1 (sl_vcubic adoption): storm gate PASS (6 Nov, 0.70 vs 2.60) and multi-storm re-test no
+  degradation (21 Nov); remaining exam-quarter gate z500 d5 <= control + 2 %: vc 64.39 vs lc_mix 63.76 (+1.0 %) -> PASS (no tolerance
+  needed) -> D1 CLOSED (adopted with A/P1). [reg: 6 Nov exam-quarter gate | inputs: deterministic part-1 reruns | fail-5why: n/a (pass)]
+  P-pole: gate = masked global d2 t700 bias within -0.6 K; last measured on the T42 screen with vcs (-0.591, 3 starts, screen only) ->
+  not measured on the exam config -> stays TESTING, decided in the final exam. Tracks / P2-P4: re-scored when the combined storm run
+  (tn-p3-vcreloc) lands - P2/P4 TN 5-day rain within +-25 % is 0.42 on lc_mix -> FAIL, tied to the slow start.
