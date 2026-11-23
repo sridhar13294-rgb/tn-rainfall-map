@@ -4601,3 +4601,8 @@ running as a separate test) is NOT adopted on its own result unless this check p
   exchange to instability is weaker in ours (Louis net 0.95; MO +7 %) than ERA5's effective +14 %. Candidates now inside the formula
   path: w* gust from the PREVIOUS step's flux (sfc_mo) - check its size; the 80-m z1 makes zeta large and the Dyer-Hicks form saturates
   - check zeta distribution. Branch status: missing drag is REAL (~25 %), explained ~3/4 by ledger; fix path = stability/gust response.
+- 07:14 sfc_mo internals (T85 Jan d1, NH winter ocean): zeta(z1) mean -0.85, percentiles 10/50/90 = -3.22 / -0.37 / +0.58, 36 % below -1;
+  free-convection w* mean 0.69 m/s; stress / neutral 1.04. Size check: at zeta -0.37 Dyer-Hicks gives ~+10 %, at -1 ~+20 %, but the
+  stable tail (+0.58 -> Holtslag-De Bruin ~-30 %) and wind weighting pull the mean to +4 %. The MO code behaves as the reference
+  says; the remaining shortfall vs ERA5's +14 % is not a coding defect visible here (diagnosis, no verdict). [reg: n/a (diagnosis) |
+  inputs: same run | fail-5why: n/a]. Drag branch parked pending the user's freeze decision (07:05 message).
