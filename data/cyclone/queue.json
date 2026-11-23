@@ -1,18 +1,1 @@
-[
- {
-  "slug": "tn-p3-vcreloc-0",
-  "inputs": "libm_cycL2_fields.npz",
-  "account": "1",
-  "note": "P3 with sl_vcubic (Stage-1 candidate combined check, 23 Nov)",
-  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore hind2.py /kaggle/working/libm_cycL2_fields.npz ../../../data/cyclone/kaggle_cfg/lib84_vcreloc2.json 0 2 /kaggle/working/h0.json > /kaggle/working/h0.log 2>&1; tail -6 /kaggle/working/h0.log",
-  "at": "2026-11-23T10:15Z"
- },
- {
-  "slug": "tn-p3-vcreloc-1",
-  "inputs": "libm_cycL2_fields.npz",
-  "account": "4",
-  "note": "P3 with sl_vcubic (Stage-1 candidate combined check, 23 Nov)",
-  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore hind2.py /kaggle/working/libm_cycL2_fields.npz ../../../data/cyclone/kaggle_cfg/lib84_vcreloc2.json 1 2 /kaggle/working/h1.json > /kaggle/working/h1.log 2>&1; tail -6 /kaggle/working/h1.log",
-  "at": "2026-11-23T10:15Z"
- }
-]
+[]
