@@ -4617,3 +4617,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   for the slow start (it was also not the 925-venting cause on 25 Nov). [reg: 09:40 | inputs: same start/run, one key changed |
   fail-5why: n/a (not named)]. Next: which part of the trigger fails at h0 - share of tropical columns with an LFC, with CAPE > 50,
   and passing depth, at h0 vs h12 (diagnostic flags from conv_mf).
+- 10:00 Slow-start split (lc_mix, T85, Jan, conv_diag): tropical deep-active fraction 0.077 (h0-3) -> 0.121 (h12-15) (+57 %), rain 1.84 ->
+  3.35 (+82 %); rain per active column 23.9 -> 27.7 (+16 %). => ~3/4 of the spin-up (log share) is the TRIGGER firing in too few
+  columns at the start, ~1/4 is intensity. The trigger catches up as the model moistens the boundary layer (+0.19 g/kg at 1000 hPa)
+  and cools aloft (22 Nov profile) - i.e. the model re-makes its own instability before it convects. [reg: n/a (diagnosis) | inputs:
+  same start/run as 22 Nov | fail-5why: n/a]. Same shape as the package finding (ERA5 start parcels too negatively buoyant for our
+  trigger). NEXT (reference check, no run): does the Stage-1 deep test parcel get the IFS surface-flux excess (IFS Part IV 6.x: test
+  parcel T/q excess from the surface sensible/latent fluxes) - if missing, that is the reference-based fix candidate.

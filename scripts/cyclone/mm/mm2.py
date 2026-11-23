@@ -248,6 +248,7 @@ class Model:
                      rain=jnp.zeros(zs.shape, jnp.float32), t=jnp.float32(0.0), sst0=jnp.asarray(sst, jnp.float32), T0=jnp.asarray(sg['t'], jnp.float32),
                      prm=self.params())
         if self.S.get('evap_out', 0): carry['evap'] = jnp.zeros(zs.shape, jnp.float32)
+        if self.S.get('conv_diag', 0): carry['ondp'] = jnp.zeros(zs.shape, jnp.float32)
         if self.S.get('sfc_mo', 0): carry['q0v'] = jnp.zeros(zs.shape, jnp.float32)              # kinematic virtual heat flux of the last step (w*)
         if self.S.get('stress_out', 0): carry['tx'] = jnp.zeros(zs.shape, jnp.float32); carry['ty'] = jnp.zeros(zs.shape, jnp.float32); carry.update({k: jnp.zeros(zs.shape, jnp.float32) for k in ('fsta', 'staba', 'txn', 'zmo', 'wsta')})
         if self.S.get('land_rc', 0): carry['swd'] = jnp.zeros(zs.shape, jnp.float32)              # downward surface SW of the last step (canopy f1)
@@ -1176,6 +1177,7 @@ class Model:
             tl = jnp.where(self.land, jnp.clip(cr['tl'] + dt * net / cap, 230.0, 330.0), cr['tl'])
         w = jnp.where(self.land, jnp.clip(cr['w'] + dt * (d['rain'] - d['E']), 0.0, S['bucket'] * 1000), cr['w'])
         out = dict(cr, sst=sst, tl=tl, w=w, rain=cr['rain'] + dt * d['rain'], t=cr['t'] + dt)
+        if 'ondp' in cr: out['ondp'] = cr['ondp'] + dt * d['on_dp']                                   # conv_diag: time-integrated deep-active flag
         if 'q0v' in cr: out['q0v'] = d['H'] / (1.2 * CP) + 0.61 * 290.0 * d['E'] / 1.2          # Q0v = H/(rho cp) + 0.61 T E/rho (rho 1.2, T 290)
         if 'tx' in cr: out['tx'] = cr['tx'] + dt * d['tx']; out['ty'] = cr['ty'] + dt * d['ty']; out['fsta'] = cr['fsta'] + dt * d['fst']; out['staba'] = cr['staba'] + dt * d['stab']; out['txn'] = cr['txn'] + dt * d['txn']; out['zmo'] = cr['zmo'] + dt * d['zmo']; out['wsta'] = cr['wsta'] + dt * d['wst']          # stress_out: time-integrated surface stress (N m-2 s)
         if 'evap' in cr: out['evap'] = cr['evap'] + dt * d['E']                                     # evap_out: total surface evaporation since start (kg m-2)
@@ -1250,6 +1252,7 @@ class Model:
             t2 = Tsk + f * (th1 - Tsk) - G / CP * 2.0
             t850 = t_below(T, lp, 85000.0, to_p(T, lp, 85000.0))
             ex = dict(evap=cr['evap']) if 'evap' in cr else {}
+            if 'ondp' in cr: ex.update(ondp=cr['ondp'])
             if 'tx' in cr: ex.update(tx=cr['tx'], ty=cr['ty'], fsta=cr['fsta'], staba=cr['staba'], txn=cr['txn'], zmo=cr['zmo'], wsta=cr['wsta'])
             return dict(**ex, z500=to_p(phi, lp, 50000.0) / G, t850=t850, mslp=mslp, rain=cr['rain'], t2=t2, t2_old=T[-1] + 0.0065 * (z1 - 2.0),
                         u850=to_p(u, lp, 85000.0), v850=to_p(v, lp, 85000.0), u200=to_p(u, lp, 20000.0), v200=to_p(v, lp, 20000.0),
