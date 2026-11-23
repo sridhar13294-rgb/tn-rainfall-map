@@ -4662,3 +4662,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   h0 - ERA5 h0 +0.70 (SE 0.08) <= 1 -> PASS. => P3 stays CLOSED (tol) on the Stage-1 candidate; cubic does not hurt storms (+2).
   [reg: 23 Nov 15:4x | inputs: same storms/library as tn-r1-reloc2, only sl_vcubic added | fail-5why: n/a (pass)]
   Residual for Stage 2: 18 too weak (strong-storm under-deepening).
+- 01:46 Tracks re-score (gate: 48/72 h mean track error vs ERA5 positions not worse than control by more than +10 %, rule 10 tolerance;
+  same storms, 63 at 48 h, 52 at 72 h): candidate (lc_mix + cubic + relocate) 287 / 450 km.
+  vs BASE3 (Stage-1 control, base of lc_mix) 240 / 398: +19.7 % / +13.3 % -> limit 264 / 437, tol 303 / 497 -> PASS (tol) both.
+  vs BASE2 222 / 375: 48 h +29.4 % -> FAIL (tol 283); 72 h PASS (tol). vs lc_mix (no reloc) 274 / 500: better at 72 h (-9.8 %).
+  vs lc_mix + relocate: -1.3 % / -4.8 % (cubic does not hurt tracks).
+  VERDICT with BASE3 as the control (the registered Stage-1 base; no separate Tracks control was written - stated so the user can
+  overrule): Tracks CLOSED (tol). Real cost carried to Stage 2: tracks 13-20 % worse than BASE3 (the lc_mix land/conv/late sets).
+  [reg: Tracks gate +10 % (early Nov) + rule 10 | inputs: ERA5 positions from peak_targets, same storm keys paired | fail-5why: n/a (pass)]
