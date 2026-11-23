@@ -4624,3 +4624,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
   same start/run as 22 Nov | fail-5why: n/a]. Same shape as the package finding (ERA5 start parcels too negatively buoyant for our
   trigger). NEXT (reference check, no run): does the Stage-1 deep test parcel get the IFS surface-flux excess (IFS Part IV 6.x: test
   parcel T/q excess from the surface sensible/latent fluxes) - if missing, that is the reference-based fix candidate.
+- 10:00 Reference check of the trigger excess: Stage-1 conv_mf uses a FIXED parcel kick 0.5 K / 0.5 g/kg (mf_kick_t/q); the IFS flux-based
+  excess (Part IV 6.x) over tropical ocean (H ~10, LE ~150 W/m2, w* ~0.7 m/s) is ~0.2 K / ~0.1 g/kg - ours is already LARGER, so a
+  missing excess is NOT the slow-start cause. Conclusion so far (diagnosis, not a verdict): the start state from ERA5 is not in our
+  model's convective balance; the trigger fires in 64 % of its later columns at h0 and the model needs ~12 h to build its own
+  instability (moister boundary layer, cooler upper air). IFS has no such spin-up on ERA5 because ERA5 is its own state. A
+  reference-based remedy is an initialisation step (e.g. diabatic / incremental initialisation), not a physics constant. Kept OPEN.
