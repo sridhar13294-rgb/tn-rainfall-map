@@ -4844,3 +4844,12 @@ running as a separate test) is NOT adopted on its own result unless this check p
   sharp function was kept from the first column model; sfc_mo (IFS MO, Holtslag) exists but was HELD on the ocean drag sink.
   REGISTERED (before the run): local check bl_exc_ws + sbl_ifs + sfc_mo, same 3 starts, plus night mean Rib and cd/cdn printed (SIZE). NAMED
   if night wind falls to <= 1.3x ERA5 (<= 5.8 m/s); night hbl reported against <= 205 m. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 16:06 IST SLOW START - closure time-scale lead checked on paper (IFS Cy47r1 6.x: tau = (Hc / w_up) (1 + 264/N), N = spectral truncation):
+  at T170, Hc ~10 km, w_up ~5 m/s -> tau ~2000 s x 2.55 ~ 5100 s; ours fixed tau_deep 2400 s. IFS is SLOWER, so adopting it would delay the
+  start further -> closure time scale is NOT the slow-start cause (direction opposite); lead closed. Remaining slow-start leads: the shallow MF
+  set (named today for Tracks; it also halves TN rain - tn-tr-shw decides) and the source-parcel excess (IFS eqs 6.12-6.14).
+  [reg: 24 Nov slow-start lead list (summary 'remaining leads') | inputs: IFS formula, model T170 setting | fail-5why: n/a]
+- 16:06 IST SLOW START - source-parcel lead: our deep kick (0.5 K, 0.5 g/kg fixed) is already LARGER than the IFS flux-based excess (eq. 6.19
+  floors 0.2 K / 0.1 g/kg; ~0.3-0.5 K over tropical ocean), as found 24 Nov morning -> IFS's excess would also delay triggering -> NOT the cause;
+  lead closed. Slow start now hinges on ONE named candidate: the shallow MF set (venting the sub-cloud layer before deep convection can
+  start; tn-tr-shw tests the IFS-faithful trigger). [reg: same lead list | inputs: IFS eq. 6.19 vs model defaults | fail-5why: n/a]
