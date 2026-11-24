@@ -4955,3 +4955,14 @@ running as a separate test) is NOT adopted on its own result unless this check p
   set's hbl_ifsi (248 / 1185) is within 1.3x of ERA5-L134 at night AND day, the remaining night-depth gap is NAMED as the reference height
   (a measurement difference, not physics) and the night physics set goes to the Kaggle forecast gates.
   [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 20:03 IST SHALLOW-SET SPLIT (part 3, 18 starts each, 0 failed, paired with tn-lcm-wx3): no_shvent (minus sh_clos, sh_ifs2) TN v850 d1 -1.75 (paired
+  -0.08 +/- 0.03), rain 0.424, z500 d5 65.65; no_shmix (minus sh_eps, sh_det) -1.68 (paired -0.01 +/- 0.05), rain 0.462, z500 66.37. Rule (>= -1.0)
+  -> NEITHER named. [reg: 24 Nov 18:4x shallow-split registration | inputs: part-3, paired | fail-5why: below]
+- FAIL-5WHY: venting, mixing and the trigger (sh_wtest) each change nothing; only removing the whole set (shallow 'mf' -> the old 'mse' shallow
+  mixing) moves v850 by +1.38 (and costs z500 d5 +5.5 m). So the steering is not in any MF detail but in the SWAP itself: either (a) the MF
+  shallow plume's activity as such drives the northerly bias, or (b) the old 'mse' scheme supplies something the MF path lacks (it mixes the
+  whole cloud layer every step) that keeps v850 right. These are told apart by switching shallow tendencies OFF with no replacement.
+  REGISTERED (before the run): tn-tr-shoff = lc_mix + sh_off 1 (diagnostic denial only, never a fix), part 3. If TN v850 d1 >= -1.0 -> (a) NAMED:
+  the MF shallow plume's tendencies (compare its heating/moistening profile with IFS shallow over the Bay next). If < -1.0 -> (b) NAMED: a
+  process the old scheme provided is missing from the lc_mix physics (find which by comparing the two schemes' tendency profiles).
+  [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
