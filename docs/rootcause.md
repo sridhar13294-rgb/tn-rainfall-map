@@ -4673,3 +4673,8 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - 09:40 REGISTERED P-pole re-score under rule 10: gate = masked global t700 d2 |bias| <= 0.6 at the T42 screen (starts 56/61/66). Candidate
   lc_mix + sl_vcubic measured -0.624 on 21 Nov (FAIL by 0.024, pooled). Rule-10 SE = sd of the per-start values / sqrt(3), so run the same
   harness one start at a time (local T42). PASS (tol) if |mean| <= 0.6 + 2 SE; note n = 3 makes SE coarse. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 09:52 RESULT P-pole re-score (registered 09:4x): lc_mix + sl_vcubic, local T42, one start at a time: masked global t700 d2 -0.585 / -0.599 /
+  -0.692; mean -0.625 (reproduces the pooled -0.624 of 21 Nov), SE 0.033 -> limit 0.6 + 2 x 0.033 = 0.667 -> PASS (tol). t850 passed already
+  (-0.471). => P-pole CLOSED (tol) on its gate. Real cost carried to Stage 2: the poleward-40 700 hPa cold itself is still -0.96 K at
+  T42 (-0.82 at T170 for lc_mix), contributors sized: mid-level convection ~30 %, shallow-top ~25 %, resolution ~25 %, cubic 15 %.
+  [reg: 09:4x | inputs: same harness/starts/mask as 21 Nov, per-start runs reproduce the pooled value | fail-5why: n/a (pass); SE from n = 3 is coarse - stated]
