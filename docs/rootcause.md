@@ -4898,3 +4898,20 @@ running as a separate test) is NOT adopted on its own result unless this check p
   minus {sh_clos, sh_ifs2} (falls back to the CAPE closure over tau_shallow); no_shmix = lc_mix minus {sh_eps, sh_det}. A sub-group is NAMED
   if TN v850 d1 >= -1.0 m/s; the named one is then compared with IFS eq. 6.32 / 6.7-6.9 before any fix. Kept in reserve (registered as next):
   the eq. 6.32 full-tendency closure. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 18:36 IST LAND NIGHT - REGISTERED (before the run): option tofd = IFS TOFD (Part IV eqs. 3.58-3.59, Beljaars 2004; alpha 35, Cmd 0.005, Ccorr 0.6,
+  a2 from sigma_flt = ERA5 std of FILTERED sub-grid orography, implicit with the momentum diffusion). Size on paper: sigma_flt 100 m, z 50 m,
+  U 7 m/s -> ~1.4e-3 m/s2 (strong in hilly terrain). Local T42 check, 3 starts: bl_exc_ws + sbl_ifs + tofd vs bl_exc_ws + sbl_ifs (6.71 m/s).
+  NAMED for the night wind if it falls to <= 5.8 m/s (1.3x ERA5); day wind must stay >= 0.8x ERA5 (>= 3.4 m/s) and day hbl within 1.3x.
+  [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 18:50 IST TOFD LOCAL CHECK (T42, 3 starts; bl_exc_ws + sbl_ifs +/- tofd): night wind 6.71 -> 5.47 m/s (1.23x ERA5 4.43; <= 5.8) PASS -> TOFD NAMED
+  for the night wind (the missing night momentum sink); day wind 4.34 -> 3.84 (0.91x ERA5 4.22; >= 3.4) PASS; day hbl 1385 (1.15x) PASS.
+  BUT night hbl 323 -> 331 m (2.1x ERA5 158): the wind is fixed and the night depth is not. [reg: 24 Nov 18:4x TOFD registration | inputs:
+  same 3 starts, only tofd differs, sigma_flt from ERA5 | fail-5why: night depth below]
+- NIGHT DEPTH 5-why (input/diagnostic first, registered at 16:0x as the fallback): with the wind right, a 2x deep night layer points at what
+  the depth is measured FROM: our lowest level is ~82 m, ERA5's ~10 m; a night inversion in the lowest tens of metres is invisible to a bulk Ri
+  started at 82 m. REGISTERED (before the run): output-only diagnostic hbl10 = bulk-Ri depth from a 10 m reference (theta_v at 10 m from the
+  surface-layer log profile between the skin and level 1, as the model's t2), same run set (bl_exc_ws + sbl_ifs + tofd). If night hbl10 is within
+  1.3x ERA5 (<= 205 m), the night-depth gap is NAMED as the measurement level (diagnostic), not the physics.
+  Kaggle (forecast gates, one variant per job): tn-tofd = lc_mix + bl_exc_ws + tofd, part 3: globe z500 d5 <= lc_mix + 2 SE, india t2 d1-d5 <= lc_mix
+  + 2 SE, TN v850 d1 reported. tn-land170-tofd = T170 night/day land check with bl_exc_ws + sbl_ifs + tofd: night wind <= 5.8 m/s, day hbl <= 1.3x.
+  [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
