@@ -4985,3 +4985,6 @@ running as a separate test) is NOT adopted on its own result unless this check p
   [reg: 24 Nov 18:5x TOFD forecast-gate registration | inputs: part-3, paired with tn-lcm-wx3, geo_gwd.npz on Kaggle | fail-5why: n/a]
   TOFD ADOPTED into the Stage-1 candidate (with bl_exc_ws). Day-10 skill (OPEN) must be re-measured with it: registered next = full exam parts
   0-3 at 10 days for candidate + tofd after the land-set gates. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 21:57 IST KAGGLE ACCOUNT 1 weekly GPU quota (30 h) REACHED (push refused for tn-landset). Not worked around: remaining jobs go to account 4 only
+  (one at a time), priority order: tn-landset (Land BL forecast gates) -> tn-land170-full; tn-tr-shoff was accepted by Kaggle on account 1 before
+  the refusal and is in Kaggle's queue. [reg: n/a (operations note) | inputs: n/a | fail-5why: n/a]
