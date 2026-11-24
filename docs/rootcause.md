@@ -4803,3 +4803,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   model's lowest-level wind; if model wind > 1.3x ERA5 (log-interpolated to the model level) in BOTH bands, land DRAG is NAMED and the next test
   is IFS TOFD + gwd on (one variant per job); if not, the day-time surface heat flux is examined next.
   [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 14:48 IST LAND WIND BY HOUR (20-40 N land, 3 starts, day 1): ERA5 10/100 m night 2.6/4.6, day 3.4/4.3 m/s -> log-interpolated to the model's
+  lowest level (sigma 0.9904, ~82 m): night 4.43, day 4.22. Model ctl lowest level: night 6.99 (1.58x), day 4.38 (1.04x). Rule (> 1.3x in BOTH
+  bands) NOT met -> land drag is NOT named for the all-hours excess. The night wind excess (1.58x) is night-only = stable decoupling, the
+  same fault sbl_ifs addresses (it took 22 % off the night depth). So TWO faults: NIGHT (stable mixing/decoupling; sbl_ifs partial) and DAY
+  (1.38x deep with the right wind). [reg: 24 Nov 14:4x wind registration | inputs: ERA5 10/100 m same domain/hours, model level height stated | fail-5why: n/a]
+- REGISTERED (registered branch 'day -> surface heat flux'): ERA5 surface sensible heat flux, day band 10-16 local, same domain/starts
+  (blhland4_truth.json) vs model H. If model day H > 1.3x ERA5 -> the day fault is NAMED as the land heat flux (5-why on H next); if within,
+  the day BL growth itself (entrainment / K-profile) is examined. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]

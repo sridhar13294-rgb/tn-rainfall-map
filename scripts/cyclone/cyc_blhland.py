@@ -15,6 +15,9 @@ for s in ('2020-10-07', '2020-11-01', '2020-11-26'):
     for zz in ('10', '100'):                                                                         # 24 Nov: land wind by local hour (drag 5-why)
         W_ = np.array([np.hypot(A[zz + 'm_u_component_of_wind'].sel(time=t0 + np.timedelta64(h, 'h'), **box).values, A[zz + 'm_v_component_of_wind'].sel(time=t0 + np.timedelta64(h, 'h'), **box).values) for h in range(1, 25)])
         out[s]['ws%s_night' % zz] = f(np.where(nt, W_, 0).sum(0) / np.maximum(nt.sum(0), 1)); out[s]['ws%s_day' % zz] = f(np.where(dy, W_, 0).sum(0) / np.maximum(dy.sum(0), 1))
+    # 24 Nov: daytime sensible heat flux (ERA5 hourly accumulation J m-2, downward +) -> W m-2 upward
+    Hf = -np.array([A['surface_sensible_heat_flux'].sel(time=t0 + np.timedelta64(h, 'h'), **box).values for h in range(1, 25)]) / 3600.0
+    out[s]['H_day'] = f(np.where(dy, Hf, 0).sum(0) / np.maximum(dy.sum(0), 1)); out[s]['H_night'] = f(np.where(nt, Hf, 0).sum(0) / np.maximum(nt.sum(0), 1))
     print(s, out[s], flush=True)
-out['all'] = {k: round(float(np.mean([v[k] for v in out.values()])), 1) for k in ('mean', 'max', 'night', 'day', 'ws10_night', 'ws10_day', 'ws100_night', 'ws100_day')}
-os.makedirs('data/cyclone/wx', exist_ok=True); json.dump(out, open('data/cyclone/wx/blhland3_truth.json', 'w'), indent=1)
+out['all'] = {k: round(float(np.mean([v[k] for v in out.values()])), 1) for k in ('mean', 'max', 'night', 'day', 'ws10_night', 'ws10_day', 'ws100_night', 'ws100_day', 'H_day', 'H_night')}
+os.makedirs('data/cyclone/wx', exist_ok=True); json.dump(out, open('data/cyclone/wx/blhland4_truth.json', 'w'), indent=1)
