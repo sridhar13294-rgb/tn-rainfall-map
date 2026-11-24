@@ -5126,3 +5126,14 @@ running as a separate test) is NOT adopted on its own result unless this check p
   Bay/TN, 3 Nov starts, day 1: PASS if low cloud (sigma >= 0.8, max overlap) <= 1.3x ERA5 0.154 (<= 0.20) AND sigma-0.85 dT moves >= 50 % toward
   ERA5 ~0 from the land set's -0.40 (i.e. >= -0.20 K). Then part 3 on account 4: TN v850 d1 >= -1.0, z500 d5 <= lc_mix + 2 SE, TN rain >= 0.422 - 2 SE.
   [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 03:58 IST rhc_ifs LOCAL CHECK (land set + rhc_ifs, T42, Bay/TN, 3 Nov starts, day 1): low cloud max-overlap 0.344 -> 0.163 (1.06x ERA5 0.154) PASS; c_ls
+  0.62 -> 0.25; total cover 0.84 -> 0.77; sigma-0.85 dT -0.40 -> -0.26 K (36 % toward ERA5 ~0; rule >= 50 %) FAIL -> rhc_ifs HELD by the registered
+  rule. Budget: radiation -1.28 -> -1.13, deep heating +0.66 -> +0.48, dynamics +0.44 -> +0.53. [reg: 25 Nov 03:4x rhc_ifs registration | inputs:
+  same starts/grid, only rhc_ifs differs | fail-5why: below]
+- FAIL-5WHY: the named link (low-cloud excess) is fixed (cloud now = ERA5), but only part of the cooling went with it: radiation at 850 is still
+  -1.13 K/day with ERA5-like cloud (close to a clear-sky tropical value) and the deep-convective heating FELL (less cloud -> less LW cooling of the
+  column above -> less instability). So the 850 cold bias has a second input: too little convective/BL heating into 850 (the slow-start / 19 Nov
+  'missing heating' line). The 850 dT rule is a PROXY for the steering; the steering itself has not been measured with the named fix.
+  REGISTERED (new measurement, rule set now, before any result): part-3 Kaggle job tn-rhcifs = land set + rhc_ifs (account 4): TN v850 d1 >= -1.0
+  -> steering NAMED as fixed by the cloud mapping; z500 d5 <= lc_mix + 2 SE; TN rain >= 0.422 - 2 SE. rhc_ifs stays HELD unless all three pass.
+  [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
