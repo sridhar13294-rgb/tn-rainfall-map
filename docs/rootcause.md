@@ -5093,3 +5093,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - 03:28 IST tn-ls-no-sfc-mo-h (land set minus sfc_mo_h, part 3, 18 starts, 0 failed): z500 d5 64.04 (paired vs land set -0.11 +/- 0.10; rule <= -0.38)
   -> sfc_mo_h NOT named as the cost; india t2 d5 3.41 (land set 3.40). Remaining: no_sbl_ifs (running), no_sfc_mo (queued).
   [reg: 25 Nov 00:2x cost-split registration | inputs: part-3, paired with tn-landset | fail-5why: n/a]
+- 03:38 IST LOW CLOUD BY COMPONENT (land set, Bay/TN, day 1, sigma >= 0.8 random): c_ls 0.623, c_tow 0.084, c_anv 0.000 -> c_ls (RH-based large-scale
+  cloud) holds 98 % -> NAMED. [reg: 25 Nov 03:1x component registration | inputs: same run | fail-5why: n/a]
+- 5-why next: c_ls = Sundqvist mapping of RH; IFS has no diagnostic RH-cloud (prognostic Tiedtke cloud), so the reference is ERA5 itself:
+  STATE vs MAPPING. REGISTERED (before the result): our mapping applied to ERA5's OWN instantaneous RH (1000-800 hPa, 25-hPa levels, max-random
+  overlap, p > 0.8 ps), Bay/TN, same 3 starts, 8 hours of day 1 (cyc_clsbay.py, 'clsbay truth'). MAPPING NAMED if scheme(ERA5 RH) >= 1.5x ERA5
+  lcc (our scheme makes too much cloud even from the right humidity); otherwise the model's STATE (its RH, esp. the +5-9 pt 925 rise) is NAMED.
+  [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
