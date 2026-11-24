@@ -5085,3 +5085,8 @@ running as a separate test) is NOT adopted on its own result unless this check p
   ERA5's definition (sigma >= 0.8, random overlap) over Bay/TN, lc_mix + land set, same 3 starts/day 1, vs ERA5 lcc 0.154: LOW-CLOUD EXCESS NAMED
   for the 850 cooling if >= 1.5x; otherwise the 850 radiative cooling is clear-sky-like and the cold bias is a missing HEATING (back to the
   shallow/BL heating chain of 19 Nov). [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 03:14 IST LOW CLOUD, ERA5 definition (sigma >= 0.8; land set; Bay/TN; 3 starts; day 1): random overlap 0.637, maximum overlap 0.344 vs ERA5 lcc 0.154
+  (4.1x / 2.2x; >= 1.5x either way) -> LOW-CLOUD EXCESS NAMED for the Bay 850 radiative cooling (-1.28 K/day). Yet daily-mean RH at 850 is close
+  to ERA5 (0.755 vs 0.743 d1), so the excess comes from WHICH cloud component or the sub-daily/level mapping. REGISTERED (before the result): low
+  cloud by component (c_ls RH-based, c_tow convective tower, c_anv anvil), same run: the component holding >= 50 % is NAMED and then compared with
+  its IFS counterpart. [reg: 25 Nov 03:0x low-cloud registration + this line (component registration) | inputs: ERA5 lcc same box/day | fail-5why: n/a]
