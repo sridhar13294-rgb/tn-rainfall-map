@@ -248,7 +248,7 @@ class Model:
                      rain=jnp.zeros(zs.shape, jnp.float32), t=jnp.float32(0.0), sst0=jnp.asarray(sst, jnp.float32), T0=jnp.asarray(sg['t'], jnp.float32),
                      prm=self.params())
         if self.S.get('evap_out', 0): carry['evap'] = jnp.zeros(zs.shape, jnp.float32)
-        if self.S.get('conv_diag', 0): carry['ondp'] = jnp.zeros(zs.shape, jnp.float32); carry['onsh'] = jnp.zeros(zs.shape, jnp.float32)
+        if self.S.get('conv_diag', 0): carry['ondp'] = jnp.zeros(zs.shape, jnp.float32); carry['onsh'] = jnp.zeros(zs.shape, jnp.float32); carry['shq85'] = jnp.zeros(zs.shape, jnp.float32); carry['shmb'] = jnp.zeros(zs.shape, jnp.float32)
         if self.S.get('sfc_mo', 0): carry['q0v'] = jnp.zeros(zs.shape, jnp.float32)              # kinematic virtual heat flux of the last step (w*)
         if self.S.get('stress_out', 0): carry['tx'] = jnp.zeros(zs.shape, jnp.float32); carry['ty'] = jnp.zeros(zs.shape, jnp.float32); carry.update({k: jnp.zeros(zs.shape, jnp.float32) for k in ('fsta', 'staba', 'txn', 'zmo', 'wsta')})
         if self.S.get('land_rc', 0): carry['swd'] = jnp.zeros(zs.shape, jnp.float32)              # downward surface SW of the last step (canopy f1)
@@ -929,6 +929,9 @@ class Model:
         cm = reg & ok[None]
         mu = ((u * mass) * cm).sum(0) / jnp.maximum((mass * cm).sum(0), 1.0); mv = ((v * mass) * cm).sum(0) / jnp.maximum((mass * cm).sum(0), 1.0)
         dT = dT + dTc + dTs; dq = dq + dqc + dqs
+        if self.S.get('conv_diag', 0):                                                              # 25 Nov: shallow-scheme size diagnostics (output only)
+            k85 = int(np.argmin(np.abs(np.asarray(self.coords.vertical.centers) - 0.85)))
+            self._shd = dict(shq85=dqs[k85] * jnp.ones_like(ps), shmb=(self._sh2_diag['Mb'] if (S['shallow'] == 'mf' and getattr(self, '_sh2_diag', None) is not None and self.S.get('sh_ifs2', 0)) else jnp.zeros_like(ps)))
         du_pre, dv_pre = du, dv                                                                    # momentum budget diagnostic (CMT part)
         if self.S.get('cmt_mf', 0) and (S['conv'] == 'mf' or self.S.get('phys_ifs', 0)) and getattr(self, '_cmt_M', None) is not None:
             # mass-flux convective momentum transport (Gregory et al. 1997; ECMWF IFS): du/dt = g d/dp [M (u_u - u)],
@@ -1116,6 +1119,7 @@ class Model:
         hbl_ifsi = jnp.where((k2 >= 0) & (k2 <= Lv - 2), y_lo + jnp.clip((0.25 - q_lo) / jnp.maximum(q_hi - q_lo, 1e-6), 0.0, 1.0) * (y_hi - y_lo), hbl_ifs)
         diag.update(hbl=hbl, zlcl=zlcl, hbl_ifs=hbl_ifs, hbl_tm=hbl_tm, excess=excess, hbl10=hbl10, hbl10i=hbl10i, hbl_ifsi=hbl_ifsi)
         diag.update(rain_csrc=jnp.sum(Pconv_src, 0), rain_lsrc=jnp.sum(src, 0), ev_prof=ev)   # diagnostic only (20 Nov): rain produced by convection / grid-scale, evaporation per layer
+        if self.S.get('conv_diag', 0) and getattr(self, '_shd', None) is not None: diag.update(**self._shd)
         if S['conv'] == 'mf': diag.update(on_dp=on_dp, on_sh=on_sh, on_bmjsh=(shallow & ~okmf).astype(jnp.float32))
         if 'on_mid' in locals(): diag.update(on_mid=on_mid)
         if S['conv'] == 'mf':
@@ -1265,6 +1269,7 @@ class Model:
         out = dict(cr, sst=sst, tl=tl, w=w, rain=cr['rain'] + dt * d['rain'], t=cr['t'] + dt)
         if 'ondp' in cr: out['ondp'] = cr['ondp'] + dt * d['on_dp']                                   # conv_diag: time-integrated deep-active flag
         if 'onsh' in cr: out['onsh'] = cr['onsh'] + dt * d['on_sh']                                   # conv_diag: time-integrated shallow-active flag
+        if 'shq85' in cr: out['shq85'] = cr['shq85'] + dt * d['shq85']; out['shmb'] = cr['shmb'] + dt * d['shmb']
         if 'q0v' in cr: out['q0v'] = d['H'] / (1.2 * CP) + 0.61 * 290.0 * d['E'] / 1.2          # Q0v = H/(rho cp) + 0.61 T E/rho (rho 1.2, T 290)
         if 'tx' in cr: out['tx'] = cr['tx'] + dt * d['tx']; out['ty'] = cr['ty'] + dt * d['ty']; out['fsta'] = cr['fsta'] + dt * d['fst']; out['staba'] = cr['staba'] + dt * d['stab']; out['txn'] = cr['txn'] + dt * d['txn']; out['zmo'] = cr['zmo'] + dt * d['zmo']; out['wsta'] = cr['wsta'] + dt * d['wst']          # stress_out: time-integrated surface stress (N m-2 s)
         if 'evap' in cr: out['evap'] = cr['evap'] + dt * d['E']                                     # evap_out: total surface evaporation since start (kg m-2)
@@ -1341,6 +1346,7 @@ class Model:
             ex = dict(evap=cr['evap']) if 'evap' in cr else {}
             if 'ondp' in cr: ex.update(ondp=cr['ondp'])
             if 'onsh' in cr: ex.update(onsh=cr['onsh'])
+            if 'shq85' in cr: ex.update(shq85=cr['shq85'], shmb=cr['shmb'])
             if 'tx' in cr: ex.update(tx=cr['tx'], ty=cr['ty'], fsta=cr['fsta'], staba=cr['staba'], txn=cr['txn'], zmo=cr['zmo'], wsta=cr['wsta'])
             return dict(**ex, z500=to_p(phi, lp, 50000.0) / G, t850=t850, mslp=mslp, rain=cr['rain'], t2=t2, t2_old=T[-1] + 0.0065 * (z1 - 2.0),
                         u850=to_p(u, lp, 85000.0), v850=to_p(v, lp, 85000.0), u200=to_p(u, lp, 20000.0), v200=to_p(v, lp, 20000.0),
@@ -1439,7 +1445,7 @@ def iau_init(M, st_pre, cr_pre, st_t0, window_h=6.0, pieces=6):
         s = dataclasses.replace(s, **{f: getattr(s, f) + inc[f] / pieces for f in flds},
                                 tracers={k: jnp.maximum(s.tracers[k] + inc_q[k] / pieces, 0.0) for k in s.tracers})
         s, c = integrate(M, s, c, window_h / pieces)
-    for k in ('rain', 'evap', 'tx', 'ty', 'txn', 'fsta', 'staba', 'zmo', 'wsta', 'ondp', 'onsh'):
+    for k in ('rain', 'evap', 'tx', 'ty', 'txn', 'fsta', 'staba', 'zmo', 'wsta', 'ondp', 'onsh', 'shq85', 'shmb'):
         if k in c: c = dict(c, **{k: jnp.zeros_like(c[k])})
     return s, c
 def bred_vectors(M, state, carry, n=6, hours=12.0, seed=0, amp=1.0):
