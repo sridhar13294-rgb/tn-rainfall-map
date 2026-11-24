@@ -4712,3 +4712,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   parcel / closure), not an initialisation one. The failure traces to the diagnosis (my 'cold-start balance' reading of 23 Nov was
   incomplete), not to a coding fault in IAU. NEXT: reference diff of the deep trigger and CAPE closure vs IFS Cy47r1 6.x on the same
   column states (h0 ERA5 columns where IFS-ERA5 rains and we do not).
+- 11:01 REFERENCE DIFF found (deep trigger): our deep convection exists only if the FULLY entraining updraught (eps = entr (1.3 - RH) ...)
+  reaches an LFC, > mf_dmin depth and CAPE > 50 J/kg; IFS decides existence/type with a weakly entraining TEST parcel (eq. 6.18,
+  eps = 0.8/z + 3e-4) and calls it deep when that cloud is > 200 hPa deep - our test parcel is used only for SHALLOW. A stricter trigger
+  at ERA5's state = exactly the 'fires in 64 % of later columns' finding. Fix option dp_test (coded, default OFF): deep existence from
+  the IFS test parcel (> 200 hPa), updraught unchanged for mass flux/closure. No new constants.
+  REGISTERED (T85 local, lc_mix + dp_test, Jan K=1 / Jul K=36, ctl = 0.62 / 0.64): FIX WORKS if tropical d1 rain / ERA5 >= 0.85 on both
+  AND <= 1.15 (no overshoot) AND z500 d1 rmse NH/SH not worse than ctl by > 5 %. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]

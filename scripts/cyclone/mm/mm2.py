@@ -373,6 +373,7 @@ class Model:
             if shallow:                                                                                 # sh_eps > 0 (10 Nov, IFS Cy50r1 eq. 6.7): shallow entrainment
                 eps = jnp.where(S['sh_eps'] > 0, S['sh_eps'] * (1.3 - rk) * jnp.power(jnp.clip(qsat(Te, pk) / qs_src, 1e-3, 1.0), 3.0), eps)   # = 2 x 1.75e-3 (1.3 - RH) f_scale
                 if test: eps = 0.8 / jnp.maximum(zk, 10.0) + 3e-4                                      # IFS eq. 6.18: weakly entraining TEST parcel decides if shallow convection exists
+            if test and not shallow: eps = 0.8 / jnp.maximum(zk, 10.0) + 3e-4                         # dp_test: same IFS test parcel (eq. 6.18) decides DEEP existence
             if mid is not None: eps = 2.0 * eps                                                       # midlev: f_eps = 2 for shallow / mid-level (IFS Cy50r1 eq. 6.7)
             # mf_mix_exact > 0 (18 Nov, A/P1 BOMEX): integrate the entrainment mixing d(phi_u)/dz = -eps (phi_u - phi_e) exactly over the
             # layer (phi_e + (phi_u - phi_e) exp(-eps dz)) instead of one explicit step, so the result does not depend on layer thickness
@@ -413,13 +414,19 @@ class Model:
         xs = tuple(a[::-1] for a in (Tn, q_in, h_in, p * jnp.ones_like(Tn), zc, sig * jnp.ones_like(Tn), rh_e, ii * jnp.ones(Tn.shape, jnp.int32)))
         (_, _, _, lfc, _, _, _), (inc, b, cond, hu, qu, eps_l) = jax.lax.scan(make_plume(False), (z0, z0, f0, f0, f0, z0 - 1.0, z0 + 0.5), xs)
         inc, b, cond, hu, qu, eps_l = [a[::-1] for a in (inc, b, cond, hu, qu, eps_l)]
-        if shallow and self.S.get('sh_eps', 0) > 0:                                                  # trigger from the IFS test parcel (eq. 6.18)
+        if (shallow and self.S.get('sh_eps', 0) > 0) or (not shallow and mid is None and self.S.get('dp_test', 0)):   # trigger from the IFS test parcel (eq. 6.18); dp_test (24 Nov): also for DEEP
             (_, _, _, _, _, _, _), (inc_t, _, cond_t, _, _, _) = jax.lax.scan(make_plume(True), (z0, z0, f0, f0, f0, z0 - 1.0, z0 + 0.5), xs)
             inc_t, cond_t = inc_t[::-1], cond_t[::-1]
         else:
             inc_t, cond_t = inc, cond
         sig_top = jnp.min(jnp.where(inc, sig, 1.0), axis=0); cape = (RD * jnp.maximum(b, 0) * dsig / sig * inc).sum(0)
         deep = lfc & ((sig_src - sig_top) * ps > S['mf_dmin']) & (cape > 50.0)   # mf_dmin: minimum cloud depth (Pa) for deep convection (ECMWF ~20000)
+        if (not shallow) and mid is None and self.S.get('dp_test', 0):
+            # dp_test (24 Nov, slow-start root: at ERA5's state our deep trigger fired in 64 % of its later columns): IFS decides whether deep
+            # convection exists from the weakly entraining TEST parcel's cloud depth (> 200 hPa, Part IV 6.x / eq. 6.18), not from the fully
+            # entraining updraught; the updraught (eps above) still sets the mass flux, CAPE closure and heating. No CAPE threshold in the test.
+            sig_top_t = jnp.min(jnp.where(inc_t, sig, 1.0), axis=0)
+            deep = ((sig_src - sig_top_t) * ps > 20000.0) & (cond_t > 0).any(0) & (cape > 0.0)
         if shallow: deep = lfc & ((sig_src - sig_top) * ps <= 25000.0) & (cape > 0.0) & (sig_src > 0.8)      # 'deep' = this plume is active
         if mid is not None: deep = mid & (cond > 0).any(0) & (inc & (ii < ksrc[None])).any(0)            # midlev: active where the plume makes cloud and rises
         if shallow:
