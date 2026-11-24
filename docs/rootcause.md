@@ -5064,3 +5064,14 @@ running as a separate test) is NOT adopted on its own result unless this check p
   strong. REGISTERED (before the result): ERA5 low/total cloud over Bay/TN, same 3 starts, day 1 (cyc_lccbay.py, 'lccbay truth'). If model total
   cover > 1.2x ERA5 tcc (or low cloud > 1.3x ERA5 lcc; model 'low' = sigma >= 0.68, ERA5 = p > 0.8 ps - definitions differ, stated) -> cloud
   excess NAMED for the 850 cold bias. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 02:25 IST ERA5 CLOUD over Bay/TN (3 Nov starts, day 1): tcc 0.593, lcc 0.154. Model lc_mix: total cover 0.84 (1.42x > 1.2x), low random-overlap
+  0.67 (definitions differ). Rule -> CLOUD EXCESS NAMED for the Bay 850 cold bias. [reg: 25 Nov 02:2x lccbay registration | inputs: ERA5 tcc/lcc
+  same box/starts/day | fail-5why: n/a]
+- 5-why, using what is already established (19 Nov 11:50-13:19, subtropical ocean; same chain): the cloud excess FOLLOWS a low-level cooling
+  (T-driven RH rise, 62 %), whose trigger is radiation not balanced by boundary-layer heating, because bl_lcl 1 caps the ocean BL at the LCL
+  (455 m vs ERA5 821) and traps the surface heat below 925 hPa. bl_lcl 0 fixed the ocean BL (1036 m, 1.26x) and the 925 physics, but was HELD
+  because the LAND afternoon BL went too deep (daily max 1.47x) and the remaining cooling was the weak descent. NEW since then: the land day
+  BL is now fixed at its root (bl_exc_ws: excess 2.65 -> 0.8 K; day 1.38x -> 1.16x). The land objection to bl_lcl 0 may no longer hold.
+  REGISTERED (before any run): local T42, 3 starts, candidate land set + bl_lcl 0: (i) land 20-40 N day-1 daily-max hbl <= 1.3x ERA5 1507 and day
+  hbl_ifsi within 1.3x ERA5-L134; (ii) Bay/TN sigma-0.85 day-1 dT moves >= 50 % toward ERA5 (~0) from lc_mix-land-set's value (measured in the
+  same run set). If both pass -> part-3 Kaggle job for TN v850 / rain / z500 gates. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
