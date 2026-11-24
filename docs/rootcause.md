@@ -4670,3 +4670,6 @@ running as a separate test) is NOT adopted on its own result unless this check p
   VERDICT with BASE3 as the control (the registered Stage-1 base; no separate Tracks control was written - stated so the user can
   overrule): Tracks CLOSED (tol). Real cost carried to Stage 2: tracks 13-20 % worse than BASE3 (the lc_mix land/conv/late sets).
   [reg: Tracks gate +10 % (early Nov) + rule 10 | inputs: ERA5 positions from peak_targets, same storm keys paired | fail-5why: n/a (pass)]
+- 09:40 REGISTERED P-pole re-score under rule 10: gate = masked global t700 d2 |bias| <= 0.6 at the T42 screen (starts 56/61/66). Candidate
+  lc_mix + sl_vcubic measured -0.624 on 21 Nov (FAIL by 0.024, pooled). Rule-10 SE = sd of the per-start values / sqrt(3), so run the same
+  harness one start at a time (local T42). PASS (tol) if |mean| <= 0.6 + 2 SE; note n = 3 makes SE coarse. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
