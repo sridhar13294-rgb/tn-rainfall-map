@@ -4829,3 +4829,6 @@ running as a separate test) is NOT adopted on its own result unless this check p
   (T42 lc_mix, 3 starts): PASS if model day hbl within 1.3x ERA5 1206 and night not deeper than ctl 414. Then Kaggle part 3 tn-blexc
   (lc_mix + bl_exc_ws): globe z500 d5 RMSE <= lc_mix 65.9 + 2 SE, india t2 RMSE d1-d5 <= lc_mix + 2 SE. Night fault: sbl_ifs combined
   after (one variant per job). [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 15:28 IST bl_exc_ws LOCAL CHECK (T42 lc_mix, 3 starts): day hbl 1660 -> 1400 m (1.16x ERA5 1206; <= 1.3x) PASS; night 414 -> 412 (not deeper)
+  PASS; day excess 2.65 -> 0.81 K; day H 151.5 -> 153.6 (unchanged); daily mean 853 -> 773. -> local part PASSED; Kaggle part 3 tn-blexc
+  (account 4) queued for the forecast gates. [reg: 24 Nov 15:1x bl_exc_ws registration | inputs: same starts/domain, only bl_exc_ws differs | fail-5why: n/a]
