@@ -5100,3 +5100,16 @@ running as a separate test) is NOT adopted on its own result unless this check p
   overlap, p > 0.8 ps), Bay/TN, same 3 starts, 8 hours of day 1 (cyc_clsbay.py, 'clsbay truth'). MAPPING NAMED if scheme(ERA5 RH) >= 1.5x ERA5
   lcc (our scheme makes too much cloud even from the right humidity); otherwise the model's STATE (its RH, esp. the +5-9 pt 925 rise) is NAMED.
   [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 03:42 IST MAPPING CHECK (cyc_clsbay, Bay/TN, 3 starts x 8 hours, day 1): our Sundqvist mapping on ERA5's OWN RH (1000-800 hPa, p > 0.8 ps):
+  max-random 0.364, max 0.343, random 0.592 vs ERA5 lcc 0.154 -> 2.4x (>= 1.5x) -> MAPPING NAMED. ERA5 RH900 0.748 / RH850 0.734 (the model's
+  RH is close to these on d1). Our own run gave 0.344 max / 0.637 random - the same as the scheme on ERA5's humidity: the model STATE is not the
+  cause; the RH-cloud mapping makes ~2.4x ERA5's low cloud from the right humidity. [reg: 25 Nov 03:2x mapping registration | inputs: ERA5
+  instantaneous RH/T/q on 25-hPa levels, same box/starts/hours, our exact RHc profile and mixed-phase qs | fail-5why: n/a (named)]
+- CHAIN (stated as found, each link registered): TN steering bias (northerly v850) <- Bay/TN 850 cold (-0.7/-1.1 K d1/d2) <- radiation-led cooling
+  at 850 (-1.3 K/day) <- low-cloud excess (2.2-4.1x ERA5) <- c_ls 98 % <- Sundqvist RH-cloud mapping (2.4x ERA5 even on ERA5's RH). The old 'mse'
+  shallow scheme 'fixed' the steering only by over-heating 850 (+0.8 K/day) - right for the wrong reason, as its z500 cost (+5.5 m) showed.
+- 5-why on the mapping vs reference: the IFS has NO diagnostic RH-cloud; its cloud fraction is PROGNOSTIC (Tiedtke 1993, Part IV ch.7):
+  stratiform cloud forms only through sources (convective detrainment, BL turbulence, cooling with dqs/dt < 0 above RHcrit) and decays by
+  erosion/evaporation, so a humid but steady tropical BL (RH 0.75-0.85) does not carry a standing deck. Our diagnostic scheme puts cloud wherever
+  RH > RHc (0.8 near the surface). The IFS-faithful fix is the prognostic cloud-fraction equation (or its documented source/sink terms);
+  the decision on scope is for the morning report. [reg: this line (5-why, no run) | inputs: IFS Part IV ch.7 (prognostic cloud) | fail-5why: n/a]
