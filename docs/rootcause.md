@@ -5137,3 +5137,6 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED (new measurement, rule set now, before any result): part-3 Kaggle job tn-rhcifs = land set + rhc_ifs (account 4): TN v850 d1 >= -1.0
   -> steering NAMED as fixed by the cloud mapping; z500 d5 <= lc_mix + 2 SE; TN rain >= 0.422 - 2 SE. rhc_ifs stays HELD unless all three pass.
   [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 04:51 IST tn-ls-no-sbl-ifs (land set minus sbl_ifs, part 3, 18 starts, 0 failed): z500 d5 64.36 (paired vs land set +0.20 +/- 0.14; rule <= -0.38) ->
+  sbl_ifs NOT the cost (removing it is slightly worse); india t2 d5 3.25 (land set 3.40, tofd-only 3.30). Remaining: no_sfc_mo (queued after
+  tn-rhcifs). [reg: 25 Nov 00:2x cost-split registration | inputs: part-3, paired with tn-landset | fail-5why: n/a]
