@@ -4732,3 +4732,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
   D3 CLOSED as 'no defect at T170' (hyb kept as an option). The Asian jet speed error that remains (~-6 m/s d1 at T170 in base2) is NOT D3;
   it moves to the Tracks/steering investigation (steering = 500-850 hPa winds). [reg: 13 Nov T170 criterion + rule 10 | inputs: T170 screen,
   same starts, only hyb differs | fail-5why: n/a]
+
+## 24 Nov 11:16 IST - Tracks: steering diagnosis (from existing part-3 exam runs; diagnosis, not a verdict)
+- Storms drift left (west/south of the NW track) and go too far. Part-3 (Oct-Dec etc.) biases, TN / south India: lc_mix v850 d1/d2 -1.7 / -1.1
+  m/s (too NORTHERLY), BASE3 -0.3 / 0.0; u850 d2-d3 too easterly in BOTH (-2.5..-2.8). Existing denials: removing the CONV set brings TN v850 to
+  -0.4 / 0.0 (land -1.5, late -1.5, rad_every -1.7, land_rs -1.4, skin/imp -1.7) -> the extra northerly steering that turns storms left comes
+  with the conv set (~90 % of the lc_mix - BASE3 difference; measured post hoc, so it only directs the next test).
+- REGISTERED: split the conv set on part 3 (one variant per job): no_shmf (shallow mass-flux scheme items), no_deepmix (entr, mf_org,
+  mf_mix_exact), no_salrad (sfc_sal, rad_prm). A sub-group is NAMED for the steering if removing it brings TN v850 d1 to >= -1.0 m/s (>= 50 %
+  of the -1.4 difference), rule 10 SE stated. Then the named item is compared with its IFS reference (5-why) before any fix.
+  [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
