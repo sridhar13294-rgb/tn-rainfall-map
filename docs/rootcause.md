@@ -4811,3 +4811,21 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - REGISTERED (registered branch 'day -> surface heat flux'): ERA5 surface sensible heat flux, day band 10-16 local, same domain/starts
   (blhland4_truth.json) vs model H. If model day H > 1.3x ERA5 -> the day fault is NAMED as the land heat flux (5-why on H next); if within,
   the day BL growth itself (entrainment / K-profile) is examined. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 15:03 IST LAND DAY HEAT FLUX (20-40 N land, 3 starts, day 1, local 10-16): ERA5 H 120.1, model 151.5 W/m2 (1.26x); night -13.2 vs -13.0.
+  Rule (> 1.3x) NOT met -> heat flux NOT named (it adds ~12 % depth at most if BL ~ sqrt of heat input; the excess is 38 %).
+  [reg: 24 Nov 14:5x H registration | inputs: ERA5 hourly H same domain/hours | fail-5why: n/a]
+- Registered branch 'day BL growth'. Code read first: our hbl (diagnostic AND K-profile depth) adds a parcel excess 6.5 H/(rho cp u*) - with
+  u* in the denominator, where Troen-Mahrt use w_s ~ (u*^3 + 7 eps kappa w*^3)^(1/3) (~1.5-2 m/s by day) -> e.g. H 150, u* 0.3: ~3 K instead of
+  ~0.5 K. The IFS diagnostic BLH (3.10.1) has no excess at all.
+  REGISTERED (diagnostic, before the result): same run, model day hbl recomputed with the IFS definition (no excess; output-only field
+  hbl_ifs) and the mean day excess. If IFS-definition day hbl is within 1.3x of ERA5 1206 m -> the day fault is NAMED as the excess term
+  (u* instead of w_s), and a fix (w_s denominator, as Troen-Mahrt) is tested for the K-profile; if still > 1.3x, the K-profile growth is next.
+  [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 15:16 IST LAND DAY BL - excess diagnostic (same run): day excess 2.65 K (Troen-Mahrt scale ~0.5 K); IFS-definition day hbl 1450 m = 1.20x ERA5
+  1206 (model's own 1660 = 1.38x) -> within 1.3x -> the day fault is NAMED: the parcel-excess term (u* instead of w_s) - in the diagnostic AND
+  in the K-profile depth it sets. Night with the IFS definition 484 m (3.1x ERA5 158; no 100 m floor, no LCL cap) -> night fault confirmed separate.
+  [reg: 24 Nov 15:0x excess registration | inputs: same run, only the depth definition differs | fail-5why: n/a]
+- REGISTERED (before any run): option bl_exc_ws (excess = 6.5 H/(rho cp w_s), w_s = (u*^3 + 0.7 kappa w*^3)^(1/3), Troen-Mahrt). Local check
+  (T42 lc_mix, 3 starts): PASS if model day hbl within 1.3x ERA5 1206 and night not deeper than ctl 414. Then Kaggle part 3 tn-blexc
+  (lc_mix + bl_exc_ws): globe z500 d5 RMSE <= lc_mix 65.9 + 2 SE, india t2 RMSE d1-d5 <= lc_mix + 2 SE. Night fault: sbl_ifs combined
+  after (one variant per job). [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
