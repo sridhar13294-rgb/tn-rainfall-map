@@ -4881,3 +4881,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   2.65/2.87/3.15/3.27/3.40 (paired <= +0.01, within 2 SE) PASS. With the local land-BL part (day 1.38x -> 1.16x ERA5): bl_exc_ws ADOPTED into
   the Stage-1 candidate (day land BL fixed, neutral on forecast scores). Land BL row stays OPEN for the night part.
   [reg: 24 Nov 15:1x bl_exc_ws registration | inputs: part-3 exam, same 18 starts paired with tn-lcm-wx3 | fail-5why: n/a]
+- 17:41 IST tn-land170-ctl (lc_mix, T170, 3 starts): night wind 7.60 m/s (T42 6.99 -> ratio 1.09x), night hbl 453 (T42 414), day hbl 1657 (1660),
+  day wind 5.03, day excess 2.58 K. Rule (T170 <= 0.85x T42 -> resolution named; > 0.95x -> cleared): 1.09x -> RESOLUTION CLEARED. At the exam
+  resolution the night fault is LARGER: wind 1.72x ERA5 (4.43), depth 2.9x (158). [reg: 24 Nov 16:3x resolution registration | inputs:
+  same 3 starts/domain/hours, only the grid differs | fail-5why: n/a]
+  Night remaining candidates (each measured ~7 % at T42): stable mixing (sbl_ifs), surface MO drag (sfc_mo), orographic blocking/GWD (gwd),
+  TOFD (not coded). tn-land170-excsbl (queued, acct 4) gives the sbl_ifs effect at T170 before any combination is registered.
+  [reg: this line (registration of order) | inputs: n/a | fail-5why: n/a]
