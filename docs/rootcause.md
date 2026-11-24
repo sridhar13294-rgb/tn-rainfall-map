@@ -5054,3 +5054,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
   The registered rule needs each process's ERA5 counterpart, which ERA5 does not provide per process -> the rule cannot be applied as written
   (stated). AMENDMENT (registered before the next result): compare with the same budget for the old-scheme run (T850 right): the term that
   carries >= 60 % of the dT difference (lc_mix minus old) is NAMED. [reg: this line (amendment before result) | inputs: model budget only | fail-5why: n/a]
+- 02:23 IST OLD-SCHEME BUDGET (same starts): dT +0.82 K (overshoots ERA5 ~0 the other way) = physics +0.26 [shallow 'mse' +4.87, evap -4.05,
+  radiation -0.81, deep +0.40, BL -0.15] + dynamics +0.56. Difference lc_mix - old = -1.29 K: shallow+evap pair -0.87 (67 %), radiation -0.56 (43 %),
+  deep +0.26, dynamics -0.15. Amended rule (>= 60 %) -> the old scheme's shallow-mixing heating pair is NAMED for the difference - but it is a
+  non-IFS mixing that over-heats 850 (+0.8 K/day) and over-cools 700 (-1.6 K): it is NOT a reference to copy. [reg: 25 Nov 02:1x amendment |
+  inputs: model budgets, same starts/grid | fail-5why: below]
+- FAIL-5WHY (against ERA5, not the old scheme): lc_mix's own 850 cooling is radiation-led (-1.36 K/day with low cloud random-overlap 0.67,
+  total cover 0.84; old scheme -0.81 with 0.59). If lc_mix's low cloud over the Bay is too much vs ERA5, cloud-top LW cooling at ~850 is too
+  strong. REGISTERED (before the result): ERA5 low/total cloud over Bay/TN, same 3 starts, day 1 (cyc_lccbay.py, 'lccbay truth'). If model total
+  cover > 1.2x ERA5 tcc (or low cloud > 1.3x ERA5 lcc; model 'low' = sigma >= 0.68, ERA5 = p > 0.8 ps - definitions differ, stated) -> cloud
+  excess NAMED for the 850 cold bias. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
