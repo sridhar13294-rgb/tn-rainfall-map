@@ -5011,3 +5011,14 @@ running as a separate test) is NOT adopted on its own result unless this check p
   cloud-layer moistening/heating of the two schemes and the MF cloud-base mass flux with IFS-typical values (shallow Mb ~0.01-0.03 kg m-2 s-1);
   if the MF flux is << IFS-typical, the MF scheme's STRENGTH is NAMED (too weak) and its closure (eq. 6.32 full tendency, registered in
   reserve) is next. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+
+## 25 Nov 01:29 IST - LAND BL: CLOSED
+- tn-land170-full (T170, full land set, 3 starts, sigma_flt loaded): night wind 5.43 m/s (1.23x ERA5 4.43; <= 5.8) PASS; night H -16.3 W/m2 (1.23x
+  ERA5 -13.2; 0.7-1.3x) PASS; hbl_ifsi night 292 m (0.93x ERA5-L134 315) PASS, day 1249 m (1.04x of 1205) PASS. With tn-landset (forecast gates
+  vs lc_mix PASS, 24 Nov 23:3x): both registered closure parts pass -> LAND BL CLOSED. Root causes named and fixed: (day) parcel excess with u*
+  instead of w_s (bl_exc_ws); (night) missing turbulent orographic form drag (tofd) + Louis-sharp stable exchange for heat (sfc_mo + sfc_mo_h) +
+  K-profile without a stable branch (sbl_ifs); the night-depth gap left after that was the reference height of the measure (ERA5 model levels).
+  [reg: 24 Nov 20:0x Land BL closure registration | inputs: T170 exam resolution, ERA5 same domain/starts/bands, ERA5-L134 reference | fail-5why: n/a]
+- Still open from this item (stated, not a limitation accepted): the three night items cost z500 d5 +0.52 +/- 0.14 m vs tofd alone. Registered
+  question stands: split sbl_ifs / sfc_mo / sfc_mo_h on part 3 when GPU allows, to keep the land fix at the least skill cost.
+  [reg: 24 Nov 23:3x question registration | inputs: n/a | fail-5why: n/a]
