@@ -5075,3 +5075,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED (before any run): local T42, 3 starts, candidate land set + bl_lcl 0: (i) land 20-40 N day-1 daily-max hbl <= 1.3x ERA5 1507 and day
   hbl_ifsi within 1.3x ERA5-L134; (ii) Bay/TN sigma-0.85 day-1 dT moves >= 50 % toward ERA5 (~0) from lc_mix-land-set's value (measured in the
   same run set). If both pass -> part-3 Kaggle job for TN v850 / rain / z500 gates. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 03:02 IST bl_lcl 0 RE-TEST (local T42, 3 starts, with the land set): (i) land daily-max hbl 1836 (1.22x ERA5 1507) PASS, hbl_ifsi day 1205 (1.00x) PASS
+  - the 19 Nov land objection is GONE (bl_exc_ws fixed it at the root); (ii) Bay/TN sigma-0.85 day-1 dT -0.40 (land set) -> -0.68 K (bl_lcl 0):
+  WORSE, not 50 % better -> FAIL; bl_lcl 0 HELD. Its budget: radiation -1.28 -> -1.88 K/day (deeper BL lifts moisture to ~850 -> more cloud-top
+  LW cooling there), dynamics +0.44 -> +0.68. [reg: 25 Nov 02:4x bl_lcl 0 registration | inputs: same starts/grid, only bl_lcl differs | fail-5why: below]
+- CAVEAT on my 02:3x 'cloud excess NAMED': I compared TOTAL cover (0.84 vs ERA5 0.59), which includes high cloud (anvil/cirrus excess known since
+  18 Nov) that does not cool 850. The 850 cooling needs LOW cloud with ERA5's definition (p > 0.8 ps). Daily-mean pressure-level RH-cloud from our
+  scheme is close to ERA5's at 850 on d1 (0.134 vs 0.121), off at 925 by d2 (0.26 vs 0.14). REGISTERED (before the result): model low cloud with
+  ERA5's definition (sigma >= 0.8, random overlap) over Bay/TN, lc_mix + land set, same 3 starts/day 1, vs ERA5 lcc 0.154: LOW-CLOUD EXCESS NAMED
+  for the 850 cooling if >= 1.5x; otherwise the 850 radiative cooling is clear-sky-like and the cold bias is a missing HEATING (back to the
+  shallow/BL heating chain of 19 Nov). [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
