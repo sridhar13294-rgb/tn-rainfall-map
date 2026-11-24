@@ -4726,3 +4726,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
   LESS often - my 'weakly entraining = looser trigger' statement was wrong in the lower layers. The diff is real but acts the other way;
   it is not the slow-start cause. Remaining slow-start leads (unchecked vs IFS): source-parcel definition (IFS: departure from the
   surface-flux-based excess, eqs 6.12-6.14), closure time scale (IFS tau = Hc/w x (1 + 264/N), ours fixed 40 min).
+- 11:15 D3 RE-SCORE: D3 = 'sigma coordinate over Tibet costs the Asian jet'. Its registered T170 test (13 Nov) measured the effect of the fix
+  (hybrid coordinate): Asia jet d1-d3 +0.1 m/s mean vs the 0.5 m/s the problem would need -> at the exam resolution the sigma slope does NOT
+  produce a measurable jet loss. Under rule 10 the question is whether a defect exists, and the measured effect (+0.1) is inside noise. =>
+  D3 CLOSED as 'no defect at T170' (hyb kept as an option). The Asian jet speed error that remains (~-6 m/s d1 at T170 in base2) is NOT D3;
+  it moves to the Tracks/steering investigation (steering = 500-850 hPa winds). [reg: 13 Nov T170 criterion + rule 10 | inputs: T170 screen,
+  same starts, only hyb differs | fail-5why: n/a]
