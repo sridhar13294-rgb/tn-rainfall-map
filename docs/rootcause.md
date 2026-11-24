@@ -4678,3 +4678,15 @@ running as a separate test) is NOT adopted on its own result unless this check p
   (-0.471). => P-pole CLOSED (tol) on its gate. Real cost carried to Stage 2: the poleward-40 700 hPa cold itself is still -0.96 K at
   T42 (-0.82 at T170 for lc_mix), contributors sized: mid-level convection ~30 %, shallow-top ~25 %, resolution ~25 %, cubic 15 %.
   [reg: 09:4x | inputs: same harness/starts/mask as 21 Nov, per-start runs reproduce the pooled value | fail-5why: n/a (pass); SE from n = 3 is coarse - stated]
+
+## 24 Nov 10:08 IST - CORRECTIONS (user 10:06-10:07): 'Stage 2' misuse; Tracks gate; plan
+- I used 'Stage 2' for 'later fixes'. In the plan Stage 2 = 3-D ocean. The open items are atmosphere items and belong to Stage 1;
+  Stage 1 closes only when ALL are closed (user standard, no accepted known limitations). My 28 Nov freeze recommendation is WITHDRAWN.
+- Tracks: I scored against a control +10 %. The REGISTERED Stage-1 Tracks gate (5 Nov, eased 9 Nov) is: trend/turns match the real storm
+  AND 72-h mean position error <= 280-290 km. Candidate: 72 h 450 km (SE ~20) -> 450 > 290 + 2 SE -> FAIL; trend: 92 % within 45 deg but
+  a systematic left (west) drift (-197 km cross-track at 72 h) and 1.30x too far. => Tracks OPEN (FAIL). The 24 Nov 02:0x 'CLOSED (tol)'
+  is WITHDRAWN. [reg: 5/9 Nov Tracks gate + rule 10 | inputs: 52 storms at 72 h, ERA5 positions | fail-5why: track error = speed (too far)
+  + left drift -> steering too strong/turned; lc_mix sets worsen tracks vs BASE3 (+13-20 %) -> next: steering wind at 500-850 hPa vs ERA5
+  along the storm paths]
+- User 10:07: 'work on the open items and close'. Order: (1) slow-start initialisation (P5b, P2/P4, P5a, Day-10 share it); (2) Tracks
+  steering; (3) D3 re-score; (4) Land night BL root cause.
