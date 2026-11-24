@@ -5022,3 +5022,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - Still open from this item (stated, not a limitation accepted): the three night items cost z500 d5 +0.52 +/- 0.14 m vs tofd alone. Registered
   question stands: split sbl_ifs / sfc_mo / sfc_mo_h on part 3 when GPU allows, to keep the land fix at the least skill cost.
   [reg: 24 Nov 23:3x question registration | inputs: n/a | fail-5why: n/a]
+- 01:29 IST REGISTERED (the 0.5 m cost question): part 3, account 4, one variant per job, each = full land set minus one item: no_sbl_ifs,
+  no_sfc_mo_h, no_sfc_mo (minus sfc_mo AND sfc_mo_h, since h needs mo). An item is NAMED as the cost if removing it brings z500 d5 to within
+  1 SE of tofd-only (63.63, i.e. paired vs tn-landset <= -0.38); its land effect (night H / wind) is then weighed against the cost with the T170 land
+  script before deciding the candidate. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
