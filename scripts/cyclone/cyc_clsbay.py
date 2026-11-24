@@ -1,7 +1,7 @@
 """25 Nov (Bay 850 cold -> low-cloud excess -> c_ls named): apply OUR RH-cloud mapping (Sundqvist, RHc(sigma) = 0.7 + 0.1 exp(1 - sigma^-4),
 mixed-phase saturation, maximum-random overlap) to ERA5's OWN instantaneous RH on the 25-hPa pressure levels 1000-800 hPa (p > 0.8 ps)
 over Bay/TN 5-20 N 75-95 E, 3 starts x 8 hours of day 1, and compare with ERA5 lcc at the same times. GitHub 'clsbay truth' ->
-data/cyclone/wx/clsbay_truth.json"""
+data/cyclone/wx/clsbay2_truth.json"""
 import json, os, numpy as np, xarray as xr
 A = xr.open_zarr('gs://gcp-public-data-arco-era5/ar/full_37-1h-0p25deg-chunk-1.zarr-v3', storage_options={'token': 'anon'}, chunks=None)
 LV = [1000, 975, 950, 925, 900, 875, 850, 825, 800]
@@ -16,13 +16,17 @@ for s in ('2020-11-01', '2020-11-11', '2020-11-16'):
         T = A['temperature'].sel(time=t, level=LV, **box).values; q = A['specific_humidity'].sel(time=t, level=LV, **box).values
         p = np.array(LV, float)[:, None, None] * 100.0 * np.ones_like(T); sig = p / ps[None]
         rh = np.clip(q / qs_mix(T, p), 0, 1); rhc = 0.7 + 0.1 * np.exp(1.0 - np.maximum(sig, 0.05) ** -4.0)
-        c = 1.0 - np.sqrt(np.clip((1.0 - rh) / (1.0 - rhc), 0.0, 1.0)); c = np.where((sig >= 0.8) & (sig <= 1.0), c, 0.0)   # below ground / above 0.8 ps -> none
-        clr = np.ones(ps.shape); prev = np.zeros(ps.shape)                           # maximum-random overlap, bottom-up
-        for k in range(len(LV)):
-            ck = c[k]; clr = clr * (1.0 - np.maximum(ck, prev)) / np.maximum(1.0 - prev, 1e-6); prev = ck
-        cmr = 1.0 - clr; crand = 1.0 - np.prod(1.0 - c, 0); cmax = c.max(0)
+        def mr(rhc_):
+            c = 1.0 - np.sqrt(np.clip((1.0 - rh) / (1.0 - rhc_), 0.0, 1.0)); c = np.where((sig >= 0.8) & (sig <= 1.0), c, 0.0)   # below ground / above 0.8 ps -> none
+            clr = np.ones(ps.shape); prev = np.zeros(ps.shape)                       # maximum-random overlap, bottom-up
+            for k in range(len(LV)):
+                ck = c[k]; clr = clr * (1.0 - np.maximum(ck, prev)) / np.maximum(1.0 - prev, 1e-6); prev = ck
+            return 1.0 - clr, 1.0 - np.prod(1.0 - c, 0), c.max(0)
+        cmr, crand, cmax = mr(rhc)
+        rhc_i = np.where(sig > 0.8, 0.8 + 0.2 * ((np.minimum(sig, 1.0) - 0.8) / 0.2) ** 2, 0.8)     # 25 Nov: IFS eq. 7.27 RH_crit profile
+        cmr_i, _, cmax_i = mr(np.minimum(rhc_i, 0.999))
         W = np.cos(np.radians(la))[:, None] * np.ones(ps.shape); f = lambda X: round(float((X * W).sum() / W.sum()), 3)
-        out[f'{s}_{h}'] = dict(scheme_maxrand=f(cmr), scheme_rand=f(crand), scheme_max=f(cmax), era5_lcc=f(A['low_cloud_cover'].sel(time=t, **box).values),
+        out[f'{s}_{h}'] = dict(ifsrhc_maxrand=f(cmr_i), ifsrhc_max=f(cmax_i), scheme_maxrand=f(cmr), scheme_rand=f(crand), scheme_max=f(cmax), era5_lcc=f(A['low_cloud_cover'].sel(time=t, **box).values),
                                rh900=f(rh[4]), rh850=f(rh[6])); print(s, h, out[f'{s}_{h}'], flush=True)
 out['mean'] = {k: round(float(np.mean([v[k] for v in out.values()])), 3) for k in next(iter(out.values()))}
-os.makedirs('data/cyclone/wx', exist_ok=True); json.dump(out, open('data/cyclone/wx/clsbay_truth.json', 'w'), indent=1); print(out['mean'])
+os.makedirs('data/cyclone/wx', exist_ok=True); json.dump(out, open('data/cyclone/wx/clsbay2_truth.json', 'w'), indent=1); print(out['mean'])

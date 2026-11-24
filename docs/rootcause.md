@@ -5113,3 +5113,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
   erosion/evaporation, so a humid but steady tropical BL (RH 0.75-0.85) does not carry a standing deck. Our diagnostic scheme puts cloud wherever
   RH > RHc (0.8 near the surface). The IFS-faithful fix is the prognostic cloud-fraction equation (or its documented source/sink terms);
   the decision on scope is for the morning report. [reg: this line (5-why, no run) | inputs: IFS Part IV ch.7 (prognostic cloud) | fail-5why: n/a]
+- 03:42 IST REFERENCE CHECK of the mapping's critical RH (IFS Cy47r1 eq. 7.27): RH_crit = 0.8 for sigma <= 0.8 and 0.8 + 0.2 ((sigma - 0.8)/0.2)^2 below
+  (0.85 at sigma 0.9, 0.91 at 0.95 -> 1 at the surface). Ours: 0.7 + 0.1 exp(1 - sigma^-4) = 0.74 at 0.85, 0.76 at 0.9, 0.78 at 0.95 - 0.1-0.13 LOWER
+  in the boundary layer, exactly where the excess low cloud is. REGISTERED (before the result): the same ERA5-RH mapping check with the IFS RH_crit
+  profile (cyc_clsbay.py -> clsbay2_truth.json): RH_crit NAMED as the mapping fault if scheme(ERA5 RH, IFS RH_crit) max-random is within 0.7-1.3x
+  ERA5 lcc (0.108-0.200); then option rhc_ifs is coded, checked locally (Bay 850 dT, low cloud) and sent to the part-3 gates (TN v850, rain, z500).
+  [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
