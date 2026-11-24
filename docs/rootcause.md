@@ -4872,3 +4872,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   the 1.4-1.5x could be the test resolution, not the physics. REGISTERED (before the run): same script, ctl and bl_exc_ws+sbl_ifs at T85
   (local limit), 3 starts. If T85 night wind is <= 0.85x the T42 value, resolution is NAMED as a large input to the night gap and the night
   verdicts must be redone at T170 on Kaggle (one job); if T85 ~ T42 (> 0.95x), resolution is cleared. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 16:47 IST T85 local run of the registered resolution check: killed (exit 137, out of memory: the hourly column diagnostic at T85 needs > 7 GB).
+  The registered check moves to Kaggle at T170 (the exam resolution) with the SAME rule (T170 night wind <= 0.85x T42 6.99 / 6.71 -> resolution
+  NAMED): tn-land170-ctl (acct 1), tn-land170-excsbl = bl_exc_ws + sbl_ifs (acct 4), one variant per job, script land_t170.py smoke-tested at
+  T42 locally first. [reg: 24 Nov 16:3x resolution registration (unchanged rule; only where it runs) | inputs: n/a | fail-5why: n/a]
