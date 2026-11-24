@@ -4915,3 +4915,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
   Kaggle (forecast gates, one variant per job): tn-tofd = lc_mix + bl_exc_ws + tofd, part 3: globe z500 d5 <= lc_mix + 2 SE, india t2 d1-d5 <= lc_mix
   + 2 SE, TN v850 d1 reported. tn-land170-tofd = T170 night/day land check with bl_exc_ws + sbl_ifs + tofd: night wind <= 5.8 m/s, day hbl <= 1.3x.
   [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 19:03 IST NIGHT DEPTH from a 10 m reference (bl_exc_ws + sbl_ifs + tofd, T42, 3 starts): night hbl10 234 m vs ERA5 158 (1.48x; limit 205) -> NOT
+  named as the whole gap. Size: from the level-1 IFS definition (383 m, gap 225 m) to the 10 m reference (234, gap 76 m) the measurement level
+  accounts for ~2/3 of the night-depth gap; a real 1.48x remains. Night surface sensible heat flux -6.3 W/m2 vs ERA5 -13.2 (half): the surface
+  cools the air too weakly at night -> weaker inversion. [reg: 24 Nov 18:5x hbl10 registration | inputs: same run, only the reference level differs | fail-5why: next]
+  NEXT 5-why (measure before any run): why is night H half of ERA5 - stable heat-transfer cut (ch reduced like cd/cdn 0.16) vs skin/soil
+  cooling (skin_ifs) vs night downward LW. [reg: this line (registration of the next measurement) | inputs: n/a | fail-5why: n/a]
