@@ -8,6 +8,9 @@ for s in ('2020-10-07', '2020-11-01', '2020-11-26'):
     m = A['land_sea_mask'].sel(time=t0, **box).values > 0.5; W = np.cos(np.radians(la))[:, None] * np.ones(m.shape)
     f = lambda X: round(float((np.where(m, X, 0) * W).sum() / (W * m).sum()), 1)
     B = np.array([A['boundary_layer_height'].sel(time=t0 + np.timedelta64(h, 'h'), **box).values for h in range(1, 25)])
-    out[s] = dict(mean=f(B.mean(0)), max=f(B.max(0))); print(s, out[s], flush=True)
-out['all'] = {k: round(float(np.mean([v[k] for v in out.values()])), 1) for k in ('mean', 'max')}
-os.makedirs('data/cyclone/wx', exist_ok=True); json.dump(out, open('data/cyclone/wx/blhland_truth.json', 'w'), indent=1)
+    lo = A.longitude.values; lh = (np.arange(1, 25)[:, None] + lo[None, :] / 15.0) % 24          # local hour [24, lon]
+    nt = ((lh >= 21) | (lh <= 4))[:, None, :] * np.ones(B.shape, bool); dy = ((lh >= 10) & (lh <= 16))[:, None, :] * np.ones(B.shape, bool)
+    bn = np.where(nt, B, 0).sum(0) / np.maximum(nt.sum(0), 1); bd = np.where(dy, B, 0).sum(0) / np.maximum(dy.sum(0), 1)
+    out[s] = dict(mean=f(B.mean(0)), max=f(B.max(0)), night=f(bn), day=f(bd)); print(s, out[s], flush=True)
+out['all'] = {k: round(float(np.mean([v[k] for v in out.values()])), 1) for k in ('mean', 'max', 'night', 'day')}
+os.makedirs('data/cyclone/wx', exist_ok=True); json.dump(out, open('data/cyclone/wx/blhland2_truth.json', 'w'), indent=1)

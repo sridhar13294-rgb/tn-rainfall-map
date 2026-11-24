@@ -4780,3 +4780,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
   (-24 %), Bay/TN 0.225 -> 0.144 (-36 %); deep-active unchanged (0.116/0.119, 0.088/0.089); TN d1 rain 9.43 -> 9.26 mm (ERA5 22.35). Size is
   real (a third of Bay/TN shallow columns fail the IFS w test), day-1 rain does not move on one start -> the part-3 Kaggle job decides.
   [reg: 24 Nov sh_wtest registration (size step) | inputs: L2 library, lc_mix set, only sh_wtest differs | fail-5why: n/a]
+- 14:05 IST LAND NIGHT BL - sbl_ifs local check (T42 lc_mix, 3 starts, 20-40 N land, day 1 hourly): mean hbl ctl 853 -> sbl 800 m (ERA5 497:
+  1.72x -> 1.61x), daily max 1883 -> 1879 (1.25x). Registered rule (mean within 0.7-1.3x) -> FAIL. sbl_ifs HELD (not rejected).
+  [reg: 24 Nov land night BL registration | inputs: L2 library, lc_mix set, only sbl_ifs differs, ERA5 same domain/sampling | fail-5why: below]
+- FAIL-5WHY: (1) why so small a change? <- one start (11-01) with sbl_ifs, local 21-04 h: surface H < 0 in 96-100 % of night land points (the
+  stable branch IS active), night hbl only ~270-370 m, floor 100 m in <= 12 %. (2) Even removing ALL night depth could lower the 24-h mean by
+  ~120 m at most, but 853 -> <= 646 needs >= 207 m. (3) So the excess is NOT mainly at night: my 19 Nov reading 'mean 1.7x but max 1.24x ->
+  night' was an inference, not a measurement - it is withdrawn. (4) The gap sits in the transition/day hours or the comparison of hours.
+  REGISTERED (diagnostic, before the result): ERA5 BLH on the same domain/starts split by LOCAL hour, night 21-04 and day 10-16 (cyc_blhland.py
+  now writes blhland2_truth.json), and the model ctl/sbl the same way. The hour band with >= 60 % of the mean excess is NAMED as where the
+  fault is; then its 5-why. sbl_ifs is judged again on the night band only (within 1.3x of ERA5 night). [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
