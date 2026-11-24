@@ -4776,3 +4776,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   mean hbl ctl vs sbl_ifs. Then Kaggle part-3 job tn-sbl = lc_mix + sbl_ifs. CLOSED if (rule 10): land 20-40 N day-1 mean BLH within 0.7-1.3x
   ERA5 497 m AND daily max within 1.3x ERA5 1507 m, AND globe z500 d5 RMSE <= lc_mix + 2 SE, AND land t2 (india) RMSE d1-d5 not worse than
   lc_mix + 2 SE. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 13:33 IST sh_wtest SIZE CHECK (T85 lc_mix, 2020-11-16 start, 24 h; diagnostic step, not a verdict): shallow-active fraction tropics 0.289 -> 0.221
+  (-24 %), Bay/TN 0.225 -> 0.144 (-36 %); deep-active unchanged (0.116/0.119, 0.088/0.089); TN d1 rain 9.43 -> 9.26 mm (ERA5 22.35). Size is
+  real (a third of Bay/TN shallow columns fail the IFS w test), day-1 rain does not move on one start -> the part-3 Kaggle job decides.
+  [reg: 24 Nov sh_wtest registration (size step) | inputs: L2 library, lc_mix set, only sh_wtest differs | fail-5why: n/a]
