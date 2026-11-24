@@ -1,6 +1,6 @@
-tn-land170-excsbl
-libm_wx2020L2_fields.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore land_t170.py /kaggle/working/libm_wx2020L2_fields.npz '{"bl_exc_ws": 1, "sbl_ifs": 1}' excsbl /kaggle/working/land_excsbl.json > /kaggle/working/land.log 2>&1; grep "^#" /kaggle/working/land.log; tail -2 /kaggle/working/land.log
+tn-tr-no-shvent
+libm_wx2020L2_fields.npz,wx_truth_2020.npz
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/tr_no_shvent.json 3 4 /kaggle/working/wx_3.json > /kaggle/working/wx_3.log 2>&1; tail -3 /kaggle/working/wx_3.log
 NvidiaTeslaT4
-4
-#Land BL night: T170 resolution check (24 Nov 16:3x) 2026-11-24T11:38Z
+1
+#Tracks: shallow set split (24 Nov) 2026-11-24T13:04Z
