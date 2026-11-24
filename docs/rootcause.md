@@ -5090,3 +5090,6 @@ running as a separate test) is NOT adopted on its own result unless this check p
   to ERA5 (0.755 vs 0.743 d1), so the excess comes from WHICH cloud component or the sub-daily/level mapping. REGISTERED (before the result): low
   cloud by component (c_ls RH-based, c_tow convective tower, c_anv anvil), same run: the component holding >= 50 % is NAMED and then compared with
   its IFS counterpart. [reg: 25 Nov 03:0x low-cloud registration + this line (component registration) | inputs: ERA5 lcc same box/day | fail-5why: n/a]
+- 03:28 IST tn-ls-no-sfc-mo-h (land set minus sfc_mo_h, part 3, 18 starts, 0 failed): z500 d5 64.04 (paired vs land set -0.11 +/- 0.10; rule <= -0.38)
+  -> sfc_mo_h NOT named as the cost; india t2 d5 3.41 (land set 3.40). Remaining: no_sbl_ifs (running), no_sfc_mo (queued).
+  [reg: 25 Nov 00:2x cost-split registration | inputs: part-3, paired with tn-landset | fail-5why: n/a]
