@@ -4836,3 +4836,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   1.3x ERA5 158 m (<= 205 m) AND night lowest-level wind <= 1.3x ERA5 (<= 5.8 m/s at ~82 m). If it fails: 5-why on the input first - our
   lowest level is ~82 m (ERA5's ~10 m), so a surface inversion below 82 m is not seen by the bulk-Ri depth -> check with the 2 m / skin reference.
   [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 15:49 IST LAND NIGHT - bl_exc_ws + sbl_ifs local (3 starts): night hbl 323 m (2.05x ERA5 158) FAIL; night wind 6.71 m/s (1.51x of 4.43) FAIL;
+  day 1387 (1.15x) still PASS. Combination HELD. [reg: 24 Nov 15:4x night registration | inputs: same starts, ERA5 same hours | fail-5why: below]
+- FAIL-5WHY: (1) night wind stays 1.5x even with IFS stable mixing (and vs ERA5 100 m 4.6 it is still 1.46x, so not the 82 m interpolation)
+  <- (2) the momentum SINK at night is weak: surface stress <- (3) our land stable surface drag cd = cdn / (1 + 10 Rib)^2 (Louis 'sharp':
+  Rib 0.2 cuts cd by 89 %), while IFS 3.2 uses Monin-Obukhov with Holtslag-De Bruin stable functions (much milder reduction) <- (4) the
+  sharp function was kept from the first column model; sfc_mo (IFS MO, Holtslag) exists but was HELD on the ocean drag sink.
+  REGISTERED (before the run): local check bl_exc_ws + sbl_ifs + sfc_mo, same 3 starts, plus night mean Rib and cd/cdn printed (SIZE). NAMED
+  if night wind falls to <= 1.3x ERA5 (<= 5.8 m/s); night hbl reported against <= 205 m. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
