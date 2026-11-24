@@ -5119,3 +5119,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   profile (cyc_clsbay.py -> clsbay2_truth.json): RH_crit NAMED as the mapping fault if scheme(ERA5 RH, IFS RH_crit) max-random is within 0.7-1.3x
   ERA5 lcc (0.108-0.200); then option rhc_ifs is coded, checked locally (Bay 850 dT, low cloud) and sent to the part-3 gates (TN v850, rain, z500).
   [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 03:45 IST IFS RH_crit MAPPING CHECK (clsbay2, ERA5 RH, Bay/TN, 3 starts x 8 h): max-random 0.176, max 0.164 vs ERA5 lcc 0.154 (1.14x / 1.06x; within
+  0.7-1.3x; ours 0.364, 2.4x) -> RH_crit PROFILE NAMED: our critical RH is 0.1-0.13 too low in the boundary layer vs IFS eq. 7.27; with the IFS profile
+  the same mapping reproduces ERA5's low cloud from ERA5's humidity. [reg: 25 Nov 03:3x RH_crit registration | inputs: ERA5 RH/T/q, IFS eq. 7.27 | fail-5why: n/a]
+- REGISTERED (before the run): option rad_prm.rhc_ifs = IFS eq. 7.27 profile at all levels (coded in radcloud). Local T42 check, land set + rhc_ifs,
+  Bay/TN, 3 Nov starts, day 1: PASS if low cloud (sigma >= 0.8, max overlap) <= 1.3x ERA5 0.154 (<= 0.20) AND sigma-0.85 dT moves >= 50 % toward
+  ERA5 ~0 from the land set's -0.40 (i.e. >= -0.20 K). Then part 3 on account 4: TN v850 d1 >= -1.0, z500 d5 <= lc_mix + 2 SE, TN rain >= 0.422 - 2 SE.
+  [reg: this line (registration) | inputs: n/a | fail-5why: n/a]

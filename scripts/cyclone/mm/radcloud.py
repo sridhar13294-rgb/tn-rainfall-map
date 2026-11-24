@@ -173,6 +173,9 @@ def clouds(T, q, p, dp, ps, sea, conv_mask=None, conv_rain=None, conv_src=None, 
     P = dict(DEFAULTS); P.update(prm or {})
     mass = dp / G; sig = p / ps; qs = qsat(T, p, xp); rh = xp.clip(q / qs, 0.0, 1.0)
     rhc = P['rhc_up'] + (P['rhc_low'] - P['rhc_up']) * xp.exp(1.0 - xp.maximum(sig, 0.05) ** (-P['rhc_n']))
+    if P.get('rhc_ifs', 0.0) > 0:                                                # 25 Nov (Bay 850 cold -> low cloud -> mapping): IFS Cy47r1 eq. 7.27
+        rhc = xp.where(sig > 0.8, 0.8 + 0.2 * ((xp.minimum(sig, 1.0) - 0.8) / 0.2) ** 2, 0.8)   # RH_crit = 0.8 above sigma 0.8, rising to 1 at the surface
+        rhc = xp.minimum(rhc, 0.999)
     c_ls = 1.0 - xp.sqrt(xp.clip((1.0 - rh) / (1.0 - rhc), 0.0, 1.0))
     c_ls = xp.where(sig > P['sig_min'], c_ls, 0.0)
     qg = c_ls * P['b_ls'] * qs                                               # grid-mean condensate, kg/kg
@@ -324,6 +327,9 @@ def clouds(T, q, p, dp, ps, sea, conv_mask=None, conv_rain=None, conv_src=None, 
         a_ = xp.clip((T - 250.16) / (273.16 - 250.16), 0.0, 1.0) ** 2
         es_m = a_ * es_w + (1.0 - a_) * es_i; qs = 0.622 * es_m / xp.maximum(p - 0.378 * es_m, 1.0); rh = xp.clip(q / qs, 0.0, 1.0)
     rhc = P['rhc_up'] + (P['rhc_low'] - P['rhc_up']) * xp.exp(1.0 - xp.maximum(sig, 0.05) ** (-P['rhc_n']))
+    if P.get('rhc_ifs', 0.0) > 0:                                                # 25 Nov (Bay 850 cold -> low cloud -> mapping): IFS Cy47r1 eq. 7.27
+        rhc = xp.where(sig > 0.8, 0.8 + 0.2 * ((xp.minimum(sig, 1.0) - 0.8) / 0.2) ** 2, 0.8)   # RH_crit = 0.8 above sigma 0.8, rising to 1 at the surface
+        rhc = xp.minimum(rhc, 0.999)
     c_ls = 1.0 - xp.sqrt(xp.clip((1.0 - rh) / (1.0 - rhc), 0.0, 1.0))
     c_ls = xp.where(sig > P['sig_min'], c_ls, 0.0)
     qg = c_ls * P['b_ls'] * qs                                               # grid-mean condensate, kg/kg
