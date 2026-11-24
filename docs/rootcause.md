@@ -4697,3 +4697,6 @@ running as a separate test) is NOT adopted on its own result unless this check p
   Data: ERA5 at t0-6h for all 73 starts ('pre fields'). REGISTERED local test (T85, Jan K=1 and Jul K=36 starts, lc_mix + sl_vcubic):
   FIX WORKS if (a) tropical day-1 rain >= 0.85 x ERA5 (now 0.68) on both starts AND (b) z500 NH and SH d1 RMSE not worse than without
   IAU by > 5 %. If (a) fails, 5-why before any exam run. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 10:15 AMENDMENT (before any IAU result): local T85 with sl_vcubic is OOM-killed (6 GB) -> the local IAU test runs on lc_mix WITHOUT cubic
+  (the spin-up mechanism is in convection/boundary layer, not vertical advection); same rule. The exam check will use the full candidate.
+  [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
