@@ -4876,3 +4876,8 @@ running as a separate test) is NOT adopted on its own result unless this check p
   The registered check moves to Kaggle at T170 (the exam resolution) with the SAME rule (T170 night wind <= 0.85x T42 6.99 / 6.71 -> resolution
   NAMED): tn-land170-ctl (acct 1), tn-land170-excsbl = bl_exc_ws + sbl_ifs (acct 4), one variant per job, script land_t170.py smoke-tested at
   T42 locally first. [reg: 24 Nov 16:3x resolution registration (unchanged rule; only where it runs) | inputs: n/a | fail-5why: n/a]
+- 17:09 IST tn-blexc (lc_mix + bl_exc_ws, part 3, 18 starts, 0 failed; option active - variant T170_lcm_lc_blexc, t2 differs up to 0.02 K):
+  globe z500 d5 RMSE 65.90 -> 65.93 (paired +0.04 +/- 0.04; limit 65.90 + 2 x 1.95) PASS; india t2 RMSE d1-d5 2.65/2.87/3.14/3.25/3.39 ->
+  2.65/2.87/3.15/3.27/3.40 (paired <= +0.01, within 2 SE) PASS. With the local land-BL part (day 1.38x -> 1.16x ERA5): bl_exc_ws ADOPTED into
+  the Stage-1 candidate (day land BL fixed, neutral on forecast scores). Land BL row stays OPEN for the night part.
+  [reg: 24 Nov 15:1x bl_exc_ws registration | inputs: part-3 exam, same 18 starts paired with tn-lcm-wx3 | fail-5why: n/a]
