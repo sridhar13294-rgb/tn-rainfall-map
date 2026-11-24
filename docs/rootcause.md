@@ -4921,3 +4921,26 @@ running as a separate test) is NOT adopted on its own result unless this check p
   cools the air too weakly at night -> weaker inversion. [reg: 24 Nov 18:5x hbl10 registration | inputs: same run, only the reference level differs | fail-5why: next]
   NEXT 5-why (measure before any run): why is night H half of ERA5 - stable heat-transfer cut (ch reduced like cd/cdn 0.16) vs skin/soil
   cooling (skin_ifs) vs night downward LW. [reg: this line (registration of the next measurement) | inputs: n/a | fail-5why: n/a]
+- 19:04 IST NIGHT H measured from existing runs (T42, 3 starts, night band): ctl -13.0 W/m2 (= ERA5 -13.2) but the night fixes lower it: + sbl/exc
+  -10.1, + sfc_mo -8.0, + tofd -6.3. With the wind brought down to ERA5-like values, heat exchange falls with it: our land ck = 0.8 cdn x Louis-sharp
+  fst (night cd/cdn ~0.16), while the IFS uses MO with Holtslag-De Bruin for heat too (sfc_mo did momentum only). REGISTERED (before the run):
+  option sfc_mo_h (land heat exchange from the same MO solution); local T42 check bl_exc_ws + sbl_ifs + tofd + sfc_mo + sfc_mo_h. NAMED if night H
+  is within 0.7-1.3x ERA5 (-9.2..-17.2 W/m2) AND night hbl10 <= 205 m; night wind must stay <= 5.8 m/s, day hbl <= 1.3x ERA5.
+  [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 19:18 IST sfc_mo_h LOCAL CHECK (T42, 3 starts, bl_exc_ws + sbl_ifs + tofd + sfc_mo + sfc_mo_h): night H -14.1 W/m2 (1.07x ERA5 -13.2) PASS;
+  night wind 5.05 (1.14x) PASS; day hbl 1320 (1.09x) PASS; night hbl10 235 m (1.49x; limit 205) FAIL -> sfc_mo_h NAMED for the night heat
+  exchange; night depth still open. [reg: 24 Nov 19:0x sfc_mo_h registration | inputs: same 3 starts, only sfc_mo + sfc_mo_h differ | fail-5why: below]
+- FAIL-5WHY (diagnostic first): wind and surface cooling now match ERA5, yet the 10 m-reference depth does not move (234 -> 235) -> suspect
+  the depth measure itself: it returns the HEIGHT OF THE MODEL LEVEL where Ri first exceeds 0.25 (no interpolation); at T42/32 levels the
+  levels above 82 m are ~150-250 m apart, so the value is quantized upward; ERA5 (137 levels, ~20-30 m apart near the ground) is near-continuous.
+  REGISTERED (before the run): output-only hbl10i = same with linear interpolation in Ri between the bracketing levels; same run. If night hbl10i
+  <= 205 m, the remaining night-depth gap is NAMED as the depth diagnostic (quantization) and the night physics set (sbl_ifs + tofd + sfc_mo +
+  sfc_mo_h) goes to the Kaggle forecast gates. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 19:32 IST hbl10i (night set, T42, 3 starts): night 165 m (1.04x ERA5) - BUT the same measure gives DAY 1975 m (1.64x ERA5 1206). A depth measure
+  that is right at night and 64 % too deep by day is biased, not validated: the 10 m theta_v comes from the SKIN temperature through a log
+  profile (skin much warmer than air by day, colder at night), so it exaggerates the night inversion and the day instability. => NOT accepted
+  as evidence; quantization NOT named on it (my 18:5x/19:1x 10 m-reference idea had this flaw, stated). [reg: 24 Nov 19:2x hbl10i registration |
+  inputs: same run | fail-5why: reference biased by skin temperature]
+  REGISTERED (before the run): hbl_ifsi = IFS 3.10.1 definition (lowest model level reference, no excess, no skin) WITH Ri interpolation; run the
+  night set AND ctl (lc_mix), 3 starts. Quantization is NAMED only if the night set's hbl_ifsi is within 1.3x ERA5 at NIGHT (<= 205) AND by DAY
+  (<= 1568); ctl reported so the physics part and the measurement part are separated. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]

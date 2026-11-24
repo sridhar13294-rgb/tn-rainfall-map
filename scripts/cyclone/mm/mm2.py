@@ -136,7 +136,7 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='mf', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='radcloud', rad_every=2,
-                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, sh_wtest=0.0, sbl_ifs=0.0, bl_exc_ws=0.0, tofd=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, midlev=0.0, lsc_sub=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
+                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, sh_wtest=0.0, sbl_ifs=0.0, bl_exc_ws=0.0, tofd=0.0, sfc_mo_h=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, midlev=0.0, lsc_sub=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
@@ -640,13 +640,17 @@ class Model:
                 zt = jnp.clip(ribg * lm ** 2 / jnp.maximum(lh, 0.5), -5.0, 5.0)
                 usm = KARM * Vg / jnp.maximum(lm, 1.0)
                 z0m = jnp.where(sea, 0.11 * nu / jnp.maximum(usm, 0.01) + S['charnock'] * usm ** 2 / G, S['z0_land']); z0h = jnp.where(sea, 0.40 * nu / jnp.maximum(usm, 0.01), S['z0_land'] / 10.0)
-            pm, _ = psis(zt)
+            pm, ph = psis(zt)
             cd = (KARM / jnp.maximum(jnp.log(z1 / z0m) - pm, 1.0)) ** 2 * (Vg / V1) ** 2      # stress = rho cd V1 u1 with the gusty |U|
+            # sfc_mo_h (24 Nov, Land night BL 5-why: night H half of ERA5): the same MO / Holtslag-De Bruin solution for HEAT over land,
+            # ck = kappa^2 / ((ln(z1/z0m) - psi_m)(ln(z1/z0h) - psi_h)) (IFS 3.2), replacing cdn x Louis-sharp fst there; sea unchanged
+            ck_mo = KARM ** 2 / (jnp.maximum(jnp.log(z1 / z0m) - pm, 1.0) * jnp.maximum(jnp.log(z1 / z0h) - ph, 1.0)) * (Vg / V1)
             zt_d, wst_d = zt, wst
         # ck is a 10-m-height value (bulk formulas, COARE): brought to the lowest model level (~80 m) with the log law;
         # using it directly with the faster wind up there overstated sea evaporation by ~30% (ck_z=1 on, 0 off; off until tested)
         zfac = jnp.where(sea, (jnp.log(10.0 / z0) / jnp.log(z1 / z0)) ** 2, 1.0) ** S['ck_z']
         ckn = jnp.where(sea, S['ck'] * zfac, 0.8 * cdn); ck = ckn * fst
+        if self.S.get('sfc_mo', 0) and self.S.get('sfc_mo_h', 0): ck = jnp.where(sea, ck, ck_mo)
         rho = p1 / (RD * T1 * (1 + 0.61 * q1)); ust = jnp.sqrt(cd) * V1
         beta = jnp.where(sea, 1.0, jnp.clip(cr['w'] / (0.75 * S['bucket'] * 1000), 0, 1))
         # land_rs > 0 (track / P4 root cause, 5 Nov): land evaporation through a SURFACE resistance in series with the
@@ -1097,8 +1101,20 @@ class Model:
         z0d = jnp.where(self.land, 0.1, 2e-4); f10 = jnp.log(10.0 / z0d) / jnp.log(jnp.maximum(z1, 12.0) / z0d)   # 24 Nov: hbl10 diagnostic (output only)
         thv10 = thvs + f10 * (thv1 - thvs); rib10 = G * (zc - 10.0) * (thv - thv10) / (thv10 * Vz2)
         hbl10 = jnp.clip(jnp.min(jnp.where((rib10 > 0.25) & (zc > 10.0), zc, 3000.0), axis=0), 0.0, 3000.0)
+        # hbl10i (24 Nov): same, linearly interpolated in Ri between the first level above 0.25 and the level below it (as usual BLH diagnostics)
+        Lv = zc.shape[0]; kk = jnp.max(jnp.where((rib10 > 0.25) & (zc > 10.0), jnp.arange(Lv)[:, None, None], -1), axis=0)
+        kk_ = jnp.clip(kk, 0, Lv - 2); r_hi = jnp.take_along_axis(rib10, kk_[None], 0)[0]; r_lo = jnp.take_along_axis(rib10, (kk_ + 1)[None], 0)[0]
+        z_hi = jnp.take_along_axis(zc, kk_[None], 0)[0]; z_lo = jnp.take_along_axis(zc, (kk_ + 1)[None], 0)[0]
+        wgt = jnp.clip((0.25 - r_lo) / jnp.maximum(r_hi - r_lo, 1e-6), 0.0, 1.0)
+        hbl10i = jnp.where((kk >= 0) & (kk <= Lv - 2), z_lo + wgt * (z_hi - z_lo), hbl10)
         hbl10 = jnp.where(rib10[-1] > 0.25, 10.0 + (zc[-1] - 10.0) * 0.25 / jnp.maximum(rib10[-1], 1e-6), hbl10)   # inversion below level 1: linear in Ri
-        diag.update(hbl=hbl, zlcl=zlcl, hbl_ifs=hbl_ifs, hbl_tm=hbl_tm, excess=excess, hbl10=hbl10)
+        hbl10i = jnp.where(rib10[-1] > 0.25, hbl10, hbl10i)
+        # hbl_ifsi (24 Nov): IFS 3.10.1 definition (reference = lowest model level, no excess) WITH Ri interpolation between bracketing levels
+        k2 = jnp.max(jnp.where(rib0 > 0.25, jnp.arange(Lv)[:, None, None], -1), axis=0); k2_ = jnp.clip(k2, 0, Lv - 2)
+        q_hi = jnp.take_along_axis(rib0, k2_[None], 0)[0]; q_lo = jnp.take_along_axis(rib0, (k2_ + 1)[None], 0)[0]
+        y_hi = jnp.take_along_axis(zc, k2_[None], 0)[0]; y_lo = jnp.take_along_axis(zc, (k2_ + 1)[None], 0)[0]
+        hbl_ifsi = jnp.where((k2 >= 0) & (k2 <= Lv - 2), y_lo + jnp.clip((0.25 - q_lo) / jnp.maximum(q_hi - q_lo, 1e-6), 0.0, 1.0) * (y_hi - y_lo), hbl_ifs)
+        diag.update(hbl=hbl, zlcl=zlcl, hbl_ifs=hbl_ifs, hbl_tm=hbl_tm, excess=excess, hbl10=hbl10, hbl10i=hbl10i, hbl_ifsi=hbl_ifsi)
         diag.update(rain_csrc=jnp.sum(Pconv_src, 0), rain_lsrc=jnp.sum(src, 0), ev_prof=ev)   # diagnostic only (20 Nov): rain produced by convection / grid-scale, evaporation per layer
         if S['conv'] == 'mf': diag.update(on_dp=on_dp, on_sh=on_sh, on_bmjsh=(shallow & ~okmf).astype(jnp.float32))
         if 'on_mid' in locals(): diag.update(on_mid=on_mid)
