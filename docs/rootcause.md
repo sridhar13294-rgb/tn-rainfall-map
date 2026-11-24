@@ -4999,3 +4999,15 @@ running as a separate test) is NOT adopted on its own result unless this check p
   paired with tn-lcm-wx3 and tn-tofd | fail-5why: n/a]
   Open question this raises (not hidden): which of sbl_ifs / sfc_mo / sfc_mo_h costs the 0.5 m, and whether the land-BL gains (night H) are
   worth it - decided after tn-land170-full, by a registered split if the T170 land rule passes. [reg: this line (registration of the question) | inputs: n/a | fail-5why: n/a]
+
+## 25 Nov 01:28 IST - Tracks: shallow-off denial verdict
+- tn-tr-shoff (lc_mix + sh_off, diagnostic only; part 3, 18 starts, 0 failed): TN v850 d1 -1.72 +/- 0.47 (paired -0.05 +/- 0.04), d2 -0.99; TN rain
+  0.470; z500 d5 66.01 (paired +0.12 +/- 0.21). Rule: < -1.0 -> (b) NAMED: switching the MF shallow plume OFF changes nothing, so the MF plume is
+  NOT what drives the northerly bias; the old 'mse' shallow scheme (removed when shallow = 'mf') supplied a process that lc_mix now lacks, and its
+  removal is what costs the steering and half the TN rain. Corollary stated: the MF shallow scheme is nearly inert for these fields.
+  [reg: 24 Nov 20:0x sh_off registration | inputs: part-3, paired with tn-lcm-wx3 | fail-5why: n/a (named)]
+- 5-why next (measure before any run): (1) what does 'mse' do that MF does not - it relaxes the column from cloud base to the parcel top
+  toward a mixed moist-static-energy profile over tau_shallow, wherever 'shallow' is flagged; (2) SIZE: compare, over the Bay/TN box, the
+  cloud-layer moistening/heating of the two schemes and the MF cloud-base mass flux with IFS-typical values (shallow Mb ~0.01-0.03 kg m-2 s-1);
+  if the MF flux is << IFS-typical, the MF scheme's STRENGTH is NAMED (too weak) and its closure (eq. 6.32 full tendency, registered in
+  reserve) is next. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
