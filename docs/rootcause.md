@@ -4832,3 +4832,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - 15:28 IST bl_exc_ws LOCAL CHECK (T42 lc_mix, 3 starts): day hbl 1660 -> 1400 m (1.16x ERA5 1206; <= 1.3x) PASS; night 414 -> 412 (not deeper)
   PASS; day excess 2.65 -> 0.81 K; day H 151.5 -> 153.6 (unchanged); daily mean 853 -> 773. -> local part PASSED; Kaggle part 3 tn-blexc
   (account 4) queued for the forecast gates. [reg: 24 Nov 15:1x bl_exc_ws registration | inputs: same starts/domain, only bl_exc_ws differs | fail-5why: n/a]
+- 15:37 IST LAND NIGHT BL - REGISTERED (before the run): local check bl_exc_ws + sbl_ifs (T42 lc_mix, 3 starts). Night rule: night hbl within
+  1.3x ERA5 158 m (<= 205 m) AND night lowest-level wind <= 1.3x ERA5 (<= 5.8 m/s at ~82 m). If it fails: 5-why on the input first - our
+  lowest level is ~82 m (ERA5's ~10 m), so a surface inversion below 82 m is not seen by the bulk-Ri depth -> check with the 2 m / skin reference.
+  [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
