@@ -4790,3 +4790,16 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED (diagnostic, before the result): ERA5 BLH on the same domain/starts split by LOCAL hour, night 21-04 and day 10-16 (cyc_blhland.py
   now writes blhland2_truth.json), and the model ctl/sbl the same way. The hour band with >= 60 % of the mean excess is NAMED as where the
   fault is; then its 5-why. sbl_ifs is judged again on the night band only (within 1.3x of ERA5 night). [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 14:33 IST LAND BL BY LOCAL HOUR (20-40 N land, 3 starts, day 1; night 21-04, day 10-16 local). ERA5 night 158 / day 1206 / mean 497 m.
+  ctl: night 414 (2.62x) / day 1660 (1.38x) / mean 853; sbl_ifs: night 324 (2.06x) / day 1649 / mean 800. Share of ctl's mean excess (356 m):
+  night 24 %, day 37 %, transitions 39 % -> NO band carries >= 60 % -> not a night-only fault: the land BL is too deep at ALL hours.
+  sbl_ifs on the night band: 2.06x > 1.3x -> FAIL; HELD (IFS-faithful, moves the right way, -22 % at night; not enough alone).
+  [reg: 24 Nov 14:0x local-hour registration | inputs: ERA5 BLH same domain/starts/hour bands | fail-5why: below]
+- FAIL-5WHY / next cause: (1) too deep day AND night <- (2) a cause acting at all hours: low-level wind (night V1 6-8 m/s at 20-40 N land in
+  the sbl run; 18 Nov 1.9x ERA5 100 m wind at night) - shear lowers bulk Ri and deepens every hour; (3) weak land drag: z0 fixed 0.1 m
+  everywhere, no turbulent orographic form drag (IFS TOFD, Beljaars 2004), sub-grid orography drag (gwd) OFF in lc_mix; (4) IFS Table 8.3 z0m is
+  per vegetation (desert 0.013 ... forest 2.0) - over 20-40 N deserts IFS z0 is LOWER than ours, so the IFS's extra land drag there comes from
+  TOFD/blocking, not z0. REGISTERED (diagnostic, before results): ERA5 10/100 m wind by the same hour bands (blhland3_truth.json) vs the
+  model's lowest-level wind; if model wind > 1.3x ERA5 (log-interpolated to the model level) in BOTH bands, land DRAG is NAMED and the next test
+  is IFS TOFD + gwd on (one variant per job); if not, the day-time surface heat flux is examined next.
+  [reg: this line (registration) | inputs: n/a | fail-5why: n/a]

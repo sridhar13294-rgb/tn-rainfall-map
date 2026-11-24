@@ -11,6 +11,10 @@ for s in ('2020-10-07', '2020-11-01', '2020-11-26'):
     lo = A.longitude.values; lh = (np.arange(1, 25)[:, None] + lo[None, :] / 15.0) % 24          # local hour [24, lon]
     nt = ((lh >= 21) | (lh <= 4))[:, None, :] * np.ones(B.shape, bool); dy = ((lh >= 10) & (lh <= 16))[:, None, :] * np.ones(B.shape, bool)
     bn = np.where(nt, B, 0).sum(0) / np.maximum(nt.sum(0), 1); bd = np.where(dy, B, 0).sum(0) / np.maximum(dy.sum(0), 1)
-    out[s] = dict(mean=f(B.mean(0)), max=f(B.max(0)), night=f(bn), day=f(bd)); print(s, out[s], flush=True)
-out['all'] = {k: round(float(np.mean([v[k] for v in out.values()])), 1) for k in ('mean', 'max', 'night', 'day')}
-os.makedirs('data/cyclone/wx', exist_ok=True); json.dump(out, open('data/cyclone/wx/blhland2_truth.json', 'w'), indent=1)
+    out[s] = dict(mean=f(B.mean(0)), max=f(B.max(0)), night=f(bn), day=f(bd))
+    for zz in ('10', '100'):                                                                         # 24 Nov: land wind by local hour (drag 5-why)
+        W_ = np.array([np.hypot(A[zz + 'm_u_component_of_wind'].sel(time=t0 + np.timedelta64(h, 'h'), **box).values, A[zz + 'm_v_component_of_wind'].sel(time=t0 + np.timedelta64(h, 'h'), **box).values) for h in range(1, 25)])
+        out[s]['ws%s_night' % zz] = f(np.where(nt, W_, 0).sum(0) / np.maximum(nt.sum(0), 1)); out[s]['ws%s_day' % zz] = f(np.where(dy, W_, 0).sum(0) / np.maximum(dy.sum(0), 1))
+    print(s, out[s], flush=True)
+out['all'] = {k: round(float(np.mean([v[k] for v in out.values()])), 1) for k in ('mean', 'max', 'night', 'day', 'ws10_night', 'ws10_day', 'ws100_night', 'ws100_day')}
+os.makedirs('data/cyclone/wx', exist_ok=True); json.dump(out, open('data/cyclone/wx/blhland3_truth.json', 'w'), indent=1)
