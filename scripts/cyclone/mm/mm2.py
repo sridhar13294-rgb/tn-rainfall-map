@@ -1,4 +1,4 @@
-import functools
+import functools, dataclasses
 """MEGAM - Multi-scale Engine for Global Atmospheric Modelling (Sridhar & Adhitya). Core atmosphere model."""
 """Our moist multi-level global model, version 2.
 Dynamics: Dinosaur (Google Research's open-source spectral core): hydrostatic primitive equations on 32 terrain-following
@@ -1335,6 +1335,24 @@ def integrate(M, state, carry, hours):
         st, cr = c; M._carry = cr; st2 = M.step(st); return (st2, M.surface(st2, cr)), None
     if key not in M._jit: M._jit[key] = jax.jit(lambda s, c: jax.lax.scan(one, (s, c), None, length=n)[0])
     return M._jit[key](state, dict(carry, doy0=jnp.float32(M.doy0), utc0=jnp.float32(M.utc0)))
+def iau_init(M, st_pre, cr_pre, st_t0, window_h=6.0, pieces=6):
+    """Incremental Analysis Update start (Bloom et al. 1996, MWR 124, 6-h window as used operationally), 24 Nov - the slow
+    convective start: (1) run from ERA5(t0 - window) freely to t0 -> background; (2) increment = ERA5(t0) - background for
+    vorticity, divergence, temperature, log ps and q; (3) rerun from ERA5(t0 - window) adding increment/pieces at the start of
+    each of `pieces` equal sub-windows. Returns (state, carry) at t0: ERA5's large scale with the model's own convection already
+    running. Accumulators (rain, evap, stress) are reset so verification starts at t0. M must be built for t0 - window."""
+    flds = ('vorticity', 'divergence', 'temperature_variation', 'log_surface_pressure')
+    bg, _ = integrate(M, st_pre, cr_pre, window_h)
+    inc = {f: getattr(st_t0, f) - getattr(bg, f) for f in flds}
+    inc_q = {k: st_t0.tracers[k] - bg.tracers[k] for k in st_t0.tracers}
+    s, c = st_pre, cr_pre
+    for _ in range(pieces):
+        s = dataclasses.replace(s, **{f: getattr(s, f) + inc[f] / pieces for f in flds},
+                                tracers={k: jnp.maximum(s.tracers[k] + inc_q[k] / pieces, 0.0) for k in s.tracers})
+        s, c = integrate(M, s, c, window_h / pieces)
+    for k in ('rain', 'evap', 'tx', 'ty', 'txn', 'fsta', 'staba', 'zmo', 'wsta', 'ondp'):
+        if k in c: c = dict(c, **{k: jnp.zeros_like(c[k])})
+    return s, c
 def bred_vectors(M, state, carry, n=6, hours=12.0, seed=0, amp=1.0):
     """bred vectors (NCEP-style): small random seeds are grown by the model itself for `hours`; what grows is the part of
     today's uncertainty that matters (troughs, the storm's surroundings). Each is scaled so its 850-hPa-ish wind
