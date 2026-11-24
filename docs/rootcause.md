@@ -5026,3 +5026,14 @@ running as a separate test) is NOT adopted on its own result unless this check p
   no_sfc_mo_h, no_sfc_mo (minus sfc_mo AND sfc_mo_h, since h needs mo). An item is NAMED as the cost if removing it brings z500 d5 to within
   1 SE of tofd-only (63.63, i.e. paired vs tn-landset <= -0.38); its land effect (night H / wind) is then weighed against the cost with the T170 land
   script before deciding the candidate. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 01:42 IST SHALLOW SIZE CHECK (T42, 2020-11-16, day 1; T85 run was killed by memory): MF shallow (lc_mix) cloud-base mass flux per active column
+  0.022 (Bay/TN) / 0.041 (tropics) kg m-2 s-1 = within IFS-typical 0.01-0.03(-0.04) -> MF STRENGTH NOT named (not too weak). Moisture tendency at
+  sigma 0.85: MF +0.54 (Bay/TN) / +0.77 (tropics) g/kg/day; old 'mse' scheme -1.39 / -2.01 g/kg/day - OPPOSITE sign: the old scheme dried 850 and
+  carried the moisture up to the parcel top (it mixed from cloud base to parcel top in columns up to 300 hPa deep - the 5 Nov sh_depth note), i.e.
+  it acted as CONGESTUS / mid-level moistening, not shallow cumulus. [reg: 25 Nov 01:2x size registration | inputs: same start/grid, only the
+  shallow scheme differs | fail-5why: n/a]
+- 5-why continues: the process lc_mix lacks is the mid-level (700-500 hPa) moistening by cumulus congestus that the old scheme supplied by
+  accident. If true, lc_mix should be DRIER than ERA5 at 700/500 over the Bay/TN by day 1-2 while the old scheme is closer. REGISTERED
+  (measurement, before the result): T42 local, 3 Nov starts, 48 h, RH 850/700/500 bias vs ERA5 (rh_truth_2020) over Bay/TN, ctl vs mse. NAMED
+  (missing congestus moistening) if ctl RH700 or RH500 bias <= -5 %-points AND mse's bias is at least 3 points closer to zero.
+  [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
