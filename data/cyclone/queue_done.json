@@ -2118,5 +2118,29 @@
   "note": "P3 with sl_vcubic (Stage-1 candidate combined check, 23 Nov)",
   "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore hind2.py /kaggle/working/libm_cycL2_fields.npz ../../../data/cyclone/kaggle_cfg/lib84_vcreloc2.json 1 2 /kaggle/working/h1.json > /kaggle/working/h1.log 2>&1; tail -6 /kaggle/working/h1.log",
   "at": "2026-11-23T10:17Z"
+ },
+ {
+  "slug": "tn-p5b-no-shmf",
+  "inputs": "libm_wx2020L2_fields.npz,wx_truth_2020.npz",
+  "account": "1",
+  "note": "Tracks steering: conv-set split (24 Nov)",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/p5b_no_shmf.json 3 4 /kaggle/working/wx_3.json > /kaggle/working/wx_3.log 2>&1; tail -3 /kaggle/working/wx_3.log",
+  "at": "2026-11-24T05:48Z"
+ },
+ {
+  "slug": "tn-p5b-no-deepmix",
+  "inputs": "libm_wx2020L2_fields.npz,wx_truth_2020.npz",
+  "account": "4",
+  "note": "Tracks steering: conv-set split (24 Nov)",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/p5b_no_deepmix.json 3 4 /kaggle/working/wx_3.json > /kaggle/working/wx_3.log 2>&1; tail -3 /kaggle/working/wx_3.log",
+  "at": "2026-11-24T05:49Z"
+ },
+ {
+  "slug": "tn-p5b-no-salrad",
+  "inputs": "libm_wx2020L2_fields.npz,wx_truth_2020.npz",
+  "account": "1",
+  "note": "Tracks steering: conv-set split (24 Nov)",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/p5b_no_salrad.json 3 4 /kaggle/working/wx_3.json > /kaggle/working/wx_3.log 2>&1; tail -3 /kaggle/working/wx_3.log",
+  "at": "2026-11-24T05:50Z"
  }
 ]
