@@ -5049,3 +5049,8 @@ running as a separate test) is NOT adopted on its own result unless this check p
   Nov starts, lc_mix: radiation, deep convection, shallow MF, large-scale cond/evap, BL diffusion, dynamics. The process that carries >= 60 % of the
   net cooling relative to ERA5's day-1 change is NAMED for the 850 cold bias (and then compared with its IFS reference).
   [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 02:12 IST BAY/TN sigma-0.85 BUDGET, lc_mix (T42, 1/11/16 Nov, day 1): dT -0.47 K (ERA5 daily-mean T850 change ~0.0) = physics -0.88 [radiation
+  -1.36, deep +0.65, BL -0.14, evap -0.04, shallow -0.02, lsc +0.02] + dynamics +0.41. Cloud: cover 0.84, low (random overlap) 0.67, deep-active 0.08.
+  The registered rule needs each process's ERA5 counterpart, which ERA5 does not provide per process -> the rule cannot be applied as written
+  (stated). AMENDMENT (registered before the next result): compare with the same budget for the old-scheme run (T850 right): the term that
+  carries >= 60 % of the dT difference (lc_mix minus old) is NAMED. [reg: this line (amendment before result) | inputs: model budget only | fail-5why: n/a]
