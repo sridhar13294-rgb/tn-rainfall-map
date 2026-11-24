@@ -5037,3 +5037,15 @@ running as a separate test) is NOT adopted on its own result unless this check p
   (measurement, before the result): T42 local, 3 Nov starts, 48 h, RH 850/700/500 bias vs ERA5 (rh_truth_2020) over Bay/TN, ctl vs mse. NAMED
   (missing congestus moistening) if ctl RH700 or RH500 bias <= -5 %-points AND mse's bias is at least 3 points closer to zero.
   [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 01:59 IST BAY/TN RH + T vs ERA5 (T42, starts 1/11/16 Nov, daily means d1/d2; lc_mix vs old 'mse' shallow): lc_mix RH700 -0.2/-5.1 pts, RH500
+  +12.4/+5.3 pts (mid levels NOT dry), RH925 +5.5/+9.1, T850 -0.68/-1.12 K (tropics -0.48/-0.75), T700 -0.21/+0.11. Old scheme: RH700 +15/+11,
+  RH500 +19/+14, RH925 -12/-13, T850 +0.20/-0.10, T700 -1.75/-1.53. Rule (lc_mix RH700/500 <= -5 AND old scheme >= 3 pts closer) -> NOT named:
+  lc_mix is not too dry aloft and the old scheme is FARTHER from ERA5 there. 'Missing congestus moistening' is withdrawn.
+  [reg: 25 Nov 01:4x RH registration | inputs: ERA5 rh_truth daily means, same starts/grid | fail-5why: below]
+- What the numbers show instead: lc_mix's Bay/TN 850 hPa is COLD and growing (-0.7 K d1, -1.1 K d2) with a moist 925; the old scheme moved
+  heat DOWN from 700 to 850 (T850 right, T700 -1.6 K). A cold low-level anomaly over the Bay raises pressure there and turns the flow on its
+  western flank (TN) northerly - the steering bias. This also matches the open Day-10 item ('mid-level/low-level physics cooling').
+  REGISTERED (measurement, before the result): process budget of the sigma 0.85 temperature tendency over Bay/TN (5-20 N, 75-95 E), day 1, T42, 3
+  Nov starts, lc_mix: radiation, deep convection, shallow MF, large-scale cond/evap, BL diffusion, dynamics. The process that carries >= 60 % of the
+  net cooling relative to ERA5's day-1 change is NAMED for the 850 cold bias (and then compared with its IFS reference).
+  [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
