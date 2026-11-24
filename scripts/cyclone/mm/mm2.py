@@ -1342,7 +1342,8 @@ def iau_init(M, st_pre, cr_pre, st_t0, window_h=6.0, pieces=6):
     each of `pieces` equal sub-windows. Returns (state, carry) at t0: ERA5's large scale with the model's own convection already
     running. Accumulators (rain, evap, stress) are reset so verification starts at t0. M must be built for t0 - window."""
     flds = ('vorticity', 'divergence', 'temperature_variation', 'log_surface_pressure')
-    bg, _ = integrate(M, st_pre, cr_pre, window_h)
+    bg, cb = st_pre, cr_pre
+    for _ in range(pieces): bg, cb = integrate(M, bg, cb, window_h / pieces)          # same compiled piece as below (memory)
     inc = {f: getattr(st_t0, f) - getattr(bg, f) for f in flds}
     inc_q = {k: st_t0.tracers[k] - bg.tracers[k] for k in st_t0.tracers}
     s, c = st_pre, cr_pre
