@@ -4988,3 +4988,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - 21:57 IST KAGGLE ACCOUNT 1 weekly GPU quota (30 h) REACHED (push refused for tn-landset). Not worked around: remaining jobs go to account 4 only
   (one at a time), priority order: tn-landset (Land BL forecast gates) -> tn-land170-full; tn-tr-shoff was accepted by Kaggle on account 1 before
   the refusal and is in Kaggle's queue. [reg: n/a (operations note) | inputs: n/a | fail-5why: n/a]
+- 21:58 IST tn-land170-excsbl (T170, bl_exc_ws + sbl_ifs, 3 starts): hbl_ifsi night 325 (1.03x ERA5-L134 315) / day 1305 (1.08x of 1205) -> depth
+  within 1.3x at the exam resolution; night wind 7.25 m/s (1.64x ERA5 4.43) -> wind still needs TOFD (tn-land170-full measures the full set);
+  night H -14.2 (1.08x ERA5). Informative step (no closure rule on this job). [reg: 24 Nov 16:3x/20:0x land170 registrations | inputs: T170, same
+  starts/bands, ERA5-L134 reference | fail-5why: n/a]
