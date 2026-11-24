@@ -4944,3 +4944,14 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED (before the run): hbl_ifsi = IFS 3.10.1 definition (lowest model level reference, no excess, no skin) WITH Ri interpolation; run the
   night set AND ctl (lc_mix), 3 starts. Quantization is NAMED only if the night set's hbl_ifsi is within 1.3x ERA5 at NIGHT (<= 205) AND by DAY
   (<= 1568); ctl reported so the physics part and the measurement part are separated. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 20:00 IST hbl_ifsi (IFS 3.10.1 definition, lowest-model-level reference, Ri interpolated; T42, 3 starts): night set day 1185 (0.98x ERA5) / night
+  248 m (1.57x); ctl (lc_mix) day 1346 (1.12x) / night 372 (2.36x). Rule (night set within 1.3x at night AND day) -> night FAIL -> quantization
+  NOT named alone. Size split of ctl's night gap: level quantization 484 -> 372 (interpolation), physics (night set) 372 -> 248, remaining 248 vs
+  158. [reg: 24 Nov 19:3x hbl_ifsi registration | inputs: same 3 starts, ERA5 BLH same band | fail-5why: below]
+- FAIL-5WHY: the one difference left between the two measures is the REFERENCE HEIGHT: ours ~82 m (lowest model level), ERA5's ~10 m (L137).
+  A night inversion below 82 m makes ERA5's depth small but is outside ours. This can be measured fairly on ERA5 itself (no skin temperature):
+  REGISTERED (before the result): ERA5 model levels (cyc_blhml.py, 'blhml truth'), same domain/starts, night and day bands, IFS definition with
+  interpolation, reference L137 (~10 m; must reproduce ERA5 BLH within 15 %, else the script is wrong) and L134 (~79 m, = ours). If the night
+  set's hbl_ifsi (248 / 1185) is within 1.3x of ERA5-L134 at night AND day, the remaining night-depth gap is NAMED as the reference height
+  (a measurement difference, not physics) and the night physics set goes to the Kaggle forecast gates.
+  [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
