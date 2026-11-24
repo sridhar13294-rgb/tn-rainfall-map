@@ -4888,3 +4888,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
   Night remaining candidates (each measured ~7 % at T42): stable mixing (sbl_ifs), surface MO drag (sfc_mo), orographic blocking/GWD (gwd),
   TOFD (not coded). tn-land170-excsbl (queued, acct 4) gives the sbl_ifs effect at T170 before any combination is registered.
   [reg: this line (registration of order) | inputs: n/a | fail-5why: n/a]
+- 18:33 IST tn-tr-shw (lc_mix + sh_wtest, part 3, 18 starts, 0 failed): TN v850 d1 -1.74 +/- 0.47 (paired -0.07 +/- 0.03), d2 -1.11; TN rain ratio
+  0.421 (lc_mix 0.422); globe z500 d5 65.90 -> 65.71 (paired -0.18 +/- 0.12). Gate 1 (TN v850 d1 >= -1.0) FAIL -> sh_wtest HELD (IFS-faithful,
+  neutral-to-slightly-better z500; not the steering cause). [reg: 24 Nov 13:0x sh_wtest registration | inputs: part-3, paired with tn-lcm-wx3 | fail-5why: below]
+- FAIL-5WHY: (1) the trigger cut a third of Bay/TN shallow columns (size check) yet moved nothing -> the effect of the shallow set is NOT in
+  how OFTEN it fires but in WHAT it does where it fires (the remaining, buoyant columns carry it) <- (2) what it does = closure strength
+  (sh_clos / sh_ifs2: surface-flux closure, whole sub-cloud venting, implicit transport) and the cloud-layer mixing (sh_eps entrainment, sh_det
+  detrainment). REGISTERED (diagnostic split of the named set, part 3, one variant per job, same rule as the 24 Nov split): no_shvent = lc_mix
+  minus {sh_clos, sh_ifs2} (falls back to the CAPE closure over tau_shallow); no_shmix = lc_mix minus {sh_eps, sh_det}. A sub-group is NAMED
+  if TN v850 d1 >= -1.0 m/s; the named one is then compared with IFS eq. 6.32 / 6.7-6.9 before any fix. Kept in reserve (registered as next):
+  the eq. 6.32 full-tendency closure. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
