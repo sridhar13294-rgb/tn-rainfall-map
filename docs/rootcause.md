@@ -4992,3 +4992,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   within 1.3x at the exam resolution; night wind 7.25 m/s (1.64x ERA5 4.43) -> wind still needs TOFD (tn-land170-full measures the full set);
   night H -14.2 (1.08x ERA5). Informative step (no closure rule on this job). [reg: 24 Nov 16:3x/20:0x land170 registrations | inputs: T170, same
   starts/bands, ERA5-L134 reference | fail-5why: n/a]
+- 23:33 IST tn-landset (lc_mix + bl_exc_ws + tofd + sbl_ifs + sfc_mo + sfc_mo_h, part 3, 18 starts, 0 failed): globe z500 d5 64.16 (vs lc_mix paired
+  -1.74 +/- 0.31; limit 69.80) PASS; india t2 d1-d5 2.71/2.91/3.22/3.32/3.40 (limits 2.85/3.07/3.37/3.51/3.52) PASS -> Land BL closure part (2)
+  PASSES. STATED: versus tofd-only (tn-tofd) the three night items COST skill: z500 d5 +0.52 +/- 0.14 m (~3.7 SE) and india t2 +0.06..+0.11 K;
+  u850 d3 unchanged (NH 4.29, India 4.38); TN v850 d1 -1.49, TN rain 0.443. [reg: 24 Nov 20:0x Land BL closure registration | inputs: part-3,
+  paired with tn-lcm-wx3 and tn-tofd | fail-5why: n/a]
+  Open question this raises (not hidden): which of sbl_ifs / sfc_mo / sfc_mo_h costs the 0.5 m, and whether the land-BL gains (night H) are
+  worth it - decided after tn-land170-full, by a registered split if the T170 land rule passes. [reg: this line (registration of the question) | inputs: n/a | fail-5why: n/a]
