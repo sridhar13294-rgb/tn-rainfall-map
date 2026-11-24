@@ -4719,3 +4719,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   the IFS test parcel (> 200 hPa), updraught unchanged for mass flux/closure. No new constants.
   REGISTERED (T85 local, lc_mix + dp_test, Jan K=1 / Jul K=36, ctl = 0.62 / 0.64): FIX WORKS if tropical d1 rain / ERA5 >= 0.85 on both
   AND <= 1.15 (no overshoot) AND z500 d1 rmse NH/SH not worse than ctl by > 5 %. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 11:15 RESULT dp_test (registered 11:0x): tropical d1 rain / ERA5 Jan 0.62 -> 0.32, Jul 0.64 -> 0.35; z500 d1 worse (NH 19.05 -> 21.75) ->
+  FAIL on every criterion; NOT adopted. [reg: 11:0x | inputs: same starts/run, only dp_test differs | fail-5why below]
+  fail-5why: the failure traces to MY reading of the reference: the IFS test-parcel entrainment eps = 0.8/z + 3e-4 is LARGER than our
+  updraught's (~0.5-1e-3 in moist air) below ~1.5 km, so the test parcel is more diluted in the boundary layer and reaches 200 hPa depth
+  LESS often - my 'weakly entraining = looser trigger' statement was wrong in the lower layers. The diff is real but acts the other way;
+  it is not the slow-start cause. Remaining slow-start leads (unchecked vs IFS): source-parcel definition (IFS: departure from the
+  surface-flux-based excess, eqs 6.12-6.14), closure time scale (IFS tau = Hc/w x (1 + 264/N), ours fixed 40 min).
