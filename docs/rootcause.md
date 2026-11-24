@@ -4853,3 +4853,22 @@ running as a separate test) is NOT adopted on its own result unless this check p
   floors 0.2 K / 0.1 g/kg; ~0.3-0.5 K over tropical ocean), as found 24 Nov morning -> IFS's excess would also delay triggering -> NOT the cause;
   lead closed. Slow start now hinges on ONE named candidate: the shallow MF set (venting the sub-cloud layer before deep convection can
   start; tn-tr-shw tests the IFS-faithful trigger). [reg: same lead list | inputs: IFS eq. 6.19 vs model defaults | fail-5why: n/a]
+- 16:16 IST NIGHT DRAG TEST (registered 15:5x): bl_exc_ws + sbl_ifs + sfc_mo vs without (3 starts): night wind 6.71 -> 6.29 m/s (1.42x ERA5 4.43;
+  limit 5.8) -> sfc_mo NOT named (moves the right way, -6 %); night hbl 323 -> 335; night cd/cdn ~0.2 in both (stable cut ~80 %).
+  [reg: 24 Nov 15:5x | inputs: same starts, only sfc_mo differs | fail-5why: below]
+- FAIL-5WHY: (1) the surface-layer formula is not the missing night sink (IFS MO changed the wind by 6 %) <- (2) by day the mixed layer passes
+  momentum to the surface, so day wind is right (1.04x); at night the surface is decoupled and the only sinks left are ones that do NOT depend
+  on surface-layer stability: orographic blocking/gravity-wave drag and TOFD - both missing in lc_mix (22 Nov: our land stress 0.46-0.51x
+  ERA5, gw 18 % of it) <- (3) this revises my 14:4x 'drag NOT named' reading: that rule asked for excess in BOTH bands, but a missing
+  body-force sink shows mainly when turbulence is off (night) - the rule's premise was wrong, stated.
+  REGISTERED (size, before the run): same 3 starts, bl_exc_ws + sbl_ifs + gwd 1 (Lott-Miller blocking + GWD, our option; known 75L T170 Andes
+  defect, so local T42 only as a SIZE check). NAMED if night wind <= 5.8 m/s; then the gwd defect is fixed before any Kaggle use.
+  [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 16:30 IST NIGHT OROGRAPHIC-DRAG SIZE CHECK (registered 16:2x): + gwd 1 (T42, 3 starts): night wind 6.71 -> 6.25 m/s (1.41x; limit 5.8) -> NOT
+  named alone; night hbl 323 -> 320. sfc_mo (-0.42) and gwd (-0.46) each move ~7 %; together ~-0.9 would reach ~5.8 - at the limit, so
+  neither is THE cause. [reg: 24 Nov 16:2x | inputs: same starts, only gwd differs, T42 | fail-5why: below]
+- FAIL-5WHY / INPUT CHECK (rule: check inputs and size): every night test so far ran at T42 (model orography very smooth, lowest level ~82 m),
+  while the exam is T170 and ERA5 is 0.25 deg. Smoothed terrain gives less blocking, fewer valleys/cold pools and faster night winds, so part of
+  the 1.4-1.5x could be the test resolution, not the physics. REGISTERED (before the run): same script, ctl and bl_exc_ws+sbl_ifs at T85
+  (local limit), 3 starts. If T85 night wind is <= 0.85x the T42 value, resolution is NAMED as a large input to the night gap and the night
+  verdicts must be redone at T170 on Kaggle (one job); if T85 ~ T42 (> 0.95x), resolution is cleared. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
