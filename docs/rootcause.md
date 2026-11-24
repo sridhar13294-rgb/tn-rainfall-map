@@ -4690,3 +4690,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   along the storm paths]
 - User 10:07: 'work on the open items and close'. Order: (1) slow-start initialisation (P5b, P2/P4, P5a, Day-10 share it); (2) Tracks
   steering; (3) D3 re-score; (4) Land night BL root cause.
+- 10:08 SLOW-START FIX DESIGN (reference: Incremental Analysis Update, Bloom et al. 1996 MWR 124; as used operationally with a 6-h window,
+  e.g. Met Office / GEOS): (1) start from ERA5 at t0-6h, run 6 h free -> background bg(t0); (2) increment = ERA5(t0) - bg(t0) for vorticity,
+  divergence, temperature, log ps, q (spectral); (3) restart from ERA5(t0-6h) and run 6 h adding increment/6 every hour; the state at t0
+  is ERA5's large scale with the model's own convection already running for 6 h. No tuned constants (window 6 h = the reference window).
+  Data: ERA5 at t0-6h for all 73 starts ('pre fields'). REGISTERED local test (T85, Jan K=1 and Jul K=36 starts, lc_mix + sl_vcubic):
+  FIX WORKS if (a) tropical day-1 rain >= 0.85 x ERA5 (now 0.68) on both starts AND (b) z500 NH and SH d1 RMSE not worse than without
+  IAU by > 5 %. If (a) fails, 5-why before any exam run. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
