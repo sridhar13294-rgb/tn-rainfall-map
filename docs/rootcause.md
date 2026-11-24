@@ -4966,3 +4966,15 @@ running as a separate test) is NOT adopted on its own result unless this check p
   the MF shallow plume's tendencies (compare its heating/moistening profile with IFS shallow over the Bay next). If < -1.0 -> (b) NAMED: a
   process the old scheme provided is missing from the lc_mix physics (find which by comparing the two schemes' tendency profiles).
   [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 20:04 IST ERA5 MODEL-LEVEL DEPTH (cyc_blhml, 3 starts, land 20-40 N, IFS definition + interpolation): script check - L137 reference night 151 /
+  day 1307 vs ERA5 BLH 156 / 1209 (3 % / 8 %, within 15 %) -> the computation is right. ERA5 from the L134 (~79 m) reference: night 315, day 1205.
+  Our hbl_ifsi (same definition, ~82 m reference): night set 248 (0.79x) / 1185 (0.98x); ctl 372 (1.18x) / 1346 (1.12x). Rule (night set within
+  1.3x at night AND day) PASS -> the remaining night-depth gap is NAMED as the reference height (measurement), not physics.
+  [reg: 24 Nov 20:0x blhml registration | inputs: ERA5 model levels, same domain/starts/bands, standard-atmosphere level heights (stated) | fail-5why: n/a]
+- STATED PLAINLY: compared like for like, even lc_mix's night depth is within 1.3x (1.18x). My earlier '2.6-2.9x too deep at night' was mostly
+  a measurement mismatch (82 m vs 10 m reference + level quantization). The REAL night faults found on the way are the night WIND (1.58x T42,
+  1.72x T170; ERA5 compared at the same height) - fixed locally by TOFD - and the night surface cooling after the wind fix (fixed by sfc_mo_h).
+- REGISTERED (closure of Land BL): full land set = bl_exc_ws (adopted) + sbl_ifs + tofd + sfc_mo + sfc_mo_h. CLOSED if (1) T170 land check
+  (tn-land170-full): night wind <= 1.3x ERA5 (<= 5.8 m/s), night H within 0.7-1.3x ERA5, day/night hbl_ifsi within 1.3x of ERA5-L134 (205-410 /
+  ...: 0.7-1.3x of 315 and 1205); (2) part-3 forecast gates (tn-landset): globe z500 d5 <= lc_mix + 2 SE, india t2 d1-d5 <= lc_mix + 2 SE.
+  [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
