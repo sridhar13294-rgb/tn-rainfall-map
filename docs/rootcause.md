@@ -4742,3 +4742,37 @@ running as a separate test) is NOT adopted on its own result unless this check p
   mf_mix_exact), no_salrad (sfc_sal, rad_prm). A sub-group is NAMED for the steering if removing it brings TN v850 d1 to >= -1.0 m/s (>= 50 %
   of the -1.4 difference), rule 10 SE stated. Then the named item is compared with its IFS reference (5-why) before any fix.
   [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+
+## 24 Nov 13:18 IST - Tracks: conv-set split verdict (registered 24 Nov rule)
+- tn-p5b-no-shmf (lc_mix minus shallow mass-flux items: shallow 'mf', sh_trig, sh_dmax, sh_eps, sh_det, sh_clos, sh_ifs2; part 3, 18 starts):
+  TN v850 d1 -0.29 +/- 0.55 (>= -1.0) -> NAMED. Paired vs lc_mix (tn-lcm-wx3, same 18 starts): +1.38 +/- 0.29 d1, +1.20 +/- 0.61 d2 m/s
+  (whole no-conv effect was +1.23). Same removal: TN 5-day rain ratio 0.422 -> 0.794, TN u850 d5 bias -4.31 -> -2.47, BUT globe z500 d5 RMSE
+  65.9 -> 71.4 m (worse) -> removing it is NOT a fix; the scheme must be made right.
+  tn-p5b-no-deepmix: v850 d1 -2.19 +/- 0.51 (paired -0.52 +/- 0.10) -> NOT named. tn-p5b-no-salrad: -1.69 +/- 0.46 (paired -0.02) -> NOT named.
+  [reg: 24 Nov 11:16 conv-set split rule | inputs: part-3 exam, 18 starts, one variant per job, paired with tn-lcm-wx3 | fail-5why: n/a]
+- 5-why (named item vs IFS Cy47r1 Part IV ch.6): (1) storms turn left <- TN v850 too northerly; (2) <- the shallow MF set (same set also cuts TN
+  rain by half -> P5b/P2/P4 and the slow start share this root candidate); (3) shallow venting of the sub-cloud layer too frequent/strong;
+  (4) two documented departures from the IFS: (a) TRIGGER - IFS: shallow only if the surface test parcel (excess eq. 6.19 from surface fluxes
+  and w*, eq. 6.20) reaches its LCL with w > 0 from the kinetic-energy eq. 6.10 (w started at w*); ours (sh_trig) fires wherever the parcel
+  condenses, with a fixed 0.5 K / 0.5 g/kg kick and no buoyancy/w test, and the parcel may stay negatively buoyant for 200 hPa below the LFC;
+  (b) CLOSURE - IFS eq. 6.32 uses the total non-convective sub-cloud MSE tendency (advection + radiation + diffusion); ours uses the surface
+  flux only. (5) both were simplifications taken on 10-11 Nov to make the shallow scheme active at all (old buoyancy test 'almost never passed').
+- REGISTERED (before any run): (a) first, as it is the documented trigger: option sh_wtest = IFS shallow test (eq. 6.19 excess, eq. 6.20 w*,
+  eq. 6.10 K from the first level, w > 0 at LCL required). Local SIZE check first (T85 lc_mix, 1 Nov start, 24 h): share of shallow-active
+  columns (tropics, Bay/TN box 5-20N 75-95E) removed by the test. Then part-3 Kaggle job tn-tr-shw = lc_mix + sh_wtest. Pass (all, rule 10):
+  TN v850 d1 >= -1.0; globe z500 d5 RMSE <= lc_mix 65.9 + 2 SE; TN rain ratio not below lc_mix 0.422 - 2 SE. (b) closure (6.32 full tendency)
+  only if (a) fails. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+
+## 24 Nov 13:20 IST - Land night BL: root cause (5-why) and registration
+- Fact (19 Nov): land 20-40 N, day 1 hourly: model BL height mean 843 m (cap) vs ERA5 497 (1.70x); daily max 1.24x -> the excess is at NIGHT;
+  night wind 1.9x ERA5 (18 Nov). Diagnostic check first: IFS 3.10.1 BLH = lowest level where bulk Ri from the LOWEST MODEL LEVEL reaches 0.25,
+  2 m wind zero, no u* term -> our hbl uses the same reference and threshold (only extra: 100 m floor, <= ~50 m of the 346 m gap) -> the
+  diagnostic is not the cause.
+- 5-why: (1) night BL too deep / night winds too strong <- (2) stable-BL mixing too strong <- (3) in stable columns K = max(kappa u* z (1 - z/h)^2,
+  Kfree): the K-profile has NO stability function (Troen-Mahrt need u*/phi_m; IFS does not use a K-profile there at all) <- (4) IFS Cy47r1
+  3.3.2(b): stable K = l^2 |dU/dz| f_LTG(Ri) (b 5, d 1; separate f_m, f_h), 1/l = 1/(kappa z) + 1/(0.1 h_BL); size e.g. u* 0.3, z 50, h 300 m:
+  ours ~4.1 m2/s, IFS ~1.3 m2/s (~3x) <- (5) the K-profile was written for the convective BL and never given a stable branch.
+- REGISTERED (before any run): option sbl_ifs (code in mm2, default off). Local SIZE check: T85 lc_mix, 1 Nov start, 24 h, land 20-40 N hourly
+  mean hbl ctl vs sbl_ifs. Then Kaggle part-3 job tn-sbl = lc_mix + sbl_ifs. CLOSED if (rule 10): land 20-40 N day-1 mean BLH within 0.7-1.3x
+  ERA5 497 m AND daily max within 1.3x ERA5 1507 m, AND globe z500 d5 RMSE <= lc_mix + 2 SE, AND land t2 (india) RMSE d1-d5 not worse than
+  lc_mix + 2 SE. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]

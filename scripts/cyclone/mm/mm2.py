@@ -136,7 +136,7 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='mf', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='radcloud', rad_every=2,
-                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, midlev=0.0, lsc_sub=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
+                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, sh_wtest=0.0, sbl_ifs=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, midlev=0.0, lsc_sub=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
@@ -248,7 +248,7 @@ class Model:
                      rain=jnp.zeros(zs.shape, jnp.float32), t=jnp.float32(0.0), sst0=jnp.asarray(sst, jnp.float32), T0=jnp.asarray(sg['t'], jnp.float32),
                      prm=self.params())
         if self.S.get('evap_out', 0): carry['evap'] = jnp.zeros(zs.shape, jnp.float32)
-        if self.S.get('conv_diag', 0): carry['ondp'] = jnp.zeros(zs.shape, jnp.float32)
+        if self.S.get('conv_diag', 0): carry['ondp'] = jnp.zeros(zs.shape, jnp.float32); carry['onsh'] = jnp.zeros(zs.shape, jnp.float32)
         if self.S.get('sfc_mo', 0): carry['q0v'] = jnp.zeros(zs.shape, jnp.float32)              # kinematic virtual heat flux of the last step (w*)
         if self.S.get('stress_out', 0): carry['tx'] = jnp.zeros(zs.shape, jnp.float32); carry['ty'] = jnp.zeros(zs.shape, jnp.float32); carry.update({k: jnp.zeros(zs.shape, jnp.float32) for k in ('fsta', 'staba', 'txn', 'zmo', 'wsta')})
         if self.S.get('land_rc', 0): carry['swd'] = jnp.zeros(zs.shape, jnp.float32)              # downward surface SW of the last step (canopy f1)
@@ -365,6 +365,17 @@ class Model:
         h_kick = CP * S['mf_kick_t'] + LV * S['mf_kick_q']
         q_kick = S['mf_kick_q']
         if mid is not None: h_kick = 0.0; q_kick = 0.0                                              # midlev: updraught starts from the environment at the base (IFS CUBASMCN)
+        # sh_wtest > 0 (24 Nov, Tracks/P5b 5-why; IFS Cy47r1 Part IV eqs. 6.19-6.20): the shallow TEST parcel's excess comes from the
+        # surface fluxes and w* (dT = max(0.2, 1.5 H/(rho cp w*)), dq = max(1e-4, 1.5 E/(rho w*))), not the fixed deep-plume kick
+        wt_on = shallow and self.S.get('sh_wtest', 0) > 0 and Hs is not None and E is not None
+        if wt_on:
+            T1 = Tn[-1]; rho1 = p[-1] / (RD * T1); z1 = jnp.maximum(zc[-1], 1.0)
+            bflx = jnp.maximum(Hs / CP + 0.61 * T1 * E, 0.0) / rho1
+            wst = 1.2 * jnp.power(0.1 ** 3 + 1.5 * G * KARM * z1 / T1 * bflx, 1.0 / 3.0)
+            dT_t = jnp.maximum(0.2, 1.5 * jnp.maximum(Hs, 0.0) / (rho1 * CP * wst)); dq_t = jnp.maximum(1e-4, 1.5 * jnp.maximum(E, 0.0) / (rho1 * wst))
+            h_kick_t = CP * dT_t + LV * dq_t; q_kick_t = dq_t
+        else:
+            h_kick_t = h_kick; q_kick_t = q_kick
         def make_plume(test):
           def plume(c, x):
             hu, qu, alive, lfc, started, zp, Kw = c; Te, qe, he, pk, zk, sk, rk, k = x
@@ -379,7 +390,8 @@ class Model:
             # layer (phi_e + (phi_u - phi_e) exp(-eps dz)) instead of one explicit step, so the result does not depend on layer thickness
             # (explicit eps dz reached 0.6 in the lowest layers: the shallow test parcel was ~60 % environment after one layer)
             fmix = jnp.where(S['mf_mix_exact'] > 0, 1.0 - jnp.exp(-eps * dz), eps * dz)
-            hu1 = jnp.where(src, he + h_kick, hu + fmix * (he - hu)); qu1 = jnp.where(src, qe + q_kick, qu + fmix * (qe - qu))
+            hk_, qk_ = (h_kick_t, q_kick_t) if (test and shallow) else (h_kick, q_kick)
+            hu1 = jnp.where(src, he + hk_, hu + fmix * (he - hu)); qu1 = jnp.where(src, qe + qk_, qu + fmix * (qe - qu))
             Td = (hu1 - G * zk - LV * qu1) / CP; sat = qu1 > qsat(Td, pk); Tu = Te
             for _ in range(4):
                 qs_ = qsat(Tu, pk); f_ = CP * Tu + G * zk + LV * qs_ - hu1; df = CP + LV * qs_ * 17.67 * 243.5 / (Tu - 29.65) ** 2
@@ -400,7 +412,7 @@ class Model:
             # freezing (mf_ice = share of the new condensate that freezes in the updraft): above 0 C its latent heat of fusion
             # warms the plume, as in the old scheme's bmj_ice; without it the tropical upper troposphere runs 3-5 K cold
             hu1 = hu1 + S['mf_ice'] * 3.34e5 * jnp.clip((273.15 - Tu) / 20.0, 0.0, 1.0) * cond
-            nh = jnp.where(act, jnp.where(src, he + h_kick, hu1), hu); nq = jnp.where(act, jnp.where(src, qe + q_kick, qv), qu)
+            nh = jnp.where(act, jnp.where(src, he + hk_, hu1), hu); nq = jnp.where(act, jnp.where(src, qe + qk_, qv), qu)
             return (nh, nq, alv2, lfc2, st2, jnp.where(act | ~st2, zk, zp), Kw2), (act, jnp.where(run & act, b, 0.0), jnp.where(run & act, cond, 0.0), nh, nq, eps)
           return plume
         z0 = jnp.zeros_like(ps); f0 = jnp.zeros(ps.shape, bool)
@@ -415,8 +427,21 @@ class Model:
         (_, _, _, lfc, _, _, _), (inc, b, cond, hu, qu, eps_l) = jax.lax.scan(make_plume(False), (z0, z0, f0, f0, f0, z0 - 1.0, z0 + 0.5), xs)
         inc, b, cond, hu, qu, eps_l = [a[::-1] for a in (inc, b, cond, hu, qu, eps_l)]
         if (shallow and self.S.get('sh_eps', 0) > 0) or (not shallow and mid is None and self.S.get('dp_test', 0)):   # trigger from the IFS test parcel (eq. 6.18); dp_test (24 Nov): also for DEEP
-            (_, _, _, _, _, _, _), (inc_t, _, cond_t, _, _, _) = jax.lax.scan(make_plume(True), (z0, z0, f0, f0, f0, z0 - 1.0, z0 + 0.5), xs)
-            inc_t, cond_t = inc_t[::-1], cond_t[::-1]
+            (_, _, _, _, _, _, _), (inc_t, b_t, cond_t, _, _, eps_t) = jax.lax.scan(make_plume(True), (z0, z0, f0, f0, f0, z0 - 1.0, z0 + 0.5), xs)
+            inc_t, cond_t, b_t, eps_t = inc_t[::-1], cond_t[::-1], b_t[::-1], eps_t[::-1]
+            if wt_on:
+                # IFS eq. 6.10 for the test parcel from the first level (K = w*^2/2) up to its LCL: dK/dz = -eps (1 + beta Cd)^2 K
+                # + g b / (f (1 + gamma) Tv) (same implicit form as mf_wke); shallow needs K > 0 at the LCL (Part IV 6.5.1)
+                Kt = 0.5 * wst ** 2; okw = jnp.zeros_like(ps, bool); done = jnp.zeros_like(ps, bool); zp_ = jnp.take_along_axis(zc, ksrc[None], 0)[0]
+                for k in range(L - 2, -1, -1):
+                    above = (k < ksrc) & ~done & inc_t[k]
+                    dzk_ = jnp.maximum(zc[k] - zp_, 0.0)
+                    Kn_ = (Kt + dzk_ * G * b_t[k] / (3.0 * Tn[k])) / (1.0 + dzk_ * eps_t[k] * 2.0 * 1.949)
+                    Kt = jnp.where(above, Kn_, Kt)
+                    lcl = above & (cond_t[k] > 0)
+                    okw = jnp.where(lcl, Kt > 0, okw); done = done | lcl | (above & (Kt <= 0))
+                    zp_ = jnp.where(above, zc[k], zp_)
+                cond_t = cond_t * okw[None]
         else:
             inc_t, cond_t = inc, cond
         sig_top = jnp.min(jnp.where(inc, sig, 1.0), axis=0); cape = (RD * jnp.maximum(b, 0) * dsig / sig * inc).sum(0)
@@ -679,7 +704,18 @@ class Model:
         dUdz = jnp.sqrt((u[:-1] - u[1:]) ** 2 + (v[:-1] - v[1:]) ** 2) / jnp.maximum(zc[:-1] - zc[1:], 1.0)
         rii = G * (thv[:-1] - thv[1:]) / (thv[1:] * (zc[:-1] - zc[1:])) / jnp.maximum(dUdz ** 2, 1e-6)
         Kfree = 30.0 ** 2 * dUdz * jnp.where(rii > 0, 1.0 / (1 + 10 * rii) ** 2, jnp.sqrt(1 - 18 * jnp.minimum(rii, 0)))
-        Kh = jnp.clip(jnp.maximum(Kbl, Kfree), 0.0, 500.0)
+        Kh = jnp.clip(jnp.maximum(Kbl, Kfree), 0.0, 500.0); Km = Kh
+        if self.S.get('sbl_ifs', 0) > 0:
+            # sbl_ifs (24 Nov, Land night BL 5-why; IFS Cy47r1 Part IV 3.3.2(b)): where the surface buoyancy flux is <= 0 (stable BL) the
+            # K-profile kappa u* z (1 - z/h)^2 has no stability dependence. The IFS uses K = l^2 |dU/dz| f_LTG(Ri) (revised Louis-Tiedtke-
+            # Geleyn, b = 5, d = 1: f_m = 1/(1 + 2 b Ri (1 + d Ri)^-1/2), f_h = 1/(1 + 2 b Ri (1 + d Ri)^1/2)), 1/l = 1/(kappa z) + 1/lambda,
+            # lambda = 0.1 h_BL inside the stable BL. Above the BL our Kfree (lambda 30 m, as the IFS) is kept.
+            stab_c = (G / thv1 * (H / (rho * CP) + 0.61 * th1 * E / rho)) <= 0.0
+            lam = jnp.maximum(0.1 * hbl, 10.0)[None]; lmix = 1.0 / (1.0 / (KARM * zh) + 1.0 / lam)
+            rip = jnp.maximum(rii, 0.0)
+            fm = 1.0 / (1.0 + 10.0 * rip / jnp.sqrt(1.0 + rip)); fh = 1.0 / (1.0 + 10.0 * rip * jnp.sqrt(1.0 + rip))
+            inb = stab_c[None] & (zh < hbl[None])
+            Kh = jnp.where(inb, jnp.clip(lmix ** 2 * dUdz * fh, 0.0, 500.0), Kh); Km = jnp.where(inb, jnp.clip(lmix ** 2 * dUdz * fm, 0.0, 500.0), Kh)
         if self.S.get('bl_entr', 0) > 0:
             # bl_entr (11 Nov, IFS Cy50r1 Part IV eq. 3.50): entrainment at the top of the convective boundary layer, w'thv'_top =
             # -0.2 w'thv'_surface, as a diffusion coefficient on the first interface at/above the BL top: K_e = 0.2 B_s dz / dthv.
@@ -695,13 +731,20 @@ class Model:
         a = -dt * A / mass; c = -dt * C_ / mass; b = 1 - a - c
         def diffuse(X, sfc):
             rhs = X.at[-1].add(dt * sfc / mass[-1]); return (tridiag(a, b, c, rhs) - X) / dt
-        du = diffuse(u, taux); dv = diffuse(v, tauy); dq = diffuse(q, E)
+        if self.S.get('sbl_ifs', 0) > 0:                                                            # momentum with its own K (f_m), heat/moisture with f_h
+            coefm = rhoh * Km / jnp.maximum(zc[:-1] - zc[1:], 1.0)
+            am = -dt * jnp.concatenate([jnp.zeros_like(coefm[:1]), coefm], 0) / mass; cm_ = -dt * jnp.concatenate([coefm, jnp.zeros_like(coefm[:1])], 0) / mass; bm = 1 - am - cm_
+        else:
+            am, bm, cm_ = a, b, c
+        def diffuse_m(X, sfc):
+            rhs = X.at[-1].add(dt * sfc / mass[-1]); return (tridiag(am, bm, cm_, rhs) - X) / dt
+        du = diffuse_m(u, taux); dv = diffuse_m(v, tauy); dq = diffuse(q, E)
         # drag_imp > 0 (P2 crash 2, 5 Nov): surface stress IMPLICIT in the lowest-layer wind (backward Euler, as IFS / GFS):
         # tau = -rho cd V1 u^{n+1}. Explicit form overshoots when dt rho cd V1 / (layer mass) > 2: 75-level 7-hPa bottom layer
         # with a 100 m mixing depth (cloud-base limit) -> wind sign flip with growing amplitude (trace: 93 -> 743 m/s in 3 steps).
         cdv = rho * cd * V1
         def drag_imp(X):
-            b2 = b.at[-1].add(dt * cdv / mass[-1]); return (tridiag(a, b2, c, X) - X) / dt
+            b2 = bm.at[-1].add(dt * cdv / mass[-1]); return (tridiag(am, b2, cm_, X) - X) / dt
         di = S['drag_imp'] > 0
         du = jnp.where(di, drag_imp(u), du); dv = jnp.where(di, drag_imp(v), dv)
         taux = jnp.where(di, -cdv * (u1 + dt * du[-1]), taux); tauy = jnp.where(di, -cdv * (v1 + dt * dv[-1]), tauy)
@@ -1185,6 +1228,7 @@ class Model:
         w = jnp.where(self.land, jnp.clip(cr['w'] + dt * (d['rain'] - d['E']), 0.0, S['bucket'] * 1000), cr['w'])
         out = dict(cr, sst=sst, tl=tl, w=w, rain=cr['rain'] + dt * d['rain'], t=cr['t'] + dt)
         if 'ondp' in cr: out['ondp'] = cr['ondp'] + dt * d['on_dp']                                   # conv_diag: time-integrated deep-active flag
+        if 'onsh' in cr: out['onsh'] = cr['onsh'] + dt * d['on_sh']                                   # conv_diag: time-integrated shallow-active flag
         if 'q0v' in cr: out['q0v'] = d['H'] / (1.2 * CP) + 0.61 * 290.0 * d['E'] / 1.2          # Q0v = H/(rho cp) + 0.61 T E/rho (rho 1.2, T 290)
         if 'tx' in cr: out['tx'] = cr['tx'] + dt * d['tx']; out['ty'] = cr['ty'] + dt * d['ty']; out['fsta'] = cr['fsta'] + dt * d['fst']; out['staba'] = cr['staba'] + dt * d['stab']; out['txn'] = cr['txn'] + dt * d['txn']; out['zmo'] = cr['zmo'] + dt * d['zmo']; out['wsta'] = cr['wsta'] + dt * d['wst']          # stress_out: time-integrated surface stress (N m-2 s)
         if 'evap' in cr: out['evap'] = cr['evap'] + dt * d['E']                                     # evap_out: total surface evaporation since start (kg m-2)
@@ -1260,6 +1304,7 @@ class Model:
             t850 = t_below(T, lp, 85000.0, to_p(T, lp, 85000.0))
             ex = dict(evap=cr['evap']) if 'evap' in cr else {}
             if 'ondp' in cr: ex.update(ondp=cr['ondp'])
+            if 'onsh' in cr: ex.update(onsh=cr['onsh'])
             if 'tx' in cr: ex.update(tx=cr['tx'], ty=cr['ty'], fsta=cr['fsta'], staba=cr['staba'], txn=cr['txn'], zmo=cr['zmo'], wsta=cr['wsta'])
             return dict(**ex, z500=to_p(phi, lp, 50000.0) / G, t850=t850, mslp=mslp, rain=cr['rain'], t2=t2, t2_old=T[-1] + 0.0065 * (z1 - 2.0),
                         u850=to_p(u, lp, 85000.0), v850=to_p(v, lp, 85000.0), u200=to_p(u, lp, 20000.0), v200=to_p(v, lp, 20000.0),
@@ -1358,7 +1403,7 @@ def iau_init(M, st_pre, cr_pre, st_t0, window_h=6.0, pieces=6):
         s = dataclasses.replace(s, **{f: getattr(s, f) + inc[f] / pieces for f in flds},
                                 tracers={k: jnp.maximum(s.tracers[k] + inc_q[k] / pieces, 0.0) for k in s.tracers})
         s, c = integrate(M, s, c, window_h / pieces)
-    for k in ('rain', 'evap', 'tx', 'ty', 'txn', 'fsta', 'staba', 'zmo', 'wsta', 'ondp'):
+    for k in ('rain', 'evap', 'tx', 'ty', 'txn', 'fsta', 'staba', 'zmo', 'wsta', 'ondp', 'onsh'):
         if k in c: c = dict(c, **{k: jnp.zeros_like(c[k])})
     return s, c
 def bred_vectors(M, state, carry, n=6, hours=12.0, seed=0, amp=1.0):
