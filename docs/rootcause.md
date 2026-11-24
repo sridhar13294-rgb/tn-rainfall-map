@@ -4700,3 +4700,15 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - 10:15 AMENDMENT (before any IAU result): local T85 with sl_vcubic is OOM-killed (6 GB) -> the local IAU test runs on lc_mix WITHOUT cubic
   (the spin-up mechanism is in convection/boundary layer, not vertical advection); same rule. The exam check will use the full candidate.
   [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 11:01 RESULT IAU slow-start test (registered 10:1x, amended 10:2x; T85 lc_mix, 6-h IAU): tropical d1 rain / ERA5: Jan 0.62 -> 0.67, Jul
+  0.64 -> 0.67 (rule needs >= 0.85) -> (a) FAIL; z500 d1 rmse NH 19.05 -> 19.23 (+1 %), SH 19.55 -> 21.67 (+11 %) Jan, Jul NH 17.19 ->
+  18.18 (+6 %), SH 20.69 -> 20.73 -> (b) FAIL. => IAU NOT adopted; HELD. [reg: 10:1x (+ amendment 10:2x) | inputs: ERA5 t0-6h same
+  pipeline, same starts, only the start method differs | fail-5why below]
+  fail-5why: (1) why so little gain? The increment re-imposes ERA5's T and q at t0, i.e. it removes the moist boundary layer / cool upper
+  air the model builds before it convects (22 Nov profile) - so any start that matches ERA5 brings the deficit back. (2) why does the model
+  need a different state? Its convection reaches ERA5's rain only in a state MORE unstable than ERA5's own (trigger fires in 64 % of its
+  later columns at ERA5's state; plateau still ~0.85 after spin-up). (3) => the root is NOT the start method but the scheme's equilibrium:
+  at ERA5's instability our deep trigger/closure makes ~2/3 of ERA5's convective rain. That is a PHYSICS discrepancy vs IFS (trigger test
+  parcel / closure), not an initialisation one. The failure traces to the diagnosis (my 'cold-start balance' reading of 23 Nov was
+  incomplete), not to a coding fault in IAU. NEXT: reference diff of the deep trigger and CAPE closure vs IFS Cy47r1 6.x on the same
+  column states (h0 ERA5 columns where IFS-ERA5 rains and we do not).
