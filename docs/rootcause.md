@@ -5346,3 +5346,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   tropical source); (3) TN v850 has not moved in any cloud test (-1.5..-1.7) -> the northerly d1-d2 bias is NOT driven by the cloud chain (that
   chain drives the cooling growth and rain decline). v850 needs its own 5-why (day-1 signal from the start: mslp +0.7 hPa high over TN at d1).
   [reg: this line (5-why) | inputs: exam fields | fail-5why: n/a]
+- 18:26 IST TRACKS v850 5-WHY, step 1 (from existing part-3 JSONs): day-1 v850 bias TN -1.67/-1.69/-0.29 and S.India -1.39/-1.36/-0.29 for
+  lc_mix/cldprog/no_shmf; mslp d1 is +69..+97 Pa high in ALL three (shared -> not the cause of the difference). The only variant that removes the
+  northerly is the old mse scheme, which heats 850 hPa by ~+4.9 K/day (MSE mixing) vs ERA5 Q1 ~+1.1 K/day; ours -0.8 K/day over the Bay.
+  REGISTERED (before the result): (a) T42 day-1 difference map lc_mix minus no_shmf (3 starts: 1/11/16 Nov) - if the v850 difference is largest
+  over the Bay/TN coast and co-located with a 850 hPa heating/rain difference, the bias is the low-level heating deficit of the mass-flux
+  scheme; if it is broad-scale (whole basin, no rain co-location), it is a dynamical/initial-state cause and the next check is the DFI/initial
+  imbalance. (b) No gate change; Tracks gate stays TN v850 d1 >= -1.0. [reg: this line | inputs: part-3 JSONs listed; ERA5 Q1 q1bay2 | fail-5why: n/a]
