@@ -5215,3 +5215,15 @@ running as a separate test) is NOT adopted on its own result unless this check p
   0.7 m cost. REGISTERED (before the run): part-3 job tn-ls-moland = land set + sfc_mo_land, account 4: cost NAMED as the ocean part if z500 d5
   is within 1 SE of the no-sfc_mo run (paired vs land set <= -0.5); then the candidate uses sfc_mo_land and Land BL stays closed (its land
   physics unchanged). [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 09:10 IST DAY-2 BAY BUDGET (land set + rhc_ifs, T42, 3 starts run one per process - the 3-start run was killed by memory): sigma-0.85 physics
+  -0.90 / +0.03 / -1.70 (mean -0.86 K/day) vs ERA5 Q1 day 2 at 850 +1.01 -> shortfall 1.86 K/day, same as day 1. Parts (mean): radiation -2.01
+  (day 1 -1.13), deep +0.99, lsc +0.36, shallow -0.14, BL -0.02. dT day 2 mean -0.18 K (day 1 -0.26): with rhc_ifs the 850 cold does NOT grow
+  on day 2 locally. Low cloud (max overlap) day 2 0.22/0.22/0.37 (day 1 0.16; ERA5 day-1 0.154) - the low-cloud excess comes back on day 2 in
+  one start and the radiative cooling nearly doubles. [reg: 25 Nov 08:1x day-2 registration | inputs: ERA5 Q1 day 2 (q1bay2), same box/starts |
+  fail-5why: below]
+- The registered rule ('process with >= 60 % of the shortfall') cannot be applied: ERA5 has no per-process Q1 (stated again). What can be said:
+  the shortfall is steady (~1.9 K/day both days) and is a missing HEATING of ~2 K/day at 850 relative to ERA5, i.e. convective heating that
+  should be ~3x ours at that level - the Q1 profile ERA5 shows (1.0-1.1 K/day from 925 to 700, max 2.1 at 400-500) has much more LOW-LEVEL
+  heating than our deep scheme gives. NEXT (registered): our deep-convective heating PROFILE (925-200 hPa) vs ERA5 Q1 + radiation profile over
+  Bay/TN day 1: the level band where ours falls short by >= 60 % of the column deficit is NAMED (bottom-heavy deficit -> detrainment/entrainment
+  profile; top-heavy -> closure strength). [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
