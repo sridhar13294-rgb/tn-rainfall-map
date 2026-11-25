@@ -5548,3 +5548,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - 21:43 IST ATTRIBUTION (same screen, cld_det + sst_fill, NO tau_ifs, 140 samples): reaching sigma < 0.4 0.25, below-0.7 detrained share 0.42 ->
   sst_fill alone moves tops a little (0.20 -> 0.25); tau_ifs carries most of the change (0.25 -> 0.51, 0.42 -> 0.15). tau_ifs NAMED as the
   deep-top fix at screen level. [reg: 21:4x attribution registration | inputs: model T42 one start (stated) | fail-5why: n/a]
+- 21:58 IST tau_ifs 5-DAY LOW-CLOUD SCREEN (T42 11 Nov; candidate + cld_det + sst_fill + tau_ifs): low cloud days 3-5 Bay 2.81/3.46/2.67x, S.India
+  3.49/4.25/3.49x ERA5 (rule 0.7-1.3x FAIL - worse than without tau_ifs 2.54/2.89/2.28x); total cover Bay 1.20/1.13/1.01x. The tops are fixed
+  (screen above) but the low-cloud excess grows. Component split (Bay): c_ls 0.18-0.50 with cld_det vs 0.003-0.022 without -> the excess is the
+  carried large-scale cloud, and on 11 Nov h24-48 it sits at sigma 0.86-0.93 where deep detrainment D = 0 (detprof7). So the cloud there does
+  NOT come straight from detrainment. tau_ifs: tops PASS, low cloud FAIL -> HELD for the T170 test until the low-cloud source is named.
+  [reg: 21:4x cloud-screen registration | inputs: ERA5 lcc5/tcc, model T42 one start (stated) | fail-5why: below]
+- FAIL-5WHY / REGISTERED (before the result): budget of the carried cloud fraction at sigma 0.84-0.93 (Bay box, 11 Nov h24-48) by term -
+  formation da_f, detrainment D, erosion/evaporation - with and without cld_det. The term that differs most between the two runs is named.
+  Candidate mechanisms (not yet tested): weaker downdrafts (cld_det reduces convective rain, and a_dd is capped by the rain) leave a moister
+  sub-cloud layer, so the formation term fires there. [reg: this line | inputs: n/a | fail-5why: n/a]
