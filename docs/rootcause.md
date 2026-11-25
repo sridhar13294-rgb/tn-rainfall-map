@@ -5530,3 +5530,12 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - 21:00 IST REGISTERED (before the result): T42 5-day cloud screen (cld_t170.py, 11 Nov, same as the 16:21 check) for candidate + sst_fill, and
   then candidate + sst_fill + cld_det: low cloud days 3-5 vs ERA5 (rule 0.7-1.3x, Bay and S.India). Screens only; tells whether the coastal SST
   defect also distorted the cloud results that HELD cld_prog / cld_det. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 21:30 IST CLOUD SCREENS WITH sst_fill (T42, 11 Nov, days 3-5 low cloud vs ERA5): candidate + sst_fill Bay 0.40/0.34/0.39x, S.India 0.56/0.61/0.71x
+  (too LOW, below 0.7 - slightly lower than without the fix); + cld_det Bay 2.54/2.89/2.28x, S.India 2.87/3.40/2.77x (too HIGH). The SST defect
+  did not cause the cloud failures: without the convective source there is too little low cloud, with it far too much, because the deep
+  plumes detrain at 650-800 hPa (deep-top 5-why). cld_prog / cld_det stay HELD. [reg: 21:0x cloud-screen registration | inputs: ERA5 lcc5, model T42 one start (stated) | fail-5why: below]
+- FAIL-5WHY (deep-top chain, plume response): ours removes CAPE over a FIXED 2400 s; IFS's deep closure time scale is tau = (z_top - z_base) /
+  w_up x (1 + 264/N) (~5100 s at T170, x7.3 at T42) - IFS convection consumes CAPE 2+ times more slowly, so a convecting column stays unstable
+  and keeps deep tops. Coded tau_ifs (that formula; w_up from eq. 6.10). REGISTERED (before the result): T42 tops screen (11 Nov, h24-48),
+  candidate + cld_det + sst_fill + tau_ifs: SUPPORTED if columns reaching sigma < 0.4 >= 0.40 (was 0.20) and the detrained-mass share from
+  tops below sigma 0.7 <= 0.35 (was 0.60). Screen only (T42's x7.3 factor exaggerates; stated). [reg: this line | inputs: n/a | fail-5why: n/a]

@@ -136,7 +136,7 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='mf', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='radcloud', rad_every=2,
-                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, sh_wtest=0.0, sbl_ifs=0.0, bl_exc_ws=0.0, tofd=0.0, sfc_mo_h=0.0, dp_ifs=0.0, dp_ifs_exc=0.0, sfc_mo_land=0.0, cld_prog=0.0, cld_det=0.0, mf_ice_ifs=0.0, sst_fill=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, midlev=0.0, lsc_sub=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
+                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, sh_wtest=0.0, sbl_ifs=0.0, bl_exc_ws=0.0, tofd=0.0, sfc_mo_h=0.0, dp_ifs=0.0, dp_ifs_exc=0.0, sfc_mo_land=0.0, cld_prog=0.0, cld_det=0.0, mf_ice_ifs=0.0, sst_fill=0.0, tau_ifs=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, midlev=0.0, lsc_sub=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
@@ -166,6 +166,7 @@ def fill_nan_grid(x, iters=400):
     return x
 class Model:
     def __init__(self, grid='T170', layers=32, dt_min=None, set_=None):
+        self.ntrunc = int(''.join(c for c in str(grid) if c.isdigit()) or 170)                      # spectral truncation N (tau_ifs)
         self.S = dict(DEFAULTS); self.S.update(set_ or {})
         if dt_min is None or (dt_min > DT_MAX.get(grid, 15.0)): dt_min = DT_MAX.get(grid, 15.0)   # longest stable step per grid (Kaggle benchmark: T119 blew up at 30 min)
         self.coords = coordinate_systems.CoordinateSystem((spherical_harmonic.Grid.construct(max_wavenumber=255, gaussian_nodes=192) if grid == 'T255' else getattr(spherical_harmonic.Grid, grid)()), sigma_coordinates.SigmaCoordinates(sigma_bounds(layers)))
@@ -561,6 +562,13 @@ class Model:
         # convective turnover time), between 10 min and tau_deep
         zsrc = jnp.take_along_axis(zc, ksrc[None], 0)[0]; ztop = jnp.max(jnp.where(inc, zc, 0.0), axis=0)
         tau = jnp.where(S['mf_wup'] > 0, jnp.clip((ztop - zsrc) / jnp.maximum(S['mf_wup'], 1e-3), 600.0, S['tau_deep']), S['tau_deep'])
+        if (not shallow) and mid is None and self.S.get('tau_ifs', 0):
+            # tau_ifs (25 Nov, deep-top 5-why: convecting columns cap themselves within a day; ours removes CAPE over a fixed 2400 s): IFS Cy47r1
+            # Part IV deep closure time scale tau = (z_top - z_base) / w_up_mean x (1 + 264 / N), N the spectral truncation (T170 -> x2.55),
+            # w_up from the plume's eq. 6.10 kinetic energy (floor 1 m/s), averaged over the cloud layers.
+            cl_ = inc & (ii < ksrc[None]); wu_ = jnp.sqrt(2.0 * jnp.maximum(Kw_l, 0.0))
+            wbar = jnp.maximum(jnp.sum(jnp.where(cl_, wu_, 0.0), 0) / jnp.maximum(jnp.sum(cl_, 0), 1), 1.0)
+            tau = jnp.maximum((ztop - zsrc) / wbar, 600.0) * (1.0 + 264.0 / self.ntrunc)
         if shallow: tau = S['tau_shallow'] * jnp.ones_like(tau)
         Mb = cape / (tau * jnp.maximum(-dcape, 1e-6))
         if shallow and Hs is not None and E is not None:
