@@ -5480,3 +5480,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
   (all / sea), sea q_sat(SST)*0.98 - q2m, and atmospheric net radiation (TOA - surface). Decisions: (a) radiation: if model atmospheric
   radiative cooling exceeds ERA5's by >= 50 W m-2 it is named as a column-deficit term; (b) evaporation over sea: LE = rho Ck U dq - the
   factor (U or dq or Ck = LE/(rho U dq)) that is >= 15 % off ERA5 is named. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 20:37 IST BAYFX RESULT (Bay box day 1, model T42 candidate vs ERA5 hourly, 1 / 11 Nov): atmospheric net radiation -114.6/-118.9 vs -106.1/-108.5
+  W m-2 (model cools 8-10 W m-2 more; rule >= 50: radiation NOT named). Rain 0.79/2.89 vs 2.76/6.93 mm/day (0.29/0.42x). Sea evaporation
+  59.2/107.4 vs 86.1/126.9 W m-2 (0.69/0.85x): U ~2.67/4.89 vs 3.35/4.95 m/s (0.80/0.99 - named on 1 Nov only), sea-air humidity difference
+  dq 4.27/4.91 vs 6.19/6.60 g/kg (0.69/0.74x - NAMED on both starts; conservative, because our dq uses q at ~80 m, which is drier than q2m),
+  effective Ck 1.80/1.56e-3 vs 1.44/1.35e-3 (ours HIGHER, compensating). Named: the near-surface air over the Bay is too MOIST for the SST,
+  so evaporation is low, and with it rain. [reg: 20:5x bayfx registration | inputs: ERA5 ARCO hourly (fetched 20:4x), model T42; height mismatch U (log-law 0.84) and q (80 m vs 2 m) stated | fail-5why: n/a]
+- 5-WHY next step, REGISTERED (before the result): is the moist surface air the BL failing to vent? Model Bay RH925 daily means days 0-2 vs ERA5
+  rh_truth RH925 (11 Nov): if the model RH925 rises >= 0.05 above ERA5's by day 1-2, BL moisture trapping is named and the venting processes
+  (shallow mass flux sh_ifs2, BL-top entrainment) get their own size check; if not, the surface-layer humidity itself (lowest level) is the
+  place to look. [reg: this line | inputs: n/a | fail-5why: n/a]
