@@ -1,33 +1,32 @@
 {
- "run_utc": "2026-11-25T04:07:12.028385+00:00",
+ "run_utc": "2026-11-25T14:20:21.113269+00:00",
  "radars": {
   "Chennai": {
    "working": false,
-   "scan_utc": "2026-11-24T21:20:00+00:00",
-   "note": "picture is 407 min old (radar probably not working)"
+   "scan_utc": null,
+   "note": "no scan time or picture too small"
   },
   "Karaikal": {
    "working": true,
-   "scan_utc": "2026-11-25T04:00:49+00:00",
+   "scan_utc": "2026-11-25T14:11:55+00:00",
    "note": ""
   }
  },
- "satellite_latest": "2026-11-25T03:30:00+00:00",
+ "satellite_latest": "2026-11-25T13:45:00+00:00",
  "compared_this_run": 1,
  "satday": {
   "accumulated": {
-   "2026-11-25": 96,
-   "2026-11-26": 3
+   "2026-11-26": 44
   },
   "gauge_fit": {
-   "cut": 3,
-   "scale": 0.85,
-   "mae": 2.3,
-   "bias": 0.89,
-   "ets": 0.27,
-   "pod": 0.44,
-   "far": 0.41
+   "cut": 5,
+   "scale": 1.0,
+   "mae": 2.4,
+   "bias": 0.93,
+   "ets": 0.26,
+   "pod": 0.39,
+   "far": 0.38
   },
-  "days_compared": 26
+  "days_compared": 27
  }
 }
