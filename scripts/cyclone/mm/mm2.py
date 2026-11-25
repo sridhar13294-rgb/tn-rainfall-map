@@ -136,7 +136,7 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='mf', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='radcloud', rad_every=2,
-                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, sh_wtest=0.0, sbl_ifs=0.0, bl_exc_ws=0.0, tofd=0.0, sfc_mo_h=0.0, dp_ifs=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, midlev=0.0, lsc_sub=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
+                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, sh_wtest=0.0, sbl_ifs=0.0, bl_exc_ws=0.0, tofd=0.0, sfc_mo_h=0.0, dp_ifs=0.0, dp_ifs_exc=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, midlev=0.0, lsc_sub=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
@@ -377,6 +377,16 @@ class Model:
             h_kick_t = CP * dT_t + LV * dq_t; q_kick_t = dq_t
         else:
             h_kick_t = h_kick; q_kick_t = q_kick
+        if (not shallow) and mid is None and self.S.get('dp_ifs_exc', 0) > 0 and Hs is not None and E is not None:
+            # dp_ifs_exc (25 Nov, dp_ifs fail-5why): IFS 6.4 deep TEST parcel excess - first departure level (our source at/near the lowest
+            # levels): eq. 6.19 from the surface fluxes and w*, capped 3 K / 2 g/kg; higher departure levels: 0.2 K / 0.1 g/kg (6.21)
+            T1 = Tn[-1]; rho1 = p[-1] / (RD * T1); z1 = jnp.maximum(zc[-1], 1.0)
+            bflx = jnp.maximum(Hs / CP + 0.61 * T1 * E, 0.0) / rho1
+            wsd = 1.2 * jnp.power(0.1 ** 3 + 1.5 * G * KARM * z1 / T1 * bflx, 1.0 / 3.0)
+            dT1 = jnp.clip(1.5 * jnp.maximum(Hs, 0.0) / (rho1 * CP * wsd), 0.2, 3.0); dq1 = jnp.clip(1.5 * jnp.maximum(E, 0.0) / (rho1 * wsd), 1e-4, 2e-3)
+            low = ksrc >= Tn.shape[0] - 2
+            dTd = jnp.where(low, dT1, 0.2); dqd = jnp.where(low, dq1, 1e-4)
+            h_kick_t = CP * dTd + LV * dqd; q_kick_t = dqd
         def make_plume(test):
           def plume(c, x):
             hu, qu, alive, lfc, started, zp, Kw = c; Te, qe, he, pk, zk, sk, rk, k = x
@@ -393,7 +403,7 @@ class Model:
             # layer (phi_e + (phi_u - phi_e) exp(-eps dz)) instead of one explicit step, so the result does not depend on layer thickness
             # (explicit eps dz reached 0.6 in the lowest layers: the shallow test parcel was ~60 % environment after one layer)
             fmix = jnp.where(S['mf_mix_exact'] > 0, 1.0 - jnp.exp(-eps * dz), eps * dz)
-            hk_, qk_ = (h_kick_t, q_kick_t) if (test and shallow) else (h_kick, q_kick)
+            hk_, qk_ = (h_kick_t, q_kick_t) if (test and (shallow or (mid is None and self.S.get('dp_ifs_exc', 0) > 0))) else (h_kick, q_kick)
             hu1 = jnp.where(src, he + hk_, hu + fmix * (he - hu)); qu1 = jnp.where(src, qe + qk_, qu + fmix * (qe - qu))
             Td = (hu1 - G * zk - LV * qu1) / CP; sat = qu1 > qsat(Td, pk); Tu = Te
             for _ in range(4):
@@ -916,7 +926,7 @@ class Model:
             on_dp = Cv['deep'].astype(jnp.float32); on_sh = Cv['shallow'].astype(jnp.float32)
             self._cmt_M = Cv['M']; P_ifs = Cv['P_sfc']
         elif S['conv'] == 'mf':                                                                       # mass-flux scheme replaces the adjustment
-            dTc, dqc, Pmf, regmf, okmf = self.conv_mf(Tn, qn, p, mass, zc, sig, dsig, ps, ksrc, S, dt, div=div, E=E)
+            dTc, dqc, Pmf, regmf, okmf = self.conv_mf(Tn, qn, p, mass, zc, sig, dsig, ps, ksrc, S, dt, div=div, E=E, Hs=H)
             reg, ok = regmf, okmf
             on_dp = okmf.astype(jnp.float32); on_sh = jnp.zeros_like(on_dp)
             if S['shallow'] == 'mf':                                                                 # shallow cumulus as a non-raining mass-flux plume
