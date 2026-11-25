@@ -5254,3 +5254,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
   identical to the T170-checked land set (Land BL stays CLOSED; the over-land MO momentum + heat are unchanged), the ocean keeps Charnock/Louis.
   Stated: the ocean drag-sink question (22 Nov, sfc_mo HELD at 0.78) remains its own item - the IFS ocean MO surface layer lowers z500 skill here.
   [reg: 25 Nov 08:3x moland registration | inputs: part-3, paired with tn-landset | fail-5why: n/a]
+- 10:19 IST tn-bud170 (T170, land set + rhc_ifs, 3 Nov starts, 3-hourly, days 1-3; S.India sigma 0.85 physics -0.44/-0.36/-0.93 K/day): change day 1 ->
+  day 3 = -0.49 K/day; by process: radiation -1.10 -> -2.24 (-1.14), deep +0.72 -> +1.13 (+0.41), lsc +0.08 -> +0.25 (+0.17), BL +0.16, shallow
+  -0.09. The same at 925 (rad -1.20 -> -1.90) and 700 (-1.24 -> -1.85); Bay/TN 850 rad -1.14 -> -1.66. Rule (process with >= 60 % of the change)
+  -> RADIATION NAMED for the growing low-level cooling (its change is larger than the net; deep convection partly offsets it). At T170 the
+  cooling growth is radiative, not a convection decline. [reg: 25 Nov 09:4x T170 budget registration | inputs: T170 exam resolution, same starts
+  and boxes | fail-5why: n/a (named)]
+- 5-why next: radiation's inputs - clouds (low/mid cloud growing day by day, as one local start showed: low cloud 0.16 -> 0.37) or humidity/
+  temperature profile. REGISTERED (before the result): ERA5 low/total cloud over South India + Bay/TN days 1-3 (same starts) vs the model's cloud at
+  T170 days 1-3 (Kaggle cloud diagnostic, account 4); CLOUD GROWTH NAMED if model low cloud rises >= 50 % from day 1 to day 3 while ERA5's
+  changes < 20 %; otherwise the clear-sky input (humidity profile) is next. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
