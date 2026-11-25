@@ -5227,3 +5227,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
   heating than our deep scheme gives. NEXT (registered): our deep-convective heating PROFILE (925-200 hPa) vs ERA5 Q1 + radiation profile over
   Bay/TN day 1: the level band where ours falls short by >= 60 % of the column deficit is NAMED (bottom-heavy deficit -> detrainment/entrainment
   profile; top-heavy -> closure strength). [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 09:24 IST HEATING PROFILE vs ERA5 Q1 (land set + rhc_ifs, T42, Bay/TN, 3 starts, day 1; physics / deep / rad K/day | ERA5 Q1 | shortfall):
+  925 -0.92/+0.35/-1.49 | +1.11 | 2.03; 850 -0.79/+0.48/-1.13 | +1.10 | 1.89; 700 -0.45/+0.81/-1.16 | +1.08 | 1.53; 600 -0.14/+0.76/-0.79 | +1.41 | 1.54;
+  500 -0.24/+0.51/-0.91 | +2.06 | 2.30; 400 -0.22/+0.30/-1.02 | +2.12 | 2.34; 300 -0.73/+0.06/-1.37 | +1.56 | 2.29; 200 -1.12/0.00/-1.25 | +0.80 | 1.92.
+  Deficit share sigma >= 0.6: 45 %, above: 55 % -> NO band holds >= 60 % -> neither profile shape named; the deficit is COLUMN-WIDE (~2 K/day at
+  every level) = too little total convective heating, i.e. too little rain (2.0 vs ERA5 6.4 mm/day here: 0.5 vs ~1.6 K/day column-mean latent
+  heating). [reg: 25 Nov 09:1x profile registration | inputs: ERA5 Q1 37 levels, same box/starts/day | fail-5why: below]
+- RESOLUTION CAVEAT (stated plainly - this weakens the last hours' local chain): at T42 the Bay day-1 rain is 0.31x ERA5, but at the exam's T170
+  the TN/South-India day-1 rain is 0.71-0.74x. The local T42 diagnostics overstate the convective deficit roughly 2x; the T170 fault is the
+  decline after day 1 (to ~0.5). Further convection diagnostics must run at T170 (Kaggle, account 4 only until account 1 resets) or they may
+  be chasing a resolution effect. [reg: this line (statement + direction) | inputs: T42 vs T170 rain ratios | fail-5why: n/a]
