@@ -5612,3 +5612,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
   detrained share from tops below 0.7 0.19 (<= 0.35 PASS). Detrainment now peaks at sigma 0.23-0.52 (0.15-0.18 /day) and the carried cloud sits
   aloft (cfa 0.22-0.50 at sigma 0.23-0.45; <= 0.07 below 0.7). The "low deep tops" of tonight were MY BUG, not the model physics: no tops
   problem remains, so tau_ifs has no registered reason left and stays OFF (coded, not adopted). [reg: 23:1x rerun registration | inputs: model T42 one start | fail-5why: n/a]
+- 23:34 IST 5-DAY CLOUD SCREEN, FIXED cld_det (T42 11 Nov, candidate + cld_det + sst_fill): low cloud days 3-5 Bay 0.35/0.24/0.44x, S.India
+  0.39/0.39/0.70x ERA5 (too LOW - FAIL); total cover Bay 1.42/1.37/1.32x, S.India 1.51/1.49/1.52x (too HIGH). cld_det HELD (screen).
+  [reg: 23:1x rerun registration | inputs: ERA5 lcc5/tcc, model T42 one start (stated) | fail-5why: below]
+- FAIL-5WHY: (a) total cover too high <- the detrained cloud now sits aloft (cfa 0.2-0.5 at sigma 0.23-0.45) AND radiation still adds our
+  DIAGNOSTIC convective cloud (towers f_tow, anvils c_anv) on top: the same convective cloud counted twice. IFS has no separate diagnostic
+  convective cloud once detrainment feeds the prognostic cloud (Part IV 7.2.4: convection enters the cloud scheme only via 7.22-7.23).
+  (b) low cloud too low existed without cld_det too (sst_fill-only screen 0.34-0.71x) -> a separate cause (cloud-free start; formation only).
+  REGISTERED (before the result): same 5-day screen with cld_det + diagnostic convective cloud OFF (rad_prm f_tow 0, anv_max 0 - removing a
+  double count, not a tuning): total cover days 3-5 within 0.85-1.15x ERA5 in both boxes -> (a) closed; low cloud reported for (b).
+  [reg: this line | inputs: n/a | fail-5why: n/a]
