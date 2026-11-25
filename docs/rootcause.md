@@ -5364,3 +5364,14 @@ running as a separate test) is NOT adopted on its own result unless this check p
   (a) 0 failed starts (no blow-up to day 10); (b) z500 RMSE d10 <= 122.6 m (the existing regression gate, line 384) AND <= the lc_mix day-10
   value of the same starts + 2 SE (paired); (c) global mslp RMSE d10 and tropics t850 RMSE d10 no worse than lc_mix + 2 SE (paired). It runs
   only after items 7-10 settle the candidate, so the 10-day GPU minutes are spent once. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 18:42 IST TRACKS v850 MAP TEST (T42, 3 starts, day 1, lc_mix minus no_shmf): TN v850 +0.74 (T170 exam: -1.38), Bay -0.21, Arabian Sea -0.44.
+  The T42 run does NOT reproduce the T170 TN v850 difference (opposite sign; the TN box is ~3 T42 grid points) -> INCONCLUSIVE, the registered
+  map test is invalid at this resolution (SIZE check failed: my test-design error, stated). Side facts (same run, broad): lc_mix is 0.6-1.2 K
+  colder at 850 hPa over the whole basin, mslp +22..+26 Pa over TN/Bay/Arabian Sea, TN rain -2.9 mm/day. [reg: 18:2x v850 step-1 registration |
+  inputs: T42 3 starts, model-model difference | fail-5why: below]
+- FAIL-5WHY: (1) inconclusive <- (2) T42 cannot resolve the TN-coast v850 signal <- (3) I chose T42 to avoid the T170 local OOM without checking it
+  reproduces the signal first. REGISTERED (before the result): the same map test at T170 on Kaggle (one job, first slot after the weekly reset,
+  behind tn-clddet), same decision rule (local co-located with heating/rain vs basin-wide). [reg: this line | inputs: n/a | fail-5why: n/a]
+- 18:42 IST REGISTERED (before the result): T42 5-day cloud check of the full candidate + cld_det (11 Nov start, the same script/start as the 16:21
+  check): it is a SCREEN only (no verdict; verdicts at T170). It says the detrainment source moves low cloud toward ERA5 if Bay and S.India
+  days 3-5 ratios rise toward 0.7-1.3x from 0.64/0.78/0.41 and 0.57/1.10/0.77 without passing 1.3x. [reg: this line | inputs: n/a | fail-5why: n/a]
