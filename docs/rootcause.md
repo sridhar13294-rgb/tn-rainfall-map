@@ -5527,3 +5527,6 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - 20:59 IST CORRECTION (my error): two stamps above named registrations at "21:2x"/"21:3x" - times that had not happened yet; I wrote them without
   checking the clock. Corrected to point at the registration blocks (20:5x). The heading times of every block tonight are clock-checked; the
   "reg:" labels tonight are approximate (to the 10 minutes) and each points to the block written immediately before its result. [reg: n/a (correction) | inputs: n/a | fail-5why: n/a]
+- 21:00 IST REGISTERED (before the result): T42 5-day cloud screen (cld_t170.py, 11 Nov, same as the 16:21 check) for candidate + sst_fill, and
+  then candidate + sst_fill + cld_det: low cloud days 3-5 vs ERA5 (rule 0.7-1.3x, Bay and S.India). Screens only; tells whether the coastal SST
+  defect also distorted the cloud results that HELD cld_prog / cld_det. [reg: this line | inputs: n/a | fail-5why: n/a]
