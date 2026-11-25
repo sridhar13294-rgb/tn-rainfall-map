@@ -5375,3 +5375,16 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - 18:42 IST REGISTERED (before the result): T42 5-day cloud check of the full candidate + cld_det (11 Nov start, the same script/start as the 16:21
   check): it is a SCREEN only (no verdict; verdicts at T170). It says the detrainment source moves low cloud toward ERA5 if Bay and S.India
   days 3-5 ratios rise toward 0.7-1.3x from 0.64/0.78/0.41 and 0.57/1.10/0.77 without passing 1.3x. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 19:07 IST cld_det SCREEN (T42, 11 Nov, 5 days; registered 18:4x): low cloud Bay 0.232/0.365/0.329/0.347/0.328 (days 3-5 1.98/2.23/1.74x ERA5),
+  S.India 0.309/0.649/0.343/0.486/0.556 (1.67/2.70/2.37x) - nearly all of it the carried large-scale cloud (c_ls 0.31-0.55); total cover Bay days 3-5
+  0.46/0.45/0.41 vs ERA5 0.55/0.57/0.57 (lower). SCREEN NEGATIVE (overshoots 1.3x by far). tn-clddet REMOVED from the Kaggle queue so no GPU
+  minutes go to a variant the screen already rejects. cld_det HELD. [reg: 18:4x cld_det screen registration | inputs: ERA5 lcc5/tcc days 1-5
+  3-start mean, model one start (stated) | fail-5why: below]
+- FAIL-5WHY (size first, T42 Bay profile 11 Nov h24-48): detrained air D peaks at sigma 0.73-0.81 (0.38-0.47 /day) and ~85-90 % of the detrained
+  mass is below 650 hPa (above 500 hPa only ~0.04 /day per layer); the carried cloud follows (cfa 0.12-0.19 at sigma 0.73-0.84). (1) low cloud too
+  high <- (2) deep detrainment lands at 700-800 hPa <- (3) our deep updraughts end low, OR our bulk mass-flux shape (eta falls linearly over the
+  upper 40 % of the cloud - NOT the IFS organised/turbulent detrainment) puts detrainment low. ERA5 Bay cloud fraction at 300/250/200 hPa (1 Nov
+  start, 0-48 h) = 0.05/0.10/0.21: real deep convection here tops near 200 hPa. REGISTERED (before the result): model Bay cloud fraction at
+  300/250/200 hPa (same start/hours, T42, total radiation cloud) and the share of deep updraught mass flux reaching sigma < 0.4. If the model
+  upper cloud is < 0.5x ERA5 and < 30 % of deep mass flux reaches sigma 0.4, the root is LOW DEEP TOPS (bottom-heavy deep convection, which
+  also fits the +2.8 K/day deep heating at 700 hPa and links to Tracks/P5b); otherwise it is the eta shape. [reg: this line | inputs: ERA5 cc 300-200 hPa | fail-5why: n/a]
