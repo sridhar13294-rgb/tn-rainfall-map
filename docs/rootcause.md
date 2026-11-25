@@ -5196,3 +5196,14 @@ running as a separate test) is NOT adopted on its own result unless this check p
   criteria (night wind <= 1.3x, night H 0.7-1.3x, day/night depth 0.7-1.3x of ERA5-L134), the candidate drops sfc_mo (keeps the 0.7 m) and Land BL
   stays CLOSED; if night H fails, sfc_mo_h is needed - then sfc_mo is restricted to land (its ocean part being the cost is the next measurement).
   [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 08:04 IST LIKE-FOR-LIKE RAIN AREA (T42, Bay/TN, 3 starts, day 1, area with rain > 0.1 mm/h): ERA5 tp area 0.309; ours (land set + rhc_ifs) 0.161
+  (0.52x), rain per raining column 12.5 vs ERA5 20.8 mm/day (0.60x); with dp_ifs + dp_ifs_exc 0.153 / 1.85 mm/day -> FAIL (no gain), HELD.
+  [reg: 25 Nov 07:5x dp_ifs_exc registration | inputs: ERA5 tp hourly area (cpbay2), same box/starts/day, model hourly rain | fail-5why: below]
+- CORRECTION (stated): my 07:4x 'TRIGGER NAMED (0.35x)' compared deep-ACTIVE columns with ERA5's convective-RAIN area - not like for like.
+  Like for like the deficit is shared: area 0.52x x intensity 0.60x = 0.31x. Neither the trigger nor the intensity alone is named by the rule.
+- T170 evidence (part-3 exam, rain ratio by day vs ERA5): TN d1/d2/d3 lc_mix 0.57/0.43/0.43, land set 0.64/0.42/0.47, + rhc_ifs 0.74/0.46/0.52,
+  no_shmf (old scheme) 0.63/0.66/0.69; South India similar (rhc_ifs 0.74/0.50/0.54). At the exam resolution day 1 is the BEST day: the rain
+  deficit GROWS after day 1, in step with the Bay 850 cold growing (-0.7 K d1 -> -1.1 K d2), and the old scheme (850 kept warm) holds 0.65.
+  So the open rain/steering fault is a day-1-to-3 DECLINE linked to the low-level cooling, more than a 'slow start'.
+  NEXT (registered): the low-level cooling after day 1 by process (sigma 0.925/0.85, day 2 vs day 1, Bay/TN), ERA5 Q1 day 2 as reference;
+  the process carrying >= 60 % of the day-2 physics shortfall vs ERA5 Q1 is NAMED. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
