@@ -5237,3 +5237,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   the TN/South-India day-1 rain is 0.71-0.74x. The local T42 diagnostics overstate the convective deficit roughly 2x; the T170 fault is the
   decline after day 1 (to ~0.5). Further convection diagnostics must run at T170 (Kaggle, account 4 only until account 1 resets) or they may
   be chasing a resolution effect. [reg: this line (statement + direction) | inputs: T42 vs T170 rain ratios | fail-5why: n/a]
+- 09:40 IST T170 EXAM TRENDS (part 3, mean bias d1..d5): lc_mix TN t850 -0.51/-1.19/-1.85/-1.53/-1.60 K, S.India -0.59/-1.15/-1.68; + rhc_ifs TN
+  -0.47/-1.07/-1.61; old scheme (no_shmf) +0.52/+0.10/-0.37 - at the exam resolution the 850 hPa cooling over South India GROWS ~0.6 K/day for
+  3 days, in step with the rain decline (0.74 -> 0.46 -> 0.52) - this is also the open Day-10 'low-level cooling' item. TN v850 is northerly only
+  on d1-d2 (-1.6/-1.1) and turns southerly by d4-d5 (+0.3/+1.5); u850 easterly grows (-0.3 -> -2.8).
+  REGISTERED (before the result): T170 physics budget by process (bud_t170.py, Kaggle account 4, land set + rhc_ifs, 3 Nov starts, 3-hourly,
+  days 1-3) at sigma 0.925/0.85/0.7 over South India and Bay/TN; ERA5 Q1 days 1-2 over Bay/TN (+1.1/+1.0 at 850) as reference. The process whose
+  DAY-1-TO-DAY-3 change carries >= 60 % of the change in physics heating at 850 is NAMED for the decline (the cause that grows, not the static
+  offset). [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
