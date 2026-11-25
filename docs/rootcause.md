@@ -5430,3 +5430,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED (before the result): Bay box theta_e at the plume source (lowest 2 levels) and theta_es at sigma 0.6, h0 vs h36, same 2 starts:
   the drift term that removes more of the h0 buoyancy margin (source theta_e fall vs theta_es(600) rise) is named; if both are < 1 K the
   drift is not the cap and the next check is the plume code path between h0 and h24 (e.g. the source level choice). [reg: this line | inputs: n/a | fail-5why: n/a]
+- 19:51 IST THETA_E DRIFT RESULT (T42 Bay box, h36 - h0, 11 Nov / 1 Nov): source theta_e +4.60/+2.66 K (lowest-level q +1.6/+0.9 g/kg), theta_es(600)
+  +2.32/+4.58 K; buoyancy margin -3.21 -> -0.93 (11 Nov, MORE buoyant) and +1.57 -> -0.34 (1 Nov, less). On 11 Nov - the start whose tops
+  collapsed - neither drift term removes margin, so by the registered rule the box-mean drift is NOT the cap; next check is the plume code
+  path / timing. 1 Nov shows a mid-level (600 hPa) warming of the kind suspected. Side fact: the lowest level over the Bay moistens by
+  1-1.6 g/kg in 36 h. [reg: 20:0x theta_e registration | inputs: model T42 2 starts, box means (deep columns not separated - stated) | fail-5why: below]
+- FAIL-5WHY / REGISTERED (before the result): tops share reaching sigma < 0.4 at each hour h0, 3, 6, 9, 12, 18, 24 (11 Nov): an abrupt drop
+  within the first 3-6 h (spin-up: carry fields such as surface fluxes / radiation / cloud starting from zero) names the code path; a gradual
+  fall over 12-24 h names a drift inside the convecting columns that the box mean hides. [reg: this line | inputs: n/a | fail-5why: n/a]
