@@ -5539,3 +5539,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
   and keeps deep tops. Coded tau_ifs (that formula; w_up from eq. 6.10). REGISTERED (before the result): T42 tops screen (11 Nov, h24-48),
   candidate + cld_det + sst_fill + tau_ifs: SUPPORTED if columns reaching sigma < 0.4 >= 0.40 (was 0.20) and the detrained-mass share from
   tops below sigma 0.7 <= 0.35 (was 0.60). Screen only (T42's x7.3 factor exaggerates; stated). [reg: this line | inputs: n/a | fail-5why: n/a]
+- 21:36 IST tau_ifs TOPS SCREEN (T42 11 Nov h24-48, candidate + cld_det + sst_fill + tau_ifs, 253 deep samples): columns reaching sigma < 0.4 0.51
+  (was 0.20; rule >= 0.40 PASS); detrained-mass share from tops below sigma 0.7 0.15 (was 0.60; rule <= 0.35 PASS) -> SUPPORTED (screen).
+  Deep-active share of Bay samples rose 94 -> 253 of 315 (slower CAPE removal keeps columns convecting). The registered combination had TWO
+  changes (sst_fill + tau_ifs), so attribution is open. [reg: 21:3x tau_ifs registration | inputs: model T42 one start (stated) | fail-5why: n/a]
+- REGISTERED (before the results): (1) attribution - the same tops screen with cld_det + sst_fill WITHOUT tau_ifs; (2) T42 5-day low-cloud screen
+  (cld_t170.py, 11 Nov) for candidate + cld_det + sst_fill + tau_ifs, rule days 3-5 within 0.7-1.3x ERA5 in Bay and S.India. [reg: this line | inputs: n/a | fail-5why: n/a]
