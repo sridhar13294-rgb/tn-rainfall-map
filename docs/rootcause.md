@@ -5407,3 +5407,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   loses buoyancy against an environment that ERA5/IFS keeps warm by freezing <- (3) our candidate has no fusion heat in the updraught
   (mf_ice off); IFS splits condensate by the mixed-phase function and releases L_f for the ice part. Coded mf_ice_ifs (IFS alpha, no free
   share). REGISTERED (before the result): same screen with candidate + cld_det + mf_wke + mf_ice_ifs, same two conditions. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 19:34 IST mf_ice_ifs SCREEN RESULT: below-0.7 share 0.28, reaching sigma < 0.4 0.17 (no change from mf_wke alone) -> NOT SUPPORTED; freezing is
+  NOT what stops the plumes (they stop at 600-700 hPa, below the 0 C level). mf_ice_ifs HELD. [reg: 19:4x mf_ice_ifs registration | inputs: model T42 one start (stated) | fail-5why: below]
+- FAIL-5WHY: the IFS entrainment we use falls as (qs/qs_base)^3 (~0.03 of its base value at 600 hPa), so dilution should not stop a Bay plume
+  there; what is left is the environment the plume rises through (model-drift: low levels cooled / mid levels warm) or our plume formulation
+  itself. REGISTERED (before the result): the same tops measure at the ERA5 START STATE (h0, plus h3/h6 the first steps): if at h0 >= 0.40 of
+  deep columns reach sigma < 0.4 and it falls by h24-48, the cause is the model drift of the environment (links to the cold-growth / cloud
+  chain); if tops are low already at h0, the cause is the plume formulation. [reg: this line | inputs: n/a | fail-5why: n/a]
