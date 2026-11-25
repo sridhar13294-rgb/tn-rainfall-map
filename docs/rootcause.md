@@ -5490,3 +5490,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   rh_truth RH925 (11 Nov): if the model RH925 rises >= 0.05 above ERA5's by day 1-2, BL moisture trapping is named and the venting processes
   (shallow mass flux sh_ifs2, BL-top entrainment) get their own size check; if not, the surface-layer humidity itself (lowest level) is the
   place to look. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 20:43 IST RH925 RESULT (T42 11 Nov, Bay box daily, model vs ERA5): RH925 0.784/0.824/0.827 vs 0.767/0.788/0.782 (+0.017/+0.036/+0.045; rule >= 0.05:
+  NOT met); RH850 0.760/0.796/0.776 vs 0.745/0.788/0.771 (close). By the registered rule: BL trapping at 925 hPa is NOT named; the excess
+  moisture sits in the SURFACE LAYER (lowest level q rose 15.4 -> 17.0 g/kg in 36 h, 1-1.6 g/kg - the same size as the 1.8 g/kg dq shortfall).
+  [reg: 20:5x RH925 registration | inputs: ERA5 rh_truth daily, model T42 6-hourly | fail-5why: n/a]
+- REGISTERED (before the result): ERA5 'bayq truth' - specific humidity at 1000/975/950/925/900 hPa and q2m over Bay sea points, h0 and day 1
+  (1 + 11 Nov). Model the same levels. If the model's q(1000) - q(925) gradient on day 1 exceeds ERA5's by >= 1 g/kg (moisture held in the
+  lowest levels), the vertical mixing out of the surface layer is named (next: K / surface-layer coupling size check); if the model is
+  uniformly moister through 1000-900 by >= 1 g/kg, the source/sink balance of the whole BL is named instead. [reg: this line | inputs: n/a | fail-5why: n/a]
