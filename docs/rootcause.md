@@ -5264,3 +5264,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   temperature profile. REGISTERED (before the result): ERA5 low/total cloud over South India + Bay/TN days 1-3 (same starts) vs the model's cloud at
   T170 days 1-3 (Kaggle cloud diagnostic, account 4); CLOUD GROWTH NAMED if model low cloud rises >= 50 % from day 1 to day 3 while ERA5's
   changes < 20 %; otherwise the clear-sky input (humidity profile) is next. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 10:27 IST ERA5 cloud days 1/2/3 (lcc3): S.India low 0.196/0.245/0.205, total 0.67/0.65/0.64; Bay/TN low 0.165/0.185/0.166 (flat, < 20 % change). Smoke
+  of cld_t170 (T42, 1 start, + rhc_ifs; not the verdict): S.India low cloud 0.28/0.40/0.66 (+137 %), Bay 0.17/0.24/0.32 (+86 %) - the model's low
+  cloud GROWS day by day where ERA5's does not. Verdict job tn-cld170 (T170, 3 starts, candidate with sfc_mo_land) queued on account 4.
+  [reg: 25 Nov 10:2x cloud-growth registration (smoke + reference step) | inputs: ERA5 lcc/tcc 3-hourly same boxes/starts | fail-5why: n/a]
