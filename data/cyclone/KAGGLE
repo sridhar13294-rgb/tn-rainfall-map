@@ -1,6 +1,6 @@
-tn-cld170
-libm_wx2020L2_fields.npz,geo_gwd.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore cld_t170.py /kaggle/working/libm_wx2020L2_fields.npz '{"bl_exc_ws": 1, "sbl_ifs": 1, "tofd": 1, "sfc_mo": 1, "sfc_mo_h": 1, "sfc_mo_land": 1, "rad_prm": {"aer": 1, "lw_cnt": 0.667, "qs_mix": 1, "rhc_ifs": 1}}' cand /kaggle/working/cld_cand.json > /kaggle/working/cld.log 2>&1; grep "^#" /kaggle/working/cld.log; tail -2 /kaggle/working/cld.log
+tn-cldprog
+libm_wx2020L2_fields.npz,wx_truth_2020.npz,geo_gwd.npz
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/cand_cldprog.json 3 4 /kaggle/working/wx_3.json > /kaggle/working/wx_3.log 2>&1; tail -3 /kaggle/working/wx_3.log
 NvidiaTeslaT4
 4
-#T170 cloud days 1-3 (25 Nov) 2026-11-25T04:59Z
+#Tracks/rain: prognostic cloud stage 2 (25 Nov) 2026-11-25T10:55Z
