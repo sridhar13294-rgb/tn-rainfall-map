@@ -5284,3 +5284,14 @@ running as a separate test) is NOT adopted on its own result unless this check p
   radiation only (stage 1; stated). Local T42 smoke (cld_t170.py, 11 Nov start, + land set + rhc_ifs): low cloud must NOT grow (day 3 <= 1.2x day 1)
   over S.India and Bay. If it passes: T170 3-start cloud job, then part-3 gates (TN v850 d1 >= -1.0, TN rain >= 0.85 = P5b gate, z500 d5 <= lc_mix
   + 2 SE). [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 11:38 IST cld_prog STAGE 1 SMOKE (T42, 11 Nov, land set + rhc_ifs + cld_prog): low cloud (max overlap) S.India 0.135/0.218/0.323 (day 3 = 2.4x day 1;
+  rule <= 1.2x) FAIL; Bay 0.082/0.121/0.189 (2.3x) FAIL; day-1 level now BELOW ERA5 (0.135 vs 0.196 S.India); 850 radiation -1.23/-1.59/-3.72
+  K/day (S.India) - the loop is still there. cld_prog stage 1 HELD. [reg: 25 Nov 11:0x cld_prog registration | inputs: same start/grid as the
+  no-prog smoke (0.28/0.40/0.66) | fail-5why: below]
+- FAIL-5WHY: (1) cloud still grows, from a lower start <- (2) prognostic formation responds to cooling (dqs/dt < 0 above RH_crit), and the
+  cooling is mostly the cloud's own LW at its top - the memory alone does not break the loop <- (3) what damps it in the IFS and is missing in
+  stage 1: the condensation C1 + C2 RELEASES LATENT HEAT in the cloud layer and evaporation/erosion COOL and moisten where cloud dies (the cloud
+  scheme IS the large-scale condensation there); stage 1 feeds radiation only and the old adjustment condenses only at supersaturation <- (4)
+  stated simplification of stage 1. NEXT (registered): stage 2 = cloud condensation/evaporation/autoconversion feed T and q (latent heat, rain
+  into the large-scale rain), replacing the old large-scale adjustment where cld_prog is on; same smoke rule. [reg: this line (registration) |
+  inputs: n/a | fail-5why: n/a]
