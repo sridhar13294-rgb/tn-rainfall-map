@@ -5641,3 +5641,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   separate model error from one-start weather. REGISTERED (before the result, 26 Nov morning): the same screen on 3 starts (1/11/16 Nov), one
   process per start, means compared with the 3-start ERA5 mean, same rule; and the low-cloud deficit (b) gets its own 5-why (cloud-free start vs
   the formation term). [reg: this line | inputs: n/a | fail-5why: n/a]
+- 26 Nov 00:34 IST 3-START cld_sed SCREEN (T42, 1/11/16 Nov means vs ERA5 3-start mean, candidate + fixed cld_det + sst_fill + cld_sed): total cover
+  days 3-5 Bay 0.76/0.54/0.53x, S.India 0.80/0.59/0.54x (rule 0.85-1.15x FAIL - now too LOW); low cloud Bay 0.26/0.31/0.19x, S.India
+  0.42/0.65/0.26x. With 3 starts the one-start "both ways" swing is gone: with ice falling out, the carried cloud is too thin at all levels.
+  cld_det + cld_sed HELD. [reg: 26 Nov 00:0x 3-start registration | inputs: ERA5 lcc5/tcc 3-start mean, model T42 3 starts | fail-5why: below]
+- FAIL-5WHY (to run in the morning): the carried cloud lacks the IFS pieces that SUPPLY cloud between convective events - large-scale ADVECTION
+  of a and q_l (stated simplification since 25 Nov), the analysed initial cloud, and the subsidence term of 7.22-7.23; with only local sources,
+  cloud decays wherever convection is not active. First check (size): the share of Bay/S.India grid-days with no convection whose ERA5 cloud
+  cover is > 0.3 (cloud that must have been advected in). [reg: this line (plan, registered before the check) | inputs: n/a | fail-5why: n/a]
