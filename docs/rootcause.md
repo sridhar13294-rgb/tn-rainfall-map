@@ -5279,3 +5279,8 @@ running as a separate test) is NOT adopted on its own result unless this check p
   loop; in the IFS cloud is PROGNOSTIC (Part IV ch.7: a and q_l carried, formed only by sources, removed by evaporation, erosion E2 =
   0.333 a(1-a) K (q_sat - q_v), K 1e-5 (1e-4 with shallow convection) and precipitation) <- (5) MEGAM kept the old diagnostic scheme.
   The IFS-faithful fix is the prognostic cloud (fraction + condensate). [reg: this line (5-why) | inputs: IFS Part IV ch.7 | fail-5why: n/a]
+- 11:29 IST REGISTERED (before any run): option cld_prog = stage 1 of the IFS prognostic large-scale cloud (Part IV ch.7: 7.26-7.30 formation and
+  condensation, 7.46 evaporation, 7.48-7.49 erosion, 7.50-7.52 Sundqvist autoconversion; IFS RH_crit 7.27), carried per column (not advected), feeding
+  radiation only (stage 1; stated). Local T42 smoke (cld_t170.py, 11 Nov start, + land set + rhc_ifs): low cloud must NOT grow (day 3 <= 1.2x day 1)
+  over S.India and Bay. If it passes: T170 3-start cloud job, then part-3 gates (TN v850 d1 >= -1.0, TN rain >= 0.85 = P5b gate, z500 d5 <= lc_mix
+  + 2 SE). [reg: this line (registration) | inputs: n/a | fail-5why: n/a]

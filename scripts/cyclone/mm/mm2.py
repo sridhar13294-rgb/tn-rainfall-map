@@ -136,7 +136,7 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='mf', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='radcloud', rad_every=2,
-                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, sh_wtest=0.0, sbl_ifs=0.0, bl_exc_ws=0.0, tofd=0.0, sfc_mo_h=0.0, dp_ifs=0.0, dp_ifs_exc=0.0, sfc_mo_land=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, midlev=0.0, lsc_sub=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
+                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, sh_wtest=0.0, sbl_ifs=0.0, bl_exc_ws=0.0, tofd=0.0, sfc_mo_h=0.0, dp_ifs=0.0, dp_ifs_exc=0.0, sfc_mo_land=0.0, cld_prog=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, midlev=0.0, lsc_sub=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
@@ -253,6 +253,7 @@ class Model:
         if self.S.get('stress_out', 0): carry['tx'] = jnp.zeros(zs.shape, jnp.float32); carry['ty'] = jnp.zeros(zs.shape, jnp.float32); carry.update({k: jnp.zeros(zs.shape, jnp.float32) for k in ('fsta', 'staba', 'txn', 'zmo', 'wsta')})
         if self.S.get('land_rc', 0): carry['swd'] = jnp.zeros(zs.shape, jnp.float32)              # downward surface SW of the last step (canopy f1)
         if self.S.get('cld_fix', 0): carry['q0'] = jnp.asarray(sg['q'], jnp.float32)
+        if self.S.get('cld_prog', 0): L_ = len(self.sig); carry.update(cfa=jnp.zeros((L_,) + zs.shape, jnp.float32), cql=jnp.zeros((L_,) + zs.shape, jnp.float32), cTp=jnp.zeros((L_,) + zs.shape, jnp.float32), cinit=jnp.zeros(zs.shape, jnp.float32))
         if self.S.get('q_adv', 0):                                                                  # (13 Nov) advective moisture tendency for the IFS trigger (6.21) / QCV (6.32)
             carry['q_adv'] = jnp.zeros_like(jnp.asarray(sg['q'], jnp.float32)); carry['q_last'] = jnp.asarray(sg['q'], jnp.float32); carry['dqp'] = jnp.zeros_like(carry['q_adv'])                # cld_fix: start humidity for the frozen RH cloud
         if self.S.get('skin_ifs', 0):                                                               # (19 Nov) IFS skin layer over a 4-layer soil
@@ -1038,6 +1039,39 @@ class Model:
         dq = dq - cond + evap; dT = dT + LV / CP * (cond - evap)
         # ---------------- radiation
         Tn = T + dt * dT; qn = jnp.maximum(q + dt * dq, 0)
+        cfa_n = cql_n = None
+        if self.S.get('cld_prog', 0) and 'cfa' in cr:
+            # cld_prog (25 Nov, root of the growing low cloud: a diagnostic RH-cloud has no memory/sink -> cooling-RH-cloud loop). Stage 1 of the IFS
+            # PROGNOSTIC cloud (Part IV ch.7): large-scale cloud fraction a and condensate ql carried in the carry (NOT advected - stated
+            # simplification), updated each step by: formation when dqs/dt < 0 and RH > RH_crit (7.27): da = -(1-a)^2/(2(qs-qv)) dqs/dt (7.29),
+            # condensation C1 = -a dqs/dt + C2 = -0.5 da dqs/dt (7.26, 7.30); evaporation E1 = a dqs/dt for dqs/dt > 0 (7.46); erosion
+            # E2 = 0.333 a(1-a) K (qs - qv), K 1e-5 (1e-4 with shallow convection) with da = E2 / q_cld (7.48-7.49); autoconversion (Sundqvist,
+            # 7.50-7.52) a c0 q_cld (1 - exp(-(q_cld/q_crit)^2)), c0 1.67e-4 s-1, q_crit 0.25 (sea) / 0.55 (land) g/kg; a = 0 when ql -> 0.
+            # Stage 1 feeds RADIATION only (no T/q feedback; the existing large-scale condensation still does the latent heating) - stated.
+            # Convective detrainment source not included: the convective cloud (c_tow, c_anv) stays diagnostic in radiation.
+            es_w_ = 611.21 * jnp.exp(17.502 * (Tn - 273.16) / (Tn - 32.19)); es_i_ = 611.21 * jnp.exp(22.587 * (Tn - 273.16) / (Tn + 0.7))
+            al = jnp.clip((Tn - 250.16) / 23.0, 0.0, 1.0) ** 2; es_ = al * es_w_ + (1 - al) * es_i_; qsn = 0.622 * es_ / jnp.maximum(p - 0.378 * es_, 1.0)
+            Tp = cr['cTp']; es_wp = 611.21 * jnp.exp(17.502 * (Tp - 273.16) / (Tp - 32.19)); es_ip = 611.21 * jnp.exp(22.587 * (Tp - 273.16) / (Tp + 0.7))
+            alp = jnp.clip((Tp - 250.16) / 23.0, 0.0, 1.0) ** 2; esp = alp * es_wp + (1 - alp) * es_ip; qsp = 0.622 * esp / jnp.maximum(p - 0.378 * esp, 1.0)
+            init = cr['cinit'] > 0.5
+            dqs = jnp.where(init, (qsn - qsp) / dt, 0.0)                                            # kg/kg/s; 0 on the first step
+            rh_ = jnp.clip(qn / qsn, 0.0, 1.0); sgm = sig * jnp.ones_like(Tn)
+            rhcr = jnp.minimum(jnp.where(sgm > 0.8, 0.8 + 0.2 * ((jnp.minimum(sgm, 1.0) - 0.8) / 0.2) ** 2, 0.8), 0.999)
+            a0 = jnp.where(init, cr['cfa'], 1.0 - jnp.sqrt(jnp.clip((1.0 - rh_) / (1.0 - rhcr), 0.0, 1.0)))   # first step: start from the diagnostic cloud
+            q0 = jnp.where(init, cr['cql'], a0 * 0.01 * qsn)
+            sub = jnp.maximum(qsn - qn, 1e-7)
+            da_f = jnp.where((dqs < 0) & (rh_ > rhcr), -(1.0 - a0) ** 2 / (2.0 * sub) * dqs, 0.0)
+            a1 = jnp.clip(a0 + dt * da_f, 0.0, 1.0)
+            cnd = jnp.where(dqs < 0, -a0 * dqs - 0.5 * (a1 - a0) / dt * dqs, 0.0)
+            ev1 = jnp.where(dqs > 0, a0 * dqs, 0.0)
+            Kr = jnp.where(on_sh[None] > 0, 1e-4, 1e-5) if S['conv'] == 'mf' else 1e-5
+            ev2 = 0.333 * a1 * (1.0 - a1) * Kr * sub
+            qcl = q0 / jnp.maximum(a1, 1e-3); qcr = jnp.where(self.land[None], 5.5e-4, 2.5e-4)
+            aut = a1 * 1.67e-4 * qcl * (1.0 - jnp.exp(-(qcl / qcr) ** 2))
+            q1 = jnp.maximum(q0 + dt * (cnd - ev1 - ev2 - aut), 0.0)
+            a2 = jnp.clip(a1 - dt * ev2 / jnp.maximum(qcl, 1e-7), 0.0, 1.0)
+            a2 = jnp.where(q1 < 1e-8, 0.0, a2)
+            cfa_n, cql_n = a2, q1
         doy0 = cr['doy0'] if 'doy0' in cr else self.doy0; utc0 = cr['utc0'] if 'utc0' in cr else self.utc0   # start date as data: no recompile per start
         t_h = cr['t'] / 3600.0; doy = doy0 + t_h / 24.0; decl = math.radians(23.44) * jnp.sin(2 * jnp.pi * (doy - 81) / 365.0)
         hour = (utc0 + t_h) % 24.0; ha = jnp.radians(15.0 * (hour - 12.0) + jnp.asarray(self.LO))
@@ -1049,6 +1083,7 @@ class Model:
             def fresh():
                 ent_on = bool(self.S.get('ent_top', 0))                                              # D2 needs the cloud part of the LW heating
                 rprm = dict(dict(alb_land=S['alb_land']), **(self.S.get('rad_prm') or {}))
+                if cfa_n is not None: rprm.update(cls_prog=cfa_n, qls_prog=cql_n)
                 if self.S.get('cld_pdf', 0): rprm['pdf'] = 1.0                                       # D1: one sub-grid water PDF for cloud fraction and water
                 if self.S.get('rad_dbg', 0): self._rad_in = dict(T=Tn, q=qn, p=p, dp=dp, ps=ps, Ts=Ts, sea=sea, mu0=mu0, cm=cm, Psrc=Pconv_src, cond=cond, s0=1361.0 * ecc, prm=rprm)   # diagnostics only (eager calls)
                 Rr = radcloud.radiation(Tn, qn, p, dp, ps, Ts, sea, mu0, conv_mask=cm, conv_rain=Pconv_src.sum(0), conv_src=Pconv_src,
@@ -1121,6 +1156,7 @@ class Model:
             dT = dTbl + (dT - rad - dTbl) * fac + rad; dq = dqbl + (dq - dqbl) * fac
         _Rr = locals().get('Rr'); _cov = _Rr['cover'] if isinstance(_Rr, dict) and 'cover' in _Rr else jnp.zeros_like(Ts)   # diagnostic only (19 Nov)
         diag = dict(cover=_cov, rain=Psurf + Pc * 0.0, H=H, E=E, ust=ust, tx=taux, ty=tauy, fst=fst, stab=(rib > 0).astype(jnp.float32), txn=-rho * cdn * V1 * u1, zmo=zt_d, wst=wst_d, V1=V1, sw_sfc=sw_sfc, lw_dn=lw_dn, Ts=Ts, chv=chv, beta=beta, dqsdT=qss * 17.67 * 243.5 / (Ts - 29.65) ** 2)
+        if cfa_n is not None: diag.update(cfa_n=cfa_n, cql_n=cql_n, cTp_n=Tn)
         # P1 diagnostic (3 Nov): boundary-layer top vs lifting condensation level of the lowest-level air
         # (Bolton-type estimate z_lcl ~ 125 m per K of dew-point depression)
         rib0 = G * zc * (thv - thv1) / (thv1 * Vz2)                                                  # 24 Nov: IFS 3.10.1 diagnostic BLH (no parcel excess), output only
@@ -1291,6 +1327,7 @@ class Model:
             tl = jnp.where(self.land, jnp.clip(cr['tl'] + dt * net / cap, 230.0, 330.0), cr['tl'])
         w = jnp.where(self.land, jnp.clip(cr['w'] + dt * (d['rain'] - d['E']), 0.0, S['bucket'] * 1000), cr['w'])
         out = dict(cr, sst=sst, tl=tl, w=w, rain=cr['rain'] + dt * d['rain'], t=cr['t'] + dt)
+        if 'cfa' in cr: out['cfa'] = d['cfa_n']; out['cql'] = d['cql_n']; out['cTp'] = d['cTp_n']; out['cinit'] = jnp.ones_like(cr['cinit'])   # cld_prog carry
         if 'ondp' in cr: out['ondp'] = cr['ondp'] + dt * d['on_dp']                                   # conv_diag: time-integrated deep-active flag
         if 'onsh' in cr: out['onsh'] = cr['onsh'] + dt * d['on_sh']                                   # conv_diag: time-integrated shallow-active flag
         if 'shq85' in cr: out['shq85'] = cr['shq85'] + dt * d['shq85']; out['shmb'] = cr['shmb'] + dt * d['shmb']

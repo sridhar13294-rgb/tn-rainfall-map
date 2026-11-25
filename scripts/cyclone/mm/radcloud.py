@@ -185,6 +185,9 @@ def clouds(T, q, p, dp, ps, sea, conv_mask=None, conv_rain=None, conv_src=None, 
         bw = xp.maximum((1.0 - rhc) * qs, 1e-9); ex = q + bw - qs
         c_ls = xp.where(sig > P['sig_min'], xp.clip(ex / (2.0 * bw), 0.0, 1.0), 0.0)
         qg = xp.where(sig > P['sig_min'], xp.where(ex >= 2.0 * bw, q - qs, xp.maximum(ex, 0.0) ** 2 / (4.0 * bw)), 0.0)
+    if P.get('cls_prog', None) is not None:                                  # 25 Nov cld_prog: PROGNOSTIC large-scale cloud (IFS ch.7 sources/sinks, mm2)
+        c_ls = xp.where(sig > P['sig_min'], xp.clip(P['cls_prog'], 0.0, 1.0), 0.0); qg = xp.where(sig > P['sig_min'], xp.maximum(P['qls_prog'], 0.0), 0.0)
+        ls_cond = None
     if ls_cond is not None: qg = qg + xp.maximum(ls_cond, 0.0) * P['tau_ls']
     c_tow = xp.zeros_like(T); c_anv = xp.zeros_like(T)
     if conv_mask is not None and conv_rain is not None:
@@ -339,6 +342,9 @@ def clouds(T, q, p, dp, ps, sea, conv_mask=None, conv_rain=None, conv_src=None, 
         bw = xp.maximum((1.0 - rhc) * qs, 1e-9); ex = q + bw - qs
         c_ls = xp.where(sig > P['sig_min'], xp.clip(ex / (2.0 * bw), 0.0, 1.0), 0.0)
         qg = xp.where(sig > P['sig_min'], xp.where(ex >= 2.0 * bw, q - qs, xp.maximum(ex, 0.0) ** 2 / (4.0 * bw)), 0.0)
+    if P.get('cls_prog', None) is not None:                                  # 25 Nov cld_prog: PROGNOSTIC large-scale cloud (IFS ch.7 sources/sinks, mm2)
+        c_ls = xp.where(sig > P['sig_min'], xp.clip(P['cls_prog'], 0.0, 1.0), 0.0); qg = xp.where(sig > P['sig_min'], xp.maximum(P['qls_prog'], 0.0), 0.0)
+        ls_cond = None
     if ls_cond is not None: qg = qg + xp.maximum(ls_cond, 0.0) * P['tau_ls']
     c_tow = xp.zeros_like(T); c_anv = xp.zeros_like(T)
     if conv_mask is not None and conv_rain is not None:
