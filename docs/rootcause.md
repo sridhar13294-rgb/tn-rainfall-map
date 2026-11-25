@@ -5207,3 +5207,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   So the open rain/steering fault is a day-1-to-3 DECLINE linked to the low-level cooling, more than a 'slow start'.
   NEXT (registered): the low-level cooling after day 1 by process (sigma 0.925/0.85, day 2 vs day 1, Bay/TN), ERA5 Q1 day 2 as reference;
   the process carrying >= 60 % of the day-2 physics shortfall vs ERA5 Q1 is NAMED. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 08:19 IST tn-land170-nomo (T170, bl_exc_ws + sbl_ifs + tofd, no sfc_mo/sfc_mo_h; 3 starts): night wind 5.84 m/s (limit 1.3x 4.43 = 5.76; SE 0.13 ->
+  tol 6.02) PASS (tol); night H -8.76 W/m2 (limit 0.7x -13.2 = -9.24; SE 0.08 -> tol -9.08) FAIL; depth night 325 (1.03x ERA5-L134) / day 1301
+  (1.08x) PASS. -> without the MO surface layer the night land cooling is too weak: sfc_mo_h (needs sfc_mo) is required for Land BL.
+  [reg: 25 Nov 07:5x nomo registration | inputs: T170, same starts/bands | fail-5why: n/a (branch as registered)]
+- Registered branch: sfc_mo restricted to LAND (option sfc_mo_land; ocean keeps the Charnock/Louis drag) to test whether the OCEAN part is the
+  0.7 m cost. REGISTERED (before the run): part-3 job tn-ls-moland = land set + sfc_mo_land, account 4: cost NAMED as the ocean part if z500 d5
+  is within 1 SE of the no-sfc_mo run (paired vs land set <= -0.5); then the candidate uses sfc_mo_land and Land BL stays closed (its land
+  physics unchanged). [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
