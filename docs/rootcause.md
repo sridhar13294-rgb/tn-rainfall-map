@@ -5334,3 +5334,15 @@ running as a separate test) is NOT adopted on its own result unless this check p
   The decisive tests are the forecast fields, not the cloud alone. REGISTERED (before the result): part-3 T170 run tn-cldprog = candidate +
   cld_prog 2 (account 4): TN v850 d1 >= -1.0; TN rain >= 0.85 (P5b gate); z500 d5 <= lc_mix + 2 SE; and the S.India t850 bias growth d1 -> d3
   shrinks by >= 50 % (from -1.1 K/2 days). cld_prog stays HELD unless all pass. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 17:57 IST tn-cldprog (T170 part 3, 18 starts, 0 failed; candidate = land set + sfc_mo_land + rhc_ifs + cld_prog 2): TN v850 d1 -1.69 +/- 0.45 FAIL (>= -1.0);
+  TN 5-day rain ratio 0.573 FAIL (>= 0.85; lc_mix 0.422, moland ~0.51); z500 d5 60.92 m PASS (lc_mix 65.90; paired vs moland -2.56 +/- 0.52, d3
+  -1.38 +/- 0.12); S.India t850 bias growth d1 -> d3 -0.61 K vs moland -1.08 (44 % smaller; rule >= 50 %) FAIL, TN 39 %. Also: tropics t850 RMSE d5
+  2.19 -> 1.84, India u850 d5 4.91 -> 4.41, global mslp 634 -> 623 Pa, TN u850 d5 bias -2.40 (lc_mix -4.31); India t2 d5 3.39 -> 3.47 (slightly
+  worse). Registered rule (all four) -> cld_prog HELD, stated plainly: it is the largest single forecast gain of Stage 1 (z500 d5 -7.6 % vs lc_mix),
+  roughly halves the low-level cold growth and lifts TN rain 0.51 -> 0.57, but the TN northerly v850 and the 0.85 rain gate are not met.
+  [reg: 25 Nov 16:1x tn-cldprog registration | inputs: part-3 T170, paired with tn-ls-moland / tn-lcm-wx3 | fail-5why: below]
+- FAIL-5WHY: (1) low cloud now too LOW (local 0.4-0.8x ERA5) and the cold growth only halved <- (2) two documented IFS pieces still missing:
+  the analysed initial cloud (we start cloud-free) and the CONVECTIVE DETRAINMENT source of cloud fraction and condensate (IFS 7.23, the main
+  tropical source); (3) TN v850 has not moved in any cloud test (-1.5..-1.7) -> the northerly d1-d2 bias is NOT driven by the cloud chain (that
+  chain drives the cooling growth and rain decline). v850 needs its own 5-why (day-1 signal from the start: mslp +0.7 hPa high over TN at d1).
+  [reg: this line (5-why) | inputs: exam fields | fail-5why: n/a]
