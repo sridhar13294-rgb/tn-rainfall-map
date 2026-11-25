@@ -5438,3 +5438,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - FAIL-5WHY / REGISTERED (before the result): tops share reaching sigma < 0.4 at each hour h0, 3, 6, 9, 12, 18, 24 (11 Nov): an abrupt drop
   within the first 3-6 h (spin-up: carry fields such as surface fluxes / radiation / cloud starting from zero) names the code path; a gradual
   fall over 12-24 h names a drift inside the convecting columns that the box mean hides. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 19:56 IST TOPS TIMING RESULT (T42, 11 Nov, 12-15 deep samples per hour - small, stated): reaching sigma < 0.4 h0 1.0 (n 3), h3-12 0.42-0.53,
+  h18 0.33, h24 0.42, h24-48 mean 0.20. GRADUAL fall over 12-48 h, no abrupt drop in the first 3-6 h -> by the registered rule NOT spin-up;
+  a drift inside the convecting columns that the box mean hides. [reg: 20:1x timing registration | inputs: model T42 one start | fail-5why: n/a]
+- REGISTERED (before the result): in DEEP-ACTIVE columns only (Bay box, 11 Nov), compare h3-12 vs h30-48: source theta_e, theta_es at sigma
+  0.6 and 0.5, and RH at sigma 0.6-0.5 (entrainment dilution). The term that removes the most buoyancy margin is named; RH falling by >= 0.15
+  names mid-level drying (entrainment), a theta_es rise >= 1.5 K names mid-level warming, a source theta_e fall >= 1.5 K names the BL. [reg: this line | inputs: n/a | fail-5why: n/a]
