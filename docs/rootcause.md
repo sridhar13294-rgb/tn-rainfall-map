@@ -5653,3 +5653,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   3-hourly): if >= 50 % of the box's total-cloud area sits over points with no convection (cp < 0.1 mm/h), local convective supply cannot carry the
   cloud and the missing ADVECTION of a/q_l is named as the next fix (IFS: a and q_l are advected prognostic variables); if < 50 %, the local
   source terms are the place to look. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 26 Nov 03:44 IST cldadv RESULT (ERA5 hourly 0.25 deg, 1/11/16 Nov days 3-5): share of total-cloud area over non-convecting points Bay 0.69, S.India 0.75
+  (low cloud 0.67/0.69); 59-62 % of non-convecting points have cover > 0.3 (mean 0.50/0.51). Rule (>= 50 %) MET -> missing ADVECTION of the
+  carried cloud (a, q_l) is NAMED as the next fix: two thirds of the observed cloud sits where no local convective source exists, and our carried
+  cloud cannot move there. [reg: 03:4x cldadv registration | inputs: ERA5 cp/tcc/lcc (fetched 03:5x) | fail-5why: n/a]
