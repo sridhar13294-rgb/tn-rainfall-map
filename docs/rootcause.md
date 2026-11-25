@@ -5422,3 +5422,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED (before the result): model Bay box T at sigma 0.925/0.85/0.7/0.6/0.5, h0 vs h36: if (T700 - T850) rises by >= 1 K and the
   deep heating peak sits at 0.65-0.75, the self-capping loop is named; if instead 850/925 cool by >= 1 K with 700 unchanged, it is the low-level
   cold growth (cloud chain). [reg: this line | inputs: n/a | fail-5why: n/a]
+- 19:44 IST STABILITY DRIFT RESULT (T42 Bay box, h36 - h0; 11 Nov / 1 Nov): T at sigma 0.5/0.6/0.7/0.85/0.925 = +0.27/+0.79/+0.24/+0.22/-0.04 and
+  +0.69/+1.49/+0.77/-0.12/-0.71 K. (T700 - T850) change +0.01 / +0.89 (rule >= 1 K: NOT met); 850/925 cooling >= 1 K: NOT met -> NEITHER
+  mechanism named by the registered rule; INCONCLUSIVE. What the numbers do show: the largest warming is at sigma 0.6 (+0.8/+1.5 K), i.e. a
+  cap forms at 600 hPa, not 700 - my registered levels were one layer too low. [reg: 19:5x stability registration | inputs: model T42 2 starts | fail-5why: below]
+- FAIL-5WHY: a plume's buoyancy at 600 hPa is theta_e(source, diluted) - theta_es(600); temperature alone misses the source MOISTURE.
+  REGISTERED (before the result): Bay box theta_e at the plume source (lowest 2 levels) and theta_es at sigma 0.6, h0 vs h36, same 2 starts:
+  the drift term that removes more of the h0 buoyancy margin (source theta_e fall vs theta_es(600) rise) is named; if both are < 1 K the
+  drift is not the cap and the next check is the plume code path between h0 and h24 (e.g. the source level choice). [reg: this line | inputs: n/a | fail-5why: n/a]
