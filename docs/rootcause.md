@@ -5461,3 +5461,12 @@ running as a separate test) is NOT adopted on its own result unless this check p
   day 1 (h3-21, 3-hourly), starts 1 + 11 Nov, vs ERA5 Q1 (q1bay2 truth, day-1 mean: ~1.0 K/day at 850-900, 0.6-0.8 at 650-750, 1.1-1.2 at
   550-600, 0.5-0.9 at 250-450). If the model exceeds ERA5 by >= 1 K/day in a layer below 500 hPa while falling short above 400 hPa, the deep
   heating is bottom/mid-heavy (plume response named; links Tracks/P5b); otherwise the heating profile is not the cause. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 20:18 IST HEATING PROFILE RESULT (T42, Bay box, starts 1+11 Nov, model day 1 h3-21; ERA5 q1bay2 mean is h27-45 - a one-day timing mismatch,
+  stated): model physics heating 925/850/700/600/500/400/300/250/200 = -0.64/-0.81/-0.05/-0.19/-0.54/-0.75/-1.09/-1.49/-1.10 K/day vs ERA5 Q1
+  +0.92/+1.01/+0.68/+1.09/+0.98/+0.91/+0.49/+0.58/+0.92: the model is SHORT by 0.7-2.1 K/day at EVERY level. By the registered rule (excess
+  below 500 AND shortfall above 400) NOT met -> the heating SHAPE is not the cause of the capping. But the size is the finding: a column
+  heating deficit of ~1.6 K/day ~ 190 W m-2 ~ 6 mm/day of rain-equivalent over the Bay - the same direction as P5b (TN rain 0.57) and the
+  cold growth (P5a). [reg: 20:2x Q1-profile registration | inputs: ERA5 q1bay2 (h27-45), model T42 h3-21 | fail-5why: below]
+- NEXT (registered before the result): split the column deficit with ERA5 flux truth (flux_truth_2020: daily tp24, shf, lhf, surface and TOA
+  net SW/LW, days 0-2, the 1 + 11 Nov starts) into L*P, SH and atmospheric net radiation (TOA net - surface net), model vs ERA5, Bay box day 1.
+  The term carrying >= 50 % of the deficit is named. Timing matched this time (both day 1). [reg: this line | inputs: n/a | fail-5why: n/a]
