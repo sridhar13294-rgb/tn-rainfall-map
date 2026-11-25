@@ -5177,3 +5177,14 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED (before the run): option dp_ifs (coded). Local T42, land set + rhc_ifs + dp_ifs, Bay/TN, same 3 starts: PASS if deep-active fraction is
   within 0.5-1.5x ERA5's 0.229 AND Bay rain >= 0.5x ERA5 (>= 3.2 mm/day). Then part 3 (account 4): TN v850 d1 >= -1.0, TN rain >= 0.85 (P5b gate),
   z500 d5 <= lc_mix + 2 SE. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 07:50 IST dp_ifs LOCAL CHECK (land set + rhc_ifs + dp_ifs, T42, Bay/TN, 3 starts, day 1): deep-active 0.080 -> 0.701 (3.1x ERA5 cp area 0.229; rule
+  0.5-1.5x) FAIL; rain 2.02 -> 3.22 mm/day (0.50x ERA5, at the limit); rain per active column 25.4 -> 4.6 -> dp_ifs HELD (fires almost
+  everywhere, weakly). [reg: 25 Nov 07:4x dp_ifs registration | inputs: same starts/grid, only dp_ifs differs | fail-5why: below]
+- FAIL-5WHY: (1) INPUT to the test: the parcel excess. IFS 6.4: the deep test parcel gets the surface-flux excess (eq. 6.19, capped 3 K / 2 g/kg)
+  at the first departure level and only 0.2 K / 0.1 g/kg at higher ones (6.21); ours gives the fixed deep kick 0.5 K / 0.5 g/kg at every source
+  level - the moisture kick is 5x IFS's (~1.2 K of theta_e), and with the weakly entraining test parcel this alone can make most tropical
+  columns 'deep'. (2) DIAGNOSTIC: 'deep-active' counts non-raining deep columns; ERA5's comparison area is convective RAIN > 0.1 mm/h - not like
+  for like (also true of the 0.080 baseline; stated). REGISTERED (before the run): dp_ifs with the IFS test-parcel excess (first level eq. 6.19
+  from H and E with w*, cap 3 K / 2 g/kg; higher levels 0.2 K / 0.1 g/kg) = option dp_ifs_exc; measure like ERA5: area with model rain > 0.1 mm/h
+  (hourly) vs ERA5 tp > 0.1 mm/h area (cpbay2), plus Bay rain. PASS if rain area within 0.7-1.3x ERA5's AND Bay rain >= 0.5x ERA5.
+  [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
