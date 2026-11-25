@@ -5558,3 +5558,12 @@ running as a separate test) is NOT adopted on its own result unless this check p
   formation da_f, detrainment D, erosion/evaporation - with and without cld_det. The term that differs most between the two runs is named.
   Candidate mechanisms (not yet tested): weaker downdrafts (cld_det reduces convective rain, and a_dd is capped by the rain) leave a moister
   sub-cloud layer, so the formation term fires there. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 22:10 IST LOW-CLOUD BUDGET RESULT (T42 11 Nov, Bay box, sigma 0.84-0.93, h24-48 3-hourly samples; both with sst_fill): without cld_det the carried
+  cloud there is 0.000 (RH 0.813 < RH_crit 0.849, no formation); with cld_det it is 0.051 and RH is 0.907 (+0.094), with formation and detrainment
+  both ~0 at the sampled times. The term that differs is the HUMIDITY of the 850-925 hPa layer, not a cloud source -> by the registered rule the
+  cloud-term budget does not name a term; it names the state: cld_det moistens 850-925 hPa by ~0.09 RH. [reg: 22:0x cloud-budget registration |
+  inputs: model T42 one start, 3-hourly snapshots (formation between samples not captured - stated) | fail-5why: below]
+- REGISTERED (before the result): the downdraft lead. Downdraft mass flux Md (capped by the updraft's rain production in conv_mf) and the
+  convective rain, Bay box day 2, with vs without cld_det: if Md falls by >= 30 % with cld_det, the weaker downdraft (less dry mid-level air
+  brought down) is named for the moister 850-925 layer; if Md is within 30 %, the lead is closed and the next check is the cloud-water
+  evaporation (cnet) profile. [reg: this line | inputs: n/a | fail-5why: n/a]

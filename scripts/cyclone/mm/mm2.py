@@ -664,6 +664,7 @@ class Model:
         Ed = (Ev).sum(0); Pu = (P1 * Mb).sum(0)
         a_dd = eta_dd * jnp.minimum(1.0, Pu / jnp.maximum(eta_dd * Mb * Ed, 1e-12)) * (0.0 if shallow else 1.0)   # cannot evaporate more rain than the updraft made; none for shallow
         Md = a_dd * Mb
+        if self.S.get('cld_dbg', 0) and not shallow and mid is None: self._dd = dict(Md=Md, Mb=Mb, Pu=(P1 * Mb).sum(0))   # diagnostics only
         dh_dd = (top(Fhd) - Fhd) / mass * Md; dq_dd = ((top(Fqd) - Fqd) + Ev) / mass * Md
         Pscale = jnp.clip(1.0 - Md * Ed / jnp.maximum(Pu, 1e-12), 0.0, 1.0)
         dT_dd = (dh_dd - LV * dq_dd) / CP
@@ -1141,6 +1142,7 @@ class Model:
                 a2 = jnp.clip(a2 + dt * self._det['D'] / mass, 0.0, 1.0); q1 = q1 + dt * self._det['Lw'] / mass
             a2 = jnp.where(q1 < 1e-8, 0.0, a2)
             cfa_n, cql_n = a2, q1
+            if self.S.get('cld_dbg', 0): self._cdbg = dict(da_f=da_f, a0=a0, a1=a1, a2=a2, rh=rh_, rhcr=rhcr, ev2a=ev2 / jnp.maximum(qcl, 1e-7), D=(self._det['D'] / mass if getattr(self, '_det', None) is not None else jnp.zeros_like(a2)))   # diagnostics only
             cnet = cnet_aut = None; cTp_new = T
             if self.S.get('cld_prog', 0) >= 2:
                 # stage 2 (25 Nov): the cloud's net condensation (C1 + C2 - E1 - E2) changes T and q and autoconversion falls as rain. Applied as its
