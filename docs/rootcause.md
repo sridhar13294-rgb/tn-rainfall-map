@@ -5316,3 +5316,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   cloud (ERA5 carries cloud fraction and condensate) - our library has none. So the test cannot tell spin-up from a loop in 3 days.
   REGISTERED (before the result): 5-day run (same start) + ERA5 low cloud days 1-5; the LOOP is NAMED as broken if days 3-5 stay within 0.7-1.3x
   ERA5 AND day 5 <= 1.2x day 3 (levels off); if it keeps growing past ERA5, it is not broken. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 16:06 IST 5-DAY CLOUD CHECK (T42, 11 Nov start, lc_mix + rhc_ifs + cld_prog 2) vs ERA5 days 1-5 (lcc5, mean of 3 starts): Bay/TN low 0.066/0.093/0.141/
+  0.164/0.147 vs ERA5 0.165/0.185/0.166/0.156/0.189 -> days 3-5 0.85/1.05/0.78x, day5/day3 1.04 -> PASS (levels off at ERA5: loop broken over
+  the Bay). S.India 0.080/0.152/0.229/0.320/0.334 vs 0.196/0.245/0.205/0.180/0.235 -> 1.12/1.78/1.42x, day5/day3 1.46 -> FAIL (still grows past
+  ERA5 over the S.India box, which is mostly LAND). [reg: 25 Nov 15:5x 5-day registration | inputs: ERA5 lcc 3-hourly; model one start (stated) |
+  fail-5why: below]
+- FAIL-5WHY (inputs first): this smoke ran WITHOUT the land set (bl_exc_ws, sbl_ifs, tofd, sfc_mo_land, sfc_mo_h) - my config error for a box
+  that is mostly land, where the night cooling and BL depth those items fix feed RH directly. REGISTERED (before the result): the same 5-day
+  check with the full candidate (land set + sfc_mo_land + rhc_ifs + cld_prog 2), same rule per box. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
