@@ -5575,3 +5575,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
   cloud evaporation back to vapour (-cnet where < 0, incl. ev0), large-scale autoconversion to rain. If >= 50 % of the detrained water returns to
   vapour, "recycling" (detrained water evaporating instead of raining out) is named for the moistening; the IFS reference for the split is the
   same equations, so the next check would be their SIZE (w_up in eq. 6.39, l_crit, Sundqvist aut on detrained cloud). [reg: this line | inputs: n/a | fail-5why: n/a]
+- 22:30 IST CLOUD-WATER FATE RESULT (T42 11 Nov Bay box h24-48, cld_det on): detrained 3.49 mm/day; back to vapour 0.29 (8 %); large-scale
+  autoconversion to rain 2.65 (76 %). Rule (>= 50 % back to vapour) NOT met -> recycling NOT named; the detrained water mostly rains out.
+  [reg: 22:2x water-fate registration | inputs: model T42 one start | fail-5why: below]
+- REGISTERED (before the result): split the +0.09 RH at sigma 0.84-0.93 into temperature and humidity: T and q there, with vs without cld_det
+  (same samples). If T is >= 0.5 K colder with cld_det, cooling is named (next: radiative cooling under the new carried cloud); if q is >= 0.8
+  g/kg higher, moistening is named (next: the vertical moisture flux of the stronger mass flux, Mb +45 %). [reg: this line | inputs: n/a | fail-5why: n/a]
