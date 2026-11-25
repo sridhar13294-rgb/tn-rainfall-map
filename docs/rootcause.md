@@ -5154,3 +5154,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
   3/9/15/21 (cyc_q1bay.py, 'q1bay truth') vs our sigma-0.85 physics total (land set -0.84 K/day; + rhc_ifs -0.79). MISSING PHYSICS HEATING NAMED if
   ERA5 Q1 exceeds ours by >= 0.4 K/day (then the deep-heating profile is compared with ERA5's Q1 profile); if within 0.4, the 850 cold is NOT a
   physics shortfall and the DYNAMICS term (+0.44 ours) is checked against ERA5's advection. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 07:35 IST ERA5 Q1 over Bay/TN (3 starts, day-1 hours 3/9/15/21): 925 +1.11, 850 +1.11, 700 +1.08, 600 +1.41, 500 +2.06, 400 +2.12, 300 +1.56, 200 +0.80
+  K/day. Ours at sigma 0.85: physics -0.84 (land set) / -0.79 (+ rhc_ifs) -> ERA5 exceeds ours by ~1.9 K/day (>= 0.4) -> MISSING PHYSICS HEATING
+  NAMED. Size: with radiation ~-1.3, ERA5's convective+BL heating at 850 is ~+2.4 K/day vs our deep +0.66 (+ BL -0.09) - about 4x too little;
+  and our dynamics term is +0.44 (warming = weak/absent ascent) where ERA5's must be ~-1.1 (ascent cooling balancing the convection). The Bay's
+  convective circulation is too WEAK on day 1 - the same root as the slow start (P2/P4/P5) and, through the low-level inflow, the TN steering.
+  [reg: 25 Nov 07:3x Q1 registration | inputs: ERA5 37 levels, same box/starts/day | fail-5why: n/a (named)]
+- REGISTERED next (before results): (a) size of the deep-convection deficit by rain: ERA5 total and convective precipitation over Bay/TN day 1 vs
+  ours (land set + rhc_ifs); (b) deep-active fraction ours (0.07-0.09) vs ERA5's convective-rain area fraction (cp > 0.1 mm/h). TRIGGER named if
+  our active fraction < 0.5x ERA5's cp area; INTENSITY (closure) named if the fraction is within 0.5-1.5x but rain per active column < 0.5x.
+  [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
