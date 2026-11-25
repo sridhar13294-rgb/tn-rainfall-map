@@ -5303,3 +5303,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   a saturated box) and clouds in sub-saturated air are removed by evaporation. Stage 2 as coded is NOT usable; a correct port needs the IFS
   implicit solution (Part IV 7.5) - about a day of careful work, stated. [reg: n/a (implementation debugging, no verdict) | inputs: step-by-step
   T42 trace | fail-5why: n/a]
+- 15:44 IST cld_prog stage 2 - two IFS consistency pieces added (implementation, from IFS 7.3.2 and the cloudy/clear split): dq_sat/dt divided by
+  1 + L/cp dqs/dT (moist adjustment) and a <= RH (cloudy part saturated: qv = a qs + (1 - a) q_env), the excess cloud evaporated with its
+  condensate. T42 step-by-step trace: stable for 72 steps (1 day), cloud water <= 0.7 g/kg, T normal. The registered smoke rule (day-3 low cloud
+  <= 1.2x day 1) now runs. [reg: n/a (implementation) | inputs: T42 trace | fail-5why: n/a]

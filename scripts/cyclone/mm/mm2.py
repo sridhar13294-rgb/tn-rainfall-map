@@ -1055,11 +1055,15 @@ class Model:
             Tp = cr['cTp']; es_wp = 611.21 * jnp.exp(17.502 * (Tp - 273.16) / (Tp - 32.19)); es_ip = 611.21 * jnp.exp(22.587 * (Tp - 273.16) / (Tp + 0.7))
             alp = jnp.clip((Tp - 250.16) / 23.0, 0.0, 1.0) ** 2; esp = alp * es_wp + (1 - alp) * es_ip; qsp = 0.622 * esp / jnp.maximum(p - 0.378 * esp, 1.0)
             init = cr['cinit'] > 0.5
-            dqs = jnp.where(init, (qsn - qsp) / dt, 0.0)                                            # kg/kg/s; 0 on the first step
+            gam = 1.0 + LV / CP * qsn * 17.502 * 240.97 / jnp.maximum(Tc_ - 32.19, 50.0) ** 2         # 1 + L/cp dqs/dT (moist adjustment, IFS 7.3.2)
+            dqs = jnp.where(init, (qsn - qsp) / dt / gam, 0.0)                                      # kg/kg/s, condensation-adjusted; 0 on the first step
             rh_ = jnp.clip(qc_ / qsn, 0.0, 1.0); sgm = sig * jnp.ones_like(Tn)
             rhcr = jnp.minimum(jnp.where(sgm > 0.8, 0.8 + 0.2 * ((jnp.minimum(sgm, 1.0) - 0.8) / 0.2) ** 2, 0.8), 0.999)
-            a0 = jnp.where(init, cr['cfa'], 1.0 - jnp.sqrt(jnp.clip((1.0 - rh_) / (1.0 - rhcr), 0.0, 1.0)))   # first step: start from the diagnostic cloud
-            q0 = jnp.where(init, cr['cql'], a0 * 0.01 * qsn)
+            a0r = jnp.where(init, cr['cfa'], 1.0 - jnp.sqrt(jnp.clip((1.0 - rh_) / (1.0 - rhcr), 0.0, 1.0)))   # first step: start from the diagnostic cloud
+            q0r = jnp.where(init, cr['cql'], a0r * 0.01 * qsn)
+            # consistency of the cloudy/clear split (IFS: cloudy part saturated, qv = a qs + (1 - a) q_env >= a qs) -> a <= RH; cloud beyond that
+            # is evaporated with its condensate (q_cld kept), cooling and moistening (stage 2 applies it through cnet)
+            a0 = jnp.minimum(a0r, rh_); q0 = q0r * jnp.where(a0r > 1e-6, a0 / jnp.maximum(a0r, 1e-6), 1.0); ev0 = (q0r - q0) / dt
             sub = jnp.maximum(qsn - qc_, 1e-7)
             da_f = jnp.where((dqs < 0) & (rh_ > rhcr), -(1.0 - a0) ** 2 / (2.0 * sub) * dqs, 0.0)
             a1 = jnp.clip(a0 + dt * da_f, 0.0, 1.0)
@@ -1078,7 +1082,7 @@ class Model:
                 # stage 2 (25 Nov): the cloud's net condensation (C1 + C2 - E1 - E2) changes T and q and autoconversion falls as rain. Applied as its
                 # OWN split step after the physics (cloud_apply, from the surface() call), so dq_sat/dt seen by the cloud excludes the cloud's own
                 # latent heating (the first try fed it back inside the physics step and blew up: Clausius-Clapeyron feedback ~2.5x per step).
-                cnet = jnp.where(init, jnp.clip(cnd - ev1 - ev2, -jnp.maximum(q0, 0.0) / dt, 0.5 * jnp.maximum(qc_, 0.0) / dt), 0.0)   # cannot condense vapour that is not there
+                cnet = jnp.where(init, jnp.clip(cnd - ev1 - ev2, -jnp.maximum(q0, 0.0) / dt, 0.5 * jnp.maximum(qc_, 0.0) / dt) - ev0, 0.0)   # cannot condense vapour that is not there; ev0 = consistency evaporation
                 cnet_aut = jnp.where(init, (jnp.minimum(aut, jnp.maximum(q0, 0.0) / dt) * mass).sum(0), 0.0)
                 cTp_new = T + dt * LV / CP * cnet
         doy0 = cr['doy0'] if 'doy0' in cr else self.doy0; utc0 = cr['utc0'] if 'utc0' in cr else self.utc0   # start date as data: no recompile per start
