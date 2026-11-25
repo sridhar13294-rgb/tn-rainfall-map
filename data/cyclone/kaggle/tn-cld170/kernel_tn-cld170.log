@@ -1,0 +1,92 @@
+[{"stream_name":"stdout","time":0.850402138,"data":"+ nvidia-smi || true\n"}
+,{"stream_name":"stdout","time":0.99429479,"data":"Wed Nov 25 04:59:59 2026       \n"}
+,{"stream_name":"stdout","time":0.994319346,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":0.994324498,"data":"| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":0.994328248,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.994332067,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":0.994335654,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":0.994339288,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":0.994342957,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":1.107063009,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":1.107088146,"data":"| N/A   56C    P8             11W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":1.10709409,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":1.10709881,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.107103305,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":1.107107958,"data":"| N/A   52C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":1.107129708,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":1.107132923,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.107696115,"data":"\n"}
+,{"stream_name":"stdout","time":1.107722485,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.107730857,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":1.10773622,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":1.107741404,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":1.107747229,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":1.109453839,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":1.109472834,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.434117274,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1.4346100210000001,"data":"accelerator asked NvidiaTeslaT4 -\u003e jax for cuda12\n"}
+,{"stream_name":"stdout","time":1.434624285,"data":"+ pip uninstall -y -q jax-cuda13-plugin jax-cuda13-pjrt 2\u003e/dev/null; pip install -q \"jax[cuda12]==0.12.0.1\"\n"}
+,{"stream_name":"stderr","time":98.048747517,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":98.048782847,"data":"bigframes 2.51.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":98.048787474,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.5 which is incompatible.\n"}
+,{"stream_name":"stderr","time":98.048790867,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":98.048793944,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":98.048796874,"data":"ydf 0.15.0 requires protobuf\u003c7.0.0,\u003e=5.29.1, but you have protobuf 7.36.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":98.048799829,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.5 which is incompatible.\n"}
+,{"stream_name":"stderr","time":98.04880275,"data":"gradio 6.30.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
+,{"stream_name":"stdout","time":98.307737369,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":111.575807711,"data":"[CudaDevice(id=0), CudaDevice(id=1)] 0.12.0.1\n"}
+,{"stream_name":"stdout","time":111.575851381,"data":" \n"}
+,{"stream_name":"stdout","time":111.575858442,"data":"+ free -g; nproc\n"}
+,{"stream_name":"stdout","time":111.595585232,"data":"               total        used        free      shared  buff/cache   available\n"}
+,{"stream_name":"stdout","time":111.595606918,"data":"Mem:              31           1          21           0           9          30\n"}
+,{"stream_name":"stdout","time":111.595612586,"data":"Swap:              0           0           0\n"}
+,{"stream_name":"stdout","time":111.599059822,"data":"4\n"}
+,{"stream_name":"stdout","time":111.599380447,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":111.599394227,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
+,{"stream_name":"stdout","time":121.501786962,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":121.501831389,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
+,{"stream_name":"stdout","time":140.267825222,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":140.267860338,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o libm_wx2020L2_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020L2_fields.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" libm_wx2020L2_fields.npz || { echo BAD_DOWNLOAD libm_wx2020L2_fields.npz; rm -f libm_wx2020L2_fields.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o libm_wx2020L2_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020L2_fields.npz; }\n"}
+,{"stream_name":"stdout","time":142.609895384,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":142.609927022,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o geo_gwd.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/geo_gwd.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" geo_gwd.npz || { echo BAD_DOWNLOAD geo_gwd.npz; rm -f geo_gwd.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o geo_gwd.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/geo_gwd.npz; }\n"}
+,{"stream_name":"stdout","time":142.937130512,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":142.937159075,"data":"setup s 142\n"}
+,{"stream_name":"stdout","time":142.937164725,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore cld_t170.py /kaggle/working/libm_wx2020L2_fields.npz '{\"bl_exc_ws\": 1, \"sbl_ifs\": 1, \"tofd\": 1, \"sfc_mo\": 1, \"sfc_mo_h\": 1, \"sfc_mo_land\": 1, \"rad_prm\": {\"aer\": 1, \"lw_cnt\": 0.667, \"qs_mix\": 1, \"rhc_ifs\": 1}}' cand /kaggle/working/cld_cand.json \u003e /kaggle/working/cld.log 2\u003e\u00261; grep \"^#\" /kaggle/working/cld.log; tail -2 /kaggle/working/cld.log 2\u003e\u00261 | tee job.log\n"}
+,{"stream_name":"stdout","time":1355.4583563,"data":"# cand india_south cloud lowmax day1/2/3 0.278 0.402 0.433\n"}
+,{"stream_name":"stdout","time":1355.458413444,"data":"# cand india_south cloud cls day1/2/3 0.256 0.379 0.414\n"}
+,{"stream_name":"stdout","time":1355.458417717,"data":"# cand india_south cloud cover day1/2/3 0.842 0.869 0.779\n"}
+,{"stream_name":"stdout","time":1355.458420956,"data":"# cand india_south sigma 0.925 day 1 dT +0.07 = phys +0.11 + dyn -0.04 | h_bl +0.54 h_shal +0.41 h_deep +0.50 h_lsc +0.02 h_evap -0.15 rad_app -1.21\n"}
+,{"stream_name":"stdout","time":1355.458424321,"data":"# cand india_south sigma 0.925 day 2 dT -0.64 = phys -0.29 + dyn -0.35 | h_bl +0.05 h_shal +0.41 h_deep +0.77 h_lsc +0.21 h_evap -0.08 rad_app -1.65\n"}
+,{"stream_name":"stdout","time":1355.458427433,"data":"# cand india_south sigma 0.925 day 3 dT -0.48 = phys -0.55 + dyn +0.07 | h_bl +0.11 h_shal +0.40 h_deep +0.61 h_lsc +0.27 h_evap -0.01 rad_app -1.92\n"}
+,{"stream_name":"stdout","time":1355.458430493,"data":"# cand india_south sigma 0.85 day 1 dT -0.28 = phys -0.39 + dyn +0.11 | h_bl -0.15 h_shal +0.15 h_deep +0.74 h_lsc +0.06 h_evap -0.07 rad_app -1.13\n"}
+,{"stream_name":"stdout","time":1355.458433424,"data":"# cand india_south sigma 0.85 day 2 dT -0.15 = phys -0.19 + dyn +0.04 | h_bl +0.03 h_shal -0.05 h_deep +1.31 h_lsc +0.20 h_evap -0.01 rad_app -1.65\n"}
+,{"stream_name":"stdout","time":1355.458436449,"data":"# cand india_south sigma 0.85 day 3 dT +0.11 = phys -1.00 + dyn +1.11 | h_bl +0.01 h_shal -0.06 h_deep +1.04 h_lsc +0.26 h_evap -0.04 rad_app -2.20\n"}
+,{"stream_name":"stdout","time":1355.458439396,"data":"# cand india_south sigma 0.7 day 1 dT +0.19 = phys -0.49 + dyn +0.68 | h_bl +0.00 h_shal -0.51 h_deep +1.10 h_lsc +0.20 h_evap -0.03 rad_app -1.26\n"}
+,{"stream_name":"stdout","time":1355.45844233,"data":"# cand india_south sigma 0.7 day 2 dT +0.19 = phys -0.94 + dyn +1.13 | h_bl -0.00 h_shal +0.01 h_deep +0.67 h_lsc +0.05 h_evap -0.25 rad_app -1.41\n"}
+,{"stream_name":"stdout","time":1355.458445322,"data":"# cand india_south sigma 0.7 day 3 dT -0.26 = phys -1.30 + dyn +1.04 | h_bl +0.02 h_shal -0.01 h_deep +0.58 h_lsc +0.05 h_evap -0.16 rad_app -1.78\n"}
+,{"stream_name":"stdout","time":1355.458448548,"data":"# cand bay_tn cloud lowmax day1/2/3 0.212 0.319 0.347\n"}
+,{"stream_name":"stdout","time":1355.458451405,"data":"# cand bay_tn cloud cls day1/2/3 0.193 0.296 0.316\n"}
+,{"stream_name":"stdout","time":1355.458454197,"data":"# cand bay_tn cloud cover day1/2/3 0.794 0.835 0.759\n"}
+,{"stream_name":"stdout","time":1355.458456977,"data":"# cand bay_tn sigma 0.925 day 1 dT -0.25 = phys -0.71 + dyn +0.46 | h_bl +0.27 h_shal +0.29 h_deep +0.35 h_lsc +0.03 h_evap -0.10 rad_app -1.55\n"}
+,{"stream_name":"stdout","time":1355.458459906,"data":"# cand bay_tn sigma 0.925 day 2 dT -0.43 = phys -0.66 + dyn +0.24 | h_bl -0.06 h_shal +0.41 h_deep +0.57 h_lsc +0.09 h_evap -0.12 rad_app -1.55\n"}
+,{"stream_name":"stdout","time":1355.458473064,"data":"# cand bay_tn sigma 0.925 day 3 dT -0.48 = phys -0.40 + dyn -0.08 | h_bl -0.11 h_shal +0.34 h_deep +0.91 h_lsc +0.13 h_evap -0.04 rad_app -1.63\n"}
+,{"stream_name":"stdout","time":1355.45847576,"data":"# cand bay_tn sigma 0.85 day 1 dT -0.32 = phys -0.77 + dyn +0.44 | h_bl -0.11 h_shal -0.02 h_deep +0.54 h_lsc +0.03 h_evap -0.05 rad_app -1.15\n"}
+,{"stream_name":"stdout","time":1355.458478154,"data":"# cand bay_tn sigma 0.85 day 2 dT -0.13 = phys -0.60 + dyn +0.47 | h_bl +0.00 h_shal -0.09 h_deep +0.95 h_lsc +0.11 h_evap -0.07 rad_app -1.50\n"}
+,{"stream_name":"stdout","time":1355.458480552,"data":"# cand bay_tn sigma 0.85 day 3 dT -0.13 = phys -0.35 + dyn +0.23 | h_bl +0.00 h_shal -0.11 h_deep +1.34 h_lsc +0.13 h_evap -0.04 rad_app -1.67\n"}
+,{"stream_name":"stdout","time":1355.458482944,"data":"# cand bay_tn sigma 0.7 day 1 dT +0.03 = phys -0.53 + dyn +0.56 | h_bl +0.00 h_shal -0.17 h_deep +0.80 h_lsc +0.07 h_evap -0.08 rad_app -1.16\n"}
+,{"stream_name":"stdout","time":1355.458485313,"data":"# cand bay_tn sigma 0.7 day 2 dT -0.07 = phys -0.88 + dyn +0.81 | h_bl +0.01 h_shal -0.11 h_deep +0.72 h_lsc +0.15 h_evap -0.15 rad_app -1.49\n"}
+,{"stream_name":"stdout","time":1355.458487743,"data":"# cand bay_tn sigma 0.7 day 3 dT -0.23 = phys -0.43 + dyn +0.20 | h_bl +0.00 h_shal -0.04 h_deep +1.18 h_lsc +0.05 h_evap -0.06 rad_app -1.55\n"}
+,{"stream_name":"stdout","time":1355.461316655,"data":"# cand bay_tn sigma 0.7 day 2 dT -0.07 = phys -0.88 + dyn +0.81 | h_bl +0.01 h_shal -0.11 h_deep +0.72 h_lsc +0.15 h_evap -0.15 rad_app -1.49\n"}
+,{"stream_name":"stdout","time":1355.461334809,"data":"# cand bay_tn sigma 0.7 day 3 dT -0.23 = phys -0.43 + dyn +0.20 | h_bl +0.00 h_shal -0.04 h_deep +1.18 h_lsc +0.05 h_evap -0.06 rad_app -1.55\n"}
+,{"stream_name":"stdout","time":1355.46187098,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1355.46188932,"data":"+ rm -rf repo libm_wx2020L2_fields.npz geo_gwd.npz\n"}
+,{"stream_name":"stdout","time":1355.74505878,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1355.745081711,"data":"total s 1355\n"}
+,{"stream_name":"stderr","time":1357.746093958,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":1357.74611986,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":1357.947150094,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":1357.94718652,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":1358.730222597,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":1359.623183915,"data":"[NbConvertApp] Writing 285694 bytes to __results__.html\n"}
+]
