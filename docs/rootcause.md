@@ -5657,3 +5657,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
   (low cloud 0.67/0.69); 59-62 % of non-convecting points have cover > 0.3 (mean 0.50/0.51). Rule (>= 50 %) MET -> missing ADVECTION of the
   carried cloud (a, q_l) is NAMED as the next fix: two thirds of the observed cloud sits where no local convective source exists, and our carried
   cloud cannot move there. [reg: 03:4x cldadv registration | inputs: ERA5 cp/tcc/lcc (fetched 03:5x) | fail-5why: n/a]
+- 26 Nov 03:49 IST cld_adv CODED: carried cloud fraction and cloud water are semi-Lagrangian, monotone, nodal tracers of the dynamical core (IFS: a
+  and q_l are advected prognostic variables). The physics' new a, q_l (computed from the pre-step values) are applied as an INCREMENT to the
+  advected tracer in cloud_apply, so neither advection nor physics is lost (time-splitting stated). T42 2-day smoke (11 Nov, candidate +
+  cld_det + cld_sed + sst_fill + cld_adv): finite, global rain 1.81 mm/day. REGISTERED (before the result): the 3-start T42 5-day cloud screen
+  (1/11/16 Nov, same script) with cld_adv added: total cover AND low cloud days 3-5 within 0.85-1.15x / 0.7-1.3x ERA5 (3-start mean) in Bay
+  and S.India. [reg: this line | inputs: n/a | fail-5why: n/a]

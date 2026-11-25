@@ -136,7 +136,7 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='mf', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='radcloud', rad_every=2,
-                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, sh_wtest=0.0, sbl_ifs=0.0, bl_exc_ws=0.0, tofd=0.0, sfc_mo_h=0.0, dp_ifs=0.0, dp_ifs_exc=0.0, sfc_mo_land=0.0, cld_prog=0.0, cld_det=0.0, mf_ice_ifs=0.0, sst_fill=0.0, tau_ifs=0.0, cld_sed=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, midlev=0.0, lsc_sub=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
+                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, sh_wtest=0.0, sbl_ifs=0.0, bl_exc_ws=0.0, tofd=0.0, sfc_mo_h=0.0, dp_ifs=0.0, dp_ifs_exc=0.0, sfc_mo_land=0.0, cld_prog=0.0, cld_det=0.0, mf_ice_ifs=0.0, sst_fill=0.0, tau_ifs=0.0, cld_sed=0.0, cld_adv=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, midlev=0.0, lsc_sub=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
@@ -260,6 +260,7 @@ class Model:
         vor, div = spherical_harmonic.uv_nodal_to_vor_div_modal(hor, sg['u'] * self.MPS, sg['v'] * self.MPS)
         st = primitive_equations.State(vorticity=vor, divergence=div, temperature_variation=hor.to_modal(sg['t'] * self.K - self.ref_t[:, None, None]),
                                        log_surface_pressure=hor.to_modal(np.log(ps[None] * self.PA)), tracers={'specific_humidity': jnp.asarray(sg['q'])})
+        if self.cadv(): st = st.replace(tracers=dict(st.tracers, cloud_fraction=jnp.zeros_like(st.tracers['specific_humidity']), cloud_water=jnp.zeros_like(st.tracers['specific_humidity'])))
         self.zs = jnp.asarray(zs, jnp.float32); self.land = jnp.asarray(land); self.T0 = jnp.asarray(sg['t'])
         if (self.S.get('gwd', 0) or self.S.get('tofd', 0)) and getattr(self, 'gw', None) is None: self.gw = load_gwd(self.S.get('gwd_file'), np.asarray(self.LA), np.asarray(self.LO))
         if self.S.get('land_rc', 0): self.veg = load_veg(self.S.get('veg_file'), np.asarray(self.LA), np.asarray(self.LO), when.month if when is not None else 1)
@@ -276,7 +277,7 @@ class Model:
         if self.S.get('stress_out', 0): carry['tx'] = jnp.zeros(zs.shape, jnp.float32); carry['ty'] = jnp.zeros(zs.shape, jnp.float32); carry.update({k: jnp.zeros(zs.shape, jnp.float32) for k in ('fsta', 'staba', 'txn', 'zmo', 'wsta')})
         if self.S.get('land_rc', 0): carry['swd'] = jnp.zeros(zs.shape, jnp.float32)              # downward surface SW of the last step (canopy f1)
         if self.S.get('cld_fix', 0): carry['q0'] = jnp.asarray(sg['q'], jnp.float32)
-        if self.S.get('cld_prog', 0): L_ = len(self.sig); carry.update(cfa=jnp.zeros((L_,) + zs.shape, jnp.float32), cql=jnp.zeros((L_,) + zs.shape, jnp.float32), cTp=jnp.zeros((L_,) + zs.shape, jnp.float32), cinit=jnp.zeros(zs.shape, jnp.float32), **({'cnet': jnp.zeros((L_,) + zs.shape, jnp.float32)} if self.S.get('cld_prog', 0) >= 2 else {}))
+        if self.S.get('cld_prog', 0): L_ = len(self.sig); carry.update(**({'cfa_in': jnp.zeros((L_,) + zs.shape, jnp.float32), 'cql_in': jnp.zeros((L_,) + zs.shape, jnp.float32)} if self.cadv() else {}), cfa=jnp.zeros((L_,) + zs.shape, jnp.float32), cql=jnp.zeros((L_,) + zs.shape, jnp.float32), cTp=jnp.zeros((L_,) + zs.shape, jnp.float32), cinit=jnp.zeros(zs.shape, jnp.float32), **({'cnet': jnp.zeros((L_,) + zs.shape, jnp.float32)} if self.S.get('cld_prog', 0) >= 2 else {}))
         if self.S.get('q_adv', 0):                                                                  # (13 Nov) advective moisture tendency for the IFS trigger (6.21) / QCV (6.32)
             carry['q_adv'] = jnp.zeros_like(jnp.asarray(sg['q'], jnp.float32)); carry['q_last'] = jnp.asarray(sg['q'], jnp.float32); carry['dqp'] = jnp.zeros_like(carry['q_adv'])                # cld_fix: start humidity for the frozen RH cloud
         if self.S.get('skin_ifs', 0):                                                               # (19 Nov) IFS skin layer over a 4-layer soil
@@ -1297,7 +1298,7 @@ class Model:
         if same: return                                                                             # same grid, terrain and coast: reuse the compiled model
         self._jit = {}; self._built = (split, np.asarray(self.oro), np.asarray(self.zs), np.asarray(self.land))
         self.eq = (primitive_equations.SemiLagrangianPrimitiveEquationsHybrid if self.hyb else primitive_equations.SemiLagrangianPrimitiveEquations)(self.ref_t, self.oro, self.coords_dyn, self.ps, humidity_key='specific_humidity',
-                                                                       monotone_tracers=True, nodal_tracers=('specific_humidity',), departure_iterations=int(self.S.get('sl_iter', 1)), monotone_dynamics=bool(self.S.get('mono', True)),
+                                                                       monotone_tracers=True, nodal_tracers=self.trkeys(), departure_iterations=int(self.S.get('sl_iter', 1)), monotone_dynamics=bool(self.S.get('mono', True)),
                                                                        **({'vertical_interpolation_order': 'cubic'} if self.S.get('sl_vcubic', 0) > 0 else {}))   # sl_vcubic (5 Nov 23:00): cubic vertical SL interpolation (Dinosaur default linear smears the tropopause: +1.5 K/day physics-off)
         cl = hor.cos_lat
         class Phys(time_integration.ExplicitODE):
@@ -1311,10 +1312,10 @@ class Model:
                 vt = hor.to_modal(jax.tree_util.tree_map(lambda x: x * M.MPS / M.SEC / cl, (tend['u'], tend['v'])))
                 return primitive_equations.State(vorticity=hor.curl_cos_lat(vt), divergence=hor.div_cos_lat(vt),
                                                  temperature_variation=hor.to_modal(tend['T'] * M.K / M.SEC), log_surface_pressure=jnp.zeros_like(state.log_surface_pressure),
-                                                 tracers={'specific_humidity': tend['q'] / M.SEC}, sim_time=None if state.sim_time is None else 0.0)
+                                                 tracers=dict({'specific_humidity': tend['q'] / M.SEC}, **({'cloud_fraction': jnp.zeros_like(tend['q']), 'cloud_water': jnp.zeros_like(tend['q'])} if M.cadv() else {})), sim_time=None if state.sim_time is None else 0.0)
         self.phys = Phys()
         res = hor.latitude_nodes / 128; tau = self.ps.nondimensionalize(8.6 / (2.4 ** np.log2(res)) * float(self.S.get('diff_x', 1.0)) * units.hours)   # diff_x: e-folding time multiplier (larger = weaker damping of the smallest scales)
-        self.filt = primitive_equations.step_filter_excluding_nodal_tracers(time_integration.horizontal_diffusion_step_filter(hor, dt=self.dt, tau=tau, order=int(self.S.get('diff_order', 2))), nodal_tracers=('specific_humidity',))
+        self.filt = primitive_equations.step_filter_excluding_nodal_tracers(time_integration.horizontal_diffusion_step_filter(hor, dt=self.dt, tau=tau, order=int(self.S.get('diff_order', 2))), nodal_tracers=self.trkeys())
         if split:
             # process splitting: dynamics first, then the physics once per step from the new state (half the physics cost;
             # how most operational models couple their physics)
@@ -1326,6 +1327,10 @@ class Model:
         else:
             eqs = time_integration.compose_equations([self.eq, self.phys])
             self.step = time_integration.step_with_filters(time_integration.semi_lagrangian_crank_nicolson_rk2(eqs, self.dt, off_centering=0.05, warm_start_corrector=True), [self.filt])
+    def cadv(self):
+        return bool(self.S.get('cld_adv', 0)) and self.S.get('cld_prog', 0) >= 2
+    def trkeys(self):
+        return ('specific_humidity', 'cloud_fraction', 'cloud_water') if self.cadv() else ('specific_humidity',)
     def cloud_apply(self, st, cr):
         """cld_prog >= 2: apply the prognostic cloud's net condensation (latent heat, vapour) as its own split step."""
         if 'cnet' not in cr: return st, cr
@@ -1333,6 +1338,13 @@ class Model:
         dTv = hor.to_modal(LV / CP * cr['cnet'] * dts * self.K)
         q = st.tracers['specific_humidity']
         st = st.replace(temperature_variation=st.temperature_variation + dTv, tracers=dict(st.tracers, specific_humidity=jnp.maximum(q - cr['cnet'] * dts, 0.0)))
+        if self.cadv():
+            # cld_adv (26 Nov, cloud 5-why: 2/3 of ERA5 cloud area sits over non-convecting points): a and q_l are SL-advected nodal tracers (IFS: advected
+            # prognostic variables). The physics computed its new a, q_l from the PRE-step values (cfa_in/cql_in); its INCREMENT is added to the
+            # advected tracer so neither the advection nor the physics is lost.
+            fa = jnp.clip(st.tracers['cloud_fraction'] + cr['cfa'] - cr['cfa_in'], 0.0, 1.0); fq = jnp.maximum(st.tracers['cloud_water'] + cr['cql'] - cr['cql_in'], 0.0)
+            fa = jnp.where(fq < 1e-8, 0.0, fa)
+            st = st.replace(tracers=dict(st.tracers, cloud_fraction=fa, cloud_water=fq)); cr = dict(cr, cfa=fa, cql=fq, cfa_in=fa, cql_in=fq)
         # the spectral transform smooths the point-wise latent heating, so the reference temperature for the next dq_sat/dt must be the TRUE
         # nodal temperature after this step (25 Nov: storing the predicted value made T - cTp grow 0.3 -> 7.8 K in 5 steps -> runaway)
         aux = primitive_equations.compute_diagnostic_state_sigma(st.replace(tracers={}), self.coords)
@@ -1635,7 +1647,7 @@ def bred_vectors(M, state, carry, n=6, hours=12.0, seed=0, amp=1.0):
 def add_perturbation(state, bvs, coefs):
     pert = state
     for c, b in zip(coefs, bvs): pert = jax.tree_util.tree_map(lambda a, x: a + c * x, pert, b)
-    q = pert.tracers['specific_humidity']; return pert.replace(tracers={'specific_humidity': jnp.maximum(q, 0.0)})
+    q = pert.tracers['specific_humidity']; return pert.replace(tracers=dict(pert.tracers, specific_humidity=jnp.maximum(q, 0.0)))
 
 def track_from_peak(M, out, box=(5.0, 22.0, 78.0, 99.0), every_h=6, t_from=24, t_to=144):
     """The Bay system at its strongest: the highest smoothed 850-hPa vorticity over the Bay sea (box) between t_from and
