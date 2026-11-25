@@ -136,7 +136,7 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='mf', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='radcloud', rad_every=2,
-                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, sh_wtest=0.0, sbl_ifs=0.0, bl_exc_ws=0.0, tofd=0.0, sfc_mo_h=0.0, dp_ifs=0.0, dp_ifs_exc=0.0, sfc_mo_land=0.0, cld_prog=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, midlev=0.0, lsc_sub=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
+                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, sh_wtest=0.0, sbl_ifs=0.0, bl_exc_ws=0.0, tofd=0.0, sfc_mo_h=0.0, dp_ifs=0.0, dp_ifs_exc=0.0, sfc_mo_land=0.0, cld_prog=0.0, cld_det=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, midlev=0.0, lsc_sub=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
@@ -431,7 +431,7 @@ class Model:
             # warms the plume, as in the old scheme's bmj_ice; without it the tropical upper troposphere runs 3-5 K cold
             hu1 = hu1 + S['mf_ice'] * 3.34e5 * jnp.clip((273.15 - Tu) / 20.0, 0.0, 1.0) * cond
             nh = jnp.where(act, jnp.where(src, he + hk_, hu1), hu); nq = jnp.where(act, jnp.where(src, qe + qk_, qv), qu)
-            return (nh, nq, alv2, lfc2, st2, jnp.where(act | ~st2, zk, zp), Kw2), (act, jnp.where(run & act, b, 0.0), jnp.where(run & act, cond, 0.0), nh, nq, eps)
+            return (nh, nq, alv2, lfc2, st2, jnp.where(act | ~st2, zk, zp), Kw2), (act, jnp.where(run & act, b, 0.0), jnp.where(run & act, cond, 0.0), nh, nq, eps, Kw2)
           return plume
         z0 = jnp.zeros_like(ps); f0 = jnp.zeros(ps.shape, bool)
         # src_dp > 0 (Pa): the rising parcel starts from the mass-weighted mean moist static energy and humidity of a src_dp-thick
@@ -442,10 +442,10 @@ class Model:
         use = (S['src_dp'] > 0) & (ii == ksrc[None]) & (mid is None)
         h_in = jnp.where(use, h_avg[None], h_e); q_in = jnp.where(use, q_avg[None], qn)
         xs = tuple(a[::-1] for a in (Tn, q_in, h_in, p * jnp.ones_like(Tn), zc, sig * jnp.ones_like(Tn), rh_e, ii * jnp.ones(Tn.shape, jnp.int32)))
-        (_, _, _, lfc, _, _, _), (inc, b, cond, hu, qu, eps_l) = jax.lax.scan(make_plume(False), (z0, z0, f0, f0, f0, z0 - 1.0, z0 + 0.5), xs)
-        inc, b, cond, hu, qu, eps_l = [a[::-1] for a in (inc, b, cond, hu, qu, eps_l)]
+        (_, _, _, lfc, _, _, _), (inc, b, cond, hu, qu, eps_l, Kw_l) = jax.lax.scan(make_plume(False), (z0, z0, f0, f0, f0, z0 - 1.0, z0 + 0.5), xs)
+        inc, b, cond, hu, qu, eps_l, Kw_l = [a[::-1] for a in (inc, b, cond, hu, qu, eps_l, Kw_l)]
         if (shallow and self.S.get('sh_eps', 0) > 0) or (not shallow and mid is None and (self.S.get('dp_test', 0) or self.S.get('dp_ifs', 0))):   # trigger from the IFS test parcel (eq. 6.18); dp_test (24 Nov): also for DEEP
-            (_, _, _, _, _, _, _), (inc_t, b_t, cond_t, _, _, eps_t) = jax.lax.scan(make_plume(True), (z0, z0, f0, f0, f0, z0 - 1.0, z0 + 0.5), xs)
+            (_, _, _, _, _, _, _), (inc_t, b_t, cond_t, _, _, eps_t, _) = jax.lax.scan(make_plume(True), (z0, z0, f0, f0, f0, z0 - 1.0, z0 + 0.5), xs)
             inc_t, cond_t, b_t, eps_t = inc_t[::-1], cond_t[::-1], b_t[::-1], eps_t[::-1]
             if wt_on:
                 # IFS eq. 6.10 for the test parcel from the first level (K = w*^2/2) up to its LCL: dK/dz = -eps (1 + beta Cd)^2 K
@@ -499,6 +499,28 @@ class Model:
         top = lambda F: jnp.concatenate([jnp.zeros_like(F[:1]), F[:-1]], 0)                        # = bottom flux of the layer above
         dh1 = (Fh - top(Fh)) / mass; P1 = eta * cond; dq1 = (Fq - top(Fq)) / mass - (0.0 if shallow else P1 / mass)   # shallow: condensate re-evaporates in place
         # the source layer: air leaves upward through its top (handled: its top flux = the bottom flux of the layer above)
+        det_on = (not shallow) and mid is None and self.S.get('cld_det', 0) > 0
+        if det_on:
+            # cld_det (25 Nov, cld_prog fail-5why: convective detrainment source missing). Updraught condensate l_up kept in the plume and
+            # converted to rain by IFS Cy47r1 Part IV eq. 6.39: G = c0 / (0.75 w_up) l_up (1 - exp(-(l_up/l_crit)^2)) per metre, c00 1.4e-3 s-1,
+            # l_crit 0.5 g/kg, w_up <= 15 m/s, conversion only where l_up > 0.3 g/kg (sea) / 0.5 g/kg (land); w_up from the plume's eq. 6.10
+            # kinetic energy (floor 1 m/s, stated). The rest DETRAINS where the mass flux decreases: D_k l_up (eq. 7.22), so per unit Mb the
+            # detrained condensate is (eta_k - eta_above) l_k and the liquid flux telescopes exactly (water conserved). Not included (stated):
+            # the (1 + 0.3 alpha_T) and Bergeron factors (6.40-6.41), dilution of l_up by entrainment (our bulk eta has no lateral inflow).
+            wup = jnp.clip(jnp.sqrt(2.0 * jnp.maximum(Kw_l, 0.0)), 1.0, 15.0)
+            thr = jnp.where(self.land, 5e-4, 3e-4)
+            dzl = jnp.concatenate([jnp.maximum(zc[:-1] - zc[1:], 0.0), jnp.zeros_like(zc[:1])], 0)
+            lu = jnp.zeros_like(ps); Lk = []; Gk = []
+            for k in range(L - 1, -1, -1):
+                on = eta[k] > 0
+                l1 = jnp.where(on, lu + cond[k], 0.0)
+                g = jnp.where(l1 > thr, jnp.minimum(l1, dzl[k] * 1.4e-3 / (0.75 * wup[k]) * l1 * (1.0 - jnp.exp(-(l1 / 5e-4) ** 2))), 0.0)
+                lu = l1 - g; Lk.append(lu); Gk.append(g)
+            l_up = jnp.stack(Lk[::-1], 0); G_up = jnp.stack(Gk[::-1], 0)
+            dEta = jnp.maximum(eta - top(eta), 0.0)
+            Pdet = dEta * l_up
+            P1 = eta * G_up
+            dq1 = (Fq - top(Fq)) / mass - P1 / mass - Pdet / mass
         dT1 = (dh1 - LV * dq1) / CP
         gam = LV / CP * qsat(Tn, p) * 17.67 * 243.5 / (Tn - 29.65) ** 2
         dhs = jnp.take_along_axis(dh1, ksrc[None], 0)[0]
@@ -579,6 +601,7 @@ class Model:
             zb = jnp.maximum(jnp.take_along_axis(zc, ksrc[None], 0)[0], 1.0)
             Mb = jnp.maximum(jnp.maximum(-om_b / G, jnp.maximum(Hs + LV * E, 0.0) / (G * zb)), 1e-6)
         Mb = jnp.clip(Mb, 0.0, jnp.minimum(S['mf_cap'] * mmin / dt, 1.0)) * deep
+        if det_on: self._det = dict(D=dEta * Mb[None], Lw=Pdet * Mb[None])                       # kg m-2 s-1 per layer: detrained air and condensate
         if not shallow and mid is None: self._cmt_M = eta * Mb[None]                                               # updraft mass flux per layer (kg m-2 s-1), for mass-flux momentum transport
         # downdraft (mf_dd = its mass flux as a share of the updraft's, ECMWF ~0.3): air from the level of free sink (lower
         # third of the cloud) is cooled to saturation by evaporating rain and sinks moist-adiabatically (moist static energy of
@@ -614,6 +637,7 @@ class Model:
     def column(self, T, q, u, v, ps, cr, want_diag=False, rad_fresh=False, div=None, om=None):
         """All arrays nodal: T, q, u, v [L, X, Y] (SI); ps [X, Y] Pa; cr = surface carry. Returns tendencies (per second)
         and diagnostics (surface rain, surface fluxes)."""
+        self._det = None
         S = dict(self.S); S.update(cr['prm']); dt = self.dt_s; sig = jnp.asarray(self.sig)[:, None, None]; dsig = jnp.asarray(self.dsig)[:, None, None]
         sb = jnp.asarray(self.sigb)[:, None, None]; p = sig * ps; dp = dsig * ps; mass = dp / G; L = T.shape[0]
         if self.hyb:                                                                                 # D3: per-column level pressures; sig = p / ps keeps every sigma test as p / ps
@@ -1048,7 +1072,7 @@ class Model:
             # E2 = 0.333 a(1-a) K (qs - qv), K 1e-5 (1e-4 with shallow convection) with da = E2 / q_cld (7.48-7.49); autoconversion (Sundqvist,
             # 7.50-7.52) a c0 q_cld (1 - exp(-(q_cld/q_crit)^2)), c0 1.67e-4 s-1, q_crit 0.25 (sea) / 0.55 (land) g/kg; a = 0 when ql -> 0.
             # Stage 1 feeds RADIATION only (no T/q feedback; the existing large-scale condensation still does the latent heating) - stated.
-            # Convective detrainment source not included: the convective cloud (c_tow, c_anv) stays diagnostic in radiation.
+            # Convective detrainment source: cld_det (deep updraught only; shallow condensate still evaporates in place - stated).
             Tc_ = T; qc_ = q
             es_w_ = 611.21 * jnp.exp(17.502 * (Tc_ - 273.16) / (Tc_ - 32.19)); es_i_ = 611.21 * jnp.exp(22.587 * (Tc_ - 273.16) / (Tc_ + 0.7))
             al = jnp.clip((Tc_ - 250.16) / 23.0, 0.0, 1.0) ** 2; es_ = al * es_w_ + (1 - al) * es_i_; qsn = 0.622 * es_ / jnp.maximum(p - 0.378 * es_, 1.0)
@@ -1075,6 +1099,11 @@ class Model:
             aut = a1 * 1.67e-4 * qcl * (1.0 - jnp.exp(-(qcl / qcr) ** 2))
             q1 = jnp.maximum(q0 + dt * (jnp.minimum(cnd - ev1 - ev2, 0.5 * jnp.maximum(qc_, 0.0) / dt) - aut), 0.0)
             a2 = jnp.clip(a1 - dt * ev2 / jnp.maximum(qcl, 1e-7), 0.0, 1.0)
+            if self.S.get('cld_det', 0) and getattr(self, '_det', None) is not None:
+                # cld_det: convective sources (IFS Cy47r1 Part IV eqs. 7.22-7.23): da = D_up dt, dql = D_up l_up dt (D_up = detrained mass / layer mass);
+                # the compensating-subsidence advection terms (M_up/rho d/dz) are not included (stated). The condensate was already taken from the
+                # vapour inside conv_mf, so it is NOT part of cnet (no second latent heating).
+                a2 = jnp.clip(a2 + dt * self._det['D'] / mass, 0.0, 1.0); q1 = q1 + dt * self._det['Lw'] / mass
             a2 = jnp.where(q1 < 1e-8, 0.0, a2)
             cfa_n, cql_n = a2, q1
             cnet = cnet_aut = None; cTp_new = T

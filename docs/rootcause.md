@@ -5353,3 +5353,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
   over the Bay/TN coast and co-located with a 850 hPa heating/rain difference, the bias is the low-level heating deficit of the mass-flux
   scheme; if it is broad-scale (whole basin, no rain co-location), it is a dynamical/initial-state cause and the next check is the DFI/initial
   imbalance. (b) No gate change; Tracks gate stays TN v850 d1 >= -1.0. [reg: this line | inputs: part-3 JSONs listed; ERA5 Q1 q1bay2 | fail-5why: n/a]
+- 18:36 IST cld_det CODED (from the cld_prog fail-5why): deep updraught keeps its condensate l_up and rains it by IFS Cy47r1 eq. 6.39 (c00 1.4e-3,
+  l_crit 0.5 g/kg, w_up from eq. 6.10, thresholds 0.3/0.5 g/kg sea/land); the rest detrains where the mass flux falls (eq. 7.22: D l_up) and
+  feeds the carried cloud with da = D dt (eq. 7.23). Water conserved by telescoping liquid flux; subsidence terms, Bergeron and alpha_T factors
+  not included (stated). T42 2-day smoke (11 Nov): finite, global rain 2.2 mm/day. REGISTERED (before the result): part-3 T170 tn-clddet =
+  cand_cldprog + cld_det, account 4, the SAME four rules as tn-cldprog (TN v850 d1 >= -1.0; TN rain >= 0.85; z500 d5 <= lc_mix + 2 SE; S.India
+  t850 cold growth d1->d3 shrinks >= 50 %). Adopted only if all four pass; otherwise HELD with a fail-5why. [reg: this line | inputs: n/a | fail-5why: n/a]
