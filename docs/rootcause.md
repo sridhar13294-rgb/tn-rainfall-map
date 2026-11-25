@@ -5581,3 +5581,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - REGISTERED (before the result): split the +0.09 RH at sigma 0.84-0.93 into temperature and humidity: T and q there, with vs without cld_det
   (same samples). If T is >= 0.5 K colder with cld_det, cooling is named (next: radiative cooling under the new carried cloud); if q is >= 0.8
   g/kg higher, moistening is named (next: the vertical moisture flux of the stronger mass flux, Mb +45 %). [reg: this line | inputs: n/a | fail-5why: n/a]
+- 22:42 IST T/q SPLIT RESULT (sigma 0.84-0.93, Bay box h24-48, without / with cld_det): T 293.51 / 292.51 K (-1.00 K, rule >= 0.5: COOLING NAMED);
+  q 13.55 / 14.16 g/kg (+0.61, rule >= 0.8: not named). The 850-925 hPa layer gets colder (and somewhat moister) when the detrained water is
+  carried. [reg: 22:3x T/q registration | inputs: model T42 one start | fail-5why: below]
+- REGISTERED (before the result): heating at sigma 0.925 and 0.85 by process (bud_t170.py at T42, 11 Nov, days 1-2), with vs without cld_det:
+  the process whose cooling grows most is named. Candidates: rain evaporation (h_evap: the 2.65 mm/day of autoconverted rain falls from
+  ~800 hPa through the sub-cloud layer, cools and moistens - fits both signs) or radiation under the new cloud (rad_app). [reg: this line | inputs: n/a | fail-5why: n/a]
