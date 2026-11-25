@@ -5414,3 +5414,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   itself. REGISTERED (before the result): the same tops measure at the ERA5 START STATE (h0, plus h3/h6 the first steps): if at h0 >= 0.40 of
   deep columns reach sigma < 0.4 and it falls by h24-48, the cause is the model drift of the environment (links to the cold-growth / cloud
   chain); if tops are low already at h0, the cause is the plume formulation. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 19:36 IST h0 TOPS RESULT (T42, 11 Nov, h0/3/6, 27 deep samples - small, stated): reaching sigma < 0.4 0.52 (h24-48: 0.20); tops below sigma 0.7
+  0.11 of detrained mass (h24-48: 0.60). By the registered rule: tops are HIGH at the ERA5 state and collapse within a day -> the cause is MODEL
+  DRIFT of the environment, not the plume formulation. [reg: 19:5x h0-tops registration | inputs: ERA5 start state, model T42 | fail-5why: n/a]
+- NEXT 5-WHY STEP: which drift caps the plumes at 600-700 hPa? Candidate mechanism (from earlier budgets): deep heating +2.8 K/day at sigma 0.7
+  (ERA5 Q1 total ~+1.1 K/day there) -> a warm layer near 700 hPa -> plumes stop under it -> they detrain and heat there again (self-reinforcing).
+  REGISTERED (before the result): model Bay box T at sigma 0.925/0.85/0.7/0.6/0.5, h0 vs h36: if (T700 - T850) rises by >= 1 K and the
+  deep heating peak sits at 0.65-0.75, the self-capping loop is named; if instead 850/925 cool by >= 1 K with 700 unchanged, it is the low-level
+  cold growth (cloud chain). [reg: this line | inputs: n/a | fail-5why: n/a]
