@@ -5388,3 +5388,15 @@ running as a separate test) is NOT adopted on its own result unless this check p
   300/250/200 hPa (same start/hours, T42, total radiation cloud) and the share of deep updraught mass flux reaching sigma < 0.4. If the model
   upper cloud is < 0.5x ERA5 and < 30 % of deep mass flux reaches sigma 0.4, the root is LOW DEEP TOPS (bottom-heavy deep convection, which
   also fits the +2.8 K/day deep heating at 700 hPa and links to Tracks/P5b); otherwise it is the eta shape. [reg: this line | inputs: ERA5 cc 300-200 hPa | fail-5why: n/a]
+- 19:20 IST DEEP-TOP TEST RESULT (T42; 1 Nov upper cloud, 11 Nov tops h24-48, 94 deep column-samples in the Bay box): model total cloud at
+  300/250/200 hPa 0.08-0.25/0.18-0.32/0.32-0.37 vs ERA5 0.02-0.07/0.09-0.14/0.19-0.24 (NOT < 0.5x - higher); deep tops: 51 % of deep columns top
+  below sigma 0.7 and carry 60 % of the detrained mass; only 20 % reach sigma < 0.4. By the REGISTERED rule (both conditions needed) the verdict is
+  "not low tops -> eta shape". Stated plainly: the upper-cloud condition was a poor proxy - that cloud is our DIAGNOSTIC anvil (made from the
+  rain rate, not from the plume top), so it cannot measure tops; my test-design error. The direct measure (tops) says most "deep" plumes stop
+  at 650-750 hPa. [reg: 19:3x deep-top registration | inputs: ERA5 cc 300-200 hPa (1 Nov start), model T42 | fail-5why: below]
+- FAIL-5WHY / next: (1) detrainment low <- (2) half the deep plumes stop below 700 hPa <- (3) in our candidate the plume dies at the first level
+  of negative buoyancy (mf_wke = 0); IFS integrates the updraught kinetic energy (eq. 6.10) so plumes coast through thin stable layers (the
+  0 C layer near 550-600 hPa and the trade-type stable layer near 750 hPa). mf_wke (already coded, eq. 6.10) was HELD on 18 Nov "re-test after
+  the land fix"; the land fix closed 25 Nov, so the re-test is due. REGISTERED (before the result): T42 screen candidate + cld_det + mf_wke 1,
+  same start/hours/box: SUPPORTED if the detrained-mass share from tops below sigma 0.7 falls from 0.60 to <= 0.35 and the share reaching
+  sigma < 0.4 rises from 0.20 to >= 0.40. Screen only; adoption needs the T170 four-rule test after the weekly reset. [reg: this line | inputs: n/a | fail-5why: n/a]
