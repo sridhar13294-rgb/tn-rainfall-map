@@ -5150,3 +5150,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   from the Bay low-cloud cooling alone; remaining named input from the budget: deep-convective heating fell with less cloud (the slow-start
   line). India t2 colder: fewer low clouds -> more night LW loss over land (to check against ERA5 t2 diurnal, morning). [reg: this line (5-why) |
   inputs: budgets + exam | fail-5why: n/a]
+- 07:32 IST REGISTERED (Bay 850 second input, before the result): ERA5 apparent heat source Q1 at 850 hPa over Bay/TN, same 3 starts, day-1 hours
+  3/9/15/21 (cyc_q1bay.py, 'q1bay truth') vs our sigma-0.85 physics total (land set -0.84 K/day; + rhc_ifs -0.79). MISSING PHYSICS HEATING NAMED if
+  ERA5 Q1 exceeds ours by >= 0.4 K/day (then the deep-heating profile is compared with ERA5's Q1 profile); if within 0.4, the 850 cold is NOT a
+  physics shortfall and the DYNAMICS term (+0.44 ours) is checked against ERA5's advection. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
