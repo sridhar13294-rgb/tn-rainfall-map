@@ -1069,7 +1069,7 @@ class Model:
             ev2 = 0.333 * a1 * (1.0 - a1) * Kr * sub
             qcl = q0 / jnp.maximum(a1, 1e-3); qcr = jnp.where(self.land[None], 5.5e-4, 2.5e-4)
             aut = a1 * 1.67e-4 * qcl * (1.0 - jnp.exp(-(qcl / qcr) ** 2))
-            q1 = jnp.maximum(q0 + dt * (cnd - ev1 - ev2 - aut), 0.0)
+            q1 = jnp.maximum(q0 + dt * (jnp.minimum(cnd - ev1 - ev2, 0.5 * jnp.maximum(qc_, 0.0) / dt) - aut), 0.0)
             a2 = jnp.clip(a1 - dt * ev2 / jnp.maximum(qcl, 1e-7), 0.0, 1.0)
             a2 = jnp.where(q1 < 1e-8, 0.0, a2)
             cfa_n, cql_n = a2, q1
@@ -1078,7 +1078,7 @@ class Model:
                 # stage 2 (25 Nov): the cloud's net condensation (C1 + C2 - E1 - E2) changes T and q and autoconversion falls as rain. Applied as its
                 # OWN split step after the physics (cloud_apply, from the surface() call), so dq_sat/dt seen by the cloud excludes the cloud's own
                 # latent heating (the first try fed it back inside the physics step and blew up: Clausius-Clapeyron feedback ~2.5x per step).
-                cnet = jnp.where(init, jnp.maximum(cnd - ev1 - ev2, -jnp.maximum(q0, 0.0) / dt), 0.0)
+                cnet = jnp.where(init, jnp.clip(cnd - ev1 - ev2, -jnp.maximum(q0, 0.0) / dt, 0.5 * jnp.maximum(qc_, 0.0) / dt), 0.0)   # cannot condense vapour that is not there
                 cnet_aut = jnp.where(init, (jnp.minimum(aut, jnp.maximum(q0, 0.0) / dt) * mass).sum(0), 0.0)
                 cTp_new = T + dt * LV / CP * cnet
         doy0 = cr['doy0'] if 'doy0' in cr else self.doy0; utc0 = cr['utc0'] if 'utc0' in cr else self.utc0   # start date as data: no recompile per start
