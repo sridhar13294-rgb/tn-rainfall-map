@@ -5470,3 +5470,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - NEXT (registered before the result): split the column deficit with ERA5 flux truth (flux_truth_2020: daily tp24, shf, lhf, surface and TOA
   net SW/LW, days 0-2, the 1 + 11 Nov starts) into L*P, SH and atmospheric net radiation (TOA net - surface net), model vs ERA5, Bay box day 1.
   The term carrying >= 50 % of the deficit is named. Timing matched this time (both day 1). [reg: this line | inputs: n/a | fail-5why: n/a]
+- 20:26 IST FLUX SPLIT RESULT (partial): ERA5 flux_truth radiation fields are ALL NaN (the WeatherBench2 store lacks them for 2020 - the truth file
+  is incomplete; my input check found it only now). Measured parts, Bay box day 1, model (T42 candidate) vs ERA5 (1 / 11 Nov): rain 0.79/2.89
+  vs 1.90/5.08 mm/day (0.42/0.57x; deficit 32/63 W m-2 of L*P), latent heat 62.5/87.2 vs 81.7/115.0 W m-2 (0.76x), sensible 10.1/14.2 vs
+  12.5/14.0. L*P explains only 17-33 % of the ~190 W m-2 Q1-residual deficit; the radiation share cannot be measured -> the registered >= 50 %
+  rule cannot be applied: INCONCLUSIVE (input missing). Named facts: Bay evaporation is 24 % low and rain 43-58 % low on day 1.
+  [reg: 20:4x flux-split registration | inputs: ERA5 flux_truth (rad NaN), tp24, lhf, shf; model T42 | fail-5why: below]
+- FAIL-5WHY / REGISTERED (before the result): new ERA5 fetch 'bayfx truth' (ARCO hourly, Bay box day 1, 1 + 11 Nov): H, LE, rain, 10-m wind
+  (all / sea), sea q_sat(SST)*0.98 - q2m, and atmospheric net radiation (TOA - surface). Decisions: (a) radiation: if model atmospheric
+  radiative cooling exceeds ERA5's by >= 50 W m-2 it is named as a column-deficit term; (b) evaporation over sea: LE = rho Ck U dq - the
+  factor (U or dq or Ck = LE/(rho U dq)) that is >= 15 % off ERA5 is named. [reg: this line | inputs: n/a | fail-5why: n/a]
