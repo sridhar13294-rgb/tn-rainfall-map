@@ -5567,3 +5567,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   convective rain, Bay box day 2, with vs without cld_det: if Md falls by >= 30 % with cld_det, the weaker downdraft (less dry mid-level air
   brought down) is named for the moister 850-925 layer; if Md is within 30 %, the lead is closed and the next check is the cloud-water
   evaporation (cnet) profile. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 22:23 IST DOWNDRAFT RESULT (T42 11 Nov Bay box h24-48): without / with cld_det - Md 0.0034 / 0.0049 kg m-2 s-1 (+44 %, not a fall), Mb 0.0097 /
+  0.0141 (+45 %), updraft rain production 8.25 / 4.49 mm/day (-46 %). Rule (Md falls >= 30 %) NOT met -> downdraft lead CLOSED. What the
+  numbers show: with cld_det about half of the updraft condensate is detrained instead of rained, the column keeps that water, and convection
+  runs stronger. [reg: 22:1x downdraft registration | inputs: model T42 one start | fail-5why: below]
+- REGISTERED (before the result): the cloud-water fate. Bay box h24-48 with cld_det, column integrals (mm/day): detrained condensate, carried-
+  cloud evaporation back to vapour (-cnet where < 0, incl. ev0), large-scale autoconversion to rain. If >= 50 % of the detrained water returns to
+  vapour, "recycling" (detrained water evaporating instead of raining out) is named for the moistening; the IFS reference for the split is the
+  same equations, so the next check would be their SIZE (w_up in eq. 6.39, l_crit, Sundqvist aut on detrained cloud). [reg: this line | inputs: n/a | fail-5why: n/a]

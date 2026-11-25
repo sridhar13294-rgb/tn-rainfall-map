@@ -1151,6 +1151,7 @@ class Model:
                 cnet = jnp.where(init, jnp.clip(cnd - ev1 - ev2, -jnp.maximum(q0, 0.0) / dt, 0.5 * jnp.maximum(qc_, 0.0) / dt) - ev0, 0.0)   # cannot condense vapour that is not there; ev0 = consistency evaporation
                 cnet_aut = jnp.where(init, (jnp.minimum(aut, jnp.maximum(q0, 0.0) / dt) * mass).sum(0), 0.0)
                 cTp_new = T + dt * LV / CP * cnet
+                if self.S.get('cld_dbg', 0): self._cdbg2 = dict(evap=(jnp.maximum(-cnet, 0.0) * mass).sum(0), cond=(jnp.maximum(cnet, 0.0) * mass).sum(0), aut=cnet_aut, det=((self._det['Lw']).sum(0) if getattr(self, '_det', None) is not None else jnp.zeros_like(ps)))   # kg m-2 s-1, diagnostics
         doy0 = cr['doy0'] if 'doy0' in cr else self.doy0; utc0 = cr['utc0'] if 'utc0' in cr else self.utc0   # start date as data: no recompile per start
         t_h = cr['t'] / 3600.0; doy = doy0 + t_h / 24.0; decl = math.radians(23.44) * jnp.sin(2 * jnp.pi * (doy - 81) / 365.0)
         hour = (utc0 + t_h) % 24.0; ha = jnp.radians(15.0 * (hour - 12.0) + jnp.asarray(self.LO))
