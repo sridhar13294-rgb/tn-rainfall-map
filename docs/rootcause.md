@@ -5498,3 +5498,17 @@ running as a separate test) is NOT adopted on its own result unless this check p
   (1 + 11 Nov). Model the same levels. If the model's q(1000) - q(925) gradient on day 1 exceeds ERA5's by >= 1 g/kg (moisture held in the
   lowest levels), the vertical mixing out of the surface layer is named (next: K / surface-layer coupling size check); if the model is
   uniformly moister through 1000-900 by >= 1 g/kg, the source/sink balance of the whole BL is named instead. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 20:50 IST BAYQ RESULT + INPUT DEFECT FOUND. ERA5 vs model (Bay sea, day 1): q1000 17.55/17.09 vs 17.93/17.35, q925 14.71/14.54 vs 15.04/13.76; the
+  q(1000)-q(925) gradient exceeds ERA5's by 0.05 (1 Nov) / 1.04 (11 Nov) g/kg; uniform excess >= 1 g/kg NOT met -> the registered rule names
+  surface-layer mixing on 11 Nov only. BUT the input check behind dq found the real cause: model SST over the Bay sea nodes is 299.52/299.70 K vs
+  the library's 302.23/302.40 K (min 277.8 K!). mm2.init fills the SST NaNs over land with 0.0 BEFORE interpolating to the model grid
+  (np.where(isfinite(sst), sst, 0.0)), so every coastal sea node is blended with 0 K: values 260-300 K stay as a too-cold SST, values < 260 K are
+  zeroed and the node is then treated as LAND (sea = ~land & sst > 0). The sea-air humidity difference is short by 2.2 g/kg of q_sat(SST) for
+  exactly this reason. This touches every coast at every resolution (TN coast, Bay, Arabian Sea). [reg: 20:5x bayq registration | inputs:
+  ERA5 ARCO q profile, library SST, model init | fail-5why: n/a]
+- REGISTERED (before the result): (1) SIZE at T170 (exam resolution), init only: share of sea nodes whose SST is >= 1 K below the library's
+  nearest-sea value, and share of library-sea nodes turned to land, globally and in the Bay/TN box. (2) FIX sst_fill (standard sea-over-land
+  extrapolation, no tuned value): fill NaN/land cells from finite sea neighbours on the 1.5 deg grid (iterated neighbour mean) BEFORE the
+  interpolation; land nodes still use land temperature (mask unchanged). Gate for the fix input check: Bay sea-node SST mean within 0.3 K of
+  the library's and min >= 295 K at T42 and T170. Forecast gates for adoption: the T170 four rules (TN v850 d1 >= -1.0; TN rain >= 0.85; z500 d5
+  <= lc_mix + 2 SE; S.India cold growth -50 %) after the weekly reset. [reg: this line | inputs: n/a | fail-5why: n/a]
