@@ -5512,3 +5512,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   interpolation; land nodes still use land temperature (mask unchanged). Gate for the fix input check: Bay sea-node SST mean within 0.3 K of
   the library's and min >= 295 K at T42 and T170. Forecast gates for adoption: the T170 four rules (TN v850 d1 >= -1.0; TN rain >= 0.85; z500 d5
   <= lc_mix + 2 SE; S.India cold growth -50 %) after the weekly reset. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 20:51 IST SST DEFECT SIZE + FIX INPUT CHECK (11 Nov library, init only): WITHOUT fill - T42: 15.1 % of all sea nodes zeroed (run as land), Bay sea
+  mean 299.70 vs 302.44 K, min 277.5, 9 of 27 Bay sea nodes zeroed; T170: 14.8 % of sea nodes zeroed globally, 2.5 % >= 1 K too cold, Bay
+  301.00 vs 302.42 K, min 261.5, 174 of 478 Bay sea nodes (36 %) run as LAND. The library NaNs are coastal 1.5-deg cells (sea-ice cells carry
+  271.5 K, so the fill does not touch ice). WITH sst_fill: 0 nodes zeroed; Bay 302.40/302.40 K (ref 302.41/302.40), min 301.81/301.75 -> fix
+  input gate (within 0.3 K, min >= 295 K, T42 and T170) PASS. Every Stage-1 exam so far ran with this defect. tn-sstfill (candidate +
+  sst_fill, part-3 T170, the four rules) queued FIRST for the weekly reset. [reg: 21:2x sst registration | inputs: library SST/LSM, model init T42/T170 | fail-5why: n/a]
+- REGISTERED (before the result): T42 screen, day 1 Bay box, candidate + sst_fill vs ERA5 bayfx: sea LE ratio rises from 0.69/0.85 and rain
+  ratio from 0.29/0.42 (1 / 11 Nov). Screen only - the verdict is tn-sstfill. [reg: this line | inputs: n/a | fail-5why: n/a]

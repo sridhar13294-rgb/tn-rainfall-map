@@ -136,7 +136,7 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='mf', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='radcloud', rad_every=2,
-                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, sh_wtest=0.0, sbl_ifs=0.0, bl_exc_ws=0.0, tofd=0.0, sfc_mo_h=0.0, dp_ifs=0.0, dp_ifs_exc=0.0, sfc_mo_land=0.0, cld_prog=0.0, cld_det=0.0, mf_ice_ifs=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, midlev=0.0, lsc_sub=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
+                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, sh_wtest=0.0, sbl_ifs=0.0, bl_exc_ws=0.0, tofd=0.0, sfc_mo_h=0.0, dp_ifs=0.0, dp_ifs_exc=0.0, sfc_mo_land=0.0, cld_prog=0.0, cld_det=0.0, mf_ice_ifs=0.0, sst_fill=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, midlev=0.0, lsc_sub=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
@@ -147,6 +147,23 @@ NWAVE = 8
 # Inside the old range nothing changes (13-level starts bit-identical).
 _ITP4 = vertical_interpolation.vectorize_vertical_interpolation(functools.partial(vertical_interpolation._linear_interp_with_safe_extrap, n=4))
 
+def fill_nan_grid(x, iters=400):
+    """Fill NaN cells of a [lat, lon] field from finite 8-neighbours (periodic in longitude), iterated until full (sea-over-land)."""
+    x = np.array(x, float)
+    for _ in range(iters):
+        bad = ~np.isfinite(x)
+        if not bad.any(): break
+        v = np.where(bad, 0.0, x); w = (~bad).astype(float)
+        sv = np.zeros_like(v); sw = np.zeros_like(w)
+        for di in (-1, 0, 1):
+            for dj in (-1, 0, 1):
+                if di == 0 and dj == 0: continue
+                vv = np.roll(v, dj, 1); ww = np.roll(w, dj, 1)
+                if di == 1: vv = np.concatenate([vv[1:], vv[-1:] * 0], 0); ww = np.concatenate([ww[1:], ww[-1:] * 0], 0)
+                if di == -1: vv = np.concatenate([vv[:1] * 0, vv[:-1]], 0); ww = np.concatenate([ww[:1] * 0, ww[:-1]], 0)
+                sv += vv; sw += ww
+        x = np.where(bad & (sw > 0), sv / np.maximum(sw, 1e-9), x)
+    return x
 class Model:
     def __init__(self, grid='T170', layers=32, dt_min=None, set_=None):
         self.S = dict(DEFAULTS); self.S.update(set_ or {})
@@ -209,6 +226,11 @@ class Model:
         levs = np.asarray(levs, float); N = lambda x: self.to_nodes(x, lats, lons)
         T3, Q3, U3, V3 = [N(f3[k]) for k in ('temperature', 'specific_humidity', 'u_component_of_wind', 'v_component_of_wind')]
         ps = N(ps_pa); zs = np.maximum(N(zs_m), 0.0); land = N(lsm) > 0.5
+        if self.S.get('sst_fill', 0):
+            # sst_fill (25 Nov, P5b 5-why INPUT defect): the old line filled SST NaNs over land with 0 K BEFORE interpolating to the model grid,
+            # so coastal sea nodes were blended with 0 K (Bay sea nodes 2.7 K too cold on average, some ~278 K; nodes < 260 K became land).
+            # Standard sea-over-land extrapolation: NaN cells take the mean of their finite neighbours, iterated, then interpolate.
+            sst_k = fill_nan_grid(np.asarray(sst_k, float))
         sst = N(np.where(np.isfinite(sst_k), sst_k, 0.0)); sst = np.where(land | (sst < 260), 0.0, sst)
         self._bogus_zs = zs
         if storm and storm.get('vmax_kt', 0) >= 15: T3, Q3, U3, V3, ps = self.bogus(T3, Q3, U3, V3, ps, levs, **storm)
