@@ -5188,3 +5188,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   from H and E with w*, cap 3 K / 2 g/kg; higher levels 0.2 K / 0.1 g/kg) = option dp_ifs_exc; measure like ERA5: area with model rain > 0.1 mm/h
   (hourly) vs ERA5 tp > 0.1 mm/h area (cpbay2), plus Bay rain. PASS if rain area within 0.7-1.3x ERA5's AND Bay rain >= 0.5x ERA5.
   [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 07:54 IST tn-ls-no-sfc-mo (land set minus sfc_mo and sfc_mo_h, part 3, 18 starts, 0 failed): z500 d5 63.43 (paired vs land set -0.73 +/- 0.12; rule
+  <= -0.38) -> sfc_mo (IFS MO surface layer for momentum over land+sea) NAMED as the cost (it is also the item HELD on 22 Nov for the ocean drag
+  sink at 0.78); india t2 d5 3.42. [reg: 25 Nov 00:2x cost-split registration | inputs: part-3, paired with tn-landset | fail-5why: n/a]
+- Weighing (as registered): without sfc_mo/sfc_mo_h the night land surface cooling falls (T42: H -6.3 vs ERA5 -13.2) - a Land BL closure criterion.
+  REGISTERED (before the result): T170 land check tn-land170-nomo = bl_exc_ws + sbl_ifs + tofd (account 4). If it still meets all four Land BL
+  criteria (night wind <= 1.3x, night H 0.7-1.3x, day/night depth 0.7-1.3x of ERA5-L134), the candidate drops sfc_mo (keeps the 0.7 m) and Land BL
+  stays CLOSED; if night H fails, sfc_mo_h is needed - then sfc_mo is restricted to land (its ocean part being the cost is the next measurement).
+  [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
