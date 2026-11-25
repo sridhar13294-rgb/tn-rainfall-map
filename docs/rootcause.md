@@ -5400,3 +5400,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   the land fix"; the land fix closed 25 Nov, so the re-test is due. REGISTERED (before the result): T42 screen candidate + cld_det + mf_wke 1,
   same start/hours/box: SUPPORTED if the detrained-mass share from tops below sigma 0.7 falls from 0.60 to <= 0.35 and the share reaching
   sigma < 0.4 rises from 0.20 to >= 0.40. Screen only; adoption needs the T170 four-rule test after the weekly reset. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 19:27 IST mf_wke SCREEN RESULT (T42, 11 Nov h24-48, 143 samples): detrained-mass share from tops below sigma 0.7 0.60 -> 0.29 (rule <= 0.35 PASS);
+  columns reaching sigma < 0.4 0.20 -> 0.19 (rule >= 0.40 FAIL). NOT SUPPORTED as a screen. Tops moved up from 700-800 to 500-700 hPa and stop
+  there. [reg: 19:3x mf_wke registration | inputs: model T42 one start (stated) | fail-5why: below]
+- FAIL-5WHY: (1) plumes now stop at 500-650 hPa <- (2) that is the 0 C level (~550-600 hPa in the tropics), where a plume without freezing
+  loses buoyancy against an environment that ERA5/IFS keeps warm by freezing <- (3) our candidate has no fusion heat in the updraught
+  (mf_ice off); IFS splits condensate by the mixed-phase function and releases L_f for the ice part. Coded mf_ice_ifs (IFS alpha, no free
+  share). REGISTERED (before the result): same screen with candidate + cld_det + mf_wke + mf_ice_ifs, same two conditions. [reg: this line | inputs: n/a | fail-5why: n/a]
