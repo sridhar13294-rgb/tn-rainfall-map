@@ -5140,3 +5140,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - 04:51 IST tn-ls-no-sbl-ifs (land set minus sbl_ifs, part 3, 18 starts, 0 failed): z500 d5 64.36 (paired vs land set +0.20 +/- 0.14; rule <= -0.38) ->
   sbl_ifs NOT the cost (removing it is slightly worse); india t2 d5 3.25 (land set 3.40, tofd-only 3.30). Remaining: no_sfc_mo (queued after
   tn-rhcifs). [reg: 25 Nov 00:2x cost-split registration | inputs: part-3, paired with tn-landset | fail-5why: n/a]
+- 06:20 IST tn-rhcifs (land set + rhc_ifs, part 3, 18 starts, 0 failed): TN v850 d1 -1.56 +/- 0.44 (paired vs land set -0.07 +/- 0.04) FAIL (>= -1.0);
+  z500 d5 63.02 (paired vs lc_mix -2.88 +/- 0.37; best of all runs) PASS; TN rain 0.506 (>= 0.42) PASS. Also: TN u850 d5 bias -4.31 (lc_mix) ->
+  -2.84 (the too-EASTERLY half of the steering error shrinks by a third); t850 RMSE d3 tropics 1.95 -> 1.82, India 2.37 -> 2.23; India t2 RMSE d3
+  3.14 -> 3.26 (worse, bias -1.09 -> -1.42 K). Registered rule (all three) -> rhc_ifs HELD (not adopted), stated plainly: it is the best
+  forecast so far on z500 and reduces the easterly steering bias, but the northerly v850 bias is untouched and India t2 gets colder.
+  [reg: 25 Nov 03:5x tn-rhcifs registration | inputs: part-3, paired with tn-landset and tn-lcm-wx3 | fail-5why: below]
+- FAIL-5WHY: the 850 cooling over the Bay is only partly removed (local 36 %), and v850 does not move -> the northerly bias does not come
+  from the Bay low-cloud cooling alone; remaining named input from the budget: deep-convective heating fell with less cloud (the slow-start
+  line). India t2 colder: fewer low clouds -> more night LW loss over land (to check against ERA5 t2 diurnal, morning). [reg: this line (5-why) |
+  inputs: budgets + exam | fail-5why: n/a]
