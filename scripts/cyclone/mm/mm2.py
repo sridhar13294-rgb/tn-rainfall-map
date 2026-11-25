@@ -621,6 +621,20 @@ class Model:
             xs_i = (mass, h_e, qn, Mk, sh(hu), sh(qu), Fh_x, Fq_x, cl * jnp.ones(Tn.shape, bool))
             _, (h_new, q_new) = jax.lax.scan(imp, (jnp.zeros_like(ps), jnp.zeros_like(ps)), xs_i)
             dh_s = (h_new - h_e) / dt; dq_s = (q_new - qn) / dt
+            self._det_sh = None
+            if self.S.get('cld_det', 0) >= 2 and self.S.get('cld_prog', 0) >= 2:
+                # cld_det 2 (26 Nov, low-cloud 5-why): SHALLOW updraught detrainment into the carried cloud (IFS eqs. 7.22-7.23 apply to all
+                # updraughts). The plume's condensate is taken from the vapour where it condenses (Mk cond / mass; before this it re-evaporated in
+                # place through the vapour-flux convergence) and carried as l_up; it detrains where the flux falls ((Mk - Mk_above) l_up) and all
+                # of it at the top. No shallow rain (the shallow call has no precipitation output; IFS shallow l_up rarely passes 6.39's
+                # thresholds - stated), so water is conserved exactly: vapour removed = liquid detrained.
+                lu = jnp.zeros_like(ps); Lk = []
+                for k in range(L - 1, -1, -1):
+                    lu = jnp.where(Mk[k] > 0, lu + cond[k], 0.0); Lk.append(lu)
+                l_sh = jnp.stack(Lk[::-1], 0)
+                dM = jnp.maximum(Mk - top(Mk), 0.0); Det_sh = dM * l_sh
+                dq_s = dq_s - Mk * cond / mass
+                self._det_sh = dict(D=dM, Lw=Det_sh)
             self._sh2_diag = dict(Mb=Mb2, kcb=kcb)
             return (dh_s - LV * dq_s) / CP, dq_s, jnp.zeros_like(Tn), inc & deep[None], deep
         if S['mf_closure'] == 'hybrid' and div is not None:
@@ -675,7 +689,7 @@ class Model:
     def column(self, T, q, u, v, ps, cr, want_diag=False, rad_fresh=False, div=None, om=None):
         """All arrays nodal: T, q, u, v [L, X, Y] (SI); ps [X, Y] Pa; cr = surface carry. Returns tendencies (per second)
         and diagnostics (surface rain, surface fluxes)."""
-        self._det = None
+        self._det = None; self._det_sh = None
         S = dict(self.S); S.update(cr['prm']); dt = self.dt_s; sig = jnp.asarray(self.sig)[:, None, None]; dsig = jnp.asarray(self.dsig)[:, None, None]
         sb = jnp.asarray(self.sigb)[:, None, None]; p = sig * ps; dp = dsig * ps; mass = dp / G; L = T.shape[0]
         if self.hyb:                                                                                 # D3: per-column level pressures; sig = p / ps keeps every sigma test as p / ps
@@ -1142,6 +1156,8 @@ class Model:
                 # the compensating-subsidence advection terms (M_up/rho d/dz) are not included (stated). The condensate was already taken from the
                 # vapour inside conv_mf, so it is NOT part of cnet (no second latent heating).
                 a2 = jnp.clip(a2 + dt * self._det['D'] / mass, 0.0, 1.0); q1 = q1 + dt * self._det['Lw'] / mass
+            if self.S.get('cld_det', 0) >= 2 and getattr(self, '_det_sh', None) is not None:
+                a2 = jnp.clip(a2 + dt * self._det_sh['D'] / mass, 0.0, 1.0); q1 = q1 + dt * self._det_sh['Lw'] / mass      # shallow detrainment (7.22-7.23)
             sed_sfc = 0.0
             if self.S.get('cld_sed', 0):
                 # cld_sed (25 Nov, cover 5-why: detrained cirrus has no sink): IFS Cy47r1 Part IV 7.2(i) sedimentation of cloud ICE with a constant

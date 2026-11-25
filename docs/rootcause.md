@@ -5672,3 +5672,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   eq. 7.22-7.23 apply to ALL updraughts - shallow cumulus detrainment is the main source of tropical low cloud. REGISTERED (before coding/the
   result): add the shallow updraught's detrainment (same 6.39/7.22-7.23 bookkeeping as the fixed cld_det, using the shallow eta and cond);
   rerun the 3-start screen: low cloud AND total cover within the rules in both boxes. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 26 Nov 04:28 IST cld_det 2 CODED (shallow detrainment, registered 04:2x): in the IFS shallow path (sh_ifs2) the plume condensate is taken from the
+  vapour where it condenses (before: it re-evaporated in place through the vapour-flux convergence) and detrains into the carried cloud where
+  the shallow mass flux falls and at its top (eqs. 7.22-7.23); no shallow rain (stated), water conserved exactly. T42 2-day smoke (11 Nov):
+  finite, global rain 1.89 mm/day. Running the registered 3-start screen. [reg: 04:2x shallow registration | inputs: n/a | fail-5why: n/a]
