@@ -5249,3 +5249,8 @@ running as a separate test) is NOT adopted on its own result unless this check p
   large-scale condensation heating rises 0.00/+1.20/+1.85 and deep +0.65/+1.65/+1.22 - a growing large-scale cloud deck cooling at its top is the
   candidate for the growing 850 cooling (to be judged at T170, 3 starts). Kaggle job tn-bud170 queued (account 4).
   [reg: 25 Nov 09:4x T170 budget registration (smoke step) | inputs: same code as the Kaggle job | fail-5why: n/a]
+- 09:53 IST tn-ls-moland (land set with sfc_mo over LAND only, part 3, 18 starts, 0 failed): z500 d5 63.48 (paired vs land set -0.68 +/- 0.11; rule <=
+  -0.5) -> the OCEAN part of sfc_mo is NAMED as the 0.7 m cost; india t2 d5 3.39 (land set 3.40). CANDIDATE uses sfc_mo_land: the land physics is
+  identical to the T170-checked land set (Land BL stays CLOSED; the over-land MO momentum + heat are unchanged), the ocean keeps Charnock/Louis.
+  Stated: the ocean drag-sink question (22 Nov, sfc_mo HELD at 0.78) remains its own item - the IFS ocean MO surface layer lowers z500 skill here.
+  [reg: 25 Nov 08:3x moland registration | inputs: part-3, paired with tn-landset | fail-5why: n/a]
