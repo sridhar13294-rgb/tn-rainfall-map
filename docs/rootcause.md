@@ -5268,3 +5268,14 @@ running as a separate test) is NOT adopted on its own result unless this check p
   of cld_t170 (T42, 1 start, + rhc_ifs; not the verdict): S.India low cloud 0.28/0.40/0.66 (+137 %), Bay 0.17/0.24/0.32 (+86 %) - the model's low
   cloud GROWS day by day where ERA5's does not. Verdict job tn-cld170 (T170, 3 starts, candidate with sfc_mo_land) queued on account 4.
   [reg: 25 Nov 10:2x cloud-growth registration (smoke + reference step) | inputs: ERA5 lcc/tcc 3-hourly same boxes/starts | fail-5why: n/a]
+- 11:00 IST tn-cld170 (T170, candidate = land set with sfc_mo_land + rhc_ifs, 3 Nov starts, days 1/2/3): low cloud (sigma >= 0.8, max overlap) S.India
+  0.278/0.402/0.433 (+56 %; ERA5 0.196/0.245/0.205, +5 %), Bay/TN 0.212/0.319/0.347 (+64 %; ERA5 0.165/0.185/0.166, +1 %); c_ls carries it
+  (S.India 0.256 -> 0.414). Rule (model >= +50 % while ERA5 < 20 %) -> CLOUD GROWTH NAMED for the growing radiative cooling (850 rad -1.13 ->
+  -2.20 K/day) behind the rain decline and the Day-10 low-level cooling. Day-1 level is already 1.4x ERA5 over S.India at T170.
+  [reg: 25 Nov 10:2x cloud-growth registration | inputs: T170, ERA5 lcc 3-hourly same boxes/starts | fail-5why: n/a (named)]
+- 5-why: (1) low cloud grows <- (2) c_ls = f(RH) with the IFS RH_crit; it grows because low-level RH rises day by day (local: RH925 +5.5 -> +9.1 pts,
+  RH850 +1 -> +5 pts vs ERA5) <- (3) RH rises with the low-level cooling (T-driven, 19 Nov: 62 %), and the cooling is the cloud's own radiation
+  -> a closed loop: cooling -> RH -> cloud -> cooling <- (4) a DIAGNOSTIC RH-cloud has no memory and no sink of its own, so nothing breaks the
+  loop; in the IFS cloud is PROGNOSTIC (Part IV ch.7: a and q_l carried, formed only by sources, removed by evaporation, erosion E2 =
+  0.333 a(1-a) K (q_sat - q_v), K 1e-5 (1e-4 with shallow convection) and precipitation) <- (5) MEGAM kept the old diagnostic scheme.
+  The IFS-faithful fix is the prognostic cloud (fraction + condensate). [reg: this line (5-why) | inputs: IFS Part IV ch.7 | fail-5why: n/a]
