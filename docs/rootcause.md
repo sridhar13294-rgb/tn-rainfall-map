@@ -5608,3 +5608,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - REGISTERED (before the results): with the FIXED cld_det - (1) the T42 tops screen (11 Nov h24-48, candidate + cld_det + sst_fill): reaching
   sigma < 0.4 and detrained share below 0.7, reported against the old rule (>= 0.40 / <= 0.35) to see if any tops problem remains; (2) the T42
   5-day low-cloud screen, rule days 3-5 within 0.7-1.3x ERA5 in Bay and S.India. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 23:19 IST TOPS SCREEN, FIXED cld_det (T42 11 Nov h24-48, candidate + cld_det + sst_fill, 110 samples): reaching sigma < 0.4 0.53 (>= 0.40 PASS),
+  detrained share from tops below 0.7 0.19 (<= 0.35 PASS). Detrainment now peaks at sigma 0.23-0.52 (0.15-0.18 /day) and the carried cloud sits
+  aloft (cfa 0.22-0.50 at sigma 0.23-0.45; <= 0.07 below 0.7). The "low deep tops" of tonight were MY BUG, not the model physics: no tops
+  problem remains, so tau_ifs has no registered reason left and stays OFF (coded, not adopted). [reg: 23:1x rerun registration | inputs: model T42 one start | fail-5why: n/a]
