@@ -5359,3 +5359,8 @@ running as a separate test) is NOT adopted on its own result unless this check p
   not included (stated). T42 2-day smoke (11 Nov): finite, global rain 2.2 mm/day. REGISTERED (before the result): part-3 T170 tn-clddet =
   cand_cldprog + cld_det, account 4, the SAME four rules as tn-cldprog (TN v850 d1 >= -1.0; TN rain >= 0.85; z500 d5 <= lc_mix + 2 SE; S.India
   t850 cold growth d1->d3 shrinks >= 50 %). Adopted only if all four pass; otherwise HELD with a fail-5why. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 18:36 IST DAY-10 GATE REGISTERED (item 11 had no explicit gate; registered now, before any 10-day result, from existing references only):
+  the FINAL candidate runs the full exam (wx2.py parts 0-3, 72+ starts, T170, days 10, one variant per job, account 4/1). Day-10 CLOSES when
+  (a) 0 failed starts (no blow-up to day 10); (b) z500 RMSE d10 <= 122.6 m (the existing regression gate, line 384) AND <= the lc_mix day-10
+  value of the same starts + 2 SE (paired); (c) global mslp RMSE d10 and tropics t850 RMSE d10 no worse than lc_mix + 2 SE (paired). It runs
+  only after items 7-10 settle the candidate, so the 10-day GPU minutes are spent once. [reg: this line | inputs: n/a | fail-5why: n/a]
