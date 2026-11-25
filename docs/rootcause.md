@@ -5587,3 +5587,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - REGISTERED (before the result): heating at sigma 0.925 and 0.85 by process (bud_t170.py at T42, 11 Nov, days 1-2), with vs without cld_det:
   the process whose cooling grows most is named. Candidates: rain evaporation (h_evap: the 2.65 mm/day of autoconverted rain falls from
   ~800 hPa through the sub-cloud layer, cools and moistens - fits both signs) or radiation under the new cloud (rad_app). [reg: this line | inputs: n/a | fail-5why: n/a]
+- 23:00 IST PROCESS BUDGET RESULT (T42 11 Nov Bay box, K/day, without -> with cld_det): sigma 0.925 h_deep +1.01/+1.72 -> -0.37/-0.21 (days 1/2;
+  change -1.4/-1.9), rad_app -1.39/-1.18 -> -0.94/-0.57 (less cooling), h_evap ~0 both, h_lsc 0 -> +0.08/+0.23; sigma 0.85 h_deep +1.51/+2.30 ->
+  +0.85/+1.58. NAMED: the DEEP-CONVECTION tendency at 925 hPa turns from warming to cooling (largest change); rain evaporation is not it.
+  [reg: 22:4x process-budget registration | inputs: model T42 one start | fail-5why: below]
+- REGISTERED (before the result): split h_deep at sigma 0.925/0.85 into the updraught/subsidence part (dT1 Mb) and the downdraft part (dT_dd),
+  with vs without cld_det. If the downdraft part carries >= 2/3 of the change, the downdraft is named (it grows with Mb +45 % while the
+  subsidence warming no longer balances it); otherwise the updraught/subsidence part (changed condensate bookkeeping, dq1 with Pdet) is named. [reg: this line | inputs: n/a | fail-5why: n/a]

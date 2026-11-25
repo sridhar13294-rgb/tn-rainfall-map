@@ -669,6 +669,7 @@ class Model:
         Pscale = jnp.clip(1.0 - Md * Ed / jnp.maximum(Pu, 1e-12), 0.0, 1.0)
         dT_dd = (dh_dd - LV * dq_dd) / CP
         if shallow: return dT1 * Mb, dq1 * Mb, jnp.zeros_like(P1), inc & deep[None], deep
+        if self.S.get('cld_dbg', 0) and mid is None: self._dd.update(dTup=dT1 * Mb, dTdd=dT_dd)   # diagnostics only (K/s)
         return dT1 * Mb + dT_dd, dq1 * Mb + dq_dd, P1 * Mb * Pscale, inc & deep[None], deep
     def column(self, T, q, u, v, ps, cr, want_diag=False, rad_fresh=False, div=None, om=None):
         """All arrays nodal: T, q, u, v [L, X, Y] (SI); ps [X, Y] Pa; cr = surface carry. Returns tendencies (per second)
