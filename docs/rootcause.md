@@ -5663,3 +5663,12 @@ running as a separate test) is NOT adopted on its own result unless this check p
   cld_det + cld_sed + sst_fill + cld_adv): finite, global rain 1.81 mm/day. REGISTERED (before the result): the 3-start T42 5-day cloud screen
   (1/11/16 Nov, same script) with cld_adv added: total cover AND low cloud days 3-5 within 0.85-1.15x / 0.7-1.3x ERA5 (3-start mean) in Bay
   and S.India. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 26 Nov 04:24 IST cld_adv 3-START SCREEN (T42, 1/11/16 Nov vs ERA5 3-start mean; candidate + cld_det + cld_sed + sst_fill + cld_adv): total cover days
+  3-5 Bay 1.28/1.05/1.04x, S.India 1.12/0.85/0.94x (rule 0.85-1.15x: 5 of 6 box-days PASS, Bay day 3 high); low cloud Bay 0.40/0.32/0.24x,
+  S.India 0.59/0.67/0.42x (rule 0.7-1.3x FAIL). Advection fixed most of the total-cover error (was 0.53-0.80x); low cloud is still 2-4x short.
+  The package stays HELD. [reg: 03:5x cld_adv registration | inputs: ERA5 lcc5/tcc 3-start mean, model T42 3 starts | fail-5why: below]
+- FAIL-5WHY (low cloud): (1) low cloud short <- (2) with the diagnostic towers off/on the prognostic low cloud is near zero below 800 hPa
+  <- (3) our only convective source is the DEEP updraught (cld_det); the shallow scheme re-evaporates its condensate in place, while in IFS
+  eq. 7.22-7.23 apply to ALL updraughts - shallow cumulus detrainment is the main source of tropical low cloud. REGISTERED (before coding/the
+  result): add the shallow updraught's detrainment (same 6.39/7.22-7.23 bookkeeping as the fixed cld_det, using the shallow eta and cond);
+  rerun the 3-start screen: low cloud AND total cover within the rules in both boxes. [reg: this line | inputs: n/a | fail-5why: n/a]
