@@ -5324,3 +5324,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - FAIL-5WHY (inputs first): this smoke ran WITHOUT the land set (bl_exc_ws, sbl_ifs, tofd, sfc_mo_land, sfc_mo_h) - my config error for a box
   that is mostly land, where the night cooling and BL depth those items fix feed RH directly. REGISTERED (before the result): the same 5-day
   check with the full candidate (land set + sfc_mo_land + rhc_ifs + cld_prog 2), same rule per box. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 16:21 IST 5-DAY CLOUD CHECK, FULL CANDIDATE (land set + sfc_mo_land + rhc_ifs + cld_prog 2; T42, 11 Nov): S.India low 0.087/0.146/0.117/0.198/0.182 (days 3-5
+  vs ERA5 0.57/1.10/0.77x), Bay 0.078/0.096/0.107/0.121/0.077 (0.64/0.78/0.41x). No runaway any more (S.India 0.33 -> 0.18 at day 5 with the land
+  set), but the low cloud is now BELOW ERA5 on several days -> the 0.7-1.3x rule FAILS on the low side; cld_prog stage 2 HELD.
+  [reg: 25 Nov 16:0x full-candidate registration | inputs: ERA5 lcc days 1-5 (3-start mean), model one start (stated) | fail-5why: below]
+- FAIL-5WHY: (1) too little low cloud <- (2) cloud starts near zero (no analysed cloud in our library; ERA5/IFS start from analysed cloud) and
+  the formation source needs dq_sat/dt < 0 with RH > RH_crit, so in steady humid tropical air it fills slowly; (3) the convective DETRAINMENT
+  source of cloud (IFS 7.23, a large tropical source) is not in stage 2 - the convective cloud stays diagnostic (c_tow) and does not feed a.
+  The decisive tests are the forecast fields, not the cloud alone. REGISTERED (before the result): part-3 T170 run tn-cldprog = candidate +
+  cld_prog 2 (account 4): TN v850 d1 >= -1.0; TN rain >= 0.85 (P5b gate); z500 d5 <= lc_mix + 2 SE; and the S.India t850 bias growth d1 -> d3
+  shrinks by >= 50 % (from -1.1 K/2 days). cld_prog stays HELD unless all pass. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
