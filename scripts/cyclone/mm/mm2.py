@@ -1246,11 +1246,15 @@ class Model:
             self.step = time_integration.step_with_filters(time_integration.semi_lagrangian_crank_nicolson_rk2(eqs, self.dt, off_centering=0.05, warm_start_corrector=True), [self.filt])
     def cloud_apply(self, st, cr):
         """cld_prog >= 2: apply the prognostic cloud's net condensation (latent heat, vapour) as its own split step."""
-        if 'cnet' not in cr: return st
+        if 'cnet' not in cr: return st, cr
         hor = self.coords.horizontal; dts = self.dt_s
         dTv = hor.to_modal(LV / CP * cr['cnet'] * dts * self.K)
         q = st.tracers['specific_humidity']
-        return st.replace(temperature_variation=st.temperature_variation + dTv, tracers=dict(st.tracers, specific_humidity=jnp.maximum(q - cr['cnet'] * dts, 0.0)))
+        st = st.replace(temperature_variation=st.temperature_variation + dTv, tracers=dict(st.tracers, specific_humidity=jnp.maximum(q - cr['cnet'] * dts, 0.0)))
+        # the spectral transform smooths the point-wise latent heating, so the reference temperature for the next dq_sat/dt must be the TRUE
+        # nodal temperature after this step (25 Nov: storing the predicted value made T - cTp grow 0.3 -> 7.8 K in 5 steps -> runaway)
+        aux = primitive_equations.compute_diagnostic_state_sigma(st.replace(tracers={}), self.coords)
+        return st, dict(cr, cTp=(aux.temperature_variation + self.ref_t[:, None, None]) / self.K)
     def pres(self, ps, xp=jnp):
         """(12 Nov, D3) layer-centre pressure, layer thickness and interface pressure (Pa) for surface pressure ps [X, Y]."""
         if not self.hyb:
@@ -1381,7 +1385,7 @@ class Model:
                         ul=crop(u[-1]), vl=crop(v[-1]), u850=crop(u[k850]), v850=crop(v[k850]), rain=crop(cr['rain']), sst=crop(cr['sst']))
         inner = int(round(every_h * 3600 / self.dt_s)); outer = int(hours // every_h)
         def one(c, _):
-            st, cr = c; self._carry = cr; st2 = self.step(st); cr2 = self.surface(st2, cr); st2 = self.cloud_apply(st2, cr2); return (st2, cr2), None
+            st, cr = c; self._carry = cr; st2 = self.step(st); cr2 = self.surface(st2, cr); st2, cr2 = self.cloud_apply(st2, cr2); return (st2, cr2), None
         def block(c, _):
             c, _ = jax.lax.scan(one, c, None, length=inner); return c, post(*c)
         key = ('run', hours, every_h, tuple(box))
@@ -1432,7 +1436,7 @@ class Model:
                         **(self._map_extras(state, T, u, v, ps, lp, phi, to_p) if self.S.get('map_out') else {}))
         inner = int(round(every_h * 3600 / self.dt_s)); outer = int(hours // every_h)
         def one(c, _):
-            st, cr = c; self._carry = cr; st2 = self.step(st); cr2 = self.surface(st2, cr); st2 = self.cloud_apply(st2, cr2); return (st2, cr2), None
+            st, cr = c; self._carry = cr; st2 = self.step(st); cr2 = self.surface(st2, cr); st2, cr2 = self.cloud_apply(st2, cr2); return (st2, cr2), None
         def block(c, _):
             c, _ = jax.lax.scan(one, c, None, length=inner); return c, post(*c)
         key = ('wx', hours, every_h)
@@ -1505,7 +1509,7 @@ def integrate(M, state, carry, hours):
     """run without saving output; returns the final (state, carry)."""
     n = int(round(hours * 3600 / M.dt_s)); key = ('int', n)
     def one(c, _):
-        st, cr = c; M._carry = cr; st2 = M.step(st); cr2 = M.surface(st2, cr); return (M.cloud_apply(st2, cr2), cr2), None
+        st, cr = c; M._carry = cr; st2 = M.step(st); cr2 = M.surface(st2, cr); return M.cloud_apply(st2, cr2), None
     if key not in M._jit: M._jit[key] = jax.jit(lambda s, c: jax.lax.scan(one, (s, c), None, length=n)[0])
     return M._jit[key](state, dict(carry, doy0=jnp.float32(M.doy0), utc0=jnp.float32(M.utc0)))
 def iau_init(M, st_pre, cr_pre, st_t0, window_h=6.0, pieces=6):
