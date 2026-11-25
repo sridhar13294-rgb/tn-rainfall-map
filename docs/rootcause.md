@@ -5545,3 +5545,6 @@ running as a separate test) is NOT adopted on its own result unless this check p
   changes (sst_fill + tau_ifs), so attribution is open. [reg: 21:3x tau_ifs registration | inputs: model T42 one start (stated) | fail-5why: n/a]
 - REGISTERED (before the results): (1) attribution - the same tops screen with cld_det + sst_fill WITHOUT tau_ifs; (2) T42 5-day low-cloud screen
   (cld_t170.py, 11 Nov) for candidate + cld_det + sst_fill + tau_ifs, rule days 3-5 within 0.7-1.3x ERA5 in Bay and S.India. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 21:43 IST ATTRIBUTION (same screen, cld_det + sst_fill, NO tau_ifs, 140 samples): reaching sigma < 0.4 0.25, below-0.7 detrained share 0.42 ->
+  sst_fill alone moves tops a little (0.20 -> 0.25); tau_ifs carries most of the change (0.25 -> 0.51, 0.42 -> 0.15). tau_ifs NAMED as the
+  deep-top fix at screen level. [reg: 21:4x attribution registration | inputs: model T42 one start (stated) | fail-5why: n/a]
