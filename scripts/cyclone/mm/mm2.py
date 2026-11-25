@@ -1072,6 +1072,15 @@ class Model:
             a2 = jnp.clip(a1 - dt * ev2 / jnp.maximum(qcl, 1e-7), 0.0, 1.0)
             a2 = jnp.where(q1 < 1e-8, 0.0, a2)
             cfa_n, cql_n = a2, q1
+            if self.S.get('cld_prog', 0) >= 2:
+                # stage 2 (25 Nov, stage-1 fail-5why): the cloud's condensation C1 + C2, evaporation E1 and erosion E2 now change T and q (latent heat,
+                # IFS ch.7 is the large-scale condensation), and autoconversion falls as rain (no sub-cloud evaporation of it - stated). The old
+                # adjustment still removes any supersaturation left.
+                net = jnp.where(init, cnd - ev1 - ev2, 0.0)
+                net = jnp.maximum(net, -jnp.maximum(q0, 0.0) / dt)                                      # cannot evaporate more than the cloud holds
+                dT = dT + LV / CP * net; dq = dq - net
+                Psurf = Psurf + jnp.where(init, (jnp.minimum(aut, jnp.maximum(q0, 0.0) / dt) * mass).sum(0), 0.0)
+                Tn = T + dt * dT; qn = jnp.maximum(q + dt * dq, 0)
         doy0 = cr['doy0'] if 'doy0' in cr else self.doy0; utc0 = cr['utc0'] if 'utc0' in cr else self.utc0   # start date as data: no recompile per start
         t_h = cr['t'] / 3600.0; doy = doy0 + t_h / 24.0; decl = math.radians(23.44) * jnp.sin(2 * jnp.pi * (doy - 81) / 365.0)
         hour = (utc0 + t_h) % 24.0; ha = jnp.radians(15.0 * (hour - 12.0) + jnp.asarray(self.LO))
