@@ -548,7 +548,7 @@ class Model:
             dEta = jnp.maximum(eta - top(eta), 0.0)
             Pdet = dEta * l_up
             P1 = eta * G_up
-            dq1 = (Fq - top(Fq)) / mass - P1 / mass - Pdet / mass
+            dq1 = (Fq - top(Fq)) / mass - eta * cond / mass                                         # 25 Nov 23:1x FIX: vapour leaves where it CONDENSES (as before); rain (P1) and detrained water (Pdet) are liquid sinks of l_up, not of vapour
         dT1 = (dh1 - LV * dq1) / CP
         gam = LV / CP * qsat(Tn, p) * 17.67 * 243.5 / (Tn - 29.65) ** 2
         dhs = jnp.take_along_axis(dh1, ksrc[None], 0)[0]

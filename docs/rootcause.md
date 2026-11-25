@@ -5594,3 +5594,17 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - REGISTERED (before the result): split h_deep at sigma 0.925/0.85 into the updraught/subsidence part (dT1 Mb) and the downdraft part (dT_dd),
   with vs without cld_det. If the downdraft part carries >= 2/3 of the change, the downdraft is named (it grows with Mb +45 % while the
   subsidence warming no longer balances it); otherwise the updraught/subsidence part (changed condensate bookkeeping, dq1 with Pdet) is named. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 23:12 IST UP/DOWN SPLIT RESULT (sigma 0.925, K/day, without -> with cld_det): updraught/subsidence part 3.07 -> 0.47 (-2.6), downdraft -1.20 ->
+  -0.78 (+0.4). Rule: downdraft NOT named; the updraught part is. [reg: 22:5x split registration | inputs: model T42 one start | fail-5why: below]
+- ROOT CAUSE = MY CODE BUG in cld_det (coded 18:3x today), stated plainly: I replaced the vapour sink "- eta cond / mass" (vapour removed where it
+  condenses) with "- P1/mass - Pdet/mass" (removed where it RAINS or DETRAINS). The vapour-flux divergence leaves the condensed vapour in the
+  condensing layer, so with cld_det the cloud-base layers (850-925 hPa) were spuriously moistened and, through dT1 = (dh1 - L dq1)/cp, COOLED
+  by L eta cond / cp - exactly the -1 K / +0.6 g/kg / +0.09 RH found above. Water was conserved in the column, so the smoke test did not catch
+  it; the vertical placement was wrong. FIXED: dq1 = flux divergence - eta cond / mass (as the original); rain and detrained water are sinks of
+  the updraught liquid only. CONSEQUENCE: every result tonight run WITH cld_det on is invalid and withdrawn - the cld_det low-cloud screens
+  (1.7-4.3x), the deep-top measurements (detprof: 0.20 reach / 0.60 below 0.7, the h0/timing/drift chain, mf_wke, mf_ice_ifs, tau_ifs and its
+  attribution) and the budgets above. Results WITHOUT cld_det stand: sst_fill defect and fix, bayfx/bayq/RH comparisons, the low-cloud screens
+  without cld_det. [reg: n/a (correction of my own code) | inputs: n/a | fail-5why: n/a]
+- REGISTERED (before the results): with the FIXED cld_det - (1) the T42 tops screen (11 Nov h24-48, candidate + cld_det + sst_fill): reaching
+  sigma < 0.4 and detrained share below 0.7, reported against the old rule (>= 0.40 / <= 0.35) to see if any tops problem remains; (2) the T42
+  5-day low-cloud screen, rule days 3-5 within 0.7-1.3x ERA5 in Bay and S.India. [reg: this line | inputs: n/a | fail-5why: n/a]
