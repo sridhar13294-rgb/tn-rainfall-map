@@ -5622,3 +5622,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   REGISTERED (before the result): same 5-day screen with cld_det + diagnostic convective cloud OFF (rad_prm f_tow 0, anv_max 0 - removing a
   double count, not a tuning): total cover days 3-5 within 0.85-1.15x ERA5 in both boxes -> (a) closed; low cloud reported for (b).
   [reg: this line | inputs: n/a | fail-5why: n/a]
+- 23:49 IST DOUBLE-COUNT TEST RESULT (T42 11 Nov, fixed cld_det + sst_fill, diagnostic towers/anvils OFF): total cover days 3-5 Bay 1.46/1.48/1.40x,
+  S.India 1.52/1.53/1.56x (rule 0.85-1.15x FAIL - unchanged); low cloud fell to 0.06-0.29x (the diagnostic towers had been supplying low cloud).
+  By the rule the double count is NOT the cover excess; (a) stays open. [reg: 23:3x double-count registration | inputs: ERA5 lcc5/tcc, model T42 one start | fail-5why: below]
+- FAIL-5WHY: the excess is the detrained carried cloud aloft (cfa 0.2-0.5 at 200-450 hPa), which in our scheme has only erosion and evaporation
+  as sinks: it is not advected (stated simplification) and its ice does not FALL. In IFS the ice sedimentation (7.2.3(c), eqs. 7.20-7.21) is the
+  main sink of anvil cirrus. REGISTERED (before the result): add ice sedimentation to the carried cloud with the IFS fall speed law (constants
+  from Part IV 7.2.3(c), read before coding); rerun the same screen: total cover days 3-5 within 0.85-1.15x in both boxes. [reg: this line | inputs: n/a | fail-5why: n/a]
