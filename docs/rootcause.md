@@ -5245,3 +5245,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   days 1-3) at sigma 0.925/0.85/0.7 over South India and Bay/TN; ERA5 Q1 days 1-2 over Bay/TN (+1.1/+1.0 at 850) as reference. The process whose
   DAY-1-TO-DAY-3 change carries >= 60 % of the change in physics heating at 850 is NAMED for the decline (the cause that grows, not the static
   offset). [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 09:47 IST bud_t170.py smoke test (T42, 1 start 11 Nov; not a verdict): runs; S.India sigma 0.85 days 1/2/3: radiation -1.08/-2.76/-5.62 K/day while
+  large-scale condensation heating rises 0.00/+1.20/+1.85 and deep +0.65/+1.65/+1.22 - a growing large-scale cloud deck cooling at its top is the
+  candidate for the growing 850 cooling (to be judged at T170, 3 starts). Kaggle job tn-bud170 queued (account 4).
+  [reg: 25 Nov 09:4x T170 budget registration (smoke step) | inputs: same code as the Kaggle job | fail-5why: n/a]
