@@ -5444,3 +5444,12 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - REGISTERED (before the result): in DEEP-ACTIVE columns only (Bay box, 11 Nov), compare h3-12 vs h30-48: source theta_e, theta_es at sigma
   0.6 and 0.5, and RH at sigma 0.6-0.5 (entrainment dilution). The term that removes the most buoyancy margin is named; RH falling by >= 0.15
   names mid-level drying (entrainment), a theta_es rise >= 1.5 K names mid-level warming, a source theta_e fall >= 1.5 K names the BL. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 20:05 IST DEEP-COLUMN DRIFT RESULT (T42 11 Nov, deep-active Bay columns, early h3-12 n 52 vs late h30-48 n 71): source theta_e 344.93 -> 344.20
+  (-0.73), theta_es(600) 344.19 -> 345.79 (+1.60), theta_es(500) +0.40, RH 600-500 0.604 -> 0.417 (-0.19); margin at 600 hPa +0.74 -> -1.58 K.
+  By the registered rule: mid-level WARMING (+1.6 >= 1.5) is the largest margin term and mid-level DRYING (-0.19 >= 0.15) is also met; the
+  BL source is not (-0.7). Named: the convecting columns warm and dry at 600-500 hPa over 1-2 days, capping the plumes. [reg: 20:2x deep-column
+  registration | inputs: model T42 one start, conditional on deep-active | fail-5why: n/a]
+- Reference check started: ERA5 Bay box-mean RH500 days 0/1/2 (11 Nov) 0.450/0.424/0.388, RH700 0.600/0.661/0.698, T700 flat 283.2 K (ERA5 itself
+  dries at 500 hPa by ~0.06 in 2 days). REGISTERED (before the result): model Bay box-mean RH500, RH700 and T700 daily means days 0-2, same
+  start: if the model's RH500 falls >= 0.08 more than ERA5's or T700 rises >= 0.5 K vs ERA5's flat T700, the mid-level drift is a MODEL
+  error (next: which process heats/dries 600-500 hPa in the budget); if within those, the capping is in the plume's response, not the state. [reg: this line | inputs: n/a | fail-5why: n/a]
