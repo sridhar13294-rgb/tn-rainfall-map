@@ -136,7 +136,7 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='mf', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='radcloud', rad_every=2,
-                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, sh_wtest=0.0, sbl_ifs=0.0, bl_exc_ws=0.0, tofd=0.0, sfc_mo_h=0.0, dp_ifs=0.0, dp_ifs_exc=0.0, sfc_mo_land=0.0, cld_prog=0.0, cld_det=0.0, mf_ice_ifs=0.0, sst_fill=0.0, tau_ifs=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, midlev=0.0, lsc_sub=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
+                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, sh_wtest=0.0, sbl_ifs=0.0, bl_exc_ws=0.0, tofd=0.0, sfc_mo_h=0.0, dp_ifs=0.0, dp_ifs_exc=0.0, sfc_mo_land=0.0, cld_prog=0.0, cld_det=0.0, mf_ice_ifs=0.0, sst_fill=0.0, tau_ifs=0.0, cld_sed=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, midlev=0.0, lsc_sub=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
@@ -1141,6 +1141,15 @@ class Model:
                 # the compensating-subsidence advection terms (M_up/rho d/dz) are not included (stated). The condensate was already taken from the
                 # vapour inside conv_mf, so it is NOT part of cnet (no second latent heating).
                 a2 = jnp.clip(a2 + dt * self._det['D'] / mass, 0.0, 1.0); q1 = q1 + dt * self._det['Lw'] / mass
+            sed_sfc = 0.0
+            if self.S.get('cld_sed', 0):
+                # cld_sed (25 Nov, cover 5-why: detrained cirrus has no sink): IFS Cy47r1 Part IV 7.2(i) sedimentation of cloud ICE with a constant
+                # fall speed V_i = 0.13 m/s (eq. 7.83), solved implicitly top-down (as 7.84-7.86): q_k' (1 + dt V/dz_k) = q_k + dt F_in / m_k. The ice share
+                # of the carried condensate is (1 - alpha), alpha = ((T - 250.16)/23)^2; what falls out of the lowest layer reaches the ground as precipitation.
+                ice = (1.0 - al) * q1; liq = q1 - ice; mk = mass; dzk = jnp.maximum(dz, 1.0); Fin = jnp.zeros_like(ps); out_i = []
+                for k in range(L):
+                    qn_ = (ice[k] + dt * Fin / mk[k]) / (1.0 + dt * 0.13 / dzk[k]); Fin = mk[k] * qn_ * 0.13 / dzk[k]; out_i.append(qn_)
+                q1 = liq + jnp.stack(out_i, 0); sed_sfc = Fin
             a2 = jnp.where(q1 < 1e-8, 0.0, a2)
             cfa_n, cql_n = a2, q1
             if self.S.get('cld_dbg', 0): self._cdbg = dict(da_f=da_f, a0=a0, a1=a1, a2=a2, rh=rh_, rhcr=rhcr, ev2a=ev2 / jnp.maximum(qcl, 1e-7), D=(self._det['D'] / mass if getattr(self, '_det', None) is not None else jnp.zeros_like(a2)))   # diagnostics only
@@ -1151,6 +1160,7 @@ class Model:
                 # latent heating (the first try fed it back inside the physics step and blew up: Clausius-Clapeyron feedback ~2.5x per step).
                 cnet = jnp.where(init, jnp.clip(cnd - ev1 - ev2, -jnp.maximum(q0, 0.0) / dt, 0.5 * jnp.maximum(qc_, 0.0) / dt) - ev0, 0.0)   # cannot condense vapour that is not there; ev0 = consistency evaporation
                 cnet_aut = jnp.where(init, (jnp.minimum(aut, jnp.maximum(q0, 0.0) / dt) * mass).sum(0), 0.0)
+                cnet_aut = cnet_aut + sed_sfc                                                       # cld_sed: ice reaching the ground
                 cTp_new = T + dt * LV / CP * cnet
                 if self.S.get('cld_dbg', 0): self._cdbg2 = dict(evap=(jnp.maximum(-cnet, 0.0) * mass).sum(0), cond=(jnp.maximum(cnet, 0.0) * mass).sum(0), aut=cnet_aut, det=((self._det['Lw']).sum(0) if getattr(self, '_det', None) is not None else jnp.zeros_like(ps)))   # kg m-2 s-1, diagnostics
         doy0 = cr['doy0'] if 'doy0' in cr else self.doy0; utc0 = cr['utc0'] if 'utc0' in cr else self.utc0   # start date as data: no recompile per start

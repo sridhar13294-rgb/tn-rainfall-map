@@ -5629,3 +5629,6 @@ running as a separate test) is NOT adopted on its own result unless this check p
   as sinks: it is not advected (stated simplification) and its ice does not FALL. In IFS the ice sedimentation (7.2.3(c), eqs. 7.20-7.21) is the
   main sink of anvil cirrus. REGISTERED (before the result): add ice sedimentation to the carried cloud with the IFS fall speed law (constants
   from Part IV 7.2.3(c), read before coding); rerun the same screen: total cover days 3-5 within 0.85-1.15x in both boxes. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 23:49 IST cld_sed CODED: IFS Cy47r1 Part IV 7.2(i) - cloud ice falls at a constant V_i = 0.13 m/s (eq. 7.83, implicit top-down as 7.84-7.86);
+  ice share (1 - alpha(T)) of the carried condensate; ice leaving the lowest layer is surface precipitation. Fraction is not sedimented (as IFS
+  A(a) without a fall term - stated). Running the registered screen (candidate + fixed cld_det + sst_fill + cld_sed). [reg: 23:5x sedimentation registration | inputs: IFS doc read 23:5x | fail-5why: n/a]
