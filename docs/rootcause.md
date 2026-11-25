@@ -5295,3 +5295,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   stated simplification of stage 1. NEXT (registered): stage 2 = cloud condensation/evaporation/autoconversion feed T and q (latent heat, rain
   into the large-scale rain), replacing the old large-scale adjustment where cld_prog is on; same smoke rule. [reg: this line (registration) |
   inputs: n/a | fail-5why: n/a]
+- 12:12 IST cld_prog STAGE 2 - implementation defects found by step-by-step debugging (not physics verdicts): (1) latent heat fed back inside the
+  physics step -> Clausius-Clapeyron runaway (fixed: own split step); (2) the stored reference T was the pre-transform value while the spectral
+  transform smooths the point heating (T - cTp 0.3 -> 7.8 K in 5 steps; fixed: true nodal T after the step); (3) condensation not limited by the
+  vapour present (fixed). Remaining defect: grid points with a = 1 and RH far below 1 keep condensing (one point heated 308 -> 329 K by step 30):
+  my explicit port has no saturation consistency - in the IFS the cloud budget is solved implicitly with the saturation adjustment (a = 1 means
+  a saturated box) and clouds in sub-saturated air are removed by evaporation. Stage 2 as coded is NOT usable; a correct port needs the IFS
+  implicit solution (Part IV 7.5) - about a day of careful work, stated. [reg: n/a (implementation debugging, no verdict) | inputs: step-by-step
+  T42 trace | fail-5why: n/a]
