@@ -5676,3 +5676,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   vapour where it condenses (before: it re-evaporated in place through the vapour-flux convergence) and detrains into the carried cloud where
   the shallow mass flux falls and at its top (eqs. 7.22-7.23); no shallow rain (stated), water conserved exactly. T42 2-day smoke (11 Nov):
   finite, global rain 1.89 mm/day. Running the registered 3-start screen. [reg: 04:2x shallow registration | inputs: n/a | fail-5why: n/a]
+- 26 Nov 05:03 IST SHALLOW-DETRAINMENT 3-START SCREEN (T42, 1/11/16 Nov vs ERA5 3-start mean; candidate + cld_det 2 + cld_sed + sst_fill + cld_adv): LOW
+  cloud days 3-5 Bay 0.70/0.77/0.74x, S.India 1.04/1.15/0.89x (rule 0.7-1.3x: PASS all 6 box-days); total cover Bay 1.37/1.17/1.19x, S.India
+  1.19/1.05/1.09x (rule 0.85-1.15x: FAIL on 4 of 6). Low cloud is fixed by the shallow source; total cover now too high. Package HELD.
+  [reg: 04:2x shallow registration | inputs: ERA5 lcc5/tcc 3-start mean, model T42 3 starts | fail-5why: below]
+- FAIL-5WHY / REGISTERED (before the result): which level carries the cover excess? ERA5 'mhcc truth' (medium/high cloud cover, same boxes,
+  starts and days) vs model mid (0.45 <= sigma < 0.8) and high (sigma < 0.45) max-overlap cloud from the same screen re-run: the layer whose
+  ratio exceeds 1.3x is named (then its source term gets the size check). [reg: this line | inputs: n/a | fail-5why: n/a]

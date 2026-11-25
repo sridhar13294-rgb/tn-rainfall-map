@@ -23,7 +23,7 @@ for KEY in os.environ.get('STARTS', '2020-11-01T00,2020-11-11T00,2020-11-16T00')
         ps = jnp.exp(hor.to_nodal(st.log_surface_pressure))[0] / M.PA; u, v = spherical_harmonic.vor_div_to_uv_nodal(hor, st.vorticity, st.divergence)
         tn, d = M.column(T, q, u / M.MPS, v / M.MPS, ps, dict(cr, doy0=jnp.float32(M.doy0), utc0=jnp.float32(M.utc0)), rad_fresh=True, div=hor.to_nodal(st.divergence) * M.SEC)
         if 'cld' in d:
-            C = np.asarray(d['cld']); low = sig >= 0.8; cl = {'lowmax': C[low].max(0), 'cover': np.asarray(d['cover'])}
+            C = np.asarray(d['cld']); low = sig >= 0.8; cl = {'lowmax': C[low].max(0), 'cover': np.asarray(d['cover']), 'midmax': C[(sig < 0.8) & (sig >= 0.45)].max(0), 'highmax': C[sig < 0.45].max(0)}   # mid/high added 26 Nov (ERA5 mcc/hcc split at 0.8 / 0.45 ps)
             if 'c_ls' in d: cl['cls'] = np.asarray(d['c_ls'])[low].max(0)
             for b, m in BOX.items():
                 for nm, X in cl.items():
@@ -37,7 +37,7 @@ for KEY in os.environ.get('STARTS', '2020-11-01T00,2020-11-11T00,2020-11-16T00')
     print(KEY, 'done', flush=True)
 mean = {k_: float(np.mean(v_)) for k_, v_ in acc.items()}; json.dump(mean, open(OUT, 'w'))
 for b in BOX:
-    for nm in ('lowmax', 'cls', 'cover'):
+    for nm in ('lowmax', 'cls', 'cover', 'midmax', 'highmax'):
         ks = [f'{b}|cld|{nm}|{h}' for h in range(0, int(os.environ.get('HOURS', '72')) + 1, 3)]
         if all(k_ in mean for k_ in ks): print('#', TAG, b, 'cloud', nm, 'days', ' '.join('%.3f' % np.mean([mean[k_] for k_ in ks[8 * (dd - 1) + 1: 8 * dd + 1]]) for dd in range(1, int(os.environ.get('HOURS', '72')) // 24 + 1)), flush=True)
     for sl in SIGS:
