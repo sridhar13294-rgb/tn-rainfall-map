@@ -5649,3 +5649,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   of a and q_l (stated simplification since 25 Nov), the analysed initial cloud, and the subsidence term of 7.22-7.23; with only local sources,
   cloud decays wherever convection is not active. First check (size): the share of Bay/S.India grid-days with no convection whose ERA5 cloud
   cover is > 0.3 (cloud that must have been advected in). [reg: this line (plan, registered before the check) | inputs: n/a | fail-5why: n/a]
+- 26 Nov 03:40 IST REGISTERED (before the result; rule for the 00:3x size check): ERA5 'cldadv truth' (boxes Bay/S.India, 1/11/16 Nov, days 3-5,
+  3-hourly): if >= 50 % of the box's total-cloud area sits over points with no convection (cp < 0.1 mm/h), local convective supply cannot carry the
+  cloud and the missing ADVECTION of a/q_l is named as the next fix (IFS: a and q_l are advected prognostic variables); if < 50 %, the local
+  source terms are the place to look. [reg: this line | inputs: n/a | fail-5why: n/a]
