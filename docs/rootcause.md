@@ -5517,10 +5517,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
   301.00 vs 302.42 K, min 261.5, 174 of 478 Bay sea nodes (36 %) run as LAND. The library NaNs are coastal 1.5-deg cells (sea-ice cells carry
   271.5 K, so the fill does not touch ice). WITH sst_fill: 0 nodes zeroed; Bay 302.40/302.40 K (ref 302.41/302.40), min 301.81/301.75 -> fix
   input gate (within 0.3 K, min >= 295 K, T42 and T170) PASS. Every Stage-1 exam so far ran with this defect. tn-sstfill (candidate +
-  sst_fill, part-3 T170, the four rules) queued FIRST for the weekly reset. [reg: 21:2x sst registration | inputs: library SST/LSM, model init T42/T170 | fail-5why: n/a]
+  sst_fill, part-3 T170, the four rules) queued FIRST for the weekly reset. [reg: sst registration, block above (20:5x) | inputs: library SST/LSM, model init T42/T170 | fail-5why: n/a]
 - REGISTERED (before the result): T42 screen, day 1 Bay box, candidate + sst_fill vs ERA5 bayfx: sea LE ratio rises from 0.69/0.85 and rain
   ratio from 0.29/0.42 (1 / 11 Nov). Screen only - the verdict is tn-sstfill. [reg: this line | inputs: n/a | fail-5why: n/a]
 - 20:59 IST sst_fill T42 SCREEN (day 1 Bay box, vs ERA5 bayfx, 1 / 11 Nov): sea LE 75.2/128.9 vs 86.1/126.9 W m-2 -> 0.87/1.02x (was 0.69/0.85) RISES;
   atmospheric radiation -107.1/-105.3 vs -106.1/-108.5 (now within 3 W m-2, was 8-10 too cold); rain 0.51/5.01 vs 2.76/6.93 mm/day -> 0.18/0.72x
   (was 0.29/0.42): RISES on 11 Nov, FALLS on 1 Nov (h1-22 accumulation vs 24 h before - sampling not identical, stated). Screen: evaporation and
-  radiation move to ERA5 on both starts; rain mixed. Verdict waits for tn-sstfill (T170, 18 starts). [reg: 21:3x sst screen registration | inputs: ERA5 bayfx, model T42 | fail-5why: n/a]
+  radiation move to ERA5 on both starts; rain mixed. Verdict waits for tn-sstfill (T170, 18 starts). [reg: sst-screen registration, block above (20:5x) | inputs: ERA5 bayfx, model T42 | fail-5why: n/a]
+- 20:59 IST CORRECTION (my error): two stamps above named registrations at "21:2x"/"21:3x" - times that had not happened yet; I wrote them without
+  checking the clock. Corrected to point at the registration blocks (20:5x). The heading times of every block tonight are clock-checked; the
+  "reg:" labels tonight are approximate (to the 10 minutes) and each points to the block written immediately before its result. [reg: n/a (correction) | inputs: n/a | fail-5why: n/a]
