@@ -17,7 +17,7 @@ for KEY in os.environ.get('STARTS', '2020-11-01T00,2020-11-11T00,2020-11-16T00')
     st, cr = M.init(f3, Z['levs'], Z['lats'], Z['lons'], f2[V2.index('surface_pressure')], f2[V2.index('geopotential_at_surface')] / 9.80616,
                     f2[V2.index('sea_surface_temperature')], f2[V2.index('land_sea_mask')], when=t0, **landinit.land_kwargs(f2, V2))
     M.build(t0); st = M.dfi(st); hor = M.coords.horizontal; sig = np.asarray(M.sig); h0 = 0
-    for h in range(0, 73, 3):
+    for h in range(0, int(os.environ.get('HOURS', '72')) + 1, 3):
         if h: st, cr = mm2.integrate(M, st, cr, h - h0); h0 = h
         T = (hor.to_nodal(st.temperature_variation) + M.ref_t[:, None, None]) / M.K; q = st.tracers['specific_humidity']
         ps = jnp.exp(hor.to_nodal(st.log_surface_pressure))[0] / M.PA; u, v = spherical_harmonic.vor_div_to_uv_nodal(hor, st.vorticity, st.divergence)
@@ -38,8 +38,8 @@ for KEY in os.environ.get('STARTS', '2020-11-01T00,2020-11-11T00,2020-11-16T00')
 mean = {k_: float(np.mean(v_)) for k_, v_ in acc.items()}; json.dump(mean, open(OUT, 'w'))
 for b in BOX:
     for nm in ('lowmax', 'cls', 'cover'):
-        ks = [f'{b}|cld|{nm}|{h}' for h in range(0, 73, 3)]
-        if all(k_ in mean for k_ in ks): print('#', TAG, b, 'cloud', nm, 'day1/2/3', ' '.join('%.3f' % np.mean([mean[k_] for k_ in ks[8 * (dd - 1) + 1: 8 * dd + 1]]) for dd in (1, 2, 3)), flush=True)
+        ks = [f'{b}|cld|{nm}|{h}' for h in range(0, int(os.environ.get('HOURS', '72')) + 1, 3)]
+        if all(k_ in mean for k_ in ks): print('#', TAG, b, 'cloud', nm, 'days', ' '.join('%.3f' % np.mean([mean[k_] for k_ in ks[8 * (dd - 1) + 1: 8 * dd + 1]]) for dd in range(1, int(os.environ.get('HOURS', '72')) // 24 + 1)), flush=True)
     for sl in SIGS:
         for dday in (1, 2, 3):
             hs = list(range(3 * 8 * (dday - 1), 3 * 8 * dday + 1, 3))

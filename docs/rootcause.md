@@ -5307,3 +5307,12 @@ running as a separate test) is NOT adopted on its own result unless this check p
   1 + L/cp dqs/dT (moist adjustment) and a <= RH (cloudy part saturated: qv = a qs + (1 - a) q_env), the excess cloud evaporated with its
   condensate. T42 step-by-step trace: stable for 72 steps (1 day), cloud water <= 0.7 g/kg, T normal. The registered smoke rule (day-3 low cloud
   <= 1.2x day 1) now runs. [reg: n/a (implementation) | inputs: T42 trace | fail-5why: n/a]
+- 15:52 IST cld_prog STAGE 2 smoke (T42, 11 Nov): low cloud S.India 0.080/0.152/0.229 (day 3 = 2.9x day 1; rule <= 1.2x) FAIL, Bay 0.066/0.093/0.141
+  (2.1x) FAIL -> HELD. BUT stated: the day-1 level now starts far BELOW ERA5 (0.08 vs 0.196) and day 3 reaches ~ERA5 (0.229 vs 0.205 S.India);
+  850 radiation day 3 -2.11 K/day (no-prog -5.62, stage 1 -3.72) and the 850 dT on days 2-3 is no longer negative (S.India +0.20/+0.18).
+  [reg: 25 Nov 11:0x cld_prog registration (same rule for stage 2) | inputs: same start/grid | fail-5why: below]
+- FAIL-5WHY: the 'growth' rule assumed a correct day-1 cloud; here the growth is from a too-LOW start - (1) the first step starts from the
+  diagnostic cloud with q_l = 0.01 a q_s and is then cut to a <= RH, so day 1 begins nearly cloud-free <- (2) the IFS starts from the ANALYSED
+  cloud (ERA5 carries cloud fraction and condensate) - our library has none. So the test cannot tell spin-up from a loop in 3 days.
+  REGISTERED (before the result): 5-day run (same start) + ERA5 low cloud days 1-5; the LOOP is NAMED as broken if days 3-5 stay within 0.7-1.3x
+  ERA5 AND day 5 <= 1.2x day 3 (levels off); if it keeps growing past ERA5, it is not broken. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
