@@ -5164,3 +5164,16 @@ running as a separate test) is NOT adopted on its own result unless this check p
   ours (land set + rhc_ifs); (b) deep-active fraction ours (0.07-0.09) vs ERA5's convective-rain area fraction (cp > 0.1 mm/h). TRIGGER named if
   our active fraction < 0.5x ERA5's cp area; INTENSITY (closure) named if the fraction is within 0.5-1.5x but rain per active column < 0.5x.
   [reg: this line (registration) | inputs: n/a | fail-5why: n/a]
+- 07:43 IST BAY RAIN / TRIGGER (land set + rhc_ifs, T42, 3 Nov starts, day 1) vs ERA5 (cpbay): rain 2.02 vs 6.42 mm/day (0.31x); deep-active fraction
+  0.080 vs ERA5 convective-rain area (cp > 0.1 mm/h) 0.229 (0.35x < 0.5x); rain per active column 25.4 vs ERA5 19.5 (1.3x) -> TRIGGER NAMED
+  (convection starts in a third of the columns ERA5 has; once on, it rains enough). [reg: 25 Nov 07:3x trigger/intensity registration |
+  inputs: ERA5 tp/cp hourly, same box/starts/day | fail-5why: n/a (named)]
+- 5-why vs IFS 6.4 (deep test parcel, checked in the documentation now): IFS decides deep convection from a test parcel with eps = 0.4 x eps_up(1) x
+  (qs/qs_surf)^3 (WEAKER than the updraught), w = 1 m/s at departure and the K-equation (top where w = 0), departure levels up to 350 hPa above
+  ground, cloud > 200 hPa, NO CAPE threshold. Ours: the fully entraining updraught must be buoyant (LFC) with depth > 250 hPa and CAPE > 50 J/kg.
+  CORRECTION of my 24 Nov dp_test: it used the SHALLOW test-parcel entrainment 0.8/z + 3e-4 (eq. 6.18) for the deep test - the wrong reference
+  (much stronger near the surface) - which is why it fired less (rain 0.32). That fail-5why ('test parcel more entraining') was right about the
+  symptom and wrong about IFS: the IFS deep test is the weak one. dp_test stays rejected as coded; dp_ifs is the documented version.
+  REGISTERED (before the run): option dp_ifs (coded). Local T42, land set + rhc_ifs + dp_ifs, Bay/TN, same 3 starts: PASS if deep-active fraction is
+  within 0.5-1.5x ERA5's 0.229 AND Bay rain >= 0.5x ERA5 (>= 3.2 mm/day). Then part 3 (account 4): TN v850 d1 >= -1.0, TN rain >= 0.85 (P5b gate),
+  z500 d5 <= lc_mix + 2 SE. [reg: this line (registration) | inputs: n/a | fail-5why: n/a]

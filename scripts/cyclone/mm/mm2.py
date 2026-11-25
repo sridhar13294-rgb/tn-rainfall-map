@@ -136,7 +136,7 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='mf', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='radcloud', rad_every=2,
-                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, sh_wtest=0.0, sbl_ifs=0.0, bl_exc_ws=0.0, tofd=0.0, sfc_mo_h=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, midlev=0.0, lsc_sub=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
+                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, sh_wtest=0.0, sbl_ifs=0.0, bl_exc_ws=0.0, tofd=0.0, sfc_mo_h=0.0, dp_ifs=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, midlev=0.0, lsc_sub=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
@@ -362,6 +362,7 @@ class Model:
         # parcel kick (mf_kick_t K, mf_kick_q kg/kg): the extra warmth and moisture of rising boundary-layer thermals, as in
         # ECMWF's trigger test; organised entrainment (mf_org > 0): mixing falls off with height as (qsat / qsat at the
         # source)^(3 mf_org) (Bechtold et al. 2008), so a deep moist plume can reach the upper troposphere
+        rh_src = jnp.take_along_axis(rh_e, ksrc[None], 0)[0]
         h_kick = CP * S['mf_kick_t'] + LV * S['mf_kick_q']
         q_kick = S['mf_kick_q']
         if mid is not None: h_kick = 0.0; q_kick = 0.0                                              # midlev: updraught starts from the environment at the base (IFS CUBASMCN)
@@ -385,6 +386,8 @@ class Model:
                 eps = jnp.where(S['sh_eps'] > 0, S['sh_eps'] * (1.3 - rk) * jnp.power(jnp.clip(qsat(Te, pk) / qs_src, 1e-3, 1.0), 3.0), eps)   # = 2 x 1.75e-3 (1.3 - RH) f_scale
                 if test: eps = 0.8 / jnp.maximum(zk, 10.0) + 3e-4                                      # IFS eq. 6.18: weakly entraining TEST parcel decides if shallow convection exists
             if test and not shallow: eps = 0.8 / jnp.maximum(zk, 10.0) + 3e-4                         # dp_test: same IFS test parcel (eq. 6.18) decides DEEP existence
+            dpi = test and (not shallow) and mid is None and self.S.get('dp_ifs', 0) > 0
+            if dpi: eps = 0.4 * S['entr'] * (1.3 - rh_src) * jnp.power(jnp.clip(qsat(Te, pk) / qs_src, 1e-3, 1.0), 3.0)   # dp_ifs (25 Nov): IFS 6.4 deep test parcel eps = 0.4 eps_up(1) (qs/qs_surf)^3
             if mid is not None: eps = 2.0 * eps                                                       # midlev: f_eps = 2 for shallow / mid-level (IFS Cy50r1 eq. 6.7)
             # mf_mix_exact > 0 (18 Nov, A/P1 BOMEX): integrate the entrainment mixing d(phi_u)/dz = -eps (phi_u - phi_e) exactly over the
             # layer (phi_e + (phi_u - phi_e) exp(-eps dz)) instead of one explicit step, so the result does not depend on layer thickness
@@ -408,6 +411,10 @@ class Model:
             ok_k = jnp.where(S['mf_wke'] > 0, jnp.where(lfc, Kn > 0, b > 0), b > 0)
             alv2 = jnp.where(src, True, jnp.where(run, alive & (ok_k | (~lfc & (sig_src - sk < 0.2))) & (sk > 0.08), alive & ~started))
             Kw2 = jnp.where(run & (lfc | (b > 0)), jnp.maximum(Kn, 0.0), Kw)
+            if dpi:   # dp_ifs: w = 1 m/s at the departure level (K 0.5), K eq. 6.10 at every level; the test cloud top is where w vanishes
+                Kn = (Kw + dz * G * b / (3.0 * Te)) / (1.0 + dz * eps * 2.0 * 1.949)
+                alv2 = jnp.where(src, True, jnp.where(run, alive & (Kn > 0) & (sk > 0.08), alive & ~started))
+                Kw2 = jnp.where(run, jnp.maximum(Kn, 0.0), Kw)
             act = st2 & alv2 & (run | src)
             # freezing (mf_ice = share of the new condensate that freezes in the updraft): above 0 C its latent heat of fusion
             # warms the plume, as in the old scheme's bmj_ice; without it the tropical upper troposphere runs 3-5 K cold
@@ -426,7 +433,7 @@ class Model:
         xs = tuple(a[::-1] for a in (Tn, q_in, h_in, p * jnp.ones_like(Tn), zc, sig * jnp.ones_like(Tn), rh_e, ii * jnp.ones(Tn.shape, jnp.int32)))
         (_, _, _, lfc, _, _, _), (inc, b, cond, hu, qu, eps_l) = jax.lax.scan(make_plume(False), (z0, z0, f0, f0, f0, z0 - 1.0, z0 + 0.5), xs)
         inc, b, cond, hu, qu, eps_l = [a[::-1] for a in (inc, b, cond, hu, qu, eps_l)]
-        if (shallow and self.S.get('sh_eps', 0) > 0) or (not shallow and mid is None and self.S.get('dp_test', 0)):   # trigger from the IFS test parcel (eq. 6.18); dp_test (24 Nov): also for DEEP
+        if (shallow and self.S.get('sh_eps', 0) > 0) or (not shallow and mid is None and (self.S.get('dp_test', 0) or self.S.get('dp_ifs', 0))):   # trigger from the IFS test parcel (eq. 6.18); dp_test (24 Nov): also for DEEP
             (_, _, _, _, _, _, _), (inc_t, b_t, cond_t, _, _, eps_t) = jax.lax.scan(make_plume(True), (z0, z0, f0, f0, f0, z0 - 1.0, z0 + 0.5), xs)
             inc_t, cond_t, b_t, eps_t = inc_t[::-1], cond_t[::-1], b_t[::-1], eps_t[::-1]
             if wt_on:
@@ -452,6 +459,12 @@ class Model:
             # entraining updraught; the updraught (eps above) still sets the mass flux, CAPE closure and heating. No CAPE threshold in the test.
             sig_top_t = jnp.min(jnp.where(inc_t, sig, 1.0), axis=0)
             deep = ((sig_src - sig_top_t) * ps > 20000.0) & (cond_t > 0).any(0) & (cape > 0.0)
+        if (not shallow) and mid is None and self.S.get('dp_ifs', 0):
+            # dp_ifs (25 Nov, Bay trigger named: deep-active 0.08 vs ERA5 convective-rain area 0.23): IFS 6.4 deep test - LCL found and test cloud
+            # thicker than 200 hPa; no CAPE threshold (the updraught's CAPE still sets the closure). Departure: our most-unstable low level (IFS loops
+            # departure levels up to 350 hPa above ground - stated simplification); condensate removal (50 %) not modelled (our b has no loading).
+            sig_top_t = jnp.min(jnp.where(inc_t, sig, 1.0), axis=0)
+            deep = ((sig_src - sig_top_t) * ps > 20000.0) & (cond_t > 0).any(0)
         if shallow: deep = lfc & ((sig_src - sig_top) * ps <= 25000.0) & (cape > 0.0) & (sig_src > 0.8)      # 'deep' = this plume is active
         if mid is not None: deep = mid & (cond > 0).any(0) & (inc & (ii < ksrc[None])).any(0)            # midlev: active where the plume makes cloud and rises
         if shallow:
