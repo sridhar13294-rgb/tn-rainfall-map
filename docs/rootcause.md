@@ -5453,3 +5453,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   dries at 500 hPa by ~0.06 in 2 days). REGISTERED (before the result): model Bay box-mean RH500, RH700 and T700 daily means days 0-2, same
   start: if the model's RH500 falls >= 0.08 more than ERA5's or T700 rises >= 0.5 K vs ERA5's flat T700, the mid-level drift is a MODEL
   error (next: which process heats/dries 600-500 hPa in the budget); if within those, the capping is in the plume's response, not the state. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 20:11 IST MODEL vs ERA5 MID-LEVEL STATE (T42 11 Nov, Bay box daily means days 0/1/2): model RH500 0.492/0.534/0.484 vs ERA5 0.450/0.424/0.388
+  (model WETTER, no extra drying); T700 283.06/283.01/283.23 vs ERA5 283.17/283.25/283.15 (flat, within 0.25 K). By the registered rule: the
+  box-mean state does not drift -> the capping is in the PLUME'S RESPONSE (the convecting columns warm/dry themselves at 600-500 hPa), not the
+  large-scale state. [reg: 20:1x ERA5 RH registration | inputs: ERA5 rh_truth (daily, 1.5 deg), model T42 | fail-5why: n/a]
+- REGISTERED (before the result): the heating profile. Model Bay box physics heating (all physics incl. radiation = apparent Q1) by level,
+  day 1 (h3-21, 3-hourly), starts 1 + 11 Nov, vs ERA5 Q1 (q1bay2 truth, day-1 mean: ~1.0 K/day at 850-900, 0.6-0.8 at 650-750, 1.1-1.2 at
+  550-600, 0.5-0.9 at 250-450). If the model exceeds ERA5 by >= 1 K/day in a layer below 500 hPa while falling short above 400 hPa, the deep
+  heating is bottom/mid-heavy (plume response named; links Tracks/P5b); otherwise the heating profile is not the cause. [reg: this line | inputs: n/a | fail-5why: n/a]
