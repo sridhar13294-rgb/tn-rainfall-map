@@ -5632,3 +5632,12 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - 23:49 IST cld_sed CODED: IFS Cy47r1 Part IV 7.2(i) - cloud ice falls at a constant V_i = 0.13 m/s (eq. 7.83, implicit top-down as 7.84-7.86);
   ice share (1 - alpha(T)) of the carried condensate; ice leaving the lowest layer is surface precipitation. Fraction is not sedimented (as IFS
   A(a) without a fall term - stated). Running the registered screen (candidate + fixed cld_det + sst_fill + cld_sed). [reg: 23:5x sedimentation registration | inputs: IFS doc read 23:5x | fail-5why: n/a]
+- 26 Nov 00:04 IST cld_sed SCREEN RESULT (T42 11 Nov, candidate + fixed cld_det + sst_fill + cld_sed): total cover days 3-5 Bay 1.04/0.74/0.69x,
+  S.India 1.36/0.90/0.97x ERA5 (rule 0.85-1.15x in both boxes: FAIL - Bay days 4-5 low, S.India day 3 high; was 1.32-1.52x without sedimentation:
+  the excess is gone on 4 of 6 box-days and now swings both ways). Low cloud still 0.22-0.80x (issue (b), separate). cld_sed HELD by the rule.
+  [reg: 25 Nov 23:5x sedimentation registration | inputs: ERA5 lcc5/tcc (3-start mean), model ONE start - day-to-day swings of one start are not
+  separable from the model (stated) | fail-5why: below]
+- FAIL-5WHY (first step, size): one start against a 3-start ERA5 mean gives single-day swings of +-0.3x in cover; the rule as registered cannot
+  separate model error from one-start weather. REGISTERED (before the result, 26 Nov morning): the same screen on 3 starts (1/11/16 Nov), one
+  process per start, means compared with the 3-start ERA5 mean, same rule; and the low-cloud deficit (b) gets its own 5-why (cloud-free start vs
+  the formation term). [reg: this line | inputs: n/a | fail-5why: n/a]
