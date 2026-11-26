@@ -136,7 +136,7 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='mf', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='radcloud', rad_every=2,
-                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, sh_wtest=0.0, sbl_ifs=0.0, bl_exc_ws=0.0, tofd=0.0, sfc_mo_h=0.0, dp_ifs=0.0, dp_ifs_exc=0.0, sfc_mo_land=0.0, cld_prog=0.0, cld_det=0.0, mf_ice_ifs=0.0, sst_fill=0.0, tau_ifs=0.0, cld_sed=0.0, cld_adv=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, midlev=0.0, lsc_sub=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
+                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, sh_wtest=0.0, sbl_ifs=0.0, bl_exc_ws=0.0, tofd=0.0, sfc_mo_h=0.0, dp_ifs=0.0, dp_ifs_exc=0.0, sfc_mo_land=0.0, cld_prog=0.0, cld_det=0.0, mf_ice_ifs=0.0, sst_fill=0.0, tau_ifs=0.0, cld_sed=0.0, cld_adv=0.0, cld_sub=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, midlev=0.0, lsc_sub=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
@@ -634,7 +634,7 @@ class Model:
                 l_sh = jnp.stack(Lk[::-1], 0)
                 dM = jnp.maximum(Mk - top(Mk), 0.0); Det_sh = dM * l_sh
                 dq_s = dq_s - Mk * cond / mass
-                self._det_sh = dict(D=dM, Lw=Det_sh)
+                self._det_sh = dict(D=dM, Lw=Det_sh, Mtop=top(Mk))
             self._sh2_diag = dict(Mb=Mb2, kcb=kcb)
             return (dh_s - LV * dq_s) / CP, dq_s, jnp.zeros_like(Tn), inc & deep[None], deep
         if S['mf_closure'] == 'hybrid' and div is not None:
@@ -651,7 +651,7 @@ class Model:
             zb = jnp.maximum(jnp.take_along_axis(zc, ksrc[None], 0)[0], 1.0)
             Mb = jnp.maximum(jnp.maximum(-om_b / G, jnp.maximum(Hs + LV * E, 0.0) / (G * zb)), 1e-6)
         Mb = jnp.clip(Mb, 0.0, jnp.minimum(S['mf_cap'] * mmin / dt, 1.0)) * deep
-        if det_on: self._det = dict(D=dEta * Mb[None], Lw=Pdet * Mb[None])                       # kg m-2 s-1 per layer: detrained air and condensate
+        if det_on: self._det = dict(D=dEta * Mb[None], Lw=Pdet * Mb[None], Mtop=top(eta) * Mb[None])                       # kg m-2 s-1 per layer: detrained air and condensate
         if not shallow and mid is None: self._cmt_M = eta * Mb[None]                                               # updraft mass flux per layer (kg m-2 s-1), for mass-flux momentum transport
         # downdraft (mf_dd = its mass flux as a share of the updraft's, ECMWF ~0.3): air from the level of free sink (lower
         # third of the cloud) is cooled to saturation by evaporating rain and sinks moist-adiabatically (moist static energy of
@@ -1158,6 +1158,20 @@ class Model:
                 a2 = jnp.clip(a2 + dt * self._det['D'] / mass, 0.0, 1.0); q1 = q1 + dt * self._det['Lw'] / mass
             if self.S.get('cld_det', 0) >= 2 and getattr(self, '_det_sh', None) is not None:
                 a2 = jnp.clip(a2 + dt * self._det_sh['D'] / mass, 0.0, 1.0); q1 = q1 + dt * self._det_sh['Lw'] / mass      # shallow detrainment (7.22-7.23)
+            if self.S.get('cld_sub', 0) and self.S.get('cld_det', 0):
+                # cld_sub (26 Nov, high-cloud 5-why): the compensating-SUBSIDENCE terms of IFS eqs. 7.22-7.23 (M_c/rho d a/dz, M_c/rho d l/dz):
+                # the environment around the updraughts sinks with the updraught mass flux, carrying cloud down into warmer air where it
+                # evaporates (the dq_s/dt > 0 term then removes it). Upwind, through each layer's top interface: dx_k = dt M_top/m_k (x_above - x_k),
+                # Courant number capped at 1 (stated). Water is conserved: what leaves a layer enters the one below.
+                Mt = jnp.zeros_like(a2)
+                if getattr(self, '_det', None) is not None: Mt = Mt + self._det['Mtop']
+                if getattr(self, '_det_sh', None) is not None: Mt = Mt + self._det_sh['Mtop']
+                cr_ = jnp.clip(dt * Mt / mass, 0.0, 1.0)
+                up_ = lambda x: jnp.concatenate([jnp.zeros_like(x[:1]), x[:-1]], 0)
+                ql_ = q1 * mass; flx = jnp.minimum(dt * Mt, up_(mass)) * up_(q1)                                  # liquid entering each layer from above (kg m-2 per step)
+                flx_out = jnp.concatenate([flx[1:], jnp.zeros_like(flx[:1])], 0)              # = what the layer below receives from this one
+                q1 = jnp.maximum((ql_ + flx - flx_out) / mass, 0.0)
+                a2 = jnp.clip(a2 + cr_ * (up_(a2) - a2), 0.0, 1.0)
             sed_sfc = 0.0
             if self.S.get('cld_sed', 0):
                 # cld_sed (25 Nov, cover 5-why: detrained cirrus has no sink): IFS Cy47r1 Part IV 7.2(i) sedimentation of cloud ICE with a constant

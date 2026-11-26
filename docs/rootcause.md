@@ -5692,3 +5692,12 @@ running as a separate test) is NOT adopted on its own result unless this check p
   25 Nov 23:3x test of switching them off was done BEFORE advection and the shallow source existed (and the towers were then the only low-cloud
   source); it does not carry over. REGISTERED (before the result): the same 3-start screen with the diagnostic anvil and towers OFF (rad_prm
   f_tow 0, anv_max 0): low cloud stays within 0.7-1.3x, total cover within 0.85-1.15x and high cloud <= 1.3x on all 6 box-days. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 26 Nov 06:12 IST ANVIL-OFF 3-START RESULT (T42, full package + diagnostic anvil/towers OFF): high cloud Bay 1.58/1.22/1.27x, S.India 1.43/1.00/1.11x
+  (rule <= 1.3x FAIL on day 3 in both boxes - barely changed from 1.56/1.32); total cover Bay 1.38/1.17/1.21x, S.India 1.24/1.07/1.15x (FAIL);
+  low cloud Bay 0.54/0.90/0.82x, S.India 0.74/1.28/1.00x (Bay day 3 FAIL). The diagnostic anvil is NOT the high-cloud excess; the prognostic
+  detrained cirrus is. Diagnostic anvil/towers stay as they were (no registered reason to change). [reg: 05:4x anvil-off registration | inputs:
+  ERA5 lcc5/tcc/mhcc 3-start means, model T42 3 starts | fail-5why: below]
+- FAIL-5WHY: detrained cirrus sinks in our scheme: erosion, evaporation, sedimentation (0.13 m/s), advection. Still missing from IFS 7.22-7.23:
+  the compensating-SUBSIDENCE terms (cloud carried down with the environment's sinking around the updraughts into warmer air, where it
+  evaporates). Coded cld_sub (upwind, Courant capped at 1, water conserved). REGISTERED (before the result): the full package + cld_sub
+  (diagnostic anvil/towers ON as before), 3-start screen: high cloud <= 1.3x, total cover 0.85-1.15x, low cloud 0.7-1.3x on all 6 box-days. [reg: this line | inputs: n/a | fail-5why: n/a]
