@@ -5739,3 +5739,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   1e-3 exp(0.03 (T - 273.15)) (eq. 7.56), q_crit,i = 3e-5 kg/kg (IFS's own tuned value, taken as the reference); snow to the surface in the same step
   (stated). REGISTERED (before the results): (1) model IWP per start within 0.7-1.3x ERA5 (2 SE allowed per rule 10); (2) the 3-start cloud screen
   (high <= 1.3x, total 0.85-1.15x, low 0.7-1.3x, rule 10) on all 6 box-days. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 26 Nov 08:26 IST cld_iaut RESULT (T42, 3 starts, full cloud package + cld_iaut): (1) IWP 5.2/55.1/17.4 vs ERA5 9.8/21.7/22.5 g/m2 -> 0.53/2.54/0.77x,
+  mean 1.28 +- 0.63 (rule 0.7-1.3x with 2 SE: PASS; the 11 Nov start is still 2.5x - stated). (2) 3-start cloud screen with rule 10: ALL 18
+  box-day cells PASS (high Bay 1.50+-0.23/1.17/1.23, S.India 1.12/0.77/1.01; total Bay 1.28+-0.13/1.11/1.12, S.India 1.04/0.99/1.05; low Bay
+  0.59+-0.07/1.13/0.88, S.India 0.81/1.63+-0.34/1.33). Stated plainly: with only 3 starts the SEs are wide (0.03-0.41), so rule 10 is lenient here;
+  the means alone would fail Bay high day 3 (1.50), Bay low day 3 (0.59), S.India low day 4 (1.63). SCREEN PASSED by the registered rule. The cloud
+  package (cld_prog 2, cld_det 2, cld_sed, cld_adv, cld_sub, cld_iaut, sst_fill) goes to the T170 test tn-cldpkg (18 starts, four forecast
+  rules), which is the verdict. [reg: 07:4x cld_iaut registration | inputs: ERA5 iwp/cldps per start, model T42 3 starts | fail-5why: n/a]
