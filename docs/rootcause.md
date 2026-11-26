@@ -5709,3 +5709,12 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - FAIL-5WHY (next, registered before the check): fetch ERA5 high/total cloud PER START (same boxes/days) so the excess can be checked start by
   start and against 2 SE (rule 10); then, if the 11/16 Nov excess is real, size the cirrus sink terms (sedimentation 0.13 m/s vs the detrained
   ice flux) in those starts. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 26 Nov 06:50 IST PER-START CHECK (ERA5 cldps truth, fetched 06:4x; model = the cld_sub 3-start screen; ratio per start, mean +- SE of 3): applying
+  rule 10 (within 2 SE of the bound) to all 18 box-day-variable cells: high cloud PASS on all 6 (Bay d3 1.61+-0.20 -> 1.21 <= 1.3; S.India d3
+  1.37+-0.17); low cloud PASS on all 6 (Bay d3 0.69+-0.14; S.India d4 1.57+-0.38); total cover PASS on 5 of 6 - Bay day 3 1.37+-0.09 FAILS
+  (lower 2-SE bound 1.19 > 1.15). The package (cld_prog 2 + cld_det 2 + cld_sed + cld_adv + cld_sub + sst_fill) therefore fails the registered
+  cloud screen on ONE box-day of 6, driven by the 11 Nov start's high cloud (1.95x). Mean-of-ratios here differs from ratio-of-means above (stated).
+  Still HELD at screen level. [reg: 06:1x cld_sub registration + rule 10 | inputs: ERA5 cldps per start, model T42 3 starts | fail-5why: next]
+- NEXT (registered before the check): T170 is the exam resolution - the screen is T42; cirrus spread and fall depend on resolution. The cloud
+  package goes to a T170 part-3 job (four forecast rules) only after tn-sstfill, and the T42 Bay-day-3 cover excess is sized there with the
+  same per-start rule. [reg: this line | inputs: n/a | fail-5why: n/a]
