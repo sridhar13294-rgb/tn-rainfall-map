@@ -5701,3 +5701,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
   the compensating-SUBSIDENCE terms (cloud carried down with the environment's sinking around the updraughts into warmer air, where it
   evaporates). Coded cld_sub (upwind, Courant capped at 1, water conserved). REGISTERED (before the result): the full package + cld_sub
   (diagnostic anvil/towers ON as before), 3-start screen: high cloud <= 1.3x, total cover 0.85-1.15x, low cloud 0.7-1.3x on all 6 box-days. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 26 Nov 06:47 IST cld_sub 3-START RESULT (T42, full package + cld_sub): high cloud Bay 1.57/1.20/1.24x, S.India 1.33/0.99/1.19x (FAIL day 3 both
+  boxes); total cover Bay 1.37/1.16/1.15x, S.India 1.19/1.12/1.15x (FAIL); low cloud Bay 0.69/0.97/0.92x, S.India 0.94/1.54/1.19x (FAIL Bay d3,
+  S.India d4). The subsidence term barely moves high cloud. cld_sub HELD. Per-start: the high-cloud excess comes from the 11 and 16 Nov starts
+  (model 0.61-0.97 vs ERA5 3-start mean 0.45-0.56; 1 Nov start 0.29-0.55); the ERA5 truth is a 3-start MEAN only, so a paired per-start check is
+  not possible with it (stated). [reg: 06:1x cld_sub registration | inputs: ERA5 lcc5/tcc/mhcc 3-start means, model T42 3 starts | fail-5why: below]
+- FAIL-5WHY (next, registered before the check): fetch ERA5 high/total cloud PER START (same boxes/days) so the excess can be checked start by
+  start and against 2 SE (rule 10); then, if the 11/16 Nov excess is real, size the cirrus sink terms (sedimentation 0.13 m/s vs the detrained
+  ice flux) in those starts. [reg: this line | inputs: n/a | fail-5why: n/a]
