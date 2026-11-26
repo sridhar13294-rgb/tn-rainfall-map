@@ -5746,3 +5746,6 @@ running as a separate test) is NOT adopted on its own result unless this check p
   the means alone would fail Bay high day 3 (1.50), Bay low day 3 (0.59), S.India low day 4 (1.63). SCREEN PASSED by the registered rule. The cloud
   package (cld_prog 2, cld_det 2, cld_sed, cld_adv, cld_sub, cld_iaut, sst_fill) goes to the T170 test tn-cldpkg (18 starts, four forecast
   rules), which is the verdict. [reg: 07:4x cld_iaut registration | inputs: ERA5 iwp/cldps per start, model T42 3 starts | fail-5why: n/a]
+- 26 Nov 08:27 IST P5b 5-WHY RESTART on the full package (registered before the result): Bay box day 1, model (T42, candidate + cloud package +
+  sst_fill) vs ERA5 bayfx (1 / 11 Nov): sea LE, rain, atmospheric radiation, sea-air dq. The term >= 15 % off ERA5 that is largest in W m-2 is
+  named as the next rain-deficit step. [reg: this line | inputs: n/a | fail-5why: n/a]
