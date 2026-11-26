@@ -5735,3 +5735,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - FAIL-5WHY: our carried condensate turns into precipitation only by the LIQUID Sundqvist autoconversion (and ice falls at 0.13 m/s); IFS
   converts cloud ICE to SNOW by its own ice autoconversion (Part IV 7.2.x) and snow falls at ~1 m/s. That conversion is missing. Next: read
   the IFS ice-to-snow autoconversion (form, constants) and register the test before coding. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 26 Nov 07:35 IST cld_iaut CODED from IFS Cy47r1 Part IV 7.2(g) (read 07:3x): ice autoconversion = Sundqvist form 7.50 with ice parameters, c0 =
+  1e-3 exp(0.03 (T - 273.15)) (eq. 7.56), q_crit,i = 3e-5 kg/kg (IFS's own tuned value, taken as the reference); snow to the surface in the same step
+  (stated). REGISTERED (before the results): (1) model IWP per start within 0.7-1.3x ERA5 (2 SE allowed per rule 10); (2) the 3-start cloud screen
+  (high <= 1.3x, total 0.85-1.15x, low 0.7-1.3x, rule 10) on all 6 box-days. [reg: this line | inputs: n/a | fail-5why: n/a]

@@ -136,7 +136,7 @@ DEFAULTS = dict(rh_deep=0.8, tau_deep=2400.0, tau_shallow=3600.0, tau_cmt=6 * 36
                 z0_land=0.1, cap_land=2e5, bucket=0.15, alb_sea=0.07, alb_land=0.2, k_wv=0.1, k_dry=2.2e-4, k_cld=0.08, k_sw=0.012,
                 h_ml=40.0, ent=0.6, tau_strat=15 * 86400.0, sponge=86400.0, sst_off=0.0, sppt=0.0, sppt_seed=0, gust=1.0, sppt_on=None,
                 conv='mf', entr=1.5e-4, mf_cap=0.3, mf_closure='cape', rad='radcloud', rad_every=2,
-                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, sh_wtest=0.0, sbl_ifs=0.0, bl_exc_ws=0.0, tofd=0.0, sfc_mo_h=0.0, dp_ifs=0.0, dp_ifs_exc=0.0, sfc_mo_land=0.0, cld_prog=0.0, cld_det=0.0, mf_ice_ifs=0.0, sst_fill=0.0, tau_ifs=0.0, cld_sed=0.0, cld_adv=0.0, cld_sub=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, midlev=0.0, lsc_sub=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
+                mf_kick_t=0.5, mf_kick_q=0.0005, mf_org=0.0, mf_wup=0.0, mf_dd=0.5, shallow='mse', sh_top=0.0, bmj_dt=0.5, rad_prm=None, bmj_ice=0.0, ck_z=0.5, sh_taper=0.0, pbl_tm=0.0, sh_trig=0.0, sh_clos=0.0, ev_frac=0.3, mf_wke=0.0, rad_top=0.12, mf_capdp=0.0, sp_quad=0.0, sp_top=0.05, src_dp=0.0, mf_dmin=25000.0, sh_dtop=0.0, sh_cap=0.0, sh_mflux=0.0, cmt_mf=0.0, cmt_cu=0.7, cld_pdf=0.0, ent_top=0.0, evap_ifs=0.0, sfc_imp=0.0, bl_lcl=0.0, sfc_sal=0.0, drag_imp=0.0, soil_fr=0.0, soil_mu=1400.0, land_rs=0.0, sh_depth=0.0, sh_eps=0.0, sh_det=0.0, sh_dmax=30000.0, edmf=0.0, sh_ifs2=0.0, sh_wtest=0.0, sbl_ifs=0.0, bl_exc_ws=0.0, tofd=0.0, sfc_mo_h=0.0, dp_ifs=0.0, dp_ifs_exc=0.0, sfc_mo_land=0.0, cld_prog=0.0, cld_det=0.0, mf_ice_ifs=0.0, sst_fill=0.0, tau_ifs=0.0, cld_sed=0.0, cld_adv=0.0, cld_sub=0.0, cld_iaut=0.0, phys_ifs=0.0, bl_entr=0.0, ifs_pbl=1.0, mf_mix_exact=0.0, skin_ifs=0.0, skin_lam=10.0, emis_land=1.0, dd_ifs=0.0, lsc_mix=0.0, midlev=0.0, lsc_sub=0.0, sh_off=0.0, phys_off=False, mono=True, mf_ice=0.0, ocean3d=None)
 RADKEYS = ('heating', 'sw_net_sfc', 'lw_dn_sfc', 'olr', 'cover')       # kept in the carry between radiation calls (rad_every > 1)
 # settings an ensemble member may change without recompiling: carried as numbers inside the run (carry['prm'])
 DT_MAX = {'T42': 60.0, 'T63': 40.0, 'T85': 30.0, 'T106': 20.0, 'T119': 20.0, 'T170': 20.0, 'T213': 15.0, 'T255': 12.0}
@@ -1149,6 +1149,13 @@ class Model:
             ev2 = 0.333 * a1 * (1.0 - a1) * Kr * sub
             qcl = q0 / jnp.maximum(a1, 1e-3); qcr = jnp.where(self.land[None], 5.5e-4, 2.5e-4)
             aut = a1 * 1.67e-4 * qcl * (1.0 - jnp.exp(-(qcl / qcr) ** 2))
+            if self.S.get('cld_iaut', 0):
+                # cld_iaut (26 Nov, cirrus 5-why: model IWP 1.9-5.7x ERA5): IFS Cy47r1 Part IV 7.2(g) - the Sundqvist form (7.50) with ICE parameters:
+                # c0 = 1e-3 exp(0.03 (T - 273.15)) s-1 (7.56), q_crit,i = 3e-5 kg/kg, applied to the in-cloud ice share (1 - alpha); the liquid share keeps
+                # c0 = 1.67e-4 and its q_crit. The snow is counted as surface precipitation in the same step (no snow prognostic, no sublimation below
+                # cloud - stated, same as our liquid autoconversion).
+                qlc_ = al * qcl; qic_ = (1.0 - al) * qcl
+                aut = a1 * (1.67e-4 * qlc_ * (1.0 - jnp.exp(-(qlc_ / qcr) ** 2)) + 1e-3 * jnp.exp(0.03 * (Tc_ - 273.15)) * qic_ * (1.0 - jnp.exp(-(qic_ / 3e-5) ** 2)))
             q1 = jnp.maximum(q0 + dt * (jnp.minimum(cnd - ev1 - ev2, 0.5 * jnp.maximum(qc_, 0.0) / dt) - aut), 0.0)
             a2 = jnp.clip(a1 - dt * ev2 / jnp.maximum(qcl, 1e-7), 0.0, 1.0)
             if self.S.get('cld_det', 0) and getattr(self, '_det', None) is not None:
