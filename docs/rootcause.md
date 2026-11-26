@@ -5683,3 +5683,12 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - FAIL-5WHY / REGISTERED (before the result): which level carries the cover excess? ERA5 'mhcc truth' (medium/high cloud cover, same boxes,
   starts and days) vs model mid (0.45 <= sigma < 0.8) and high (sigma < 0.45) max-overlap cloud from the same screen re-run: the layer whose
   ratio exceeds 1.3x is named (then its source term gets the size check). [reg: this line | inputs: n/a | fail-5why: n/a]
+- 26 Nov 05:36 IST MID/HIGH SPLIT RESULT (T42 3 starts vs ERA5 mhcc 3-start mean, days 3-5): mid cloud Bay 0.97/0.79/0.82x, S.India 1.03/0.92/0.81x
+  (fine); HIGH cloud Bay 1.56/1.23/1.30x, S.India 1.32/0.96/1.13x (days 1-2 0.66-0.80 vs ERA5 0.49-0.60). Rule (> 1.3x names the layer): HIGH
+  cloud NAMED (Bay day 3, S.India day 3, Bay day 5 at 1.30). Model layer cover is max-overlap within the layer; ERA5's own overlap differs
+  (stated). [reg: 05:0x mid/high registration | inputs: ERA5 mhcc (fetched 05:1x), model T42 3 starts | fail-5why: below]
+- FAIL-5WHY: high cloud has two sources in the model now - the prognostic detrained cloud (advected, sedimenting) AND radiation's diagnostic
+  anvil (anv_max) and towers (f_tow), still ON. IFS has no diagnostic anvil once convection feeds the prognostic cloud (Part IV 7.2.4). The
+  25 Nov 23:3x test of switching them off was done BEFORE advection and the shallow source existed (and the towers were then the only low-cloud
+  source); it does not carry over. REGISTERED (before the result): the same 3-start screen with the diagnostic anvil and towers OFF (rad_prm
+  f_tow 0, anv_max 0): low cloud stays within 0.7-1.3x, total cover within 0.85-1.15x and high cloud <= 1.3x on all 6 box-days. [reg: this line | inputs: n/a | fail-5why: n/a]
