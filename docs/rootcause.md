@@ -5718,3 +5718,6 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - NEXT (registered before the check): T170 is the exam resolution - the screen is T42; cirrus spread and fall depend on resolution. The cloud
   package goes to a T170 part-3 job (four forecast rules) only after tn-sstfill, and the T42 Bay-day-3 cover excess is sized there with the
   same per-start rule. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 26 Nov 07:01 IST REGISTERED (before the result): is the 11 Nov high-cloud excess too much CONVECTION? ERA5 total and convective rain per start
+  (rainps truth) vs model rain (the cld_sub screen runs), Bay box days 2-3: if the 11 Nov model rain exceeds ERA5's by >= 30 % while the 1 Nov
+  start does not, over-active convection (too much detrained ice) is named; otherwise the cirrus sinks are sized next. [reg: this line | inputs: n/a | fail-5why: n/a]
