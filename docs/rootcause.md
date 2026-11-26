@@ -5721,3 +5721,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - 26 Nov 07:01 IST REGISTERED (before the result): is the 11 Nov high-cloud excess too much CONVECTION? ERA5 total and convective rain per start
   (rainps truth) vs model rain (the cld_sub screen runs), Bay box days 2-3: if the 11 Nov model rain exceeds ERA5's by >= 30 % while the 1 Nov
   start does not, over-active convection (too much detrained ice) is named; otherwise the cirrus sinks are sized next. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 26 Nov 07:17 IST PER-START RAIN RESULT (T42 full cloud package vs ERA5 rainps, Bay box, days 1-3 mm/day): 1 Nov 0.64/0.72/1.03 vs 2.90/1.99/2.84
+  (0.22-0.36x); 11 Nov 4.84/5.22/4.93 vs 6.99/5.33/6.34 (0.69-0.98x); 16 Nov 4.30/3.18/2.00 vs 9.34/6.47/4.76 (0.42-0.49x). Rule (11 Nov model
+  rain >= 1.3x ERA5 on days 2-3): NOT met (0.98/0.78) -> over-active convection NOT named for the 11 Nov high-cloud excess. Side fact for P5b:
+  Bay rain is still 0.2-0.98x ERA5 with the full package at T42. [reg: 07:0x rain registration | inputs: ERA5 rainps (fetched 07:0x), model T42 3 starts | fail-5why: below]
+- REGISTERED (before the result): cirrus water vs cover. ERA5 ice water path above 450 hPa (specific cloud ice water content, per start, Bay box,
+  days 2-3) vs the model's carried ice (cql ice share) there: if the model IWP is within 0.7-1.3x ERA5 while its high cover is 1.3x+, too much
+  FRACTION per unit ice is named (the D_up fraction source vs IFS 7.23); if the model IWP is >= 1.3x, too much ICE (sinks too weak) is named. [reg: this line | inputs: n/a | fail-5why: n/a]
