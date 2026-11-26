@@ -5728,3 +5728,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - REGISTERED (before the result): cirrus water vs cover. ERA5 ice water path above 450 hPa (specific cloud ice water content, per start, Bay box,
   days 2-3) vs the model's carried ice (cql ice share) there: if the model IWP is within 0.7-1.3x ERA5 while its high cover is 1.3x+, too much
   FRACTION per unit ice is named (the D_up fraction source vs IFS 7.23); if the model IWP is >= 1.3x, too much ICE (sinks too weak) is named. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 26 Nov 07:35 IST IWP RESULT (Bay box, days 2-3, above 450 hPa; model T42 full cloud package vs ERA5 ciwc): 1 Nov 18.9 vs 9.8 g/m2 (1.9x), 11 Nov 124.2
+  vs 21.7 (5.7x), 16 Nov 46.7 vs 22.5 (2.1x). Rule: model IWP >= 1.3x -> too much ICE named (the cirrus sinks are too weak), worst on 11 Nov -
+  the start with the high-cover excess. ERA5 ciwc excludes snow (a separate prognostic in IFS), so the comparison is with cloud ice only. [reg:
+  07:1x IWP registration | inputs: ERA5 ciwc (fetched 07:2x), model T42 3 starts | fail-5why: below]
+- FAIL-5WHY: our carried condensate turns into precipitation only by the LIQUID Sundqvist autoconversion (and ice falls at 0.13 m/s); IFS
+  converts cloud ICE to SNOW by its own ice autoconversion (Part IV 7.2.x) and snow falls at ~1 m/s. That conversion is missing. Next: read
+  the IFS ice-to-snow autoconversion (form, constants) and register the test before coding. [reg: this line | inputs: n/a | fail-5why: n/a]
