@@ -5757,3 +5757,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - REGISTERED (before the result): where does the 1 Nov moisture go? ERA5 total column water vapour (Bay box, day 1, per start) vs the model's:
   if the model column is >= 2 kg m-2 MOISTER than ERA5 while raining 0.11x, convection is failing to fire/rain (trigger or closure) and is named;
   if it is drier, the moisture supply (convergence) is named. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 26 Nov 08:50 IST TCWV RESULT (Bay box, model T42 full package vs ERA5, h0/d1/d2/d3 kg m-2): 1 Nov 49.7/49.2/48.3/47.2 vs 49.4/48.9/48.6/48.8; 11 Nov
+  45.6/47.9/51.3/50.7 vs 45.0/47.2/49.7/49.5; 16 Nov 50.4/49.6/46.2/42.5 vs 48.9/47.7/43.8/41.5. Day 1 on 1 Nov: +0.35 (rule: >= 2 moister or drier
+  - NEITHER) -> INCONCLUSIVE. The model column holds ERA5's water vapour to within 0.3-2.4 kg m-2 on every start/day. Water budget, 1 Nov day 1
+  (stated as arithmetic, not a test): model E 2.6 - P 0.3 - dW/dt 0.5 -> exports ~2.8 mm/day; ERA5 3.0 - 2.8 - 0.6 -> ~0.8 mm/day: the model
+  moves the moisture out of the box instead of raining it. [reg: 08:4x TCWV registration | inputs: ERA5 tcwv (fetched 08:4x), model T42 3 starts | fail-5why: below]
+- FAIL-5WHY note: on the weak, scattered-convection start (1 Nov: ERA5 convective rain 2.4 mm/day) the T42 grid (~300 km) cannot hold the
+  convergence that a 0.25-deg ERA5 storm sets up; the resolution check comes first - the same budget at T170 (exam resolution) from the
+  tn-cldpkg job (rain per start is in its output) before any further physics change for P5b. [reg: this line | inputs: n/a | fail-5why: n/a]
