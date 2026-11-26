@@ -5749,3 +5749,11 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - 26 Nov 08:27 IST P5b 5-WHY RESTART on the full package (registered before the result): Bay box day 1, model (T42, candidate + cloud package +
   sst_fill) vs ERA5 bayfx (1 / 11 Nov): sea LE, rain, atmospheric radiation, sea-air dq. The term >= 15 % off ERA5 that is largest in W m-2 is
   named as the next rain-deficit step. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 26 Nov 08:34 IST P5b FLUX RESULT (T42 full package, Bay day 1, model vs ERA5 bayfx, 1 / 11 Nov): rain 0.30 vs 2.76 (0.11x) / 6.15 vs 6.93 (0.89x)
+  mm/day; sea LE 75.9 vs 86.1 (0.88x) / 130.4 vs 126.9 (1.03x); U ~2.75 vs 3.35 (0.82x) / 4.85 vs 4.95; atmospheric radiation -110.1 vs -106.1 /
+  -102.3 vs -108.5; dq 6.96/7.40 vs 6.19/6.60 (model at ~80 m, stated). The 11 Nov start is now close on every term. The 1 Nov start's rain
+  is 0.11x while its evaporation is 0.88x: the largest gap (2.5 mm/day = 72 W m-2) is the rain itself, not its supply. Named: on 1 Nov the
+  moisture is not being rained out (U 18 % low also named, but it explains only ~10 W m-2 of LE). [reg: 08:3x P5b registration | inputs: ERA5 bayfx, model T42 2 starts | fail-5why: below]
+- REGISTERED (before the result): where does the 1 Nov moisture go? ERA5 total column water vapour (Bay box, day 1, per start) vs the model's:
+  if the model column is >= 2 kg m-2 MOISTER than ERA5 while raining 0.11x, convection is failing to fire/rain (trigger or closure) and is named;
+  if it is drier, the moisture supply (convergence) is named. [reg: this line | inputs: n/a | fail-5why: n/a]
