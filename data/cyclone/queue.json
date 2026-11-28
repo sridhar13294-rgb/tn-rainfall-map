@@ -4,5 +4,11 @@
   "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
   "note": "P5a jets check on adopted candidate cand_sstfill",
   "cmd": "VARS=\"u200,v200,z500,u850,rain24\" WIN=\"-90,90,0,360\" NDAY=10 PERSTART=1 GR=T170 ONLY=\"cfg\" VAR_CFG=../../../data/cyclone/kaggle_cfg/cand_sstfill.json STRIDE=1 OUT=/kaggle/working/p5_dyn_cand1.json XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore p5_geo.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 12 > /kaggle/working/p5_dyn_cand1.log 2>&1; tail -4 /kaggle/working/p5_dyn_cand1.log"
+ },
+ {
+  "slug": "tn-blow23",
+  "inputs": "libm_wx2020L2_fields.npz,wx_truth_2020.npz,geo_gwd.npz",
+  "note": "cldpkg 23 Aug blow-up hourly trace at T170",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore blow_trace.py T170 /kaggle/working/libm_wx2020L2_fields.npz > /kaggle/working/blow.log 2>&1; tail -12 /kaggle/working/blow.log"
  }
 ]

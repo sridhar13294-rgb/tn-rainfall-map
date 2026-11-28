@@ -5806,3 +5806,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   cand_cldpkg set for 5 days, printing global max |T| change, max cfa/cql and mslp finiteness every 6 h. If it blows up at T42, the first
   non-finite field and its location name the process; if it does not, the blow-up is resolution-dependent and the T170 trace needs a Kaggle
   debug job. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 28 Nov 07:35 IST cldpkg BLOW-UP TRACE RESULT (T42, 23 Aug, 5 days, 6-hourly): no blow-up; all fields finite to 120 h; T max 310-320 K (Arabia/
+  Sahara, normal), cfa max 1.0, cql max 1.3-5.8 g/kg (large in-cloud water in a few cells). By the registered rule the blow-up is RESOLUTION-
+  dependent -> a T170 Kaggle debug job (blow_trace.py, hourly) is queued behind the Tracks and jet checks. [reg: 07:3x blow-up registration |
+  inputs: model T42 23 Aug | fail-5why: next step = T170 hourly trace]
