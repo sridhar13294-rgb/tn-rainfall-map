@@ -5775,3 +5775,26 @@ running as a separate test) is NOT adopted on its own result unless this check p
   registration | inputs: T170 Kaggle map.json (3 starts) | fail-5why: n/a]
 - NEXT (already queued): tn-sstfill and tn-cldpkg are the two physics changes aimed at this heating deficit (coastal evaporation; cloud
   radiative/latent effects). Their TN v850 d1 is the Tracks gate (>= -1.0). [reg: 25 Nov 18:2x | inputs: n/a | fail-5why: n/a]
+- 28 Nov 07:24 IST tn-sstfill RESULT (T170 part 3, 18 starts, 0 failed, account 1; candidate + rhc_ifs + cld_prog 2 + sst_fill, i.e. cand_cldprog + sst_fill):
+  (1) TN v850 d1 -1.78 +- 0.41 -> -1.78 + 2 SE = -0.96 >= -1.0: PASS (tol). (2) TN 5-day rain ratio 1.177 +- 0.101 (bootstrap over starts) >= 0.85:
+  PASS (lc_mix 0.422). (3) z500 d5 60.72 m vs lc_mix 65.90, paired -5.17 +- 0.66: PASS. (4) S.India t850 bias growth d1 -> d3 -0.36 K vs moland
+  -1.07 (66 % smaller; paired growth - 0.5 x moland = +0.17 +- 0.09 >= 0): PASS. ALL FOUR PASS -> ADOPTED: the Stage-1 candidate is now
+  cand_sstfill (land set + sfc_mo_land + bl_exc_ws + tofd + rhc_ifs + cld_prog 2 + sst_fill). Also: tropics t850 d5 RMSE 1.79 (lc_mix 2.22),
+  global mslp 629 (656), India t2 d5 3.20 (3.39), India u850 d5 4.51 (5.95); WORSE: S.India rain24 d5 RMSE 7.69 (lc_mix 6.45) - TN rain now
+  slightly wet (1.18). [reg: 25 Nov 20:5x sst_fill registration (four rules) + rule 10 | inputs: part-3 T170, paired with tn-lcm-wx3 / tn-ls-moland (same 18 starts) | fail-5why: n/a (pass)]
+- 28 Nov 07:24 IST tn-cldpkg RESULT (T170 part 3, account 4; cloud package cld_det 2 + cld_sed + cld_adv + cld_sub + cld_iaut + sst_fill): 2020-08-23 start
+  BLEW UP (non-finite mslp) -> 17 of 18. On the 17: TN v850 d1 -1.55 +- 0.41 PASS (tol); TN rain 1.167 PASS; z500 d5 paired -4.20 +- 0.54 PASS;
+  S.India growth 56 % smaller PASS - but a blow-up fails stability outright -> cloud package HELD. [reg: 26 Nov 08:3x cloud-package registration |
+  inputs: part-3 T170 | fail-5why: blow-up 23 Aug - trace it at T42/T85 locally first (cloud tracers + SL monotone, ice sedimentation implicit)]
+- CORRECTION (my scoring error, 25 Nov 17:57 tn-cldprog): I scored TN v850 d1 -1.69 +- 0.45 and the S.India growth (paired -0.07 +- 0.07) as FAIL
+  without applying rule 10; under rule 10 both are PASS (tol). Its TN rain 0.573 +- 0.113 (2 SE: 0.80 < 0.85) still FAILS, so "cld_prog HELD"
+  stands; the pass now comes with sst_fill.
+- CORRECTION (my labels in the user status tables since 25 Nov): I wrote "P5a = cold growth" and "Tracks = TN v850". Wrong. P5a = JETS (u200
+  biases / jet core check, tn-p5-dyn rule, 12 Nov) and Tracks = storm TRACKS (registered 5/9 Nov, re-stated 24 Nov 10:08: trend/turns match AND
+  72-h mean position error <= 280-290 km, rule 10). The TN v850 rule was a gate on the candidate tests, not the Tracks gate.
+- ITEM VERDICTS with cand_sstfill: P2/P4 (TN 5-day rain within +-25 %, part 3): 1.177 +- 0.101 -> inside 0.75-1.25: PASS -> CLOSED (rechecked
+  by the Day-10 full exam). P5b (registered P5b gate TN rain >= 0.85): PASS -> CLOSED (same recheck). Tracks, P5a, Day-10: OPEN.
+  [reg: P2/P4 gate (4112/4655), P5b gate (5178) + rule 10 | inputs: tn-sstfill part-3 | fail-5why: n/a]
+- REGISTERED (before the results): tn-r1-cand1-0/1 (83 storms, hind2.py, lib84_cand1 = vcreloc2 + the cand_sstfill extras): Tracks PASS if the 72-h
+  mean position error <= 290 km + 2 SE AND the trend rule (12-h headings within 30 deg in >= 5 of 6 quick storms / >= 80 % overall); P3 stays
+  closed if within +-5 hPa >= 59 of 83 (tol, as 24 Nov). [reg: this line | inputs: n/a | fail-5why: n/a]
