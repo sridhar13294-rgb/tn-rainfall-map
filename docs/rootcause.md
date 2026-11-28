@@ -5888,3 +5888,19 @@ running as a separate test) is NOT adopted on its own result unless this check p
   best track of EACH tracker fix (min MSLP, max vo850, max vo700, min z850, min z700). If the MSLP fix is within 50 km but the vorticity/height
   fixes are ~100 km off, the relocation moves only the surface-pressure part of the vortex (the 3-D wind/height anomaly is not moved with it);
   if all fixes are ~100 km off, the vortex found and moved is the wrong feature. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 28 Nov 11:54 IST RELOCATION FIX-BY-FIX RESULT (T85, 10 storms, after relocation, km from best track): MSLP 33-110 (mean 76), vo850 18-103 (68),
+  vo700 49-127 (85), z850 132-381 (226), z700 142-385 (231). By the registered rule NEITHER branch cleanly (MSLP not within 50): INCONCLUSIVE,
+  but two facts are named: (1) the moved SLP centre itself misses the target by ~76 km - the shift is set from the analysis centre taken as the
+  GRID POINT of the smoothed-SLP minimum (argmin), not to sub-grid precision as the tracker does (subgrid_peak) - a half-cell error by
+  construction (T85 ~78 km, T170 ~39 km); (2) the 850/700 HEIGHT minima of these weak depressions sit 130-385 km away (flat heights in the
+  monsoon trough) and pull the 5-fix mean. [reg: 11:5x fix-by-fix registration | inputs: T85 local 10 storms | fail-5why: below]
+- FIX (defect, no tuning): relocation uses the SUB-GRID analysis centre (the tracker's subgrid_peak on the smoothed SLP), so the vortex is moved
+  by the true offset. REGISTERED (before the result): T85, the same 10 storms - MSLP fix after relocation mean <= 30 km; then (if met) the
+  83-storm T170 job with the fix (Tracks rules of 07:1x). The height-fix question (tracker definition) is left for after, as a separate test.
+  [reg: this line | inputs: n/a | fail-5why: n/a]
+- 28 Nov 11:55 IST reloc_sub RESULT (T85, same 10 storms): MSLP fix after relocation 2-45 km, mean 21 km (rule <= 30: PASS; was 76); tracked hour-0
+  error 75 -> 60 km; vo850 fix 10-99 (mean 55; was 68); height fixes unchanged (132-386 km, they are not moved because they are the environment's
+  flat trough). reloc_sub is a DEFECT FIX of the relocation (no tuning) -> goes into the storm configuration. [reg: 12:0x reloc_sub registration | inputs: T85 local 10 storms | fail-5why: n/a (pass)]
+- REGISTERED (before the result): tn-r1-cand2 (83 storms, lib84_cand2 = lib84_cand1 + reloc_sub): the Tracks rules of 28 Nov 07:1x (72-h mean
+  <= 290 + 2 SE AND trend: quick-6 12-h headings within 30 deg in >= 5 of 6) and P3 (>= 59 of 83 within +-5 hPa); also reported: hour-0 mean
+  error (was 102 km). [reg: this line | inputs: n/a | fail-5why: n/a]
