@@ -1,6 +1,6 @@
-tn-blowterms
+tn-cand2
 libm_wx2020L2_fields.npz,wx_truth_2020.npz,geo_gwd.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore blow_terms.py T170 /kaggle/working/libm_wx2020L2_fields.npz > /kaggle/working/blowterms.log 2>&1; tail -16 /kaggle/working/blowterms.log
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/cand2.json 3 4 /kaggle/working/wx_3.json > /kaggle/working/wx_3.log 2>&1; tail -3 /kaggle/working/wx_3.log
 NvidiaTeslaT4
 4
-#cldpkg runaway: per-stage cloud water at the runaway point 2026-11-28T05:32Z
+#Stage-1 candidate with sl_vcubic (config fix) 2026-11-28T05:53Z
