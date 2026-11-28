@@ -1,6 +1,6 @@
-tn-r1-cand2-0
+tn-r1-cand2-1
 libm_cycL2_fields.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore hind2.py /kaggle/working/libm_cycL2_fields.npz ../../../data/cyclone/kaggle_cfg/lib84_cand2.json 0 2 /kaggle/working/h0.json > /kaggle/working/h0.log 2>&1; tail -6 /kaggle/working/h0.log
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore hind2.py /kaggle/working/libm_cycL2_fields.npz ../../../data/cyclone/kaggle_cfg/lib84_cand2.json 1 2 /kaggle/working/h1.json > /kaggle/working/h1.log 2>&1; tail -6 /kaggle/working/h1.log
 NvidiaTeslaT4
-1
-#Tracks + P3 with sub-grid relocation 2026-11-28T09:23Z
+4
+#Tracks + P3 with sub-grid relocation 2026-11-28T09:52Z
