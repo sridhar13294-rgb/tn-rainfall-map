@@ -5973,3 +5973,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - 28 Nov 19:02 IST DAY-10 PART 0 (tn-d10-p0, 19 starts, cand2, 10 days): 0 failed starts; z500 d10 112.37 m (<= 122.6) vs lc_mix 110.80, paired +1.57 +- 2.80
   (within 2 SE); global mslp d10 1028 vs 995, paired +32.9 +- 21.3 (within 2 SE); tropics t850 d10 2.07 vs 2.53 (-0.46 +- 0.04, better). Part 0
   passes (a), (b), (c). Day-10 closes only when all four parts pass. [reg: 25 Nov Day-10 registration + rule 10 | inputs: tn-d10-p0 vs tn-lcm-wx0, same 19 starts | fail-5why: n/a]
+- 28 Nov 20:12 IST REGISTERED (before the result) - steering test brought forward locally (the user asked to attack the direction now; Kaggle queue
+  slow): T85, the quick-6 storms (Sidr, Titli, Phailin, Giri, Hamoon, Nivar), lib84_cand2 settings, 72 h, model DLM at the tracked centre vs ERA5
+  DLM along best track. Same rule as 17:4x: if the model DLM-vector error explains >= 50 % of the variance of its motion-vector error (12-72 h
+  segments), the STEERING FLOW is named; otherwise the vortex-relative motion. T85 and 6 storms only - a screen; the T170 83-storm tn-r1-dlm decides. [reg: this line | inputs: n/a | fail-5why: n/a]
