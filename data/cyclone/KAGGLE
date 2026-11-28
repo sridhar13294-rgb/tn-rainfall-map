@@ -1,6 +1,6 @@
-tn-h0off
-libm_cycL2_fields.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore h0off.py T170 83 /kaggle/working/libm_cycL2_fields.npz > /kaggle/working/h0off.log 2>&1; tail -4 /kaggle/working/h0off.log
+tn-p5-dyn-physoff
+libm_wx2020_fields.npz,wx_truth_2020.npz
+VARS="u200,v200,z500,u850,rain24" WIN="-90,90,0,360" NDAY=10 PERSTART=1 GR=T170 ONLY="physics off" STRIDE=1 OUT=/kaggle/working/p5_dyn_physoff.json XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore p5_geo.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 12 > /kaggle/working/p5_dyn_physoff.log 2>&1; tail -4 /kaggle/working/p5_dyn_physoff.log
 NvidiaTeslaT4
-1
-#Tracks: hour-0 centre offset at T170, 83 storms 2026-11-28T04:26Z
+4
+#P5a: jets with physics off (dynamics only) 2026-11-28T04:27Z
