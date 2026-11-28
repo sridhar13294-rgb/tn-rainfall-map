@@ -5938,3 +5938,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   (full) kg m-2 per day (~0.1-0.2 hPa, no mass fixer). This residual is NOT a Stage-1 gate (P2/P4, P5b pass on rain against observations); it
   is logged as a follow-up for the Day-10 exam's rain/drift check, not pursued now so the GPU and time go to the three open items.
   [reg: 15:2x residual registration | inputs: model T42 one start | fail-5why: follow-up, not a Stage-1 item]
+- 28 Nov 15:35 IST tn-p5-dyn-cand2 RESULT (T170, 12 starts, cand2 = with sl_vcubic; p5_dyn_eval.py): NO jet feature (subtropical and eddy-driven jet core
+  latitude and speed, Asia / Pacific / Atlantic, plus the Rossby-wave and MJO-band u checks) is systematically wrong on days 1-5 (0 features
+  with >= 7 same-sign failures on any of days 1-5; the first systematic flags appear on days 9-10 in 4 features). Asia subtropical jet speed
+  d1-d4 -2.1 / -2.4 / -3.0 / -3.1 m/s (cand1 WITHOUT sl_vcubic: -5.9 / -8.6 / -10.3 / -10.6). By the registered P5a rule -> P5a PASS ->
+  CLOSED. Stated: the sl_vcubic omission I found this morning was the whole difference between FAIL and PASS here. Not in the P5a rule but
+  noted: the MJO-band RAIN pattern correlation drops below 0.6 from day 2 (0.59) - a Day-10 exam concern, not a P5a gate. [reg: 28 Nov 07:1x
+  P5a registration (days 1-5) | inputs: p5_dyn_cand2.npz (release) + wx_truth_2020 | fail-5why: n/a (pass)]
