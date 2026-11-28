@@ -5834,3 +5834,5 @@ running as a separate test) is NOT adopted on its own result unless this check p
   start fields, (b) the tracker's hour-0 fix. If (a) is small (< 50 km) and (b) ~100 km, the TRACKER (centre definition on the T170 grid) is
   named; if (a) ~100 km, the RELOCATION is named. Either way the 72-h error carries it and it gets fixed before the steering 5-why.
   [reg: this line | inputs: n/a | fail-5why: n/a]
+- 28 Nov 09:50 IST hour-0 check: T170 init locally is OOM (6 GB, killed) - running it at T85 instead, adding a third case (relocated + DFI); the
+  registered rule is applied to the same three-way split; the T85 grid (1.4 deg) adds its own quantisation (stated). [reg: 10:1x hour-0 registration | inputs: n/a | fail-5why: n/a]
