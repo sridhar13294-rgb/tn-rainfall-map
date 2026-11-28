@@ -5977,3 +5977,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   slow): T85, the quick-6 storms (Sidr, Titli, Phailin, Giri, Hamoon, Nivar), lib84_cand2 settings, 72 h, model DLM at the tracked centre vs ERA5
   DLM along best track. Same rule as 17:4x: if the model DLM-vector error explains >= 50 % of the variance of its motion-vector error (12-72 h
   segments), the STEERING FLOW is named; otherwise the vortex-relative motion. T85 and 6 storms only - a screen; the T170 83-storm tn-r1-dlm decides. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 28 Nov 20:25 IST DAY-10 PART 1 (tn-d10-p1, 18 starts, 0 failed): z500 d10 110.73 (<= 122.6) vs lc_mix 108.49, paired +2.24 +- 2.30 PASS; tropics t850 d10
+  better (-0.31 +- 0.05); global mslp d10 1026.8 vs 987.3, paired +39.5 +- 17.5 -> outside 2 SE. POOLED parts 0-1 (37 starts): mslp d10 +36.1 +- 13.7
+  (outside 2 SE: FAIL so far), z500 d10 +1.89 +- 1.80 (PASS), t850 -0.39 +- 0.04 (PASS). The registered unit is the full exam (all parts
+  pooled), so the verdict waits for parts 2-3; but the mslp d10 signal is consistent (+33, +39). [reg: 25 Nov Day-10 registration + rule 10 | inputs: tn-d10-p0/p1 vs tn-lcm-wx0/1 | fail-5why: started below]
+- REGISTERED (before the check): where and how does cand2's mslp d10 lose to lc_mix? Paired d10 mslp RMSE and BIAS by region (N/S extratropics,
+  tropics) and the day it turns worse (d6-d10), parts 0-1. If one region carries >= 2/3 of the global excess and its bias grows, that
+  region's drift is named. [reg: this line | inputs: n/a | fail-5why: n/a]
