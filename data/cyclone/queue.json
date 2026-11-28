@@ -1,1 +1,8 @@
-[]
+[
+ {
+  "slug": "tn-blowsteps",
+  "inputs": "libm_wx2020L2_fields.npz,wx_truth_2020.npz,geo_gwd.npz",
+  "note": "cldpkg runaway: per model step tracer before/after dyn/apply",
+  "cmd": "H0=92 NSTEP=21 XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore blow_steps.py T170 /kaggle/working/libm_wx2020L2_fields.npz > /kaggle/working/blowsteps.log 2>&1; tail -25 /kaggle/working/blowsteps.log"
+ }
+]

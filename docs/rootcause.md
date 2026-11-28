@@ -5882,3 +5882,5 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - REGISTERED (before the result): at the same point, every model step h93-h97 - tracer before the dynamics step, after it (pure SL advection),
   and after cloud_apply (increment). The stage that multiplies the value is named. Run locally at T85 first (cheaper); if T85 does not run
   away, the same trace on Kaggle at T170. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 28 Nov 11:53 IST blow_steps at T85 locally: killed silently (memory; two compiled programs), no output - moved to Kaggle T170 (tn-blowsteps,
+  same registered rule). T42 check of the script works. [reg: 11:3x step-trace registration | inputs: n/a | fail-5why: n/a]
