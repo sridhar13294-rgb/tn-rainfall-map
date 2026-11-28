@@ -5932,3 +5932,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - REGISTERED (before the result): the baseline residual. Split the residual per step into (a) surface flux applied to q vs counted in evap,
   (b) rain counted vs q removed by convection + cloud, (c) the dynamics step alone (q and cloud water before/after, physics off): the
   term >= 50 % of the residual is named. Test on lc_mix, T42, 6 h. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 28 Nov 15:31 IST RESIDUAL SPLIT, step (c) first (T42 lc_mix, 23 Aug, 24 h): full physics dW +0.53 vs E-P +0.88 -> residual -0.35 kg m-2 (13 % of the
+  day's E); "phys_off" run: dW +0.15, but its rain accumulator still counts -10.2 kg m-2 of E-P (phys_off does not stop every rain path), so
+  (c) is NOT measurable with this switch - INCONCLUSIVE (my test design; stated). Global total air mass also drifts +0.74 (phys off) / +2.09
+  (full) kg m-2 per day (~0.1-0.2 hPa, no mass fixer). This residual is NOT a Stage-1 gate (P2/P4, P5b pass on rain against observations); it
+  is logged as a follow-up for the Day-10 exam's rain/drift check, not pursued now so the GPU and time go to the three open items.
+  [reg: 15:2x residual registration | inputs: model T42 one start | fail-5why: follow-up, not a Stage-1 item]
