@@ -5884,3 +5884,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   away, the same trace on Kaggle at T170. [reg: this line | inputs: n/a | fail-5why: n/a]
 - 28 Nov 11:53 IST blow_steps at T85 locally: killed silently (memory; two compiled programs), no output - moved to Kaggle T170 (tn-blowsteps,
   same registered rule). T42 check of the script works. [reg: 11:3x step-trace registration | inputs: n/a | fail-5why: n/a]
+- 28 Nov 11:53 IST REGISTERED (before the result) - relocation 5-why step 2 (T85 local, 10 storms, init only): after relocation, the distance from
+  best track of EACH tracker fix (min MSLP, max vo850, max vo700, min z850, min z700). If the MSLP fix is within 50 km but the vorticity/height
+  fixes are ~100 km off, the relocation moves only the surface-pressure part of the vortex (the 3-D wind/height anomaly is not moved with it);
+  if all fixes are ~100 km off, the vortex found and moved is the wrong feature. [reg: this line | inputs: n/a | fail-5why: n/a]
