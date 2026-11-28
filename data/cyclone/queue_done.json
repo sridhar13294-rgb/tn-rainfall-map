@@ -2406,5 +2406,13 @@
   "cmd": "H0=92 NSTEP=21 XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore blow_steps.py T170 /kaggle/working/libm_wx2020L2_fields.npz > /kaggle/working/blowsteps.log 2>&1; tail -25 /kaggle/working/blowsteps.log",
   "account": "1",
   "at": "2026-11-28T06:57Z"
+ },
+ {
+  "slug": "tn-r1-cand2-0",
+  "inputs": "libm_cycL2_fields.npz",
+  "note": "Tracks + P3 with sub-grid relocation",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore hind2.py /kaggle/working/libm_cycL2_fields.npz ../../../data/cyclone/kaggle_cfg/lib84_cand2.json 0 2 /kaggle/working/h0.json > /kaggle/working/h0.log 2>&1; tail -6 /kaggle/working/h0.log",
+  "account": "1",
+  "at": "2026-11-28T09:23Z"
  }
 ]
