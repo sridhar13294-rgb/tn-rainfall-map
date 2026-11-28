@@ -5798,3 +5798,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - REGISTERED (before the results): tn-r1-cand1-0/1 (83 storms, hind2.py, lib84_cand1 = vcreloc2 + the cand_sstfill extras): Tracks PASS if the 72-h
   mean position error <= 290 km + 2 SE AND the trend rule (12-h headings within 30 deg in >= 5 of 6 quick storms / >= 80 % overall); P3 stays
   closed if within +-5 hPa >= 59 of 83 (tol, as 24 Nov). [reg: this line | inputs: n/a | fail-5why: n/a]
+- 28 Nov 07:25 IST REGISTERED (before the result) - P5a JETS closure rule on cand_sstfill (tn-p5-dyn-cand1, the 12 Nov jet check: p5_geo.py, 12
+  Oct-Nov 2020 starts, T170, days 0-10): P5a CLOSES if no jet feature (subtropical jet 20-45N and eddy-driven jet 45-70N u200 core latitude
+  and speed, Asia / Pacific / Atlantic sectors) is SYSTEMATICALLY wrong (>= 7 of 12 starts failing the same day with the same sign; failing =
+  latitude shift > 2.5 deg or speed bias > 5 m/s) on days 1-5, scored with p5_dyn_eval.py as on 12 Nov. [reg: this line | inputs: n/a | fail-5why: n/a]
