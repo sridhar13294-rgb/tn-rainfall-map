@@ -5787,8 +5787,8 @@ running as a separate test) is NOT adopted on its own result unless this check p
   S.India growth 56 % smaller PASS - but a blow-up fails stability outright -> cloud package HELD. [reg: 26 Nov 08:3x cloud-package registration |
   inputs: part-3 T170 | fail-5why: blow-up 23 Aug - trace it at T42/T85 locally first (cloud tracers + SL monotone, ice sedimentation implicit)]
 - CORRECTION (my scoring error, 25 Nov 17:57 tn-cldprog): I scored TN v850 d1 -1.69 +- 0.45 and the S.India growth (paired -0.07 +- 0.07) as FAIL
-  without applying rule 10; under rule 10 both are PASS (tol). Its TN rain 0.573 +- 0.113 (2 SE: 0.80 < 0.85) still FAILS, so "cld_prog HELD"
-  stands; the pass now comes with sst_fill.
+  without applying rule 10; under rule 10 both pass (tol). Its TN rain 0.573 +- 0.113 (2 SE: 0.80 < 0.85) still FAILS, so "cld_prog HELD"
+  stands; the pass now comes with sst_fill. [reg: 25 Nov tn-cldprog registration + rule 10 | inputs: tn-cldprog part-3, bootstrap SE | fail-5why: n/a]
 - CORRECTION (my labels in the user status tables since 25 Nov): I wrote "P5a = cold growth" and "Tracks = TN v850". Wrong. P5a = JETS (u200
   biases / jet core check, tn-p5-dyn rule, 12 Nov) and Tracks = storm TRACKS (registered 5/9 Nov, re-stated 24 Nov 10:08: trend/turns match AND
   72-h mean position error <= 280-290 km, rule 10). The TN v850 rule was a gate on the candidate tests, not the Tracks gate.
