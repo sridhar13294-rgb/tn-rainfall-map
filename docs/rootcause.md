@@ -5846,3 +5846,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - 28 Nov 09:51 IST REGISTERED (before the result) - P5a jet-speed 5-why step 1: the same jet check (p5_geo.py, 12 starts, T170, 10 days) with
   PHYSICS OFF (dynamics only). If the Asia subtropical jet core speed still falls by >= 4 m/s on day 1, the DYNAMICS (diffusion / numerics /
   initial balance) is named; if it falls by < 2 m/s, the PHYSICS is named and gets its own split (drag, CMT, radiation). [reg: this line | inputs: n/a | fail-5why: n/a]
+- 28 Nov 09:56 IST tn-blow23 RESULT (T170 hourly trace, cand_cldpkg, 23 Aug 2020): all fields finite and T in 193-320 K to h106; the carried CLOUD
+  WATER runs away first - max cql 5-15 g/kg to h92, then 32 / 103 / 275 / 840 / 2207 / 3982 / 9590 / 50902 g/kg (h94-h105), at 29 N 348 E (the
+  subtropical Atlantic stratocumulus region off NW Africa), then everything is non-finite at h107. Named: a WATER-CREATING runaway in the
+  carried cloud (cql far above any available vapour), not the dynamics or the temperature. [reg: 07:3x blow-up registration (T170 branch) |
+  inputs: Kaggle kernel_blow.log | fail-5why: below]
+- FAIL-5WHY: (1) cql grows without bound <- (2) a source adds condensate that was never taken from vapour, or a sink goes negative and
+  is clipped. Prime suspect by location (shallow-cumulus region) and form: cld_det 2's SHALLOW source - it adds Mk cond / mass to the cloud and
+  takes the same from the vapour tendency dq_s, but if that vapour is not there (q clipped at 0 later), the clip creates the water. REGISTERED
+  (before the result): T170 trace h86-h100 at the runaway point with every cql term per step (deep det, shallow det, subsidence, sedimentation,
+  autoconversion, advection increment) and q before/after the clip; the term that grows first and the clip (if any) are named. [reg: this line | inputs: n/a | fail-5why: n/a]
