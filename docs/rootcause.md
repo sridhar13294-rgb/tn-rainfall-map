@@ -5765,3 +5765,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - FAIL-5WHY note: on the weak, scattered-convection start (1 Nov: ERA5 convective rain 2.4 mm/day) the T42 grid (~300 km) cannot hold the
   convergence that a 0.25-deg ERA5 storm sets up; the resolution check comes first - the same budget at T170 (exam resolution) from the
   tn-cldpkg job (rain per start is in its output) before any further physics change for P5b. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 28 Nov 06:11 IST tn-v850map RESULT (T170, Kaggle account 1, 3 starts 1/11/16 Nov, day 1, lc_mix minus old mse scheme): v850 TN -0.71, Bay +0.29,
+  Arabian +1.00, C.India -0.73, S.Ind.Ocean -0.80; rain TN -4.77, SIO -5.56, Bay +0.07 mm/day; t850 TN -1.23, Bay -1.34, Arabian -2.13, C.India
+  -1.53 K; mslp TN +34, Bay +52, Arabian +57 Pa. T170 reproduces the TN northerly difference (T42 did not). By the registered rule: the TN
+  northerly sits with the largest local rain deficit (-4.8 mm/day) - co-located - but v850 differences of similar size occur elsewhere and the
+  850 hPa cooling (1.2-2.1 K) with higher pressure covers the whole north Indian Ocean -> the LOW-LEVEL HEATING DEFICIT of the mass-flux scheme
+  is named, basin-wide, with TN where it is largest in rain. Stated plainly: the rule's "initial-state" branch could never be selected by this
+  test - both runs start from the same state, so a difference map shows physics only (my test-design error). [reg: 25 Nov 18:2x v850 step-1
+  registration | inputs: T170 Kaggle map.json (3 starts) | fail-5why: n/a]
+- NEXT (already queued): tn-sstfill and tn-cldpkg are the two physics changes aimed at this heating deficit (coastal evaporation; cloud
+  radiative/latent effects). Their TN v850 d1 is the Tracks gate (>= -1.0). [reg: 25 Nov 18:2x | inputs: n/a | fail-5why: n/a]
