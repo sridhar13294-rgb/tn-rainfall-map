@@ -2414,5 +2414,13 @@
   "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore hind2.py /kaggle/working/libm_cycL2_fields.npz ../../../data/cyclone/kaggle_cfg/lib84_cand2.json 0 2 /kaggle/working/h0.json > /kaggle/working/h0.log 2>&1; tail -6 /kaggle/working/h0.log",
   "account": "1",
   "at": "2026-11-28T09:23Z"
+ },
+ {
+  "slug": "tn-r1-cand2-1",
+  "inputs": "libm_cycL2_fields.npz",
+  "note": "Tracks + P3 with sub-grid relocation",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore hind2.py /kaggle/working/libm_cycL2_fields.npz ../../../data/cyclone/kaggle_cfg/lib84_cand2.json 1 2 /kaggle/working/h1.json > /kaggle/working/h1.log 2>&1; tail -6 /kaggle/working/h1.log",
+  "account": "4",
+  "at": "2026-11-28T09:53Z"
  }
 ]
