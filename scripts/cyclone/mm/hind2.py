@@ -39,8 +39,15 @@ for i, s in enumerate(storms):
             out = M.run(state, carry, C.get('hours', 120), box=tuple(C.get('box', (30.0, 120.0, -42.0, 35.0))))
             if not np.isfinite(out['mslp']).all(): raise RuntimeError('model blew up')
             trk = M.track(out, st0[0], st0[1])
+            dlm = []                                                                              # 28 Nov (Tracks 5-why): model deep-layer mean wind, 200-600 km ring around the tracked centre
+            LOb, LAb = np.meshgrid(M.blon, M.blat, indexing='ij')
+            for p in trk:
+                i = int(round(p[0] / 6))
+                if p[0] % 12 or i >= out['udlm'].shape[0]: continue
+                dd = np.hypot(LAb - p[1], ((LOb - p[2] + 180) % 360 - 180) * np.cos(np.radians(p[1]))) * 111.2; m = (dd >= 200) & (dd <= 600)
+                if m.any(): dlm.append((p[0], round(float(out['udlm'][i][m].mean()), 2), round(float(out['vdlm'][i][m].mean()), 2)))
             res.append(dict(name=s['name'], season=s['season'], basin=s.get('basin', 'BB'), var=var['name'], t0=key, real=[((p[0] - g).total_seconds() / 3600, p[1], p[2], p[3]) for p in P0],
-                            truth=O.segment(*s['lf']) if s['lf'] else 'no landfall', truth_lf=s['lf'], trk=trk, sec=round(time.time() - t)))
+                            truth=O.segment(*s['lf']) if s['lf'] else 'no landfall', truth_lf=s['lf'], trk=trk, dlm=dlm, sec=round(time.time() - t)))
             if C.get('systems'):                                                                  # test #9: every system the model holds, vs every real storm alive then
                 res[-1]['systems'] = mm2.track_all(M, out, **C.get('sys_kw', {}))
                 g1 = g + dt.timedelta(hours=C.get('hours', 120))

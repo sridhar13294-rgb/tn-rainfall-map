@@ -1520,6 +1520,7 @@ class Model:
         ix = np.where((self.lon >= box[0]) & (self.lon <= box[1]))[0]; iy = np.where((self.lat >= box[2]) & (self.lat <= box[3]))[0]
         self.blon, self.blat = self.lon[ix], self.lat[iy]; crop = lambda a: a[..., ix[0]:ix[-1] + 1, iy[0]:iy[-1] + 1]
         zs_n = jnp.asarray(self.zs)
+        wdl = np.where((self.sig >= 0.2) & (self.sig <= 0.85), np.asarray(self.dsig), 0.0); wdl = jnp.asarray(wdl / wdl.sum(), jnp.float32)
         def post(state, cr):
             u, v = spherical_harmonic.vor_div_to_uv_nodal(hor, state.vorticity, state.divergence); u, v = u / self.MPS, v / self.MPS
             T = (hor.to_nodal(state.temperature_variation) + self.ref_t[:, None, None]) / self.K
@@ -1529,7 +1530,8 @@ class Model:
             mslp = ps * jnp.exp(G * zs_n / (RD * (T[-1] + 0.0065 * zs_n / 2)))
             vo = hor.to_nodal(state.vorticity) * self.SEC
             return dict(mslp=crop(mslp), vo850=crop(vo[k850]), vo700=crop(vo[k700]), z850=crop(phi[k850] / G), z700=crop(phi[k700] / G),
-                        ul=crop(u[-1]), vl=crop(v[-1]), u850=crop(u[k850]), v850=crop(v[k850]), rain=crop(cr['rain']), sst=crop(cr['sst']))
+                        ul=crop(u[-1]), vl=crop(v[-1]), u850=crop(u[k850]), v850=crop(v[k850]), rain=crop(cr['rain']), sst=crop(cr['sst']),
+                        udlm=crop((u * wdl[:, None, None]).sum(0)), vdlm=crop((v * wdl[:, None, None]).sum(0)))   # 28 Nov: deep-layer (sigma 0.2-0.85) mass-weighted mean wind
         inner = int(round(every_h * 3600 / self.dt_s)); outer = int(hours // every_h)
         def one(c, _):
             st, cr = c; self._carry = cr; st2 = self.step(st); cr2 = self.surface(st2, cr); st2, cr2 = self.cloud_apply(st2, cr2); return (st2, cr2), None
