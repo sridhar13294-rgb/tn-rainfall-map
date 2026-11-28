@@ -2382,5 +2382,21 @@
   "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore blow_terms.py T170 /kaggle/working/libm_wx2020L2_fields.npz > /kaggle/working/blowterms.log 2>&1; tail -16 /kaggle/working/blowterms.log",
   "account": "4",
   "at": "2026-11-28T05:32Z"
+ },
+ {
+  "slug": "tn-cand2",
+  "inputs": "libm_wx2020L2_fields.npz,wx_truth_2020.npz,geo_gwd.npz",
+  "note": "Stage-1 candidate with sl_vcubic (config fix)",
+  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/cand2.json 3 4 /kaggle/working/wx_3.json > /kaggle/working/wx_3.log 2>&1; tail -3 /kaggle/working/wx_3.log",
+  "account": "4",
+  "at": "2026-11-28T05:54Z"
+ },
+ {
+  "slug": "tn-p5-dyn-cand2",
+  "inputs": "libm_wx2020_fields.npz,wx_truth_2020.npz",
+  "note": "P5a jets on cand2 (with sl_vcubic)",
+  "cmd": "VARS=\"u200,v200,z500,u850,rain24\" WIN=\"-90,90,0,360\" NDAY=10 PERSTART=1 GR=T170 ONLY=\"cfg\" VAR_CFG=../../../data/cyclone/kaggle_cfg/cand2.json STRIDE=1 OUT=/kaggle/working/p5_dyn_cand2.json XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore p5_geo.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 12 > /kaggle/working/p5_dyn_cand2.log 2>&1; tail -4 /kaggle/working/p5_dyn_cand2.log",
+  "account": "1",
+  "at": "2026-11-28T05:55Z"
  }
 ]
