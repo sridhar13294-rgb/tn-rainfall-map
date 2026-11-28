@@ -5802,3 +5802,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   Oct-Nov 2020 starts, T170, days 0-10): P5a CLOSES if no jet feature (subtropical jet 20-45N and eddy-driven jet 45-70N u200 core latitude
   and speed, Asia / Pacific / Atlantic sectors) is SYSTEMATICALLY wrong (>= 7 of 12 starts failing the same day with the same sign; failing =
   latitude shift > 2.5 deg or speed bias > 5 m/s) on days 1-5, scored with p5_dyn_eval.py as on 12 Nov. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 28 Nov 07:26 IST REGISTERED (before the result) - cldpkg blow-up 5-why, step 1 (size/reproduce): run the 23 Aug 2020 start locally at T42 with the
+  cand_cldpkg set for 5 days, printing global max |T| change, max cfa/cql and mslp finiteness every 6 h. If it blows up at T42, the first
+  non-finite field and its location name the process; if it does not, the blow-up is resolution-dependent and the T170 trace needs a Kaggle
+  debug job. [reg: this line | inputs: n/a | fail-5why: n/a]
