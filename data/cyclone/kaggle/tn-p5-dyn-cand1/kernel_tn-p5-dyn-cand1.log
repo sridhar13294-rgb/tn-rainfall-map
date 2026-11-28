@@ -1,0 +1,70 @@
+[{"stream_name":"stdout","time":0.96641527,"data":"+ nvidia-smi || true\n"}
+,{"stream_name":"stdout","time":0.99858771,"data":"Sat Nov 28 02:09:08 2026       \n"}
+,{"stream_name":"stdout","time":0.998606371,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":0.998609671,"data":"| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":0.998612455,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.998615035,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":0.998617502,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":0.998619981,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":0.998622563,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":1.049011814,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":1.049048703,"data":"| N/A   48C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":1.049053453,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":1.049056187,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.049058961,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":1.049061579,"data":"| N/A   49C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":1.049064199,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":1.049066739,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.049476636,"data":"\n"}
+,{"stream_name":"stdout","time":1.04948649,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.049490883,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":1.04949502,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":1.049499422,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":1.049503534,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":1.051043318,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":1.051057196,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.370078624,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":1.370469465,"data":"accelerator asked NvidiaTeslaT4 -\u003e jax for cuda12\n"}
+,{"stream_name":"stdout","time":1.370479539,"data":"+ pip uninstall -y -q jax-cuda13-plugin jax-cuda13-pjrt 2\u003e/dev/null; pip install -q \"jax[cuda12]==0.12.0.1\"\n"}
+,{"stream_name":"stderr","time":65.25364267,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":65.253679216,"data":"bigframes 2.51.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":65.253684535,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.5 which is incompatible.\n"}
+,{"stream_name":"stderr","time":65.25368814,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":65.253691696,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":65.253694934,"data":"ydf 0.15.0 requires protobuf\u003c7.0.0,\u003e=5.29.1, but you have protobuf 7.36.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":65.253698134,"data":"numba 0.61.2 requires numpy\u003c2.3,\u003e=1.24, but you have numpy 2.5.5 which is incompatible.\n"}
+,{"stream_name":"stderr","time":65.253701259,"data":"gradio 6.30.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
+,{"stream_name":"stdout","time":65.526961508,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":78.75750192,"data":"[CudaDevice(id=0), CudaDevice(id=1)] 0.12.0.1\n"}
+,{"stream_name":"stdout","time":78.757560875,"data":" \n"}
+,{"stream_name":"stdout","time":78.757568458,"data":"+ free -g; nproc\n"}
+,{"stream_name":"stdout","time":78.790946407,"data":"               total        used        free      shared  buff/cache   available\n"}
+,{"stream_name":"stdout","time":78.790968676,"data":"Mem:              31           1          20           0           9          30\n"}
+,{"stream_name":"stdout","time":78.790990438,"data":"Swap:              0           0           0\n"}
+,{"stream_name":"stdout","time":78.794253668,"data":"4\n"}
+,{"stream_name":"stdout","time":78.794811549,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":78.79483812,"data":"+ pip install -q xarray \"git+https://github.com/google-research/dinosaur@91e07a733ed6b579e4d83c4a9d9225b85ab3fae0\"\n"}
+,{"stream_name":"stdout","time":91.200954239,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":91.20101802,"data":"+ rm -rf repo \u0026\u0026 git clone -q --depth 1 -b cases https://github.com/sridhar13294-rgb/tn-rainfall-map.git repo\n"}
+,{"stream_name":"stdout","time":117.867667,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":117.867733857,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o libm_wx2020_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020_fields.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" libm_wx2020_fields.npz || { echo BAD_DOWNLOAD libm_wx2020_fields.npz; rm -f libm_wx2020_fields.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o libm_wx2020_fields.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/libm_wx2020_fields.npz; }\n"}
+,{"stream_name":"stdout","time":139.654340313,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":139.65439156,"data":"+ curl -sSL --retry 6 --retry-all-errors --retry-delay 15 -o wx_truth_2020.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/wx_truth_2020.npz \u0026\u0026 python -c \"import zipfile,sys; f=sys.argv[1]; sys.exit(0 if not f.endswith('.npz') or zipfile.is_zipfile(f) else 1)\" wx_truth_2020.npz || { echo BAD_DOWNLOAD wx_truth_2020.npz; rm -f wx_truth_2020.npz; curl -sSL --retry 6 --retry-all-errors --retry-delay 30 -o wx_truth_2020.npz https://github.com/sridhar13294-rgb/tn-rainfall-map/releases/download/era5-cases/wx_truth_2020.npz; }\n"}
+,{"stream_name":"stdout","time":160.24678761,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":160.246818842,"data":"setup s 159\n"}
+,{"stream_name":"stdout","time":160.24682392,"data":"+ cd repo/scripts/cyclone/mm \u0026\u0026 VARS=\"u200,v200,z500,u850,rain24\" WIN=\"-90,90,0,360\" NDAY=10 PERSTART=1 GR=T170 ONLY=\"cfg\" VAR_CFG=../../../data/cyclone/kaggle_cfg/cand_sstfill.json STRIDE=1 OUT=/kaggle/working/p5_dyn_cand1.json XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore p5_geo.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 12 \u003e /kaggle/working/p5_dyn_cand1.log 2\u003e\u00261; tail -4 /kaggle/working/p5_dyn_cand1.log 2\u003e\u00261 | tee job.log\n"}
+,{"stream_name":"stdout","time":6899.906466248,"data":"WARNING landinit: no soil water, skin temperature in the start file -\u003e land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)\n"}
+,{"stream_name":"stdout","time":6899.906558641,"data":"WARNING landinit: no soil water, skin temperature in the start file -\u003e land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)\n"}
+,{"stream_name":"stdout","time":6899.906563757,"data":"WARNING landinit: no soil water, skin temperature in the start file -\u003e land starts at the lowest-level air temperature and/or 60 % soil water everywhere (5 Nov: this was the case for every Stage-1 test library)\n"}
+,{"stream_name":"stdout","time":6899.906567265,"data":"cfg                d1: u850 -1.64 v850 +0.57 C-India MSLP -0.19 | d2: u850 -1.99 v850 +0.70 C-India MSLP -0.20 | d3: u850 -2.18 v850 +0.79 C-India MSLP -0.55\n"}
+,{"stream_name":"stdout","time":6899.906954827,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":6899.906971342,"data":"+ rm -rf repo libm_wx2020_fields.npz wx_truth_2020.npz\n"}
+,{"stream_name":"stdout","time":6900.273724722,"data":"exit 0\n"}
+,{"stream_name":"stdout","time":6900.273773207,"data":"total s 6899\n"}
+,{"stream_name":"stderr","time":6902.401226629,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":6902.401258325,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":6902.612477653,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":6902.612501941,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":6903.368329227,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":6904.269495455,"data":"[NbConvertApp] Writing 284841 bytes to __results__.html\n"}
+]
