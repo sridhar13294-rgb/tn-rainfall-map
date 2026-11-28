@@ -5966,3 +5966,7 @@ running as a separate test) is NOT adopted on its own result unless this check p
   motion relative to it (beta drift / structure)? Add to hind2 output the model deep-layer mean wind (850-200 hPa, 200-600 km ring around the
   tracked centre, every 12 h) and fetch ERA5's at the best-track positions ('dlm truth'). If the model's DLM-vector error explains >= 50 % of the
   variance of its motion-vector error (12-72 h), the steering flow is named; otherwise the vortex-relative motion is named. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 28 Nov 17:59 IST dlm truth fetched (83 storms, ERA5 850-200 hPa ring-mean wind every 12 h along best track). Measure check (before the model test,
+  analysis only): REAL storm motion vs ERA5 DLM, 400 segments - correlation u 0.83, v 0.75; ERA5 steering explains 64 % of the real motion
+  variance; mean motion - DLM = +0.23 E / -0.12 N m/s. The steering measure works, so the registered model test (tn-r1-dlm) can name a
+  steering-flow error if there is one. [reg: 17:4x steering registration | inputs: ERA5 dlm_truth, best tracks | fail-5why: n/a]
