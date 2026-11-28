@@ -1,8 +1,1 @@
-[
- {
-  "slug": "tn-blowterms",
-  "inputs": "libm_wx2020L2_fields.npz,wx_truth_2020.npz,geo_gwd.npz",
-  "note": "cldpkg runaway: per-stage cloud water at the runaway point",
-  "cmd": "XLA_FLAGS=\"--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding\" python -W ignore blow_terms.py T170 /kaggle/working/libm_wx2020L2_fields.npz > /kaggle/working/blowterms.log 2>&1; tail -16 /kaggle/working/blowterms.log"
- }
-]
+[]
