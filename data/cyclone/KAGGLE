@@ -1,6 +1,6 @@
-tn-cand2
-libm_wx2020L2_fields.npz,wx_truth_2020.npz,geo_gwd.npz
-XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore wx2.py /kaggle/working/libm_wx2020L2_fields.npz ../../../data/cyclone/kaggle_cfg/cand2.json 3 4 /kaggle/working/wx_3.json > /kaggle/working/wx_3.log 2>&1; tail -3 /kaggle/working/wx_3.log
+tn-p5-dyn-cand2
+libm_wx2020_fields.npz,wx_truth_2020.npz
+VARS="u200,v200,z500,u850,rain24" WIN="-90,90,0,360" NDAY=10 PERSTART=1 GR=T170 ONLY="cfg" VAR_CFG=../../../data/cyclone/kaggle_cfg/cand2.json STRIDE=1 OUT=/kaggle/working/p5_dyn_cand2.json XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore p5_geo.py /kaggle/working/libm_wx2020_fields.npz /kaggle/working/wx_truth_2020.npz 12 > /kaggle/working/p5_dyn_cand2.log 2>&1; tail -4 /kaggle/working/p5_dyn_cand2.log
 NvidiaTeslaT4
-4
-#Stage-1 candidate with sl_vcubic (config fix) 2026-11-28T05:53Z
+1
+#P5a jets on cand2 (with sl_vcubic) 2026-11-28T05:54Z
