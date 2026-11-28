@@ -5970,3 +5970,6 @@ running as a separate test) is NOT adopted on its own result unless this check p
   analysis only): REAL storm motion vs ERA5 DLM, 400 segments - correlation u 0.83, v 0.75; ERA5 steering explains 64 % of the real motion
   variance; mean motion - DLM = +0.23 E / -0.12 N m/s. The steering measure works, so the registered model test (tn-r1-dlm) can name a
   steering-flow error if there is one. [reg: 17:4x steering registration | inputs: ERA5 dlm_truth, best tracks | fail-5why: n/a]
+- 28 Nov 19:02 IST DAY-10 PART 0 (tn-d10-p0, 19 starts, cand2, 10 days): 0 failed starts; z500 d10 112.37 m (<= 122.6) vs lc_mix 110.80, paired +1.57 +- 2.80
+  (within 2 SE); global mslp d10 1028 vs 995, paired +32.9 +- 21.3 (within 2 SE); tropics t850 d10 2.07 vs 2.53 (-0.46 +- 0.04, better). Part 0
+  passes (a), (b), (c). Day-10 closes only when all four parts pass. [reg: 25 Nov Day-10 registration + rule 10 | inputs: tn-d10-p0 vs tn-lcm-wx0, same 19 starts | fail-5why: n/a]
