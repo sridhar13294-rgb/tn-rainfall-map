@@ -5856,3 +5856,15 @@ running as a separate test) is NOT adopted on its own result unless this check p
   takes the same from the vapour tendency dq_s, but if that vapour is not there (q clipped at 0 later), the clip creates the water. REGISTERED
   (before the result): T170 trace h86-h100 at the runaway point with every cql term per step (deep det, shallow det, subsidence, sedimentation,
   autoconversion, advection increment) and q before/after the clip; the term that grows first and the clip (if any) are named. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 28 Nov 11:03 IST tn-p5-dyn-physoff RESULT (T170, 12 starts, base2 + physics OFF, LINEAR vertical SL): Asia subtropical jet speed d0/d1/d2/d3 -1.8 /
+  -7.8 / -11.8 / -14.7 m/s (physics on, cand1: -1.4 / -5.9 / -8.6 / -10.3); Pacific -0.9 / -1.0 / -1.4 / -2.6; Atlantic -1.0 / -1.8 / -3.1.
+  By the registered rule (physics-off day-1 loss >= 4 m/s: -7.8 - (-1.8) = -6.0) -> the DYNAMICS is named (as on 12 Nov: D1 linear vertical SL).
+  [reg: 10:2x physics-off registration | inputs: p5_dyn_physoff.npz | fail-5why: below]
+- CONFIGURATION ERROR FOUND (mine), stated plainly: the Stage-1 candidate is lc_mix + sl_vcubic + relocate (24 Nov, A/P1 closed WITH sl_vcubic;
+  D1's fix). The weather-exam configs I built since 24 Nov (cand_landset/moland/cldprog/sstfill/cldpkg, from suite_lcmix_wx) and the jet check
+  cand1 do NOT contain sl_vcubic - only the storm configs (lib84_*) do. So tn-sstfill's adoption and today's P5a FAIL were measured on a
+  candidate WITHOUT the D1 jet fix (12 Nov: cubic removes ~3 m/s of the Asian day-1 loss). The tn-sstfill four-rule pass stands as a
+  comparison against lc_mix (same core on both sides), but the Stage-1 candidate must carry every adopted fix. FIX: cand2 = cand_sstfill +
+  sl_vcubic. REGISTERED (before the results): (a) tn-cand2 part 3 - the same four rules (TN v850 d1 >= -1.0, TN rain >= 0.85, z500 d5 <= lc_mix +
+  2 SE, S.India growth -50 %, rule 10) plus P2/P4 (+-25 %) and P5b (>= 0.85) re-checked; (b) tn-p5-dyn-cand2 - the P5a rule of 07:1x. P2/P4 and
+  P5b stay CLOSED only if (a) confirms them. [reg: this line | inputs: n/a | fail-5why: n/a]
