@@ -5959,3 +5959,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   weak systems; the speed tail mean 1.25 vs median 1.10 shows jumps). REGISTERED (diagnostic only - the Tracks gate stays 12-h / 30 deg): the
   same headings from 24-h segments. If agreement rises a lot (>= +20 points), the 12-h headings are dominated by tracker jitter and the TRACKER
   (fix set / smoothing) is named; if not, the model motion itself. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 28 Nov 17:37 IST TRACKER-NOISE DIAGNOSTIC RESULT (tn-r1-cand1): headings within 30 deg - 12-h segments 54 % (median 27 deg), 24-h segments 64 % (median
+  22 deg): +10 points (rule >= +20) -> tracker jitter is NOT the main cause; the MODEL MOTION itself differs from the real motion by a random
+  (storm-to-storm) ~20-30 deg with no mean bias. [reg: 17:4x tracker-noise registration | inputs: tn-r1-cand1 h0/h1.json | fail-5why: below]
+- FAIL-5WHY / REGISTERED (before the result): is the random motion error the STEERING FLOW error (the large-scale forecast) or the vortex's own
+  motion relative to it (beta drift / structure)? Add to hind2 output the model deep-layer mean wind (850-200 hPa, 200-600 km ring around the
+  tracked centre, every 12 h) and fetch ERA5's at the best-track positions ('dlm truth'). If the model's DLM-vector error explains >= 50 % of the
+  variance of its motion-vector error (12-72 h), the steering flow is named; otherwise the vortex-relative motion is named. [reg: this line | inputs: n/a | fail-5why: n/a]
