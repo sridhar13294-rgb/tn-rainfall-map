@@ -5810,3 +5810,15 @@ running as a separate test) is NOT adopted on its own result unless this check p
   Sahara, normal), cfa max 1.0, cql max 1.3-5.8 g/kg (large in-cloud water in a few cells). By the registered rule the blow-up is RESOLUTION-
   dependent -> a T170 Kaggle debug job (blow_trace.py, hourly) is queued behind the Tracks and jet checks. [reg: 07:3x blow-up registration |
   inputs: model T42 23 Aug | fail-5why: next step = T170 hourly trace]
+- 28 Nov 09:46 IST tn-r1-cand1 RESULT (83 storms, T170, lib84_cand1): P3 - within +-5 hPa 68 of 83 (82 %; mean err +0.91, 12 too weak, 3 too deep) >= 59:
+  P3 stays CLOSED. TRACKS - 72-h mean position error 393 +- 60 km (median 276; was 473 +- 32 with reloc2): 393 - 2 SE = 273 <= 290 -> error part
+  PASS (tol). Trend part (12-h headings within 30 deg, quick-6 storms, >= 5 of 6): 0 of 6 pass (Sidr max 66, Titli 60, Phailin 162, Giri 165,
+  Hamoon 148, Nivar 116 deg; the 0-12 h segment is the worst in Giri/Nivar/Hamoon - tracker start jitter after relocation is a candidate cause,
+  not tested) -> trend FAIL -> Tracks OPEN. [reg: 28 Nov 07:1x tn-r1-cand1 registration (5/9 Nov gate) + rule 10 | inputs: 52 storms with 72 h
+  ERA5 positions, quick-6 headings | fail-5why: next = separate the first-12-h heading (start jitter) from the 12-72 h heading errors]
+- 28 Nov 09:46 IST tn-p5-dyn-cand1 RESULT (12 starts, T170, cand_sstfill, p5_dyn_eval.py): Asia subtropical jet core SPEED systematic from day 1
+  (10 of 12 fail, mean -5.9/-8.6/-10.3/-10.6 m/s d1-d4; the 12 Nov package was -6.2/-8.3/-9.6/-9.5 - unchanged); Pacific subtropical jet speed
+  systematic from day 4 (-5.8), Pacific polar jet speed day 4-7, Atlantic polar jet speed day 4. All jet LATITUDES, Rossby-wave phase/amplitude
+  and MJO-band u200/u850 pass or are case-dependent. By the registered rule -> P5a FAIL (OPEN): the jets are too SLOW, from day 1 in Asia.
+  [reg: 28 Nov 07:1x P5a registration | inputs: p5_dyn_cand1.npz (release model-maps) + wx_truth_2020 | fail-5why: the Asia jet loses ~6 m/s
+  in the first day and it is not touched by any physics change since 12 Nov -> next: the same jet with physics OFF at T170 (dynamics-only loss)]
