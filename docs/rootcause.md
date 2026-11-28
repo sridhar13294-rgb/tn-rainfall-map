@@ -5984,3 +5984,12 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - REGISTERED (before the check): where and how does cand2's mslp d10 lose to lc_mix? Paired d10 mslp RMSE and BIAS by region (N/S extratropics,
   tropics) and the day it turns worse (d6-d10), parts 0-1. If one region carries >= 2/3 of the global excess and its bias grows, that
   region's drift is named. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 28 Nov 20:26 IST REGIONAL SPLIT RESULT (parts 0-1, 37 starts, mslp RMSE cand2 - lc_mix, Pa): globe d5 -22 / d7 +8 / d10 +36; N extratropics d5 -32 / d7 +22 /
+  d8 +50 / d10 +85 (bias d10 -114 vs -117: unchanged); S extratropics d10 +15 (bias -102 vs -42); tropics -25..-39 every day (better; bias +89 vs
+  +43). By the rule: the N EXTRATROPICS carry the global excess from day 7, but their BIAS does not grow -> not a drift; it is synoptic error
+  growth - the same signature as the 12 Nov "d10 cost of sl_vcubic" (extratropical d10 RMSE up, bias better, ACC near zero; suspect: cubic
+  damps eddies less -> double penalty), not yet proven. [reg: 20:2x regional-split registration | inputs: tn-d10-p0/1 vs tn-lcm-wx0/1 | fail-5why: below]
+- REGISTERED (before the check): eddy amplitude test (the 12 Nov open step). N-extratropics d10 forecast anomaly std (sf) vs observed (so) for
+  mslp and z500, cand2 vs lc_mix, same 37 starts: if cand2's sf/so is >= 0.05 higher than lc_mix's AND above 1.0, too-ACTIVE eddies are named
+  (the RMSE excess is a damping deficit); if cand2 sf/so <= 1.0 the larger eddies are realistic and the excess is the double penalty of a
+  near-zero-skill day 10 (then named: day-10 predictability, not a defect). [reg: this line | inputs: n/a | fail-5why: n/a]
