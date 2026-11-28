@@ -5836,3 +5836,10 @@ running as a separate test) is NOT adopted on its own result unless this check p
   [reg: this line | inputs: n/a | fail-5why: n/a]
 - 28 Nov 09:50 IST hour-0 check: T170 init locally is OOM (6 GB, killed) - running it at T85 instead, adding a third case (relocated + DFI); the
   registered rule is applied to the same three-way split; the T85 grid (1.4 deg) adds its own quantisation (stated). [reg: 10:1x hour-0 registration | inputs: n/a | fail-5why: n/a]
+- 28 Nov 09:51 IST HOUR-0 RESULT at T85 (10 storms; candidate has dfi_off = 1, so DFI changes nothing): best track -> tracked centre: analysis
+  vortex 98 km, relocated 75 km, T170 job hour 0 97 km; relocation makes it WORSE in 3 of 10 (18 -> 74, 33 -> 88, 18 -> 73 km). By the rule:
+  INCONCLUSIVE at T85 - the 75 km is the size of the T85 half-cell (~78 km), so T85 cannot tell relocation from grid. Stated: relocation
+  does not bring the centre within 50 km even where the analysis was already within 20-35 km. [reg: 10:1x hour-0 registration | inputs: T85
+  local, 10 storms; T170 job h0 from tn-r1-cand1 | fail-5why: below]
+- REGISTERED (before the result): the same three-way check at T170 on Kaggle for all 83 storms (h0off.py, no forecast, ~10 GPU minutes),
+  same rule ((a) relocated < 50 km and tracker ~100 -> tracker named; (a) ~100 -> relocation named). [reg: this line | inputs: n/a | fail-5why: n/a]
