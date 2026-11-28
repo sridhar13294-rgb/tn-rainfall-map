@@ -5843,3 +5843,6 @@ running as a separate test) is NOT adopted on its own result unless this check p
   local, 10 storms; T170 job h0 from tn-r1-cand1 | fail-5why: below]
 - REGISTERED (before the result): the same three-way check at T170 on Kaggle for all 83 storms (h0off.py, no forecast, ~10 GPU minutes),
   same rule ((a) relocated < 50 km and tracker ~100 -> tracker named; (a) ~100 -> relocation named). [reg: this line | inputs: n/a | fail-5why: n/a]
+- 28 Nov 09:51 IST REGISTERED (before the result) - P5a jet-speed 5-why step 1: the same jet check (p5_geo.py, 12 starts, T170, 10 days) with
+  PHYSICS OFF (dynamics only). If the Asia subtropical jet core speed still falls by >= 4 m/s on day 1, the DYNAMICS (diffusion / numerics /
+  initial balance) is named; if it falls by < 2 m/s, the PHYSICS is named and gets its own split (drag, CMT, radiation). [reg: this line | inputs: n/a | fail-5why: n/a]
