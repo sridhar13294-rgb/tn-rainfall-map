@@ -5916,3 +5916,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
   given), and cloud_apply stores the physics' output directly (no increment, no clip of a stale increment). Each process conserves water in
   turn. REGISTERED (before the result): (1) T42 smoke + a global cloud-water budget check (column total change = sources - sinks within 1 %);
   (2) the cloud package at T170 on 23 Aug again (blow_trace) - no runaway (max cql < 20 g/kg) to day 5. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 28 Nov 15:19 IST tn-cand2 RESULT (T170 part 3, 18 starts, 0 failed; cand2 = cand_sstfill + sl_vcubic, the corrected Stage-1 candidate):
+  (1) TN v850 d1 -1.62 +- 0.47 -> -0.68 >= -1.0: PASS (tol). (2) TN 5-day rain 1.280 +- 0.156 >= 0.85: PASS. (3) z500 d5 61.15 vs lc_mix 65.90,
+  paired -4.74 +- 1.06: PASS. (4) S.India growth 64 % smaller (paired +0.15 +- 0.11 >= 0): PASS. ALL FOUR PASS -> cand2 is the Stage-1 candidate.
+  P2/P4 (within +-25 %): 1.280 - 2 SE = 0.967 <= 1.25 -> PASS (tol); P5b (>= 0.85): PASS -> both stay CLOSED (confirmed on the real candidate).
+  Also: tropics t850 d5 1.88 (cand_sstfill 1.79), mslp 632 (629), India t2 3.27 (3.20), India u850 4.57 (4.51), S.India rain 7.06 (7.69); India
+  u200 d1 bias -1.74 m/s. [reg: 28 Nov 11:0x cand2 registration + rule 10 | inputs: part-3 T170, paired with tn-lcm-wx3 / tn-ls-moland | fail-5why: n/a (pass)]
