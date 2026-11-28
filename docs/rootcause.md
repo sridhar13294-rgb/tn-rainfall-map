@@ -5868,3 +5868,17 @@ running as a separate test) is NOT adopted on its own result unless this check p
   sl_vcubic. REGISTERED (before the results): (a) tn-cand2 part 3 - the same four rules (TN v850 d1 >= -1.0, TN rain >= 0.85, z500 d5 <= lc_mix +
   2 SE, S.India growth -50 %, rule 10) plus P2/P4 (+-25 %) and P5b (>= 0.85) re-checked; (b) tn-p5-dyn-cand2 - the P5a rule of 07:1x. P2/P4 and
   P5b stay CLOSED only if (a) confirms them. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 28 Nov 11:23 IST tn-h0off RESULT (T170, all 83 storms, init only; candidate has dfi_off so DFI changes nothing): best track -> tracked centre at hour
+  0: analysis vortex 107 km, relocated 102 km, job 102 km (identical to the job). By the registered rule: (a) relocated ~100 km -> the
+  RELOCATION is named: it moves the vortex but leaves the tracked centre ~100 km from best track (it helps by only 5 km on average and makes
+  some storms worse, e.g. 50 -> 103 km). [reg: 10:1x hour-0 registration | inputs: Kaggle T170 h0off.log, 83 storms | fail-5why: next = why the
+  relocated centre is not at the target: the vortex found (argmin of smoothed SLP within 350 km) vs the tracker's 5-fix centre (vorticity,
+  heights) - if the moved SLP minimum lands on target but vorticity/height centres do not, the relocation moves the wrong part of the vortex]
+- 28 Nov 11:23 IST tn-blowterms RESULT (T170, per-stage cloud water at the max point, h86-h100): the runaway point is 16.5 N 42.2 E (Yemen / Red Sea
+  highlands) at sigma 0.73-0.79. Inside the cloud column step the cloud water only FALLS (autoconversion 20 %, subsidence; cnd = 0, detrainment
+  ~0), yet the carried value grows ~3x per hour between calls (32 -> 103 -> 275 -> 840 -> 2207 g/kg). So the water is created OUTSIDE the
+  cloud physics: in the step between column calls - the semi-Lagrangian advection of the cloud tracers or the increment in cloud_apply.
+  The shallow/deep sources are CLEARED (my first suspicion was wrong). [reg: 10:5x term-trace registration | inputs: Kaggle kernel_blowterms.log | fail-5why: below]
+- REGISTERED (before the result): at the same point, every model step h93-h97 - tracer before the dynamics step, after it (pure SL advection),
+  and after cloud_apply (increment). The stage that multiplies the value is named. Run locally at T85 first (cheaper); if T85 does not run
+  away, the same trace on Kaggle at T170. [reg: this line | inputs: n/a | fail-5why: n/a]
