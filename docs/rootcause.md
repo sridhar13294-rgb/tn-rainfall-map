@@ -5993,3 +5993,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
   mslp and z500, cand2 vs lc_mix, same 37 starts: if cand2's sf/so is >= 0.05 higher than lc_mix's AND above 1.0, too-ACTIVE eddies are named
   (the RMSE excess is a damping deficit); if cand2 sf/so <= 1.0 the larger eddies are realistic and the excess is the double penalty of a
   near-zero-skill day 10 (then named: day-10 predictability, not a defect). [reg: this line | inputs: n/a | fail-5why: n/a]
+- 28 Nov 20:26 IST EDDY-AMPLITUDE RESULT (cand2, parts 0-1, 37 starts, d10 forecast/observed anomaly std): mslp N extratropics 1.21 +- 0.03, S 1.24 +- 0.04,
+  tropics 1.48 +- 0.06; z500 N 1.10 +- 0.02, S 1.13 +- 0.03, tropics 1.32 +- 0.05. The lc_mix reference files (tn-lcm-wx*) carry no sf/so, so
+  the registered "vs lc_mix" half CANNOT be applied: INCONCLUSIVE on that half (input missing; stated). The other half is clear: cand2's d10
+  anomalies are 10-48 % LARGER than ERA5's everywhere -> TOO-ACTIVE flow at day 10 is named as a real defect (not only a double penalty).
+  [reg: 20:4x eddy registration | inputs: tn-d10-p0/1 sf/so | fail-5why: next = which scales carry the excess amplitude (synoptic vs small
+  scales / gravity waves) - the tropics' 1.48 in mslp points at small-scale or tidal noise rather than synoptic eddies]
