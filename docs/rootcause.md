@@ -5950,3 +5950,12 @@ running as a separate test) is NOT adopted on its own result unless this check p
   (c) global mslp d10 and tropics t850 d10 no worse than lc_mix + 2 SE, paired). Started now, before Tracks settles, because the weather exam does
   not use storm relocation (the Tracks fixes so far are storm-mode only); stated: if a Tracks fix later changes the model physics, the Day-10
   exam is rerun on that candidate. [reg: 25 Nov Day-10 registration | inputs: n/a | fail-5why: n/a]
+- 28 Nov 17:36 IST STEERING CHECK (tn-r1-cand1, 83 storms, 12-h motion vectors 12-72 h, n 298 with real motion > 4 km/h): model/real speed median 1.10
+  (mean 1.25 - a tail of jumps); mean motion-vector error east -1.0 +- 0.6, north -0.0 +- 0.5 km/h; cross-track +1.2 +- 0.5 km/h (left). No
+  systematic steering bias of a size that explains 24-37 deg median heading errors: a 1 km/h bias on a 10-20 km/h storm turns the heading by
+  3-6 deg. (Analysis of existing output; registered as the next step of the 10:0x trend 5-why.) [reg: 10:0x trend-split registration (steering
+  named -> sized) | inputs: tn-r1-cand1 h0/h1.json | fail-5why: below]
+- FAIL-5WHY: heading errors without a steering bias = NOISE in the tracked positions (the hour-0 check showed the height fixes 130-385 km off for
+  weak systems; the speed tail mean 1.25 vs median 1.10 shows jumps). REGISTERED (diagnostic only - the Tracks gate stays 12-h / 30 deg): the
+  same headings from 24-h segments. If agreement rises a lot (>= +20 points), the 12-h headings are dominated by tracker jitter and the TRACKER
+  (fix set / smoothing) is named; if not, the model motion itself. [reg: this line | inputs: n/a | fail-5why: n/a]
