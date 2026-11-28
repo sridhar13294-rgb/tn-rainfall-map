@@ -5999,3 +5999,9 @@ running as a separate test) is NOT adopted on its own result unless this check p
   anomalies are 10-48 % LARGER than ERA5's everywhere -> TOO-ACTIVE flow at day 10 is named as a real defect (not only a double penalty).
   [reg: 20:4x eddy registration | inputs: tn-d10-p0/1 sf/so | fail-5why: next = which scales carry the excess amplitude (synoptic vs small
   scales / gravity waves) - the tropics' 1.48 in mslp points at small-scale or tidal noise rather than synoptic eddies]
+- 28 Nov 20:44 IST STEERING SCREEN RESULT (T42 local - T85 was killed twice for memory (8 GB) - quick-6 storms, 72 h, 30 segments): model motion-error rms
+  5.0 m/s, steering(DLM)-error rms 2.5 m/s, correlation u 0.40 / v 0.14; the steering error explains 9 % of the motion-error variance (rule >= 50 %)
+  -> at T42 the VORTEX-RELATIVE motion is named (mean -0.65 E / -0.48 N m/s, rms 4.7). Caveat stated plainly: at T42 (~300 km grid) these
+  vortices are barely resolved (72-h error 652 km vs 347-393 at T170), so this screen is weak evidence; tn-r1-dlm (T170, 83 storms) decides.
+  [reg: 20:1x local steering registration | inputs: ERA5 dlm_truth, model T42 6 storms | fail-5why: if T170 agrees, next = the vortex's own
+  propagation (beta drift / vortex size and outer-wind structure after relocation)]
