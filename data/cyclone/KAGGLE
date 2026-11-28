@@ -1,6 +1,6 @@
-tn-blowsteps
-libm_wx2020L2_fields.npz,wx_truth_2020.npz,geo_gwd.npz
-H0=92 NSTEP=21 XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore blow_steps.py T170 /kaggle/working/libm_wx2020L2_fields.npz > /kaggle/working/blowsteps.log 2>&1; tail -25 /kaggle/working/blowsteps.log
+tn-r1-cand2-0
+libm_cycL2_fields.npz
+XLA_FLAGS="--xla_gpu_deterministic_ops=true --xla_disable_hlo_passes=constant_folding" python -W ignore hind2.py /kaggle/working/libm_cycL2_fields.npz ../../../data/cyclone/kaggle_cfg/lib84_cand2.json 0 2 /kaggle/working/h0.json > /kaggle/working/h0.log 2>&1; tail -6 /kaggle/working/h0.log
 NvidiaTeslaT4
 1
-#cldpkg runaway: per model step tracer before/after dyn/apply 2026-11-28T06:56Z
+#Tracks + P3 with sub-grid relocation 2026-11-28T09:23Z
