@@ -5822,3 +5822,6 @@ running as a separate test) is NOT adopted on its own result unless this check p
   and MJO-band u200/u850 pass or are case-dependent. By the registered rule -> P5a FAIL (OPEN): the jets are too SLOW, from day 1 in Asia.
   [reg: 28 Nov 07:1x P5a registration | inputs: p5_dyn_cand1.npz (release model-maps) + wx_truth_2020 | fail-5why: the Asia jet loses ~6 m/s
   in the first day and it is not touched by any physics change since 12 Nov -> next: the same jet with physics OFF at T170 (dynamics-only loss)]
+- 28 Nov 09:47 IST REGISTERED (before the check): Tracks trend 5-why step 1 on the existing tn-r1-cand1 output - (a) the share of ALL 83 storms'
+  12-h segments within 30 deg for 0-12 h vs 12-72 h; (b) the quick-6 storms with the 0-12 h segment excluded. If 0-12 h is >= 2x worse than
+  12-72 h, the start (relocation / tracker jitter) is named first; if similar, the steering through the forecast is named. [reg: this line | inputs: n/a | fail-5why: n/a]
