@@ -5904,3 +5904,15 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - REGISTERED (before the result): tn-r1-cand2 (83 storms, lib84_cand2 = lib84_cand1 + reloc_sub): the Tracks rules of 28 Nov 07:1x (72-h mean
   <= 290 + 2 SE AND trend: quick-6 12-h headings within 30 deg in >= 5 of 6) and P3 (>= 59 of 83 within +-5 hPa); also reported: hour-0 mean
   error (was 102 km). [reg: this line | inputs: n/a | fail-5why: n/a]
+- 28 Nov 14:54 IST tn-blowsteps RESULT (T170, per model step h92-h99 at the runaway): at the tracked maximum the cloud water always FALLS within a step
+  (dynamics moves it away, e.g. 49.7 -> 1.2; physics output 0; after cloud_apply 0), yet the GLOBAL maximum grows ~1.3x per step, appearing
+  in the NEIGHBOURING level each time (sigma 0.733 <-> 0.760 <-> 0.787). ROOT CAUSE = MY cld_adv DESIGN (26 Nov): the physics ran on the
+  PRE-advection cloud (cql_in) and its change was added as an INCREMENT to the ADVECTED tracer, then clipped at 0. The vertical transports
+  inside the physics (cld_sub, cld_sed) move a layer's water down into the next layer; the dynamics has ALREADY moved that same water; the
+  donor's negative increment is clipped at 0 on the (already emptied) advected tracer, while the receiver gets the full positive increment
+  -> water created every step where strong vertical motion (Yemen highlands) and subsidence act on the same water. Exponential growth, as
+  seen. [reg: 11:3x step-trace registration | inputs: Kaggle kernel_blowsteps.log | fail-5why: n/a (named)]
+- FIX (conservative sequential splitting, no tuning): surface() runs the cloud physics on the ADVECTED tracer (the post-dynamics state it is
+  given), and cloud_apply stores the physics' output directly (no increment, no clip of a stale increment). Each process conserves water in
+  turn. REGISTERED (before the result): (1) T42 smoke + a global cloud-water budget check (column total change = sources - sinks within 1 %);
+  (2) the cloud package at T170 on 23 Aug again (blow_trace) - no runaway (max cql < 20 g/kg) to day 5. [reg: this line | inputs: n/a | fail-5why: n/a]

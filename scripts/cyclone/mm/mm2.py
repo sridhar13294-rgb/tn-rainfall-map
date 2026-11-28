@@ -1390,7 +1390,7 @@ class Model:
             # cld_adv (26 Nov, cloud 5-why: 2/3 of ERA5 cloud area sits over non-convecting points): a and q_l are SL-advected nodal tracers (IFS: advected
             # prognostic variables). The physics computed its new a, q_l from the PRE-step values (cfa_in/cql_in); its INCREMENT is added to the
             # advected tracer so neither the advection nor the physics is lost.
-            fa = jnp.clip(st.tracers['cloud_fraction'] + cr['cfa'] - cr['cfa_in'], 0.0, 1.0); fq = jnp.maximum(st.tracers['cloud_water'] + cr['cql'] - cr['cql_in'], 0.0)
+            fa = jnp.clip(cr['cfa'], 0.0, 1.0); fq = jnp.maximum(cr['cql'], 0.0)                     # 28 Nov: physics output on the advected cloud, stored directly
             fa = jnp.where(fq < 1e-8, 0.0, fa)
             st = st.replace(tracers=dict(st.tracers, cloud_fraction=fa, cloud_water=fq)); cr = dict(cr, cfa=fa, cql=fq, cfa_in=fa, cql_in=fq)
         # the spectral transform smooths the point-wise latent heating, so the reference temperature for the next dq_sat/dt must be the TRUE
@@ -1429,6 +1429,11 @@ class Model:
         return (udg - gpart) * sgc * ps[None] * self.SEC
     def surface(self, state, cr):
         """after each step: ocean mixed layer, land temperature and soil moisture, rain total."""
+        if self.cadv():
+            # 28 Nov FIX (cldpkg runaway): the cloud physics runs on the ADVECTED cloud (sequential splitting - each process conserves water);
+            # before, it ran on the pre-advection cloud and its change was added as an increment, which created water where the dynamics and
+            # the physics' vertical transports moved the same water.
+            cr = dict(cr, cfa=state.tracers['cloud_fraction'], cql=state.tracers['cloud_water'])
         hor = self.coords.horizontal; cl = hor.cos_lat; S = dict(self.S); S.update(cr['prm'])
         aux = primitive_equations.compute_diagnostic_state_sigma(state.replace(tracers={}), self.coords)
         T = (aux.temperature_variation + self.ref_t[:, None, None]) / self.K; q = state.tracers['specific_humidity']
