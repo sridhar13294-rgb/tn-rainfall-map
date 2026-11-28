@@ -5922,3 +5922,13 @@ running as a separate test) is NOT adopted on its own result unless this check p
   P2/P4 (within +-25 %): 1.280 - 2 SE = 0.967 <= 1.25 -> PASS (tol); P5b (>= 0.85): PASS -> both stay CLOSED (confirmed on the real candidate).
   Also: tropics t850 d5 1.88 (cand_sstfill 1.79), mslp 632 (629), India t2 3.27 (3.20), India u850 4.57 (4.51), S.India rain 7.06 (7.69); India
   u200 d1 bias -1.74 m/s. [reg: 28 Nov 11:0x cand2 registration + rule 10 | inputs: part-3 T170, paired with tn-lcm-wx3 / tn-ls-moland | fail-5why: n/a (pass)]
+- 28 Nov 15:28 IST WATER-BUDGET RESULT (T42, 23 Aug, global, hours 24-72; change of total column water W vs accumulated E - P): lc_mix dW -0.29 vs E-P
+  +0.53 (residual -0.82 kg m-2 = 15 % of E); cand2 -0.10 vs +0.81 (-0.91, 17 %); fixed cloud package -0.25 vs +0.94 (-1.19, 23 %); max cql 5.4
+  g/kg, no runaway. The registered 1 % rule FAILS for all three - and the baseline itself fails it: my rule was set without measuring the
+  baseline first (size check skipped; my error). Relative to its own baseline the fixed cloud package adds -0.28 to -0.37 kg m-2 per 48 h
+  (6-7 % of E). The runaway is gone (T42); the T170 re-run decides that. NEW FINDING, all configurations: ~15 % of the surface evaporation is
+  not accounted for in the atmosphere's water over 2 days (water lost beyond the rain, or evaporation counted but not delivered). [reg: 15:1x
+  budget registration | inputs: model T42, one start | fail-5why: below]
+- REGISTERED (before the result): the baseline residual. Split the residual per step into (a) surface flux applied to q vs counted in evap,
+  (b) rain counted vs q removed by convection + cloud, (c) the dynamics step alone (q and cloud water before/after, physics off): the
+  term >= 50 % of the residual is named. Test on lc_mix, T42, 6 h. [reg: this line | inputs: n/a | fail-5why: n/a]
