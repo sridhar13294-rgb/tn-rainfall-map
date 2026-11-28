@@ -5945,3 +5945,8 @@ running as a separate test) is NOT adopted on its own result unless this check p
   CLOSED. Stated: the sl_vcubic omission I found this morning was the whole difference between FAIL and PASS here. Not in the P5a rule but
   noted: the MJO-band RAIN pattern correlation drops below 0.6 from day 2 (0.59) - a Day-10 exam concern, not a P5a gate. [reg: 28 Nov 07:1x
   P5a registration (days 1-5) | inputs: p5_dyn_cand2.npz (release) + wx_truth_2020 | fail-5why: n/a (pass)]
+- 28 Nov 15:35 IST DAY-10 EXAM QUEUED on cand2 (tn-d10-p0..p3: wx2.py parts 0-3, T170, 10 days, cand2_d10 = cand2 with days 10), judged by the gate
+  registered 25 Nov (line ~5363: (a) 0 failed starts; (b) z500 d10 <= 122.6 m AND <= lc_mix d10 + 2 SE paired (tn-lcm-wx0..3, 10-day, same starts);
+  (c) global mslp d10 and tropics t850 d10 no worse than lc_mix + 2 SE, paired). Started now, before Tracks settles, because the weather exam does
+  not use storm relocation (the Tracks fixes so far are storm-mode only); stated: if a Tracks fix later changes the model physics, the Day-10
+  exam is rerun on that candidate. [reg: 25 Nov Day-10 registration | inputs: n/a | fail-5why: n/a]
