@@ -1157,14 +1157,17 @@ class Model:
                 qlc_ = al * qcl; qic_ = (1.0 - al) * qcl
                 aut = a1 * (1.67e-4 * qlc_ * (1.0 - jnp.exp(-(qlc_ / qcr) ** 2)) + 1e-3 * jnp.exp(0.03 * (Tc_ - 273.15)) * qic_ * (1.0 - jnp.exp(-(qic_ / 3e-5) ** 2)))
             q1 = jnp.maximum(q0 + dt * (jnp.minimum(cnd - ev1 - ev2, 0.5 * jnp.maximum(qc_, 0.0) / dt) - aut), 0.0)
+            _ct = dict(q0=q0, base=q1, cnd=cnd * dt, aut=aut * dt, qv=qc_) if self.S.get('cld_dbg', 0) else None
             a2 = jnp.clip(a1 - dt * ev2 / jnp.maximum(qcl, 1e-7), 0.0, 1.0)
             if self.S.get('cld_det', 0) and getattr(self, '_det', None) is not None:
                 # cld_det: convective sources (IFS Cy47r1 Part IV eqs. 7.22-7.23): da = D_up dt, dql = D_up l_up dt (D_up = detrained mass / layer mass);
                 # the compensating-subsidence advection terms (M_up/rho d/dz) are not included (stated). The condensate was already taken from the
                 # vapour inside conv_mf, so it is NOT part of cnet (no second latent heating).
                 a2 = jnp.clip(a2 + dt * self._det['D'] / mass, 0.0, 1.0); q1 = q1 + dt * self._det['Lw'] / mass
+                if _ct is not None: _ct['deep'] = q1
             if self.S.get('cld_det', 0) >= 2 and getattr(self, '_det_sh', None) is not None:
                 a2 = jnp.clip(a2 + dt * self._det_sh['D'] / mass, 0.0, 1.0); q1 = q1 + dt * self._det_sh['Lw'] / mass      # shallow detrainment (7.22-7.23)
+                if _ct is not None: _ct['sh'] = q1
             if self.S.get('cld_sub', 0) and self.S.get('cld_det', 0):
                 # cld_sub (26 Nov, high-cloud 5-why): the compensating-SUBSIDENCE terms of IFS eqs. 7.22-7.23 (M_c/rho d a/dz, M_c/rho d l/dz):
                 # the environment around the updraughts sinks with the updraught mass flux, carrying cloud down into warmer air where it
@@ -1179,6 +1182,7 @@ class Model:
                 flx_out = jnp.concatenate([flx[1:], jnp.zeros_like(flx[:1])], 0)              # = what the layer below receives from this one
                 q1 = jnp.maximum((ql_ + flx - flx_out) / mass, 0.0)
                 a2 = jnp.clip(a2 + cr_ * (up_(a2) - a2), 0.0, 1.0)
+                if _ct is not None: _ct['sub'] = q1
             sed_sfc = 0.0
             if self.S.get('cld_sed', 0):
                 # cld_sed (25 Nov, cover 5-why: detrained cirrus has no sink): IFS Cy47r1 Part IV 7.2(i) sedimentation of cloud ICE with a constant
@@ -1188,8 +1192,10 @@ class Model:
                 for k in range(L):
                     qn_ = (ice[k] + dt * Fin / mk[k]) / (1.0 + dt * 0.13 / dzk[k]); Fin = mk[k] * qn_ * 0.13 / dzk[k]; out_i.append(qn_)
                 q1 = liq + jnp.stack(out_i, 0); sed_sfc = Fin
+                if _ct is not None: _ct['sed'] = q1
             a2 = jnp.where(q1 < 1e-8, 0.0, a2)
             cfa_n, cql_n = a2, q1
+            if _ct is not None: self._ct = _ct
             if self.S.get('cld_dbg', 0): self._cdbg = dict(da_f=da_f, a0=a0, a1=a1, a2=a2, rh=rh_, rhcr=rhcr, ev2a=ev2 / jnp.maximum(qcl, 1e-7), D=(self._det['D'] / mass if getattr(self, '_det', None) is not None else jnp.zeros_like(a2)))   # diagnostics only
             cnet = cnet_aut = None; cTp_new = T
             if self.S.get('cld_prog', 0) >= 2:
