@@ -5825,3 +5825,12 @@ running as a separate test) is NOT adopted on its own result unless this check p
 - 28 Nov 09:47 IST REGISTERED (before the check): Tracks trend 5-why step 1 on the existing tn-r1-cand1 output - (a) the share of ALL 83 storms'
   12-h segments within 30 deg for 0-12 h vs 12-72 h; (b) the quick-6 storms with the 0-12 h segment excluded. If 0-12 h is >= 2x worse than
   12-72 h, the start (relocation / tracker jitter) is named first; if similar, the steering through the forecast is named. [reg: this line | inputs: n/a | fail-5why: n/a]
+- 28 Nov 09:47 IST TRACK-TREND SPLIT RESULT (tn-r1-cand1, 83 storms): 12-h headings within 30 deg - 0-12 h 41 % (n 78, median 37 deg), 12-72 h 58 %
+  (n 294, median 24 deg); quick-6 with 0-12 h excluded: still 0 of 6 pass (Phailin 162, Hamoon 148, Giri 82, Sidr 66, Titli 60, Nivar 44 deg max).
+  By the registered rule (0-12 h >= 2x worse?) NOT met -> the STEERING through the forecast is named, not the start. INPUT finding on the way:
+  the tracked centre at HOUR 0 is 102 km (mean; median 103) from the best-track position - the relocated start is already ~100 km off.
+  [reg: 10:0x trend-split registration | inputs: tn-r1-cand1 h0/h1.json | fail-5why: below]
+- REGISTERED (before the check): the hour-0 offset. For the 83 storms: distance best track -> (a) the inserted/relocated vortex centre in the
+  start fields, (b) the tracker's hour-0 fix. If (a) is small (< 50 km) and (b) ~100 km, the TRACKER (centre definition on the T170 grid) is
+  named; if (a) ~100 km, the RELOCATION is named. Either way the 72-h error carries it and it gets fixed before the steering 5-why.
+  [reg: this line | inputs: n/a | fail-5why: n/a]
